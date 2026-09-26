@@ -1,7 +1,7 @@
 <title>Caravana Índia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@400;500;600&family=Cinzel:wght@600;700;900&family=Jost:wght@500;600&family=Julius+Sans+One&family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@400;500;600&family=Cinzel:wght@600;700;900&family=Jost:wght@500;600&family=Julius+Sans+One&family=Caveat:wght@400;600&family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap">
 <style>
 /* Visual claro da Caravana do Céu: papel, carvão, musgo, terracota e areia. */
 :root{
@@ -575,7 +575,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 
 /* Hoje */
 .hero .route{font-size:12px;letter-spacing:.1em}
-.hero .route.sa{font-family:"Poppins","Noto Sans Devanagari",sans-serif;font-size:17px;letter-spacing:0;text-transform:none;font-weight:500;color:#C9A56A}
+.hero .route.sa{font-family:"Poppins","Noto Sans Devanagari",sans-serif;font-size:17px;letter-spacing:0;text-transform:none;font-weight:600;color:#C9A56A}
 .hoje{background:linear-gradient(160deg,#3B2A1C,#5A4128);color:#F1E2BC;border-radius:var(--r);box-shadow:var(--shadow);padding:18px 18px 16px;display:flex;flex-direction:column;gap:8px}
 .hjtop{display:flex;align-items:center;gap:10px;font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#D8C09A;margin:0}
 .hjtop span{background:#E2BE78;color:#2B1F14;border-radius:999px;padding:2px 10px}
@@ -605,7 +605,16 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .mnota{font-size:12px;color:var(--faint);margin:0}
 .diario{display:flex;flex-direction:column;gap:8px}
 .dq{font-family:var(--display);font-style:italic;font-size:18px;margin:0;color:var(--ink)}
-.diario textarea{width:100%;border:1px solid var(--line2);border-radius:12px;padding:10px 12px;background:#FFFCF5;font:15px/1.5 var(--ui);resize:vertical}
+.diario textarea{width:100%;border:1px solid #DCC9A6;border-radius:6px;padding:4px 14px 6px 44px;min-height:132px;resize:vertical;color:#27406B;font:24px/32px "Caveat","Segoe Script","Bradley Hand",cursive;background:linear-gradient(90deg,transparent 34px,rgba(200,80,70,.45) 34px,rgba(200,80,70,.45) 35.5px,transparent 35.5px),repeating-linear-gradient(180deg,#FBF4E2 0 31px,#C9D3DF 31px 32px);background-attachment:local;box-shadow:inset 0 1px 3px rgba(60,40,20,.12)}
+.diario textarea::placeholder{color:#8A93A3}
+/* Mensagem do diário */
+.avisoleitura{display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,#F3E6C8,#EAD6A8);border:1px solid #CDB184;border-radius:var(--r);box-shadow:var(--shadow);padding:14px 16px;text-align:left}
+.avisoleitura.nova{box-shadow:0 0 0 3px rgba(179,71,58,.35),var(--shadow)}
+.avisoleitura b{display:block;font-family:"Special Elite","Courier Prime",monospace;font-weight:400;font-size:16px;color:#3B2A1C}
+.avisoleitura .ctx span{font-size:13px;color:#6B5A43}
+.pgm.leitura em{font-style:italic;color:#5A3A1C}
+.pgm .lendo{font-style:italic;color:#7A5A36}
+@media (prefers-reduced-motion:no-preference){.pgm .lendo{animation:pulsa 1.6s ease-in-out infinite}@keyframes pulsa{50%{opacity:.45}}}
 /* Correspondência */
 nav.tabs .badge{position:absolute;top:2px;right:calc(50% - 26px);display:grid;place-items:center;min-width:17px;height:17px;border-radius:9px;background:#B3473A;color:#fff;font-size:10.5px;font-weight:700;padding:0 4px;box-shadow:0 0 0 2px #2B1F14}
 nav.tabs button{position:relative}
@@ -655,7 +664,7 @@ nav.tabs button{position:relative}
 .pg.diariopg,.pg.cartapg{justify-content:flex-start;align-items:stretch;text-align:left;gap:10px}
 .pgdiario{border-bottom:1px dashed rgba(40,28,15,.25);padding-bottom:8px}
 .pgdq{font-family:"Courier Prime",monospace;font-size:9.5px;letter-spacing:.06em;color:#8A3F32;margin:0}
-.pgdt{font-family:"Special Elite","Courier Prime",monospace;font-size:13px;line-height:1.45;margin:4px 0 0;color:#282722}
+.pgdt{font-family:"Caveat",cursive;font-size:19px;line-height:1.2;margin:4px 0 0;color:#27406B}
 .pgct{font-family:"Courier Prime",monospace;font-size:11.5px;line-height:1.5;margin:0;color:#282722}.pgct.ass{font-style:italic}
 /* Hindi */
 .hilist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
@@ -979,6 +988,7 @@ function vTravessia() {
             : h("div", null, h("b", { text: "13" }), h("span", { text: "dias de travessia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "Asia/Kolkata", text: horaEm("Asia/Kolkata") }), h("span", { text: "Agora na Índia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +8h30" }))),
+    vAvisoLeitura(),
     vCorrespondencia(),
     ins.length ? h("div", null,
       h("p", { class: "eyebrow rule", text: `Os ${ins.length} selos do passaporte` }),
@@ -1012,7 +1022,6 @@ function vDia(d, open, isToday, abrir) {
       h("div", null, h("p", { class: "eyebrow rule", text: "Agenda do dia" }),
         d.agenda.map(p => [h("p", { class: "per", text: p.periodo }),
           h("ul", { class: "items" }, p.itens.map(it => h("li", null, h("span", { class: "h", text: it.hora || "·" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null))))])),
-      vMantra(d.n),
       vDiario(d, d.iso <= hojeTrip()),
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
@@ -2335,7 +2344,7 @@ try { S.diario = JSON.parse(localStorage.getItem("cdi-diario") || "{}") || {}; }
 function salvaDiario(n, txt) {
   S.diario = { ...S.diario, [n]: txt };
   try { localStorage.setItem("cdi-diario", JSON.stringify(S.diario)); } catch (e) {}
-  if (S.db && S.uid) return S.db.doc("diarios/" + S.uid).set({ entradas: S.diario, ts: Date.now() }).then(() => true, () => false);
+  if (S.db && S.uid) { const ref = S.db.doc("diarios/" + S.uid), dados = { entradas: S.diario, ts: Date.now() }; return ref.update(dados).catch(() => ref.set(dados)).then(() => true, () => false); }
   return Promise.resolve(false);
 }
 function vDiario(d, liberado) {
@@ -2350,7 +2359,8 @@ function vDiario(d, liberado) {
     h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: async () => {
       st.textContent = "Guardando…"; await salvaDiario(d.n, ta.value.trim()); st.textContent = "Guardado no seu passaporte."; st.className = "msg ok";
     } }, salvo ? "Atualizar" : "Guardar no passaporte"), st),
-    h("p", { class: "small", text: "Só você e a líder da travessia podem ler." }));
+    h("p", { class: "small", text: d.n === 13 ? "No último dia, a Caravana lê o seu diário e manda uma mensagem só para você." : "Só você e a líder da travessia podem ler." }),
+    d.n === 13 && leituraAberta() ? h("button", { class: "btn gold", type: "button", onclick: abrirLeitura }, "Abrir a mensagem do meu diário") : null);
 }
 // Correspondência: cartas da líder, em pergaminho, por pombo-correio
 const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nDoze selos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
@@ -2484,7 +2494,7 @@ ${dias.map(d => { const m = MANTRAS[d.n]; return `<h2 id="d${d.n}">Dia ${d.n} ·
 ${d.agenda.map(p => `<p class="e">${esc(p.periodo)}</p><ul>${p.itens.map(i => `<li><b>${esc(i.hora || "·")}</b> ${esc(i.texto)}</li>`).join("")}</ul>`).join("")}
 ${d.aviso ? `<h3>${esc(d.aviso.titulo)}</h3>${par(d.aviso.texto)}` : ""}
 ${(d.lugares || []).map(l => `<h3>${esc(l.nome)}</h3>${par(l.texto)}`).join("")}
-${m ? `<div class="m"><p class="e">Mantra do dia · ${esc(m.nome)}</p><p style="font-size:20px">${m.dev.map(esc).join("<br>")}</p><p>${m.linhas.map(esc).join("<br>")}</p><i>${esc(m.trad)}</i></div>` : ""}`; }).join("")}
+`; }).join("")}
 <h2 id="hindi">Frases úteis em hindi</h2><ul>${HINDI.map(([pt, rom, dev, pron]) => `<li><b>${esc(rom)}</b> ${esc(pt)} · fala-se ${esc(pron)}</li>`).join("")}</ul>
 <h2 id="saberes">Saberes da travessia</h2>${sab.map(x => `<h3>${esc(x.titulo)}</h3>${par(x.texto)}`).join("")}
 <h2 id="guia">Guia da travessia</h2>${guia.map(x => `<h3>${esc(x.titulo)}</h3>${par(x.texto)}`).join("")}
@@ -2499,7 +2509,7 @@ async function baixarOffline(st) {
 function vOffline() {
   const st = h("span", { class: "msg", role: "status" });
   return h("div", { class: "offline" },
-    h("div", null, h("b", { text: "Levar sem internet" }), h("span", { text: "Salve o roteiro, os mantras, as frases em hindi e os saberes abertos num arquivo para ler no ônibus ou no templo, sem sinal." })),
+    h("div", null, h("b", { text: "Levar sem internet" }), h("span", { text: "Salve o roteiro, as frases em hindi e os saberes abertos num arquivo para ler no ônibus ou no templo, sem sinal." })),
     h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: () => baixarOffline(st) }, "Salvar no celular"), st));
 }
 // Mural da caravana
@@ -2540,6 +2550,88 @@ function abrirFotoMural(f) {
 }
 setInterval(() => { if (S.tab === "travessia" && !document.querySelector(".sheet") && !(document.activeElement && /TEXTAREA|INPUT|SELECT/.test(document.activeElement.tagName))) render(); }, 60000);
 
+
+// Mensagem do diário de bordo (último dia), na linguagem do Mapa da Clareza
+const entradasDiario = () => (S.roteiro?.dias || []).filter(d => (S.diario[d.n] || "").trim()).map(d => ({ n: d.n, cidade: d.cidade, pergunta: PERGUNTAS[d.n], texto: S.diario[d.n].trim() }));
+const leituraAberta = () => hojeIso() >= FIM && !!eu() && !eu().lider && entradasDiario().length > 0;
+function promptLeitura() {
+  const nome = primeiroNome(), ent = entradasDiario();
+  return `Você escreve na voz da Caravana do Céu, uma caravana espiritual brasileira que acaba de atravessar a Índia Sagrada (4 a 16 de novembro de 2026: Delhi, Agra e o Taj Mahal, Jaipur e o templo de Galta Ji, Varanasi e o Ganges, Rishikesh e o Himalaia).
+
+Escreva uma Carta Especial da Caravana para ${nome}, a partir do Diário de Bordo que ${nome} escreveu dia a dia durante a travessia. O objetivo é que ${nome} sinta: alguém me viu por inteiro.
+
+Como ler (faça isso em silêncio, antes de escrever):
+1. Separe as frases mais reveladoras, na grafia exata de ${nome}; as palavras que se repetem em dias diferentes; e as tensões entre uma resposta e outra.
+2. Encontre um fio central e formule como identidade, no formato "Você não é X. Você é Y."
+3. Nomeie o dom de ${nome}: o jeito raro com que usa o que tem, incluindo uma camada que ${nome} mesma subestimou.
+4. Mostre o que a travessia moveu em ${nome}, ligando as palavras de cada dia ao lugar em que foram escritas.
+5. Escolha uma metáfora-mestra da natureza (rio, fogo, semente, montanha, lamparina) e desenvolva em duas ou três frases; retome-a no fecho.
+
+Como escrever:
+- Português do Brasil, falando direto com ${nome} ("você") e usando o nome dela ou dele ao longo do texto.
+- Comece com "Para ${nome}," numa linha sozinha.
+- Entre 350 e 600 palavras, em parágrafos curtos. Se houver poucas respostas, escreva mais curto e não preencha com suposições.
+- Cite entre asteriscos, em itálico, apenas frases que ${nome} escreveu de fato, dizendo o dia e o lugar (por exemplo: no dia 6, em Varanasi, você escreveu *...*). Nunca invente uma citação.
+- Use negrito com dois asteriscos em no máximo uma frase-tese por parágrafo.
+- Mais bênção do que confronto, mas com precisão; reconheça o que ${nome} conquistou antes de apontar o que ainda prende.
+- Termine com uma pergunta-espelho curta, sozinha numa linha, e depois um pequeno ritual para fazer ao chegar em casa, ligado ao que ${nome} viveu na Índia.
+- Assine "Caravana do Céu" na última linha.
+- Evite clichês de autoajuda ("acredite em você", "saia da zona de conforto", "gratidão"), previsões sobre o futuro, termos clínicos e frases de efeito em sequência.
+- Se o diário mostrar sofrimento agudo, acolha com delicadeza e sugira procurar apoio profissional.
+- Responda somente com a carta, sem título e sem comentários.
+
+Diário de Bordo de ${nome}:
+${ent.map(e => `Dia ${e.n}, ${e.cidade}. Pergunta: ${e.pergunta}\nResposta de ${nome}: ${e.texto}`).join("\n\n")}`;
+}
+// markdown mínimo: *itálico* e **negrito**, parágrafos por linha em branco
+function textoRico(txt) {
+  return String(txt || "").split(/\n\s*\n/).filter(p => p.trim()).map(p => {
+    const el = h("p");
+    p.trim().split(/(\*\*[^*]+\*\*|\*[^*]+\*)/).forEach(t => {
+      if (!t) return;
+      if (t.startsWith("**") && t.endsWith("**")) el.append(h("strong", { text: t.slice(2, -2) }));
+      else if (t.startsWith("*") && t.endsWith("*") && t.length > 2) el.append(h("em", { text: t.slice(1, -1) }));
+      else el.append(document.createTextNode(t.replace(/\n/g, " ")));
+    });
+    return el;
+  });
+}
+async function abrirLeitura() {
+  closeSheets();
+  try { localStorage.setItem("cdi-leitura-vista", "1"); } catch (e) {}
+  const corpo = h("div", { class: "pgm leitura" });
+  const st = h("p", { class: "msg", role: "status" });
+  const box = h("div", { role: "dialog", "aria-label": "Mensagem do diário de bordo", class: "correiobox" },
+    h("article", { class: "pergaminho" }, h("span", { class: "rolo top", "aria-hidden": "true" }), corpo, h("span", { class: "rolo bot", "aria-hidden": "true" })),
+    st,
+    h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: closeSheets }, "Guardar a mensagem")));
+  const sheet = h("div", { class: "sheet correiosheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  document.body.append(sheet);
+  const mostra = t => corpo.replaceChildren(h("p", { class: "pgmdata", text: "Diário de bordo · Delhi, 16 de novembro de 2026" }), ...textoRico(t));
+  if (S.leitura) { mostra(S.leitura); render(); return; }
+  corpo.replaceChildren(h("p", { class: "pgmdata", text: "Diário de bordo" }), h("p", { class: "lendo", text: "A Caravana está lendo o seu diário de bordo…" }));
+  const sample = await (window.claude?.use?.("sample") ?? null);
+  if (!sample) { corpo.append(h("p", { text: "Não consegui abrir a mensagem neste aparelho. Tente de novo mais tarde." })); return; }
+  try {
+    const { text } = await sample(promptLeitura(), { modelTier: "complex", cache: false, onText: ({ text }) => mostra(text) });
+    mostra(text); S.leitura = text;
+    if (S.db && S.uid) { const ref = S.db.doc("diarios/" + S.uid), dd = { leitura: text, leituraTs: Date.now() }; ref.update(dd).catch(() => ref.set({ entradas: S.diario, ...dd })).catch(() => {}); }
+    render();
+  } catch (e) {
+    if (e && e.text) mostra(e.text);
+    st.textContent = e && e.code === "not_granted" ? "Para receber a mensagem, permita que o app consulte o Claude quando ele perguntar." : e && e.code === "rate_limited" ? "Muita gente abrindo agora. Tente de novo em alguns minutos." : "Não consegui terminar a mensagem. Tente de novo em alguns minutos.";
+    st.className = "msg err";
+  }
+}
+function vAvisoLeitura() {
+  if (!leituraAberta()) return null;
+  let vista = false; try { vista = !!localStorage.getItem("cdi-leitura-vista"); } catch (e) {}
+  return h("button", { class: "avisoleitura" + (vista ? "" : " nova"), type: "button", onclick: abrirLeitura },
+    h("span", { class: "rolinho", "aria-hidden": "true" }, h("i")),
+    h("span", { class: "ctx" }, h("b", { text: vista ? "A mensagem do seu diário de bordo" : "Seu diário de bordo tem uma mensagem para você" }),
+      h("span", { text: vista ? "Toque para ler de novo." : "A Caravana leu a sua travessia. Toque para abrir." })));
+}
+
 // ---------- dados ----------
 function listen(col, key, q, after) {
   (q || S.db.collection(col)).onSnapshot(snap => {
@@ -2579,7 +2671,7 @@ render();
   listen("posicoes", "posicoes");
   listen("cartas", "cartas", null, () => setTimeout(checaCorreio, 1200));
   listen("mural", "mural", db.collection("mural").orderBy("ts", "desc").limit(300));
-  if (S.uid) db.doc("diarios/" + S.uid).onSnapshot(sn => { const e = sn.exists && sn.data().entradas; if (e) { S.diario = { ...e, ...S.diario }; try { localStorage.setItem("cdi-diario", JSON.stringify(S.diario)); } catch (x) {} } }, () => {});
+  if (S.uid) db.doc("diarios/" + S.uid).onSnapshot(sn => { const dd = sn.exists ? sn.data() : {}, e = dd.entradas; if (dd.leitura) { S.leitura = dd.leitura; } if (e) { S.diario = { ...e, ...S.diario }; try { localStorage.setItem("cdi-diario", JSON.stringify(S.diario)); } catch (x) {} } render(); }, () => {});
   setInterval(() => { if ((S.tab === "mapa" || S.tab === "travessia") && !document.activeElement?.matches?.("input,textarea,select") && !document.querySelector(".sheet")) render(); }, 60000);
 })();
 })();
