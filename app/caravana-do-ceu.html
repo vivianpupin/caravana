@@ -556,12 +556,16 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
   .preview{box-shadow:0 10px 24px rgba(40,24,12,.25)}
 }
 @media (min-width:720px){.preview{top:16px}}
+
+.topside{align-items:center}
+.topsim{width:40px;height:auto;display:block}
+.brand{text-align:center;justify-content:center}
 </style>
 
 <div class="app">
   <header class="top">
-    <span class="topside" aria-hidden="true"></span>
-    <div class="brand"><img src="img/simbolo-dourado.png" alt=""><div><b>Caravana do Céu</b><span>Índia Sagrada · 2026</span></div></div>
+    <span class="topside" aria-hidden="true"><img class="topsim" src="img/simbolo-dourado.png" alt=""></span>
+    <div class="brand"><div><b>Caravana do Céu</b><span>Índia Sagrada · 2026</span></div></div>
     <div class="topside right"><button class="me" id="me" type="button" hidden></button></div>
   </header>
   <main id="main"></main>
