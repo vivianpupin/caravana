@@ -125,7 +125,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--moss);outline:none;bo
 .logi b{color:var(--ink);font-weight:500}
 .per{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--moss);margin:10px 0 4px}
 ul.items{list-style:none;margin:0;padding:0}
-ul.items li{display:grid;grid-template-columns:54px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+ul.items li{display:grid;grid-template-columns:58px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line);align-items:baseline}
+ul.items li>span:last-child{font-weight:500;color:var(--ink)}
+ul.items .h.sem{color:var(--faint);font-weight:400}
 ul.items li:first-child{border-top:0}
 ul.items .h{font-weight:600;color:var(--terra);font-variant-numeric:tabular-nums}
 .place{display:flex;flex-direction:column;gap:8px}
@@ -598,7 +600,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 /* Mantra e diário */
 .mantra{background:#F4E9D2;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
 .mantra h4{font-family:var(--display);font-size:20px;font-weight:500;margin:4px 0 0}
-.inota{display:block;font-size:12.5px;color:var(--soft);line-height:1.4;margin-top:1px}
+.inota{display:block;font-size:13.5px;font-weight:400;color:var(--soft);line-height:1.45;margin-top:3px}
 .mdev{font-family:"Poppins","Noto Sans Devanagari",sans-serif;font-size:20px;line-height:1.7;color:#3B2A1C;margin:4px 0 0}
 .mlin{font-family:var(--display);font-style:italic;font-size:14.5px;line-height:1.6;color:#5A4128;margin:0}
 .mtrad{font-size:14.5px;line-height:1.55;color:#3C3A33;margin:0}
@@ -1023,7 +1025,7 @@ function vDia(d, open, isToday, abrir) {
       h("div", { class: "logi" }, h("span", null, "Hospedagem ", h("b", { text: d.hotel })), d.guia ? h("span", null, h("b", { text: d.guia })) : null),
       h("div", null, h("p", { class: "eyebrow rule", text: "Agenda do dia" }),
         d.agenda.map(p => [h("p", { class: "per", text: p.periodo }),
-          h("ul", { class: "items" }, p.itens.map(it => h("li", null, h("span", { class: "h", text: it.hora || "·" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null))))])),
+          h("ul", { class: "items" }, p.itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "depois" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null))))])),
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
         l.dados && l.dados.length ? h("div", { class: "stats" }, l.dados.map(x => h("div", null, h("b", { text: x.v }), h("span", { text: x.l })))) : null)),
