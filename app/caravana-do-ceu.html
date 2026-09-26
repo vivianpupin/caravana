@@ -188,7 +188,17 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .datapage .top2 b{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--moss)}
 .datapage .top2 span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
 .dp{display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:start}
-.dp img{width:96px;height:120px;object-fit:cover;border-radius:10px;background:var(--panel3)}
+.fotobox{display:flex;flex-direction:column;align-items:center;gap:4px}
+.fotobtn{position:relative;width:96px;height:128px;padding:0;border:1.5px dashed var(--sand);border-radius:10px;background:var(--panel3);overflow:hidden;display:grid;place-items:center}
+.fotobtn:disabled{cursor:default}
+.fotobtn img{width:100%;height:100%;object-fit:cover;display:block}
+.fotobtn:has(img){border-style:solid;border-color:var(--line2)}
+.fotoadd{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;font-weight:500;color:var(--moss);line-height:1.2;padding:4px}
+.fotoadd b{font-size:26px;font-weight:400;line-height:1}
+.fototroca{position:absolute;left:0;right:0;bottom:0;background:rgba(40,39,34,.6);color:#fff;font-size:11px;padding:3px 0}
+.fotost{font-size:11px;color:var(--soft);text-align:center;max-width:110px}
+.cadfotobox{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cadfoto{width:60px;height:80px;object-fit:cover;border-radius:8px}
 .dp dl{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
 .dp dt{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
 .dp dd{margin:0;font-family:var(--display);font-size:18px;font-weight:600;line-height:1.15;overflow-wrap:anywhere}
@@ -282,6 +292,9 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .dayline{align-self:center;font-size:11.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
 .picker{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;background:var(--panel)}
 .picker select,.picker input{flex:1 1 180px;min-width:0}
+.picker.loc{flex-direction:column;flex-wrap:nowrap;gap:12px;max-height:60vh;overflow-y:auto}
+.locopt{display:flex;flex-direction:column;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.eyebrow.vivo::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#C8412F;margin-right:8px;vertical-align:1px;box-shadow:0 0 0 3px rgba(200,65,47,.2)}
 .composer{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;align-items:flex-end;background:var(--panel)}
 .composer textarea{min-height:44px;max-height:140px;border-radius:22px;padding:10px 16px;background:var(--bg)}
 .composer .note{font-size:13px;color:var(--soft);padding:4px 2px;background:none;border:0}
@@ -417,7 +430,26 @@ async function perfis(ids) {
   falta.forEach(id => perfis.pend.add(id));
   Object.assign(S.perfis, await S.user.profiles(falta)); render();
 }
-const avatar = id => S.perfis[id]?.avatarUrl || BLANK;
+const avatar = id => { const v = S.viajantes.find(x => x.id === id); return v && v.foto ? blob(v.foto) : (S.perfis[id]?.avatarUrl || BLANK); };
+// Foto do passaporte: recorta no centro em 3x4 e reduz antes de enviar.
+async function fotoPassaporte(file) {
+  const bmp = await createImageBitmap(file), alvo = 3 / 4;
+  let w = bmp.width, hh = bmp.height, sx = 0, sy = 0;
+  if (w / hh > alvo) { const nw = hh * alvo; sx = (w - nw) / 2; w = nw; } else { const nh = w / alvo; sy = (hh - nh) / 3; hh = nh; }
+  const c = document.createElement("canvas"); c.width = 600; c.height = 800;
+  c.getContext("2d").drawImage(bmp, sx, sy, w, hh, 0, 0, 600, 800);
+  const b = await new Promise(res => c.toBlob(res, "image/jpeg", 0.88));
+  return (await S.assets.upload(b)).id;
+}
+function campoFoto(onId, status) {
+  const fi = h("input", { type: "file", accept: "image/*", id: "foto-pass-" + Math.random().toString(36).slice(2), hidden: true, onchange: async () => {
+    const f = fi.files[0]; if (!f) return; status.textContent = "Enviando sua foto…";
+    try { const id = await fotoPassaporte(f); await onId(id); status.textContent = "Foto pronta."; }
+    catch (e) { status.textContent = e && e.code ? erroFoto(e) : "Não consegui usar essa foto. Tente outra, em JPG ou PNG."; }
+    fi.value = "";
+  } });
+  return fi;
+}
 
 // ---------- selos ----------
 const minhas = () => ({ ...S.local, ...((eu() && eu().insignias) || {}) });
@@ -502,12 +534,18 @@ function vCadastro() {
       e.preventDefault();
       if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
       const doc = { nome: nome.value.trim(), cidade: cid.value.trim(), ts: Date.now(), insignias: { ...S.local } };
+      if (S.cadFoto) doc.foto = S.cadFoto;
       if (S.isOwner) doc.lider = true;
       try { await S.db.doc("viajantes/" + S.uid).set(doc); S.tab = "passaporte"; }
       catch (err) { erro.textContent = "Não consegui emitir seu passaporte. Peça à líder um convite com permissão para participar."; }
     } },
       h("label", { for: "cad-nome" }, "Seu nome", nome),
       h("label", { for: "cad-cidade" }, "De onde você vem", cid),
+      S.assets ? (() => {
+        const st = h("span", { class: "small", role: "status" }), prev = h("img", { alt: "", hidden: true, class: "cadfoto" });
+        const fi = campoFoto(async id => { S.cadFoto = id; prev.src = blob(id); prev.hidden = false; }, st);
+        return h("div", { class: "cadfotobox" }, prev, h("button", { class: "btn", type: "button", onclick: () => fi.click() }, "Foto para o passaporte (opcional)"), fi, st);
+      })() : null,
       erro, h("button", { class: "btn gold", type: "submit" }, "Emitir meu passaporte")),
     h("button", { class: "btn ghost", type: "button", onclick: () => { S.pularCadastro = true; render(); } }, "Agora não, só quero olhar"));
 }
@@ -636,8 +674,15 @@ function vPassaporte() {
     h("div", { class: "pcover", role: "img", "aria-label": "Passaporte da Travessia" }, h("img", { src: "img/simbolo.png", alt: "" }), h("b", { text: "Passaporte" }), h("span", { text: "da Travessia · Índia Sagrada" }), h("span", { text: "Caravana do Céu" })),
     v ? h("div", { class: "datapage" },
       h("div", { class: "top2" }, h("b", { text: "Passaporte da Travessia" }), h("span", { text: "Índia · 2026" })),
-      h("div", { class: "dp" },
-        h("img", { src: avatar(S.uid), alt: "" }),
+      h("div", { class: "dp" }, (() => {
+        const st = h("span", { class: "fotost", role: "status" });
+        const fi = S.assets ? campoFoto(id => S.db.doc("viajantes/" + S.uid).update({ foto: id }), st) : null;
+        return h("div", { class: "fotobox" },
+          h("button", { class: "fotobtn", type: "button", disabled: !fi, "aria-label": v.foto ? "Trocar foto do passaporte" : "Adicionar foto ao passaporte", onclick: () => fi && fi.click() },
+            v.foto ? h("img", { src: blob(v.foto), alt: "Sua foto" }) : h("span", { class: "fotoadd" }, h("b", { text: "+" }), fi ? "Adicionar foto" : "Sem foto"),
+            v.foto && fi ? h("span", { class: "fototroca", text: "Trocar" }) : null),
+          fi, st);
+      })(),
         h("dl", null,
           h("div", { class: "wide" }, h("dt", { text: "Nome" }), h("dd", { text: v.nome })),
           h("div", null, h("dt", { text: v.lider ? "Função" : "Nº do viajante" }), h("dd", { text: v.lider ? "Líder" : nn(nums[S.uid] || 0) })),
@@ -898,7 +943,14 @@ function painelPessoas(c) {
     pode ? h("div", { class: "share" },
       h("p", { class: "eyebrow", text: minha ? "Você está aparecendo no mapa" : "Mostrar onde estou" }),
       h("div", { class: "actions" },
-        h("button", { class: "btn gold", type: "button", onclick: () => { S.marcando = !S.marcando; render(); } }, S.marcando ? "Cancelar" : "Marcar no mapa"),
+        h("button", { class: "btn gold", type: "button", onclick: () => {
+          if (!navigator.geolocation) { S.posMsg = { ok: false, text: "O GPS não está disponível aqui. Marque no mapa ou cole o link ao vivo do Google Maps." }; render(); return; }
+          S.posMsg = { ok: true, text: "Buscando sua localização…" }; render();
+          navigator.geolocation.getCurrentPosition(pos => { const lat = +pos.coords.latitude.toFixed(5), lng = +pos.coords.longitude.toFixed(5); salvarPos({ cidadeId: pertoCidade({ lat, lng }), lat, lng, lugar: "" }); },
+            () => { S.posMsg = { ok: false, text: "O Claude não liberou o GPS neste aparelho. Marque no mapa ou cole o link ao vivo do Google Maps." }; render(); },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+        } }, "Usar minha localização"),
+        h("button", { class: "btn", type: "button", onclick: () => { S.marcando = !S.marcando; render(); } }, S.marcando ? "Cancelar" : "Marcar no mapa"),
         minha ? h("button", { class: "btn", type: "button", onclick: pararPos }, "Sair do mapa") : null),
       h("label", { class: "small", for: "pos-lugar" }, "Ou diga em qual lugar você está"), sel, nota, link,
       h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: () => {
@@ -944,6 +996,10 @@ function vConversa() {
           h("div", { class: "actions" },
             h("a", { class: "btn", href: `https://www.google.com/maps/search/?api=1&query=${m.lat},${m.lng}`, target: "_blank", rel: "noopener" }, "Como chegar"),
             m.cidadeId ? h("button", { class: "btn ghost", type: "button", onclick: () => { S.cidadeSel = m.cidadeId; S.localSel = m.localId || null; go("mapa"); } }, "Ver no mapa") : null)) :
+        m.tipo === "aovivo" ? h("div", { class: "ponto" },
+          h("span", { class: "eyebrow vivo", text: "Localização ao vivo" }), h("b", { text: mine ? "Você está compartilhando" : "Acompanhe onde estou" }),
+          m.texto ? h("p", { class: "t", text: m.texto }) : null,
+          h("div", { class: "actions" }, h("a", { class: "btn", href: m.link, target: "_blank", rel: "noopener" }, "Ver ao vivo no Google Maps"))) :
         m.tipo === "foto" ? h("div", null, h("img", { class: "chatfoto", src: blob(m.fotoId), alt: m.texto || "Foto", loading: "lazy" }), m.texto ? h("p", { class: "t", text: m.texto }) : null) :
         h("p", { class: "t", text: m.texto }))));
   }
@@ -968,6 +1024,31 @@ function vConversa() {
     else { const l = lugares.find(x => x.id === pSel.value); if (!l) return; m = { nome: l.nome, lat: +l.lat, lng: +l.lng, cidadeId: l.cidadeId, localId: l.id }; }
     try { await S.db.collection("chat").add({ autor: S.uid, tipo: "local", texto: pNota.value.trim(), ...m, ts: Date.now() }); S.pontoAberto = false; render(); } catch (e) { falha(e); }
   };
+  // localização: GPS quando o aparelho permitir, ou link ao vivo do Google Maps
+  const locMsg = h("p", { class: "small", role: "status" });
+  const vivoLink = h("input", { type: "text", id: "vivo-link", inputmode: "url", placeholder: "Cole aqui o link do Google Maps" });
+  const enviarGps = () => {
+    if (!navigator.geolocation) { locMsg.textContent = "Este aparelho não liberou o GPS aqui. Use a localização ao vivo do Google Maps logo abaixo."; return; }
+    locMsg.textContent = "Buscando sua localização…";
+    navigator.geolocation.getCurrentPosition(async pos => {
+      const lat = +pos.coords.latitude.toFixed(5), lng = +pos.coords.longitude.toFixed(5), cidadeId = pertoCidade({ lat, lng });
+      try {
+        await S.db.collection("chat").add({ autor: S.uid, tipo: "local", nome: "Onde estou agora", texto: pNota.value.trim(), lat, lng, cidadeId, ts: Date.now() });
+        await S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: "", nota: pNota.value.trim(), link: (minha && minha.link) || "", ts: Date.now() }).catch(() => {});
+        S.pontoAberto = false; render();
+      } catch (e) { falha(e); }
+    }, () => { locMsg.textContent = "O Claude não liberou o GPS neste aparelho. Use a localização ao vivo do Google Maps logo abaixo: ela funciona sempre."; },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+  };
+  const enviarVivo = async () => {
+    const l = vivoLink.value.trim();
+    if (!/^https:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|(www\.)?google\.[a-z.]+\/maps)/i.test(l)) { locMsg.textContent = "Cole um link do Google Maps (começa com https://maps.app.goo.gl)."; return; }
+    try {
+      await S.db.collection("chat").add({ autor: S.uid, tipo: "aovivo", link: l, texto: pNota.value.trim(), ts: Date.now() });
+      if (minha) await S.db.doc("posicoes/" + S.uid).update({ link: l, ts: Date.now() }).catch(() => {});
+      S.pontoAberto = false; render();
+    } catch (e) { falha(e); }
+  };
   const fotoMsg = h("p", { class: "note", role: "status" });
   const fileIn = h("input", { type: "file", accept: "image/*", id: "chat-foto", hidden: true, onchange: async () => {
     const f = fileIn.files[0]; if (!f) return; fotoMsg.textContent = "Enviando a foto…";
@@ -979,9 +1060,20 @@ function vConversa() {
   return h("section", { class: "view chatview" },
     h("div", { class: "chathead" }, h("p", { class: "eyebrow", text: "Conversa" }), h("h1", { style: "font-size:22px", text: "Roda da Caravana" })),
     log,
-    pode && S.pontoAberto ? h("div", { class: "picker" }, pSel, pNota, h("button", { class: "btn gold", type: "button", onclick: enviarPonto }, "Enviar ponto")) : h("span"),
+    pode && S.pontoAberto ? h("div", { class: "picker loc" },
+      h("div", { class: "locopt" },
+        h("p", { class: "eyebrow", text: "Onde estou agora" }),
+        h("button", { class: "btn gold", type: "button", onclick: enviarGps }, "Enviar minha localização atual")),
+      h("div", { class: "locopt" },
+        h("p", { class: "eyebrow vivo", text: "Ao vivo, pelo Google Maps" }),
+        h("p", { class: "small", text: "No Google Maps, toque na sua foto, escolha Compartilhamento de local, depois Compartilhar via link, e cole o link aqui. A caravana acompanha você em tempo real pelo tempo que você escolher." }),
+        h("div", { class: "unlock" }, vivoLink, h("button", { class: "btn gold", type: "button", onclick: enviarVivo }, "Compartilhar ao vivo"))),
+      h("div", { class: "locopt" },
+        h("p", { class: "eyebrow", text: "Ponto de encontro" }),
+        h("div", { class: "unlock" }, pSel, h("button", { class: "btn", type: "button", onclick: enviarPonto }, "Enviar ponto"))),
+      pNota, locMsg) : h("span"),
     pode ? h("div", { class: "composer" },
-        h("button", { class: "iconbtn", type: "button", title: "Ponto de encontro", "aria-label": "Ponto de encontro", "aria-pressed": String(S.pontoAberto), onclick: () => { S.pontoAberto = !S.pontoAberto; render(); } },
+        h("button", { class: "iconbtn", type: "button", title: "Enviar localização", "aria-label": "Enviar localização", "aria-pressed": String(S.pontoAberto), onclick: () => { S.pontoAberto = !S.pontoAberto; render(); } },
           ico(["M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z", "M12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"])),
         S.assets ? h("button", { class: "iconbtn", type: "button", title: "Enviar foto", "aria-label": "Enviar foto", onclick: () => fileIn.click() },
           ico(["M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z", "M12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"])) : null,
