@@ -608,6 +608,9 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .diario textarea{width:100%;border:1px solid #DCC9A6;border-radius:6px;padding:4px 14px 6px 44px;min-height:132px;resize:vertical;color:#27406B;font:24px/32px "Caveat","Segoe Script","Bradley Hand",cursive;background:linear-gradient(90deg,transparent 34px,rgba(200,80,70,.45) 34px,rgba(200,80,70,.45) 35.5px,transparent 35.5px),repeating-linear-gradient(180deg,#FBF4E2 0 31px,#C9D3DF 31px 32px);background-attachment:local;box-shadow:inset 0 1px 3px rgba(60,40,20,.12)}
 .diario textarea::placeholder{color:#8A93A3}
 /* Mensagem do diário */
+.leitlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.leitlist li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.leitlist b{font-weight:600;flex:1;min-width:0}.leitlist span{font-size:12.5px;color:var(--soft)}
 .avisoleitura{display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,#F3E6C8,#EAD6A8);border:1px solid #CDB184;border-radius:var(--r);box-shadow:var(--shadow);padding:14px 16px;text-align:left}
 .avisoleitura.nova{box-shadow:0 0 0 3px rgba(179,71,58,.35),var(--shadow)}
 .avisoleitura b{display:block;font-family:"Special Elite","Courier Prime",monospace;font-weight:400;font-size:16px;color:#3B2A1C}
@@ -713,7 +716,7 @@ nav.tabs button{position:relative}
 const S = {
   tab: "travessia",
   roteiro: null, roteiroErro: false,
-  dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [], cartas: [], mural: [], fotoAba: "estudio", muralCidade: "",
+  dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [], cartas: [], diarios: [], mural: [], fotoAba: "estudio", muralCidade: "",
   vReady: false, dbReady: false, pularCadastro: false,
   uid: null, me: null, isOwner: false, canChat: null,
   db: null, user: null, assets: null, perfis: {},
@@ -990,6 +993,7 @@ function vTravessia() {
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +8h30" }))),
     vAvisoLeitura(),
     vCorrespondencia(),
+    vLeiturasLider(),
     ins.length ? h("div", null,
       h("p", { class: "eyebrow rule", text: `Os ${ins.length} selos do passaporte` }),
       h("div", { class: "strip", style: "margin-top:10px" }, ins.map(l => h("button", { type: "button", "aria-label": l.nome, onclick: () => abrirSelo(l) },
@@ -2360,7 +2364,7 @@ function vDiario(d, liberado) {
       st.textContent = "Guardando…"; await salvaDiario(d.n, ta.value.trim()); st.textContent = "Guardado no seu passaporte."; st.className = "msg ok";
     } }, salvo ? "Atualizar" : "Guardar no passaporte"), st),
     h("p", { class: "small", text: d.n === 13 ? "No último dia, a Caravana lê o seu diário e manda uma mensagem só para você." : "Só você e a líder da travessia podem ler." }),
-    d.n === 13 && leituraAberta() ? h("button", { class: "btn gold", type: "button", onclick: abrirLeitura }, "Abrir a mensagem do meu diário") : null);
+    d.n === 13 && leituraAberta() ? h("button", { class: "btn gold", type: "button", onclick: () => abrirLeitura() }, "Abrir a mensagem do meu diário") : null);
 }
 // Correspondência: cartas da líder, em pergaminho, por pombo-correio
 const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nDoze selos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
@@ -2552,10 +2556,9 @@ setInterval(() => { if (S.tab === "travessia" && !document.querySelector(".sheet
 
 
 // Mensagem do diário de bordo (último dia), na linguagem do Mapa da Clareza
-const entradasDiario = () => (S.roteiro?.dias || []).filter(d => (S.diario[d.n] || "").trim()).map(d => ({ n: d.n, cidade: d.cidade, pergunta: PERGUNTAS[d.n], texto: S.diario[d.n].trim() }));
-const leituraAberta = () => hojeIso() >= FIM && !!eu() && !eu().lider && entradasDiario().length > 0;
-function promptLeitura() {
-  const nome = primeiroNome(), ent = entradasDiario();
+const entradasDe = diario => (S.roteiro?.dias || []).filter(d => String((diario || {})[d.n] || "").trim()).map(d => ({ n: d.n, cidade: d.cidade, pergunta: PERGUNTAS[d.n], texto: String(diario[d.n]).trim() }));
+const leituraAberta = () => hojeIso() >= FIM && !!S.leitura && !!eu() && !eu().lider;
+function promptLeitura(nome, ent) {
   return `Você escreve na voz da Caravana do Céu, uma caravana espiritual brasileira que acaba de atravessar a Índia Sagrada (4 a 16 de novembro de 2026: Delhi, Agra e o Taj Mahal, Jaipur e o templo de Galta Ji, Varanasi e o Ganges, Rishikesh e o Himalaia).
 
 Escreva uma Carta Especial da Caravana para ${nome}, a partir do Diário de Bordo que ${nome} escreveu dia a dia durante a travessia. O objetivo é que ${nome} sinta: alguém me viu por inteiro.
@@ -2596,37 +2599,56 @@ function textoRico(txt) {
     return el;
   });
 }
-async function abrirLeitura() {
+function abrirLeitura(texto, titulo) {
   closeSheets();
-  try { localStorage.setItem("cdi-leitura-vista", "1"); } catch (e) {}
-  const corpo = h("div", { class: "pgm leitura" });
-  const st = h("p", { class: "msg", role: "status" });
+  texto = texto || S.leitura; if (!texto) return;
+  if (!titulo) { try { localStorage.setItem("cdi-leitura-vista", "1"); } catch (e) {} }
+  const corpo = h("div", { class: "pgm leitura" }, h("p", { class: "pgmdata", text: titulo || "Diário de bordo · Delhi, 16 de novembro de 2026" }), ...textoRico(texto));
   const box = h("div", { role: "dialog", "aria-label": "Mensagem do diário de bordo", class: "correiobox" },
     h("article", { class: "pergaminho" }, h("span", { class: "rolo top", "aria-hidden": "true" }), corpo, h("span", { class: "rolo bot", "aria-hidden": "true" })),
-    st,
-    h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: closeSheets }, "Guardar a mensagem")));
+    h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: () => { closeSheets(); render(); } }, "Guardar a mensagem")));
   const sheet = h("div", { class: "sheet correiosheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
-  const mostra = t => corpo.replaceChildren(h("p", { class: "pgmdata", text: "Diário de bordo · Delhi, 16 de novembro de 2026" }), ...textoRico(t));
-  if (S.leitura) { mostra(S.leitura); render(); return; }
-  corpo.replaceChildren(h("p", { class: "pgmdata", text: "Diário de bordo" }), h("p", { class: "lendo", text: "A Caravana está lendo o seu diário de bordo…" }));
+}
+// Líder: escreve as mensagens de todos com a conta dela
+async function escreverLeituras(st, btn) {
   const sample = await (window.claude?.use?.("sample") ?? null);
-  if (!sample) { corpo.append(h("p", { text: "Não consegui abrir a mensagem neste aparelho. Tente de novo mais tarde." })); return; }
-  try {
-    const { text } = await sample(promptLeitura(), { modelTier: "complex", cache: false, onText: ({ text }) => mostra(text) });
-    mostra(text); S.leitura = text;
-    if (S.db && S.uid) { const ref = S.db.doc("diarios/" + S.uid), dd = { leitura: text, leituraTs: Date.now() }; ref.update(dd).catch(() => ref.set({ entradas: S.diario, ...dd })).catch(() => {}); }
-    render();
-  } catch (e) {
-    if (e && e.text) mostra(e.text);
-    st.textContent = e && e.code === "not_granted" ? "Para receber a mensagem, permita que o app consulte o Claude quando ele perguntar." : e && e.code === "rate_limited" ? "Muita gente abrindo agora. Tente de novo em alguns minutos." : "Não consegui terminar a mensagem. Tente de novo em alguns minutos.";
-    st.className = "msg err";
+  if (!sample) { st.textContent = "Não consegui usar o Claude agora. Tente de novo mais tarde."; st.className = "msg err"; return; }
+  const fila = S.diarios.filter(d => !d.leitura && entradasDe(d.entradas).length && S.viajantes.some(v => v.id === d.id && !v.lider));
+  if (!fila.length) { st.textContent = "Todas as mensagens já foram escritas."; st.className = "msg ok"; return; }
+  btn.disabled = true; let feitas = 0;
+  for (const d of fila) {
+    const v = S.viajantes.find(x => x.id === d.id), nome = (v.nome || "viajante").split(" ")[0];
+    st.textContent = `Escrevendo a mensagem de ${nome}… (${feitas + 1} de ${fila.length})`; st.className = "msg";
+    try {
+      const { text } = await sample(promptLeitura(nome, entradasDe(d.entradas)), { modelTier: "complex", cache: false });
+      await S.db.doc("diarios/" + d.id).update({ leitura: text, leituraTs: Date.now() });
+      feitas++;
+    } catch (e) {
+      st.textContent = e && e.code === "not_granted" ? "Para escrever as mensagens, permita que o app consulte o Claude quando ele perguntar." : e && e.code === "rate_limited" ? `Parei em ${feitas} de ${fila.length}: muitas mensagens seguidas. Toque de novo em alguns minutos para continuar.` : `Parei em ${feitas} de ${fila.length}. Toque de novo para continuar.`;
+      st.className = "msg err"; btn.disabled = false; return;
+    }
   }
+  st.textContent = `Pronto! ${feitas} ${feitas === 1 ? "mensagem escrita" : "mensagens escritas"}. Cada viajante recebe a sua em 16 de novembro.`; st.className = "msg ok"; btn.disabled = false;
+}
+function vLeiturasLider() {
+  if (!S.isOwner) return null;
+  const gente = S.viajantes.filter(v => !v.lider).sort((a, b) => (a.ts || 0) - (b.ts || 0));
+  const st = h("p", { class: "msg", role: "status" });
+  const btn = h("button", { class: "btn gold", type: "button", onclick: () => escreverLeituras(st, btn) }, "Escrever as mensagens do diário");
+  return h("div", { class: "secret" },
+    h("p", { text: "Só você vê isto. No último dia, toque no botão: o app lê o diário de bordo de cada viajante e escreve uma mensagem na linguagem do Mapa da Clareza, usando a sua conta. Cada pessoa recebe a sua em 16 de novembro." }),
+    gente.length ? h("ul", { class: "leitlist" }, gente.map(v => {
+      const d = S.diarios.find(x => x.id === v.id) || {}, n = entradasDe(d.entradas).length;
+      return h("li", null, h("b", { text: v.nome }), h("span", { text: d.leitura ? "mensagem pronta" : n ? `${n} ${n === 1 ? "dia escrito" : "dias escritos"}` : "diário vazio" }),
+        d.leitura ? h("button", { class: "btn ghost", type: "button", onclick: () => abrirLeitura(d.leitura, "Mensagem de " + v.nome.split(" ")[0]) }, "Ler") : null);
+    })) : h("p", { class: "small", text: "Nenhum viajante com passaporte ainda." }),
+    h("div", { class: "actions" }, btn), st);
 }
 function vAvisoLeitura() {
   if (!leituraAberta()) return null;
   let vista = false; try { vista = !!localStorage.getItem("cdi-leitura-vista"); } catch (e) {}
-  return h("button", { class: "avisoleitura" + (vista ? "" : " nova"), type: "button", onclick: abrirLeitura },
+  return h("button", { class: "avisoleitura" + (vista ? "" : " nova"), type: "button", onclick: () => abrirLeitura() },
     h("span", { class: "rolinho", "aria-hidden": "true" }, h("i")),
     h("span", { class: "ctx" }, h("b", { text: vista ? "A mensagem do seu diário de bordo" : "Seu diário de bordo tem uma mensagem para você" }),
       h("span", { text: vista ? "Toque para ler de novo." : "A Caravana leu a sua travessia. Toque para abrir." })));
@@ -2670,6 +2692,7 @@ render();
   listen("chat", "chat", db.collection("chat").orderBy("ts", "desc").limit(400));
   listen("posicoes", "posicoes");
   listen("cartas", "cartas", null, () => setTimeout(checaCorreio, 1200));
+  if (S.isOwner) listen("diarios", "diarios");
   listen("mural", "mural", db.collection("mural").orderBy("ts", "desc").limit(300));
   if (S.uid) db.doc("diarios/" + S.uid).onSnapshot(sn => { const dd = sn.exists ? sn.data() : {}, e = dd.entradas; if (dd.leitura) { S.leitura = dd.leitura; } if (e) { S.diario = { ...e, ...S.diario }; try { localStorage.setItem("cdi-diario", JSON.stringify(S.diario)); } catch (x) {} } render(); }, () => {});
   setInterval(() => { if ((S.tab === "mapa" || S.tab === "travessia") && !document.activeElement?.matches?.("input,textarea,select") && !document.querySelector(".sheet")) render(); }, 60000);
