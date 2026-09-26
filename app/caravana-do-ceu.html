@@ -1,0 +1,612 @@
+<title>Caravana do Céu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,500&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+:root{
+  --bg:#EFE7D6; --surface:#F8F3E8; --surface-2:#E5DAC5; --ink:#282722; --muted:#6B6556;
+  --line:#D6C9AC; --moss:#3F4938; --terra:#8A3F32; --sand:#C7B493; --on-accent:#F8F3E8;
+  --map-bg:#EAE0CB; --contour:#D2C4A3; --route:#8A3F32; --locked:#9C937F;
+  --shadow:0 1px 2px rgba(40,39,34,.08),0 6px 20px rgba(40,39,34,.08);
+  --serif:"Lora",Georgia,"Times New Roman",serif;
+  --sans:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#1C1B17; --surface:#26241F; --surface-2:#312E27; --ink:#ECE3D0; --muted:#A99F8A;
+    --line:#3F3B32; --moss:#93A37F; --terra:#D47F6B; --sand:#C7B493; --on-accent:#1C1B17;
+    --map-bg:#22201B; --contour:#37332A; --route:#D47F6B; --locked:#7A7262;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#1C1B17; --surface:#26241F; --surface-2:#312E27; --ink:#ECE3D0; --muted:#A99F8A;
+  --line:#3F3B32; --moss:#93A37F; --terra:#D47F6B; --sand:#C7B493; --on-accent:#1C1B17;
+  --map-bg:#22201B; --contour:#37332A; --route:#D47F6B; --locked:#7A7262;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;font-weight:400}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--terra);outline-offset:2px}
+h1,h2,h3{font-family:var(--serif);font-weight:700;text-wrap:balance;margin:0;line-height:1.2}
+p{margin:0}
+
+.app{height:100%;display:grid;grid-template-rows:auto 1fr auto;grid-template-areas:"top" "main" "nav"}
+.top{grid-area:top;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--bg)}
+.brand{display:flex;flex-direction:column;line-height:1.1}
+.brand b{font-family:var(--serif);font-weight:700;font-size:13px;letter-spacing:.22em;text-transform:uppercase}
+.brand span{font-size:11px;color:var(--muted);letter-spacing:.04em}
+.who{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);min-width:0}
+.who img{width:28px;height:28px;border-radius:50%;flex:none}
+.who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+main{grid-area:main;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.view{padding:20px 16px 32px;max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+
+nav.tabs{grid-area:nav;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:var(--surface);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs button{background:none;border:0;padding:8px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.02em}
+nav.tabs button svg{width:22px;height:22px}
+nav.tabs button[aria-current="page"]{color:var(--terra)}
+@media (min-width:900px){
+  .app{grid-template-columns:200px 1fr;grid-template-rows:auto 1fr;grid-template-areas:"top top" "nav main"}
+  nav.tabs{grid-template-columns:1fr;grid-auto-rows:min-content;border-top:0;border-right:1px solid var(--line);padding:16px 10px;gap:4px;background:var(--bg)}
+  nav.tabs button{flex-direction:row;justify-content:flex-start;gap:12px;font-size:14px;padding:10px 12px;border-radius:10px}
+  nav.tabs button[aria-current="page"]{background:var(--surface-2)}
+}
+
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.head h1{font-size:clamp(24px,5vw,32px)}
+.lede{color:var(--muted);max-width:60ch}
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:8px 16px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:500}
+.btn:hover{border-color:var(--sand)}
+.btn.primary{background:var(--moss);border-color:var(--moss);color:var(--on-accent)}
+.btn.terra{background:var(--terra);border-color:var(--terra);color:var(--on-accent)}
+.btn.ghost{background:none;border-color:transparent;padding-inline:8px;color:var(--muted)}
+.btn.danger{color:var(--terra);border-color:var(--terra);background:none}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.chip.open{background:color-mix(in srgb,var(--moss) 18%,transparent);color:var(--moss)}
+.chip.lock{background:none;border:1px dashed var(--locked);color:var(--locked)}
+
+.empty{border:1px dashed var(--line);border-radius:14px;padding:28px 20px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:10px;align-items:center}
+.empty h3{color:var(--ink);font-size:18px}
+
+/* Rotas */
+.routes{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.route{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.route h2{font-size:22px}
+.route .meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.bar{height:6px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--terra);border-radius:6px}
+.prog{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+ol.stops li{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:8px 0;position:relative}
+ol.stops li:not(:last-child)::after{content:"";position:absolute;left:13px;top:34px;bottom:-8px;width:2px;background:var(--line)}
+.num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;position:relative;z-index:1}
+.num.on{background:var(--terra);color:var(--on-accent)}
+.num.off{background:var(--surface);border:1.5px dashed var(--locked);color:var(--locked)}
+.stops button.link{background:none;border:0;padding:0;text-align:left;font-weight:500}
+.stops button.link:hover{color:var(--terra)}
+.stops small{display:block;color:var(--muted);font-size:12px;font-weight:400}
+
+/* Mapa */
+.mapwrap{display:grid;gap:16px}
+@media (min-width:900px){.mapwrap{grid-template-columns:1fr 320px;align-items:start}}
+.routepick{display:flex;gap:8px;flex-wrap:wrap}
+.routepick button{border-radius:999px;border:1px solid var(--line);background:var(--surface);padding:6px 14px;font-size:13px}
+.routepick button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.map{background:var(--map-bg);border:1px solid var(--line);border-radius:16px;overflow:hidden;position:relative}
+.map svg{display:block;width:100%;height:auto}
+.map .contour{fill:none;stroke:var(--contour);stroke-width:1.2}
+.map .path{fill:none;stroke:var(--route);stroke-width:3;stroke-dasharray:2 9;stroke-linecap:round;opacity:.8}
+.map .pin{cursor:pointer}
+.map .pin circle.dot{stroke-width:3}
+.map .pin.on circle.dot{fill:var(--terra);stroke:var(--map-bg)}
+.map .pin.off circle.dot{fill:var(--map-bg);stroke:var(--locked);stroke-dasharray:4 3}
+.map .pin text.n{font:600 15px var(--sans);text-anchor:middle;dominant-baseline:central}
+.map .pin.on text.n{fill:var(--on-accent)}
+.map .pin.off text.n{fill:var(--locked)}
+.map .pin text.lbl{font:500 15px var(--sans);fill:var(--ink);paint-order:stroke;stroke:var(--map-bg);stroke-width:5px;stroke-linejoin:round}
+.map .pin.off text.lbl{fill:var(--muted)}
+.map .pin circle.halo{fill:none;stroke:var(--terra);stroke-width:2;opacity:0}
+.map .pin.sel circle.halo{opacity:1}
+.map .ui{fill:var(--muted);font:500 12px var(--sans)}
+.map .ui-line{stroke:var(--muted);stroke-width:2}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.panel h2{font-size:22px}
+.panel .desc{color:var(--ink)}
+.panel .hint{font-family:var(--serif);font-style:italic;color:var(--muted)}
+.unlock{display:flex;gap:8px;flex-wrap:wrap}
+.unlock input{flex:1 1 160px;min-width:0}
+.msg{font-size:13px}
+.msg.err{color:var(--terra)}
+.msg.ok{color:var(--moss)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.secret{font-size:12px;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px}
+.secret code{font-family:ui-monospace,Menlo,monospace;background:var(--surface-2);padding:1px 6px;border-radius:4px;color:var(--ink)}
+
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+textarea{resize:vertical;min-height:90px;line-height:1.5}
+input:focus,select:focus,textarea:focus{border-color:var(--sand)}
+
+/* Conversa */
+.chatview{padding:0;max-width:none;height:100%;display:grid;grid-template-rows:auto 1fr auto;gap:0}
+.chathead{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.chatlog{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.bubble{display:grid;grid-template-columns:32px 1fr;gap:10px;max-width:640px}
+.bubble img{width:32px;height:32px;border-radius:50%}
+.bubble .b{background:var(--surface);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:8px 12px;min-width:0}
+.bubble.me{margin-left:auto;grid-template-columns:1fr}
+.bubble.me img{display:none}
+.bubble.me .b{background:color-mix(in srgb,var(--moss) 16%,var(--surface));border-color:transparent;border-radius:14px 4px 14px 14px}
+.bubble .h{display:flex;gap:8px;align-items:baseline;font-size:12px;color:var(--muted)}
+.bubble .h b{color:var(--ink);font-weight:600}
+.bubble .t{white-space:pre-wrap;overflow-wrap:anywhere}
+.bubble .del{margin-left:auto;background:none;border:0;color:var(--muted);font-size:11px;padding:0}
+.day{align-self:center;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.composer{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;align-items:flex-end;background:var(--surface)}
+.composer textarea{min-height:44px;max-height:140px;flex:1;border-radius:22px;padding:10px 16px}
+.composer .note{font-size:13px;color:var(--muted);padding:6px 0}
+
+/* Ensinamentos */
+.cats{display:flex;flex-direction:column;gap:22px}
+.cat h2{font-size:14px;font-family:var(--sans);font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:8px}
+.card h3{font-size:18px}
+.card p{color:var(--muted);font-size:13px}
+.card.locked{background:none;border-style:dashed}
+.card.locked h3{color:var(--muted)}
+.card:not(.locked):hover{border-color:var(--sand)}
+.reader{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.reader h1{font-size:clamp(28px,6vw,40px)}
+.reader .body p{font-family:var(--serif);font-size:18px;line-height:1.75;margin-bottom:1em}
+.reader .src{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+
+/* Editor */
+.sheet{position:fixed;inset:0;background:rgba(20,19,16,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+@media (min-width:700px){.sheet{align-items:center}}
+.sheet form{background:var(--surface);border-radius:18px;padding:20px;width:100%;max-width:560px;max-height:90%;overflow:auto;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
+.sheet label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:500;color:var(--muted)}
+.sheet .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sheet .chk{flex-direction:row;align-items:center;gap:8px;font-size:14px;color:var(--ink)}
+.sheet .foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:6px}
+.banner{font-size:12px;color:var(--muted);background:var(--surface-2);border-radius:10px;padding:8px 12px}
+@media (prefers-reduced-motion:no-preference){.pin circle.halo{transition:opacity .2s}}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand"><b>Caravana do Céu</b><span id="subtitle">Caderno de viagem</span></div>
+    <div class="who" id="who"></div>
+  </header>
+  <main id="main"></main>
+  <nav class="tabs" id="tabs" aria-label="Seções">
+    <button data-tab="rotas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></svg>Rotas</button>
+    <button data-tab="mapa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Mapa</button>
+    <button data-tab="conversa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/></svg>Conversa</button>
+    <button data-tab="ensinamentos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5z"/><path d="M12 6.5v13"/></svg>Ensinamentos</button>
+  </nav>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+// ---------- estado ----------
+const S = {
+  tab: "rotas",
+  rotas: [], locais: [], ens: [], chat: [],
+  progresso: {},
+  uid: null, me: null, isOwner: false, canChat: null,
+  db: null, user: null, dbReady: false,
+  rotaSel: null, localSel: null, ensSel: null, canal: "geral",
+  unlockMsg: null
+};
+try { const t = localStorage.getItem("cdc-tab"); if (t) S.tab = t; } catch (e) {}
+try { S.progresso = JSON.parse(localStorage.getItem("cdc-prog") || "{}") || {}; } catch (e) {}
+
+const $ = (s, r = document) => r.querySelector(s);
+function h(tag, attrs, ...kids) {
+  const el = document.createElementNS(tag === "svg" || SVGTAGS.has(tag) ? "http://www.w3.org/2000/svg" : "http://www.w3.org/1999/xhtml", tag);
+  if (attrs) for (const k in attrs) {
+    const v = attrs[k];
+    if (v == null || v === false) continue;
+    if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k === "text") el.textContent = v;
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const k of kids.flat()) if (k != null && k !== false) el.append(k.nodeType ? k : String(k));
+  return el;
+}
+const SVGTAGS = new Set(["g","path","circle","text","line","rect","polyline","title"]);
+
+const norm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+const byOrder = (a, b) => (a.ordem ?? 999) - (b.ordem ?? 999) || String(a.nome || a.titulo).localeCompare(String(b.nome || b.titulo));
+const locaisDa = rid => S.locais.filter(l => l.rotaId === rid).sort(byOrder);
+const aberto = l => !!(l && (l.aberto || S.progresso[l.id]));
+const localDe = id => S.locais.find(l => l.id === id);
+const ensLiberado = e => !e.localId || !localDe(e.localId) || aberto(localDe(e.localId));
+const mapsUrl = l => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(l.busca || l.nome);
+
+// ---------- navegação ----------
+function go(tab) {
+  S.tab = tab;
+  try { localStorage.setItem("cdc-tab", tab); } catch (e) {}
+  render();
+  $("#main").scrollTop = 0;
+}
+$("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (b) { if (b.dataset.tab === "ensinamentos") S.ensSel = null; go(b.dataset.tab); } });
+
+function render() {
+  for (const b of document.querySelectorAll("#tabs button")) {
+    if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+  }
+  const act = document.activeElement, actId = act && act.id, sel = act && "selectionStart" in act ? [act.selectionStart, act.selectionEnd] : null;
+  const unlockDraft = act && actId && actId.startsWith("unlock-") ? act.value : null;
+  if (!S.rotaSel || !S.rotas.find(r => r.id === S.rotaSel)) S.rotaSel = S.rotas.slice().sort(byOrder)[0]?.id || null;
+  const main = $("#main");
+  const keepChatDraft = $("#chat-input")?.value;
+  main.replaceChildren(
+    S.tab === "rotas" ? vRotas() :
+    S.tab === "mapa" ? vMapa() :
+    S.tab === "conversa" ? vConversa() : vEnsinamentos()
+  );
+  if (S.tab === "conversa") {
+    const inp = $("#chat-input"); if (inp && keepChatDraft) inp.value = keepChatDraft;
+    const log = $("#chatlog"); if (log) log.scrollTop = log.scrollHeight;
+    paintNames();
+  }
+  const el = actId && document.getElementById(actId);
+  if (el && el !== act) {
+    { if (unlockDraft != null) el.value = unlockDraft; el.focus(); if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
+  }
+}
+
+function adminBtn(label, onclick) { return S.isOwner ? h("button", { class: "btn", type: "button", onclick }, "+ " + label) : null; }
+function notReady() {
+  return h("div", { class: "empty" },
+    h("h3", { text: S.dbReady ? "Nada por aqui ainda" : "Carregando a caravana…" }),
+    h("p", { text: S.dbReady ? "Quando a organização publicar conteúdo, ele aparece aqui." : "Se demorar, abra este aplicativo pelo link do Claude, com sua conta." }));
+}
+
+// ---------- Rotas ----------
+function vRotas() {
+  const rotas = S.rotas.slice().sort(byOrder);
+  return h("section", { class: "view" },
+    h("div", { class: "head" },
+      h("div", null, h("p", { class: "eyebrow", text: "Jornadas" }), h("h1", { text: "Rotas da Caravana" })),
+      adminBtn("Nova rota", () => editar("rota"))),
+    h("p", { class: "lede", text: "Cada rota é uma sequência de lugares. Ao chegar em cada um, a guia revela a palavra do lugar e você desbloqueia o ponto no mapa e o ensinamento dele." }),
+    rotas.length ? h("div", { class: "routes" }, rotas.map(r => {
+      const ls = locaisDa(r.id), ok = ls.filter(aberto).length;
+      return h("article", { class: "route" },
+        h("div", { class: "meta" }, h("span", { class: "eyebrow", text: r.regiao || "" }),
+          S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editar("rota", r) }, "Editar") : null),
+        h("h2", { text: r.nome }),
+        r.descricao ? h("p", { class: "lede", text: r.descricao }) : null,
+        h("div", null, h("div", { class: "bar" }, h("i", { style: `width:${ls.length ? ok / ls.length * 100 : 0}%` })),
+          h("p", { class: "prog", text: `${ok} de ${ls.length} lugares desbloqueados` })),
+        ls.length ? h("ol", { class: "stops" }, ls.map((l, i) => h("li", null,
+          h("span", { class: "num " + (aberto(l) ? "on" : "off"), text: i + 1 }),
+          h("button", { class: "link", type: "button", onclick: () => { S.rotaSel = r.id; S.localSel = l.id; S.unlockMsg = null; go("mapa"); } },
+            l.nome, h("small", { text: aberto(l) ? "Desbloqueado" : "A caminho" })),
+          aberto(l) ? h("span", { class: "chip open", text: "Aberto" }) : h("span", { class: "chip lock", text: "Fechado" })
+        ))) : h("p", { class: "prog", text: "Nenhum lugar nesta rota ainda." }),
+        h("div", { class: "actions" }, h("button", { class: "btn primary", type: "button", onclick: () => { S.rotaSel = r.id; S.localSel = null; go("mapa"); } }, "Ver no mapa"))
+      );
+    })) : notReady()
+  );
+}
+
+// ---------- Mapa ----------
+function rng(seed) { let s = 0; for (const c of String(seed)) s = (s * 31 + c.charCodeAt(0)) >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
+
+function mapaSvg(rota, ls) {
+  const W = 1000, H = 640, P = 110;
+  const pts = ls.filter(l => isFinite(+l.lat) && isFinite(+l.lng));
+  const svg = h("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Mapa da rota " + rota.nome });
+  const r = rng(rota.id);
+  // relevo decorativo, gerado a partir do nome da rota
+  for (let c = 0; c < 5; c++) {
+    const cx = r() * W, cy = r() * H, base = 40 + r() * 70, ph = r() * 6, ph2 = r() * 6;
+    for (let k = 1; k <= 5; k++) {
+      const R = base * k * .55; let d = "";
+      for (let a = 0; a <= 64; a++) {
+        const t = a / 64 * Math.PI * 2, rr = R * (1 + .13 * Math.sin(3 * t + ph) + .07 * Math.sin(5 * t + ph2));
+        d += (a ? "L" : "M") + (cx + rr * Math.cos(t)).toFixed(1) + " " + (cy + rr * .72 * Math.sin(t)).toFixed(1);
+      }
+      svg.append(h("path", { class: "contour", d: d + "Z" }));
+    }
+  }
+  if (!pts.length) return svg;
+  const latC = pts.reduce((s, l) => s + +l.lat, 0) / pts.length, cos = Math.cos(latC * Math.PI / 180);
+  const xs = pts.map(l => +l.lng * cos), ys = pts.map(l => -l.lat);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const sw = Math.max(x1 - x0, .01), sh = Math.max(y1 - y0, .01);
+  const s = Math.min((W - 2 * P) / sw, (H - 2 * P) / sh), mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
+  const XY = l => [W / 2 + (+l.lng * cos - mx) * s, H / 2 + (-l.lat - my) * s];
+  svg.append(h("path", { class: "path", d: pts.map((l, i) => (i ? "L" : "M") + XY(l).map(n => n.toFixed(1)).join(" ")).join("") }));
+  pts.forEach(l => {
+    const [x, y] = XY(l), i = ls.indexOf(l), on = aberto(l);
+    const right = x < W - 260;
+    const g = h("g", { class: `pin ${on ? "on" : "off"}${S.localSel === l.id ? " sel" : ""}`, tabindex: "0", role: "button", "aria-label": `${i + 1}. ${l.nome}${on ? "" : " (fechado)"}`,
+      onclick: () => { S.localSel = l.id; S.unlockMsg = null; render(); },
+      onkeydown: e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); S.localSel = l.id; S.unlockMsg = null; render(); } } },
+      h("circle", { class: "halo", cx: x, cy: y, r: 27 }),
+      h("circle", { class: "dot", cx: x, cy: y, r: 18 }),
+      h("text", { class: "n", x, y, text: i + 1 }),
+      h("text", { class: "lbl", x: right ? x + 28 : x - 28, y: y + 5, "text-anchor": right ? "start" : "end", text: l.nome }));
+    svg.append(g);
+  });
+  // escala em km
+  const unitsPerKm = s / 111.32, nice = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
+  const km = nice.find(n => n * unitsPerKm >= 90) || 500, len = km * unitsPerKm;
+  if (len < 400) svg.append(h("g", null,
+    h("line", { class: "ui-line", x1: 32, y1: H - 32, x2: 32 + len, y2: H - 32 }),
+    h("line", { class: "ui-line", x1: 32, y1: H - 38, x2: 32, y2: H - 26 }),
+    h("line", { class: "ui-line", x1: 32 + len, y1: H - 38, x2: 32 + len, y2: H - 26 }),
+    h("text", { class: "ui", x: 32, y: H - 44, text: (km < 1 ? km * 1000 + " m" : km + " km") })));
+  svg.append(h("g", null, h("text", { class: "ui", x: W - 40, y: 44, "text-anchor": "middle", text: "N" }),
+    h("path", { d: `M${W - 40} 52 L${W - 46} 72 L${W - 40} 67 L${W - 34} 72 Z`, fill: "var(--muted)" })));
+  return svg;
+}
+
+function vMapa() {
+  const rotas = S.rotas.slice().sort(byOrder);
+  const rota = rotas.find(r => r.id === S.rotaSel);
+  if (!rota) return h("section", { class: "view" }, h("div", { class: "head" }, h("h1", { text: "Mapa" })), notReady());
+  const ls = locaisDa(rota.id);
+  if (S.localSel && !ls.find(l => l.id === S.localSel)) S.localSel = null;
+  const loc = ls.find(l => l.id === S.localSel);
+  const ok = ls.filter(aberto).length;
+  return h("section", { class: "view" },
+    h("div", { class: "head" },
+      h("div", null, h("p", { class: "eyebrow", text: rota.regiao || "Mapa" }), h("h1", { text: rota.nome })),
+      adminBtn("Novo lugar", () => editar("local", { rotaId: rota.id, ordem: ls.length + 1 }))),
+    rotas.length > 1 ? h("div", { class: "routepick", role: "group", "aria-label": "Escolher rota" }, rotas.map(r =>
+      h("button", { type: "button", "aria-pressed": String(r.id === rota.id), onclick: () => { S.rotaSel = r.id; S.localSel = null; render(); } }, r.nome))) : null,
+    h("div", { class: "mapwrap" },
+      h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
+        h("div", { class: "map" }, mapaSvg(rota, ls)),
+        h("div", { class: "legend" },
+          h("span", null, h("i", { style: "background:var(--terra)" }), `Desbloqueado (${ok})`),
+          h("span", null, h("i", { style: "border:1.5px dashed var(--locked)" }), `A desbloquear (${ls.length - ok})`),
+          h("span", { text: "O traçado liga os lugares na ordem da rota; o relevo é ilustrativo." }))),
+      loc ? painelLocal(loc, ls.indexOf(loc)) :
+        h("aside", { class: "panel" }, h("p", { class: "eyebrow", text: "Como funciona" }),
+          h("h2", { text: "Toque num ponto do mapa" }),
+          h("p", { class: "desc", text: "Os pontos tracejados ainda estão fechados. Quando a caravana chegar ao lugar, a guia diz a palavra do lugar. Digite a palavra para abrir o ponto e o ensinamento que mora nele." }))
+    ));
+}
+
+function painelLocal(l, i) {
+  const on = aberto(l), ens = S.ens.filter(e => e.localId === l.id);
+  const input = h("input", { type: "text", id: "unlock-" + l.id, placeholder: "Palavra do lugar", autocomplete: "off", "aria-label": "Palavra do lugar" });
+  const tentar = async () => {
+    if (!input.value.trim()) return;
+    if (norm(input.value) === norm(l.codigo)) {
+      S.progresso = { ...S.progresso, [l.id]: Date.now() };
+      S.unlockMsg = { ok: true, text: "Lugar desbloqueado. Bem-vinda, bem-vindo!" };
+      await salvarProgresso();
+    } else S.unlockMsg = { ok: false, text: "Essa não é a palavra deste lugar. Confira com a guia e tente de novo." };
+    render();
+  };
+  input.addEventListener("keydown", e => { if (e.key === "Enter") tentar(); });
+  return h("aside", { class: "panel" },
+    h("div", { style: "display:flex;justify-content:space-between;align-items:center;gap:8px" },
+      h("span", { class: "eyebrow", text: `Parada ${i + 1}` }),
+      on ? h("span", { class: "chip open", text: "Aberto" }) : h("span", { class: "chip lock", text: "Fechado" })),
+    h("h2", { text: l.nome }),
+    on ? (l.descricao ? h("p", { class: "desc", text: l.descricao }) : null)
+       : (l.dica ? h("p", { class: "hint", text: l.dica }) : null),
+    !on && l.codigo ? h("div", { class: "unlock" }, input, h("button", { class: "btn terra", type: "button", onclick: tentar }, "Desbloquear")) : null,
+    !on && !l.codigo ? h("p", { class: "msg", text: "Este lugar abre quando a organização liberar." }) : null,
+    S.unlockMsg ? h("p", { class: "msg " + (S.unlockMsg.ok ? "ok" : "err"), role: "status", text: S.unlockMsg.text }) : null,
+    h("div", { class: "actions" },
+      on ? ens.map(e => h("button", { class: "btn primary", type: "button", onclick: () => { S.ensSel = e.id; go("ensinamentos"); } }, "Ler: " + e.titulo)) : null,
+      h("a", { class: "btn", href: mapsUrl(l), target: "_blank", rel: "noopener" }, "Abrir no Google Maps")),
+    S.isOwner ? h("div", { class: "secret" },
+      h("p", null, "Só você vê isto. Palavra do lugar: ", h("code", { text: l.codigo || "(sem palavra)" }), l.aberto ? " · aberto para todos" : ""),
+      h("div", { class: "actions", style: "margin-top:8px" },
+        h("button", { class: "btn", type: "button", onclick: () => editar("local", l) }, "Editar lugar"),
+        h("button", { class: "btn", type: "button", onclick: async () => { await gravar("locais", l.id, { ...semId(l), aberto: !l.aberto }); } }, l.aberto ? "Fechar para todos" : "Abrir para todos"))) : null
+  );
+}
+
+async function salvarProgresso() {
+  try { localStorage.setItem("cdc-prog", JSON.stringify(S.progresso)); } catch (e) {}
+  if (S.db && S.uid) {
+    try { await S.db.doc(`data/users/${S.uid}/progresso`).set({ abertos: S.progresso }); } catch (e) { /* segue salvo neste aparelho */ }
+  }
+}
+
+// ---------- Conversa ----------
+function vConversa() {
+  const canais = [{ id: "geral", nome: "Geral" }, ...S.rotas.slice().sort(byOrder).map(r => ({ id: r.id, nome: r.nome }))];
+  if (!canais.find(c => c.id === S.canal)) S.canal = "geral";
+  const msgs = S.chat.filter(m => (m.canal || "geral") === S.canal).sort((a, b) => a.ts - b.ts);
+  const log = h("div", { class: "chatlog", id: "chatlog", "aria-live": "polite" });
+  let lastDay = "";
+  for (const m of msgs) {
+    const d = new Date(m.ts), day = d.toLocaleDateString("pt-BR", { day: "numeric", month: "long" });
+    if (day !== lastDay) { log.append(h("p", { class: "day", text: day })); lastDay = day; }
+    const mine = m.autor && m.autor === S.uid;
+    log.append(h("div", { class: "bubble" + (mine ? " me" : "") },
+      h("img", { alt: "", "data-avatar": m.autor || "" }),
+      h("div", { class: "b" },
+        h("div", { class: "h" }, h("b", { "data-name": m.autor || "", text: mine ? "Você" : "…" }),
+          h("span", { text: d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) }),
+          (mine || S.isOwner) ? h("button", { class: "del", type: "button", onclick: () => apagarMsg(m.id) }, "apagar") : null),
+        h("p", { class: "t", text: m.texto }))));
+  }
+  if (!msgs.length) log.append(h("div", { class: "empty", style: "margin:auto;max-width:420px" },
+    h("h3", { text: "A roda está aberta" }),
+    h("p", { text: S.canal === "geral" ? "Escreva a primeira mensagem para a caravana." : "Combine horários, dúvidas e partilhas desta rota aqui." })));
+
+  const podeEscrever = S.db && S.uid && S.canChat !== false;
+  const ta = h("textarea", { id: "chat-input", rows: "1", maxlength: "1000", placeholder: "Escreva para a caravana", "aria-label": "Mensagem" });
+  const enviar = async () => {
+    const texto = ta.value.trim(); if (!texto) return;
+    ta.value = "";
+    try { await S.db.collection("chat").add({ canal: S.canal, autor: S.uid, texto, ts: Date.now() }); }
+    catch (e) { ta.value = texto; if (e && e.code === "invalid_argument") { S.canChat = false; render(); } }
+  };
+  ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); enviar(); } });
+  return h("section", { class: "view chatview" },
+    h("div", { class: "chathead" },
+      h("div", null, h("p", { class: "eyebrow", text: "Conversa" }), h("h1", { style: "font-size:24px", text: "Roda da Caravana" })),
+      h("div", { class: "routepick", role: "group", "aria-label": "Canal" }, canais.map(c =>
+        h("button", { type: "button", "aria-pressed": String(c.id === S.canal), onclick: () => { S.canal = c.id; render(); } }, c.nome)))),
+    log,
+    podeEscrever
+      ? h("div", { class: "composer" }, ta, h("button", { class: "btn primary", type: "button", onclick: enviar }, "Enviar"))
+      : h("div", { class: "composer" }, h("p", { class: "note", text: S.db ? "Para escrever aqui, peça à organização um convite com permissão para participar." : "A conversa aparece quando você abre o aplicativo pelo link do Claude, com sua conta." }))
+  );
+}
+async function apagarMsg(id) { try { await S.db.doc("chat/" + id).delete(); } catch (e) {} }
+async function paintNames() {
+  if (!S.user) return;
+  const els = [...document.querySelectorAll("[data-name],[data-avatar]")];
+  const ids = [...new Set(els.map(e => e.dataset.name || e.dataset.avatar).filter(Boolean))];
+  if (!ids.length) return;
+  const ps = await S.user.profiles(ids);
+  for (const e of els) {
+    const p = ps[e.dataset.name || e.dataset.avatar]; if (!p) continue;
+    if (e.dataset.avatar !== undefined) e.src = p.avatarUrl;
+    else if (!p.isMe) e.textContent = p.name || "Viajante";
+  }
+}
+
+// ---------- Ensinamentos ----------
+function vEnsinamentos() {
+  const e = S.ens.find(x => x.id === S.ensSel);
+  if (e && (ensLiberado(e) || S.isOwner)) {
+    const l = e.localId && localDe(e.localId);
+    return h("section", { class: "view" },
+      h("div", { class: "actions" },
+        h("button", { class: "btn ghost", type: "button", onclick: () => { S.ensSel = null; render(); } }, "← Todos os ensinamentos"),
+        S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editar("ens", e) }, "Editar") : null),
+      h("article", { class: "reader" },
+        h("p", { class: "eyebrow", text: [e.categoria, l && l.nome].filter(Boolean).join(" · ") }),
+        h("h1", { text: e.titulo }),
+        h("div", { class: "body" }, String(e.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() }))),
+        e.fonte ? h("p", { class: "src", text: "Fontes: " + e.fonte }) : null));
+  }
+  const cats = {};
+  for (const x of S.ens.slice().sort(byOrder)) (cats[x.categoria || "Ensinamentos"] ||= []).push(x);
+  return h("section", { class: "view" },
+    h("div", { class: "head" },
+      h("div", null, h("p", { class: "eyebrow", text: "Biblioteca" }), h("h1", { text: "Ensinamentos" })),
+      adminBtn("Novo ensinamento", () => editar("ens"))),
+    h("p", { class: "lede", text: "Alguns ensinamentos ficam abertos desde o início. Os outros moram num lugar da rota e se abrem quando você chega lá." }),
+    Object.keys(cats).length ? h("div", { class: "cats" }, Object.entries(cats).map(([cat, xs]) => h("section", { class: "cat" },
+      h("h2", { text: cat }),
+      h("div", { class: "cards" }, xs.map(x => {
+        const lib = ensLiberado(x), l = x.localId && localDe(x.localId);
+        return h("button", { class: "card" + (lib ? "" : " locked"), type: "button", "aria-disabled": String(!lib && !S.isOwner),
+          onclick: () => { if (lib || S.isOwner) { S.ensSel = x.id; render(); $("#main").scrollTop = 0; } } },
+          lib ? h("span", { class: "chip open", text: l ? l.nome : "Aberto" }) : h("span", { class: "chip lock", text: "Abre em " + (l ? l.nome : "breve") }),
+          h("h3", { text: x.titulo }),
+          h("p", { text: lib ? (x.resumo || "") : "Chegue a este lugar para ler." }));
+      }))))) : notReady());
+}
+
+// ---------- Editor (só a organizadora) ----------
+const semId = o => { const c = { ...o }; delete c.id; return c; };
+async function gravar(col, id, data) {
+  const ref = id ? S.db.doc(`${col}/${id}`) : S.db.collection(col).doc();
+  await ref.set(data);
+}
+function editar(tipo, item) {
+  item = item || {};
+  const rotas = S.rotas.slice().sort(byOrder), locais = S.locais.slice().sort(byOrder);
+  const F = {
+    rota: { col: "rotas", titulo: "Rota", campos: [["nome", "Nome da rota"], ["regiao", "Região"], ["descricao", "Descrição", "area"], ["ordem", "Ordem", "num"]] },
+    local: { col: "locais", titulo: "Lugar", campos: [["nome", "Nome do lugar"], ["rotaId", "Rota", "sel", rotas.map(r => [r.id, r.nome])], ["ordem", "Ordem na rota", "num"],
+      ["lat", "Latitude", "num"], ["lng", "Longitude", "num"], ["busca", "Busca no Google Maps (opcional)"], ["dica", "Dica enquanto fechado", "area"],
+      ["descricao", "Texto depois de aberto", "area"], ["codigo", "Palavra do lugar (a guia revela)"], ["aberto", "Aberto para todos", "chk"]] },
+    ens: { col: "ensinamentos", titulo: "Ensinamento", campos: [["titulo", "Título"], ["categoria", "Categoria (ex.: Sabedoria, Vivência)"],
+      ["localId", "Mora no lugar (deixe vazio para ficar sempre aberto)", "sel", [["", "Sempre aberto"], ...locais.map(l => [l.id, l.nome])]],
+      ["resumo", "Resumo curto"], ["texto", "Texto (separe parágrafos com uma linha em branco)", "area"], ["fonte", "Fontes"], ["ordem", "Ordem", "num"]] }
+  }[tipo];
+  const inputs = {};
+  const campos = F.campos.map(([k, label, kind, opts]) => {
+    const id = `ed-${tipo}-${k}`; let el;
+    if (kind === "area") el = h("textarea", { id, rows: k === "texto" ? "10" : "3" });
+    else if (kind === "sel") { el = h("select", { id }, opts.map(([v, t]) => h("option", { value: v, text: t }))); }
+    else if (kind === "chk") el = h("input", { id, type: "checkbox" });
+    else el = h("input", { id, type: kind === "num" ? "number" : "text", step: kind === "num" ? "any" : null });
+    if (kind === "chk") el.checked = !!item[k]; else el.value = item[k] ?? "";
+    inputs[k] = [el, kind];
+    return kind === "chk" ? h("label", { class: "chk", for: id }, el, label) : h("label", { for: id }, label, el);
+  });
+  let confirmando = false;
+  const delBtn = item.id ? h("button", { class: "btn danger", type: "button", onclick: async () => {
+    if (!confirmando) { confirmando = true; delBtn.textContent = "Toque de novo para apagar"; return; }
+    await S.db.doc(`${F.col}/${item.id}`).delete(); fechar();
+  } }, "Apagar") : h("span");
+  const erro = h("p", { class: "msg err", role: "alert" });
+  const form = h("form", { onsubmit: async e => {
+    e.preventDefault();
+    const data = {};
+    for (const k in inputs) { const [el, kind] = inputs[k];
+      if (kind === "chk") data[k] = el.checked;
+      else if (kind === "num") { if (el.value !== "") data[k] = Number(el.value); }
+      else if (el.value.trim() !== "") data[k] = el.value.trim(); }
+    const obrig = tipo === "ens" ? "titulo" : "nome";
+    if (!data[obrig]) { erro.textContent = "Preencha o " + (obrig === "titulo" ? "título" : "nome") + "."; return; }
+    try { await gravar(F.col, item.id, data); fechar(); }
+    catch (err) { erro.textContent = "Não consegui salvar. Confira sua conexão e tente de novo."; }
+  } },
+    h("h2", { text: (item.id ? "Editar " : "Novo ") + F.titulo.toLowerCase() }),
+    h("p", { class: "banner", text: "Só você, dona do aplicativo, vê este formulário." }),
+    campos, erro,
+    h("div", { class: "foot" }, delBtn, h("div", { class: "actions" },
+      h("button", { class: "btn", type: "button", onclick: () => fechar() }, "Cancelar"),
+      h("button", { class: "btn primary", type: "submit" }, "Salvar"))));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) fechar(); } }, form);
+  function fechar() { sheet.remove(); }
+  document.body.append(sheet);
+  form.querySelector("input,select,textarea")?.focus();
+}
+
+// ---------- dados ----------
+function listen(col, key, q) {
+  (q || S.db.collection(col)).onSnapshot(snap => {
+    S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    S.dbReady = true; render();
+  }, () => { S.dbReady = true; render(); });
+}
+
+render();
+
+(async () => {
+  const [db, user] = await Promise.all([window.claude?.use?.("db") ?? null, window.claude?.use?.("user") ?? null]);
+  S.db = db; S.user = user;
+  if (user) {
+    const me = await user.me();
+    S.me = me; S.uid = me.id; S.isOwner = me.isOwner;
+    const who = $("#who");
+    who.replaceChildren(h("img", { src: me.avatarUrl, alt: "" }), h("span", { text: me.name || "Viajante" }));
+    if (S.isOwner) $("#subtitle").textContent = "Você está como organizadora";
+  }
+  if (!db) { S.dbReady = true; render(); return; }
+  listen("rotas", "rotas");
+  listen("locais", "locais");
+  listen("ensinamentos", "ens");
+  listen("chat", "chat", db.collection("chat").orderBy("ts", "desc").limit(400));
+  if (S.uid) db.doc(`data/users/${S.uid}/progresso`).onSnapshot(d => {
+    if (d.exists) { S.progresso = { ...S.progresso, ...(d.data().abertos || {}) }; render(); }
+  }, () => {});
+})();
+})();
+</script>
