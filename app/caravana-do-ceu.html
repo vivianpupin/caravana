@@ -560,6 +560,14 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .topside{align-items:center}
 .topsim{width:28px;height:auto;display:block}
 .brand{text-align:center;justify-content:center}
+
+#frase-giro{min-height:3.1em;display:flex;align-items:center;justify-content:center;transition:opacity .45s ease,transform .45s ease}
+#frase-giro.sai{opacity:0;transform:translateY(4px)}
+@media (prefers-reduced-motion:reduce){#frase-giro{transition:none}}
+.hero .legenda{font-size:10.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--terra);margin-top:-2px}
+
+.brand b{font-family:"Jost",system-ui,sans-serif!important;font-weight:500!important;letter-spacing:.16em!important}
+.brand span{font-family:"Jost",system-ui,sans-serif!important;font-weight:500;letter-spacing:.3em}
 </style>
 
 <div class="app">
@@ -803,6 +811,23 @@ function contador(n, rotulo) {
       h("span", { class: "gravado" }, rotulo)));
 }
 
+// ---------- Frases que se revezam na abertura ----------
+const FRASES = [
+  "Seu caravansaray de bolso.",
+  "O pátio onde a caravana para antes de cada partida.",
+  "Água, mapas e céu aberto para cada dia da travessia.",
+  "Aqui a caravana se abastece. Lá fora, a Índia espera.",
+  "Partimos de madrugada, quando as estrelas orientam a rota.",
+  "Especiarias, mapas e força para a longa jornada."
+];
+S.fraseIdx = 0;
+setInterval(() => {
+  S.fraseIdx = (S.fraseIdx + 1) % FRASES.length;
+  const el = document.getElementById("frase-giro"); if (!el) return;
+  el.classList.add("sai");
+  setTimeout(() => { el.textContent = FRASES[S.fraseIdx]; el.classList.remove("sai"); }, 450);
+}, 6000);
+
 // ---------- Travessia ----------
 function vTravessia() {
   const R = S.roteiro;
@@ -817,7 +842,8 @@ function vTravessia() {
       h("h1", null, "Travessia da", h("br"), "Índia Sagrada"),
       h("p", { class: "route", text: "Delhi · Agra · Jaipur · Varanasi · Rishikesh" }),
       h("span", { class: "line" }),
-      h("p", { class: "intro", text: "Seu caravansaray de bolso. Como nas rotas antigas, é aqui que a caravana para, se abastece e reencontra o caminho: o roteiro de cada dia, os selos dos lugares sagrados, os saberes da travessia e a roda do grupo." })),
+      h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] }),
+      h("p", { class: "legenda", text: "Roteiro · Passaporte · Saberes · Caravana" })),
     h("div", { class: "clock" },
       f > 0 ? h("div", null, h("b", { text: f }), h("span", { text: f === 1 ? "dia para embarcar" : "dias para embarcar" }))
             : h("div", null, h("b", { text: "13" }), h("span", { text: "dias de travessia" })),
