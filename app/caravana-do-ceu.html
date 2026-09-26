@@ -622,7 +622,8 @@ nav.tabs button{position:relative}
 .correiosheet .correiobox{background:transparent;box-shadow:none;padding:8px 0;overflow:visible;max-height:92%}
 .correiosheet{align-items:center}
 .correiobox .btn.ghost{color:#F1E2BC;border-color:rgba(241,226,188,.5)}
-.pergaminho{position:relative;margin:0 6px;overflow:auto;max-height:70vh;border-radius:4px}
+.pergaminho{position:relative;margin:0 6px;border-radius:4px}
+.pergaminho .pgm{max-height:58vh;overflow:auto}
 .pgm{position:relative;padding:30px 24px 34px;background:radial-gradient(ellipse at 50% 45%,#F6E7C4 0%,#EDD6A4 60%,#D8B679 100%);color:#3B2A1C;font-family:var(--display);font-style:italic;font-size:16.5px;line-height:1.65;display:flex;flex-direction:column;gap:12px;box-shadow:inset 0 0 40px rgba(120,80,30,.35)}
 .pgm p{margin:0}
 .pgmdata{font-family:"Cinzel",serif;font-style:normal;font-size:11.5px;letter-spacing:.12em;color:#7A5A36;text-align:right}
@@ -2350,7 +2351,7 @@ function vDiario(d, liberado) {
     h("p", { class: "small", text: "Só você e a líder da travessia podem ler." }));
 }
 // Correspondência: cartas da líder, em pergaminho, por pombo-correio
-const CARTA_RASCUNHO = "Treze dias atrás a gente chegou em Delhi com as malas cheias e o coração aberto. Hoje voltamos com o passaporte carimbado e com a Índia morando dentro da gente!\n\nCada selo guarda um amanhecer, um rio, um templo, uma roda.. e cada um de vocês fez parte do caminho do outro.\n\nQue tudo o que foi vivido aqui continue florescendo aí dentro, nos gestos simples de cada dia.\n\nObrigada por atravessarem comigo!";
+const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nDoze selos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
 const ASSINATURA = "Vivian · Caravana do Céu";
 const cartasAbertas = () => S.cartas.filter(c => !c.rascunho && c.envio && c.envio <= Date.now()).sort((a, b) => a.envio - b.envio);
 const dataCarta = ts => new Date(ts).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" });
