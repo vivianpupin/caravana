@@ -991,9 +991,7 @@ function vTravessia() {
             : h("div", null, h("b", { text: "13" }), h("span", { text: "dias de travessia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "Asia/Kolkata", text: horaEm("Asia/Kolkata") }), h("span", { text: "Agora na Índia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +8h30" }))),
-    vAvisoLeitura(),
     vCorrespondencia(),
-    vLeiturasLider(),
     ins.length ? h("div", null,
       h("p", { class: "eyebrow rule", text: `Os ${ins.length} selos do passaporte` }),
       h("div", { class: "strip", style: "margin-top:10px" }, ins.map(l => h("button", { type: "button", "aria-label": l.nome, onclick: () => abrirSelo(l) },
@@ -1026,7 +1024,6 @@ function vDia(d, open, isToday, abrir) {
       h("div", null, h("p", { class: "eyebrow rule", text: "Agenda do dia" }),
         d.agenda.map(p => [h("p", { class: "per", text: p.periodo }),
           h("ul", { class: "items" }, p.itens.map(it => h("li", null, h("span", { class: "h", text: it.hora || "·" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null))))])),
-      vDiario(d, d.iso <= hojeTrip()),
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
         l.dados && l.dados.length ? h("div", { class: "stats" }, l.dados.map(x => h("div", null, h("b", { text: x.v }), h("span", { text: x.l })))) : null)),
@@ -1135,9 +1132,6 @@ function paginasLivro() {
       h("div", { class: "mrz", "aria-hidden": "true", text: mrzDe(v, insigniaLocais().filter(aberto).length) }))
   ];
   for (let i = 0; i < ls.length; i += 2) pages.push(pag("selos", h("p", { class: "pgnum", text: "Vistos / Visas · Pág. " + nn(i / 2 + 3) }), ls.slice(i, i + 2).map(selo)));
-  const ent = (S.roteiro?.dias || []).filter(d => S.diario[d.n]);
-  for (let i = 0; i < ent.length; i += 3) pages.push(pag("diariopg", h("p", { class: "pgnum", text: "Diário de bordo · Log" }),
-    ent.slice(i, i + 3).map(d => h("div", { class: "pgdiario" }, h("p", { class: "pgdq", text: `DIA ${nn(d.n)} · ${d.cidade.toUpperCase()} · ${PERGUNTAS[d.n] || ""}` }), h("p", { class: "pgdt", text: S.diario[d.n] })))));
   for (const c of cartasAbertas()) pages.push(pag("cartapg", h("p", { class: "pgnum", text: "Correspondência · " + dataDoc(c.envio) }),
     h("p", { class: "pgct", text: "Para " + primeiroNome() + "," }), String(c.texto || "").split(/\n\s*\n/).map(p => h("p", { class: "pgct", text: p.trim() })), h("p", { class: "pgct ass", text: c.assinatura || ASSINATURA })));
   pages.push(pag("fim", h("img", { class: "fimsim", src: "img/simbolo-marrom.png", alt: "" }), h("p", { class: "pgfrase", text: "Explorando nossa origem nos damos conta de que somos infinitos." }), h("p", { class: "pgsub", text: "Caravana do Céu" })));
@@ -2692,7 +2686,6 @@ render();
   listen("chat", "chat", db.collection("chat").orderBy("ts", "desc").limit(400));
   listen("posicoes", "posicoes");
   listen("cartas", "cartas", null, () => setTimeout(checaCorreio, 1200));
-  if (S.isOwner) listen("diarios", "diarios");
   listen("mural", "mural", db.collection("mural").orderBy("ts", "desc").limit(300));
   if (S.uid) db.doc("diarios/" + S.uid).onSnapshot(sn => { const dd = sn.exists ? sn.data() : {}, e = dd.entradas; if (dd.leitura) { S.leitura = dd.leitura; } if (e) { S.diario = { ...e, ...S.diario }; try { localStorage.setItem("cdi-diario", JSON.stringify(S.diario)); } catch (x) {} } render(); }, () => {});
   setInterval(() => { if ((S.tab === "mapa" || S.tab === "travessia") && !document.activeElement?.matches?.("input,textarea,select") && !document.querySelector(".sheet")) render(); }, 60000);
