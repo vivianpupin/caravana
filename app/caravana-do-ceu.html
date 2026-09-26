@@ -352,8 +352,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .top{background:linear-gradient(180deg,#3B2A1C,#2E2116);border-bottom:1px solid #1E150D;box-shadow:inset 0 -1px 0 rgba(226,190,120,.25);color:#F1E2BC;backdrop-filter:none}
 .top::after{content:"";position:absolute}
 .brand img{width:40px;height:auto}
-.brand img.lockup{display:block;width:auto;height:56px}
-.top{padding-block:8px}
+.brand{flex-direction:row;gap:10px;text-align:left}
 .brand b{color:#F1E2BC;font-family:var(--display);letter-spacing:.14em;text-transform:uppercase;font-size:15.5px;font-weight:600}
 .brand span{color:#C9A56A;letter-spacing:.24em}
 .me{background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.35);box-shadow:none}
@@ -562,7 +561,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 <div class="app">
   <header class="top">
     <span class="topside" aria-hidden="true"></span>
-    <div class="brand"><img class="lockup" src="img/lockup-claro.png" alt="Caravana"></div>
+    <div class="brand"><img src="img/simbolo-dourado.png" alt=""><div><b>Caravana do Céu</b><span>Índia Sagrada · 2026</span></div></div>
     <div class="topside right"><button class="me" id="me" type="button" hidden></button></div>
   </header>
   <main id="main"></main>
@@ -596,7 +595,7 @@ try { const t = localStorage.getItem("cdi-tab2"); if (t) S.tab = t; } catch (e) 
 try { S.local = JSON.parse(localStorage.getItem("cdi-ins") || "{}") || {}; } catch (e) {}
 try { S.checks = JSON.parse(localStorage.getItem("cdi-checks") || "{}") || {}; } catch (e) {}
 
-const SVGTAGS = new Set(["svg","g","path","circle","text","line","rect","title","image"]);
+const SVGTAGS = new Set(["svg","g","path","circle","ellipse","text","line","rect","title","image"]);
 function h(tag, attrs, ...kids) {
   const el = SVGTAGS.has(tag) ? document.createElementNS("http://www.w3.org/2000/svg", tag) : document.createElement(tag);
   if (attrs) for (const k in attrs) {
@@ -863,7 +862,7 @@ function vDia(d, open, isToday, abrir) {
       ls.length ? h("div", null, h("p", { class: "eyebrow rule", text: ls.length > 1 ? "Selos deste dia" : "Selo deste dia" }),
         h("div", { class: "seals", style: "margin-top:12px" }, ls.map(l => h("button", { type: "button", onclick: () => abrirSelo(l) },
           h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" }), aberto(l) ? "Carimbado" : "Carimbar")))) : null,
-      d.cuidados && d.cuidados.length ? h("div", null, h("p", { class: "eyebrow rule", text: "Leve com você" }),
+      false && d.cuidados && d.cuidados.length ? h("div", null, h("p", { class: "eyebrow rule", text: "Leve com você" }),
         h("div", { class: "checks", style: "margin-top:10px" }, d.cuidados.map((c, i) => {
           const id = `ck-${d.n}-${i}`;
           return h("label", { for: id }, h("input", { type: "checkbox", id, checked: !!ck[i], onchange: e => {
@@ -1103,7 +1102,7 @@ const BONECO = {
   cabeloCor: ["#2B1D14", "#5A3A22", "#8A5A2B", "#C9A063", "#D9D2C5", "#A83E2A"],
   cabelo: [["curto", "Curto"], ["longo", "Longo"], ["cacheado", "Cacheado"], ["coque", "Coque"], ["tranca", "Trança"], ["careca", "Careca"]],
   chapeu: [["fedora", "Fedora"], ["safari", "Safári"], ["lenco", "Lenço"], ["turbante", "Turbante"], ["flores", "Coroa de flores"], ["sem", "Sem chapéu"]],
-  roupa: [["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
+  roupa: [["basico", "Básico"], ["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
   roupaCor: ["#8B6B43", "#C2A878", "#5F6B45", "#8A3F32", "#D9822B", "#B83A6B", "#2F5D7C", "#E8E0CF", "#2B2622"],
   acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["tambor", "Tambor"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["chicote", "Chicote"], ["nenhum", "Nada"]],
   colar: [["nenhum", "Nenhum"], ["guirlanda", "Guirlanda de flores"], ["rudraksha", "Rudraksha"]],
@@ -1121,21 +1120,66 @@ const bonecoDe = id => ({ ...bonecoPadrao(id), ...((S.viajantes.find(v => v.id =
 function escurece(hex, f) { const n = parseInt(hex.slice(1), 16); const c = k => Math.round(((n >> k) & 255) * f); return `rgb(${c(16)},${c(8)},${c(0)})`; }
 // Bichinho ao lado do explorador (área à direita, de x 56 a 92).
 function desenhaPet(tipo) {
-  const g = h("g", { class: "pet" }), P = (d, fill, x) => h("path", { d, fill, ...(x || {}) }), C = (cx, cy, r, fill) => h("circle", { cx, cy, r, fill }), E = (cx, cy, rx, ry, fill) => h("ellipse", { cx, cy, rx, ry, fill });
-  const olho = (x, y) => C(x, y, .9, "#1E150D");
-  g.append(E(74, 86, 13, 2.4, "rgba(40,28,15,.22)"));
-  if (tipo === "gato") g.append(P("M83 80 Q92 70 86 62", "none", { stroke: "#D9822B", "stroke-width": 2.4, "stroke-linecap": "round" }), E(76, 79, 8, 5.5, "#D9822B"), C(68, 72, 5, "#D9822B"), P("M64.5 69 L65 63 L68.5 67.5 Z M71.5 69 L71 63 L67.5 67.5 Z", "#D9822B"), olho(66.5, 72), olho(69.5, 72), h("rect", { x: 70, y: 82, width: 2, height: 4, fill: "#B86E1E" }), h("rect", { x: 79, y: 82, width: 2, height: 4, fill: "#B86E1E" }));
-  if (tipo === "cachorro") g.append(P("M84 76 Q90 70 88 66", "none", { stroke: "#A0673F", "stroke-width": 2.4, "stroke-linecap": "round" }), E(76, 78, 9, 6, "#C08A55"), C(67, 71, 5.5, "#C08A55"), E(63.8, 72, 2.2, 4, "#8B5A2B"), E(70.2, 72, 2.2, 4, "#8B5A2B"), E(67, 74, 2.4, 1.8, "#E8D2B0"), C(67, 73, .9, "#1E150D"), olho(65.5, 70), olho(68.5, 70),
-    h("rect", { x: 70, y: 82, width: 2.2, height: 4.5, fill: "#8B5A2B" }), h("rect", { x: 80, y: 82, width: 2.2, height: 4.5, fill: "#8B5A2B" }));
-  if (tipo === "camelo") g.append(E(78, 67, 11, 6.5, "#A97A42"), E(79, 60.5, 5, 5, "#A97A42"), P("M68 66 Q63 60 64 50 L68 50 Q67 60 71 64 Z", "#A97A42"), E(64, 49, 4.5, 2.8, "#A97A42"), olho(63, 48.5),
-    ...[70, 74, 82, 86].map(x => h("rect", { x, y: 71, width: 2.2, height: 14, fill: "#8C6435" })), h("rect", { x: 72, y: 63, width: 12, height: 3, fill: "#8A3F32" }));
-  if (tipo === "elefante") g.append(E(77, 75, 11, 8, "#9A9A9E"), C(66, 72, 6.5, "#A6A6AA"), E(70.5, 71, 3.5, 5, "#8C8C90"), P("M61 74 Q58 80 61 84", "none", { stroke: "#A6A6AA", "stroke-width": 2.8, "stroke-linecap": "round" }), olho(64, 70.5),
-    ...[70, 76, 81, 85].map(x => h("rect", { x, y: 80, width: 3, height: 6, fill: "#8C8C90" })), h("rect", { x: 72, y: 67, width: 10, height: 4, rx: 1, fill: "#B83A6B" }));
-  if (tipo === "vaca") g.append(E(77, 74, 11, 6.5, "#F1EAD9"), E(79, 67.5, 4, 3, "#E4DAC4"), C(65, 71, 5, "#F1EAD9"), P("M61.5 66.5 Q60 63 62 62 M68.5 66.5 Q70 63 68 62", "none", { stroke: "#8B6B43", "stroke-width": 1.4 }), E(64, 74, 2.8, 2, "#E8C9B0"), olho(63.5, 70), olho(66.5, 70),
-    ...[69, 73, 81, 85].map(x => h("rect", { x, y: 78, width: 2.2, height: 8, fill: "#DDD2BC" })), C(65, 76.5, 1.3, "#D9A53A"));
-  if (tipo === "macaco") g.append(P("M84 80 Q94 72 88 62 Q86 58 89 56", "none", { stroke: "#8B6B43", "stroke-width": 2, "stroke-linecap": "round" }), E(76, 78, 7, 7, "#8B6B43"), C(71, 68, 5.5, "#8B6B43"), C(66, 67, 2, "#8B6B43"), C(76, 67, 2, "#8B6B43"), E(71, 69.5, 3.6, 3.2, "#D8B892"), olho(69.8, 68.5), olho(72.2, 68.5));
-  if (tipo === "pavao") g.append(...[-50, -25, 0, 25, 50].map(a => E(80 + Math.sin(a * Math.PI / 180) * 9, 66 - Math.cos(a * Math.PI / 180) * 9, 3.6, 7, "#2E7D6B")), ...[-50, -25, 0, 25, 50].map(a => C(80 + Math.sin(a * Math.PI / 180) * 11, 66 - Math.cos(a * Math.PI / 180) * 11, 1.8, "#1F4E8C")),
-    E(78, 76, 5, 7, "#1F5FA8"), C(74, 66, 3, "#1F5FA8"), P("M71.5 66 L69 67 L71.5 67.5 Z", "#D9A53A"), olho(73.5, 65.5), P("M74 63 L73 60 M75 63 L75 60 M76 63 L77 60", "none", { stroke: "#1F5FA8", "stroke-width": .7 }), h("rect", { x: 76.5, y: 82, width: 1.4, height: 4, fill: "#8B6B43" }), h("rect", { x: 79.5, y: 82, width: 1.4, height: 4, fill: "#8B6B43" }));
+  const g = h("g", { class: "pet", stroke: "#4A3322", "stroke-width": .7, "stroke-linejoin": "round", "stroke-linecap": "round" });
+  const P = (d, fill, x) => h("path", { d, fill, ...(x || {}) }), C = (cx, cy, r, fill, x) => h("circle", { cx, cy, r, fill, ...(x || {}) }), E = (cx, cy, rx, ry, fill, x) => h("ellipse", { cx, cy, rx, ry, fill, ...(x || {}) });
+  const sem = { stroke: "none" }, olho = (x, y) => [C(x, y, 1.1, "#1E150D", sem), C(x + .35, y - .35, .35, "#fff", sem)];
+  g.append(E(75, 86, 13, 2.2, "rgba(40,28,15,.2)", sem));
+  if (tipo === "gato") g.append(
+    P("M79 84 Q91 85 89 75 Q88 70 85 71", "none", { stroke: "#C9762B", "stroke-width": 3.2 }),
+    P("M65 85 Q62 72 70 67 Q79 64 81 74 Q82 82 78 85 Z", "#E8963F"),
+    P("M69 85 Q68 77 72 74 Q75 77 74 85 Z", "#F6D7A8", sem),
+    P("M64 58 L65.5 49.5 L70 55 Z M78 58 L76.5 49.5 L72 55 Z", "#E8963F"), P("M65.6 55.5 L66.3 51.5 L68.4 54.2 Z M76.4 55.5 L75.7 51.5 L73.6 54.2 Z", "#F2B3A0", sem),
+    C(71, 60, 7.5, "#E8963F"), P("M68 54 L69 57 M71 53.2 L71 56.5 M74 54 L73 57", "none", { stroke: "#C9762B", "stroke-width": 1 }),
+    ...olho(68.3, 60.5), ...olho(73.7, 60.5), P("M70.2 63 L71.8 63 L71 64 Z", "#E07A7A", sem), P("M71 64 Q70 65.5 68.8 65 M71 64 Q72 65.5 73.2 65", "none", { "stroke-width": .6 }),
+    P("M66 63.5 L61 62.5 M66 64.5 L61 65 M76 63.5 L81 62.5 M76 64.5 L81 65", "none", { "stroke-width": .4, stroke: "#6B4A2A" }));
+  if (tipo === "cachorro") g.append(
+    P("M81 76 Q89 71 87 63", "none", { stroke: "#B9824B", "stroke-width": 3 }),
+    P("M64 85 L64 75 Q65 67 73 67 Q82 67 82 77 L82 85 Z", "#D09A5F"),
+    P("M66 85 L66 76 Q68 72 71 73 L71 85 Z", "#F1D9B6", sem),
+    C(69, 60, 7.5, "#D09A5F"), E(62.5, 63, 5, 3.6, "#F1D9B6"), E(60, 61.8, 1.7, 1.3, "#2B1D14", sem),
+    P("M74 54 Q80 56 78.5 66 Q75 66 73.5 58 Z", "#8B5A2B"), ...olho(66.5, 58.5),
+    P("M61 65.6 Q62.5 69 64.5 66", "#E36A7A", { "stroke-width": .5 }), h("rect", { x: 64.5, y: 65.5, width: 9, height: 2.2, rx: 1, fill: "#A3231A", stroke: "none" }), C(69, 68.5, 1.2, "#D9A53A", sem));
+  if (tipo === "camelo") g.append(
+    ...[[69, 1], [73, 0], [82, 1], [86, 0]].map(([x, t]) => h("rect", { x, y: 70, width: 2.6, height: 15, rx: 1.2, fill: t ? "#B8864B" : "#C99A5B" })),
+    P("M67 72 Q66 63 74 63 Q76 55 81 58 Q84 61 87 63 Q91 65 90 71 Q89 75 84 74 L70 74 Q67 74 67 72 Z", "#D6A86A"),
+    P("M91 68 Q94 71 92 76", "none", { "stroke-width": 1.2 }),
+    P("M69 66 Q63 62 63 53 Q63 49 60 48.5 L57 48.5 Q55 49 55.5 51 Q56 53 59 53 Q60 60 66 69 Z", "#D6A86A"),
+    E(60, 47.8, 2, 1.5, "#D6A86A"), ...olho(58.5, 50.2), P("M55.6 52.2 L57.2 52.2", "none", { "stroke-width": .6 }),
+    P("M74 63.5 Q80 61 86 63.5 L86 67 L74 67 Z", "#A3231A", { "stroke-width": .5 }), P("M74 67 L86 67", "none", { stroke: "#D9A53A", "stroke-width": 1.2 }),
+    ...[76, 80, 84].map(x => C(x, 68.6, .9, "#D9A53A", sem)));
+  if (tipo === "elefante") g.append(
+    ...[70, 75, 82, 86.5].map(x => h("rect", { x, y: 74, width: 4.2, height: 11, rx: 1.8, fill: "#A5A8AE" })),
+    P("M68 76 Q66 62 78 61 Q90 60 91 70 Q92 79 84 79 L72 79 Q68 79 68 76 Z", "#B3B6BC"),
+    P("M91 69 Q94 70 93.5 74", "none", { "stroke-width": 1 }),
+    C(66, 66, 8, "#B3B6BC"), P("M68 60 Q76 58 76 67 Q76 74 69 73 Z", "#9EA2A8"), P("M70 62 Q74 62 74 67 Q74 71 70 71", "none", { stroke: "#E7B7B0", "stroke-width": 1.4 }),
+    P("M60 68 Q56 74 57 80 Q57.6 83 60 82 Q60.5 81 59.6 80 Q59 75 62.5 71 Z", "#B3B6BC"),
+    P("M61.8 70.6 Q59.5 71.5 59.8 74", "none", { stroke: "#FBF7EE", "stroke-width": 1.6 }), ...olho(63.5, 63.5),
+    P("M73 62 Q79 60 85 62 L85 66 L73 66 Z", "#B83A6B", { "stroke-width": .5 }), ...[75, 79, 83].map(x => C(x, 67.2, .9, "#D9A53A", sem)));
+  if (tipo === "vaca") g.append(
+    ...[70, 74, 83, 87].map(x => h("rect", { x, y: 73, width: 2.8, height: 12, rx: 1.2, fill: "#E9E1CF" })),
+    ...[70, 74, 83, 87].map(x => h("rect", { x: x - .1, y: 83, width: 3, height: 2.2, fill: "#5A4630", stroke: "none" })),
+    P("M68 74 Q67 65 76 65 Q78 61 82 63 Q85 64 88 65 Q92 66 91 72 Q90 76 85 76 L71 76 Q68 76 68 74 Z", "#F6F1E4"),
+    P("M91 69 Q94 72 92.5 78", "none", { "stroke-width": 1 }), C(92.5, 78.8, 1.2, "#5A4630", sem),
+    P("M69 70 Q65 70 62 68 Q59 67 59.5 63 Q60 59 64 59 Q68 59 69.5 63 Z", "#F6F1E4"),
+    E(60.2, 66, 2.6, 2, "#E8C4B0"), C(59.4, 66, .5, "#6B4A2A", sem), ...olho(63.6, 62.2),
+    P("M62 59.5 Q60 55 62.5 54 M66.5 59.5 Q68.5 55 66 54", "none", { stroke: "#8B6B43", "stroke-width": 1.4 }),
+    E(68.8, 61.5, 2.6, 1.2, "#EDE5D3"),
+    ...Array.from({ length: 7 }, (_, i) => C(64 + i * 1.3, 70 + Math.sin(i / 6 * Math.PI) * 2.5, 1.2, i % 2 ? "#F2A72B" : "#E0661C", sem)));
+  if (tipo === "macaco") g.append(
+    P("M80 80 Q92 82 90 70 Q89 64 85 66 Q84 68 86 69 Q88 71 86 75", "none", { stroke: "#7A5431", "stroke-width": 2.2 }),
+    P("M67 85 Q64 74 72 71 Q81 70 82 79 Q82 85 78 85 Z", "#8B6238"),
+    P("M70.5 85 Q70 78 73.5 76 Q77 78 76.5 85 Z", "#D8B892", sem),
+    C(65.8, 62, 2.6, "#8B6238"), C(78.2, 62, 2.6, "#8B6238"), C(65.8, 62, 1.3, "#D8B892", sem), C(78.2, 62, 1.3, "#D8B892", sem),
+    C(72, 61, 7, "#8B6238"), P("M67.5 60 Q67.5 56 70.5 56.8 Q72 57.6 73.5 56.8 Q76.5 56 76.5 60 Q77 65.5 72 66.5 Q67 65.5 67.5 60 Z", "#E3C49E", sem),
+    ...olho(70, 59.8), ...olho(74, 59.8), P("M71.2 62.3 L72.8 62.3", "none", { "stroke-width": .6 }), P("M70.3 64 Q72 65.3 73.7 64", "none", { "stroke-width": .6 }));
+  if (tipo === "pavao") {
+    for (let i = 0; i < 9; i++) { const a = (-72 + i * 18) * Math.PI / 180, cx = 81 + Math.sin(a) * 12, cy = 72 - Math.cos(a) * 12;
+      g.append(E(cx, cy, 3.4, 7.5, "#2E8A6E", { transform: `rotate(${-72 + i * 18} ${cx} ${cy})`, "stroke-width": .5 }), E(81 + Math.sin(a) * 14.5, 72 - Math.cos(a) * 14.5, 1.9, 2.4, "#1F4E8C", { stroke: "#E8B321", "stroke-width": .6 })); }
+    g.append(h("rect", { x: 75.5, y: 79, width: 1.2, height: 6, fill: "#8B6B43", stroke: "none" }), h("rect", { x: 78.5, y: 79, width: 1.2, height: 6, fill: "#8B6B43", stroke: "none" }),
+      P("M72 80 Q70 70 76 68 Q82 68 82 76 Q82 81 77 81 Z", "#1F5FA8"), P("M74 69 Q72 62 70 58 Q69 55 71.5 54.5 Q74 55 74.5 59 Q76 64 77.5 68.5 Z", "#1F5FA8"),
+      P("M69.5 56.5 L66.8 57.6 L69.8 58.3 Z", "#D9A53A", { "stroke-width": .4 }), ...olho(71.5, 56.5),
+      P("M72 54.5 L71 50.5 M73 54.5 L73.5 50.5 M74 55 L76 51.5", "none", { stroke: "#1F5FA8", "stroke-width": .6 }), C(71, 50.3, .9, "#2E8A6E", sem), C(73.5, 50.2, .9, "#2E8A6E", sem), C(76.1, 51.3, .9, "#2E8A6E", sem));
+  }
   return g;
 }
 // Desenha o explorador numa caixa de 60 x 90 (o pet ocupa até x 92).
@@ -1143,7 +1187,7 @@ function desenhaBoneco(b) {
   const g = h("g", { class: "boneco" }), P = (d, fill, extra) => h("path", { d, fill, ...(extra || {}) });
   const pele = b.pele, cab = b.cabeloCor, roupa = b.roupaCor, couro = "#3A2A1C", ouro = "#D9A53A", branco = "#F4EFE3";
   const longa = ["vestido", "sari", "cigana", "monge", "kurta"].includes(b.roupa);
-  const calca = b.roupa === "terno" ? roupa : b.roupa === "academia" ? "#2B2622" : b.roupa === "yogi" ? branco : b.roupa === "kurta" ? "#EDE6D6" : "#5A4630";
+  const calca = b.roupa === "basico" ? pele : b.roupa === "terno" ? roupa : b.roupa === "academia" ? "#2B2622" : b.roupa === "yogi" ? branco : b.roupa === "kurta" ? "#EDE6D6" : "#5A4630";
   const cor = b.roupa === "monge" ? (roupa === "#8B6B43" || roupa === "#C2A878" ? "#D9822B" : roupa) : b.roupa === "yogi" ? branco : roupa;
   g.append(h("ellipse", { cx: 30, cy: 86, rx: 15, ry: 3.2, fill: "rgba(40,28,15,.28)" }));
   if (b.pet && b.pet !== "nenhum") g.append(desenhaPet(b.pet));
@@ -1155,11 +1199,11 @@ function desenhaBoneco(b) {
     g.append(h("rect", { x: 21.5, y: 56, width: 7.5, height: 24, rx: 2, fill: calca }), h("rect", { x: 31, y: 56, width: 7.5, height: 24, rx: 2, fill: calca }));
     if (b.roupa === "kurta") g.append(P("M18 50 L42 50 L44 70 L16 70 Z", cor));
   }
-  const pe = b.roupa === "academia" ? "#F4EFE3" : b.roupa === "monge" || b.roupa === "yogi" || b.roupa === "sari" ? pele : couro;
+  const pe = b.roupa === "academia" ? "#F4EFE3" : ["monge", "yogi", "sari", "basico"].includes(b.roupa) ? pele : couro;
   g.append(h("rect", { x: 20, y: 79, width: 9.5, height: 5, rx: 2.5, fill: pe }), h("rect", { x: 30.5, y: 79, width: 9.5, height: 5, rx: 2.5, fill: pe }));
   if (b.roupa === "monge" || b.roupa === "yogi" || b.roupa === "sari") g.append(h("rect", { x: 20, y: 82.5, width: 9.5, height: 1.8, fill: "#6B4A2A" }), h("rect", { x: 30.5, y: 82.5, width: 9.5, height: 1.8, fill: "#6B4A2A" }));
   // braços
-  const nuE = b.roupa === "academia" || b.roupa === "monge", nuD = b.roupa === "academia" || b.roupa === "sari";
+  const nuE = ["academia", "monge", "basico"].includes(b.roupa), nuD = ["academia", "sari", "basico"].includes(b.roupa);
   const manga = b.roupa === "colete" || b.roupa === "cigana" ? branco : cor;
   g.append(h("rect", { x: 11.5, y: 36, width: 7, height: 22, rx: 3.5, fill: nuE ? pele : manga, transform: "rotate(8 15 36)" }), h("rect", { x: 41.5, y: 36, width: 7, height: 22, rx: 3.5, fill: nuD ? pele : manga, transform: "rotate(-8 45 36)" }));
   g.append(h("circle", { cx: 13, cy: 59, r: 3.2, fill: pele }), h("circle", { cx: 47, cy: 59, r: 3.2, fill: pele }));
@@ -1174,9 +1218,11 @@ function desenhaBoneco(b) {
   else if (b.roupa === "monge") g.append(P("M17 37 Q23 34 28 35 L43 36 L44 52 L16 52 Z", cor), P("M28 35 L44 36 L44 42 Z", escurece(cor, .8)), P("M17 37 L22 36 L25 50 L16 52 Z", pele, { opacity: 0 }));
   else if (b.roupa === "terno") g.append(P("M18 36 Q30 32 42 36 L44 58 L16 58 Z", cor), P("M26 35 L30 46 L34 35 Z", branco), P("M29 36 L31 36 L32 45 L30 48 L28 45 Z", "#A3231A"),
     P("M26 35 L30 46 L27 52 L22 38 Z", escurece(cor, .75)), P("M34 35 L30 46 L33 52 L38 38 Z", escurece(cor, .75)));
+  else if (b.roupa === "basico") {}
   else if (b.roupa === "academia") g.append(P("M21 36 Q30 34 39 36 L41 57 L19 57 Z", cor), P("M21 36 L24 34 L25 40 Z M39 36 L36 34 L35 40 Z", pele), P("M26 37 Q30 41 34 37", "none", { stroke: escurece(cor, .7), "stroke-width": 1 }));
   else g.append(P("M18 36 Q30 32 42 36 L44 58 L16 58 Z", cor), P("M26 35 L30 44 L34 35 Z", branco),
     P("M26 35 L30 44 L28 50 L23 38 Z", escurece(cor, .82)), P("M34 35 L30 44 L32 50 L37 38 Z", escurece(cor, .82)));
+  if (b.roupa === "basico") g.append(h("rect", { x: 18, y: 36, width: 24, height: 20, rx: 5, fill: pele }), P("M19 52 L41 52 L42 62 L31 62 L30 58 L29 62 L18 62 Z", "#EDE6D6"), P("M19 52 L41 52 L41 54.5 L19 54.5 Z", "#C9BFA9"));
   if (b.roupa === "jaqueta" || b.roupa === "colete") g.append(h("rect", { x: 17, y: 55, width: 26, height: 3, fill: couro }), h("rect", { x: 28.5, y: 55, width: 3, height: 3, fill: "#C9A063" }));
   if (b.roupa === "academia") g.append(h("rect", { x: 19, y: 55, width: 22, height: 2.5, fill: "#F4EFE3" }));
   // colar
@@ -1229,7 +1275,7 @@ function desenhaBoneco(b) {
   }
   return g;
 }
-const bonecoSvg = (b, cls) => h("svg", { viewBox: b.pet && b.pet !== "nenhum" ? "0 0 94 90" : "0 0 60 90", class: cls || "bonecosvg", role: "img", "aria-label": "Explorador" }, desenhaBoneco(b));
+const bonecoSvg = (b, cls) => h("svg", { viewBox: b.pet && b.pet !== "nenhum" ? "0 0 99 90" : "0 0 60 90", class: cls || "bonecosvg", role: "img", "aria-label": "Explorador" }, desenhaBoneco(b));
 // Fantasias inspiradas nos deuses: mudam roupa, cores e o que a pessoa segura.
 BONECO.deus = [["nenhum", "Nenhuma"], ["shiva", "Shiva"], ["ganesha", "Ganesha"], ["durga", "Durga"], ["krishna", "Krishna"], ["hanuman", "Hanuman"], ["lakshmi", "Lakshmi"],
   ["saraswati", "Saraswati"], ["vishnu", "Vishnu"], ["parvati", "Parvati"], ["kali", "Kali"], ["surya", "Surya"], ["ganga", "Ganga"], ["brahma", "Brahma"]];
@@ -1294,7 +1340,11 @@ desenhaBoneco = function (b0) {
 
 function vExplorador() {
   const v = eu();
-  if (!S.bonecoRasc) S.bonecoRasc = bonecoDe(S.uid);
+  if (!S.bonecoRasc) {
+    const salvo = (S.viajantes.find(x => x.id === S.uid) || {}).boneco;
+    // quem ainda não montou começa do zero: só o básico, para ir vestindo
+    S.bonecoRasc = salvo ? bonecoDe(S.uid) : { ...bonecoPadrao(S.uid), roupa: "basico", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum", pet: "nenhum", deus: "nenhum", barba: "nao" };
+  }
   const b = S.bonecoRasc, set = (k, val) => { S.bonecoRasc = { ...S.bonecoRasc, [k]: val }; render(); };
   const chips = (k, ops) => h("div", { class: "opts" }, ops.map(([val, lab]) => h("button", { type: "button", class: "opt", "aria-pressed": String(b[k] === val), onclick: () => set(k, val) }, lab)));
   const cores = (k, arr, rot) => h("div", { class: "opts" }, arr.map(c => h("button", { type: "button", class: "sw", style: `background:${c}`, "aria-label": rot, "aria-pressed": String(b[k] === c), onclick: () => set(k, c) })));
