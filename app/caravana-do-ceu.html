@@ -575,6 +575,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 
 /* Hoje */
 .hero .route{font-size:12px;letter-spacing:.1em}
+.hero .route.sa{font-family:"Poppins","Noto Sans Devanagari",sans-serif;font-size:17px;letter-spacing:0;text-transform:none;font-weight:500}
 .hoje{background:linear-gradient(160deg,#3B2A1C,#5A4128);color:#F1E2BC;border-radius:var(--r);box-shadow:var(--shadow);padding:18px 18px 16px;display:flex;flex-direction:column;gap:8px}
 .hjtop{display:flex;align-items:center;gap:10px;font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#D8C09A;margin:0}
 .hjtop span{background:#E2BE78;color:#2B1F14;border-radius:999px;padding:2px 10px}
@@ -617,19 +618,20 @@ nav.tabs button{position:relative}
 .rolinho{position:relative;width:34px;height:40px;flex:none;border-radius:4px;background:linear-gradient(90deg,#D9B97E,#F1DDB0 30%,#F1DDB0 70%,#D9B97E);box-shadow:inset 0 3px 0 #C9A56A,inset 0 -3px 0 #C9A56A}
 .rolinho i{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#B3473A,#7A1F16);box-shadow:0 1px 2px rgba(0,0,0,.3)}
 .envelope .ctx{display:flex;flex-direction:column;min-width:0}
-.envelope b{font-family:"Cinzel",var(--display);font-size:15px;font-weight:600;color:#3B2A1C}
+.envelope b{font-family:"Special Elite","Courier Prime",monospace;font-size:15px;font-weight:400;color:#3B2A1C}
 .envelope .ctx span{font-size:12.5px;color:#6B5A43}
 .correiosheet .correiobox{background:transparent;box-shadow:none;padding:8px 0;overflow:visible;max-height:92%}
 .correiosheet{align-items:center}
 .correiobox .btn.ghost{color:#F1E2BC;border-color:rgba(241,226,188,.5)}
 .pergaminho{position:relative;margin:0 6px;border-radius:4px}
 .pergaminho .pgm{max-height:58vh;overflow:auto}
-.pgm{position:relative;padding:30px 24px 34px;background:radial-gradient(ellipse at 50% 45%,#F6E7C4 0%,#EDD6A4 60%,#D8B679 100%);color:#3B2A1C;font-family:var(--display);font-style:italic;font-size:16.5px;line-height:1.65;display:flex;flex-direction:column;gap:12px;box-shadow:inset 0 0 40px rgba(120,80,30,.35)}
+.pgm{position:relative;padding:30px 24px 34px;background:radial-gradient(ellipse at 50% 45%,#F6E7C4 0%,#EDD6A4 60%,#D8B679 100%);color:#2E2419;font-family:"Courier Prime","Courier New",monospace;font-style:normal;font-size:15px;line-height:1.65;display:flex;flex-direction:column;gap:12px;box-shadow:inset 0 0 40px rgba(120,80,30,.35)}
 .pgm p{margin:0}
-.pgmdata{font-family:"Cinzel",serif;font-style:normal;font-size:11.5px;letter-spacing:.12em;color:#7A5A36;text-align:right}
-.pgmtit{font-family:"Cinzel",serif;font-style:normal;font-size:20px;font-weight:600;margin:0;color:#3B2A1C;text-align:center}
+.pgmdata{font-family:"Courier Prime",monospace;font-style:normal;font-size:12px;letter-spacing:.04em;color:#7A5A36;text-align:right}
+.pgmtit{font-family:"Special Elite","Courier Prime",monospace;font-style:normal;font-size:19px;font-weight:400;letter-spacing:.04em;margin:0;color:#3B2A1C;text-align:center}
 .pgmpara{font-weight:600}
-.pgmass{margin-top:8px!important;text-align:right;font-size:17px}
+.pgmass{margin-top:8px!important;text-align:right;font-style:italic}
+.pgm p:not(.pgmdata){text-shadow:0 0 .6px rgba(46,36,25,.55)}
 .lacre{align-self:center;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#B94A3C,#7A1F16 70%);display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.35),inset 0 0 0 4px rgba(0,0,0,.12);margin-top:6px}
 .lacre img{width:26px;height:auto;opacity:.9}
 .rolo{display:block;height:18px;border-radius:9px;background:linear-gradient(180deg,#B8904F,#E9CF96 45%,#A77D3E);box-shadow:0 3px 6px rgba(0,0,0,.3);position:relative;z-index:1}
@@ -969,7 +971,7 @@ function vTravessia() {
     h("div", { class: "hero" },
       h("img", { class: "logo", src: "img/simbolo-marrom.png", alt: "" }),
       h("h1", null, "Travessia da", h("br"), "Índia Sagrada"),
-      h("p", { class: "route", text: "Lokah Samastah Sukhino Bhavantu" }),
+      h("p", { class: "route sa", lang: "sa", text: "लोकाः समस्ताः सुखिनो भवन्तु" }),
       h("span", { class: "line" }),
       h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] })),
     h("div", { class: "clock" },
