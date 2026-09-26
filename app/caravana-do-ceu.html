@@ -154,6 +154,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--sand)}
 .day{align-self:center;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .composer{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;align-items:flex-end;background:var(--surface)}
 .composer textarea{min-height:44px;max-height:140px;flex:1;border-radius:22px;padding:10px 16px}
+.composer .note:empty{display:none}
 .composer .note{font-size:13px;color:var(--muted);padding:6px 0}
 
 /* Ensinamentos */
@@ -180,6 +181,34 @@ input:focus,select:focus,textarea:focus{border-color:var(--sand)}
 .sheet .chk{flex-direction:row;align-items:center;gap:8px;font-size:14px;color:var(--ink)}
 .sheet .foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:6px}
 .banner{font-size:12px;color:var(--muted);background:var(--surface-2);border-radius:10px;padding:8px 12px}
+.photo{display:block;width:100%;max-width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px;background:var(--surface-2)}
+.photo.blur{filter:blur(14px) saturate(.7);transform:scale(1.02)}
+.photo-wrap{overflow:hidden;border-radius:12px;position:relative}
+.photo-wrap .veil{position:absolute;inset:0;display:grid;place-items:center;color:#F8F3E8;font-size:13px;font-weight:500;letter-spacing:.04em;background:rgba(28,27,23,.25)}
+.reader .photo{aspect-ratio:3/2}
+.card .photo{aspect-ratio:16/9;border-radius:8px}
+.fotofield{display:flex;flex-direction:column;gap:8px}
+.fotofield img{width:100%;max-width:100%;max-height:200px;object-fit:cover;border-radius:10px}
+.people{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.people li{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:start}
+.people img{width:36px;height:36px;border-radius:50%}
+.people b{font-weight:600}
+.people small{display:block;color:var(--muted);font-size:12px}
+.people .nota{font-size:13px}
+.share{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:14px}
+.small{font-size:12px;color:var(--muted)}
+.map.marking svg{cursor:crosshair}
+.map .person circle{stroke:var(--map-bg);stroke-width:3}
+.map .person text{font:600 13px var(--sans);fill:#fff;text-anchor:middle;dominant-baseline:central}
+.map .person .ring{fill:none;stroke-width:2;opacity:.5}
+.picker{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;background:var(--surface)}
+.picker select,.picker input{flex:1 1 180px;min-width:0}
+.bubble .ponto{display:flex;flex-direction:column;gap:6px}
+.bubble .ponto b{font-family:var(--serif);font-size:16px}
+.bubble .chatfoto{display:block;max-width:100%;width:280px;border-radius:10px;margin-top:4px}
+.iconbtn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--bg);display:grid;place-items:center;flex:none;color:var(--muted)}
+.iconbtn svg{width:20px;height:20px}
+.iconbtn[aria-pressed="true"]{color:var(--terra);border-color:var(--terra)}
 @media (prefers-reduced-motion:no-preference){.pin circle.halo{transition:opacity .2s}}
 </style>
 
@@ -209,8 +238,59 @@ const S = {
   uid: null, me: null, isOwner: false, canChat: null,
   db: null, user: null, dbReady: false,
   rotaSel: null, localSel: null, ensSel: null, canal: "geral",
-  unlockMsg: null
+  unlockMsg: null,
+  assets: null, posicoes: [], perfis: {}, marcando: false, posMsg: null, pontoAberto: false, proj: null
 };
+const FRESCO = 3 * 60 * 60 * 1000;
+const blob = id => "/_blob/" + id;
+const minhaPos = () => S.posicoes.find(p => p.id === S.uid && Date.now() - p.ts < FRESCO);
+const frescas = rid => S.posicoes.filter(p => p.rotaId === rid && Date.now() - (p.ts || 0) < FRESCO);
+function km(a, b) {
+  const R = 6371, r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLng = (b.lng - a.lng) * r;
+  const x = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(x));
+}
+function pertoDe(p) {
+  const ls = locaisDa(p.rotaId).filter(l => isFinite(+l.lat));
+  let best = null; for (const l of ls) { const d = km(p, { lat: +l.lat, lng: +l.lng }); if (!best || d < best.d) best = { l, d }; }
+  if (!best) return "";
+  return best.d < 0.15 ? "em " + best.l.nome : `a ${best.d < 10 ? best.d.toFixed(1).replace(".", ",") : Math.round(best.d)} km de ${best.l.nome}`;
+}
+function haQuanto(ts) {
+  const m = Math.round((Date.now() - ts) / 60000);
+  return m < 1 ? "agora" : m < 60 ? `há ${m} min` : `há ${Math.floor(m / 60)} h ${m % 60 ? (m % 60) + " min" : ""}`.trim();
+}
+async function perfis(ids) {
+  const falta = [...new Set(ids)].filter(id => id && !S.perfis[id] && !perfis.pend.has(id));
+  if (!falta.length || !S.user) return;
+  falta.forEach(id => perfis.pend.add(id));
+  const ps = await S.user.profiles(falta);
+  Object.assign(S.perfis, ps); render();
+}
+perfis.pend = new Set();
+const nomeDe = id => id === S.uid ? "Você" : (S.perfis[id]?.name || "Viajante");
+async function reduzir(file) {
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return file;
+  try {
+    const bmp = await createImageBitmap(file), k = Math.min(1, 1800 / Math.max(bmp.width, bmp.height));
+    if (k === 1 && file.size < 2.5e6) return file;
+    const c = document.createElement("canvas"); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+    return await new Promise(res => c.toBlob(b => res(b || file), "image/jpeg", 0.85));
+  } catch (e) { return file; }
+}
+async function subirFoto(file) {
+  if (!S.assets) throw { code: "not_granted" };
+  const r = await S.assets.upload(await reduzir(file));
+  return r.id;
+}
+function erroFoto(e) {
+  const c = e && e.code;
+  return c === "too_large" ? "A foto é grande demais. Tente uma menor." :
+    c === "unsupported_type" ? "Esse formato não funciona. Use JPG ou PNG." :
+    c === "quota_or_state" ? "O espaço de fotos do aplicativo acabou." :
+    "Não consegui enviar a foto. Tente de novo.";
+}
 try { const t = localStorage.getItem("cdc-tab"); if (t) S.tab = t; } catch (e) {}
 try { S.progresso = JSON.parse(localStorage.getItem("cdc-prog") || "{}") || {}; } catch (e) {}
 
@@ -291,6 +371,7 @@ function vRotas() {
       return h("article", { class: "route" },
         h("div", { class: "meta" }, h("span", { class: "eyebrow", text: r.regiao || "" }),
           S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editar("rota", r) }, "Editar") : null),
+        r.foto ? h("img", { class: "photo", src: blob(r.foto), alt: "", loading: "lazy" }) : null,
         h("h2", { text: r.nome }),
         r.descricao ? h("p", { class: "lede", text: r.descricao }) : null,
         h("div", null, h("div", { class: "bar" }, h("i", { style: `width:${ls.length ? ok / ls.length * 100 : 0}%` })),
@@ -334,18 +415,37 @@ function mapaSvg(rota, ls) {
   const sw = Math.max(x1 - x0, .01), sh = Math.max(y1 - y0, .01);
   const s = Math.min((W - 2 * P) / sw, (H - 2 * P) / sh), mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
   const XY = l => [W / 2 + (+l.lng * cos - mx) * s, H / 2 + (-l.lat - my) * s];
+  S.proj = { W, H, cos, s, mx, my };
   svg.append(h("path", { class: "path", d: pts.map((l, i) => (i ? "L" : "M") + XY(l).map(n => n.toFixed(1)).join(" ")).join("") }));
   pts.forEach(l => {
     const [x, y] = XY(l), i = ls.indexOf(l), on = aberto(l);
     const right = x < W - 260;
     const g = h("g", { class: `pin ${on ? "on" : "off"}${S.localSel === l.id ? " sel" : ""}`, tabindex: "0", role: "button", "aria-label": `${i + 1}. ${l.nome}${on ? "" : " (fechado)"}`,
-      onclick: () => { S.localSel = l.id; S.unlockMsg = null; render(); },
+      onclick: () => { if (S.marcando) return; S.localSel = l.id; S.unlockMsg = null; render(); },
       onkeydown: e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); S.localSel = l.id; S.unlockMsg = null; render(); } } },
       h("circle", { class: "halo", cx: x, cy: y, r: 27 }),
       h("circle", { class: "dot", cx: x, cy: y, r: 18 }),
       h("text", { class: "n", x, y, text: i + 1 }),
       h("text", { class: "lbl", x: right ? x + 28 : x - 28, y: y + 5, "text-anchor": right ? "start" : "end", text: l.nome }));
     svg.append(g);
+  });
+  // pessoas da caravana
+  for (const p of frescas(rota.id)) {
+    const [x, y] = XY(p); if (x < 0 || x > W || y < 0 || y > H) continue;
+    const cor = S.perfis[p.id]?.color || "#3F4938", ini = (nomeDe(p.id)[0] || "?").toUpperCase();
+    svg.append(h("g", { class: "person" },
+      h("title", { text: nomeDe(p.id) + (p.nota ? ": " + p.nota : "") }),
+      h("circle", { class: "ring", cx: x, cy: y, r: 22, stroke: cor }),
+      h("circle", { cx: x, cy: y, r: 14, fill: cor }),
+      h("text", { x, y, text: ini })));
+  }
+  svg.addEventListener("click", ev => {
+    if (!S.marcando || !S.proj) return;
+    const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+    const q = pt.matrixTransform(svg.getScreenCTM().inverse()), P2 = S.proj;
+    const lng = ((q.x - P2.W / 2) / P2.s + P2.mx) / P2.cos, lat = -((q.y - P2.H / 2) / P2.s + P2.my);
+    S.marcando = false;
+    salvarPos({ rotaId: rota.id, lat: +lat.toFixed(5), lng: +lng.toFixed(5), lugar: "" });
   });
   // escala em km
   const unitsPerKm = s / 111.32, nice = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
@@ -376,16 +476,78 @@ function vMapa() {
       h("button", { type: "button", "aria-pressed": String(r.id === rota.id), onclick: () => { S.rotaSel = r.id; S.localSel = null; render(); } }, r.nome))) : null,
     h("div", { class: "mapwrap" },
       h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
-        h("div", { class: "map" }, mapaSvg(rota, ls)),
+        S.marcando ? h("p", { class: "msg ok", role: "status", text: "Toque no mapa no ponto onde você está." }) : null,
+        h("div", { class: "map" + (S.marcando ? " marking" : "") }, mapaSvg(rota, ls)),
         h("div", { class: "legend" },
           h("span", null, h("i", { style: "background:var(--terra)" }), `Desbloqueado (${ok})`),
           h("span", null, h("i", { style: "border:1.5px dashed var(--locked)" }), `A desbloquear (${ls.length - ok})`),
+          h("span", null, h("i", { style: "background:var(--moss)" }), "Pessoas da caravana"),
           h("span", { text: "O traçado liga os lugares na ordem da rota; o relevo é ilustrativo." }))),
-      loc ? painelLocal(loc, ls.indexOf(loc)) :
-        h("aside", { class: "panel" }, h("p", { class: "eyebrow", text: "Como funciona" }),
-          h("h2", { text: "Toque num ponto do mapa" }),
-          h("p", { class: "desc", text: "Os pontos tracejados ainda estão fechados. Quando a caravana chegar ao lugar, a guia diz a palavra do lugar. Digite a palavra para abrir o ponto e o ensinamento que mora nele." }))
+      h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" },
+        loc ? painelLocal(loc, ls.indexOf(loc)) :
+          h("aside", { class: "panel" }, h("p", { class: "eyebrow", text: "Como funciona" }),
+            h("h2", { text: "Toque num ponto do mapa" }),
+            h("p", { class: "desc", text: "Os pontos tracejados ainda estão fechados. Quando a caravana chegar ao lugar, a guia diz a palavra do lugar. Digite a palavra para abrir o ponto e o ensinamento que mora nele." })),
+        painelPessoas(rota, ls))
     ));
+}
+
+function painelPessoas(rota, ls) {
+  const gente = frescas(rota.id).sort((a, b) => b.ts - a.ts);
+  perfis(gente.map(p => p.id));
+  const eu = minhaPos();
+  const pode = S.db && S.uid;
+  const sel = h("select", { id: "pos-lugar", "aria-label": "Estou em" },
+    h("option", { value: "", text: "Escolha um lugar da rota" }), ls.map(l => h("option", { value: l.id, text: l.nome })));
+  const nota = h("input", { type: "text", id: "pos-nota", maxlength: "140", placeholder: "Recado (ex.: tomando chá na escadaria)" });
+  const link = h("input", { type: "text", id: "pos-link", inputmode: "url", placeholder: "Link do Google Maps (localização ao vivo)" });
+  if (eu) { nota.value = eu.nota || ""; link.value = eu.link || ""; }
+  const extras = () => {
+    const l = link.value.trim();
+    if (l && !/^https:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|(www\.)?google\.[a-z.]+\/maps)/i.test(l)) { S.posMsg = { ok: false, text: "Cole um link do Google Maps (começa com https://maps.app.goo.gl)." }; render(); return null; }
+    return { nota: nota.value.trim(), link: l };
+  };
+  return h("aside", { class: "panel" },
+    h("p", { class: "eyebrow", text: "Caravana agora" }),
+    h("h2", { text: "Quem está por aqui" }),
+    gente.length ? h("ul", { class: "people" }, gente.map(p => h("li", null,
+      h("img", { alt: "", src: S.perfis[p.id]?.avatarUrl || "data:image/gif;base64,R0lGODlhAQABAAAAACw=" }),
+      h("div", null,
+        h("b", { text: nomeDe(p.id) }),
+        h("small", { text: [pertoDe(p), haQuanto(p.ts)].filter(Boolean).join(" · ") }),
+        p.nota ? h("p", { class: "nota", text: p.nota }) : null,
+        h("div", { class: "actions", style: "margin-top:6px" },
+          p.link ? h("a", { class: "btn", href: p.link, target: "_blank", rel: "noopener" }, "Ver ao vivo") : null,
+          h("a", { class: "btn ghost", href: `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`, target: "_blank", rel: "noopener" }, "Como chegar")))))) :
+      h("p", { class: "small", text: "Ninguém compartilhou onde está nesta rota nas últimas 3 horas." }),
+    pode ? h("div", { class: "share" },
+      h("p", { class: "eyebrow", text: eu ? "Você está compartilhando" : "Mostrar onde estou" }),
+      h("div", { class: "actions" },
+        h("button", { class: "btn terra", type: "button", onclick: () => { S.marcando = !S.marcando; render(); } }, S.marcando ? "Cancelar marcação" : "Marcar no mapa"),
+        eu ? h("button", { class: "btn", type: "button", onclick: pararPos }, "Parar de compartilhar") : null),
+      h("label", { class: "small", for: "pos-lugar" }, "Ou diga em qual lugar da rota você está"), sel,
+      nota, link,
+      h("div", { class: "actions" }, h("button", { class: "btn primary", type: "button", onclick: () => {
+        const ex = extras(); if (!ex) return;
+        const l = ls.find(x => x.id === sel.value);
+        if (l) salvarPos({ rotaId: rota.id, lat: +l.lat, lng: +l.lng, lugar: l.nome, ...ex });
+        else if (eu) salvarPos({ ...eu, id: undefined, ...ex });
+        else { S.posMsg = { ok: false, text: "Marque no mapa ou escolha um lugar primeiro." }; render(); }
+      } }, "Salvar")),
+      S.posMsg ? h("p", { class: "msg " + (S.posMsg.ok ? "ok" : "err"), role: "status", text: S.posMsg.text }) : null,
+      h("p", { class: "small", text: "O aplicativo não tem acesso ao GPS do celular. Para aparecer ao vivo, abra o Google Maps, toque na sua foto, escolha Compartilhamento de local, crie um link e cole aqui. Sua marcação some sozinha depois de 3 horas e só quem participa da caravana vê." })
+    ) : null);
+}
+async function salvarPos(p) {
+  const eu = minhaPos() || {};
+  const doc = { rotaId: p.rotaId, lat: p.lat, lng: p.lng, lugar: p.lugar || "", nota: p.nota ?? eu.nota ?? "", link: p.link ?? eu.link ?? "", ts: Date.now() };
+  try { await S.db.doc("posicoes/" + S.uid).set(doc); S.posMsg = { ok: true, text: "Pronto. A caravana já vê onde você está." }; }
+  catch (e) { S.posMsg = { ok: false, text: "Não consegui salvar. Peça à organização um convite com permissão para participar." }; }
+  render();
+}
+async function pararPos() {
+  try { await S.db.doc("posicoes/" + S.uid).delete(); S.posMsg = { ok: true, text: "Você parou de compartilhar." }; } catch (e) {}
+  render();
 }
 
 function painelLocal(l, i) {
@@ -405,6 +567,8 @@ function painelLocal(l, i) {
     h("div", { style: "display:flex;justify-content:space-between;align-items:center;gap:8px" },
       h("span", { class: "eyebrow", text: `Parada ${i + 1}` }),
       on ? h("span", { class: "chip open", text: "Aberto" }) : h("span", { class: "chip lock", text: "Fechado" })),
+    l.foto ? h("div", { class: "photo-wrap" }, h("img", { class: "photo" + (on ? "" : " blur"), src: blob(l.foto), alt: "", loading: "lazy" }),
+      on ? null : h("span", { class: "veil", text: "Chegue ao lugar para ver" })) : null,
     h("h2", { text: l.nome }),
     on ? (l.descricao ? h("p", { class: "desc", text: l.descricao }) : null)
        : (l.dica ? h("p", { class: "hint", text: l.dica }) : null),
@@ -446,6 +610,14 @@ function vConversa() {
         h("div", { class: "h" }, h("b", { "data-name": m.autor || "", text: mine ? "Você" : "…" }),
           h("span", { text: d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) }),
           (mine || S.isOwner) ? h("button", { class: "del", type: "button", onclick: () => apagarMsg(m.id) }, "apagar") : null),
+        m.tipo === "local" ? h("div", { class: "ponto" },
+          h("span", { class: "eyebrow", text: "Ponto de encontro" }),
+          h("b", { text: m.nome || "Local marcado" }),
+          m.texto ? h("p", { class: "t", text: m.texto }) : null,
+          h("div", { class: "actions" },
+            h("a", { class: "btn", href: `https://www.google.com/maps/search/?api=1&query=${m.lat},${m.lng}`, target: "_blank", rel: "noopener" }, "Como chegar"),
+            m.rotaId ? h("button", { class: "btn ghost", type: "button", onclick: () => { S.rotaSel = m.rotaId; S.localSel = m.localId || null; go("mapa"); } }, "Ver no mapa") : null)) :
+        m.tipo === "foto" ? h("div", null, h("img", { class: "chatfoto", src: blob(m.fotoId), alt: m.texto || "Foto", loading: "lazy" }), m.texto ? h("p", { class: "t", text: m.texto }) : null) :
         h("p", { class: "t", text: m.texto }))));
   }
   if (!msgs.length) log.append(h("div", { class: "empty", style: "margin:auto;max-width:420px" },
@@ -461,14 +633,47 @@ function vConversa() {
     catch (e) { ta.value = texto; if (e && e.code === "invalid_argument") { S.canChat = false; render(); } }
   };
   ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); enviar(); } });
+  const falha = e => { if (e && e.code === "invalid_argument") { S.canChat = false; render(); } };
+  // ponto de encontro
+  const lugares = (S.canal === "geral" ? S.locais.slice().sort(byOrder) : locaisDa(S.canal)).filter(l => isFinite(+l.lat));
+  const eu = minhaPos();
+  const pSel = h("select", { id: "ponto-sel", "aria-label": "Ponto de encontro" },
+    eu ? h("option", { value: "@eu", text: "Onde eu estou agora" }) : null,
+    lugares.map(l => h("option", { value: l.id, text: l.nome })));
+  const pNota = h("input", { type: "text", id: "ponto-nota", maxlength: "200", placeholder: "Recado (ex.: às 18h, na escadaria)" });
+  const enviarPonto = async () => {
+    let msg;
+    if (pSel.value === "@eu" && eu) msg = { nome: eu.lugar || pertoDe(eu).replace(/^em /, "") || "Onde estou", lat: eu.lat, lng: eu.lng, rotaId: eu.rotaId };
+    else { const l = lugares.find(x => x.id === pSel.value); if (!l) return; msg = { nome: l.nome, lat: +l.lat, lng: +l.lng, rotaId: l.rotaId, localId: l.id }; }
+    try { await S.db.collection("chat").add({ canal: S.canal, autor: S.uid, tipo: "local", texto: pNota.value.trim(), ...msg, ts: Date.now() }); S.pontoAberto = false; render(); }
+    catch (e) { falha(e); }
+  };
+  // foto
+  const fotoMsg = h("p", { class: "note", role: "status" });
+  const fileIn = h("input", { type: "file", accept: "image/*", id: "chat-foto", hidden: true, onchange: async () => {
+    const f = fileIn.files[0]; if (!f) return;
+    fotoMsg.textContent = "Enviando a foto…";
+    try { const id = await subirFoto(f); await S.db.collection("chat").add({ canal: S.canal, autor: S.uid, tipo: "foto", fotoId: id, texto: ta.value.trim(), ts: Date.now() }); ta.value = ""; fotoMsg.textContent = ""; }
+    catch (e) { fotoMsg.textContent = erroFoto(e); falha(e); }
+    fileIn.value = "";
+  } });
+  const icoPin = () => h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "1.7", "stroke-linecap": "round", "stroke-linejoin": "round" }, h("path", { d: "M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" }), h("circle", { cx: "12", cy: "10", r: "2.3" }));
+  const icoFoto = () => h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "1.7", "stroke-linecap": "round", "stroke-linejoin": "round" }, h("rect", { x: "3", y: "6", width: "18", height: "14", rx: "2" }), h("circle", { cx: "12", cy: "13", r: "3.5" }), h("path", { d: "M8.5 6l1.5-2h4l1.5 2" }));
   return h("section", { class: "view chatview" },
     h("div", { class: "chathead" },
       h("div", null, h("p", { class: "eyebrow", text: "Conversa" }), h("h1", { style: "font-size:24px", text: "Roda da Caravana" })),
       h("div", { class: "routepick", role: "group", "aria-label": "Canal" }, canais.map(c =>
         h("button", { type: "button", "aria-pressed": String(c.id === S.canal), onclick: () => { S.canal = c.id; render(); } }, c.nome)))),
     log,
+    podeEscrever && S.pontoAberto ? h("div", { class: "picker" },
+      lugares.length || eu ? [pSel, pNota, h("button", { class: "btn terra", type: "button", onclick: enviarPonto }, "Enviar ponto")]
+        : h("p", { class: "note", text: "Esta rota ainda não tem lugares no mapa." })) : null,
     podeEscrever
-      ? h("div", { class: "composer" }, ta, h("button", { class: "btn primary", type: "button", onclick: enviar }, "Enviar"))
+      ? h("div", { class: "composer" },
+          h("button", { class: "iconbtn", type: "button", title: "Ponto de encontro", "aria-label": "Ponto de encontro", "aria-pressed": String(S.pontoAberto), onclick: () => { S.pontoAberto = !S.pontoAberto; render(); } }, icoPin()),
+          S.assets ? h("button", { class: "iconbtn", type: "button", title: "Enviar foto", "aria-label": "Enviar foto", onclick: () => fileIn.click() }, icoFoto()) : null,
+          fileIn, h("div", { style: "flex:1;display:flex;flex-direction:column;min-width:0" }, ta, fotoMsg),
+          h("button", { class: "btn primary", type: "button", onclick: enviar }, "Enviar"))
       : h("div", { class: "composer" }, h("p", { class: "note", text: S.db ? "Para escrever aqui, peça à organização um convite com permissão para participar." : "A conversa aparece quando você abre o aplicativo pelo link do Claude, com sua conta." }))
   );
 }
@@ -498,6 +703,7 @@ function vEnsinamentos() {
       h("article", { class: "reader" },
         h("p", { class: "eyebrow", text: [e.categoria, l && l.nome].filter(Boolean).join(" · ") }),
         h("h1", { text: e.titulo }),
+        e.foto ? h("img", { class: "photo", src: blob(e.foto), alt: "" }) : null,
         h("div", { class: "body" }, String(e.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() }))),
         e.fonte ? h("p", { class: "src", text: "Fontes: " + e.fonte }) : null));
   }
@@ -514,6 +720,7 @@ function vEnsinamentos() {
         const lib = ensLiberado(x), l = x.localId && localDe(x.localId);
         return h("button", { class: "card" + (lib ? "" : " locked"), type: "button", "aria-disabled": String(!lib && !S.isOwner),
           onclick: () => { if (lib || S.isOwner) { S.ensSel = x.id; render(); $("#main").scrollTop = 0; } } },
+          lib && x.foto ? h("img", { class: "photo", src: blob(x.foto), alt: "", loading: "lazy" }) : null,
           lib ? h("span", { class: "chip open", text: l ? l.nome : "Aberto" }) : h("span", { class: "chip lock", text: "Abre em " + (l ? l.nome : "breve") }),
           h("h3", { text: x.titulo }),
           h("p", { text: lib ? (x.resumo || "") : "Chegue a este lugar para ler." }));
@@ -530,17 +737,31 @@ function editar(tipo, item) {
   item = item || {};
   const rotas = S.rotas.slice().sort(byOrder), locais = S.locais.slice().sort(byOrder);
   const F = {
-    rota: { col: "rotas", titulo: "Rota", campos: [["nome", "Nome da rota"], ["regiao", "Região"], ["descricao", "Descrição", "area"], ["ordem", "Ordem", "num"]] },
+    rota: { col: "rotas", titulo: "Rota", campos: [["nome", "Nome da rota"], ["regiao", "Região"], ["descricao", "Descrição", "area"], ["foto", "Foto de capa", "foto"], ["ordem", "Ordem", "num"]] },
     local: { col: "locais", titulo: "Lugar", campos: [["nome", "Nome do lugar"], ["rotaId", "Rota", "sel", rotas.map(r => [r.id, r.nome])], ["ordem", "Ordem na rota", "num"],
       ["lat", "Latitude", "num"], ["lng", "Longitude", "num"], ["busca", "Busca no Google Maps (opcional)"], ["dica", "Dica enquanto fechado", "area"],
-      ["descricao", "Texto depois de aberto", "area"], ["codigo", "Palavra do lugar (a guia revela)"], ["aberto", "Aberto para todos", "chk"]] },
+      ["descricao", "Texto depois de aberto", "area"], ["foto", "Foto do lugar", "foto"], ["codigo", "Palavra do lugar (a guia revela)"], ["aberto", "Aberto para todos", "chk"]] },
     ens: { col: "ensinamentos", titulo: "Ensinamento", campos: [["titulo", "Título"], ["categoria", "Categoria (ex.: Sabedoria, Vivência)"],
       ["localId", "Mora no lugar (deixe vazio para ficar sempre aberto)", "sel", [["", "Sempre aberto"], ...locais.map(l => [l.id, l.nome])]],
-      ["resumo", "Resumo curto"], ["texto", "Texto (separe parágrafos com uma linha em branco)", "area"], ["fonte", "Fontes"], ["ordem", "Ordem", "num"]] }
+      ["resumo", "Resumo curto"], ["texto", "Texto (separe parágrafos com uma linha em branco)", "area"], ["foto", "Foto", "foto"], ["fonte", "Fontes"], ["ordem", "Ordem", "num"]] }
   }[tipo];
   const inputs = {};
   const campos = F.campos.map(([k, label, kind, opts]) => {
     const id = `ed-${tipo}-${k}`; let el;
+    if (kind === "foto") {
+      const prev = h("img", { alt: "", hidden: !item[k], src: item[k] ? blob(item[k]) : null });
+      const st = h("span", { class: "small", role: "status" });
+      const tirar = h("button", { class: "btn ghost", type: "button", hidden: !item[k], onclick: () => { el.dataset.id = ""; prev.hidden = true; tirar.hidden = true; } }, "Tirar foto");
+      const fi = h("input", { type: "file", accept: "image/*", id, onchange: async () => {
+        const f = fi.files[0]; if (!f) return; st.textContent = "Enviando…";
+        try { const nid = await subirFoto(f); el.dataset.id = nid; prev.src = blob(nid); prev.hidden = false; tirar.hidden = false; st.textContent = "Foto pronta. Toque em Salvar."; }
+        catch (e) { st.textContent = erroFoto(e); }
+      } });
+      el = h("div", { class: "fotofield" }, prev, S.assets ? fi : h("span", { class: "small", text: "O envio de fotos não está disponível nesta visualização." }), h("div", { class: "actions" }, tirar, st));
+      el.dataset.id = item[k] || "";
+      inputs[k] = [el, kind];
+      return h("div", { class: "fotofield" }, h("span", { class: "small", text: label }), el);
+    }
     if (kind === "area") el = h("textarea", { id, rows: k === "texto" ? "10" : "3" });
     else if (kind === "sel") { el = h("select", { id }, opts.map(([v, t]) => h("option", { value: v, text: t }))); }
     else if (kind === "chk") el = h("input", { id, type: "checkbox" });
@@ -560,6 +781,7 @@ function editar(tipo, item) {
     const data = {};
     for (const k in inputs) { const [el, kind] = inputs[k];
       if (kind === "chk") data[k] = el.checked;
+      else if (kind === "foto") { if (el.dataset.id) data[k] = el.dataset.id; }
       else if (kind === "num") { if (el.value !== "") data[k] = Number(el.value); }
       else if (el.value.trim() !== "") data[k] = el.value.trim(); }
     const obrig = tipo === "ens" ? "titulo" : "nome";
@@ -590,8 +812,8 @@ function listen(col, key, q) {
 render();
 
 (async () => {
-  const [db, user] = await Promise.all([window.claude?.use?.("db") ?? null, window.claude?.use?.("user") ?? null]);
-  S.db = db; S.user = user;
+  const [db, user, assets] = await Promise.all(["db", "user", "assets"].map(n => window.claude?.use?.(n) ?? null));
+  S.db = db; S.user = user; S.assets = assets;
   if (user) {
     const me = await user.me();
     S.me = me; S.uid = me.id; S.isOwner = me.isOwner;
@@ -604,6 +826,8 @@ render();
   listen("locais", "locais");
   listen("ensinamentos", "ens");
   listen("chat", "chat", db.collection("chat").orderBy("ts", "desc").limit(400));
+  listen("posicoes", "posicoes");
+  setInterval(() => { if (S.tab === "mapa" && !document.activeElement?.matches?.("input,textarea,select")) render(); }, 60000);
   if (S.uid) db.doc(`data/users/${S.uid}/progresso`).onSnapshot(d => {
     if (d.exists) { S.progresso = { ...S.progresso, ...(d.data().abertos || {}) }; render(); }
   }, () => {});
