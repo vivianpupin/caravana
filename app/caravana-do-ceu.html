@@ -81,7 +81,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--moss);outline:none;bo
 /* Roteiro: abertura */
 .hero{text-align:center;padding:18px 8px 4px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .hero .logo{width:96px;height:auto}
-.hero h1{font-family:"Cinzel",Georgia,serif;font-weight:700;font-size:clamp(30px,8.6vw,50px);line-height:1.05;letter-spacing:.04em;text-transform:uppercase;color:#6B4424;text-shadow:0 1px 0 #F4E6C4,0 2px 0 rgba(107,68,36,.25)}
+.hero h1{font-weight:500;font-size:clamp(32px,8.5vw,48px);line-height:1.05;letter-spacing:-.01em}
 .hero .route{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--moss)}
 .hero .line{display:none}
 .hero .intro{font-family:var(--display);font-style:italic;font-size:18px;line-height:1.5;color:var(--soft);max-width:34ch}
@@ -508,22 +508,6 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .pgnome{font-family:var(--type)!important;font-size:13px!important;letter-spacing:.06em}
 .pgdia{font-family:var(--mono)!important;font-size:9.5px!important;letter-spacing:.08em;color:#6B5A43!important}
 
-/* Instrumentos antigos */
-.instrumentos{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:8px;align-items:center}
-.instr{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px}
-.relogio{width:100%;max-width:130px;height:auto;filter:drop-shadow(0 6px 10px rgba(59,42,28,.35))}
-.relogio .rom{font:600 8.5px "Cinzel",Georgia,serif;fill:#3B2A1C}
-.relogio .rnome{font:700 6.5px "Courier Prime",monospace;fill:#6B4A1E;letter-spacing:.14em}
-.hora{font-family:"Courier Prime",monospace;font-weight:700;font-size:13px;color:#3B2A1C;letter-spacing:.06em}
-.placa{position:relative;width:100%;background:linear-gradient(135deg,#F3D78E,#B88A3E 45%,#E8C476 70%,#7A5A26);border-radius:10px;padding:14px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -2px 4px rgba(0,0,0,.25),0 6px 12px rgba(59,42,28,.35)}
-.rebite{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFF1C6,#7A5A26);box-shadow:0 1px 1px rgba(0,0,0,.4)}
-.r1{top:5px;left:6px}.r2{top:5px;right:6px}.r3{bottom:5px;left:6px}.r4{bottom:5px;right:6px}
-.gravado{font:700 8.5px "Courier Prime",monospace;letter-spacing:.14em;text-transform:uppercase;color:#4A3312;text-shadow:0 1px 0 rgba(255,240,200,.6);text-align:center}
-.rodas{display:flex;gap:3px;background:#2B1D14;padding:4px;border-radius:5px;box-shadow:inset 0 2px 4px rgba(0,0,0,.6)}
-.roda{display:flex;flex-direction:column;align-items:center;width:24px;height:36px;overflow:hidden;border-radius:3px;background:linear-gradient(180deg,#1A120B,#F4E6C4 30%,#FFF8E6 50%,#F4E6C4 70%,#1A120B);justify-content:center}
-.roda b{font:700 22px "Courier Prime",monospace;color:#2B1D14;line-height:1}
-.roda i{font:700 12px "Courier Prime",monospace;font-style:normal;color:rgba(43,29,20,.25);line-height:1}
-@media (prefers-reduced-motion:no-preference){.rodas.anim .roda b{animation:gira .9s cubic-bezier(.2,1.3,.4,1) both}@keyframes gira{from{transform:translateY(-60%);opacity:.3}to{transform:none;opacity:1}}}
 .foot q{font-size:clamp(11px,3vw,14px)!important;white-space:nowrap;max-width:none!important}
 
 .fcats{display:flex;border-bottom:1px solid var(--line2);gap:4px;margin-bottom:4px}
@@ -545,6 +529,31 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .reac .e{font-size:22px;line-height:1.1}
 .reac:active{transform:scale(.95)}
 .toast{position:fixed;left:50%;top:calc(76px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:40;background:#3B2A1C;color:#F1E2BC;padding:10px 16px;border-radius:999px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:90vw}
+
+/* Cartão de embarque */
+.bilhete{position:relative;background:#FFFDF8;border-radius:16px;box-shadow:var(--shadow);padding:14px 18px 12px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.bilhete::before,.bilhete::after{content:"";position:absolute;top:calc(100% - 44px);width:18px;height:18px;border-radius:50%;background:var(--bg)}
+.bilhete::before{left:-9px}.bilhete::after{right:-9px}
+.bl-top{display:flex;justify-content:space-between;font-family:"Courier Prime",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.bl-rota{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}
+.bl-rota b{display:block;font-family:var(--display);font-size:30px;font-weight:500;line-height:1;letter-spacing:.02em}
+.bl-rota span{font-size:11.5px;color:var(--soft)}
+.bl-rota .dir{text-align:right}
+.bl-linha{display:flex;align-items:center;gap:6px;color:var(--terra)}
+.bl-linha i{flex:1;border-top:1px dashed var(--sand)}
+.bl-campos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:1px solid var(--line);padding-top:10px}
+.bl-campos span{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.bl-campos b{font-family:"Courier Prime",monospace;font-size:18px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.bl-rodape{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px dashed var(--sand);padding-top:10px;font-family:"Courier Prime",monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+.bl-cod{width:96px;height:22px;background:repeating-linear-gradient(90deg,#282722 0 1.5px,transparent 1.5px 3px,#282722 3px 4px,transparent 4px 6.5px,#282722 6.5px 9px,transparent 9px 10px);opacity:.75}
+/* Cabeçalho limpo */
+.top{background:#2A1F17!important;box-shadow:none!important;border-bottom:0!important;padding-block:10px!important}
+.brand img.lockup{height:50px!important}
+.me{background:none!important;border:0!important;padding:0!important}
+.me b{display:none}
+.me img{width:34px!important;height:34px!important;border:1.5px solid rgba(241,226,188,.5)}
+nav.tabs{background:#2A1F17!important;box-shadow:none!important}
+nav.tabs button[aria-current="page"] .ic{background:#E9D7B0!important;box-shadow:none!important;color:#2A1F17!important}
 </style>
 
 <div class="app">
@@ -803,10 +812,17 @@ function vTravessia() {
       h("p", { class: "route", text: "Delhi · Agra · Jaipur · Varanasi · Rishikesh" }),
       h("span", { class: "line" }),
       h("p", { class: "intro", text: "Treze dias atravessando uma cultura viva, pulsando em cada oferenda, cada cântico, cada amanhecer à beira do rio." })),
-    h("div", { class: "instrumentos" },
-      relogio("Asia/Kolkata", "Índia"),
-      contador(f > 0 ? f : 13, f > 0 ? (f === 1 ? "dia para embarcar" : "dias para embarcar") : "dias de travessia"),
-      relogio("America/Sao_Paulo", "Brasília")),
+    h("div", { class: "bilhete", role: "group", "aria-label": "Cartão de embarque" },
+      h("div", { class: "bl-top" }, h("span", { text: "Cartão de embarque · Boarding pass" }), h("span", { text: "CDC 2026" })),
+      h("div", { class: "bl-rota" },
+        h("div", null, h("b", { text: "BRA" }), h("span", { text: "Brasil" })),
+        h("div", { class: "bl-linha", "aria-hidden": "true" }, h("i"), h("svg", { viewBox: "0 0 24 24", width: 20, height: 20 }, h("path", { transform: "rotate(90 12 12)", d: "M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z", fill: "currentColor" })), h("i")),
+        h("div", { class: "dir" }, h("b", { text: "DEL" }), h("span", { text: "Nova Delhi" }))),
+      h("div", { class: "bl-campos" },
+        h("div", null, h("span", { text: f > 0 ? "Embarque em" : "Travessia" }), h("b", { text: f > 0 ? f + (f === 1 ? " dia" : " dias") : "13 dias" })),
+        h("div", null, h("span", { text: "Hora na Índia" }), h("b", { class: "hora", "data-tz": "Asia/Kolkata", text: horaEm("Asia/Kolkata") })),
+        h("div", null, h("span", { text: "Hora no Brasil" }), h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }))),
+      h("div", { class: "bl-rodape" }, h("span", { text: "Embarque · 04 NOV 2026" }), h("span", { class: "bl-cod", "aria-hidden": "true" }))),
     ins.length ? h("div", null,
       h("p", { class: "eyebrow rule", text: `Os ${ins.length} selos do passaporte` }),
       h("div", { class: "strip", style: "margin-top:10px" }, ins.map(l => h("button", { type: "button", "aria-label": l.nome, onclick: () => abrirSelo(l) },
