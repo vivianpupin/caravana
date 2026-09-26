@@ -1102,7 +1102,7 @@ const BONECO = {
   cabeloCor: ["#2B1D14", "#5A3A22", "#8A5A2B", "#C9A063", "#D9D2C5", "#A83E2A"],
   cabelo: [["curto", "Curto"], ["longo", "Longo"], ["cacheado", "Cacheado"], ["coque", "Coque"], ["tranca", "Trança"], ["careca", "Careca"]],
   chapeu: [["fedora", "Fedora"], ["safari", "Safári"], ["lenco", "Lenço"], ["turbante", "Turbante"], ["flores", "Coroa de flores"], ["sem", "Sem chapéu"]],
-  roupa: [["basico", "Básico"], ["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
+  roupa: [["basico", "Sem roupa"], ["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
   roupaCor: ["#8B6B43", "#C2A878", "#5F6B45", "#8A3F32", "#D9822B", "#B83A6B", "#2F5D7C", "#E8E0CF", "#2B2622"],
   acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["tambor", "Tambor"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["chicote", "Chicote"], ["nenhum", "Nada"]],
   colar: [["nenhum", "Nenhum"], ["guirlanda", "Guirlanda de flores"], ["rudraksha", "Rudraksha"]],
@@ -1222,7 +1222,8 @@ function desenhaBoneco(b) {
   else if (b.roupa === "academia") g.append(P("M21 36 Q30 34 39 36 L41 57 L19 57 Z", cor), P("M21 36 L24 34 L25 40 Z M39 36 L36 34 L35 40 Z", pele), P("M26 37 Q30 41 34 37", "none", { stroke: escurece(cor, .7), "stroke-width": 1 }));
   else g.append(P("M18 36 Q30 32 42 36 L44 58 L16 58 Z", cor), P("M26 35 L30 44 L34 35 Z", branco),
     P("M26 35 L30 44 L28 50 L23 38 Z", escurece(cor, .82)), P("M34 35 L30 44 L32 50 L37 38 Z", escurece(cor, .82)));
-  if (b.roupa === "basico") g.append(h("rect", { x: 18, y: 36, width: 24, height: 20, rx: 5, fill: pele }), P("M19 52 L41 52 L42 62 L31 62 L30 58 L29 62 L18 62 Z", "#EDE6D6"), P("M19 52 L41 52 L41 54.5 L19 54.5 Z", "#C9BFA9"));
+  // corpo liso de boneco, sem detalhes
+  if (b.roupa === "basico") g.append(h("rect", { x: 18, y: 35, width: 24, height: 24, rx: 7, fill: pele }), P("M20.5 55 L39.5 55 L38.5 61 L21.5 61 Z", pele), P("M22 44 Q30 46 38 44", "none", { stroke: escurece(pele.length === 7 ? pele : "#C98E62", .82), "stroke-width": .8, "stroke-linecap": "round", opacity: .5 }));
   if (b.roupa === "jaqueta" || b.roupa === "colete") g.append(h("rect", { x: 17, y: 55, width: 26, height: 3, fill: couro }), h("rect", { x: 28.5, y: 55, width: 3, height: 3, fill: "#C9A063" }));
   if (b.roupa === "academia") g.append(h("rect", { x: 19, y: 55, width: 22, height: 2.5, fill: "#F4EFE3" }));
   // colar
@@ -1268,9 +1269,16 @@ function desenhaBoneco(b) {
     if (A === "lotus") T.append(...[-40, -15, 15, 40].map(a => h("ellipse", { cx: 48 + Math.sin(a * Math.PI / 180) * 4, cy: 54 - Math.cos(a * Math.PI / 180) * 2, rx: 2, ry: 4.5, fill: "#E7849E", transform: `rotate(${a} ${48 + Math.sin(a * Math.PI / 180) * 4} ${54 - Math.cos(a * Math.PI / 180) * 2})` })), h("ellipse", { cx: 48, cy: 56, rx: 5.5, ry: 2, fill: "#5F8A4A" }), h("circle", { cx: 48, cy: 54, r: 1.4, fill: "#F2C94C" }));
     if (A === "sino") T.append(P("M44 62 Q44 55 48 55 Q52 55 52 62 L53.5 64 L42.5 64 Z", ouro), h("circle", { cx: 48, cy: 65, r: 1.2, fill: "#8A6B2A" }), h("rect", { x: 47, y: 52, width: 2, height: 3.5, fill: "#8A6B2A" }));
     if (A === "bolsa") T.append(h("line", { x1: 20, y1: 36, x2: 41, y2: 55, stroke: couro, "stroke-width": 1.8 }), h("rect", { x: 37, y: 51, width: 10, height: 9, rx: 2, fill: "#7A5431" }), h("rect", { x: 37, y: 51, width: 10, height: 3.5, rx: 1.5, fill: "#5E3F24" }));
-    if (A === "chicote") T.append(h("circle", { cx: 13, cy: 66, r: 4.5, fill: "none", stroke: "#4A3322", "stroke-width": 1.6 }), h("circle", { cx: 13, cy: 66, r: 2.6, fill: "none", stroke: "#4A3322", "stroke-width": 1.4 }), h("path", { d: "M13 70.5 Q12 78 16 84", fill: "none", stroke: "#4A3322", "stroke-width": 1.3 }));
+    if (A === "chicote") T.append(h("ellipse", { cx: 50, cy: 70, rx: 6.5, ry: 3.6, fill: "none", stroke: "#4A3322", "stroke-width": 1.8 }), h("ellipse", { cx: 50, cy: 72.5, rx: 6, ry: 3.4, fill: "none", stroke: "#5A3F28", "stroke-width": 1.8 }), h("ellipse", { cx: 50, cy: 75, rx: 5.5, ry: 3.1, fill: "none", stroke: "#4A3322", "stroke-width": 1.8 }),
+      h("rect", { x: 45.5, y: 55.5, width: 3.2, height: 12, rx: 1.4, fill: "#2B1D14", transform: "rotate(-12 47 61)" }), h("rect", { x: 45.3, y: 58, width: 3.6, height: 1.2, fill: "#C9A063", transform: "rotate(-12 47 61)" }),
+      h("path", { d: "M55.5 75 Q58 80 55 83 Q52 86 57 86.5 L60 85.5", fill: "none", stroke: "#4A3322", "stroke-width": 1.2, "stroke-linecap": "round" }));
     if (A === "lanterna") T.append(h("circle", { cx: 48, cy: 67, r: 7, fill: "rgba(255,196,90,.35)" }), h("rect", { x: 45.5, y: 62, width: 5, height: 8, rx: 1, fill: "#C9A063" }), h("rect", { x: 46.5, y: 63.5, width: 3, height: 5, fill: "#FFD27A" }), h("line", { x1: 48, y1: 62, x2: 48, y2: 59, stroke: couro, "stroke-width": 1 }));
-    if (A === "mapa") T.append(h("rect", { x: 43, y: 55, width: 11, height: 8, rx: 1, fill: "#EAD9AE", transform: "rotate(-12 48 59)" }), h("path", { d: "M45 58 L49 60 L52 57", fill: "none", stroke: "#A3231A", "stroke-width": .9, transform: "rotate(-12 48 59)" }));
+    if (A === "mapa") T.append(h("g", { transform: "rotate(-10 50 60)" },
+      h("path", { d: "M40 52 L46 53.5 L52 52 L58 53.5 L58 67 L52 65.5 L46 67 L40 65.5 Z", fill: "#EAD6A8", stroke: "#8A6B43", "stroke-width": .7, "stroke-linejoin": "round" }),
+      h("path", { d: "M46 53.5 L46 67 M52 52 L52 65.5", stroke: "#B89A6A", "stroke-width": .6 }),
+      h("path", { d: "M41.5 63 Q44 58 47.5 60 Q50 62 52.5 57.5 Q54 55 55.5 56", fill: "none", stroke: "#A3231A", "stroke-width": .9, "stroke-dasharray": "1.4 1" }),
+      h("path", { d: "M54.3 54.8 L56.7 57.2 M56.7 54.8 L54.3 57.2", stroke: "#A3231A", "stroke-width": 1.1, "stroke-linecap": "round" }),
+      h("path", { d: "M42.5 55.5 L43.5 57 M44 55.5 L43 57", stroke: "#6B4A2A", "stroke-width": .5 })));
     if (A === "camera") T.append(h("line", { x1: 25, y1: 35, x2: 30, y2: 42, stroke: couro, "stroke-width": 1 }), h("line", { x1: 35, y1: 35, x2: 30, y2: 42, stroke: couro, "stroke-width": 1 }), h("rect", { x: 25.5, y: 41, width: 9, height: 6.5, rx: 1.2, fill: "#2A2622" }), h("circle", { cx: 30, cy: 44.2, r: 2, fill: "#6E7F86" }));
   }
   return g;
@@ -1281,30 +1289,44 @@ BONECO.deus = [["nenhum", "Nenhuma"], ["shiva", "Shiva"], ["ganesha", "Ganesha"]
   ["saraswati", "Saraswati"], ["vishnu", "Vishnu"], ["parvati", "Parvati"], ["kali", "Kali"], ["surya", "Surya"], ["ganga", "Ganga"], ["brahma", "Brahma"]];
 const DEUS = {
   shiva: { pele: "#7FA9C9", roupa: "shiva", roupaCor: "#C9822F", acessorio: "tridente", chapeu: "jata", colar: "cobra", testa: "cinzas" },
-  ganesha: { roupa: "kurta", roupaCor: "#E0761C", acessorio: "modak", chapeu: "ganesha", colar: "guirlanda", testa: "nada", barba: "nao" },
-  durga: { roupa: "sari", roupaCor: "#B0301F", acessorio: "tridente", chapeu: "coroa", colar: "ouro", testa: "bindi", bracos: 4 },
+  ganesha: { roupa: "kurta", roupaCor: "#E0761C", acessorio: "modak", chapeu: "ganesha", colar: "guirlanda", testa: "nada", barba: "nao", bracos: 4 },
+  durga: { roupa: "sari", roupaCor: "#B0301F", acessorio: "tridente", chapeu: "coroa", colar: "ouro", testa: "bindi", bracos: 8 },
   krishna: { pele: "#5E86B8", roupa: "dhoti", roupaCor: "#E8B321", acessorio: "flauta", chapeu: "pena", colar: "guirlanda", testa: "tilak", barba: "nao" },
   hanuman: { pele: "#D9822B", roupa: "dhoti", roupaCor: "#B0301F", acessorio: "gada", chapeu: "coroa", colar: "ouro", testa: "tilak", rabo: 1, barba: "nao" },
   lakshmi: { roupa: "sari", roupaCor: "#D44A7A", acessorio: "moedas", chapeu: "coroa", colar: "ouro", testa: "bindi", bracos: 4 },
-  saraswati: { roupa: "sari", roupaCor: "#F4EFE3", acessorio: "veena", chapeu: "coroa", colar: "ouro", testa: "bindi" },
+  saraswati: { roupa: "sari", roupaCor: "#F4EFE3", acessorio: "veena", chapeu: "coroa", colar: "ouro", testa: "bindi", bracos: 4 },
   vishnu: { pele: "#4F74A8", roupa: "dhoti", roupaCor: "#E8B321", acessorio: "concha", chapeu: "coroaalta", colar: "guirlanda", testa: "tilak", bracos: 4, barba: "nao" },
   parvati: { roupa: "sari", roupaCor: "#3F7A4A", acessorio: "lotus", chapeu: "coroa", colar: "ouro", testa: "bindi" },
   kali: { pele: "#2F3550", roupa: "dhoti", roupaCor: "#A3231A", acessorio: "espada", chapeu: "sem", cabelo: "longo", cabeloCor: "#141018", colar: "flores", testa: "bindi", bracos: 4 },
   surya: { roupa: "dhoti", roupaCor: "#E0761C", acessorio: "lotus", chapeu: "sol", colar: "ouro", testa: "tilak" },
-  ganga: { roupa: "sari", roupaCor: "#8FB8C9", acessorio: "kalash", chapeu: "coroa", colar: "ouro", testa: "bindi" },
-  brahma: { roupa: "dhoti", roupaCor: "#B0301F", acessorio: "livro", chapeu: "coroa", colar: "rudraksha", testa: "tilak", barba: "sim", cabeloCor: "#E8E2D6" }
+  ganga: { roupa: "sari", roupaCor: "#8FB8C9", acessorio: "kalash", chapeu: "coroa", colar: "ouro", testa: "bindi", bracos: 4 },
+  brahma: { roupa: "dhoti", roupaCor: "#B0301F", acessorio: "livro", chapeu: "coroa", colar: "rudraksha", testa: "tilak", barba: "sim", cabeloCor: "#E8E2D6", bracos: 4, cabecas: 3 }
 };
 const _desenhaBase = desenhaBoneco;
 desenhaBoneco = function (b0) {
   const d = b0.deus && DEUS[b0.deus];
   const b = d ? { ...b0, ...d, cabelo: d.cabelo || (b0.cabelo === "careca" ? "curto" : b0.cabelo) } : b0;
-  const base = { ...b, roupa: ["shiva", "dhoti"].includes(b.roupa) ? "yogi" : b.roupa, acessorio: "nenhum",
+  const base = { ...b, roupa: ["shiva", "dhoti"].includes(b.roupa) ? "yogi" : b.roupa, acessorio: d ? "nenhum" : b.acessorio,
     chapeu: ["jata", "ganesha", "coroa", "coroaalta", "pena", "sol"].includes(b.chapeu) ? "sem" : b.chapeu, colar: ["cobra", "ouro", "flores"].includes(b.colar) ? "nenhum" : b.colar,
     testa: b.testa === "cinzas" ? "nada" : b.testa, roupaCor: b.roupaCor };
   const g = h("g", { class: "boneco" }), P = (dd, fill, x) => h("path", { d: dd, fill, ...(x || {}) }), ouro = "#D9A53A";
   if (b.rabo) g.append(P("M22 56 Q8 60 8 72 Q8 80 14 80", "none", { stroke: b.pele, "stroke-width": 2.6, "stroke-linecap": "round" }));
-  if (b.bracos) g.append(h("rect", { x: 8, y: 38, width: 6, height: 17, rx: 3, fill: b.pele, transform: "rotate(40 11 38)" }), h("rect", { x: 46, y: 38, width: 6, height: 17, rx: 3, fill: b.pele, transform: "rotate(-40 49 38)" }),
-    h("circle", { cx: 3.5, cy: 49, r: 2.8, fill: b.pele }), h("circle", { cx: 56.5, cy: 49, r: 2.8, fill: b.pele }));
+  // braços extras em leque atrás do corpo, cada mão com um pequeno atributo
+  if (b.bracos) {
+    const pares = (b.bracos - 2) / 2, itens = ["#D9A53A", "#E7849E", "#F4EFE3", "#A3231A", "#C9CDD2", "#5F8A4A"];
+    for (let k = 0; k < pares; k++) {
+      const ang = 38 + k * (pares > 1 ? 34 : 0);
+      for (const [lado, sx] of [[-1, 16], [1, 44]]) {
+        const a = ang * lado, rad = a * Math.PI / 180, hx = sx + Math.sin(rad) * 17, hy = 38 - Math.cos(rad) * 17 + 17 * 0 + (k > 1 ? -4 : 0);
+        g.append(h("rect", { x: sx - 3, y: 38, width: 6, height: 17, rx: 3, fill: b.pele, transform: `rotate(${180 + a} ${sx} 38)` }));
+        const px = sx - Math.sin(rad) * -17, py = 38 - Math.cos(rad) * 17;
+        g.append(h("circle", { cx: sx + Math.sin(rad) * 17, cy: 38 - Math.cos(rad) * 17, r: 2.7, fill: b.pele }), h("circle", { cx: sx + Math.sin(rad) * 19.5, cy: 38 - Math.cos(rad) * 19.5, r: 1.6, fill: itens[(k * 2 + (lado > 0 ? 1 : 0)) % itens.length] }));
+      }
+    }
+  }
+  // cabeças extras (Brahma): ficam atrás da cabeça principal
+  if (b.cabecas) for (const cx of [19.5, 40.5]) g.append(h("circle", { cx, cy: 23.5, r: 8.2, fill: b.pele }), h("path", { d: `M${cx - 6} 26 Q${cx} 34 ${cx + 6} 26 Q${cx} 29 ${cx - 6} 26 Z`, fill: b.cabeloCor || "#E8E2D6" }),
+    h("path", { d: `M${cx - 6.5} 17 L${cx - 6.5} 13 L${cx - 3} 15.5 L${cx} 11.5 L${cx + 3} 15.5 L${cx + 6.5} 13 L${cx + 6.5} 17 Z`, fill: ouro }), h("circle", { cx: cx + (cx < 30 ? -2.5 : 2.5), cy: 23, r: .9, fill: "#2B1D14" }));
   if (b.chapeu === "sol") g.append(...Array.from({ length: 12 }, (_, i) => { const t = i / 12 * Math.PI * 2; return h("line", { x1: 30 + Math.cos(t) * 12, y1: 20 + Math.sin(t) * 12, x2: 30 + Math.cos(t) * 17, y2: 20 + Math.sin(t) * 17, stroke: "#F2A72B", "stroke-width": 2, "stroke-linecap": "round" }); }), h("circle", { cx: 30, cy: 20, r: 13, fill: "rgba(242,167,43,.35)" }));
   g.append(_desenhaBase(base));
   // roupa própria dos deuses: dhoti e pele de tigre de Shiva
@@ -1354,7 +1376,9 @@ function vExplorador() {
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Mapa da Expedição" }), h("h1", { text: "Monte seu explorador" }))),
     h("div", { class: "builder" },
       h("div", { class: "preview" }, bonecoSvg(b, "bonecosvg big"), h("p", { class: "tagname", text: v ? v.nome : "Viajante" }),
-        h("button", { class: "btn", type: "button", onclick: () => { S.bonecoRasc = bonecoPadrao(Math.random().toString(36)); render(); } }, "Sortear")),
+        h("div", { class: "actions", style: "flex-direction:column;gap:6px" },
+          h("button", { class: "btn", type: "button", onclick: () => { S.bonecoRasc = bonecoPadrao(Math.random().toString(36)); render(); } }, "Sortear"),
+          h("button", { class: "btn ghost", type: "button", onclick: () => { const x = S.bonecoRasc; S.bonecoRasc = { pele: x.pele, cabeloCor: x.cabeloCor, cabelo: x.cabelo, roupa: "basico", chapeu: "sem", roupaCor: x.roupaCor, acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum", barba: "nao", pet: "nenhum", deus: "nenhum" }; render(); } }, "Desmontar"))),
       h("div", { class: "controls" },
         h("p", { class: "lab", text: "Chapéu" }), chips("chapeu", BONECO.chapeu),
         h("p", { class: "lab", text: "Pele" }), cores("pele", BONECO.pele, "Tom de pele"),
