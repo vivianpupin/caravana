@@ -547,29 +547,6 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .lvponto[aria-current="true"]{background:#E9D7B0;width:20px;border-radius:4px}
 @media (max-width:480px){.lvseta{width:34px;height:34px}.livro{width:min(70vw,320px)!important}}
 
-/* Fundo de papel marrom (texto claro direto no fundo; cartões continuam claros) */
-main{background:#8D5A39 url("img/fundo.webp") center/cover no-repeat;--ink:#F6ECD6;--soft:#EADBBE;--faint:#D6C19C;--terra:#F1D9A6;--moss:#F1E2BC;--line:rgba(246,236,214,.22);--line2:rgba(246,236,214,.38);color:var(--ink)}
-main .panel,main .day,main .datapage,main .pages,main .sab,main details.guide,main .clock div,main .preview,main .fotovazia,main .bubble .b,main .empty,main .people li,main .welcome form,main .opt,main .pick button,main .daychips button,main .meuexp,main .checks label,main .stats div,main .note,main .composer,main .picker,main input,main select,main textarea,main .btn:not(.gold):not(.ghost),main .fcats,main .sw,main .reac{
-  --ink:#282722;--soft:#6B6556;--faint:#9A917F;--terra:#8A3F32;--moss:#3F4938;--line:rgba(40,39,34,.10);--line2:rgba(40,39,34,.18);color:var(--ink)}
-main .empty{background:rgba(255,252,247,.9)}
-main .btn.ghost{color:var(--soft)}
-main .panel .btn.ghost,main .datapage .btn.ghost,main .day .btn.ghost{color:#6B6556}
-main .daychips{background:rgba(120,76,46,.88);backdrop-filter:blur(8px)}
-main .daychips button[aria-current="true"]{background:#2A1F17;color:#F1E2BC;border-color:#2A1F17}
-main .daychips button[aria-current="true"] b{color:#F1E2BC}
-main .pick button[aria-pressed="true"],main .opt[aria-pressed="true"]{background:#2A1F17;color:#F1E2BC;border-color:#2A1F17}
-main .rule::after{background:rgba(246,236,214,.35)}
-main .day .rule::after,main .panel .rule::after{background:var(--line2)}
-main .hero h1,main .head h1{text-shadow:0 1px 12px rgba(40,24,12,.35)}
-main .hero .logo{filter:brightness(2.4) sepia(.35) saturate(.6)}
-main .foot img.s{filter:brightness(2.4) sepia(.35) saturate(.6)}
-main .chathead{background:rgba(120,76,46,.55);backdrop-filter:blur(6px)}
-main .dayline{color:#EADBBE}
-main .fotoframe{background:rgba(42,31,23,.6)}
-main .lab{color:#F1D9A6}
-main .sab.locked{background:rgba(255,252,247,.55);--ink:#282722;--soft:#5A5448;color:var(--ink)}
-main .strip img.off,main .seals img.off{filter:grayscale(1) opacity(.45) brightness(1.4)}
-main .slot small,main .roster small{color:inherit}
 
 /* Prévia do explorador acompanha a rolagem */
 .preview{position:sticky;top:6px;z-index:4}
@@ -577,7 +554,7 @@ main .slot small,main .roster small{color:inherit}
   .preview{flex-direction:row;justify-content:center;gap:14px;padding:10px 14px}
   .preview .bonecosvg.big{width:auto;height:150px;margin:0}
   .preview .tagname{font-size:17px}
-  .preview{box-shadow:0 10px 24px rgba(40,24,12,.35)}
+  .preview{box-shadow:0 10px 24px rgba(40,24,12,.25)}
 }
 @media (min-width:720px){.preview{top:16px}}
 </style>
