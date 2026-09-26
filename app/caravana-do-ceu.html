@@ -378,7 +378,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .map .terra{fill:#E4CC98;stroke:#6B4A2A;stroke-width:1;stroke-linejoin:round;opacity:.75}
 .map .terra.india{fill:#EFDDB3;opacity:1;stroke-width:1.6}
 .map .rio{fill:none;stroke:#5F8190;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
-.map .riolbl{font:italic 500 15px var(--display);fill:#3F5E6A;letter-spacing:.06em}
+.map .riolbl{display:none}
 .map .grade line{stroke:#6B4A2A;stroke-width:.5;stroke-dasharray:3 5;opacity:.35}
 .map .grade text{font:500 10px var(--ui);fill:#6B4A2A;opacity:.6}
 .map .rota{fill:none;stroke:#A3231A;stroke-width:4;stroke-linecap:round;stroke-dasharray:.012 .008}
@@ -609,6 +609,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .dq{font-family:var(--display);font-style:italic;font-size:18px;margin:0;color:var(--ink)}
 .diario textarea{width:100%;border:1px solid #DCC9A6;border-radius:6px;padding:4px 14px 6px 44px;min-height:132px;resize:vertical;color:#27406B;font:24px/32px "Caveat","Segoe Script","Bradley Hand",cursive;background:linear-gradient(90deg,transparent 34px,rgba(200,80,70,.45) 34px,rgba(200,80,70,.45) 35.5px,transparent 35.5px),repeating-linear-gradient(180deg,#FBF4E2 0 31px,#C9D3DF 31px 32px);background-attachment:local;box-shadow:inset 0 1px 3px rgba(60,40,20,.12)}
 .diario textarea::placeholder{color:#8A93A3}
+.coord{font:500 12.5px "Courier Prime",monospace;letter-spacing:.04em;color:#7A5A36;text-align:center;margin:0}
 /* Mensagem do diário */
 .leitlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .leitlist li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
@@ -775,7 +776,7 @@ async function perfis(ids) {
   const falta = [...new Set(ids)].filter(id => id && !S.perfis[id] && !perfis.pend.has(id));
   if (!falta.length || !S.user) return;
   falta.forEach(id => perfis.pend.add(id));
-  Object.assign(S.perfis, await S.user.profiles(falta)); render();
+  try { Object.assign(S.perfis, await S.user.profiles(falta)); render(); } catch (e) { falta.forEach(id => perfis.pend.delete(id)); }
 }
 const avatar = id => { const v = S.viajantes.find(x => x.id === id); return v && v.foto ? blob(v.foto) : (S.perfis[id]?.avatarUrl || BLANK); };
 // Foto do passaporte: recorta no centro em 3x4 e reduz antes de enviar.
@@ -804,6 +805,7 @@ const aberto = l => !!(l && (l.aberto || minhas()[l.id]));
 const conquistasDe = v => S.locais.filter(l => l.insignia && (l.aberto || (v.insignias || {})[l.id])).length;
 const insigniaLocais = () => S.locais.filter(l => l.insignia).sort(byOrdem);
 const localDe = id => S.locais.find(l => l.id === id);
+const lib = x => !x.localId || aberto(localDe(x.localId)) || S.isOwner;
 const cidadeDe = id => S.cidades.find(c => c.id === id);
 const hojeIso = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
 const diaDe = n => (S.roteiro?.dias || []).find(d => d.n === n);
@@ -1053,7 +1055,6 @@ function vDia(d, open, isToday, abrir) {
 function vSaberes() {
   const e = S.ens.find(x => x.id === S.ensSel);
   if (e) marcaLido(e.id);
-  const lib = x => !x.localId || aberto(localDe(x.localId)) || S.isOwner;
   if (e && lib(e)) {
     const l = e.localId && localDe(e.localId);
     return h("section", { class: "view" },
@@ -1152,7 +1153,7 @@ function abrirLivro(pagina) {
   const pinta = () => {
     leaves.forEach((lf, i) => { const virada = i < atual; lf.classList.toggle("virada", virada); lf.style.zIndex = virada ? i + 1 : n - i; });
     [...pontos.children].forEach((b, i) => b.setAttribute("aria-current", String(i === atual)));
-    cont.textContent = atual === 0 ? "Capa" : atual === 1 ? "Dados do viajante" : atual === n - 1 ? "Última página" : "Vistos";
+    cont.textContent = atual === 0 ? "Capa" : atual === 1 ? "Dados do viajante" : atual === n - 1 ? "Última página" : pages[atual].classList.contains("cartapg") ? "Correspondência" : "Vistos";
     ant.disabled = atual === 0; prox.disabled = atual === n - 1;
   };
   const ir = d => { atual = Math.max(0, Math.min(n - 1, atual + d)); pinta(); };
@@ -1222,6 +1223,7 @@ function vPassaporte() {
         h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : "", g.cidade].filter(Boolean).join(" · ") })),
         h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null);
 }
+document.addEventListener("keydown", e => { if (e.key === "Escape" && document.querySelector(".sheet")) closeSheets(); });
 function closeSheets() { document.querySelectorAll(".sheet").forEach(s => s.remove()); }
 function conteudoInsignia(l) {
   const on = aberto(l), ts = minhas()[l.id], d = diaDe(l.dia), livre = disponivel(l);
@@ -1233,6 +1235,7 @@ function conteudoInsignia(l) {
     h("div", { class: "bigwrap" + (on ? "" : " off") }, h("img", { src: badgeSrc(l), alt: "Selo " + l.nome }),
       on ? h("span", { class: "stamp" + (S.novoSelo === l.id ? " new" : "") }, h("b", { text: "Selado" }), h("i", { text: ts ? dataSelo(ts) : "Caravana" })) : null),
     h("p", { class: "eyebrow", style: "text-align:center", text: [cidadeDe(l.cidadeId)?.nome, d ? `Dia ${d.n} · ${d.data}` : ""].filter(Boolean).join(" · ") }),
+    isFinite(+l.lat) ? h("p", { class: "coord", text: coordTxt(+l.lat, +l.lng) }) : null,
     h("h2", { text: l.nome }),
     h("p", { class: "lede", style: "text-align:center;margin:0 auto", text: on ? (l.descricao || "") : (l.dica || "") }),
     !on && l.codigo && livre ? h("div", { class: "unlock" }, input, h("button", { class: "btn gold", type: "button", onclick: tentar }, "Carimbar")) : null,
@@ -1554,7 +1557,7 @@ function vExplorador() {
   const b = S.bonecoRasc, set = (k, val) => { S.bonecoRasc = { ...S.bonecoRasc, [k]: val }; render(); };
   const chips = (k, ops) => h("div", { class: "opts" }, ops.map(([val, lab]) => h("button", { type: "button", class: "opt", "aria-pressed": String(b[k] === val), onclick: () => set(k, val) }, lab)));
   const cores = (k, arr, rot) => h("div", { class: "opts" }, arr.map(c => h("button", { type: "button", class: "sw", style: `background:${c}`, "aria-label": rot, "aria-pressed": String(b[k] === c), onclick: () => set(k, c) })));
-  const msg = h("p", { class: "msg", role: "status" });
+  const msg = h("p", { class: "msg" + (S.expMsg ? " ok" : ""), role: "status", text: S.expMsg || "" });
   return h("section", { class: "view" },
 
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Mapa da Expedição" }), h("h1", { text: "Monte seu explorador" }))),
@@ -1579,7 +1582,7 @@ function vExplorador() {
         b.deus && b.deus !== "nenhum" ? h("p", { class: "small", text: "A fantasia escolhe roupa, coroa e o que o deus segura. Para voltar às suas escolhas, toque em Nenhuma." }) : null)),
     v ? h("div", { class: "actions", style: "justify-content:center" },
       h("button", { class: "btn gold", type: "button", onclick: async () => {
-        try { await S.db.doc("viajantes/" + S.uid).update({ boneco: S.bonecoRasc }); S.bonecoRasc = null; msg.textContent = "Explorador salvo. Ele já aparece no mapa."; msg.className = "msg ok"; }
+        try { await S.db.doc("viajantes/" + S.uid).update({ boneco: S.bonecoRasc }); S.bonecoRasc = null; S.expMsg = "Explorador salvo. Ele já aparece no mapa."; msg.textContent = S.expMsg; msg.className = "msg ok"; setTimeout(() => { S.expMsg = null; }, 6000); }
         catch (e) { msg.textContent = "Não consegui salvar. Tente de novo."; msg.className = "msg err"; }
       } }, "Salvar meu explorador"), msg)
       : h("p", { class: "small", style: "text-align:center", text: "Emita seu passaporte para salvar o seu explorador." }));
@@ -1664,6 +1667,7 @@ function pergaminho(W, H, id) {
   return svg;
 }
 function molduraECompasso(svg, W, H, id, titulo, sub) {
+  const cw = Math.round(Math.min(W - 150, Math.max(178, titulo.length * 16 + 30, sub.length * 6.6 + 30)));
   svg.insertAdjacentHTML("beforeend", `<rect width="${W}" height="${H}" fill="url(#vg-${id})" pointer-events="none"/>
     <rect x="10" y="10" width="${W - 20}" height="${H - 20}" fill="none" stroke="#5B3F22" stroke-width="1.6"/>
     <rect x="15" y="15" width="${W - 30}" height="${H - 30}" fill="none" stroke="#5B3F22" stroke-width=".6"/>
@@ -1673,8 +1677,8 @@ function molduraECompasso(svg, W, H, id, titulo, sub) {
       <path d="M34 0 L5 5 L0 0 L5 -5 Z" fill="#A08560"/><path d="M-34 0 L-5 5 L0 0 L-5 -5 Z" fill="#A08560"/>
       <path d="M17 -17 L3 -3 L0 0 Z M-17 17 L-3 3 L0 0 Z M17 17 L3 3 L0 0 Z M-17 -17 L-3 -3 L0 0 Z" fill="#5B3F22" stroke="#5B3F22" stroke-width="1.5"/>
       <text y="-39" text-anchor="middle" class="cmp">N</text></g>
-    <g transform="translate(26 30)"><rect width="178" height="46" fill="#F1E2BC" stroke="#5B3F22" stroke-width="1"/><rect x="3" y="3" width="172" height="40" fill="none" stroke="#5B3F22" stroke-width=".5"/>
-      <text x="89" y="21" text-anchor="middle" class="cart1"></text><text x="89" y="35" text-anchor="middle" class="cart2"></text></g>`);
+    <g transform="translate(26 30)"><rect width="${cw}" height="46" fill="#F1E2BC" stroke="#5B3F22" stroke-width="1"/><rect x="3" y="3" width="${cw - 6}" height="40" fill="none" stroke="#5B3F22" stroke-width=".5"/>
+      <text x="${cw / 2}" y="21" text-anchor="middle" class="cart1"></text><text x="${cw / 2}" y="35" text-anchor="middle" class="cart2"></text></g>`);
   svg.querySelector(".cart1").textContent = titulo; svg.querySelector(".cart2").textContent = sub;
 }
 function camadasGeo(svg, P, rios) {
@@ -1750,7 +1754,7 @@ function mapaIndia(cids) {
       onkeydown: e => { if (e.key === "Enter") { S.cidadeSel = c.id; render(); } } },
       h("circle", { cx: x, cy: y, r: 9, class: "c1" }), h("circle", { cx: x, cy: y, r: 4.5, class: "c2" }),
       h("text", { x: right ? x + 16 : x - 16, y: y + 1, "text-anchor": right ? "start" : "end", class: "cnome", text: c.nome.toUpperCase() }),
-      ls.length ? h("text", { x: right ? x + 16 : x - 16, y: y + 18, "text-anchor": right ? "start" : "end", class: "ccnt", text: `${ok} de ${ls.length} selos` }) : null));
+      ls.length ? h("text", { x: right ? x + 16 : x - 16, y: y + 18, "text-anchor": right ? "start" : "end", class: "ccnt", text: `${ok} de ${ls.length} ${ls.length === 1 ? "selo" : "selos"}` }) : null));
   });
   exploradoresNoMapa(svg, P, () => true);
   escala(svg, P); molduraECompasso(svg, W, H, "india", "EXPEDIÇÃO", "Índia Sagrada · 2026"); marcarClick(svg, "india");
@@ -1764,23 +1768,34 @@ function mapaCidade(c, ls) {
   camadasGeo(svg, P, false);
   const ins = pts.filter(l => l.insignia);
   if (ins.length > 1) { const seq = ins.map(l => P.xy(l)); const d = "M" + seq[0].map(n => n.toFixed(1)).join(" ") + seq.slice(1).map((b, i) => curva(seq[i], b, .15)).join(""); svg.append(h("path", { d, class: "rota fina", pathLength: "1" })); }
+  const caixas = pts.map(l => { const [x, y] = P.xy(l); return { x: x - 24, y: y - 24, w: 48, h: 48 }; });
+  const colide = b => caixas.some(c => b.x < c.x + c.w && b.x + b.w > c.x && b.y < c.y + c.h && b.y + b.h > c.y);
+  const posLabel = (x, y, texto, px, gap) => {
+    const w = texto.length * px * .5 + 6, tenta = [0, 26, -26, 50, -50];
+    for (const lado of [x < W - 40 - w - gap, !(x < W - 40 - w - gap)]) for (const dy of tenta) {
+      const bx = lado ? x + gap : x - gap - w, b = { x: bx, y: y + dy - 12, w, h: 20 };
+      if (bx < 20 || bx + w > W - 20) continue;
+      if (!colide(b)) { caixas.push(b); return { tx: lado ? x + gap : x - gap, ty: y + dy + 5, anchor: lado ? "start" : "end" }; }
+    }
+    return { tx: x + gap, ty: y + 5, anchor: "start" };
+  };
   for (const l of pts.filter(l => !l.insignia)) {
-    const [x, y] = P.xy(l), right = x < W - 170;
+    const [x, y] = P.xy(l), lb = posLabel(x, y, l.nome, 15, 14);
     svg.append(h("g", { class: "hotel pin", tabindex: "0", role: "button", "aria-label": l.nome, onclick: () => { if (S.marcando) return; S.localSel = l.id; render(); } },
       h("rect", { x: x - 8, y: y - 8, width: 16, height: 16, rx: 2 }),
-      h("text", { x: right ? x + 14 : x - 14, y: y + 5, "text-anchor": right ? "start" : "end", text: l.nome })));
+      h("text", { x: lb.tx, y: lb.ty, "text-anchor": lb.anchor, text: l.nome })));
   }
   ins.forEach(l => {
-    const [x, y] = P.xy(l), on = aberto(l), right = x < W - 190, i = insigniaLocais().indexOf(l) + 1;
+    const [x, y] = P.xy(l), on = aberto(l), lb = posLabel(x, y, l.nome, 17, 31);
     svg.append(h("g", { class: `pin ${on ? "on" : "off"}${S.localSel === l.id ? " sel" : ""}`, tabindex: "0", role: "button", "aria-label": `${l.nome}${on ? "" : " (a carimbar)"}`,
       onclick: () => { if (S.marcando) return; S.localSel = l.id; S.unlockMsg = null; render(); },
       onkeydown: e => { if (e.key === "Enter") { S.localSel = l.id; render(); } } },
       h("circle", { class: "halo", cx: x, cy: y, r: 30 }), h("circle", { class: "ring", cx: x, cy: y, r: 23 }),
       on ? h("image", { href: badgeSrc(l), x: x - 16, y: y - 21, width: 32, height: 42 }) : h("text", { class: "n", x, y, text: "✕" }),
-      h("text", { class: "lbl", x: right ? x + 31 : x - 31, y: y + 5, "text-anchor": right ? "start" : "end", text: l.nome })));
+      h("text", { class: "lbl", x: lb.tx, y: lb.ty, "text-anchor": lb.anchor, text: l.nome })));
   });
   exploradoresNoMapa(svg, P, p => p.cidadeId === c.id);
-  escala(svg, P); molduraECompasso(svg, W, H, c.id, c.nome.toUpperCase(), c.frase ? c.frase.slice(0, 30) : "Índia Sagrada"); marcarClick(svg, c.id);
+  escala(svg, P); molduraECompasso(svg, W, H, c.id, c.nome.toUpperCase(), c.frase ? (c.frase.length > 44 ? c.frase.slice(0, c.frase.lastIndexOf(" ", 42)) + "…" : c.frase) : "Índia Sagrada"); marcarClick(svg, c.id);
   return svg;
 }
 function marcarClick(svg, cidadeId) {
@@ -1993,11 +2008,13 @@ function vFotos() {
 
 function painelLocal(l) {
   if (!l.insignia) return h("aside", { class: "panel" }, h("p", { class: "eyebrow", text: "Hotel" }), h("h2", { text: l.nome }),
+    isFinite(+l.lat) ? h("p", { class: "coord", style: "text-align:left", text: coordTxt(+l.lat, +l.lng) }) : null,
     l.descricao ? h("p", { class: "small", text: l.descricao }) : null,
     h("div", { class: "actions" }, h("a", { class: "btn", href: mapsUrl(l), target: "_blank", rel: "noopener" }, "Abrir no Google Maps"),
       S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editar("local", l) }, "Editar") : null));
   return h("aside", { class: "panel" }, conteudoInsignia(l));
 }
+const coordTxt = (la, lo) => `${Math.abs(la).toFixed(4)}° ${la >= 0 ? "N" : "S"} · ${Math.abs(lo).toFixed(4)}° ${lo >= 0 ? "L" : "O"}`;
 const mapsUrl = l => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(l.busca || l.nome);
 
 function painelPessoas(c) {
@@ -2340,7 +2357,6 @@ function vMantra(n) {
 }
 // Diário de bordo
 S.diario = {};
-try { S.diario = JSON.parse(localStorage.getItem("cdi-diario") || "{}") || {}; } catch (e) {}
 function salvaDiario(n, txt) {
   S.diario = { ...S.diario, [n]: txt };
   try { localStorage.setItem("cdi-diario", JSON.stringify(S.diario)); } catch (e) {}
@@ -2377,7 +2393,7 @@ function pomboSvg(cls) {
     h("rect", { x: 26, y: 34, width: 14, height: 6, rx: 3, fill: "#EBD6A6", stroke: "#8A6A3F", "stroke-width": .8 }),
     h("path", { d: "M33 33.5 V40.5", stroke: "#8A2A1F", "stroke-width": 1.6 }));
 }
-function pergaminho(c) {
+function pergaminhoCarta(c) {
   return h("article", { class: "pergaminho" },
     h("span", { class: "rolo top", "aria-hidden": "true" }),
     h("div", { class: "pgm" },
@@ -2393,7 +2409,7 @@ function abrirCarta(c, chegou) {
   closeSheets(); marcaCarta(c.id); setTimeout(render, 0);
   const box = h("div", { role: "dialog", "aria-label": "Carta: " + (c.titulo || "correspondência"), class: "correiobox" + (chegou ? " chegou" : "") },
     chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: "Chegou uma carta por pombo-correio!" })) : null,
-    pergaminho(c),
+    pergaminhoCarta(c),
     h("div", { class: "foot2" }, S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editarCarta(c) }, "Editar") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Guardar a carta")));
   const sheet = h("div", { class: "sheet correiosheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
@@ -2417,7 +2433,7 @@ function editarCarta(c) {
     if (!isFinite(envio)) { st.textContent = "Confira a data e a hora."; st.className = "msg err"; return; }
     const dados = { titulo: tit.value.trim(), texto: ta.value.trim(), assinatura: ass.value.trim() || ASSINATURA, local: loc.value.trim(), envio, rascunho: modo === "rascunho", ts: Date.now() };
     try {
-      if (c.id) await S.db.doc("cartas/" + c.id).set(dados); else await S.db.collection("cartas").add(dados);
+      if (c.id) await S.db.doc("cartas/" + c.id).set(dados); else { const r = await S.db.collection("cartas").add(dados); c.id = r && r.id; }
       st.textContent = modo === "rascunho" ? "Rascunho guardado. Ninguém vê ainda." : modo === "agora" ? "Carta enviada! Ela chega agora para a caravana." : `Carta programada para ${dataCarta(envio)}, às ${horaCarta(envio)} na Índia.`;
       st.className = "msg ok";
     } catch (e) { st.textContent = "Não consegui guardar a carta."; st.className = "msg err"; }
@@ -2490,14 +2506,14 @@ function htmlOffline() {
 <style>body{margin:0;background:#F6EFE3;color:#282722;font:16px/1.6 Georgia,serif}main{max-width:640px;margin:0 auto;padding:20px 16px 60px}h1{font-size:28px;margin:.2em 0}h2{font-size:22px;margin:1.6em 0 .3em;border-top:1px solid #C7B493;padding-top:14px}h3{font-size:18px;margin:1em 0 .2em}.e{font:600 11px/1.4 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A3F32}.s{font:14px/1.5 system-ui,sans-serif;color:#6B6556}ul{padding-left:0;list-style:none}li{padding:4px 0;border-bottom:1px dotted #D8CBB0;font-family:system-ui,sans-serif;font-size:15px}li b{display:inline-block;min-width:52px;color:#8A3F32}.m{background:#EFE3C8;border-radius:12px;padding:12px 14px;margin:10px 0}.m i{display:block;color:#3F4938}nav a{display:inline-block;margin:0 10px 6px 0;color:#8A3F32;font-family:system-ui,sans-serif;font-size:14px}</style></head><body><main>
 <p class="e">Caravana do Céu · Índia Sagrada · 4 a 16 nov 2026</p><h1>Travessia da Índia Sagrada</h1><p class="s">Cópia para ler sem internet. Salva em ${esc(new Date().toLocaleDateString("pt-BR"))}.</p>
 <nav>${dias.map(d => `<a href="#d${d.n}">Dia ${d.n}</a>`).join("")}<a href="#hindi">Hindi</a><a href="#saberes">Saberes</a><a href="#guia">Guia</a></nav>
-${dias.map(d => { const m = MANTRAS[d.n]; return `<h2 id="d${d.n}">Dia ${d.n} · ${esc(d.data)} · ${esc(d.titulo)}</h2><p class="s">${esc(d.rota)}<br>Hospedagem: ${esc(d.hotel)}${d.guia ? " · " + esc(d.guia) : ""}</p>
+${dias.map(d => { return `<h2 id="d${d.n}">Dia ${d.n} · ${esc(d.data)} · ${esc(d.titulo)}</h2><p class="s">${esc(d.rota)}<br>Hospedagem: ${esc(d.hotel)}${d.guia ? " · " + esc(d.guia) : ""}</p>
 ${d.agenda.map(p => `<p class="e">${esc(p.periodo)}</p><ul>${p.itens.map(i => `<li><b>${esc(i.hora || "·")}</b> ${esc(i.texto)}</li>`).join("")}</ul>`).join("")}
-${d.aviso ? `<h3>${esc(d.aviso.titulo)}</h3>${par(d.aviso.texto)}` : ""}
+${d.cerimonia ? `<h3>${esc(d.cerimonia.titulo)}</h3><p class="s">${esc(d.cerimonia.quando || "")}</p>${par(d.cerimonia.texto)}` : ""}${d.aviso ? `<h3>${esc(d.aviso.titulo)}</h3>${par(d.aviso.texto)}` : ""}
 ${(d.lugares || []).map(l => `<h3>${esc(l.nome)}</h3>${par(l.texto)}`).join("")}
 `; }).join("")}
 <h2 id="hindi">Frases úteis em hindi</h2><ul>${HINDI.map(([pt, rom, dev, pron]) => `<li><b>${esc(rom)}</b> ${esc(pt)} · fala-se ${esc(pron)}</li>`).join("")}</ul>
 <h2 id="saberes">Saberes da travessia</h2>${sab.map(x => `<h3>${esc(x.titulo)}</h3>${par(x.texto)}`).join("")}
-<h2 id="guia">Guia da travessia</h2>${guia.map(x => `<h3>${esc(x.titulo)}</h3>${par(x.texto)}`).join("")}
+${cartasAbertas().length ? `<h2 id="cartas">Cartas da travessia</h2>${cartasAbertas().map(c => `<h3>${esc(c.titulo || "Carta")}</h3>${par(c.texto)}<p class="s">${esc(c.assinatura || ASSINATURA)}</p>`).join("")}` : ""}<h2 id="guia">Guia da travessia</h2>${guia.map(x => `<h3>${esc(x.titulo)}</h3>${par(x.texto)}`).join("")}
 <p class="s" style="margin-top:40px;text-align:center">Lokah Samastah Sukhino Bhavantu</p></main></body></html>`;
 }
 async function baixarOffline(st) {
@@ -2689,7 +2705,6 @@ render();
   listen("posicoes", "posicoes");
   listen("cartas", "cartas", null, () => setTimeout(checaCorreio, 1200));
   listen("mural", "mural", db.collection("mural").orderBy("ts", "desc").limit(300));
-  if (S.uid) db.doc("diarios/" + S.uid).onSnapshot(sn => { const dd = sn.exists ? sn.data() : {}, e = dd.entradas; if (dd.leitura) { S.leitura = dd.leitura; } if (e) { S.diario = { ...e, ...S.diario }; try { localStorage.setItem("cdi-diario", JSON.stringify(S.diario)); } catch (x) {} } render(); }, () => {});
   setInterval(() => { if ((S.tab === "mapa" || S.tab === "travessia") && !document.activeElement?.matches?.("input,textarea,select") && !document.querySelector(".sheet")) render(); }, 60000);
 })();
 })();
