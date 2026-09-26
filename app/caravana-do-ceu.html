@@ -1,228 +1,254 @@
-<title>Caravana do Céu</title>
+<title>Caravana Índia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,500&family=Poppins:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600&display=swap">
 <style>
+/* Visual único e escuro, como O Mapa da Travessia. */
 :root{
-  --bg:#EFE7D6; --surface:#F8F3E8; --surface-2:#E5DAC5; --ink:#282722; --muted:#6B6556;
-  --line:#D6C9AC; --moss:#3F4938; --terra:#8A3F32; --sand:#C7B493; --on-accent:#F8F3E8;
-  --map-bg:#EAE0CB; --contour:#D2C4A3; --route:#8A3F32; --locked:#9C937F;
-  --shadow:0 1px 2px rgba(40,39,34,.08),0 6px 20px rgba(40,39,34,.08);
-  --serif:"Lora",Georgia,"Times New Roman",serif;
-  --sans:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    color-scheme:dark;
-    --bg:#1C1B17; --surface:#26241F; --surface-2:#312E27; --ink:#ECE3D0; --muted:#A99F8A;
-    --line:#3F3B32; --moss:#93A37F; --terra:#D47F6B; --sand:#C7B493; --on-accent:#1C1B17;
-    --map-bg:#22201B; --contour:#37332A; --route:#D47F6B; --locked:#7A7262;
-    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.3);
-  }
-}
-:root[data-theme="dark"]{
   color-scheme:dark;
-  --bg:#1C1B17; --surface:#26241F; --surface-2:#312E27; --ink:#ECE3D0; --muted:#A99F8A;
-  --line:#3F3B32; --moss:#93A37F; --terra:#D47F6B; --sand:#C7B493; --on-accent:#1C1B17;
-  --map-bg:#22201B; --contour:#37332A; --route:#D47F6B; --locked:#7A7262;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.3);
+  --bg:#0b0806; --panel:#140f0a; --panel2:#1c150d; --panel3:#241b11;
+  --ink:#e7d9b7; --soft:#b7a37a; --faint:#7d6e52;
+  --gold:#cb9d4d; --gold-deep:#a67d33; --line:rgba(203,157,77,.22); --line2:rgba(203,157,77,.45);
+  --oxblood:#bb6144; --sage:#a9b98f; --on-gold:#140f0a;
+  --display:"Cinzel",Georgia,"Times New Roman",serif;
+  --read:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --ui:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;font-weight:400}
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.55}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:2px solid var(--terra);outline-offset:2px}
-h1,h2,h3{font-family:var(--serif);font-weight:700;text-wrap:balance;margin:0;line-height:1.2}
+a{color:var(--gold)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);font-weight:500;text-wrap:balance;margin:0;line-height:1.2;letter-spacing:.04em}
 p{margin:0}
 
-.app{height:100%;display:grid;grid-template-rows:auto 1fr auto;grid-template-areas:"top" "main" "nav"}
-.top{grid-area:top;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--bg)}
-.brand{display:flex;flex-direction:column;line-height:1.1}
-.brand b{font-family:var(--serif);font-weight:700;font-size:13px;letter-spacing:.22em;text-transform:uppercase}
-.brand span{font-size:11px;color:var(--muted);letter-spacing:.04em}
-.who{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);min-width:0}
-.who img{width:28px;height:28px;border-radius:50%;flex:none}
-.who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.app{height:100%;display:grid;grid-template-rows:auto 1fr auto;grid-template-areas:"top" "main" "nav";
+  background:var(--bg) url("img/textura.jpg") center top/cover no-repeat}
+.top{grid-area:top;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line);background:rgba(11,8,6,.82)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand img{width:34px;height:auto;flex:none}
+.brand b{display:block;font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.brand span{display:block;font-size:11px;color:var(--soft);letter-spacing:.08em;text-transform:uppercase}
+.me{display:flex;align-items:center;gap:8px;background:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 4px;font-size:12px;color:var(--soft);min-width:0}
+.me img{width:26px;height:26px;border-radius:50%;flex:none}
+.me b{color:var(--gold);font-weight:600;font-variant-numeric:tabular-nums}
+.me span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 main{grid-area:main;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-.view{padding:20px 16px 32px;max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.view{padding:22px 16px 40px;max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
 
-nav.tabs{grid-area:nav;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:var(--surface);padding-bottom:env(safe-area-inset-bottom,0px)}
-nav.tabs button{background:none;border:0;padding:8px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.02em}
+nav.tabs{grid-area:nav;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:rgba(11,8,6,.94);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs button{background:none;border:0;padding:8px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:500;color:var(--faint);letter-spacing:.03em}
 nav.tabs button svg{width:22px;height:22px}
-nav.tabs button[aria-current="page"]{color:var(--terra)}
+nav.tabs button[aria-current="page"]{color:var(--gold)}
 @media (min-width:900px){
-  .app{grid-template-columns:200px 1fr;grid-template-rows:auto 1fr;grid-template-areas:"top top" "nav main"}
-  nav.tabs{grid-template-columns:1fr;grid-auto-rows:min-content;border-top:0;border-right:1px solid var(--line);padding:16px 10px;gap:4px;background:var(--bg)}
+  .app{grid-template-columns:210px 1fr;grid-template-rows:auto 1fr;grid-template-areas:"top top" "nav main"}
+  nav.tabs{grid-template-columns:1fr;grid-auto-rows:min-content;border-top:0;border-right:1px solid var(--line);padding:18px 10px;gap:4px}
   nav.tabs button{flex-direction:row;justify-content:flex-start;gap:12px;font-size:14px;padding:10px 12px;border-radius:10px}
-  nav.tabs button[aria-current="page"]{background:var(--surface-2)}
+  nav.tabs button[aria-current="page"]{background:var(--panel2)}
 }
 
-.eyebrow{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{font-family:var(--display);font-size:11px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
 .head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.head h1{font-size:clamp(24px,5vw,32px)}
-.lede{color:var(--muted);max-width:60ch}
-.btn{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:8px 16px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:500}
-.btn:hover{border-color:var(--sand)}
-.btn.primary{background:var(--moss);border-color:var(--moss);color:var(--on-accent)}
-.btn.terra{background:var(--terra);border-color:var(--terra);color:var(--on-accent)}
-.btn.ghost{background:none;border-color:transparent;padding-inline:8px;color:var(--muted)}
-.btn.danger{color:var(--terra);border-color:var(--terra);background:none}
+.head h1{font-size:clamp(24px,5.5vw,34px)}
+.lede{font-family:var(--read);font-size:18px;line-height:1.5;color:var(--soft);max-width:60ch}
+.orn{display:block;margin:0 auto;max-width:min(100%,420px);height:auto;opacity:.9}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:999px;padding:8px 16px;border:1px solid var(--line2);background:none;font-size:13px;font-weight:500;color:var(--ink);text-decoration:none}
+.btn:hover{border-color:var(--gold)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:var(--on-gold)}
+.btn.ghost{border-color:transparent;padding-inline:8px;color:var(--soft)}
+.btn.danger{color:var(--oxblood);border-color:var(--oxblood)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
-.chip.open{background:color-mix(in srgb,var(--moss) 18%,transparent);color:var(--moss)}
-.chip.lock{background:none;border:1px dashed var(--locked);color:var(--locked)}
-
-.empty{border:1px dashed var(--line);border-radius:14px;padding:28px 20px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:10px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:999px;border:1px solid var(--line);color:var(--soft)}
+.chip.on{border-color:var(--gold);color:var(--gold)}
+.chip.today{background:var(--gold);border-color:var(--gold);color:var(--on-gold)}
+.panel{background:rgba(20,15,10,.9);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.panel h2{font-size:21px}
+.small{font-size:12.5px;color:var(--soft)}
+.msg{font-size:13px}
+.msg.err{color:var(--oxblood)}
+.msg.ok{color:var(--sage)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.empty{border:1px dashed var(--line2);border-radius:14px;padding:28px 20px;text-align:center;color:var(--soft);display:flex;flex-direction:column;gap:10px;align-items:center}
 .empty h3{color:var(--ink);font-size:18px}
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;color:var(--ink)}
+input::placeholder,textarea::placeholder{color:var(--faint)}
+textarea{resize:vertical;min-height:90px;line-height:1.5}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);outline:none}
 
-/* Rotas */
-.routes{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
-.route{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px}
-.route h2{font-size:22px}
-.route .meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.bar{height:6px;border-radius:6px;background:var(--surface-2);overflow:hidden}
-.bar i{display:block;height:100%;background:var(--terra);border-radius:6px}
-.prog{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
-ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-ol.stops li{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:8px 0;position:relative}
-ol.stops li:not(:last-child)::after{content:"";position:absolute;left:13px;top:34px;bottom:-8px;width:2px;background:var(--line)}
-.num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;position:relative;z-index:1}
-.num.on{background:var(--terra);color:var(--on-accent)}
-.num.off{background:var(--surface);border:1.5px dashed var(--locked);color:var(--locked)}
-.stops button.link{background:none;border:0;padding:0;text-align:left;font-weight:500}
-.stops button.link:hover{color:var(--terra)}
-.stops small{display:block;color:var(--muted);font-size:12px;font-weight:400}
+/* Roteiro */
+.clock{display:flex;gap:10px;flex-wrap:wrap}
+.clock div{flex:1 1 140px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:rgba(20,15,10,.85)}
+.clock b{display:block;font-family:var(--display);font-size:22px;font-weight:500;color:var(--gold);font-variant-numeric:tabular-nums}
+.clock span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.days{display:flex;flex-direction:column;gap:10px}
+details.day{background:rgba(20,15,10,.9);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+details.day[open]{border-color:var(--line2)}
+details.day.is-today{border-color:var(--gold)}
+details.day summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:56px 1fr auto;gap:14px;align-items:center;padding:14px 16px}
+details.day summary::-webkit-details-marker{display:none}
+.dnum{font-family:var(--display);text-align:center;line-height:1}
+.dnum small{display:block;font-size:10px;letter-spacing:.2em;color:var(--soft)}
+.dnum b{font-size:28px;font-weight:500;color:var(--gold);font-variant-numeric:tabular-nums}
+.dtit h3{font-size:17px}
+.dtit p{font-size:12.5px;color:var(--soft)}
+.dbadges{display:flex;gap:4px}
+.dbadges img{width:30px;height:auto}
+.dbadges img.off{filter:grayscale(1) brightness(.45)}
+.dbody{padding:0 16px 16px 86px;display:flex;flex-direction:column;gap:12px}
+@media (max-width:520px){.dbody{padding-left:16px}}
+ul.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+ul.items li{display:grid;grid-template-columns:52px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+ul.items li:first-child{border-top:0}
+ul.items .h{font-weight:600;color:var(--gold);font-variant-numeric:tabular-nums;font-size:13px}
+.nota{font-family:var(--read);font-style:italic;font-size:16px;color:var(--soft);border-left:2px solid var(--gold-deep);padding-left:12px}
 
 /* Mapa */
 .mapwrap{display:grid;gap:16px}
-@media (min-width:900px){.mapwrap{grid-template-columns:1fr 320px;align-items:start}}
-.routepick{display:flex;gap:8px;flex-wrap:wrap}
-.routepick button{border-radius:999px;border:1px solid var(--line);background:var(--surface);padding:6px 14px;font-size:13px}
-.routepick button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.map{background:var(--map-bg);border:1px solid var(--line);border-radius:16px;overflow:hidden;position:relative}
+@media (min-width:980px){.mapwrap{grid-template-columns:1fr 330px;align-items:start}}
+.pick{display:flex;gap:8px;flex-wrap:wrap}
+.pick button{border-radius:999px;border:1px solid var(--line2);background:none;padding:6px 14px;font-size:13px;color:var(--soft)}
+.pick button[aria-pressed="true"]{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
+.map{background:#100b07;border:1px solid var(--line2);border-radius:16px;overflow:hidden}
 .map svg{display:block;width:100%;height:auto}
-.map .contour{fill:none;stroke:var(--contour);stroke-width:1.2}
-.map .path{fill:none;stroke:var(--route);stroke-width:3;stroke-dasharray:2 9;stroke-linecap:round;opacity:.8}
+.map .contour{fill:none;stroke:rgba(203,157,77,.10);stroke-width:1.2}
+.map .route{fill:none;stroke:var(--gold);stroke-width:2.5;stroke-dasharray:2 10;stroke-linecap:round;opacity:.75}
 .map .pin{cursor:pointer}
-.map .pin circle.dot{stroke-width:3}
-.map .pin.on circle.dot{fill:var(--terra);stroke:var(--map-bg)}
-.map .pin.off circle.dot{fill:var(--map-bg);stroke:var(--locked);stroke-dasharray:4 3}
-.map .pin text.n{font:600 15px var(--sans);text-anchor:middle;dominant-baseline:central}
-.map .pin.on text.n{fill:var(--on-accent)}
-.map .pin.off text.n{fill:var(--locked)}
-.map .pin text.lbl{font:500 15px var(--sans);fill:var(--ink);paint-order:stroke;stroke:var(--map-bg);stroke-width:5px;stroke-linejoin:round}
-.map .pin.off text.lbl{fill:var(--muted)}
-.map .pin circle.halo{fill:none;stroke:var(--terra);stroke-width:2;opacity:0}
-.map .pin.sel circle.halo{opacity:1}
-.map .ui{fill:var(--muted);font:500 12px var(--sans)}
-.map .ui-line{stroke:var(--muted);stroke-width:2}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.map .pin .ring{fill:#100b07;stroke:var(--gold);stroke-width:2.5}
+.map .pin.off .ring{stroke:var(--faint);stroke-dasharray:4 4}
+.map .pin .n{font:600 17px var(--ui);fill:var(--faint);text-anchor:middle;dominant-baseline:central}
+.map .pin .lbl{font:500 18px var(--ui);fill:var(--ink);paint-order:stroke;stroke:#100b07;stroke-width:6px;stroke-linejoin:round}
+.map .pin.off .lbl{fill:var(--soft)}
+.map .pin .halo{fill:none;stroke:var(--gold);stroke-width:2;opacity:0}
+.map .pin.sel .halo{opacity:1}
+.map .hotel rect{fill:var(--panel3);stroke:var(--soft);stroke-width:2}
+.map .hotel text{font:500 15px var(--ui);fill:var(--soft);paint-order:stroke;stroke:#100b07;stroke-width:5px}
+.map .city .dot{fill:var(--gold)}
+.map .city text{font:500 22px var(--display);fill:var(--ink);letter-spacing:.08em;paint-order:stroke;stroke:#100b07;stroke-width:6px}
+.map .city .cnt{font:600 15px var(--ui);fill:var(--soft)}
+.map .ui{fill:var(--soft);font:500 15px var(--ui)}
+.map .ui-line{stroke:var(--soft);stroke-width:2}
+.map .person circle{stroke:#100b07;stroke-width:3}
+.map .person text{font:600 13px var(--ui);fill:#fff;text-anchor:middle;dominant-baseline:central}
+.map .person .pring{fill:none;stroke-width:2;opacity:.5}
+.map.marking svg{cursor:crosshair}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--soft)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:12px;height:12px;border-radius:50%;display:inline-block}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px}
-.panel h2{font-size:22px}
-.panel .desc{color:var(--ink)}
-.panel .hint{font-family:var(--serif);font-style:italic;color:var(--muted)}
-.unlock{display:flex;gap:8px;flex-wrap:wrap}
-.unlock input{flex:1 1 160px;min-width:0}
-.msg{font-size:13px}
-.msg.err{color:var(--terra)}
-.msg.ok{color:var(--moss)}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-.secret{font-size:12px;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px}
-.secret code{font-family:ui-monospace,Menlo,monospace;background:var(--surface-2);padding:1px 6px;border-radius:4px;color:var(--ink)}
-
-input[type=text],input[type=number],select,textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
-textarea{resize:vertical;min-height:90px;line-height:1.5}
-input:focus,select:focus,textarea:focus{border-color:var(--sand)}
-
-/* Conversa */
-.chatview{padding:0;max-width:none;height:100%;display:grid;grid-template-rows:auto 1fr auto;gap:0}
-.chathead{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
-.chatlog{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
-.bubble{display:grid;grid-template-columns:32px 1fr;gap:10px;max-width:640px}
-.bubble img{width:32px;height:32px;border-radius:50%}
-.bubble .b{background:var(--surface);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:8px 12px;min-width:0}
-.bubble.me{margin-left:auto;grid-template-columns:1fr}
-.bubble.me img{display:none}
-.bubble.me .b{background:color-mix(in srgb,var(--moss) 16%,var(--surface));border-color:transparent;border-radius:14px 4px 14px 14px}
-.bubble .h{display:flex;gap:8px;align-items:baseline;font-size:12px;color:var(--muted)}
-.bubble .h b{color:var(--ink);font-weight:600}
-.bubble .t{white-space:pre-wrap;overflow-wrap:anywhere}
-.bubble .del{margin-left:auto;background:none;border:0;color:var(--muted);font-size:11px;padding:0}
-.day{align-self:center;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.composer{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;align-items:flex-end;background:var(--surface)}
-.composer textarea{min-height:44px;max-height:140px;flex:1;border-radius:22px;padding:10px 16px}
-.composer .note:empty{display:none}
-.composer .note{font-size:13px;color:var(--muted);padding:6px 0}
-
-/* Ensinamentos */
-.cats{display:flex;flex-direction:column;gap:22px}
-.cat h2{font-size:14px;font-family:var(--sans);font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
-.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:8px}
-.card h3{font-size:18px}
-.card p{color:var(--muted);font-size:13px}
-.card.locked{background:none;border-style:dashed}
-.card.locked h3{color:var(--muted)}
-.card:not(.locked):hover{border-color:var(--sand)}
-.reader{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
-.reader h1{font-size:clamp(28px,6vw,40px)}
-.reader .body p{font-family:var(--serif);font-size:18px;line-height:1.75;margin-bottom:1em}
-.reader .src{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
-
-/* Editor */
-.sheet{position:fixed;inset:0;background:rgba(20,19,16,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
-@media (min-width:700px){.sheet{align-items:center}}
-.sheet form{background:var(--surface);border-radius:18px;padding:20px;width:100%;max-width:560px;max-height:90%;overflow:auto;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
-.sheet label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:500;color:var(--muted)}
-.sheet .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.sheet .chk{flex-direction:row;align-items:center;gap:8px;font-size:14px;color:var(--ink)}
-.sheet .foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:6px}
-.banner{font-size:12px;color:var(--muted);background:var(--surface-2);border-radius:10px;padding:8px 12px}
-.photo{display:block;width:100%;max-width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px;background:var(--surface-2)}
-.photo.blur{filter:blur(14px) saturate(.7);transform:scale(1.02)}
-.photo-wrap{overflow:hidden;border-radius:12px;position:relative}
-.photo-wrap .veil{position:absolute;inset:0;display:grid;place-items:center;color:#F8F3E8;font-size:13px;font-weight:500;letter-spacing:.04em;background:rgba(28,27,23,.25)}
-.reader .photo{aspect-ratio:3/2}
-.card .photo{aspect-ratio:16/9;border-radius:8px}
-.fotofield{display:flex;flex-direction:column;gap:8px}
-.fotofield img{width:100%;max-width:100%;max-height:200px;object-fit:cover;border-radius:10px}
 .people{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
 .people li{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:start}
 .people img{width:36px;height:36px;border-radius:50%}
 .people b{font-weight:600}
-.people small{display:block;color:var(--muted);font-size:12px}
-.people .nota{font-size:13px}
+.people small{display:block;color:var(--soft);font-size:12px}
 .share{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:14px}
-.small{font-size:12px;color:var(--muted)}
-.map.marking svg{cursor:crosshair}
-.map .person circle{stroke:var(--map-bg);stroke-width:3}
-.map .person text{font:600 13px var(--sans);fill:#fff;text-anchor:middle;dominant-baseline:central}
-.map .person .ring{fill:none;stroke-width:2;opacity:.5}
-.picker{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;background:var(--surface)}
-.picker select,.picker input{flex:1 1 180px;min-width:0}
+
+/* Insígnias */
+.passport{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;background:rgba(20,15,10,.92);border:1px solid var(--line2);border-radius:18px;padding:18px}
+.passport img{width:96px;height:96px;border-radius:50%;object-fit:cover;border:1px solid var(--line2)}
+.passport .num{font-family:var(--display);font-size:13px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
+.passport h2{font-size:24px;margin:2px 0}
+.bar{height:6px;border-radius:6px;background:var(--panel3);overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold-deep),var(--gold));border-radius:6px}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(46%,150px),1fr));gap:18px 14px}
+.badge{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.badge .art{width:100%;max-width:150px;aspect-ratio:3/4;display:grid;place-items:center;position:relative}
+.badge .art img{max-width:100%;max-height:100%;width:auto;height:auto}
+.badge.off .art img{filter:grayscale(1) brightness(.35) contrast(1.1)}
+.badge.off .art::after{content:"";position:absolute;width:44px;height:44px;border-radius:50%;background:#100b07 url("img/cristal.jpg") center/cover;border:1px solid var(--line2)}
+.badge b{font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.06em}
+.badge small{font-size:11.5px;color:var(--soft)}
+.badge.off b{color:var(--soft)}
+@media (prefers-reduced-motion:no-preference){.badge .art img{transition:transform .25s}.badge:not(.off):hover .art img{transform:rotate(-2deg) scale(1.03)}}
+.roster{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.roster li{display:grid;grid-template-columns:44px 36px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.roster li:first-child{border-top:0}
+.roster .n{font-family:var(--display);color:var(--gold);font-size:15px;font-variant-numeric:tabular-nums;text-align:right}
+.roster img{width:36px;height:36px;border-radius:50%}
+.roster small{display:block;color:var(--soft);font-size:12px}
+.roster .c{font-size:12px;color:var(--soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* Conversa */
+.chatview{padding:0;max-width:none;height:100%;display:grid;grid-template-rows:auto 1fr auto auto;gap:0}
+.chathead{padding:14px 16px;border-bottom:1px solid var(--line);background:rgba(11,8,6,.85)}
+.chatlog{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.bubble{display:grid;grid-template-columns:32px 1fr;gap:10px;max-width:640px}
+.bubble>img{width:32px;height:32px;border-radius:50%}
+.bubble .b{background:var(--panel2);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:8px 12px;min-width:0}
+.bubble.me{margin-left:auto;grid-template-columns:1fr}
+.bubble.me>img{display:none}
+.bubble.me .b{background:#2a2012;border-color:var(--line2);border-radius:14px 4px 14px 14px}
+.bubble .h{display:flex;gap:8px;align-items:baseline;font-size:12px;color:var(--soft)}
+.bubble .h b{color:var(--gold);font-weight:600}
+.bubble .t{white-space:pre-wrap;overflow-wrap:anywhere}
+.bubble .del{margin-left:auto;background:none;border:0;color:var(--faint);font-size:11px;padding:0}
 .bubble .ponto{display:flex;flex-direction:column;gap:6px}
-.bubble .ponto b{font-family:var(--serif);font-size:16px}
+.bubble .ponto b{font-family:var(--display);font-size:15px;font-weight:500;color:var(--ink)}
 .bubble .chatfoto{display:block;max-width:100%;width:280px;border-radius:10px;margin-top:4px}
-.iconbtn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--bg);display:grid;place-items:center;flex:none;color:var(--muted)}
+.dayline{align-self:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.picker{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;background:var(--panel)}
+.picker select,.picker input{flex:1 1 180px;min-width:0}
+.composer{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;align-items:flex-end;background:var(--panel)}
+.composer textarea{min-height:44px;max-height:140px;border-radius:22px;padding:10px 16px}
+.composer .note{font-size:13px;color:var(--soft);padding:4px 2px}
+.composer .note:empty{display:none}
+.iconbtn{width:44px;height:44px;border-radius:50%;border:1px solid var(--line2);background:none;display:grid;place-items:center;flex:none;color:var(--soft)}
 .iconbtn svg{width:20px;height:20px}
-.iconbtn[aria-pressed="true"]{color:var(--terra);border-color:var(--terra)}
-@media (prefers-reduced-motion:no-preference){.pin circle.halo{transition:opacity .2s}}
+.iconbtn[aria-pressed="true"]{color:var(--gold);border-color:var(--gold)}
+
+/* Ensinamentos */
+.cats{display:flex;flex-direction:column;gap:26px}
+.cat>h2{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))}
+.card{background:rgba(20,15,10,.9);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:left;display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:start}
+.card h3{font-size:16.5px;grid-column:1}
+.card p{grid-column:1;color:var(--soft);font-family:var(--read);font-size:16px;line-height:1.35}
+.card img{grid-column:2;grid-row:1/span 3;width:46px;height:auto}
+.card .chip{grid-column:1;justify-self:start}
+.card.locked{border-style:dashed;background:none}
+.card.locked h3{color:var(--soft)}
+.card.locked img{filter:grayscale(1) brightness(.4)}
+.card:not(.locked):hover{border-color:var(--line2)}
+.reader{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.reader .top-badge{width:110px;height:auto;align-self:center}
+.reader h1{font-size:clamp(26px,6vw,38px);text-align:center}
+.reader .eyebrow{text-align:center}
+.reader .body p{font-family:var(--read);font-size:20px;line-height:1.7;margin-bottom:1em}
+.reader .src{font-size:13px;color:var(--soft);border-top:1px solid var(--line);padding-top:12px}
+.photo{display:block;width:100%;max-width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:12px}
+
+/* Cadastro e editor */
+.welcome{max-width:520px;margin:0 auto;padding:28px 16px 40px;display:flex;flex-direction:column;gap:18px;text-align:center}
+.welcome .emb{width:min(100%,300px);height:auto;margin:0 auto;border-radius:50%}
+.welcome h1{font-size:clamp(26px,6vw,34px)}
+.welcome form{display:flex;flex-direction:column;gap:12px;text-align:left}
+.welcome label,.sheet label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:500;color:var(--soft);letter-spacing:.04em}
+.sheet{position:fixed;inset:0;background:rgba(5,4,3,.7);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+@media (min-width:700px){.sheet{align-items:center}}
+.sheet>div,.sheet form{background:var(--panel);border:1px solid var(--line2);border-radius:18px;padding:20px;width:100%;max-width:560px;max-height:90%;overflow:auto;display:flex;flex-direction:column;gap:12px}
+.sheet .chk{flex-direction:row;align-items:center;gap:8px;font-size:14px;color:var(--ink)}
+.sheet .foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:6px}
+.sheet .big{width:min(60%,220px);height:auto;margin:0 auto}
+.fotofield{display:flex;flex-direction:column;gap:8px}
+.fotofield img{width:100%;max-width:100%;max-height:200px;object-fit:cover;border-radius:10px}
+.unlock{display:flex;gap:8px;flex-wrap:wrap}
+.unlock input{flex:1 1 160px;min-width:0}
+.secret{font-size:12px;color:var(--soft);border-top:1px dashed var(--line2);padding-top:10px}
+.secret code{font-family:ui-monospace,Menlo,monospace;background:var(--panel3);padding:1px 6px;border-radius:4px;color:var(--ink)}
 </style>
 
 <div class="app">
   <header class="top">
-    <div class="brand"><b>Caravana do Céu</b><span id="subtitle">Caderno de viagem</span></div>
-    <div class="who" id="who"></div>
+    <div class="brand"><img src="img/simbolo.png" alt=""><div><b>Caravana do Céu</b><span>Índia · 4 a 16 nov 2026</span></div></div>
+    <button class="me" id="me" type="button" hidden></button>
   </header>
   <main id="main"></main>
   <nav class="tabs" id="tabs" aria-label="Seções">
-    <button data-tab="rotas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></svg>Rotas</button>
-    <button data-tab="mapa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Mapa</button>
-    <button data-tab="conversa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/></svg>Conversa</button>
-    <button data-tab="ensinamentos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5z"/><path d="M12 6.5v13"/></svg>Ensinamentos</button>
+    <button data-tab="roteiro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Roteiro</button>
+    <button data-tab="mapa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Mapa</button>
+    <button data-tab="insignias"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h12v10.5a6 6 0 0 1-12 0z"/><path d="M9.5 10l1.8 1.8 3.4-3.6"/></svg>Insígnias</button>
+    <button data-tab="conversa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/></svg>Conversa</button>
+    <button data-tab="ensinamentos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5z"/><path d="M12 6.5v13"/></svg>Ensinamentos</button>
   </nav>
 </div>
 
@@ -232,43 +258,548 @@ input:focus,select:focus,textarea:focus{border-color:var(--sand)}
 
 // ---------- estado ----------
 const S = {
-  tab: "rotas",
-  rotas: [], locais: [], ens: [], chat: [],
-  progresso: {},
+  tab: "roteiro",
+  dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [],
+  vReady: false, dbReady: false, pularCadastro: false,
   uid: null, me: null, isOwner: false, canChat: null,
-  db: null, user: null, dbReady: false,
-  rotaSel: null, localSel: null, ensSel: null, canal: "geral",
-  unlockMsg: null,
-  assets: null, posicoes: [], perfis: {}, marcando: false, posMsg: null, pontoAberto: false, proj: null
+  db: null, user: null, assets: null, perfis: {},
+  cidadeSel: "india", localSel: null, ensSel: null, badgeSel: null,
+  unlockMsg: null, marcando: false, posMsg: null, pontoAberto: false, proj: null, local: {}
 };
-const FRESCO = 3 * 60 * 60 * 1000;
+try { const t = localStorage.getItem("cdi-tab"); if (t) S.tab = t; } catch (e) {}
+try { S.local = JSON.parse(localStorage.getItem("cdi-ins") || "{}") || {}; } catch (e) {}
+
+const SVGTAGS = new Set(["svg","g","path","circle","text","line","rect","title","image"]);
+function h(tag, attrs, ...kids) {
+  const el = SVGTAGS.has(tag) ? document.createElementNS("http://www.w3.org/2000/svg", tag) : document.createElement(tag);
+  if (attrs) for (const k in attrs) {
+    const v = attrs[k];
+    if (v == null || v === false) continue;
+    if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k === "text") el.textContent = v;
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const k of kids.flat(Infinity)) if (k != null && k !== false) el.append(k.nodeType ? k : String(k));
+  return el;
+}
+const $ = s => document.querySelector(s);
+const norm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+const byOrdem = (a, b) => (a.ordem ?? 999) - (b.ordem ?? 999);
 const blob = id => "/_blob/" + id;
-const minhaPos = () => S.posicoes.find(p => p.id === S.uid && Date.now() - p.ts < FRESCO);
-const frescas = rid => S.posicoes.filter(p => p.rotaId === rid && Date.now() - (p.ts || 0) < FRESCO);
+const badgeSrc = l => l && l.insignia ? `insignias/${l.insignia}.webp` : null;
+const FRESCO = 3 * 60 * 60 * 1000;
+const BLANK = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
+
+// ---------- quem é quem ----------
+const eu = () => S.viajantes.find(v => v.id === S.uid);
+function numeros() {
+  const m = {}; S.viajantes.filter(v => !v.lider).sort((a, b) => (a.ts || 0) - (b.ts || 0)).forEach((v, i) => m[v.id] = i + 1); return m;
+}
+const nn = n => String(n).padStart(2, "0");
+function rotulo(id) {
+  const v = S.viajantes.find(x => x.id === id);
+  if (v && v.lider) return "Líder da travessia";
+  const n = numeros()[id]; return n ? "Viajante nº " + nn(n) : "";
+}
+function nomeDe(id) {
+  if (id === S.uid) return "Você";
+  const v = S.viajantes.find(x => x.id === id);
+  return (v && v.nome) || S.perfis[id]?.name || "Viajante";
+}
+perfis.pend = new Set();
+async function perfis(ids) {
+  const falta = [...new Set(ids)].filter(id => id && !S.perfis[id] && !perfis.pend.has(id));
+  if (!falta.length || !S.user) return;
+  falta.forEach(id => perfis.pend.add(id));
+  Object.assign(S.perfis, await S.user.profiles(falta)); render();
+}
+const avatar = id => S.perfis[id]?.avatarUrl || BLANK;
+
+// ---------- insígnias ----------
+const minhas = () => ({ ...S.local, ...((eu() && eu().insignias) || {}) });
+const aberto = l => !!(l && (l.aberto || minhas()[l.id]));
+const conquistasDe = v => S.locais.filter(l => l.insignia && (l.aberto || (v.insignias || {})[l.id])).length;
+const insigniaLocais = () => S.locais.filter(l => l.insignia).sort(byOrdem);
+const localDe = id => S.locais.find(l => l.id === id);
+const cidadeDe = id => S.cidades.find(c => c.id === id);
+const ensLiberado = e => !e.localId || !localDe(e.localId) || aberto(localDe(e.localId));
+
+async function desbloquear(l, palavra) {
+  if (norm(palavra) !== norm(l.codigo)) return { ok: false, text: "Essa não é a palavra deste lugar. Confira com a líder e tente de novo." };
+  const ts = Date.now();
+  S.local = { ...S.local, [l.id]: ts };
+  try { localStorage.setItem("cdi-ins", JSON.stringify(S.local)); } catch (e) {}
+  if (S.db && S.uid && eu()) { try { await S.db.doc("viajantes/" + S.uid).update({ insignias: { [l.id]: ts } }); } catch (e) {} }
+  return { ok: true, text: "Insígnia conquistada! Ela já está no seu passaporte." };
+}
+
+// ---------- datas ----------
+const IST = () => new Date().toLocaleTimeString("pt-BR", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit" });
+const BRT = () => new Date().toLocaleTimeString("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit" });
+const hojeIso = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+function faltam() {
+  const ini = new Date("2026-11-04T00:00:00+05:30").getTime(), d = Math.ceil((ini - Date.now()) / 86400000);
+  return d;
+}
+
+// ---------- navegação ----------
+function go(tab) {
+  S.tab = tab; try { localStorage.setItem("cdi-tab", tab); } catch (e) {}
+  render(); $("#main").scrollTop = 0;
+}
+$("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (!b) return; if (b.dataset.tab === "ensinamentos") S.ensSel = null; go(b.dataset.tab); });
+$("#me").addEventListener("click", () => go("insignias"));
+
+function render() {
+  for (const b of document.querySelectorAll("#tabs button")) {
+    if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+  }
+  const act = document.activeElement, actId = act && act.id, sel = act && "selectionStart" in act ? [act.selectionStart, act.selectionEnd] : null;
+  const draft = act && actId && act.value !== undefined ? act.value : null;
+  const openDays = [...document.querySelectorAll("details.day")].map(d => [d.dataset.id, d.open]);
+  const chatDraft = $("#chat-input")?.value;
+  pintaMe();
+  const main = $("#main");
+  const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
+  main.replaceChildren(precisaCadastro ? vCadastro() :
+    S.tab === "roteiro" ? vRoteiro() : S.tab === "mapa" ? vMapa() : S.tab === "insignias" ? vInsignias() :
+    S.tab === "conversa" ? vConversa() : vEnsinamentos());
+  for (const [id, open] of openDays) { const d = document.querySelector(`details.day[data-id="${id}"]`); if (d) d.open = open; }
+  if (S.tab === "conversa") {
+    const inp = $("#chat-input"); if (inp && chatDraft) inp.value = chatDraft;
+    const log = $("#chatlog"); if (log) log.scrollTop = log.scrollHeight;
+  }
+  const el = actId && document.getElementById(actId);
+  if (el && el !== act) { if (draft != null && "value" in el && el.type !== "file") el.value = draft; el.focus(); if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
+}
+function pintaMe() {
+  const b = $("#me"), v = eu();
+  if (!S.uid) { b.hidden = true; return; }
+  b.hidden = false;
+  b.replaceChildren(h("img", { src: avatar(S.uid), alt: "" }), h("b", { text: v ? (v.lider ? "Líder" : "nº " + nn(numeros()[S.uid] || 0)) : "" }), h("span", { text: v ? v.nome : "Fazer cadastro" }));
+}
+function adminBtn(label, fn) { return S.isOwner ? h("button", { class: "btn", type: "button", onclick: fn }, "+ " + label) : null; }
+function carregando() {
+  return h("div", { class: "empty" }, h("h3", { text: S.dbReady ? "Nada por aqui ainda" : "Abrindo o mapa da travessia…" }),
+    h("p", { text: S.dbReady ? "Quando a líder publicar, aparece aqui." : "Se demorar, abra este aplicativo pelo link do Claude, com a sua conta." }));
+}
+
+// ---------- cadastro ----------
+function vCadastro() {
+  const nome = h("input", { type: "text", id: "cad-nome", maxlength: "40", autocomplete: "given-name", placeholder: "Como a caravana vai te chamar", required: true });
+  const cid = h("input", { type: "text", id: "cad-cidade", maxlength: "40", placeholder: "Ex.: São Paulo" });
+  const erro = h("p", { class: "msg err", role: "alert" });
+  const nomePerfil = S.me && S.me.name; if (nomePerfil) nome.value = nomePerfil.split(" ")[0];
+  return h("section", { class: "welcome" },
+    h("img", { class: "emb", src: "img/emblema.jpg", alt: "O Mapa da Travessia · Índia" }),
+    h("p", { class: "eyebrow", text: "Bem-vinda, bem-vindo à travessia" }),
+    h("h1", { text: "Seu passaporte da Índia" }),
+    h("p", { class: "lede", text: "Faça seu cadastro para receber seu número de viajante, conversar com a caravana e guardar as insígnias que você conquistar pelo caminho." }),
+    h("form", { onsubmit: async e => {
+      e.preventDefault();
+      if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
+      const doc = { nome: nome.value.trim(), cidade: cid.value.trim(), ts: Date.now(), insignias: { ...S.local } };
+      if (S.isOwner) doc.lider = true;
+      try { await S.db.doc("viajantes/" + S.uid).set(doc); }
+      catch (err) { erro.textContent = "Não consegui fazer seu cadastro. Peça à líder um convite com permissão para participar."; }
+    } },
+      h("label", { for: "cad-nome" }, "Seu nome", nome),
+      h("label", { for: "cad-cidade" }, "De onde você vem", cid),
+      erro,
+      h("button", { class: "btn gold", type: "submit" }, "Entrar na travessia")),
+    h("button", { class: "btn ghost", type: "button", onclick: () => { S.pularCadastro = true; render(); } }, "Agora não, só quero olhar"));
+}
+
+// ---------- Roteiro ----------
+function vRoteiro() {
+  const dias = S.dias.slice().sort(byOrdem), hoje = hojeIso(), f = faltam();
+  const abrirId = (dias.find(d => d.iso === hoje) || dias.find(d => d.iso > hoje) || dias[0] || {}).id;
+  return h("section", { class: "view" },
+    h("img", { class: "orn", src: "img/mantra-ganesha.webp", alt: "Om Gam Ganapataye Namah" }),
+    h("div", { class: "head" },
+      h("div", null, h("p", { class: "eyebrow", text: "A rota da caravana" }), h("h1", { text: "Índia Sagrada" })),
+      adminBtn("Novo dia", () => editar("dia", { ordem: dias.length + 1 }))),
+    h("p", { class: "lede", text: "Delhi · Agra · Jaipur · Varanasi · Rishikesh. Treze dias atravessando uma cultura viva, pulsando em cada oferenda, cada cântico, cada amanhecer à beira do rio." }),
+    h("div", { class: "clock" },
+      f > 0 ? h("div", null, h("b", { text: f }), h("span", { text: f === 1 ? "dia para embarcar" : "dias para a travessia" })) : null,
+      h("div", null, h("b", { text: IST() }), h("span", { text: "Agora na Índia" })),
+      h("div", null, h("b", { text: BRT() }), h("span", { text: "Agora em Brasília · +8h30" }))),
+    dias.length ? h("div", { class: "days" }, dias.map(d => {
+      const ls = S.locais.filter(l => l.insignia && l.dia === d.n).sort(byOrdem);
+      const itens = Array.isArray(d.itens) ? d.itens : [];
+      const isToday = d.iso === hoje;
+      return h("details", { class: "day" + (isToday ? " is-today" : ""), "data-id": d.id, open: d.id === abrirId },
+        h("summary", null,
+          h("div", { class: "dnum" }, h("small", { text: "DIA" }), h("b", { text: nn(d.n) })),
+          h("div", { class: "dtit" }, h("h3", { text: d.titulo }), h("p", { text: [d.data, d.cidade].filter(Boolean).join(" · ") })),
+          h("div", { class: "dbadges" }, isToday ? h("span", { class: "chip today", text: "Hoje" }) : ls.map(l => h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" })))),
+        h("div", { class: "dbody" },
+          itens.length ? h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h", text: it.hora || "" }), h("span", { text: it.texto })))) : null,
+          d.nota ? h("p", { class: "nota", text: d.nota }) : null,
+          ls.length ? h("div", { class: "actions" }, ls.map(l => h("button", { class: "btn", type: "button", onclick: () => { S.badgeSel = l.id; S.unlockMsg = null; go("insignias"); } }, "Insígnia: " + l.nome))) : null,
+          S.isOwner ? h("div", null, h("button", { class: "btn ghost", type: "button", onclick: () => editar("dia", d) }, "Editar este dia")) : null));
+    })) : carregando(),
+    h("p", { class: "small", style: "text-align:center", text: "Horários podem mudar. Na dúvida, vale o que a líder combinar na conversa." }));
+}
+
+// ---------- Mapa ----------
+function rng(seed) { let s = 0; for (const c of String(seed)) s = (s * 31 + c.charCodeAt(0)) >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
 function km(a, b) {
   const R = 6371, r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLng = (b.lng - a.lng) * r;
   const x = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLng / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(x));
 }
+function projetor(pts, W, H, P) {
+  const latC = pts.reduce((s, p) => s + +p.lat, 0) / pts.length, cos = Math.cos(latC * Math.PI / 180);
+  const xs = pts.map(p => +p.lng * cos), ys = pts.map(p => -p.lat);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const s = Math.min((W - 2 * P) / Math.max(x1 - x0, .01), (H - 2 * P) / Math.max(y1 - y0, .01)), mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
+  return { W, H, cos, s, mx, my, xy: p => [W / 2 + (+p.lng * cos - mx) * s, H / 2 + (-p.lat - my) * s] };
+}
+function base(W, H, seed) {
+  const svg = h("svg", { viewBox: `0 0 ${W} ${H}`, role: "img" }), r = rng(seed);
+  for (let c = 0; c < 5; c++) {
+    const cx = r() * W, cy = r() * H, b = 40 + r() * 70, p1 = r() * 6, p2 = r() * 6;
+    for (let k = 1; k <= 5; k++) {
+      const R = b * k * .55; let d = "";
+      for (let a = 0; a <= 64; a++) { const t = a / 64 * Math.PI * 2, rr = R * (1 + .13 * Math.sin(3 * t + p1) + .07 * Math.sin(5 * t + p2)); d += (a ? "L" : "M") + (cx + rr * Math.cos(t)).toFixed(1) + " " + (cy + rr * .72 * Math.sin(t)).toFixed(1); }
+      svg.append(h("path", { class: "contour", d: d + "Z" }));
+    }
+  }
+  svg.append(h("g", null, h("text", { class: "ui", x: W - 40, y: 44, "text-anchor": "middle", text: "N" }),
+    h("path", { d: `M${W - 40} 52 L${W - 46} 72 L${W - 40} 67 L${W - 34} 72 Z`, fill: "#b7a37a" })));
+  return svg;
+}
+function escala(svg, P) {
+  const W = P.W, H = P.H, per = P.s / 111.32, nice = [0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
+  const k = nice.find(n => n * per >= 60) || 500, len = k * per;
+  if (len < 260) svg.append(h("g", null,
+    h("line", { class: "ui-line", x1: 32, y1: H - 32, x2: 32 + len, y2: H - 32 }),
+    h("line", { class: "ui-line", x1: 32, y1: H - 38, x2: 32, y2: H - 26 }),
+    h("line", { class: "ui-line", x1: 32 + len, y1: H - 38, x2: 32 + len, y2: H - 26 }),
+    h("text", { class: "ui", x: 32, y: H - 44, text: k < 1 ? k * 1000 + " m" : k + " km" })));
+}
+function pessoasNoMapa(svg, P, filtro) {
+  for (const p of S.posicoes.filter(p => Date.now() - (p.ts || 0) < FRESCO && filtro(p))) {
+    const [x, y] = P.xy(p); if (x < 0 || x > P.W || y < 0 || y > P.H) continue;
+    const cor = S.perfis[p.id]?.color || "#a67d33", ini = (nomeDe(p.id)[0] || "?").toUpperCase();
+    svg.append(h("g", { class: "person" }, h("title", { text: nomeDe(p.id) + (p.nota ? ": " + p.nota : "") }),
+      h("circle", { class: "pring", cx: x, cy: y, r: 22, stroke: cor }), h("circle", { cx: x, cy: y, r: 14, fill: cor }), h("text", { x, y, text: ini })));
+  }
+}
+function mapaIndia(cids) {
+  const W = 600, H = 620, svg = base(W, H, "india");
+  svg.setAttribute("aria-label", "Mapa da rota pela Índia");
+  const pts = cids.filter(c => isFinite(+c.lat)); if (!pts.length) return svg;
+  const P = projetor(pts, W, H, 80); S.proj = P;
+  const ordem = [...pts, pts[0]];
+  svg.append(h("path", { class: "route", d: ordem.map((c, i) => (i ? "L" : "M") + P.xy(c).map(n => n.toFixed(1)).join(" ")).join("") }));
+  pessoasNoMapa(svg, P, () => true);
+  pts.forEach(c => {
+    const [x, y] = P.xy(c), ls = S.locais.filter(l => l.cidadeId === c.id && l.insignia), ok = ls.filter(aberto).length;
+    const right = x < W - 170;
+    svg.append(h("g", { class: "city pin", tabindex: "0", role: "button", "aria-label": c.nome,
+      onclick: () => { if (S.marcando) return; S.cidadeSel = c.id; S.localSel = null; render(); },
+      onkeydown: e => { if (e.key === "Enter") { S.cidadeSel = c.id; render(); } } },
+      h("circle", { class: "dot", cx: x, cy: y, r: 9 }),
+      h("text", { x: right ? x + 20 : x - 20, y: y + 2, "text-anchor": right ? "start" : "end", text: c.nome.toUpperCase() }),
+      ls.length ? h("text", { class: "cnt", x: right ? x + 20 : x - 20, y: y + 22, "text-anchor": right ? "start" : "end", text: `${ok}/${ls.length} insígnias` }) : null));
+  });
+  escala(svg, P); marcarClick(svg, "india");
+  return svg;
+}
+function mapaCidade(c, ls) {
+  const W = 600, H = 560, svg = base(W, H, c.id);
+  svg.setAttribute("aria-label", "Mapa de " + c.nome);
+  const pts = ls.filter(l => isFinite(+l.lat)); if (!pts.length) return svg;
+  const P = projetor(pts.length > 1 ? pts : [...pts, { lat: +pts[0].lat + .01, lng: +pts[0].lng + .01 }, { lat: +pts[0].lat - .01, lng: +pts[0].lng - .01 }], W, H, 70); S.proj = P;
+  const ins = pts.filter(l => l.insignia);
+  if (ins.length > 1) svg.append(h("path", { class: "route", d: ins.map((l, i) => (i ? "L" : "M") + P.xy(l).map(n => n.toFixed(1)).join(" ")).join("") }));
+  for (const l of pts.filter(l => !l.insignia)) {
+    const [x, y] = P.xy(l), right = x < W - 170;
+    svg.append(h("g", { class: "hotel pin", tabindex: "0", role: "button", "aria-label": l.nome,
+      onclick: () => { if (S.marcando) return; S.localSel = l.id; render(); } },
+      h("rect", { x: x - 9, y: y - 9, width: 18, height: 18, rx: 4 }),
+      h("text", { x: right ? x + 16 : x - 16, y: y + 5, "text-anchor": right ? "start" : "end", text: l.nome })));
+  }
+  pessoasNoMapa(svg, P, p => p.cidadeId === c.id);
+  ins.forEach(l => {
+    const [x, y] = P.xy(l), on = aberto(l), right = x < W - 190, i = insigniaLocais().indexOf(l) + 1;
+    svg.append(h("g", { class: `pin ${on ? "on" : "off"}${S.localSel === l.id ? " sel" : ""}`, tabindex: "0", role: "button", "aria-label": `${l.nome}${on ? "" : " (a conquistar)"}`,
+      onclick: () => { if (S.marcando) return; S.localSel = l.id; S.unlockMsg = null; render(); },
+      onkeydown: e => { if (e.key === "Enter") { S.localSel = l.id; render(); } } },
+      h("circle", { class: "halo", cx: x, cy: y, r: 30 }),
+      h("circle", { class: "ring", cx: x, cy: y, r: 23 }),
+      on ? h("image", { href: badgeSrc(l), x: x - 16, y: y - 21, width: 32, height: 42 }) : h("text", { class: "n", x, y, text: nn(i) }),
+      h("text", { class: "lbl", x: right ? x + 31 : x - 31, y: y + 5, "text-anchor": right ? "start" : "end", text: l.nome })));
+  });
+  escala(svg, P); marcarClick(svg, c.id);
+  return svg;
+}
+function marcarClick(svg, cidadeId) {
+  svg.addEventListener("click", ev => {
+    if (!S.marcando || !S.proj) return;
+    const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+    const q = pt.matrixTransform(svg.getScreenCTM().inverse()), P = S.proj;
+    const lng = ((q.x - P.W / 2) / P.s + P.mx) / P.cos, lat = -((q.y - P.H / 2) / P.s + P.my);
+    S.marcando = false;
+    salvarPos({ cidadeId: cidadeId === "india" ? pertoCidade({ lat, lng }) : cidadeId, lat: +lat.toFixed(5), lng: +lng.toFixed(5), lugar: "" });
+  });
+}
+function pertoCidade(p) { let b = null; for (const c of S.cidades) { const d = km(p, { lat: +c.lat, lng: +c.lng }); if (!b || d < b.d) b = { id: c.id, d }; } return b ? b.id : ""; }
 function pertoDe(p) {
-  const ls = locaisDa(p.rotaId).filter(l => isFinite(+l.lat));
-  let best = null; for (const l of ls) { const d = km(p, { lat: +l.lat, lng: +l.lng }); if (!best || d < best.d) best = { l, d }; }
-  if (!best) return "";
-  return best.d < 0.15 ? "em " + best.l.nome : `a ${best.d < 10 ? best.d.toFixed(1).replace(".", ",") : Math.round(best.d)} km de ${best.l.nome}`;
+  let b = null; for (const l of S.locais.filter(l => isFinite(+l.lat))) { const d = km(p, { lat: +l.lat, lng: +l.lng }); if (!b || d < b.d) b = { l, d }; }
+  if (!b) return ""; if (b.d > 30) return cidadeDe(p.cidadeId)?.nome || "";
+  return b.d < 0.15 ? "em " + b.l.nome : `a ${b.d < 10 ? b.d.toFixed(1).replace(".", ",") : Math.round(b.d)} km de ${b.l.nome}`;
 }
-function haQuanto(ts) {
-  const m = Math.round((Date.now() - ts) / 60000);
-  return m < 1 ? "agora" : m < 60 ? `há ${m} min` : `há ${Math.floor(m / 60)} h ${m % 60 ? (m % 60) + " min" : ""}`.trim();
+function haQuanto(ts) { const m = Math.round((Date.now() - ts) / 60000); return m < 1 ? "agora" : m < 60 ? `há ${m} min` : `há ${Math.floor(m / 60)} h`; }
+
+function vMapa() {
+  const cids = S.cidades.slice().sort(byOrdem);
+  if (!cids.length) return h("section", { class: "view" }, h("h1", { text: "Mapa" }), carregando());
+  if (S.cidadeSel !== "india" && !cidadeDe(S.cidadeSel)) S.cidadeSel = "india";
+  const c = cidadeDe(S.cidadeSel), ls = c ? S.locais.filter(l => l.cidadeId === c.id).sort(byOrdem) : [];
+  const loc = ls.find(l => l.id === S.localSel);
+  perfis(S.posicoes.map(p => p.id));
+  return h("section", { class: "view" },
+    h("div", { class: "head" },
+      h("div", null, h("p", { class: "eyebrow", text: c ? "Índia · " + c.nome : "O mapa da travessia" }), h("h1", { text: c ? c.nome : "A rota da caravana" })),
+      c ? adminBtn("Novo lugar", () => editar("local", { cidadeId: c.id, ordem: 99 })) : null),
+    h("div", { class: "pick", role: "group", "aria-label": "Escolher mapa" },
+      h("button", { type: "button", "aria-pressed": String(!c), onclick: () => { S.cidadeSel = "india"; S.localSel = null; render(); } }, "Índia"),
+      cids.map(x => h("button", { type: "button", "aria-pressed": String(c && x.id === c.id), onclick: () => { S.cidadeSel = x.id; S.localSel = null; render(); } }, x.nome))),
+    h("div", { class: "mapwrap" },
+      h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
+        S.marcando ? h("p", { class: "msg ok", role: "status", text: "Toque no mapa no ponto onde você está." }) : null,
+        h("div", { class: "map" + (S.marcando ? " marking" : "") }, c ? mapaCidade(c, ls) : mapaIndia(cids)),
+        h("div", { class: "legend" },
+          c ? h("span", null, h("i", { style: "border:2px solid var(--gold)" }), "Insígnia") : h("span", { text: "Toque numa cidade para ver os lugares." }),
+          c ? h("span", null, h("i", { style: "border-radius:3px;border:2px solid var(--soft)" }), "Hotel") : null,
+          h("span", null, h("i", { style: "background:var(--gold-deep)" }), "Pessoas da caravana"),
+          h("span", { text: "O relevo é só decorativo." }))),
+      h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" },
+        loc ? painelLocal(loc) : c ? h("aside", { class: "panel" }, h("p", { class: "eyebrow", text: c.nome }), h("h2", { text: c.frase || "Toque num ponto do mapa" }),
+          h("p", { class: "small", text: "Os pontos com número são insígnias a conquistar. Quando a caravana chegar, a líder revela a palavra do lugar." })) : null,
+        painelPessoas(c))));
 }
-async function perfis(ids) {
-  const falta = [...new Set(ids)].filter(id => id && !S.perfis[id] && !perfis.pend.has(id));
-  if (!falta.length || !S.user) return;
-  falta.forEach(id => perfis.pend.add(id));
-  const ps = await S.user.profiles(falta);
-  Object.assign(S.perfis, ps); render();
+
+function painelLocal(l) {
+  if (!l.insignia) return h("aside", { class: "panel" }, h("p", { class: "eyebrow", text: "Hotel" }), h("h2", { text: l.nome }),
+    l.descricao ? h("p", { class: "small", text: l.descricao }) : null,
+    h("div", { class: "actions" }, h("a", { class: "btn", href: mapsUrl(l), target: "_blank", rel: "noopener" }, "Abrir no Google Maps"),
+      S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editar("local", l) }, "Editar") : null));
+  return h("aside", { class: "panel" }, conteudoInsignia(l));
 }
-perfis.pend = new Set();
-const nomeDe = id => id === S.uid ? "Você" : (S.perfis[id]?.name || "Viajante");
+const mapsUrl = l => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(l.busca || l.nome);
+
+function conteudoInsignia(l) {
+  const on = aberto(l), ens = S.ens.filter(e => e.localId === l.id);
+  const input = h("input", { type: "text", id: "unlock-" + l.id, placeholder: "Palavra do lugar", autocomplete: "off", "aria-label": "Palavra do lugar" });
+  const tentar = async () => { if (!input.value.trim()) return; S.unlockMsg = await desbloquear(l, input.value); render(); refreshSheet(); };
+  input.addEventListener("keydown", e => { if (e.key === "Enter") tentar(); });
+  const quando = minhas()[l.id];
+  return [
+    h("img", { class: "big", src: badgeSrc(l), alt: "Insígnia " + l.nome, style: on ? "" : "filter:grayscale(1) brightness(.4)" }),
+    h("p", { class: "eyebrow", style: "text-align:center", text: [cidadeDe(l.cidadeId)?.nome, l.dia ? "Dia " + l.dia : ""].filter(Boolean).join(" · ") }),
+    h("h2", { style: "text-align:center", text: l.nome }),
+    on ? (l.descricao ? h("p", { class: "lede", text: l.descricao }) : null) : (l.dica ? h("p", { class: "lede", style: "font-style:italic", text: l.dica }) : null),
+    on && quando ? h("p", { class: "small", style: "text-align:center", text: "Conquistada em " + new Date(quando).toLocaleDateString("pt-BR", { day: "numeric", month: "long" }) }) : null,
+    !on && l.codigo ? h("div", { class: "unlock" }, input, h("button", { class: "btn gold", type: "button", onclick: tentar }, "Conquistar")) : null,
+    S.unlockMsg ? h("p", { class: "msg " + (S.unlockMsg.ok ? "ok" : "err"), role: "status", text: S.unlockMsg.text }) : null,
+    h("div", { class: "actions" },
+      on ? ens.map(e => h("button", { class: "btn gold", type: "button", onclick: () => { S.ensSel = e.id; closeSheets(); go("ensinamentos"); } }, "Ler: " + e.titulo)) : null,
+      h("a", { class: "btn", href: mapsUrl(l), target: "_blank", rel: "noopener" }, "Google Maps")),
+    S.isOwner ? h("div", { class: "secret" },
+      h("p", null, "Só você vê isto. Palavra do lugar: ", h("code", { text: l.codigo || "(sem palavra)" }), l.aberto ? " · aberta para todos" : ""),
+      h("div", { class: "actions", style: "margin-top:8px" },
+        h("button", { class: "btn", type: "button", onclick: () => { closeSheets(); editar("local", l); } }, "Editar"),
+        h("button", { class: "btn", type: "button", onclick: () => S.db.doc("locais/" + l.id).update({ aberto: !l.aberto }).catch(() => {}) }, l.aberto ? "Fechar para todos" : "Liberar para todos"))) : null
+  ];
+}
+
+function painelPessoas(c) {
+  const gente = S.posicoes.filter(p => Date.now() - (p.ts || 0) < FRESCO && (!c || p.cidadeId === c.id)).sort((a, b) => b.ts - a.ts);
+  const minha = S.posicoes.find(p => p.id === S.uid && Date.now() - p.ts < FRESCO);
+  const pode = S.db && S.uid && eu();
+  const lugares = S.locais.filter(l => !c || l.cidadeId === c.id).sort(byOrdem);
+  const sel = h("select", { id: "pos-lugar", "aria-label": "Estou em" }, h("option", { value: "", text: "Escolha um lugar" }), lugares.map(l => h("option", { value: l.id, text: l.nome })));
+  const nota = h("input", { type: "text", id: "pos-nota", maxlength: "140", placeholder: "Recado (ex.: tomando chai na escadaria)" });
+  const link = h("input", { type: "text", id: "pos-link", inputmode: "url", placeholder: "Link do Google Maps (localização ao vivo)" });
+  if (minha) { nota.value = minha.nota || ""; link.value = minha.link || ""; }
+  return h("aside", { class: "panel" },
+    h("p", { class: "eyebrow", text: "A caravana agora" }),
+    h("h2", { text: c ? "Quem está em " + c.nome : "Onde está cada um" }),
+    gente.length ? h("ul", { class: "people" }, gente.map(p => h("li", null,
+      h("img", { alt: "", src: avatar(p.id) }),
+      h("div", null, h("b", { text: nomeDe(p.id) }),
+        h("small", { text: [rotulo(p.id), pertoDe(p), haQuanto(p.ts)].filter(Boolean).join(" · ") }),
+        p.nota ? h("p", { class: "small", style: "color:var(--ink)", text: p.nota }) : null,
+        h("div", { class: "actions", style: "margin-top:6px" },
+          p.link ? h("a", { class: "btn", href: p.link, target: "_blank", rel: "noopener" }, "Ver ao vivo") : null,
+          h("a", { class: "btn ghost", href: `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`, target: "_blank", rel: "noopener" }, "Como chegar")))))) :
+      h("p", { class: "small", text: "Ninguém mostrou onde está nas últimas 3 horas." }),
+    pode ? h("div", { class: "share" },
+      h("p", { class: "eyebrow", text: minha ? "Você está aparecendo no mapa" : "Mostrar onde estou" }),
+      h("div", { class: "actions" },
+        h("button", { class: "btn gold", type: "button", onclick: () => { S.marcando = !S.marcando; render(); } }, S.marcando ? "Cancelar" : "Marcar no mapa"),
+        minha ? h("button", { class: "btn", type: "button", onclick: pararPos }, "Sair do mapa") : null),
+      h("label", { class: "small", for: "pos-lugar" }, "Ou diga em qual lugar você está"), sel, nota, link,
+      h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: () => {
+        const l = link.value.trim();
+        if (l && !/^https:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|(www\.)?google\.[a-z.]+\/maps)/i.test(l)) { S.posMsg = { ok: false, text: "Cole um link do Google Maps (começa com https://maps.app.goo.gl)." }; render(); return; }
+        const x = lugares.find(y => y.id === sel.value), ex = { nota: nota.value.trim(), link: l };
+        if (x) salvarPos({ cidadeId: x.cidadeId, lat: +x.lat, lng: +x.lng, lugar: x.nome, ...ex });
+        else if (minha) salvarPos({ ...minha, ...ex });
+        else { S.posMsg = { ok: false, text: "Marque no mapa ou escolha um lugar primeiro." }; render(); }
+      } }, "Salvar")),
+      S.posMsg ? h("p", { class: "msg " + (S.posMsg.ok ? "ok" : "err"), role: "status", text: S.posMsg.text }) : null,
+      h("p", { class: "small", text: "O aplicativo não lê o GPS do celular. Para aparecer ao vivo, abra o Google Maps, toque na sua foto, escolha Compartilhamento de local, crie um link e cole aqui. Sua marcação some sozinha em 3 horas e só a caravana vê." })
+    ) : null);
+}
+async function salvarPos(p) {
+  const doc = { cidadeId: p.cidadeId || "", lat: p.lat, lng: p.lng, lugar: p.lugar || "", nota: p.nota || "", link: p.link || "", ts: Date.now() };
+  const antes = S.posicoes.find(x => x.id === S.uid);
+  if (antes && p.nota === undefined) { doc.nota = antes.nota || ""; doc.link = antes.link || ""; }
+  try { await S.db.doc("posicoes/" + S.uid).set(doc); S.posMsg = { ok: true, text: "Pronto. A caravana já vê onde você está." }; }
+  catch (e) { S.posMsg = { ok: false, text: "Não consegui salvar. Peça à líder um convite com permissão para participar." }; }
+  render();
+}
+async function pararPos() { try { await S.db.doc("posicoes/" + S.uid).delete(); S.posMsg = { ok: true, text: "Você saiu do mapa." }; } catch (e) {} render(); }
+
+// ---------- Insígnias ----------
+function vInsignias() {
+  const ls = insigniaLocais(), v = eu(), ok = ls.filter(aberto).length, nums = numeros();
+  if (S.badgeSel) { const l = localDe(S.badgeSel); S.badgeSel = null; if (l) setTimeout(() => abrirInsignia(l)); }
+  const gente = S.viajantes.slice().sort((a, b) => (a.lider ? -1 : 0) - (b.lider ? -1 : 0) || (nums[a.id] || 0) - (nums[b.id] || 0));
+  perfis(gente.map(g => g.id));
+  return h("section", { class: "view" },
+    h("div", { class: "passport" },
+      h("img", { src: S.uid ? avatar(S.uid) : "img/emblema.jpg", alt: "" }),
+      h("div", null,
+        h("p", { class: "num", text: v ? rotulo(S.uid) : "Passaporte da travessia" }),
+        h("h2", { text: v ? v.nome : "Viajante" }),
+        v && v.cidade ? h("p", { class: "small", text: "De " + v.cidade }) : null,
+        h("div", { class: "bar" }, h("i", { style: `width:${ls.length ? ok / ls.length * 100 : 0}%` })),
+        h("p", { class: "small", style: "margin-top:6px", text: `${ok} de ${ls.length} insígnias conquistadas` }),
+        !v && S.db && S.uid ? h("button", { class: "btn gold", type: "button", style: "margin-top:10px", onclick: () => { S.pularCadastro = false; render(); } }, "Fazer meu cadastro") : null,
+        v ? h("button", { class: "btn ghost", type: "button", style: "margin-top:6px;padding-left:0", onclick: editarPerfil }, "Editar meus dados") : null)),
+    h("div", null, h("p", { class: "eyebrow", text: "Insígnias da travessia" }),
+      h("p", { class: "lede", style: "margin-top:6px", text: "Em cada lugar sagrado a líder revela uma palavra. Toque na insígnia e digite a palavra para conquistá-la." })),
+    ls.length ? h("div", { class: "badges" }, ls.map(l => {
+      const on = aberto(l);
+      return h("button", { class: "badge" + (on ? "" : " off"), type: "button", onclick: () => { S.unlockMsg = null; abrirInsignia(l); }, "aria-label": l.nome + (on ? ", conquistada" : ", a conquistar") },
+        h("span", { class: "art" }, h("img", { src: badgeSrc(l), alt: "", loading: "lazy" })),
+        h("b", { text: l.nome }), h("small", { text: on ? "Conquistada" : "Dia " + (l.dia || "") + " · " + (cidadeDe(l.cidadeId)?.nome || "") }));
+    })) : carregando(),
+    gente.length ? h("div", { class: "panel" },
+      h("p", { class: "eyebrow", text: "A caravana" }),
+      h("h2", { text: gente.length === 1 ? "1 pessoa cadastrada" : gente.length + " pessoas cadastradas" }),
+      h("ul", { class: "roster" }, gente.map(g => h("li", null,
+        h("span", { class: "n", text: g.lider ? "✦" : nn(nums[g.id] || 0) }),
+        h("img", { src: avatar(g.id), alt: "" }),
+        h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : "", g.cidade].filter(Boolean).join(" · ") })),
+        h("span", { class: "c", text: `${conquistasDe(g)}/${ls.length}` }))))) : null);
+}
+function closeSheets() { document.querySelectorAll(".sheet").forEach(s => s.remove()); }
+function abrirInsignia(l) {
+  closeSheets();
+  const box = h("div", { role: "dialog", "aria-label": l.nome });
+  const pintar = () => box.replaceChildren(...conteudoInsignia(l), h("div", { class: "foot" }, h("span"), h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
+  pintar();
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  sheet.dataset.local = l.id;
+  document.body.append(sheet);
+}
+function refreshSheet() {
+  const sh = document.querySelector(".sheet[data-local]"); if (!sh) return;
+  const l = localDe(sh.dataset.local); if (!l) return;
+  const box = sh.firstChild, act = document.activeElement, v = act && act.id && act.value;
+  box.replaceChildren(...conteudoInsignia(l), h("div", { class: "foot" }, h("span"), h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
+  if (act && act.id) { const el = document.getElementById(act.id); if (el) { el.value = v || ""; el.focus(); } }
+}
+function editarPerfil() {
+  const v = eu(); if (!v) return;
+  const nome = h("input", { type: "text", id: "pf-nome", maxlength: "40", value: v.nome || "" });
+  const cid = h("input", { type: "text", id: "pf-cidade", maxlength: "40", value: v.cidade || "" });
+  const erro = h("p", { class: "msg err", role: "alert" });
+  const form = h("form", { onsubmit: async e => { e.preventDefault(); if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
+    try { await S.db.doc("viajantes/" + S.uid).update({ nome: nome.value.trim(), cidade: cid.value.trim() }); closeSheets(); } catch (err) { erro.textContent = "Não consegui salvar. Tente de novo."; } } },
+    h("h2", { text: "Meus dados" }), h("label", { for: "pf-nome" }, "Seu nome", nome), h("label", { for: "pf-cidade" }, "De onde você vem", cid), erro,
+    h("div", { class: "foot" }, h("span"), h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: closeSheets }, "Cancelar"), h("button", { class: "btn gold", type: "submit" }, "Salvar"))));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, form);
+  document.body.append(sheet); nome.focus();
+}
+
+// ---------- Conversa ----------
+function vConversa() {
+  const msgs = S.chat.slice().sort((a, b) => a.ts - b.ts);
+  perfis(msgs.map(m => m.autor));
+  const log = h("div", { class: "chatlog", id: "chatlog", "aria-live": "polite" });
+  let last = "";
+  for (const m of msgs) {
+    const d = new Date(m.ts), day = d.toLocaleDateString("pt-BR", { day: "numeric", month: "long" });
+    if (day !== last) { log.append(h("p", { class: "dayline", text: day })); last = day; }
+    const mine = m.autor === S.uid;
+    log.append(h("div", { class: "bubble" + (mine ? " me" : "") },
+      h("img", { alt: "", src: avatar(m.autor) }),
+      h("div", { class: "b" },
+        h("div", { class: "h" }, h("b", { text: nomeDe(m.autor) }), h("span", { text: [mine ? "" : rotulo(m.autor), d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })].filter(Boolean).join(" · ") }),
+          (mine || S.isOwner) ? h("button", { class: "del", type: "button", onclick: () => S.db.doc("chat/" + m.id).delete().catch(() => {}) }, "apagar") : null),
+        m.tipo === "local" ? h("div", { class: "ponto" },
+          h("span", { class: "eyebrow", text: "Ponto de encontro" }), h("b", { text: m.nome || "Local marcado" }),
+          m.texto ? h("p", { class: "t", text: m.texto }) : null,
+          h("div", { class: "actions" },
+            h("a", { class: "btn", href: `https://www.google.com/maps/search/?api=1&query=${m.lat},${m.lng}`, target: "_blank", rel: "noopener" }, "Como chegar"),
+            m.cidadeId ? h("button", { class: "btn ghost", type: "button", onclick: () => { S.cidadeSel = m.cidadeId; S.localSel = m.localId || null; go("mapa"); } }, "Ver no mapa") : null)) :
+        m.tipo === "foto" ? h("div", null, h("img", { class: "chatfoto", src: blob(m.fotoId), alt: m.texto || "Foto", loading: "lazy" }), m.texto ? h("p", { class: "t", text: m.texto }) : null) :
+        h("p", { class: "t", text: m.texto }))));
+  }
+  if (!msgs.length) log.append(h("div", { class: "empty", style: "margin:auto;max-width:420px" }, h("h3", { text: "A roda está aberta" }), h("p", { text: "Escreva a primeira mensagem para a caravana." })));
+
+  const pode = S.db && S.uid && eu() && S.canChat !== false;
+  const falha = e => { if (e && e.code === "invalid_argument") { S.canChat = false; render(); } };
+  const ta = h("textarea", { id: "chat-input", rows: "1", maxlength: "1000", placeholder: "Escreva para a caravana", "aria-label": "Mensagem" });
+  const enviar = async () => {
+    const texto = ta.value.trim(); if (!texto) return; ta.value = "";
+    try { await S.db.collection("chat").add({ autor: S.uid, texto, ts: Date.now() }); } catch (e) { ta.value = texto; falha(e); }
+  };
+  ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); enviar(); } });
+  const minha = S.posicoes.find(p => p.id === S.uid && Date.now() - p.ts < FRESCO);
+  const lugares = S.locais.slice().sort((a, b) => (cidadeDe(a.cidadeId)?.ordem ?? 9) - (cidadeDe(b.cidadeId)?.ordem ?? 9) || byOrdem(a, b));
+  const pSel = h("select", { id: "ponto-sel", "aria-label": "Ponto de encontro" }, minha ? h("option", { value: "@eu", text: "Onde eu estou agora" }) : null,
+    lugares.map(l => h("option", { value: l.id, text: `${l.nome} · ${cidadeDe(l.cidadeId)?.nome || ""}` })));
+  const pNota = h("input", { type: "text", id: "ponto-nota", maxlength: "200", placeholder: "Recado (ex.: às 18h, na escadaria)" });
+  const enviarPonto = async () => {
+    let m;
+    if (pSel.value === "@eu" && minha) m = { nome: minha.lugar || pertoDe(minha).replace(/^em /, "") || "Onde estou", lat: minha.lat, lng: minha.lng, cidadeId: minha.cidadeId };
+    else { const l = lugares.find(x => x.id === pSel.value); if (!l) return; m = { nome: l.nome, lat: +l.lat, lng: +l.lng, cidadeId: l.cidadeId, localId: l.id }; }
+    try { await S.db.collection("chat").add({ autor: S.uid, tipo: "local", texto: pNota.value.trim(), ...m, ts: Date.now() }); S.pontoAberto = false; render(); } catch (e) { falha(e); }
+  };
+  const fotoMsg = h("p", { class: "note", role: "status" });
+  const fileIn = h("input", { type: "file", accept: "image/*", id: "chat-foto", hidden: true, onchange: async () => {
+    const f = fileIn.files[0]; if (!f) return; fotoMsg.textContent = "Enviando a foto…";
+    try { const id = await subirFoto(f); await S.db.collection("chat").add({ autor: S.uid, tipo: "foto", fotoId: id, texto: ta.value.trim(), ts: Date.now() }); ta.value = ""; fotoMsg.textContent = ""; }
+    catch (e) { fotoMsg.textContent = erroFoto(e); falha(e); }
+    fileIn.value = "";
+  } });
+  const ico = d => h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "1.7", "stroke-linecap": "round", "stroke-linejoin": "round" }, d.map(p => h("path", { d: p })));
+  return h("section", { class: "view chatview" },
+    h("div", { class: "chathead" }, h("p", { class: "eyebrow", text: "Conversa" }), h("h1", { style: "font-size:22px", text: "Roda da Caravana" })),
+    log,
+    pode && S.pontoAberto ? h("div", { class: "picker" }, pSel, pNota, h("button", { class: "btn gold", type: "button", onclick: enviarPonto }, "Enviar ponto")) : h("span"),
+    pode ? h("div", { class: "composer" },
+        h("button", { class: "iconbtn", type: "button", title: "Ponto de encontro", "aria-label": "Ponto de encontro", "aria-pressed": String(S.pontoAberto), onclick: () => { S.pontoAberto = !S.pontoAberto; render(); } },
+          ico(["M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z", "M12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"])),
+        S.assets ? h("button", { class: "iconbtn", type: "button", title: "Enviar foto", "aria-label": "Enviar foto", onclick: () => fileIn.click() },
+          ico(["M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z", "M12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"])) : null,
+        fileIn, h("div", { style: "flex:1;display:flex;flex-direction:column;min-width:0" }, ta, fotoMsg),
+        h("button", { class: "btn gold", type: "button", onclick: enviar }, "Enviar"))
+      : h("div", { class: "composer" }, h("p", { class: "note", text: !S.db ? "A conversa aparece quando você abre o aplicativo pelo link do Claude, com a sua conta." :
+          !eu() ? "Faça seu cadastro de viajante para conversar com a caravana." : "Para escrever aqui, peça à líder um convite com permissão para participar." }),
+          S.db && S.uid && !eu() ? h("button", { class: "btn gold", type: "button", onclick: () => { S.pularCadastro = false; render(); } }, "Fazer cadastro") : null));
+}
+
+// ---------- fotos ----------
 async function reduzir(file) {
   if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return file;
   try {
@@ -279,416 +810,11 @@ async function reduzir(file) {
     return await new Promise(res => c.toBlob(b => res(b || file), "image/jpeg", 0.85));
   } catch (e) { return file; }
 }
-async function subirFoto(file) {
-  if (!S.assets) throw { code: "not_granted" };
-  const r = await S.assets.upload(await reduzir(file));
-  return r.id;
-}
+async function subirFoto(file) { if (!S.assets) throw { code: "not_granted" }; return (await S.assets.upload(await reduzir(file))).id; }
 function erroFoto(e) {
   const c = e && e.code;
-  return c === "too_large" ? "A foto é grande demais. Tente uma menor." :
-    c === "unsupported_type" ? "Esse formato não funciona. Use JPG ou PNG." :
-    c === "quota_or_state" ? "O espaço de fotos do aplicativo acabou." :
-    "Não consegui enviar a foto. Tente de novo.";
-}
-try { const t = localStorage.getItem("cdc-tab"); if (t) S.tab = t; } catch (e) {}
-try { S.progresso = JSON.parse(localStorage.getItem("cdc-prog") || "{}") || {}; } catch (e) {}
-
-const $ = (s, r = document) => r.querySelector(s);
-function h(tag, attrs, ...kids) {
-  const el = document.createElementNS(tag === "svg" || SVGTAGS.has(tag) ? "http://www.w3.org/2000/svg" : "http://www.w3.org/1999/xhtml", tag);
-  if (attrs) for (const k in attrs) {
-    const v = attrs[k];
-    if (v == null || v === false) continue;
-    if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
-    else if (k === "text") el.textContent = v;
-    else el.setAttribute(k, v === true ? "" : v);
-  }
-  for (const k of kids.flat()) if (k != null && k !== false) el.append(k.nodeType ? k : String(k));
-  return el;
-}
-const SVGTAGS = new Set(["g","path","circle","text","line","rect","polyline","title"]);
-
-const norm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
-const byOrder = (a, b) => (a.ordem ?? 999) - (b.ordem ?? 999) || String(a.nome || a.titulo).localeCompare(String(b.nome || b.titulo));
-const locaisDa = rid => S.locais.filter(l => l.rotaId === rid).sort(byOrder);
-const aberto = l => !!(l && (l.aberto || S.progresso[l.id]));
-const localDe = id => S.locais.find(l => l.id === id);
-const ensLiberado = e => !e.localId || !localDe(e.localId) || aberto(localDe(e.localId));
-const mapsUrl = l => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(l.busca || l.nome);
-
-// ---------- navegação ----------
-function go(tab) {
-  S.tab = tab;
-  try { localStorage.setItem("cdc-tab", tab); } catch (e) {}
-  render();
-  $("#main").scrollTop = 0;
-}
-$("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (b) { if (b.dataset.tab === "ensinamentos") S.ensSel = null; go(b.dataset.tab); } });
-
-function render() {
-  for (const b of document.querySelectorAll("#tabs button")) {
-    if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
-  }
-  const act = document.activeElement, actId = act && act.id, sel = act && "selectionStart" in act ? [act.selectionStart, act.selectionEnd] : null;
-  const unlockDraft = act && actId && actId.startsWith("unlock-") ? act.value : null;
-  if (!S.rotaSel || !S.rotas.find(r => r.id === S.rotaSel)) S.rotaSel = S.rotas.slice().sort(byOrder)[0]?.id || null;
-  const main = $("#main");
-  const keepChatDraft = $("#chat-input")?.value;
-  main.replaceChildren(
-    S.tab === "rotas" ? vRotas() :
-    S.tab === "mapa" ? vMapa() :
-    S.tab === "conversa" ? vConversa() : vEnsinamentos()
-  );
-  if (S.tab === "conversa") {
-    const inp = $("#chat-input"); if (inp && keepChatDraft) inp.value = keepChatDraft;
-    const log = $("#chatlog"); if (log) log.scrollTop = log.scrollHeight;
-    paintNames();
-  }
-  const el = actId && document.getElementById(actId);
-  if (el && el !== act) {
-    { if (unlockDraft != null) el.value = unlockDraft; el.focus(); if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
-  }
-}
-
-function adminBtn(label, onclick) { return S.isOwner ? h("button", { class: "btn", type: "button", onclick }, "+ " + label) : null; }
-function notReady() {
-  return h("div", { class: "empty" },
-    h("h3", { text: S.dbReady ? "Nada por aqui ainda" : "Carregando a caravana…" }),
-    h("p", { text: S.dbReady ? "Quando a organização publicar conteúdo, ele aparece aqui." : "Se demorar, abra este aplicativo pelo link do Claude, com sua conta." }));
-}
-
-// ---------- Rotas ----------
-function vRotas() {
-  const rotas = S.rotas.slice().sort(byOrder);
-  return h("section", { class: "view" },
-    h("div", { class: "head" },
-      h("div", null, h("p", { class: "eyebrow", text: "Jornadas" }), h("h1", { text: "Rotas da Caravana" })),
-      adminBtn("Nova rota", () => editar("rota"))),
-    h("p", { class: "lede", text: "Cada rota é uma sequência de lugares. Ao chegar em cada um, a guia revela a palavra do lugar e você desbloqueia o ponto no mapa e o ensinamento dele." }),
-    rotas.length ? h("div", { class: "routes" }, rotas.map(r => {
-      const ls = locaisDa(r.id), ok = ls.filter(aberto).length;
-      return h("article", { class: "route" },
-        h("div", { class: "meta" }, h("span", { class: "eyebrow", text: r.regiao || "" }),
-          S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editar("rota", r) }, "Editar") : null),
-        r.foto ? h("img", { class: "photo", src: blob(r.foto), alt: "", loading: "lazy" }) : null,
-        h("h2", { text: r.nome }),
-        r.descricao ? h("p", { class: "lede", text: r.descricao }) : null,
-        h("div", null, h("div", { class: "bar" }, h("i", { style: `width:${ls.length ? ok / ls.length * 100 : 0}%` })),
-          h("p", { class: "prog", text: `${ok} de ${ls.length} lugares desbloqueados` })),
-        ls.length ? h("ol", { class: "stops" }, ls.map((l, i) => h("li", null,
-          h("span", { class: "num " + (aberto(l) ? "on" : "off"), text: i + 1 }),
-          h("button", { class: "link", type: "button", onclick: () => { S.rotaSel = r.id; S.localSel = l.id; S.unlockMsg = null; go("mapa"); } },
-            l.nome, h("small", { text: aberto(l) ? "Desbloqueado" : "A caminho" })),
-          aberto(l) ? h("span", { class: "chip open", text: "Aberto" }) : h("span", { class: "chip lock", text: "Fechado" })
-        ))) : h("p", { class: "prog", text: "Nenhum lugar nesta rota ainda." }),
-        h("div", { class: "actions" }, h("button", { class: "btn primary", type: "button", onclick: () => { S.rotaSel = r.id; S.localSel = null; go("mapa"); } }, "Ver no mapa"))
-      );
-    })) : notReady()
-  );
-}
-
-// ---------- Mapa ----------
-function rng(seed) { let s = 0; for (const c of String(seed)) s = (s * 31 + c.charCodeAt(0)) >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
-
-function mapaSvg(rota, ls) {
-  const W = 1000, H = 640, P = 110;
-  const pts = ls.filter(l => isFinite(+l.lat) && isFinite(+l.lng));
-  const svg = h("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Mapa da rota " + rota.nome });
-  const r = rng(rota.id);
-  // relevo decorativo, gerado a partir do nome da rota
-  for (let c = 0; c < 5; c++) {
-    const cx = r() * W, cy = r() * H, base = 40 + r() * 70, ph = r() * 6, ph2 = r() * 6;
-    for (let k = 1; k <= 5; k++) {
-      const R = base * k * .55; let d = "";
-      for (let a = 0; a <= 64; a++) {
-        const t = a / 64 * Math.PI * 2, rr = R * (1 + .13 * Math.sin(3 * t + ph) + .07 * Math.sin(5 * t + ph2));
-        d += (a ? "L" : "M") + (cx + rr * Math.cos(t)).toFixed(1) + " " + (cy + rr * .72 * Math.sin(t)).toFixed(1);
-      }
-      svg.append(h("path", { class: "contour", d: d + "Z" }));
-    }
-  }
-  if (!pts.length) return svg;
-  const latC = pts.reduce((s, l) => s + +l.lat, 0) / pts.length, cos = Math.cos(latC * Math.PI / 180);
-  const xs = pts.map(l => +l.lng * cos), ys = pts.map(l => -l.lat);
-  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
-  const sw = Math.max(x1 - x0, .01), sh = Math.max(y1 - y0, .01);
-  const s = Math.min((W - 2 * P) / sw, (H - 2 * P) / sh), mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
-  const XY = l => [W / 2 + (+l.lng * cos - mx) * s, H / 2 + (-l.lat - my) * s];
-  S.proj = { W, H, cos, s, mx, my };
-  svg.append(h("path", { class: "path", d: pts.map((l, i) => (i ? "L" : "M") + XY(l).map(n => n.toFixed(1)).join(" ")).join("") }));
-  pts.forEach(l => {
-    const [x, y] = XY(l), i = ls.indexOf(l), on = aberto(l);
-    const right = x < W - 260;
-    const g = h("g", { class: `pin ${on ? "on" : "off"}${S.localSel === l.id ? " sel" : ""}`, tabindex: "0", role: "button", "aria-label": `${i + 1}. ${l.nome}${on ? "" : " (fechado)"}`,
-      onclick: () => { if (S.marcando) return; S.localSel = l.id; S.unlockMsg = null; render(); },
-      onkeydown: e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); S.localSel = l.id; S.unlockMsg = null; render(); } } },
-      h("circle", { class: "halo", cx: x, cy: y, r: 27 }),
-      h("circle", { class: "dot", cx: x, cy: y, r: 18 }),
-      h("text", { class: "n", x, y, text: i + 1 }),
-      h("text", { class: "lbl", x: right ? x + 28 : x - 28, y: y + 5, "text-anchor": right ? "start" : "end", text: l.nome }));
-    svg.append(g);
-  });
-  // pessoas da caravana
-  for (const p of frescas(rota.id)) {
-    const [x, y] = XY(p); if (x < 0 || x > W || y < 0 || y > H) continue;
-    const cor = S.perfis[p.id]?.color || "#3F4938", ini = (nomeDe(p.id)[0] || "?").toUpperCase();
-    svg.append(h("g", { class: "person" },
-      h("title", { text: nomeDe(p.id) + (p.nota ? ": " + p.nota : "") }),
-      h("circle", { class: "ring", cx: x, cy: y, r: 22, stroke: cor }),
-      h("circle", { cx: x, cy: y, r: 14, fill: cor }),
-      h("text", { x, y, text: ini })));
-  }
-  svg.addEventListener("click", ev => {
-    if (!S.marcando || !S.proj) return;
-    const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
-    const q = pt.matrixTransform(svg.getScreenCTM().inverse()), P2 = S.proj;
-    const lng = ((q.x - P2.W / 2) / P2.s + P2.mx) / P2.cos, lat = -((q.y - P2.H / 2) / P2.s + P2.my);
-    S.marcando = false;
-    salvarPos({ rotaId: rota.id, lat: +lat.toFixed(5), lng: +lng.toFixed(5), lugar: "" });
-  });
-  // escala em km
-  const unitsPerKm = s / 111.32, nice = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
-  const km = nice.find(n => n * unitsPerKm >= 90) || 500, len = km * unitsPerKm;
-  if (len < 400) svg.append(h("g", null,
-    h("line", { class: "ui-line", x1: 32, y1: H - 32, x2: 32 + len, y2: H - 32 }),
-    h("line", { class: "ui-line", x1: 32, y1: H - 38, x2: 32, y2: H - 26 }),
-    h("line", { class: "ui-line", x1: 32 + len, y1: H - 38, x2: 32 + len, y2: H - 26 }),
-    h("text", { class: "ui", x: 32, y: H - 44, text: (km < 1 ? km * 1000 + " m" : km + " km") })));
-  svg.append(h("g", null, h("text", { class: "ui", x: W - 40, y: 44, "text-anchor": "middle", text: "N" }),
-    h("path", { d: `M${W - 40} 52 L${W - 46} 72 L${W - 40} 67 L${W - 34} 72 Z`, fill: "var(--muted)" })));
-  return svg;
-}
-
-function vMapa() {
-  const rotas = S.rotas.slice().sort(byOrder);
-  const rota = rotas.find(r => r.id === S.rotaSel);
-  if (!rota) return h("section", { class: "view" }, h("div", { class: "head" }, h("h1", { text: "Mapa" })), notReady());
-  const ls = locaisDa(rota.id);
-  if (S.localSel && !ls.find(l => l.id === S.localSel)) S.localSel = null;
-  const loc = ls.find(l => l.id === S.localSel);
-  const ok = ls.filter(aberto).length;
-  return h("section", { class: "view" },
-    h("div", { class: "head" },
-      h("div", null, h("p", { class: "eyebrow", text: rota.regiao || "Mapa" }), h("h1", { text: rota.nome })),
-      adminBtn("Novo lugar", () => editar("local", { rotaId: rota.id, ordem: ls.length + 1 }))),
-    rotas.length > 1 ? h("div", { class: "routepick", role: "group", "aria-label": "Escolher rota" }, rotas.map(r =>
-      h("button", { type: "button", "aria-pressed": String(r.id === rota.id), onclick: () => { S.rotaSel = r.id; S.localSel = null; render(); } }, r.nome))) : null,
-    h("div", { class: "mapwrap" },
-      h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
-        S.marcando ? h("p", { class: "msg ok", role: "status", text: "Toque no mapa no ponto onde você está." }) : null,
-        h("div", { class: "map" + (S.marcando ? " marking" : "") }, mapaSvg(rota, ls)),
-        h("div", { class: "legend" },
-          h("span", null, h("i", { style: "background:var(--terra)" }), `Desbloqueado (${ok})`),
-          h("span", null, h("i", { style: "border:1.5px dashed var(--locked)" }), `A desbloquear (${ls.length - ok})`),
-          h("span", null, h("i", { style: "background:var(--moss)" }), "Pessoas da caravana"),
-          h("span", { text: "O traçado liga os lugares na ordem da rota; o relevo é ilustrativo." }))),
-      h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" },
-        loc ? painelLocal(loc, ls.indexOf(loc)) :
-          h("aside", { class: "panel" }, h("p", { class: "eyebrow", text: "Como funciona" }),
-            h("h2", { text: "Toque num ponto do mapa" }),
-            h("p", { class: "desc", text: "Os pontos tracejados ainda estão fechados. Quando a caravana chegar ao lugar, a guia diz a palavra do lugar. Digite a palavra para abrir o ponto e o ensinamento que mora nele." })),
-        painelPessoas(rota, ls))
-    ));
-}
-
-function painelPessoas(rota, ls) {
-  const gente = frescas(rota.id).sort((a, b) => b.ts - a.ts);
-  perfis(gente.map(p => p.id));
-  const eu = minhaPos();
-  const pode = S.db && S.uid;
-  const sel = h("select", { id: "pos-lugar", "aria-label": "Estou em" },
-    h("option", { value: "", text: "Escolha um lugar da rota" }), ls.map(l => h("option", { value: l.id, text: l.nome })));
-  const nota = h("input", { type: "text", id: "pos-nota", maxlength: "140", placeholder: "Recado (ex.: tomando chá na escadaria)" });
-  const link = h("input", { type: "text", id: "pos-link", inputmode: "url", placeholder: "Link do Google Maps (localização ao vivo)" });
-  if (eu) { nota.value = eu.nota || ""; link.value = eu.link || ""; }
-  const extras = () => {
-    const l = link.value.trim();
-    if (l && !/^https:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|(www\.)?google\.[a-z.]+\/maps)/i.test(l)) { S.posMsg = { ok: false, text: "Cole um link do Google Maps (começa com https://maps.app.goo.gl)." }; render(); return null; }
-    return { nota: nota.value.trim(), link: l };
-  };
-  return h("aside", { class: "panel" },
-    h("p", { class: "eyebrow", text: "Caravana agora" }),
-    h("h2", { text: "Quem está por aqui" }),
-    gente.length ? h("ul", { class: "people" }, gente.map(p => h("li", null,
-      h("img", { alt: "", src: S.perfis[p.id]?.avatarUrl || "data:image/gif;base64,R0lGODlhAQABAAAAACw=" }),
-      h("div", null,
-        h("b", { text: nomeDe(p.id) }),
-        h("small", { text: [pertoDe(p), haQuanto(p.ts)].filter(Boolean).join(" · ") }),
-        p.nota ? h("p", { class: "nota", text: p.nota }) : null,
-        h("div", { class: "actions", style: "margin-top:6px" },
-          p.link ? h("a", { class: "btn", href: p.link, target: "_blank", rel: "noopener" }, "Ver ao vivo") : null,
-          h("a", { class: "btn ghost", href: `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`, target: "_blank", rel: "noopener" }, "Como chegar")))))) :
-      h("p", { class: "small", text: "Ninguém compartilhou onde está nesta rota nas últimas 3 horas." }),
-    pode ? h("div", { class: "share" },
-      h("p", { class: "eyebrow", text: eu ? "Você está compartilhando" : "Mostrar onde estou" }),
-      h("div", { class: "actions" },
-        h("button", { class: "btn terra", type: "button", onclick: () => { S.marcando = !S.marcando; render(); } }, S.marcando ? "Cancelar marcação" : "Marcar no mapa"),
-        eu ? h("button", { class: "btn", type: "button", onclick: pararPos }, "Parar de compartilhar") : null),
-      h("label", { class: "small", for: "pos-lugar" }, "Ou diga em qual lugar da rota você está"), sel,
-      nota, link,
-      h("div", { class: "actions" }, h("button", { class: "btn primary", type: "button", onclick: () => {
-        const ex = extras(); if (!ex) return;
-        const l = ls.find(x => x.id === sel.value);
-        if (l) salvarPos({ rotaId: rota.id, lat: +l.lat, lng: +l.lng, lugar: l.nome, ...ex });
-        else if (eu) salvarPos({ ...eu, id: undefined, ...ex });
-        else { S.posMsg = { ok: false, text: "Marque no mapa ou escolha um lugar primeiro." }; render(); }
-      } }, "Salvar")),
-      S.posMsg ? h("p", { class: "msg " + (S.posMsg.ok ? "ok" : "err"), role: "status", text: S.posMsg.text }) : null,
-      h("p", { class: "small", text: "O aplicativo não tem acesso ao GPS do celular. Para aparecer ao vivo, abra o Google Maps, toque na sua foto, escolha Compartilhamento de local, crie um link e cole aqui. Sua marcação some sozinha depois de 3 horas e só quem participa da caravana vê." })
-    ) : null);
-}
-async function salvarPos(p) {
-  const eu = minhaPos() || {};
-  const doc = { rotaId: p.rotaId, lat: p.lat, lng: p.lng, lugar: p.lugar || "", nota: p.nota ?? eu.nota ?? "", link: p.link ?? eu.link ?? "", ts: Date.now() };
-  try { await S.db.doc("posicoes/" + S.uid).set(doc); S.posMsg = { ok: true, text: "Pronto. A caravana já vê onde você está." }; }
-  catch (e) { S.posMsg = { ok: false, text: "Não consegui salvar. Peça à organização um convite com permissão para participar." }; }
-  render();
-}
-async function pararPos() {
-  try { await S.db.doc("posicoes/" + S.uid).delete(); S.posMsg = { ok: true, text: "Você parou de compartilhar." }; } catch (e) {}
-  render();
-}
-
-function painelLocal(l, i) {
-  const on = aberto(l), ens = S.ens.filter(e => e.localId === l.id);
-  const input = h("input", { type: "text", id: "unlock-" + l.id, placeholder: "Palavra do lugar", autocomplete: "off", "aria-label": "Palavra do lugar" });
-  const tentar = async () => {
-    if (!input.value.trim()) return;
-    if (norm(input.value) === norm(l.codigo)) {
-      S.progresso = { ...S.progresso, [l.id]: Date.now() };
-      S.unlockMsg = { ok: true, text: "Lugar desbloqueado. Bem-vinda, bem-vindo!" };
-      await salvarProgresso();
-    } else S.unlockMsg = { ok: false, text: "Essa não é a palavra deste lugar. Confira com a guia e tente de novo." };
-    render();
-  };
-  input.addEventListener("keydown", e => { if (e.key === "Enter") tentar(); });
-  return h("aside", { class: "panel" },
-    h("div", { style: "display:flex;justify-content:space-between;align-items:center;gap:8px" },
-      h("span", { class: "eyebrow", text: `Parada ${i + 1}` }),
-      on ? h("span", { class: "chip open", text: "Aberto" }) : h("span", { class: "chip lock", text: "Fechado" })),
-    l.foto ? h("div", { class: "photo-wrap" }, h("img", { class: "photo" + (on ? "" : " blur"), src: blob(l.foto), alt: "", loading: "lazy" }),
-      on ? null : h("span", { class: "veil", text: "Chegue ao lugar para ver" })) : null,
-    h("h2", { text: l.nome }),
-    on ? (l.descricao ? h("p", { class: "desc", text: l.descricao }) : null)
-       : (l.dica ? h("p", { class: "hint", text: l.dica }) : null),
-    !on && l.codigo ? h("div", { class: "unlock" }, input, h("button", { class: "btn terra", type: "button", onclick: tentar }, "Desbloquear")) : null,
-    !on && !l.codigo ? h("p", { class: "msg", text: "Este lugar abre quando a organização liberar." }) : null,
-    S.unlockMsg ? h("p", { class: "msg " + (S.unlockMsg.ok ? "ok" : "err"), role: "status", text: S.unlockMsg.text }) : null,
-    h("div", { class: "actions" },
-      on ? ens.map(e => h("button", { class: "btn primary", type: "button", onclick: () => { S.ensSel = e.id; go("ensinamentos"); } }, "Ler: " + e.titulo)) : null,
-      h("a", { class: "btn", href: mapsUrl(l), target: "_blank", rel: "noopener" }, "Abrir no Google Maps")),
-    S.isOwner ? h("div", { class: "secret" },
-      h("p", null, "Só você vê isto. Palavra do lugar: ", h("code", { text: l.codigo || "(sem palavra)" }), l.aberto ? " · aberto para todos" : ""),
-      h("div", { class: "actions", style: "margin-top:8px" },
-        h("button", { class: "btn", type: "button", onclick: () => editar("local", l) }, "Editar lugar"),
-        h("button", { class: "btn", type: "button", onclick: async () => { await gravar("locais", l.id, { ...semId(l), aberto: !l.aberto }); } }, l.aberto ? "Fechar para todos" : "Abrir para todos"))) : null
-  );
-}
-
-async function salvarProgresso() {
-  try { localStorage.setItem("cdc-prog", JSON.stringify(S.progresso)); } catch (e) {}
-  if (S.db && S.uid) {
-    try { await S.db.doc(`data/users/${S.uid}/progresso`).set({ abertos: S.progresso }); } catch (e) { /* segue salvo neste aparelho */ }
-  }
-}
-
-// ---------- Conversa ----------
-function vConversa() {
-  const canais = [{ id: "geral", nome: "Geral" }, ...S.rotas.slice().sort(byOrder).map(r => ({ id: r.id, nome: r.nome }))];
-  if (!canais.find(c => c.id === S.canal)) S.canal = "geral";
-  const msgs = S.chat.filter(m => (m.canal || "geral") === S.canal).sort((a, b) => a.ts - b.ts);
-  const log = h("div", { class: "chatlog", id: "chatlog", "aria-live": "polite" });
-  let lastDay = "";
-  for (const m of msgs) {
-    const d = new Date(m.ts), day = d.toLocaleDateString("pt-BR", { day: "numeric", month: "long" });
-    if (day !== lastDay) { log.append(h("p", { class: "day", text: day })); lastDay = day; }
-    const mine = m.autor && m.autor === S.uid;
-    log.append(h("div", { class: "bubble" + (mine ? " me" : "") },
-      h("img", { alt: "", "data-avatar": m.autor || "" }),
-      h("div", { class: "b" },
-        h("div", { class: "h" }, h("b", { "data-name": m.autor || "", text: mine ? "Você" : "…" }),
-          h("span", { text: d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) }),
-          (mine || S.isOwner) ? h("button", { class: "del", type: "button", onclick: () => apagarMsg(m.id) }, "apagar") : null),
-        m.tipo === "local" ? h("div", { class: "ponto" },
-          h("span", { class: "eyebrow", text: "Ponto de encontro" }),
-          h("b", { text: m.nome || "Local marcado" }),
-          m.texto ? h("p", { class: "t", text: m.texto }) : null,
-          h("div", { class: "actions" },
-            h("a", { class: "btn", href: `https://www.google.com/maps/search/?api=1&query=${m.lat},${m.lng}`, target: "_blank", rel: "noopener" }, "Como chegar"),
-            m.rotaId ? h("button", { class: "btn ghost", type: "button", onclick: () => { S.rotaSel = m.rotaId; S.localSel = m.localId || null; go("mapa"); } }, "Ver no mapa") : null)) :
-        m.tipo === "foto" ? h("div", null, h("img", { class: "chatfoto", src: blob(m.fotoId), alt: m.texto || "Foto", loading: "lazy" }), m.texto ? h("p", { class: "t", text: m.texto }) : null) :
-        h("p", { class: "t", text: m.texto }))));
-  }
-  if (!msgs.length) log.append(h("div", { class: "empty", style: "margin:auto;max-width:420px" },
-    h("h3", { text: "A roda está aberta" }),
-    h("p", { text: S.canal === "geral" ? "Escreva a primeira mensagem para a caravana." : "Combine horários, dúvidas e partilhas desta rota aqui." })));
-
-  const podeEscrever = S.db && S.uid && S.canChat !== false;
-  const ta = h("textarea", { id: "chat-input", rows: "1", maxlength: "1000", placeholder: "Escreva para a caravana", "aria-label": "Mensagem" });
-  const enviar = async () => {
-    const texto = ta.value.trim(); if (!texto) return;
-    ta.value = "";
-    try { await S.db.collection("chat").add({ canal: S.canal, autor: S.uid, texto, ts: Date.now() }); }
-    catch (e) { ta.value = texto; if (e && e.code === "invalid_argument") { S.canChat = false; render(); } }
-  };
-  ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); enviar(); } });
-  const falha = e => { if (e && e.code === "invalid_argument") { S.canChat = false; render(); } };
-  // ponto de encontro
-  const lugares = (S.canal === "geral" ? S.locais.slice().sort(byOrder) : locaisDa(S.canal)).filter(l => isFinite(+l.lat));
-  const eu = minhaPos();
-  const pSel = h("select", { id: "ponto-sel", "aria-label": "Ponto de encontro" },
-    eu ? h("option", { value: "@eu", text: "Onde eu estou agora" }) : null,
-    lugares.map(l => h("option", { value: l.id, text: l.nome })));
-  const pNota = h("input", { type: "text", id: "ponto-nota", maxlength: "200", placeholder: "Recado (ex.: às 18h, na escadaria)" });
-  const enviarPonto = async () => {
-    let msg;
-    if (pSel.value === "@eu" && eu) msg = { nome: eu.lugar || pertoDe(eu).replace(/^em /, "") || "Onde estou", lat: eu.lat, lng: eu.lng, rotaId: eu.rotaId };
-    else { const l = lugares.find(x => x.id === pSel.value); if (!l) return; msg = { nome: l.nome, lat: +l.lat, lng: +l.lng, rotaId: l.rotaId, localId: l.id }; }
-    try { await S.db.collection("chat").add({ canal: S.canal, autor: S.uid, tipo: "local", texto: pNota.value.trim(), ...msg, ts: Date.now() }); S.pontoAberto = false; render(); }
-    catch (e) { falha(e); }
-  };
-  // foto
-  const fotoMsg = h("p", { class: "note", role: "status" });
-  const fileIn = h("input", { type: "file", accept: "image/*", id: "chat-foto", hidden: true, onchange: async () => {
-    const f = fileIn.files[0]; if (!f) return;
-    fotoMsg.textContent = "Enviando a foto…";
-    try { const id = await subirFoto(f); await S.db.collection("chat").add({ canal: S.canal, autor: S.uid, tipo: "foto", fotoId: id, texto: ta.value.trim(), ts: Date.now() }); ta.value = ""; fotoMsg.textContent = ""; }
-    catch (e) { fotoMsg.textContent = erroFoto(e); falha(e); }
-    fileIn.value = "";
-  } });
-  const icoPin = () => h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "1.7", "stroke-linecap": "round", "stroke-linejoin": "round" }, h("path", { d: "M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" }), h("circle", { cx: "12", cy: "10", r: "2.3" }));
-  const icoFoto = () => h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "1.7", "stroke-linecap": "round", "stroke-linejoin": "round" }, h("rect", { x: "3", y: "6", width: "18", height: "14", rx: "2" }), h("circle", { cx: "12", cy: "13", r: "3.5" }), h("path", { d: "M8.5 6l1.5-2h4l1.5 2" }));
-  return h("section", { class: "view chatview" },
-    h("div", { class: "chathead" },
-      h("div", null, h("p", { class: "eyebrow", text: "Conversa" }), h("h1", { style: "font-size:24px", text: "Roda da Caravana" })),
-      h("div", { class: "routepick", role: "group", "aria-label": "Canal" }, canais.map(c =>
-        h("button", { type: "button", "aria-pressed": String(c.id === S.canal), onclick: () => { S.canal = c.id; render(); } }, c.nome)))),
-    log,
-    podeEscrever && S.pontoAberto ? h("div", { class: "picker" },
-      lugares.length || eu ? [pSel, pNota, h("button", { class: "btn terra", type: "button", onclick: enviarPonto }, "Enviar ponto")]
-        : h("p", { class: "note", text: "Esta rota ainda não tem lugares no mapa." })) : null,
-    podeEscrever
-      ? h("div", { class: "composer" },
-          h("button", { class: "iconbtn", type: "button", title: "Ponto de encontro", "aria-label": "Ponto de encontro", "aria-pressed": String(S.pontoAberto), onclick: () => { S.pontoAberto = !S.pontoAberto; render(); } }, icoPin()),
-          S.assets ? h("button", { class: "iconbtn", type: "button", title: "Enviar foto", "aria-label": "Enviar foto", onclick: () => fileIn.click() }, icoFoto()) : null,
-          fileIn, h("div", { style: "flex:1;display:flex;flex-direction:column;min-width:0" }, ta, fotoMsg),
-          h("button", { class: "btn primary", type: "button", onclick: enviar }, "Enviar"))
-      : h("div", { class: "composer" }, h("p", { class: "note", text: S.db ? "Para escrever aqui, peça à organização um convite com permissão para participar." : "A conversa aparece quando você abre o aplicativo pelo link do Claude, com sua conta." }))
-  );
-}
-async function apagarMsg(id) { try { await S.db.doc("chat/" + id).delete(); } catch (e) {} }
-async function paintNames() {
-  if (!S.user) return;
-  const els = [...document.querySelectorAll("[data-name],[data-avatar]")];
-  const ids = [...new Set(els.map(e => e.dataset.name || e.dataset.avatar).filter(Boolean))];
-  if (!ids.length) return;
-  const ps = await S.user.profiles(ids);
-  for (const e of els) {
-    const p = ps[e.dataset.name || e.dataset.avatar]; if (!p) continue;
-    if (e.dataset.avatar !== undefined) e.src = p.avatarUrl;
-    else if (!p.isMe) e.textContent = p.name || "Viajante";
-  }
+  return c === "too_large" ? "A foto é grande demais. Tente uma menor." : c === "unsupported_type" ? "Esse formato não funciona. Use JPG ou PNG." :
+    c === "quota_or_state" ? "O espaço de fotos do aplicativo acabou." : "Não consegui enviar a foto. Tente de novo.";
 }
 
 // ---------- Ensinamentos ----------
@@ -701,136 +827,121 @@ function vEnsinamentos() {
         h("button", { class: "btn ghost", type: "button", onclick: () => { S.ensSel = null; render(); } }, "← Todos os ensinamentos"),
         S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editar("ens", e) }, "Editar") : null),
       h("article", { class: "reader" },
+        l && l.insignia ? h("img", { class: "top-badge", src: badgeSrc(l), alt: "" }) : null,
         h("p", { class: "eyebrow", text: [e.categoria, l && l.nome].filter(Boolean).join(" · ") }),
         h("h1", { text: e.titulo }),
         e.foto ? h("img", { class: "photo", src: blob(e.foto), alt: "" }) : null,
         h("div", { class: "body" }, String(e.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() }))),
-        e.fonte ? h("p", { class: "src", text: "Fontes: " + e.fonte }) : null));
+        e.fonte ? h("p", { class: "src", text: "Fontes: " + e.fonte }) : null),
+      h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }));
   }
   const cats = {};
-  for (const x of S.ens.slice().sort(byOrder)) (cats[x.categoria || "Ensinamentos"] ||= []).push(x);
+  for (const x of S.ens.slice().sort(byOrdem)) (cats[x.categoria || "Ensinamentos"] ||= []).push(x);
   return h("section", { class: "view" },
     h("div", { class: "head" },
-      h("div", null, h("p", { class: "eyebrow", text: "Biblioteca" }), h("h1", { text: "Ensinamentos" })),
+      h("div", null, h("p", { class: "eyebrow", text: "Para ler pelo caminho" }), h("h1", { text: "Ensinamentos" })),
       adminBtn("Novo ensinamento", () => editar("ens"))),
-    h("p", { class: "lede", text: "Alguns ensinamentos ficam abertos desde o início. Os outros moram num lugar da rota e se abrem quando você chega lá." }),
+    h("p", { class: "lede", text: "O guia da travessia fica aberto desde já. Os saberes de cada lugar se abrem junto com a insígnia dele." }),
     Object.keys(cats).length ? h("div", { class: "cats" }, Object.entries(cats).map(([cat, xs]) => h("section", { class: "cat" },
       h("h2", { text: cat }),
       h("div", { class: "cards" }, xs.map(x => {
         const lib = ensLiberado(x), l = x.localId && localDe(x.localId);
         return h("button", { class: "card" + (lib ? "" : " locked"), type: "button", "aria-disabled": String(!lib && !S.isOwner),
           onclick: () => { if (lib || S.isOwner) { S.ensSel = x.id; render(); $("#main").scrollTop = 0; } } },
-          lib && x.foto ? h("img", { class: "photo", src: blob(x.foto), alt: "", loading: "lazy" }) : null,
-          lib ? h("span", { class: "chip open", text: l ? l.nome : "Aberto" }) : h("span", { class: "chip lock", text: "Abre em " + (l ? l.nome : "breve") }),
+          l && l.insignia ? h("img", { src: badgeSrc(l), alt: "" }) : null,
           h("h3", { text: x.titulo }),
-          h("p", { text: lib ? (x.resumo || "") : "Chegue a este lugar para ler." }));
-      }))))) : notReady());
+          h("p", { text: lib ? (x.resumo || "") : "Abre com a insígnia " + (l ? l.nome : "") + "." }),
+          lib ? null : h("span", { class: "chip", text: l && l.dia ? "Dia " + l.dia : "Em breve" }));
+      }))))) : carregando(),
+    h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }));
 }
 
-// ---------- Editor (só a organizadora) ----------
-const semId = o => { const c = { ...o }; delete c.id; return c; };
-async function gravar(col, id, data) {
-  const ref = id ? S.db.doc(`${col}/${id}`) : S.db.collection(col).doc();
-  await ref.set(data);
-}
+// ---------- Editor (só a líder) ----------
 function editar(tipo, item) {
   item = item || {};
-  const rotas = S.rotas.slice().sort(byOrder), locais = S.locais.slice().sort(byOrder);
+  const cids = S.cidades.slice().sort(byOrdem), locs = S.locais.slice().sort(byOrdem);
+  const INS = ["", "india", "taj-mahal", "jaipur", "galta-ji", "varanasi", "ganga-aarti", "manikarnika", "batismo", "beatles-ashram", "rishikesh", "kunjapuri", "caverna"];
   const F = {
-    rota: { col: "rotas", titulo: "Rota", campos: [["nome", "Nome da rota"], ["regiao", "Região"], ["descricao", "Descrição", "area"], ["foto", "Foto de capa", "foto"], ["ordem", "Ordem", "num"]] },
-    local: { col: "locais", titulo: "Lugar", campos: [["nome", "Nome do lugar"], ["rotaId", "Rota", "sel", rotas.map(r => [r.id, r.nome])], ["ordem", "Ordem na rota", "num"],
-      ["lat", "Latitude", "num"], ["lng", "Longitude", "num"], ["busca", "Busca no Google Maps (opcional)"], ["dica", "Dica enquanto fechado", "area"],
-      ["descricao", "Texto depois de aberto", "area"], ["foto", "Foto do lugar", "foto"], ["codigo", "Palavra do lugar (a guia revela)"], ["aberto", "Aberto para todos", "chk"]] },
-    ens: { col: "ensinamentos", titulo: "Ensinamento", campos: [["titulo", "Título"], ["categoria", "Categoria (ex.: Sabedoria, Vivência)"],
-      ["localId", "Mora no lugar (deixe vazio para ficar sempre aberto)", "sel", [["", "Sempre aberto"], ...locais.map(l => [l.id, l.nome])]],
-      ["resumo", "Resumo curto"], ["texto", "Texto (separe parágrafos com uma linha em branco)", "area"], ["foto", "Foto", "foto"], ["fonte", "Fontes"], ["ordem", "Ordem", "num"]] }
+    dia: { col: "dias", t: "dia", campos: [["n", "Número do dia", "num"], ["iso", "Data (AAAA-MM-DD)"], ["data", "Data por extenso (ex.: Quarta · 4 nov)"], ["cidade", "Cidade(s)"], ["titulo", "Título"],
+      ["itens", "Programação (uma linha por item: 18:00 | Ganga Aarti)", "linhas"], ["nota", "Nota", "area"], ["ordem", "Ordem", "num"]], obrig: "titulo" },
+    local: { col: "locais", t: "lugar", campos: [["nome", "Nome"], ["cidadeId", "Cidade", "sel", cids.map(c => [c.id, c.nome])], ["insignia", "Insígnia (vazio = hotel ou ponto de apoio)", "sel", INS.map(i => [i, i || "Nenhuma"])],
+      ["dia", "Dia do roteiro", "num"], ["ordem", "Ordem", "num"], ["lat", "Latitude", "num"], ["lng", "Longitude", "num"], ["busca", "Busca no Google Maps"],
+      ["dica", "Dica enquanto não conquistada", "area"], ["descricao", "Texto depois de conquistada", "area"], ["codigo", "Palavra do lugar"], ["aberto", "Liberada para todos", "chk"]], obrig: "nome" },
+    ens: { col: "ensinamentos", t: "ensinamento", campos: [["titulo", "Título"], ["categoria", "Categoria"],
+      ["localId", "Abre com a insígnia de (vazio = sempre aberto)", "sel", [["", "Sempre aberto"], ...locs.filter(l => l.insignia).map(l => [l.id, l.nome])]],
+      ["resumo", "Resumo curto"], ["texto", "Texto (separe parágrafos com uma linha em branco)", "area"], ["foto", "Foto", "foto"], ["fonte", "Fontes"], ["ordem", "Ordem", "num"]], obrig: "titulo" }
   }[tipo];
   const inputs = {};
   const campos = F.campos.map(([k, label, kind, opts]) => {
     const id = `ed-${tipo}-${k}`; let el;
     if (kind === "foto") {
-      const prev = h("img", { alt: "", hidden: !item[k], src: item[k] ? blob(item[k]) : null });
-      const st = h("span", { class: "small", role: "status" });
+      const prev = h("img", { alt: "", hidden: !item[k], src: item[k] ? blob(item[k]) : null }), st = h("span", { class: "small", role: "status" });
       const tirar = h("button", { class: "btn ghost", type: "button", hidden: !item[k], onclick: () => { el.dataset.id = ""; prev.hidden = true; tirar.hidden = true; } }, "Tirar foto");
       const fi = h("input", { type: "file", accept: "image/*", id, onchange: async () => {
         const f = fi.files[0]; if (!f) return; st.textContent = "Enviando…";
-        try { const nid = await subirFoto(f); el.dataset.id = nid; prev.src = blob(nid); prev.hidden = false; tirar.hidden = false; st.textContent = "Foto pronta. Toque em Salvar."; }
-        catch (e) { st.textContent = erroFoto(e); }
+        try { const nid = await subirFoto(f); el.dataset.id = nid; prev.src = blob(nid); prev.hidden = false; tirar.hidden = false; st.textContent = "Foto pronta. Toque em Salvar."; } catch (e) { st.textContent = erroFoto(e); }
       } });
       el = h("div", { class: "fotofield" }, prev, S.assets ? fi : h("span", { class: "small", text: "O envio de fotos não está disponível nesta visualização." }), h("div", { class: "actions" }, tirar, st));
-      el.dataset.id = item[k] || "";
-      inputs[k] = [el, kind];
+      el.dataset.id = item[k] || ""; inputs[k] = [el, kind];
       return h("div", { class: "fotofield" }, h("span", { class: "small", text: label }), el);
     }
-    if (kind === "area") el = h("textarea", { id, rows: k === "texto" ? "10" : "3" });
-    else if (kind === "sel") { el = h("select", { id }, opts.map(([v, t]) => h("option", { value: v, text: t }))); }
+    if (kind === "area" || kind === "linhas") el = h("textarea", { id, rows: kind === "linhas" ? "8" : "4" });
+    else if (kind === "sel") el = h("select", { id }, opts.map(([v, t]) => h("option", { value: v, text: t })));
     else if (kind === "chk") el = h("input", { id, type: "checkbox" });
     else el = h("input", { id, type: kind === "num" ? "number" : "text", step: kind === "num" ? "any" : null });
-    if (kind === "chk") el.checked = !!item[k]; else el.value = item[k] ?? "";
+    if (kind === "chk") el.checked = !!item[k];
+    else if (kind === "linhas") el.value = (item[k] || []).map(it => (it.hora ? it.hora + " | " : "") + it.texto).join("\n");
+    else el.value = item[k] ?? "";
     inputs[k] = [el, kind];
     return kind === "chk" ? h("label", { class: "chk", for: id }, el, label) : h("label", { for: id }, label, el);
   });
-  let confirmando = false;
-  const delBtn = item.id ? h("button", { class: "btn danger", type: "button", onclick: async () => {
-    if (!confirmando) { confirmando = true; delBtn.textContent = "Toque de novo para apagar"; return; }
-    await S.db.doc(`${F.col}/${item.id}`).delete(); fechar();
+  let conf = false;
+  const del = item.id ? h("button", { class: "btn danger", type: "button", onclick: async () => {
+    if (!conf) { conf = true; del.textContent = "Toque de novo para apagar"; return; }
+    await S.db.doc(`${F.col}/${item.id}`).delete().catch(() => {}); closeSheets();
   } }, "Apagar") : h("span");
   const erro = h("p", { class: "msg err", role: "alert" });
   const form = h("form", { onsubmit: async e => {
-    e.preventDefault();
-    const data = {};
+    e.preventDefault(); const data = {};
     for (const k in inputs) { const [el, kind] = inputs[k];
       if (kind === "chk") data[k] = el.checked;
       else if (kind === "foto") { if (el.dataset.id) data[k] = el.dataset.id; }
       else if (kind === "num") { if (el.value !== "") data[k] = Number(el.value); }
+      else if (kind === "linhas") data[k] = el.value.split("\n").map(s => s.trim()).filter(Boolean).map(s => { const i = s.indexOf("|"); return i > -1 ? { hora: s.slice(0, i).trim(), texto: s.slice(i + 1).trim() } : { hora: "", texto: s }; });
       else if (el.value.trim() !== "") data[k] = el.value.trim(); }
-    const obrig = tipo === "ens" ? "titulo" : "nome";
-    if (!data[obrig]) { erro.textContent = "Preencha o " + (obrig === "titulo" ? "título" : "nome") + "."; return; }
-    try { await gravar(F.col, item.id, data); fechar(); }
-    catch (err) { erro.textContent = "Não consegui salvar. Confira sua conexão e tente de novo."; }
+    if (!data[F.obrig]) { erro.textContent = "Preencha o campo " + F.obrig + "."; return; }
+    try { await (item.id ? S.db.doc(`${F.col}/${item.id}`) : S.db.collection(F.col).doc()).set(data); closeSheets(); }
+    catch (err) { erro.textContent = "Não consegui salvar. Confira a conexão e tente de novo."; }
   } },
-    h("h2", { text: (item.id ? "Editar " : "Novo ") + F.titulo.toLowerCase() }),
-    h("p", { class: "banner", text: "Só você, dona do aplicativo, vê este formulário." }),
+    h("h2", { text: (item.id ? "Editar " : "Novo ") + F.t }),
+    h("p", { class: "small", text: "Só você, líder da travessia, vê este formulário." }),
     campos, erro,
-    h("div", { class: "foot" }, delBtn, h("div", { class: "actions" },
-      h("button", { class: "btn", type: "button", onclick: () => fechar() }, "Cancelar"),
-      h("button", { class: "btn primary", type: "submit" }, "Salvar"))));
-  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) fechar(); } }, form);
-  function fechar() { sheet.remove(); }
+    h("div", { class: "foot" }, del, h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: closeSheets }, "Cancelar"), h("button", { class: "btn gold", type: "submit" }, "Salvar"))));
+  closeSheets();
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, form);
   document.body.append(sheet);
   form.querySelector("input,select,textarea")?.focus();
 }
 
 // ---------- dados ----------
-function listen(col, key, q) {
+function listen(col, key, q, after) {
   (q || S.db.collection(col)).onSnapshot(snap => {
     S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    S.dbReady = true; render();
-  }, () => { S.dbReady = true; render(); });
+    S.dbReady = true; if (after) after(); render(); refreshSheet();
+  }, () => { S.dbReady = true; if (after) after(); render(); });
 }
 
 render();
-
 (async () => {
   const [db, user, assets] = await Promise.all(["db", "user", "assets"].map(n => window.claude?.use?.(n) ?? null));
   S.db = db; S.user = user; S.assets = assets;
-  if (user) {
-    const me = await user.me();
-    S.me = me; S.uid = me.id; S.isOwner = me.isOwner;
-    const who = $("#who");
-    who.replaceChildren(h("img", { src: me.avatarUrl, alt: "" }), h("span", { text: me.name || "Viajante" }));
-    if (S.isOwner) $("#subtitle").textContent = "Você está como organizadora";
-  }
+  if (user) { const me = await user.me(); S.me = me; S.uid = me.id; S.isOwner = me.isOwner; perfis([me.id]); }
   if (!db) { S.dbReady = true; render(); return; }
-  listen("rotas", "rotas");
-  listen("locais", "locais");
-  listen("ensinamentos", "ens");
+  listen("dias", "dias"); listen("cidades", "cidades"); listen("locais", "locais"); listen("ensinamentos", "ens");
+  listen("viajantes", "viajantes", null, () => { S.vReady = true; });
   listen("chat", "chat", db.collection("chat").orderBy("ts", "desc").limit(400));
   listen("posicoes", "posicoes");
-  setInterval(() => { if (S.tab === "mapa" && !document.activeElement?.matches?.("input,textarea,select")) render(); }, 60000);
-  if (S.uid) db.doc(`data/users/${S.uid}/progresso`).onSnapshot(d => {
-    if (d.exists) { S.progresso = { ...S.progresso, ...(d.data().abertos || {}) }; render(); }
-  }, () => {});
+  setInterval(() => { if ((S.tab === "mapa" || S.tab === "roteiro") && !document.activeElement?.matches?.("input,textarea,select") && !document.querySelector(".sheet")) render(); }, 60000);
 })();
 })();
 </script>
