@@ -80,7 +80,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--moss);outline:none;bo
 
 /* Roteiro: abertura */
 .hero{text-align:center;padding:18px 8px 4px;display:flex;flex-direction:column;align-items:center;gap:10px}
-.hero .logo{width:76px;height:76px}
+.hero .logo{width:92px;height:auto}
 .hero h1{font-weight:500;font-size:clamp(32px,8.5vw,48px);line-height:1.05;letter-spacing:-.01em}
 .hero .route{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--moss)}
 .hero .line{display:none}
@@ -171,7 +171,7 @@ details.guide summary span{font-size:13px;color:var(--soft);display:block}
 details.guide .gb{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}
 details.guide .gb p{line-height:1.75;color:#3C3A33}
 .foot{text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 0 8px}
-.foot img.s{width:56px;height:56px}
+.foot img.s{width:64px;height:auto}
 .foot q{font-family:var(--display);font-style:italic;font-size:20px;color:var(--ink);quotes:none;max-width:30ch}
 .orn{display:none}
 
@@ -181,7 +181,6 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .pcover img{width:62px;height:auto;filter:sepia(1) saturate(1.6) brightness(1.15)}
 .pcover b{font-family:var(--display);font-weight:500;font-size:clamp(18px,5vw,24px);letter-spacing:.2em;text-transform:uppercase}
 .pcover span{font-size:11px;letter-spacing:.3em;text-transform:uppercase;opacity:.8}
-.cover{display:none}
 .datapage{position:relative;overflow:hidden;background:#FFFDF8;color:var(--ink);padding:18px 18px 12px;border-radius:var(--r);box-shadow:var(--shadow);
   background-image:repeating-radial-gradient(circle at 85% 15%,rgba(63,73,56,.06) 0 1px,transparent 1px 10px),repeating-linear-gradient(120deg,rgba(138,63,50,.04) 0 1px,transparent 1px 8px)}
 .datapage .top2{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-bottom:1px solid var(--line2);padding-bottom:8px;margin-bottom:14px}
@@ -348,12 +347,147 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .unlock input{flex:1 1 160px;min-width:0}
 .secret{font-size:12.5px;color:var(--soft);border-top:1px dashed var(--line2);padding-top:10px}
 .secret code{font-family:ui-monospace,Menlo,monospace;background:var(--panel3);padding:1px 6px;border-radius:6px;color:var(--ink)}
+
+/* Cabeçalho e menu em couro, com latão */
+.top{background:linear-gradient(180deg,#3B2A1C,#2E2116);border-bottom:1px solid #1E150D;box-shadow:inset 0 -1px 0 rgba(226,190,120,.25);color:#F1E2BC;backdrop-filter:none}
+.top::after{content:"";position:absolute}
+.brand img{width:40px;height:auto}
+.brand img.letreiro{display:block;width:clamp(150px,42vw,220px);height:auto;margin-bottom:4px}
+.brand b{color:#F1E2BC;font-family:var(--display);letter-spacing:.14em;text-transform:uppercase;font-size:15.5px;font-weight:600}
+.brand span{color:#C9A56A;letter-spacing:.24em}
+.me{background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.35);box-shadow:none}
+.me b{color:#E2BE78}
+nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(6,minmax(58px,1fr));overflow-x:auto;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{color:#BFA67A;font-size:11px}
+nav.tabs .ic{width:48px;color:#E9D7B0}
+nav.tabs button[aria-current="page"]{color:#F1E2BC}
+nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE78,#B98A43);color:#2B1F14;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 2px 8px rgba(0,0,0,.35)}
+@media (min-width:900px){nav.tabs{background:linear-gradient(90deg,#2B1F14,#3B2A1C);border-right:1px solid #1E150D;grid-template-columns:1fr}}
+
+/* Mapa da Expedição */
+.map{background:#EAD6A8;border-radius:10px;box-shadow:0 10px 30px rgba(59,42,28,.25)}
+.map .terra{fill:#E4CC98;stroke:#6B4A2A;stroke-width:1;stroke-linejoin:round;opacity:.75}
+.map .terra.india{fill:#EFDDB3;opacity:1;stroke-width:1.6}
+.map .rio{fill:none;stroke:#5F8190;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
+.map .riolbl{font:italic 500 15px var(--display);fill:#3F5E6A;letter-spacing:.06em}
+.map .grade line{stroke:#6B4A2A;stroke-width:.5;stroke-dasharray:3 5;opacity:.35}
+.map .grade text{font:500 10px var(--ui);fill:#6B4A2A;opacity:.6}
+.map .rota{fill:none;stroke:#A3231A;stroke-width:4;stroke-linecap:round;stroke-dasharray:.012 .008}
+.map .rota.fina{stroke-width:2.5}
+.map .rota-sombra{fill:none;stroke:rgba(90,20,10,.18);stroke-width:8;stroke-linecap:round}
+@media (prefers-reduced-motion:no-preference){
+  .map .rota.desenha{stroke-dasharray:1;stroke-dashoffset:1;animation:traca 3.2s ease-in-out forwards}
+  @keyframes traca{to{stroke-dashoffset:0}}
+  .explorador .bob{animation:bob 2.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:scale(.74) translateY(0)}50%{transform:scale(.74) translateY(-3px)}}
+  .explorador .vivo{animation:pulso 1.8s ease-out infinite;transform-origin:22px 62px;transform-box:fill-box}
+  @keyframes pulso{0%{opacity:.8;transform:scale(.6)}100%{opacity:0;transform:scale(1.8)}}
+}
+.map .vivo{fill:rgba(200,65,47,.45)}
+.map .cidade{cursor:pointer}
+.map .cidade .c1{fill:#F1E2BC;stroke:#A3231A;stroke-width:2.5}
+.map .cidade .c2{fill:#A3231A}
+.map .cnome{font:600 21px var(--display);fill:#3B2A1C;letter-spacing:.14em;paint-order:stroke;stroke:#EFDDB3;stroke-width:5px;stroke-linejoin:round}
+.map .ccnt{font:italic 500 14px var(--display);fill:#6B4A2A;paint-order:stroke;stroke:#EFDDB3;stroke-width:4px}
+.map .cart1{font:600 17px var(--display);fill:#3B2A1C;letter-spacing:.3em}
+.map .cart2{font:italic 500 13px var(--display);fill:#6B4A2A}
+.map .cmp{font:600 13px var(--display);fill:#3B2A1C}
+.map .escala text{font:500 12px var(--ui);fill:#3B2A1C}
+.map .pin .ring{fill:#F4E6C4;stroke:#6B4A2A;stroke-width:2}
+.map .pin.off .ring{stroke:#A3231A;stroke-dasharray:3 3}
+.map .pin .n{font:700 16px var(--ui);fill:#A3231A}
+.map .pin .lbl{font:500 17px var(--display);fill:#3B2A1C;stroke:#EAD6A8}
+.map .pin .halo{stroke:#A3231A}
+.map .hotel rect{fill:#F4E6C4;stroke:#3B2A1C}
+.map .hotel text{font:italic 500 15px var(--display);fill:#3B2A1C;stroke:#EAD6A8}
+.explorador .etq{fill:#F4E6C4;stroke:#6B4A2A;stroke-width:1}
+.explorador .etqt{font:600 10.5px var(--ui);fill:#3B2A1C;text-anchor:middle}
+.meuexp{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 14px 4px 6px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
+.bonecosvg{display:block}
+.bonecosvg.mini{width:26px;height:39px}
+.bonecosvg.big{width:min(60vw,200px);height:auto;margin:0 auto}
+
+/* Montador de explorador */
+.builder{display:grid;gap:18px}
+@media (min-width:720px){.builder{grid-template-columns:260px 1fr;align-items:start}}
+.preview{background:radial-gradient(circle at 50% 40%,#F4E6C4,#E4CC98);border-radius:var(--r);padding:20px 14px;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:var(--shadow)}
+.tagname{font-family:var(--display);font-size:20px;font-weight:600;color:#3B2A1C}
+.controls{display:flex;flex-direction:column;gap:8px}
+.lab{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);margin-top:6px}
+.opts{display:flex;gap:6px;flex-wrap:wrap}
+.opt{border:1px solid var(--line2);background:var(--panel);border-radius:999px;padding:6px 14px;font-size:13px}
+.opt[aria-pressed="true"]{background:#3B2A1C;color:#F1E2BC;border-color:#3B2A1C}
+.sw{width:34px;height:34px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line2)}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 3px #B98A43}
+
+/* Estúdio de fotos */
+.estudio{display:grid;gap:18px}
+@media (min-width:820px){.estudio{grid-template-columns:1fr 300px;align-items:start}}
+.fotoframe{background:#2B1F14;border-radius:var(--r);padding:12px;display:grid;place-items:center;box-shadow:var(--shadow)}
+.fotocanvas{max-width:100%;max-height:70vh;height:auto;display:block;border-radius:4px}
+.fcontrols{display:flex;flex-direction:column;gap:8px}
+.fotovazia{background:var(--panel);border:1.5px dashed var(--sand);border-radius:var(--r);padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.fotovazia img{width:90px;height:auto}
+.fotovazia b{font-family:var(--display);font-size:22px;font-weight:500}
+.fotovazia span{color:var(--soft);max-width:36ch}
+
+.cover{display:block;width:100%;max-width:100%;height:auto;border-radius:10px;box-shadow:0 18px 40px rgba(40,39,34,.3)}
+
+/* Passaporte em 3D */
+.livrosheet{align-items:center;background:radial-gradient(circle at 50% 40%,rgba(59,42,28,.55),rgba(20,14,8,.85))}
+.livrobox{background:none!important;box-shadow:none!important;align-items:center;max-width:460px!important;overflow:visible!important}
+.livrostage{perspective:1800px;padding:8px 0 0 0;width:100%;display:flex;justify-content:center}
+.livro{position:relative;width:min(78vw,340px);aspect-ratio:.7;transform-style:preserve-3d;touch-action:pan-y;outline:none;margin-left:min(10vw,40px)}
+.leaf{position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.3,.7,.2,1)}
+.leaf.virada{transform:rotateY(-178deg)}
+@media (prefers-reduced-motion:reduce){.leaf{transition:none}}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:4px 12px 12px 4px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.face.verso{transform:rotateY(180deg);border-radius:12px 4px 4px 12px}
+.pg{position:relative;width:100%;height:100%;background:#FBF4E4;color:#282722;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;
+  background-image:repeating-radial-gradient(circle at 50% 50%,rgba(122,82,46,.05) 0 1px,transparent 1px 9px),linear-gradient(90deg,rgba(40,28,15,.12),transparent 8%)}
+.pg .marca{position:absolute;left:50%;top:50%;width:62%;transform:translate(-50%,-50%);opacity:.07;pointer-events:none}
+.pg>*:not(.marca){position:relative}
+.pg.capa{padding:0;background:#1B2B45}
+.pg.capa .capaimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pg.papel{background-color:#F6EDDA}
+.pgtit{font-family:var(--display);font-size:20px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#3B2A1C}
+.pgsub{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8A3F32}
+.pgfoto{width:44%;aspect-ratio:3/4;border-radius:8px;overflow:hidden;background:#EFE3C8;border:1px solid rgba(40,28,15,.2);display:grid;place-items:center;margin-top:6px}
+.pgfoto img{width:100%;height:100%;object-fit:cover}
+.pgfoto .bonecosvg{width:80%;height:auto}
+.pg dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;text-align:left;margin:8px 0 0;width:100%}
+.pg dt{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#9A917F;align-self:center}
+.pg dd{margin:0;font-family:var(--display);font-size:16px;font-weight:600}
+.pgnum{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#8A3F32}
+.pg.selos{justify-content:space-around}
+.pgselo{display:flex;flex-direction:column;align-items:center;gap:2px}
+.pgart{position:relative;width:34%;min-width:92px}
+.pgart img{width:100%;height:auto;display:block}
+.pgselo:not(.on) .pgart img{filter:grayscale(1) opacity(.22)}
+.pgart .stamp{width:64px;height:64px;margin-left:-32px}
+.pgnome{font-family:var(--display);font-size:15px;font-weight:600}
+.pgdia{font-size:11px;color:#6B6556}
+.pg.fim{justify-content:center;gap:14px}
+.fimsim{width:40%;height:auto;opacity:.85}
+.pgfrase{font-family:var(--display);font-style:italic;font-size:18px;line-height:1.4;max-width:22ch}
+.livronav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:14px;width:100%}
+.livrocont{color:#F1E2BC;font-size:13px;min-width:56px;text-align:center}
+.livrobox .btn.ghost{color:#E2BE78}
+.livrobox .btn:not(.gold):not(.ghost){background:rgba(241,226,188,.12);color:#F1E2BC;border-color:rgba(241,226,188,.35)}
+.folhear{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#3B2A1C,#5A4128);color:#F1E2BC;border:0;border-radius:var(--r);padding:14px 18px;text-align:left;box-shadow:var(--shadow)}
+.folhear img{width:58px;height:auto;border-radius:4px;transform:rotate(-6deg);box-shadow:0 6px 14px rgba(0,0,0,.35)}
+.folhear b{display:block;font-family:var(--display);font-size:19px;font-weight:500}
+.folhear span{font-size:13px;color:#D8C09A}
+
+.datapage::after,.pages::after{content:"";position:absolute;inset:0;background:url("img/simbolo-marrom.png") center/46% no-repeat;opacity:.06;pointer-events:none}
+.pages{position:relative}
 </style>
 
 <div class="app">
   <header class="top">
     <span class="topside" aria-hidden="true"></span>
-    <div class="brand"><img src="img/logo.png" alt=""><div><b>Caravana do Céu</b><span>Índia Sagrada · 2026</span></div></div>
+    <div class="brand"><img src="img/simbolo-dourado.png" alt=""><div><img class="letreiro" src="img/letreiro.png" alt="Caravana do Céu"><span>Índia Sagrada · 2026</span></div></div>
     <div class="topside right"><button class="me" id="me" type="button" hidden></button></div>
   </header>
   <main id="main"></main>
@@ -362,6 +496,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
     <button data-tab="passaporte"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="3" width="13" height="18" rx="1.5"/><circle cx="12" cy="10.5" r="3.2"/><path d="M8.8 10.5h6.4M12 7.3c1 1 1 5.4 0 6.4M12 7.3c-1 1-1 5.4 0 6.4M9 17h6"/></svg></span>Passaporte</button>
     <button data-tab="ensinamentos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-4.5 0-8-2.5-8-6 3 0 6 1.5 8 6zM12 20c4.5 0 8-2.5 8-6-3 0-6 1.5-8 6zM12 20c-2-2.5-3-5.5-2-9 1-2.5 1.5-4 2-6 .5 2 1 3.5 2 6 1 3.5 0 6.5-2 9z"/></svg></span>Saberes</button>
     <button data-tab="mapa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span>Mapa</button>
+    <button data-tab="fotos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h3l1.6-2.2h6.8L17 7.5h3a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.8"/><path d="M17.5 10.3h.01"/></svg></span>Fotos</button>
     <button data-tab="conversa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span>Chat</button>
   </nav>
 </div>
@@ -484,7 +619,7 @@ function go(tab) {
   S.tab = tab; try { localStorage.setItem("cdi-tab2", tab); } catch (e) {}
   render(); $("#main").scrollTop = 0;
 }
-$("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (!b) return; if (b.dataset.tab === "ensinamentos") S.ensSel = null; go(b.dataset.tab); });
+$("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (!b) return; if (b.dataset.tab === "ensinamentos") S.ensSel = null; if (b.dataset.tab === "mapa") S.montando = false; go(b.dataset.tab); });
 $("#me").addEventListener("click", () => go("passaporte"));
 
 function render() {
@@ -498,7 +633,7 @@ function render() {
   pintaMe();
   const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
   main.replaceChildren(precisaCadastro ? vCadastro() :
-    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "conversa" ? vConversa() : vTravessia());
+    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : vTravessia());
   main.scrollTop = scroll;
   if (S.tab === "conversa") {
     const inp = $("#chat-input"); if (inp && chatDraft) inp.value = chatDraft;
@@ -526,7 +661,7 @@ function vCadastro() {
   const erro = h("p", { class: "msg err", role: "alert" });
   if (S.me && S.me.name) nome.value = S.me.name.split(" ")[0];
   return h("section", { class: "welcome" },
-    h("div", { class: "pcover", role: "img", "aria-label": "Passaporte da Travessia" }, h("img", { src: "img/simbolo.png", alt: "" }), h("b", { text: "Passaporte" }), h("span", { text: "da Travessia · Índia Sagrada" }), h("span", { text: "Caravana do Céu" })),
+    h("img", { class: "cover", src: "img/passaporte.webp", alt: "Passaporte da Travessia · Caravana do Céu" }),
     h("p", { class: "eyebrow", text: "Emissão do passaporte" }),
     h("h1", { text: "Seu passaporte da Índia Sagrada" }),
     h("p", { class: "lede", text: "Com ele você recebe seu número de viajante, conversa com a caravana e carimba os selos de cada lugar sagrado da travessia." }),
@@ -560,7 +695,7 @@ function vTravessia() {
   const abrir = n => { S.diaAberto = S.diaAberto === n ? 0 : n; render(); if (S.diaAberto) requestAnimationFrame(() => document.getElementById("dia-" + n)?.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })); };
   return h("section", { class: "view" },
     h("div", { class: "hero" },
-      h("img", { class: "logo", src: "img/logo.png", alt: "" }),
+      h("img", { class: "logo", src: "img/simbolo-marrom.png", alt: "" }),
       h("p", { class: "eyebrow", text: "Temporada 2026 · Turma 1" }),
       h("h1", null, "Travessia da", h("br"), "Índia Sagrada"),
       h("p", { class: "route", text: "Delhi · Agra · Jaipur · Varanasi · Rishikesh" }),
@@ -581,7 +716,7 @@ function vTravessia() {
     h("button", { class: "btn", type: "button", style: "align-self:center", onclick: () => go("ensinamentos") }, "Guia da travessia e saberes"),
     h("div", { class: "foot" },
       h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }),
-      h("img", { class: "s", src: "img/logo.png", alt: "" }),
+      h("img", { class: "s", src: "img/simbolo-marrom.png", alt: "" }),
       h("q", { text: "Explorando nossa origem nos damos conta de que somos infinitos." }),
       h("p", { class: "eyebrow", text: "Caravana do Céu · a travessia te espera" })));
 }
@@ -661,6 +796,59 @@ function vSaberes() {
     h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }));
 }
 
+// ---------- Passaporte em 3D (folhear) ----------
+function paginasLivro() {
+  const v = eu(), nums = numeros(), ls = insigniaLocais(), mins = minhas();
+  const pag = (cls, ...kids) => h("div", { class: "pg " + cls }, h("img", { class: "marca", src: "img/simbolo-marrom.png", alt: "" }), ...kids);
+  const selo = l => {
+    const on = aberto(l), ts = mins[l.id], d = diaDe(l.dia);
+    return h("div", { class: "pgselo" + (on ? " on" : "") },
+      h("div", { class: "pgart" }, h("img", { src: badgeSrc(l), alt: "" }), on ? h("span", { class: "stamp" }, h("b", { text: "Selado" }), h("i", { text: ts ? dataSelo(ts) : "Caravana" })) : null),
+      h("p", { class: "pgnome", text: l.nome }),
+      h("p", { class: "pgdia", text: on ? (ts ? "Carimbado em " + new Date(ts).toLocaleDateString("pt-BR") : "Liberado pela líder") : d ? `Dia ${d.n} · ${d.data}` : "" }));
+  };
+  const pages = [
+    h("div", { class: "pg capa" }, h("img", { class: "capaimg", src: "img/passaporte.webp", alt: "Passaporte da Travessia" })),
+    pag("dados",
+      h("p", { class: "pgtit", text: "Passaporte da Travessia" }), h("p", { class: "pgsub", text: "Índia Sagrada · 4 a 16 nov 2026" }),
+      h("div", { class: "pgfoto" }, v && v.foto ? h("img", { src: blob(v.foto), alt: "" }) : bonecoSvg(bonecoDe(S.uid), "bonecosvg")),
+      h("dl", null,
+        h("dt", { text: "Nome" }), h("dd", { text: v ? v.nome : "Viajante" }),
+        h("dt", { text: v && v.lider ? "Função" : "Nº do viajante" }), h("dd", { text: v ? (v.lider ? "Líder da travessia" : nn(nums[S.uid] || 0)) : "—" }),
+        h("dt", { text: "Origem" }), h("dd", { text: (v && v.cidade) || "—" })))
+  ];
+  for (let i = 0; i < ls.length; i += 2) pages.push(pag("selos", h("p", { class: "pgnum", text: "Vistos · " + (i / 2 + 1) }), ls.slice(i, i + 2).map(selo)));
+  pages.push(pag("fim", h("img", { class: "fimsim", src: "img/simbolo-marrom.png", alt: "" }), h("p", { class: "pgfrase", text: "Explorando nossa origem nos damos conta de que somos infinitos." }), h("p", { class: "pgsub", text: "Caravana do Céu" })));
+  return pages;
+}
+function abrirLivro(pagina) {
+  closeSheets();
+  const pages = paginasLivro(), n = pages.length;
+  let atual = Math.max(0, Math.min(n - 1, pagina || 0));
+  const leaves = pages.map((p, i) => h("div", { class: "leaf", style: `z-index:${n - i}` }, h("div", { class: "face frente" }, p), h("div", { class: "face verso" }, h("div", { class: "pg papel" }, h("img", { class: "marca", src: "img/simbolo-marrom.png", alt: "" })))));
+  const book = h("div", { class: "livro", tabindex: "0", "aria-label": "Passaporte. Use as setas para folhear." }, leaves);
+  const cont = h("p", { class: "livrocont", "aria-live": "polite" });
+  const pinta = () => {
+    leaves.forEach((lf, i) => { const virada = i < atual; lf.classList.toggle("virada", virada); lf.style.zIndex = virada ? i + 1 : n - i; });
+    cont.textContent = `${atual + 1} de ${n}`; ant.disabled = atual === 0; prox.disabled = atual === n - 1;
+  };
+  const ir = d => { atual = Math.max(0, Math.min(n - 1, atual + d)); pinta(); };
+  const ant = h("button", { class: "btn", type: "button", onclick: () => ir(-1) }, "← Voltar");
+  const prox = h("button", { class: "btn gold", type: "button", onclick: () => ir(1) }, "Virar a página →");
+  book.addEventListener("keydown", e => { if (e.key === "ArrowRight") ir(1); if (e.key === "ArrowLeft") ir(-1); });
+  let x0 = null;
+  book.addEventListener("pointerdown", e => { x0 = e.clientX; });
+  book.addEventListener("pointerup", e => { if (x0 == null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 40) ir(dx < 0 ? 1 : -1); else if (e.clientX > book.getBoundingClientRect().left + book.offsetWidth / 2) ir(1); else ir(-1); });
+  const sheet = h("div", { class: "sheet livrosheet", onclick: e => { if (e.target === sheet) closeSheets(); } },
+    h("div", { class: "livrobox", role: "dialog", "aria-label": "Meu passaporte" },
+      h("div", { class: "livrostage" }, book),
+      h("div", { class: "livronav" }, ant, cont, prox),
+      h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar passaporte")));
+  document.body.append(sheet);
+  pinta(); book.focus({ preventScroll: true });
+}
+const paginaDoSelo = id => 2 + Math.floor(insigniaLocais().findIndex(l => l.id === id) / 2);
+
 // ---------- Passaporte ----------
 function vPassaporte() {
   const ls = insigniaLocais(), v = eu(), nums = numeros(), mins = minhas();
@@ -671,7 +859,7 @@ function vPassaporte() {
   const mrz1 = ("P<CDC<INDIA<<" + nomeMrz).padEnd(44, "<").slice(0, 44);
   const mrz2 = ((v && v.lider ? "LIDER" : nn(nums[S.uid] || 0) + "<<<") + "<04NOV26<<16NOV26<<SELOS" + nn(ok)).padEnd(44, "<").slice(0, 44);
   return h("section", { class: "view" },
-    h("div", { class: "pcover", role: "img", "aria-label": "Passaporte da Travessia" }, h("img", { src: "img/simbolo.png", alt: "" }), h("b", { text: "Passaporte" }), h("span", { text: "da Travessia · Índia Sagrada" }), h("span", { text: "Caravana do Céu" })),
+    h("img", { class: "cover", src: "img/passaporte.webp", alt: "Passaporte da Travessia · Caravana do Céu" }),
     v ? h("div", { class: "datapage" },
       h("div", { class: "top2" }, h("b", { text: "Passaporte da Travessia" }), h("span", { text: "Índia · 2026" })),
       h("div", { class: "dp" }, (() => {
@@ -693,6 +881,9 @@ function vPassaporte() {
       h("div", { class: "actions", style: "margin-top:8px" }, h("button", { class: "btn ghost", type: "button", onclick: editarPerfil }, "Editar meus dados")))
     : S.db && S.uid ? h("div", { class: "panel", style: "text-align:center;align-items:center" }, h("p", { class: "lede", text: "Emita seu passaporte para guardar os selos e aparecer para a caravana." }),
         h("button", { class: "btn gold", type: "button", onclick: () => { S.pularCadastro = false; render(); } }, "Emitir meu passaporte")) : null,
+    h("button", { class: "folhear", type: "button", onclick: () => abrirLivro(0) },
+      h("img", { src: "img/passaporte.webp", alt: "" }),
+      h("span", null, h("b", { text: "Folhear meu passaporte" }), h("span", { text: "Abra o passaporte e vire as páginas com seus selos carimbados." }))),
     h("div", { class: "pages" },
       h("div", { class: "ph" }, h("p", { class: "eyebrow", text: "Os selos da Índia Sagrada" }), h("h2", { text: "Carimbe em cada lugar sagrado" }),
         h("p", { class: "small", text: "Quando a caravana chegar ao lugar, a líder revela a palavra. Toque no selo e carimbe." })),
@@ -728,6 +919,7 @@ function conteudoInsignia(l) {
     !on && l.codigo && livre ? h("div", { class: "unlock" }, input, h("button", { class: "btn gold", type: "button", onclick: tentar }, "Carimbar")) : null,
     !on && !livre ? h("p", { class: "small", style: "text-align:center", text: `Este selo se abre no dia ${d.n}, ${d.data}, quando a caravana chegar.` }) : null,
     S.unlockMsg ? h("p", { class: "msg " + (S.unlockMsg.ok ? "ok" : "err"), style: "text-align:center", role: "status", text: S.unlockMsg.text }) : null,
+    on && S.unlockMsg && S.unlockMsg.ok ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirLivro(paginaDoSelo(l.id)) }, "Folhear meu passaporte")) : null,
     on ? saberes.map(e => h("div", { class: "saber" }, h("p", { class: "eyebrow", text: "O saber deste selo" }), h("h3", { text: e.titulo }),
       String(e.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })), e.fonte ? h("p", { class: "src", text: "Fontes: " + e.fonte }) : null)) : null,
     h("div", { class: "actions", style: "justify-content:center" },
@@ -769,7 +961,103 @@ function editarPerfil() {
   document.body.append(sheet); nome.focus();
 }
 
-// ---------- Mapa ----------
+// ---------- Exploradores (bonequinhos) ----------
+const BONECO = {
+  pele: ["#F3D2B3", "#E4B48C", "#C98E62", "#A0673F", "#7A4A2B", "#4E2F1C"],
+  cabeloCor: ["#2B1D14", "#5A3A22", "#8A5A2B", "#C9A063", "#D9D2C5", "#A83E2A"],
+  cabelo: [["curto", "Curto"], ["longo", "Longo"], ["cacheado", "Cacheado"], ["coque", "Coque"], ["careca", "Careca"]],
+  chapeu: [["fedora", "Fedora"], ["safari", "Safári"], ["lenco", "Lenço"], ["turbante", "Turbante"], ["sem", "Sem chapéu"]],
+  roupa: [["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["vestido", "Vestido"]],
+  roupaCor: ["#8B6B43", "#C2A878", "#5F6B45", "#8A3F32", "#E8E0CF", "#3E4A5A"],
+  acessorio: [["bolsa", "Bolsa"], ["chicote", "Chicote"], ["lanterna", "Lanterna"], ["mapa", "Mapa"], ["camera", "Câmera"], ["nenhum", "Nada"]],
+  barba: [["nao", "Sem barba"], ["sim", "Com barba"]]
+};
+function bonecoPadrao(id) {
+  const r = rng(id || "x"), p = arr => arr[Math.floor(r() * arr.length)], v = arr => p(arr)[0];
+  return { pele: p(BONECO.pele), cabeloCor: p(BONECO.cabeloCor), cabelo: v(BONECO.cabelo), chapeu: v(BONECO.chapeu), roupa: v(BONECO.roupa), roupaCor: p(BONECO.roupaCor), acessorio: v(BONECO.acessorio), barba: r() > .75 ? "sim" : "nao" };
+}
+const bonecoDe = id => ({ ...bonecoPadrao(id), ...((S.viajantes.find(v => v.id === id) || {}).boneco || {}) });
+function escurece(hex, f) { const n = parseInt(hex.slice(1), 16); const c = k => Math.round(((n >> k) & 255) * f); return `rgb(${c(16)},${c(8)},${c(0)})`; }
+// Desenha o explorador numa caixa de 60 x 90.
+function desenhaBoneco(b) {
+  const g = h("g", { class: "boneco" }), P = (d, fill, extra) => h("path", { d, fill, ...(extra || {}) });
+  const pele = b.pele, cab = b.cabeloCor, roupa = b.roupaCor, calca = b.roupa === "kurta" ? "#EDE6D6" : "#5A4630", couro = "#3A2A1C";
+  g.append(h("ellipse", { cx: 30, cy: 86, rx: 15, ry: 3.2, fill: "rgba(40,28,15,.28)" }));
+  if (b.roupa === "vestido") g.append(P("M19 54 L41 54 L46 81 L14 81 Z", roupa), P("M19 54 L41 54 L42 58 L18 58 Z", escurece(roupa, .85)));
+  else g.append(h("rect", { x: 21.5, y: 56, width: 7.5, height: 24, rx: 2, fill: calca }), h("rect", { x: 31, y: 56, width: 7.5, height: 24, rx: 2, fill: calca }));
+  g.append(h("rect", { x: 20, y: 78, width: 9.5, height: 6, rx: 2.5, fill: couro }), h("rect", { x: 30.5, y: 78, width: 9.5, height: 6, rx: 2.5, fill: couro }));
+  const manga = b.roupa === "colete" ? "#F1EAD9" : roupa;
+  g.append(h("rect", { x: 11.5, y: 36, width: 7, height: 22, rx: 3.5, fill: manga, transform: "rotate(8 15 36)" }), h("rect", { x: 41.5, y: 36, width: 7, height: 22, rx: 3.5, fill: manga, transform: "rotate(-8 45 36)" }));
+  g.append(h("circle", { cx: 13, cy: 59, r: 3.2, fill: pele }), h("circle", { cx: 47, cy: 59, r: 3.2, fill: pele }));
+  g.append(h("rect", { x: 26.5, y: 29, width: 7, height: 7, fill: pele }));
+  if (b.roupa === "colete") {
+    g.append(P("M18 36 Q30 32 42 36 L43 57 L17 57 Z", "#F1EAD9"), P("M18 36 Q24 34 28 35 L27 57 L17 57 Z", roupa), P("M42 36 Q36 34 32 35 L33 57 L43 57 Z", roupa));
+  } else if (b.roupa === "kurta") {
+    g.append(P("M18 36 Q30 32 42 36 L44 68 L16 68 Z", roupa), h("line", { x1: 30, y1: 35, x2: 30, y2: 46, stroke: escurece(roupa, .7), "stroke-width": 1 }));
+  } else if (b.roupa === "vestido") {
+    g.append(P("M19 36 Q30 32 41 36 L41 56 L19 56 Z", roupa));
+  } else {
+    g.append(P("M18 36 Q30 32 42 36 L44 58 L16 58 Z", roupa), P("M26 35 L30 44 L34 35 Z", "#F1EAD9"),
+      P("M26 35 L30 44 L28 50 L23 38 Z", escurece(roupa, .82)), P("M34 35 L30 44 L32 50 L37 38 Z", escurece(roupa, .82)));
+  }
+  if (b.roupa === "jaqueta" || b.roupa === "colete") g.append(h("rect", { x: 17, y: 55, width: 26, height: 3, fill: couro }), h("rect", { x: 28.5, y: 55, width: 3, height: 3, fill: "#C9A063" }));
+  // cabeça
+  if (b.cabelo === "longo" && b.chapeu !== "turbante") g.append(P("M19 20 Q19 10 30 10 Q41 10 41 20 L42 36 L18 36 Z", cab));
+  g.append(h("circle", { cx: 30, cy: 22, r: 10, fill: pele }));
+  g.append(h("circle", { cx: 26.6, cy: 22.5, r: 1.15, fill: "#2B1D14" }), h("circle", { cx: 33.4, cy: 22.5, r: 1.15, fill: "#2B1D14" }),
+    h("path", { d: "M27 26.4 Q30 28.6 33 26.4", fill: "none", stroke: "#6B3A26", "stroke-width": 1.1, "stroke-linecap": "round" }));
+  if (b.barba === "sim") g.append(P("M20.5 24 Q21 32 30 33.5 Q39 32 39.5 24 Q37 29 30 29.2 Q23 29 20.5 24 Z", cab));
+  const cobre = b.chapeu === "turbante" || b.chapeu === "lenco";
+  if (!cobre && b.cabelo !== "careca") {
+    if (b.cabelo === "cacheado") [[21, 16], [25, 12], [30, 11], [35, 12], [39, 16], [20.5, 21], [39.5, 21]].forEach(([x, y]) => g.append(h("circle", { cx: x, cy: y, r: 4, fill: cab })));
+    else g.append(P("M20 21 Q20 11 30 11 Q40 11 40 21 Q36 15 30 15.5 Q24 15 20 21 Z", cab));
+    if (b.cabelo === "coque" && b.chapeu === "sem") g.append(h("circle", { cx: 30, cy: 9, r: 4.5, fill: cab }));
+  }
+  // chapéu
+  if (b.chapeu === "fedora") g.append(h("ellipse", { cx: 30, cy: 14.5, rx: 17, ry: 3.6, fill: "#6B4F33" }), P("M21.5 14.5 Q21 4 30 5 Q39 4 38.5 14.5 Z", "#7A5B3B"),
+    P("M26.5 6 Q30 8.5 33.5 6", "none", { stroke: "#5A4129", "stroke-width": 1 }), h("rect", { x: 21.5, y: 11.2, width: 17, height: 2.8, fill: "#3A2A1C" }));
+  if (b.chapeu === "safari") g.append(h("ellipse", { cx: 30, cy: 15, rx: 16, ry: 3.4, fill: "#CDBB8F" }), P("M20 15 Q20 3 30 3.5 Q40 3 40 15 Z", "#D8C8A0"), h("rect", { x: 20.2, y: 12.3, width: 19.6, height: 2.4, fill: "#8A6B43" }));
+  if (b.chapeu === "lenco") g.append(P("M19 23 Q18 9 30 9 Q42 9 41 23 Q40 16 30 15.5 Q20 16 19 23 Z", roupa === "#8A3F32" ? "#C9A063" : "#8A3F32"), P("M39 20 L45 28 L40 27 Z", roupa === "#8A3F32" ? "#C9A063" : "#8A3F32"));
+  if (b.chapeu === "turbante") g.append(h("ellipse", { cx: 30, cy: 15.5, rx: 11.5, ry: 6, fill: "#D98B2B" }), h("ellipse", { cx: 30, cy: 11, rx: 10, ry: 5, fill: "#E6A03F" }), P("M22 15 Q30 7 38 15", "none", { stroke: "#B86E1E", "stroke-width": 1.2 }), h("circle", { cx: 30, cy: 12, r: 1.8, fill: "#8A3F32" }));
+  // acessório
+  if (b.acessorio === "bolsa") g.append(h("line", { x1: 20, y1: 36, x2: 41, y2: 55, stroke: couro, "stroke-width": 1.8 }), h("rect", { x: 37, y: 51, width: 10, height: 9, rx: 2, fill: "#7A5431" }), h("rect", { x: 37, y: 51, width: 10, height: 3.5, rx: 1.5, fill: "#5E3F24" }));
+  if (b.acessorio === "chicote") g.append(h("circle", { cx: 13, cy: 66, r: 4.5, fill: "none", stroke: "#4A3322", "stroke-width": 1.6 }), h("circle", { cx: 13, cy: 66, r: 2.6, fill: "none", stroke: "#4A3322", "stroke-width": 1.4 }), h("path", { d: "M13 70.5 Q12 78 16 84", fill: "none", stroke: "#4A3322", "stroke-width": 1.3 }));
+  if (b.acessorio === "lanterna") g.append(h("circle", { cx: 48, cy: 67, r: 7, fill: "rgba(255,196,90,.35)" }), h("rect", { x: 45.5, y: 62, width: 5, height: 8, rx: 1, fill: "#C9A063" }), h("rect", { x: 46.5, y: 63.5, width: 3, height: 5, fill: "#FFD27A" }), h("line", { x1: 48, y1: 62, x2: 48, y2: 59, stroke: couro, "stroke-width": 1 }));
+  if (b.acessorio === "mapa") g.append(h("rect", { x: 43, y: 55, width: 11, height: 8, rx: 1, fill: "#EAD9AE", transform: "rotate(-12 48 59)" }), h("path", { d: "M45 58 L49 60 L52 57", fill: "none", stroke: "#A3231A", "stroke-width": .9, transform: "rotate(-12 48 59)" }));
+  if (b.acessorio === "camera") g.append(h("line", { x1: 25, y1: 35, x2: 30, y2: 42, stroke: couro, "stroke-width": 1 }), h("line", { x1: 35, y1: 35, x2: 30, y2: 42, stroke: couro, "stroke-width": 1 }), h("rect", { x: 25.5, y: 41, width: 9, height: 6.5, rx: 1.2, fill: "#2A2622" }), h("circle", { cx: 30, cy: 44.2, r: 2, fill: "#6E7F86" }));
+  return g;
+}
+const bonecoSvg = (b, cls) => h("svg", { viewBox: "0 0 60 90", class: cls || "bonecosvg", role: "img", "aria-label": "Explorador" }, desenhaBoneco(b));
+
+function vExplorador() {
+  const v = eu();
+  if (!S.bonecoRasc) S.bonecoRasc = bonecoDe(S.uid);
+  const b = S.bonecoRasc, set = (k, val) => { S.bonecoRasc = { ...S.bonecoRasc, [k]: val }; render(); };
+  const chips = (k, ops) => h("div", { class: "opts" }, ops.map(([val, lab]) => h("button", { type: "button", class: "opt", "aria-pressed": String(b[k] === val), onclick: () => set(k, val) }, lab)));
+  const cores = (k, arr, rot) => h("div", { class: "opts" }, arr.map(c => h("button", { type: "button", class: "sw", style: `background:${c}`, "aria-label": rot, "aria-pressed": String(b[k] === c), onclick: () => set(k, c) })));
+  const msg = h("p", { class: "msg", role: "status" });
+  return h("section", { class: "view" },
+    h("div", { class: "actions" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.montando = false; S.bonecoRasc = null; render(); } }, "← Voltar ao mapa")),
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Mapa da Expedição" }), h("h1", { text: "Monte seu explorador" }))),
+    h("div", { class: "builder" },
+      h("div", { class: "preview" }, bonecoSvg(b, "bonecosvg big"), h("p", { class: "tagname", text: v ? v.nome : "Viajante" }),
+        h("button", { class: "btn", type: "button", onclick: () => { S.bonecoRasc = bonecoPadrao(Math.random().toString(36)); render(); } }, "Sortear")),
+      h("div", { class: "controls" },
+        h("p", { class: "lab", text: "Chapéu" }), chips("chapeu", BONECO.chapeu),
+        h("p", { class: "lab", text: "Pele" }), cores("pele", BONECO.pele, "Tom de pele"),
+        h("p", { class: "lab", text: "Cabelo" }), chips("cabelo", BONECO.cabelo), cores("cabeloCor", BONECO.cabeloCor, "Cor do cabelo"),
+        h("p", { class: "lab", text: "Roupa" }), chips("roupa", BONECO.roupa), cores("roupaCor", BONECO.roupaCor, "Cor da roupa"),
+        h("p", { class: "lab", text: "Na mão" }), chips("acessorio", BONECO.acessorio),
+        h("p", { class: "lab", text: "Barba" }), chips("barba", BONECO.barba))),
+    v ? h("div", { class: "actions", style: "justify-content:center" },
+      h("button", { class: "btn gold", type: "button", onclick: async () => {
+        try { await S.db.doc("viajantes/" + S.uid).update({ boneco: S.bonecoRasc }); S.montando = false; S.bonecoRasc = null; render(); }
+        catch (e) { msg.textContent = "Não consegui salvar. Tente de novo."; msg.className = "msg err"; }
+      } }, "Salvar meu explorador"), msg)
+      : h("p", { class: "small", style: "text-align:center", text: "Emita seu passaporte para salvar o seu explorador." }));
+}
+
+// ---------- Mapa da Expedição ----------
 function rng(seed) { let s = 0; for (const c of String(seed)) s = (s * 31 + c.charCodeAt(0)) >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
 function km(a, b) {
   const R = 6371, r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLng = (b.lng - a.lng) * r;
@@ -781,96 +1069,140 @@ function projetor(pts, W, H, P) {
   const xs = pts.map(p => +p.lng * cos), ys = pts.map(p => -p.lat);
   const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
   const s = Math.min((W - 2 * P) / Math.max(x1 - x0, .01), (H - 2 * P) / Math.max(y1 - y0, .01)), mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
-  return { W, H, cos, s, mx, my, xy: p => [W / 2 + (+p.lng * cos - mx) * s, H / 2 + (-p.lat - my) * s] };
+  return { W, H, cos, s, mx, my, xy: p => [W / 2 + (+p.lng * cos - mx) * s, H / 2 + (-p.lat - my) * s], inv: (x, y) => ({ lng: ((x - W / 2) / s + mx) / cos, lat: -((y - H / 2) / s + my) }) };
 }
-function base(W, H, seed) {
-  const svg = h("svg", { viewBox: `0 0 ${W} ${H}`, role: "img" }), r = rng(seed);
-  for (let c = 0; c < 5; c++) {
-    const cx = r() * W, cy = r() * H, b = 40 + r() * 70, p1 = r() * 6, p2 = r() * 6;
-    for (let k = 1; k <= 5; k++) {
-      const R = b * k * .55; let d = "";
-      for (let a = 0; a <= 64; a++) { const t = a / 64 * Math.PI * 2, rr = R * (1 + .13 * Math.sin(3 * t + p1) + .07 * Math.sin(5 * t + p2)); d += (a ? "L" : "M") + (cx + rr * Math.cos(t)).toFixed(1) + " " + (cy + rr * .72 * Math.sin(t)).toFixed(1); }
-      svg.append(h("path", { class: "contour", d: d + "Z" }));
-    }
-  }
-  svg.append(h("g", null, h("text", { class: "ui", x: W - 40, y: 44, "text-anchor": "middle", text: "N" }),
-    h("path", { d: `M${W - 40} 52 L${W - 46} 72 L${W - 40} 67 L${W - 34} 72 Z`, fill: "#6B6556" })));
+function pergaminho(W, H, id) {
+  const svg = h("svg", { viewBox: `0 0 ${W} ${H}`, role: "img" });
+  const f = "pap-" + id;
+  svg.innerHTML = `<defs>
+    <filter id="${f}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" seed="7" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 .45  0 0 0 0 .33  0 0 0 0 .18  0 0 0 .22 0"/><feComposite in2="SourceGraphic" operator="in"/><feBlend in="SourceGraphic" mode="multiply"/></filter>
+    <radialGradient id="vg-${id}" cx="50%" cy="48%" r="70%"><stop offset="55%" stop-color="#6b4a22" stop-opacity="0"/><stop offset="100%" stop-color="#6b4a22" stop-opacity=".38"/></radialGradient>
+    <pattern id="hatch-${id}" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><line x1="0" y1="0" x2="0" y2="6" stroke="#8a6a3e" stroke-width=".6" stroke-opacity=".35"/></pattern>
+  </defs>
+  <rect width="${W}" height="${H}" fill="#EAD6A8" filter="url(#${f})"/>`;
   return svg;
 }
-function escala(svg, P) {
-  const W = P.W, H = P.H, per = P.s / 111.32, nice = [0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
-  const k = nice.find(n => n * per >= 60) || 500, len = k * per;
-  if (len < 260) svg.append(h("g", null,
-    h("line", { class: "ui-line", x1: 32, y1: H - 32, x2: 32 + len, y2: H - 32 }),
-    h("line", { class: "ui-line", x1: 32, y1: H - 38, x2: 32, y2: H - 26 }),
-    h("line", { class: "ui-line", x1: 32 + len, y1: H - 38, x2: 32 + len, y2: H - 26 }),
-    h("text", { class: "ui", x: 32, y: H - 44, text: k < 1 ? k * 1000 + " m" : k + " km" })));
+function molduraECompasso(svg, W, H, id, titulo, sub) {
+  svg.insertAdjacentHTML("beforeend", `<rect width="${W}" height="${H}" fill="url(#vg-${id})" pointer-events="none"/>
+    <rect x="10" y="10" width="${W - 20}" height="${H - 20}" fill="none" stroke="#5B3F22" stroke-width="1.6"/>
+    <rect x="15" y="15" width="${W - 30}" height="${H - 30}" fill="none" stroke="#5B3F22" stroke-width=".6"/>
+    <g transform="translate(${W - 62} ${H - 70})" class="rosa">
+      <circle r="30" fill="none" stroke="#5B3F22" stroke-width=".8"/><circle r="24" fill="none" stroke="#5B3F22" stroke-width=".5" stroke-dasharray="2 2"/>
+      <path d="M0 -34 L5 -5 L0 0 L-5 -5 Z" fill="#5B3F22"/><path d="M0 34 L5 5 L0 0 L-5 5 Z" fill="#A08560"/>
+      <path d="M34 0 L5 5 L0 0 L5 -5 Z" fill="#A08560"/><path d="M-34 0 L-5 5 L0 0 L-5 -5 Z" fill="#A08560"/>
+      <path d="M17 -17 L3 -3 L0 0 Z M-17 17 L-3 3 L0 0 Z M17 17 L3 3 L0 0 Z M-17 -17 L-3 -3 L0 0 Z" fill="#5B3F22" stroke="#5B3F22" stroke-width="1.5"/>
+      <text y="-39" text-anchor="middle" class="cmp">N</text></g>
+    <g transform="translate(26 30)"><rect width="178" height="46" fill="#F1E2BC" stroke="#5B3F22" stroke-width="1"/><rect x="3" y="3" width="172" height="40" fill="none" stroke="#5B3F22" stroke-width=".5"/>
+      <text x="89" y="21" text-anchor="middle" class="cart1"></text><text x="89" y="35" text-anchor="middle" class="cart2"></text></g>`);
+  svg.querySelector(".cart1").textContent = titulo; svg.querySelector(".cart2").textContent = sub;
 }
-function pessoasNoMapa(svg, P, filtro) {
-  for (const p of S.posicoes.filter(p => Date.now() - (p.ts || 0) < FRESCO && filtro(p))) {
-    const [x, y] = P.xy(p); if (x < 0 || x > P.W || y < 0 || y > P.H) continue;
-    const cor = S.perfis[p.id]?.color || "#a67d33", ini = (nomeDe(p.id)[0] || "?").toUpperCase();
-    svg.append(h("g", { class: "person" }, h("title", { text: nomeDe(p.id) + (p.nota ? ": " + p.nota : "") }),
-      h("circle", { class: "pring", cx: x, cy: y, r: 22, stroke: cor }), h("circle", { cx: x, cy: y, r: 14, fill: cor }), h("text", { x, y, text: ini })));
+function camadasGeo(svg, P, rios) {
+  const G = S.geo; if (!G) return;
+  const perto = P.s > 400; // no zoom de cidade, os contornos gerais ficam imprecisos: só a grade
+  const path = pts => pts.map(([x, y], i) => { const [a, b] = P.xy({ lat: y, lng: x }); return (i ? "L" : "M") + a.toFixed(1) + " " + b.toFixed(1); }).join("");
+  const g = h("g", { class: "geo" });
+  if (!perto) for (const p of G.paises) for (const r of p.aneis) g.append(h("path", { d: path(r) + "Z", class: p.nome === "India" ? "terra india" : "terra" }));
+  svg.append(g);
+  const gr = h("g", { class: "rios" });
+  if (!perto) for (const r of G.rios) gr.append(h("path", { d: path(r.pts), class: "rio", "stroke-width": r.nome === "Ganges" ? 3 : r.nome === "Yamuna" ? 2.2 : 1.3 }));
+  svg.append(gr);
+  if (rios) for (const [nome, frac] of [["Ganges", .45], ["Yamuna", .5]]) {
+    const r = G.rios.filter(x => x.nome === nome).sort((a, b) => b.pts.length - a.pts.length)[0]; if (!r) continue;
+    const [x, y] = r.pts[Math.floor(r.pts.length * frac)], [a, b] = P.xy({ lat: y, lng: x });
+    if (a > 30 && a < P.W - 60 && b > 30 && b < P.H - 30) svg.append(h("text", { x: a + 6, y: b - 6, class: "riolbl", text: "Rio " + (nome === "Ganges" ? "Ganges" : "Yamuna") }));
+  }
+  const gt = h("g", { class: "grade" });
+  const tl = P.inv(0, 0), br = P.inv(P.W, P.H), passo = P.s > 600 ? 0.05 : P.s > 150 ? 0.5 : 2;
+  for (let lat = Math.ceil(br.lat / passo) * passo; lat <= tl.lat; lat += passo) { const y = P.xy({ lat, lng: tl.lng })[1]; gt.append(h("line", { x1: 16, y1: y, x2: P.W - 16, y2: y }), h("text", { x: 20, y: y - 3, text: lat.toFixed(passo < 1 ? 2 : 0) + "°N" })); }
+  for (let lng = Math.ceil(tl.lng / passo) * passo; lng <= br.lng; lng += passo) { const x = P.xy({ lat: tl.lat, lng })[0]; gt.append(h("line", { x1: x, y1: 16, x2: x, y2: P.H - 16 }), h("text", { x: x + 3, y: P.H - 20, text: lng.toFixed(passo < 1 ? 2 : 0) + "°L" })); }
+  svg.append(gt);
+}
+function escala(svg, P) {
+  const H = P.H, per = P.s / 111.32, nice = [0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
+  const k = nice.find(n => n * per >= 60) || 500, len = k * per;
+  if (len < 260) svg.append(h("g", { class: "escala" },
+    h("rect", { x: 30, y: H - 42, width: len / 2, height: 5, fill: "#5B3F22" }), h("rect", { x: 30 + len / 2, y: H - 42, width: len / 2, height: 5, fill: "#F1E2BC", stroke: "#5B3F22" }),
+    h("text", { x: 30, y: H - 48, text: k < 1 ? k * 1000 + " m" : k + " km" })));
+}
+function curva(a, b, dobra) {
+  const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1];
+  return `Q${(mx - dy * dobra).toFixed(1)} ${(my + dx * dobra).toFixed(1)} ${b[0].toFixed(1)} ${b[1].toFixed(1)}`;
+}
+function exploradoresNoMapa(svg, P, filtro) {
+  const gente = S.posicoes.filter(p => Date.now() - (p.ts || 0) < FRESCO && filtro(p));
+  const usados = {};
+  for (const p of gente) {
+    let [x, y] = P.xy(p); if (x < 0 || x > P.W || y < 0 || y > P.H) continue;
+    const k = Math.round(x / 28) + ":" + Math.round(y / 28), n = usados[k] = (usados[k] || 0) + 1;
+    x += (n - 1) * 26 * (n % 2 ? 1 : -1);
+    const nome = nomeDe(p.id), vivo = !!p.link;
+    const g = h("g", { class: "explorador", transform: `translate(${(x - 22).toFixed(1)} ${(y - 64).toFixed(1)})` },
+      h("title", { text: nome + (p.nota ? ": " + p.nota : "") }),
+      vivo ? h("circle", { class: "vivo", cx: 22, cy: 62, r: 12 }) : null,
+      h("g", { class: "bob", transform: "scale(.74)" }, desenhaBoneco(bonecoDe(p.id))),
+      h("rect", { x: 22 - Math.min(nome.length, 12) * 3.6 - 6, y: 68, width: Math.min(nome.length, 12) * 7.2 + 12, height: 15, rx: 3, class: "etq" }),
+      h("text", { x: 22, y: 79, class: "etqt", text: nome.length > 12 ? nome.slice(0, 11) + "…" : nome }));
+    svg.append(g);
   }
 }
 function mapaIndia(cids) {
-  const W = 600, H = 620, svg = base(W, H, "india");
-  svg.setAttribute("aria-label", "Mapa da rota pela Índia");
+  const W = 600, H = 640, svg = pergaminho(W, H, "india");
+  svg.setAttribute("aria-label", "Mapa da expedição pela Índia");
   const pts = cids.filter(c => isFinite(+c.lat)); if (!pts.length) return svg;
-  const P = projetor(pts, W, H, 80); S.proj = P;
-  const ordem = [...pts, pts[0]];
-  svg.append(h("path", { class: "route", d: ordem.map((c, i) => (i ? "L" : "M") + P.xy(c).map(n => n.toFixed(1)).join(" ")).join("") }));
-  pessoasNoMapa(svg, P, () => true);
+  const P = projetor(pts, W, H, 95); S.proj = P;
+  camadasGeo(svg, P, true);
+  const seq = [...pts, pts[0]].map(c => P.xy(c));
+  const d = "M" + seq[0].map(n => n.toFixed(1)).join(" ") + seq.slice(1).map((b, i) => curva(seq[i], b, i % 2 ? .18 : -.18)).join("");
+  const anima = !S.rotaVista && !matchMedia("(prefers-reduced-motion: reduce)").matches; S.rotaVista = true;
+  svg.append(h("path", { d, class: "rota-sombra" }), h("path", { d, class: "rota" + (anima ? " desenha" : ""), pathLength: "1" }));
   pts.forEach(c => {
     const [x, y] = P.xy(c), ls = S.locais.filter(l => l.cidadeId === c.id && l.insignia), ok = ls.filter(aberto).length;
-    const right = x < W - 170;
-    svg.append(h("g", { class: "city pin", tabindex: "0", role: "button", "aria-label": c.nome,
+    const right = x < W - 190;
+    svg.append(h("g", { class: "cidade", tabindex: "0", role: "button", "aria-label": c.nome,
       onclick: () => { if (S.marcando) return; S.cidadeSel = c.id; S.localSel = null; render(); },
       onkeydown: e => { if (e.key === "Enter") { S.cidadeSel = c.id; render(); } } },
-      h("circle", { class: "dot", cx: x, cy: y, r: 9 }),
-      h("text", { x: right ? x + 20 : x - 20, y: y + 2, "text-anchor": right ? "start" : "end", text: c.nome.toUpperCase() }),
-      ls.length ? h("text", { class: "cnt", x: right ? x + 20 : x - 20, y: y + 22, "text-anchor": right ? "start" : "end", text: `${ok}/${ls.length} selos` }) : null));
+      h("circle", { cx: x, cy: y, r: 9, class: "c1" }), h("circle", { cx: x, cy: y, r: 4.5, class: "c2" }),
+      h("text", { x: right ? x + 16 : x - 16, y: y + 1, "text-anchor": right ? "start" : "end", class: "cnome", text: c.nome.toUpperCase() }),
+      ls.length ? h("text", { x: right ? x + 16 : x - 16, y: y + 18, "text-anchor": right ? "start" : "end", class: "ccnt", text: `${ok} de ${ls.length} selos` }) : null));
   });
-  escala(svg, P); marcarClick(svg, "india");
+  exploradoresNoMapa(svg, P, () => true);
+  escala(svg, P); molduraECompasso(svg, W, H, "india", "EXPEDIÇÃO", "Índia Sagrada · 2026"); marcarClick(svg, "india");
   return svg;
 }
 function mapaCidade(c, ls) {
-  const W = 600, H = 560, svg = base(W, H, c.id);
+  const W = 600, H = 600, svg = pergaminho(W, H, c.id);
   svg.setAttribute("aria-label", "Mapa de " + c.nome);
   const pts = ls.filter(l => isFinite(+l.lat)); if (!pts.length) return svg;
-  const P = projetor(pts.length > 1 ? pts : [...pts, { lat: +pts[0].lat + .01, lng: +pts[0].lng + .01 }, { lat: +pts[0].lat - .01, lng: +pts[0].lng - .01 }], W, H, 70); S.proj = P;
+  const P = projetor(pts.length > 1 ? pts : [...pts, { lat: +pts[0].lat + .01, lng: +pts[0].lng + .01 }, { lat: +pts[0].lat - .01, lng: +pts[0].lng - .01 }], W, H, 90); S.proj = P;
+  camadasGeo(svg, P, false);
   const ins = pts.filter(l => l.insignia);
-  if (ins.length > 1) svg.append(h("path", { class: "route", d: ins.map((l, i) => (i ? "L" : "M") + P.xy(l).map(n => n.toFixed(1)).join(" ")).join("") }));
+  if (ins.length > 1) { const seq = ins.map(l => P.xy(l)); const d = "M" + seq[0].map(n => n.toFixed(1)).join(" ") + seq.slice(1).map((b, i) => curva(seq[i], b, .15)).join(""); svg.append(h("path", { d, class: "rota fina", pathLength: "1" })); }
   for (const l of pts.filter(l => !l.insignia)) {
     const [x, y] = P.xy(l), right = x < W - 170;
-    svg.append(h("g", { class: "hotel pin", tabindex: "0", role: "button", "aria-label": l.nome,
-      onclick: () => { if (S.marcando) return; S.localSel = l.id; render(); } },
-      h("rect", { x: x - 9, y: y - 9, width: 18, height: 18, rx: 4 }),
-      h("text", { x: right ? x + 16 : x - 16, y: y + 5, "text-anchor": right ? "start" : "end", text: l.nome })));
+    svg.append(h("g", { class: "hotel pin", tabindex: "0", role: "button", "aria-label": l.nome, onclick: () => { if (S.marcando) return; S.localSel = l.id; render(); } },
+      h("rect", { x: x - 8, y: y - 8, width: 16, height: 16, rx: 2 }),
+      h("text", { x: right ? x + 14 : x - 14, y: y + 5, "text-anchor": right ? "start" : "end", text: l.nome })));
   }
-  pessoasNoMapa(svg, P, p => p.cidadeId === c.id);
   ins.forEach(l => {
     const [x, y] = P.xy(l), on = aberto(l), right = x < W - 190, i = insigniaLocais().indexOf(l) + 1;
     svg.append(h("g", { class: `pin ${on ? "on" : "off"}${S.localSel === l.id ? " sel" : ""}`, tabindex: "0", role: "button", "aria-label": `${l.nome}${on ? "" : " (a carimbar)"}`,
       onclick: () => { if (S.marcando) return; S.localSel = l.id; S.unlockMsg = null; render(); },
       onkeydown: e => { if (e.key === "Enter") { S.localSel = l.id; render(); } } },
-      h("circle", { class: "halo", cx: x, cy: y, r: 30 }),
-      h("circle", { class: "ring", cx: x, cy: y, r: 23 }),
-      on ? h("image", { href: badgeSrc(l), x: x - 16, y: y - 21, width: 32, height: 42 }) : h("text", { class: "n", x, y, text: nn(i) }),
+      h("circle", { class: "halo", cx: x, cy: y, r: 30 }), h("circle", { class: "ring", cx: x, cy: y, r: 23 }),
+      on ? h("image", { href: badgeSrc(l), x: x - 16, y: y - 21, width: 32, height: 42 }) : h("text", { class: "n", x, y, text: "✕" }),
       h("text", { class: "lbl", x: right ? x + 31 : x - 31, y: y + 5, "text-anchor": right ? "start" : "end", text: l.nome })));
   });
-  escala(svg, P); marcarClick(svg, c.id);
+  exploradoresNoMapa(svg, P, p => p.cidadeId === c.id);
+  escala(svg, P); molduraECompasso(svg, W, H, c.id, c.nome.toUpperCase(), c.frase ? c.frase.slice(0, 30) : "Índia Sagrada"); marcarClick(svg, c.id);
   return svg;
 }
 function marcarClick(svg, cidadeId) {
   svg.addEventListener("click", ev => {
     if (!S.marcando || !S.proj) return;
     const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
-    const q = pt.matrixTransform(svg.getScreenCTM().inverse()), P = S.proj;
-    const lng = ((q.x - P.W / 2) / P.s + P.mx) / P.cos, lat = -((q.y - P.H / 2) / P.s + P.my);
+    const q = pt.matrixTransform(svg.getScreenCTM().inverse()), g = S.proj.inv(q.x, q.y);
     S.marcando = false;
-    salvarPos({ cidadeId: cidadeId === "india" ? pertoCidade({ lat, lng }) : cidadeId, lat: +lat.toFixed(5), lng: +lng.toFixed(5), lugar: "" });
+    salvarPos({ cidadeId: cidadeId === "india" ? pertoCidade(g) : cidadeId, lat: +g.lat.toFixed(5), lng: +g.lng.toFixed(5), lugar: "" });
   });
 }
 function pertoCidade(p) { let b = null; for (const c of S.cidades) { const d = km(p, { lat: +c.lat, lng: +c.lng }); if (!b || d < b.d) b = { id: c.id, d }; } return b ? b.id : ""; }
@@ -882,16 +1214,18 @@ function pertoDe(p) {
 function haQuanto(ts) { const m = Math.round((Date.now() - ts) / 60000); return m < 1 ? "agora" : m < 60 ? `há ${m} min` : `há ${Math.floor(m / 60)} h`; }
 
 function vMapa() {
+  if (S.montando) return vExplorador();
   const cids = S.cidades.slice().sort(byOrdem);
-  if (!cids.length) return h("section", { class: "view" }, h("h1", { text: "Mapa" }), carregando());
+  if (!cids.length) return h("section", { class: "view" }, h("h1", { text: "Mapa da Expedição" }), carregando());
   if (S.cidadeSel !== "india" && !cidadeDe(S.cidadeSel)) S.cidadeSel = "india";
   const c = cidadeDe(S.cidadeSel), ls = c ? S.locais.filter(l => l.cidadeId === c.id).sort(byOrdem) : [];
   const loc = ls.find(l => l.id === S.localSel);
   perfis(S.posicoes.map(p => p.id));
   return h("section", { class: "view" },
     h("div", { class: "head" },
-      h("div", null, h("p", { class: "eyebrow", text: c ? "Índia · " + c.nome : "O mapa da travessia" }), h("h1", { text: c ? c.nome : "A rota da caravana" })),
-      c ? adminBtn("Novo lugar", () => editar("local", { cidadeId: c.id, ordem: 99 })) : null),
+      h("div", null, h("p", { class: "eyebrow", text: c ? "Índia · " + c.nome : "Mapa da Expedição" }), h("h1", { text: c ? c.nome : "A rota da caravana" })),
+      h("button", { class: "meuexp", type: "button", onclick: () => { S.montando = true; S.bonecoRasc = null; render(); $("#main").scrollTop = 0; } },
+        bonecoSvg(bonecoDe(S.uid), "bonecosvg mini"), h("span", { text: "Meu explorador" }))),
     h("div", { class: "pick", role: "group", "aria-label": "Escolher mapa" },
       h("button", { type: "button", "aria-pressed": String(!c), onclick: () => { S.cidadeSel = "india"; S.localSel = null; render(); } }, "Índia"),
       cids.map(x => h("button", { type: "button", "aria-pressed": String(c && x.id === c.id), onclick: () => { S.cidadeSel = x.id; S.localSel = null; render(); } }, x.nome))),
@@ -899,15 +1233,135 @@ function vMapa() {
       h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
         S.marcando ? h("p", { class: "msg ok", role: "status", text: "Toque no mapa no ponto onde você está." }) : null,
         h("div", { class: "map" + (S.marcando ? " marking" : "") }, c ? mapaCidade(c, ls) : mapaIndia(cids)),
-        h("div", { class: "legend" },
-          c ? h("span", null, h("i", { style: "border:2px solid var(--gold)" }), "Selo") : h("span", { text: "Toque numa cidade para ver os lugares." }),
-          c ? h("span", null, h("i", { style: "border-radius:3px;border:2px solid var(--soft)" }), "Hotel") : null,
-          h("span", null, h("i", { style: "background:var(--gold-deep)" }), "Pessoas da caravana"),
-          h("span", { text: "O relevo é só decorativo." }))),
+        h("p", { class: "small", text: c ? "Selos com ✕ ainda não foram carimbados. Cada explorador é uma pessoa da caravana que mostrou onde está." : "A linha vermelha é a rota da caravana. Toque numa cidade para ver os lugares. Cada explorador é uma pessoa da caravana." })),
       h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" },
         loc ? painelLocal(loc) : c ? h("aside", { class: "panel" }, h("p", { class: "eyebrow", text: c.nome }), h("h2", { text: c.frase || "Toque num ponto do mapa" }),
-          h("p", { class: "small", text: "Os pontos com número são selos a carimbar. Quando a caravana chegar, a líder revela a palavra do lugar." })) : null,
+          h("p", { class: "small", text: "Quando a caravana chegar, a líder revela a palavra do lugar para você carimbar o selo." })) : null,
         painelPessoas(c))));
+}
+
+// ---------- Estúdio de fotos ----------
+const FILTROS = [
+  { id: "original", nome: "Original" },
+  { id: "expedicao", nome: "Expedição", m: [.62, .52, .16, .30, .62, .14, .20, .40, .28], con: 1.08, vin: .5, grao: 14 },
+  { id: "ganges", nome: "Ganges dourado", m: [1.10, .10, 0, .04, 1.00, 0, -.04, .06, .82], con: 1.06, add: [10, 4, -6], vin: .28 },
+  { id: "rosa", nome: "Cidade Rosa", m: [1.02, .06, .04, .02, .92, .04, .04, .04, .96], con: 1.02, add: [16, -2, 8], vin: .2 },
+  { id: "kashi", nome: "Kashi P&B", m: [.30, .59, .11, .30, .59, .11, .30, .59, .11], con: 1.22, vin: .45, grao: 10 },
+  { id: "himalaia", nome: "Himalaia", m: [.86, .08, .06, .04, .90, .06, .04, .10, 1.02], con: .94, add: [8, 12, 18], vin: .15 }
+];
+const MOLDURAS = [["polaroid", "Polaroid"], ["carimbo", "Carimbo"], ["assinatura", "Assinatura"], ["nenhuma", "Sem moldura"]];
+const imgCache = {};
+function carregaImg(src) { return imgCache[src] ||= new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; }); }
+function aplicaFiltro(ctx, w, hh, f) {
+  if (!f.m) return;
+  const d = ctx.getImageData(0, 0, w, hh), p = d.data, m = f.m, con = f.con || 1, add = f.add || [0, 0, 0], g = f.grao || 0;
+  const cx = w / 2, cy = hh / 2, rmax = Math.hypot(cx, cy), vin = f.vin || 0;
+  for (let y = 0, i = 0; y < hh; y++) for (let x = 0; x < w; x++, i += 4) {
+    const r = p[i], gg = p[i + 1], b = p[i + 2];
+    let R = r * m[0] + gg * m[1] + b * m[2], G = r * m[3] + gg * m[4] + b * m[5], B = r * m[6] + gg * m[7] + b * m[8];
+    R = (R - 128) * con + 128 + add[0]; G = (G - 128) * con + 128 + add[1]; B = (B - 128) * con + 128 + add[2];
+    if (vin) { const k = 1 - vin * Math.pow(Math.hypot(x - cx, y - cy) / rmax, 2.2); R *= k; G *= k; B *= k; }
+    if (g) { const n = (Math.random() - .5) * g; R += n; G += n; B += n; }
+    p[i] = R; p[i + 1] = G; p[i + 2] = B;
+  }
+  ctx.putImageData(d, 0, 0);
+}
+async function montaFoto(canvas) {
+  const F = S.foto; if (!F || !F.img) return;
+  const img = F.img, max = 1600, k = Math.min(1, max / Math.max(img.width, img.height));
+  const w = Math.round(img.width * k), hh = Math.round(img.height * k);
+  // o filtro é o passo pesado: guarda o resultado até trocar a foto ou o filtro
+  let tmp = F.img === montaFoto.img && F.filtro === montaFoto.filtro ? montaFoto.tmp : null;
+  if (!tmp) {
+    tmp = document.createElement("canvas"); tmp.width = w; tmp.height = hh;
+    const t = tmp.getContext("2d", { willReadFrequently: true }); t.drawImage(img, 0, 0, w, hh);
+    aplicaFiltro(t, w, hh, FILTROS.find(x => x.id === F.filtro) || FILTROS[0]);
+    Object.assign(montaFoto, { img: F.img, filtro: F.filtro, tmp });
+  }
+  const u = Math.max(w, hh) / 1000, legenda = [F.legenda, F.cidade].filter(Boolean).join(" · "), data = F.data;
+  const [marrom, dourado] = await Promise.all([carregaImg("img/simbolo-marrom.png"), carregaImg("img/simbolo-dourado.png")]);
+  let W = w, H = hh, ox = 0, oy = 0;
+  if (F.moldura === "polaroid") { const m = Math.round(40 * u); W = w + m * 2; H = hh + m + Math.round(190 * u); ox = m; oy = m; }
+  canvas.width = W; canvas.height = H;
+  const c = canvas.getContext("2d");
+  if (F.moldura === "polaroid") { c.fillStyle = "#F6EFE1"; c.fillRect(0, 0, W, H); }
+  c.drawImage(tmp, ox, oy);
+  const serif = "Lora, Georgia, serif", sans = "Poppins, system-ui, sans-serif";
+  if (F.moldura === "polaroid") {
+    const by = oy + hh, s = 96 * u, sw = s * marrom.width / marrom.height;
+    c.drawImage(marrom, ox + 10 * u, by + 46 * u, sw, s);
+    c.fillStyle = "#282722"; c.font = `500 ${46 * u}px ${serif}`; c.textBaseline = "alphabetic";
+    c.fillText(legenda || "Índia Sagrada", ox + sw + 36 * u, by + 96 * u, w - sw - 60 * u);
+    c.fillStyle = "#8A3F32"; c.font = `500 ${24 * u}px ${sans}`;
+    c.fillText(("Caravana do Céu · " + data).toUpperCase(), ox + sw + 36 * u, by + 138 * u, w - sw - 60 * u);
+  } else if (F.moldura === "carimbo") {
+    const R = 150 * u, x = w - R - 50 * u, y = hh - R - 50 * u;
+    c.save(); c.translate(x, y); c.rotate(-0.24); c.globalAlpha = .88;
+    c.strokeStyle = "#B0301F"; c.lineWidth = 7 * u; c.beginPath(); c.arc(0, 0, R, 0, Math.PI * 2); c.stroke();
+    c.lineWidth = 3 * u; c.beginPath(); c.arc(0, 0, R - 16 * u, 0, Math.PI * 2); c.stroke();
+    c.fillStyle = "#B0301F"; c.textAlign = "center"; c.font = `600 ${30 * u}px ${sans}`;
+    c.fillText("CARAVANA DO CÉU", 0, -R * .42); c.font = `600 ${46 * u}px ${serif}`; c.fillText((F.cidade || "ÍNDIA").toUpperCase(), 0, 14 * u, R * 1.6);
+    c.font = `600 ${28 * u}px ${sans}`; c.fillText(data.toUpperCase(), 0, R * .56); c.restore();
+  } else if (F.moldura === "assinatura") {
+    const grd = c.createLinearGradient(0, hh * .62, 0, hh); grd.addColorStop(0, "rgba(20,14,8,0)"); grd.addColorStop(1, "rgba(20,14,8,.62)");
+    c.fillStyle = grd; c.fillRect(0, hh * .62, w, hh * .38);
+    const s = 90 * u, sw = s * dourado.width / dourado.height;
+    c.drawImage(dourado, 44 * u, hh - s - 48 * u, sw, s);
+    c.fillStyle = "#F4E6C4"; c.font = `500 ${44 * u}px ${serif}`; c.fillText(legenda || "Índia Sagrada", 44 * u + sw + 26 * u, hh - 92 * u, w - sw - 120 * u);
+    c.font = `500 ${24 * u}px ${sans}`; c.fillStyle = "#E2BE78"; c.fillText(("Caravana do Céu · " + data).toUpperCase(), 44 * u + sw + 26 * u, hh - 56 * u, w - sw - 120 * u);
+  }
+}
+function vFotos() {
+  const F = S.foto || (S.foto = { filtro: "expedicao", moldura: "polaroid", legenda: "", cidade: "", data: "" });
+  const hoje = hojeIso(), dia = (S.roteiro?.dias || []).find(d => d.iso === hoje);
+  if (!F.cidade && !F._auto) { F.cidade = dia ? dia.cidade.split(" ")[0] : ""; F._auto = true; }
+  if (!F.data) { const d = new Date(); F.data = d.getDate() + " " + MES[d.getMonth()].toLowerCase() + " " + d.getFullYear(); }
+  const canvas = h("canvas", { class: "fotocanvas", "aria-label": "Prévia da foto" });
+  const msg = h("p", { class: "msg", role: "status" });
+  const fi = h("input", { type: "file", accept: "image/*", id: "estudio-foto", hidden: true, onchange: async () => {
+    const f = fi.files[0]; if (!f) return;
+    try { const bmp = await createImageBitmap(f); S.foto = { ...S.foto, img: bmp }; render(); } catch (e) { msg.textContent = "Não consegui abrir essa foto. Tente outra, em JPG ou PNG."; msg.className = "msg err"; }
+    fi.value = "";
+  } });
+  const set = (k, v) => { S.foto = { ...S.foto, [k]: v }; render(); };
+  const leg = h("input", { type: "text", id: "estudio-legenda", maxlength: "40", placeholder: "Legenda (ex.: Amanhecer no Ganges)", value: F.legenda });
+  leg.addEventListener("change", () => set("legenda", leg.value.trim()));
+  const cid = h("select", { id: "estudio-cidade", "aria-label": "Cidade" }, h("option", { value: "", text: "Sem cidade" }),
+    ["Delhi", "Agra", "Jaipur", "Varanasi", "Rishikesh"].map(c => h("option", { value: c, text: c, selected: F.cidade === c })));
+  cid.addEventListener("change", () => set("cidade", cid.value));
+  const blobDoCanvas = () => new Promise(res => canvas.toBlob(res, "image/jpeg", .92));
+  const salvar = async () => {
+    const dl = await (window.claude?.use?.("downloads") ?? null);
+    if (!dl) { msg.textContent = "Para salvar, toque e segure na foto e escolha Salvar imagem."; msg.className = "msg"; return; }
+    try { await dl.save({ filename: "caravana-" + (F.cidade || "india").toLowerCase() + ".jpg", data: await blobDoCanvas() }); msg.textContent = "Foto salva."; msg.className = "msg ok"; }
+    catch (e) { msg.textContent = e && e.code === "declined" ? "" : "Não consegui salvar. Toque e segure na foto e escolha Salvar imagem."; msg.className = "msg"; }
+  };
+  const enviar = async () => {
+    if (!S.assets || !eu()) { msg.textContent = "Para enviar à Roda, emita seu passaporte e peça à líder um convite de Editor."; msg.className = "msg err"; return; }
+    msg.textContent = "Enviando para a Roda…"; msg.className = "msg";
+    try { const r = await S.assets.upload(await blobDoCanvas()); await S.db.collection("chat").add({ autor: S.uid, tipo: "foto", fotoId: r.id, texto: [F.legenda, F.cidade].filter(Boolean).join(" · "), ts: Date.now() }); msg.textContent = "Foto enviada para a Roda."; msg.className = "msg ok"; }
+    catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
+  };
+  if (F.img) requestAnimationFrame(() => montaFoto(canvas).catch(() => {}));
+  return h("section", { class: "view" },
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Fotos da travessia" }))),
+    F.img ? h("div", { class: "estudio" },
+      h("div", { class: "fotoframe" }, canvas),
+      h("div", { class: "fcontrols" },
+        h("p", { class: "lab", text: "Filtro" }),
+        h("div", { class: "opts" }, FILTROS.map(f => h("button", { type: "button", class: "opt", "aria-pressed": String(F.filtro === f.id), onclick: () => set("filtro", f.id) }, f.nome))),
+        h("p", { class: "lab", text: "Moldura" }),
+        h("div", { class: "opts" }, MOLDURAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: () => set("moldura", id) }, n))),
+        h("p", { class: "lab", text: "Legenda" }), leg, cid,
+        h("div", { class: "actions" },
+          h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no celular"),
+          h("button", { class: "btn", type: "button", onclick: enviar }, "Enviar para a Roda"),
+          h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "Trocar foto")),
+        msg)) :
+      h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
+        h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "Escolha uma foto" }),
+        h("span", { text: "Aplique os filtros da Caravana, coloque a moldura com o nosso símbolo e salve ou mande para a Roda." })),
+    fi);
 }
 
 function painelLocal(l) {
@@ -1177,6 +1631,7 @@ function listen(col, key, q, after) {
   }, () => { S.dbReady = true; if (after) after(); render(); });
 }
 
+fetch("dados/geo.json").then(r => r.ok ? r.json() : null).then(j => { if (j) { S.geo = j; if (S.tab === "mapa") render(); } }).catch(() => {});
 fetch("dados/travessia.json").then(r => { if (!r.ok) throw 0; return r.json(); })
   .then(j => { S.roteiro = j; render(); }).catch(() => { S.roteiroErro = true; render(); });
 render();
