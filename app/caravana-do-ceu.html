@@ -571,7 +571,75 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 @media (prefers-reduced-motion:reduce){#frase-giro{transition:none}}
 .hero .legenda{font-size:10.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--terra);margin-top:-2px}
 
-.brand b{font-family:"Julius Sans One",system-ui,sans-serif!important;font-weight:400!important;letter-spacing:.16em!important;font-size:13px!important}
+.brand b{font-family:var(--ui)!important;font-weight:600!important;letter-spacing:.16em!important;font-size:13px!important}
+
+/* Hoje */
+.hero .route{font-size:12px;letter-spacing:.1em}
+.hoje{background:linear-gradient(160deg,#3B2A1C,#5A4128);color:#F1E2BC;border-radius:var(--r);box-shadow:var(--shadow);padding:18px 18px 16px;display:flex;flex-direction:column;gap:8px}
+.hjtop{display:flex;align-items:center;gap:10px;font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#D8C09A;margin:0}
+.hjtop span{background:#E2BE78;color:#2B1F14;border-radius:999px;padding:2px 10px}
+.hoje h2{font-family:var(--display);font-size:24px;font-weight:500;margin:0;color:#F6EDDA}
+.hjcid{font-size:13px;color:#D8C09A;margin:0}
+.hjprox{background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.25);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.hjl{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#E2BE78;margin:0}
+.hjitem{display:flex;gap:10px;margin:0;font-size:15px;line-height:1.4}
+.hjitem b{font-variant-numeric:tabular-nums;color:#F6EDDA;min-width:44px}
+.hjitem.dep{font-size:13px;color:#CDB894}
+.hjmantra{display:flex;flex-direction:column;align-items:flex-start;gap:0;background:none;border:0;border-left:2px solid #E2BE78;padding:2px 0 2px 10px;color:#F1E2BC;text-align:left}
+.hjmantra span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#D8C09A}
+.hjmantra b{font-family:var(--display);font-style:italic;font-weight:500;font-size:17px}
+.hjselos{display:flex;gap:12px;flex-wrap:wrap}
+.hjselos button{display:flex;align-items:center;gap:8px;background:none;border:0;color:#F1E2BC;font-size:13px;padding:0}
+.hjselos img{width:40px;height:auto}.hjselos img.off{filter:grayscale(1) opacity(.5)}
+.hoje .btn.gold{align-self:flex-start}
+.simular{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:12.5px;color:var(--soft);border:1px dashed var(--line2);border-radius:12px;padding:8px 12px}
+.simular select{font-size:13px;padding:4px 8px;border-radius:8px;border:1px solid var(--line2);background:var(--panel)}
+/* Mantra e diário */
+.mantra{background:#F4E9D2;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.mantra h4{font-family:var(--display);font-size:20px;font-weight:500;margin:4px 0 0}
+.mlin{font-family:var(--display);font-style:italic;font-size:16px;line-height:1.6;color:#5A4128;margin:0}
+.mtrad{font-size:14.5px;line-height:1.55;color:#3C3A33;margin:0}
+.mnota{font-size:12px;color:var(--faint);margin:0}
+.diario{display:flex;flex-direction:column;gap:8px}
+.dq{font-family:var(--display);font-style:italic;font-size:18px;margin:0;color:var(--ink)}
+.diario textarea{width:100%;border:1px solid var(--line2);border-radius:12px;padding:10px 12px;background:#FFFCF5;font:15px/1.5 var(--ui);resize:vertical}
+/* Carta */
+.cartabtn{display:flex;align-items:center;gap:14px;background:#FBF4E4;border:1px solid #D8C09A;border-radius:var(--r);padding:14px 16px;text-align:left;box-shadow:var(--shadow)}
+.cartabtn .selo{width:46px;height:46px;border-radius:50%;background:#8A3F32;display:grid;place-items:center;flex:none;box-shadow:inset 0 0 0 3px rgba(0,0,0,.12)}
+.cartabtn .selo img{width:26px;height:auto}
+.cartabtn b{display:block;font-family:var(--display);font-size:19px;font-weight:500}
+.cartabtn span span,.cartabtn>span:last-child>span{font-size:13px;color:var(--soft)}
+.sheet .cartabox{background:#FBF4E4}
+.cartapapel{position:relative;display:flex;flex-direction:column;gap:12px;font-family:"Courier Prime","Courier New",monospace;font-size:15px;line-height:1.65;color:#282722}
+.cartapapel p{margin:0;position:relative}
+.cartapapel .marca{position:absolute;left:50%;top:40%;width:60%;transform:translate(-50%,-50%);opacity:.06;pointer-events:none}
+.cpara{font-weight:700}.cass{margin-top:6px!important;font-style:italic}.cdata{font-size:12.5px;color:var(--soft)}
+.secret textarea,.secret input{width:100%;border:1px solid var(--line2);border-radius:10px;padding:8px 10px;font:14px/1.5 var(--ui);background:#fff}
+/* Passaporte: diário e carta */
+.pg.diariopg,.pg.cartapg{justify-content:flex-start;align-items:stretch;text-align:left;gap:10px}
+.pgdiario{border-bottom:1px dashed rgba(40,28,15,.25);padding-bottom:8px}
+.pgdq{font-family:"Courier Prime",monospace;font-size:9.5px;letter-spacing:.06em;color:#8A3F32;margin:0}
+.pgdt{font-family:"Special Elite","Courier Prime",monospace;font-size:13px;line-height:1.45;margin:4px 0 0;color:#282722}
+.pgct{font-family:"Courier Prime",monospace;font-size:11.5px;line-height:1.5;margin:0;color:#282722}.pgct.ass{font-style:italic}
+/* Hindi */
+.hilist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.hilist li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.hilist li>div{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0}
+.hpt{font-size:12.5px;color:var(--soft)}
+.hilist b{font-family:var(--display);font-size:18px;font-weight:600}
+.hpron{font-size:13.5px;color:var(--terra)}
+.hdev{font-size:14px;color:#6B6556}
+.hfala{width:38px;height:38px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);display:grid;place-items:center;color:#5A4128;flex:none}
+/* Sem internet */
+.offline{background:var(--panel);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.offline b{display:block;font-family:var(--display);font-size:19px;font-weight:500}
+.offline span{font-size:13.5px;color:var(--soft)}
+/* Mural */
+.mural{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.mfoto{position:relative;border:0;padding:0;border-radius:12px;overflow:hidden;background:#2B1F14;aspect-ratio:1;box-shadow:var(--shadow)}
+.mfoto img{width:100%;height:100%;object-fit:cover;display:block}
+.mfoto span{position:absolute;left:0;right:0;bottom:0;padding:18px 8px 6px;font-size:12px;color:#F6EDDA;text-align:left;background:linear-gradient(transparent,rgba(20,14,8,.7))}
+.mgrande{width:100%;height:auto;border-radius:12px;display:block}
 </style>
 
 <div class="app">
@@ -600,7 +668,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 const S = {
   tab: "travessia",
   roteiro: null, roteiroErro: false,
-  dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [],
+  dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [], cartas: [], mural: [], fotoAba: "estudio", muralCidade: "",
   vReady: false, dbReady: false, pularCadastro: false,
   uid: null, me: null, isOwner: false, canChat: null,
   db: null, user: null, assets: null, perfis: {},
@@ -608,6 +676,7 @@ const S = {
   unlockMsg: null, novoSelo: null, marcando: false, posMsg: null, pontoAberto: false, proj: null, local: {}, checks: {}
 };
 try { const t = localStorage.getItem("cdi-tab2"); if (t) S.tab = t; } catch (e) {}
+{ const hj = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }); if (hj >= "2026-11-04" && hj <= "2026-11-16") S.tab = "travessia"; }
 try { S.local = JSON.parse(localStorage.getItem("cdi-ins") || "{}") || {}; } catch (e) {}
 try { S.checks = JSON.parse(localStorage.getItem("cdi-checks") || "{}") || {}; } catch (e) {}
 try { S.lidos = JSON.parse(localStorage.getItem("cdi-lidos") || "{}") || {}; } catch (e) { S.lidos = {}; }
@@ -859,7 +928,7 @@ setInterval(() => {
 function vTravessia() {
   const R = S.roteiro;
   if (!R) return h("section", { class: "view" }, carregando(S.roteiroErro ? "Não consegui carregar o roteiro. Feche e abra o aplicativo de novo." : ""));
-  const dias = R.dias, hoje = hojeIso(), f = faltam();
+  const dias = R.dias, hoje = hojeTrip(), f = faltam(), dHoje = dias.find(d => d.iso === hoje);
   if (S.diaAberto == null) S.diaAberto = (dias.find(d => d.iso === hoje) || dias.find(d => d.iso > hoje) || dias[0]).n;
   const ins = insigniaLocais();
   const abrir = n => { S.diaAberto = S.diaAberto === n ? 0 : n; render(); if (S.diaAberto) requestAnimationFrame(() => document.getElementById("dia-" + n)?.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })); };
@@ -867,7 +936,7 @@ function vTravessia() {
     h("div", { class: "hero" },
       h("img", { class: "logo", src: "img/simbolo-marrom.png", alt: "" }),
       h("h1", null, "Travessia da", h("br"), "Índia Sagrada"),
-      h("p", { class: "route", text: "Delhi · Agra · Jaipur · Varanasi · Rishikesh" }),
+      h("p", { class: "route", text: "Lokah Samastah Sukhino Bhavantu" }),
       h("span", { class: "line" }),
       h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] })),
     h("div", { class: "clock" },
@@ -875,6 +944,9 @@ function vTravessia() {
             : h("div", null, h("b", { text: "13" }), h("span", { text: "dias de travessia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "Asia/Kolkata", text: horaEm("Asia/Kolkata") }), h("span", { text: "Agora na Índia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +8h30" }))),
+    vSimular(),
+    vCartaBtn(),
+    dHoje ? vHoje(dHoje, abrir) : null,
     ins.length ? h("div", null,
       h("p", { class: "eyebrow rule", text: `Os ${ins.length} selos do passaporte` }),
       h("div", { class: "strip", style: "margin-top:10px" }, ins.map(l => h("button", { type: "button", "aria-label": l.nome, onclick: () => abrirSelo(l) },
@@ -883,6 +955,7 @@ function vTravessia() {
       h("b", { text: nn(d.n) }), d.cidade))),
     h("div", { class: "days" }, dias.map(d => vDia(d, d.n === S.diaAberto, d.iso === hoje, abrir))),
     h("button", { class: "btn", type: "button", style: "align-self:center", onclick: () => go("ensinamentos") }, "Guia da travessia e saberes"),
+    vOffline(),
     h("div", { class: "foot" },
       h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }),
       h("img", { class: "s", src: "img/simbolo-marrom.png", alt: "" }),
@@ -906,6 +979,8 @@ function vDia(d, open, isToday, abrir) {
       h("div", null, h("p", { class: "eyebrow rule", text: "Agenda do dia" }),
         d.agenda.map(p => [h("p", { class: "per", text: p.periodo }),
           h("ul", { class: "items" }, p.itens.map(it => h("li", null, h("span", { class: "h", text: it.hora || "·" }), h("span", { text: it.texto }))))])),
+      vMantra(d.n),
+      vDiario(d, d.iso <= hojeTrip()),
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
         l.dados && l.dados.length ? h("div", { class: "stats" }, l.dados.map(x => h("div", null, h("b", { text: x.v }), h("span", { text: x.l })))) : null)),
@@ -963,9 +1038,11 @@ function vSaberes() {
     })) : carregando(),
     guia.length ? h("div", { style: "display:flex;flex-direction:column;gap:10px" },
       h("p", { class: "eyebrow rule", text: "Guia da travessia · antes de ir" }),
+      vHindi(),
       guia.map(g => h("details", { class: "guide" + (S.lidos[g.id] ? " lido" : ""), ontoggle: ev => { if (ev.currentTarget.open) { marcaLido(g.id); ev.currentTarget.classList.add("lido"); } } },
         h("summary", null, h("div", null, h("b", { text: g.titulo }), g.resumo ? h("span", { text: g.resumo }) : null), h("span", { class: "lidotag", "aria-label": "Lido" }, "✓"), h("span", { text: "▾", "aria-hidden": "true" })),
         h("div", { class: "gb" }, String(g.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })))))) : null,
+    vOffline(),
     h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }));
 }
 
@@ -1012,6 +1089,11 @@ function paginasLivro() {
       h("div", { class: "mrz", "aria-hidden": "true", text: mrzDe(v, insigniaLocais().filter(aberto).length) }))
   ];
   for (let i = 0; i < ls.length; i += 2) pages.push(pag("selos", h("p", { class: "pgnum", text: "Vistos / Visas · Pág. " + nn(i / 2 + 3) }), ls.slice(i, i + 2).map(selo)));
+  const ent = (S.roteiro?.dias || []).filter(d => S.diario[d.n]);
+  for (let i = 0; i < ent.length; i += 3) pages.push(pag("diariopg", h("p", { class: "pgnum", text: "Diário de bordo · Log" }),
+    ent.slice(i, i + 3).map(d => h("div", { class: "pgdiario" }, h("p", { class: "pgdq", text: `DIA ${nn(d.n)} · ${d.cidade.toUpperCase()} · ${PERGUNTAS[d.n] || ""}` }), h("p", { class: "pgdt", text: S.diario[d.n] })))));
+  if (cartaLiberada() || (S.isOwner && carta())) pages.push(pag("cartapg", h("p", { class: "pgnum", text: "Carta da travessia" }),
+    h("p", { class: "pgct", text: "Para " + (v ? v.nome.split(" ")[0] : "você") }), textoCarta().split(/\n\s*\n/).map(p => h("p", { class: "pgct", text: p.trim() })), h("p", { class: "pgct ass", text: (carta() && carta().assinatura) || "Vivian · Caravana do Céu" })));
   pages.push(pag("fim", h("img", { class: "fimsim", src: "img/simbolo-marrom.png", alt: "" }), h("p", { class: "pgfrase", text: "Explorando nossa origem nos damos conta de que somos infinitos." }), h("p", { class: "pgsub", text: "Caravana do Céu" })));
   return pages;
 }
@@ -1803,6 +1885,7 @@ async function montaFoto(canvas) {
   }
 }
 function vFotos() {
+  if (S.fotoAba === "mural") return vMural();
   const F = S.foto || (S.foto = { filtro: "expedicao", cat: "Clássicos", grao: "auto", moldura: "polaroid", legenda: "", cidade: "", data: "" });
   const hoje = hojeIso(), dia = (S.roteiro?.dias || []).find(d => d.iso === hoje);
   if (!F.cidade && !F._auto) { F.cidade = dia ? dia.cidade.split(" ")[0] : ""; F._auto = true; }
@@ -1833,9 +1916,16 @@ function vFotos() {
     try { const r = await S.assets.upload(await blobDoCanvas()); await S.db.collection("chat").add({ autor: S.uid, tipo: "foto", fotoId: r.id, texto: [F.legenda, F.cidade].filter(Boolean).join(" · "), ts: Date.now() }); msg.textContent = "Foto enviada para a Roda."; msg.className = "msg ok"; }
     catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
   };
+  const mural = async () => {
+    if (!S.assets || !eu()) { msg.textContent = "Para enviar ao mural, emita seu passaporte e peça à líder um convite de Editor."; msg.className = "msg err"; return; }
+    msg.textContent = "Enviando para o mural…"; msg.className = "msg";
+    try { const r = await S.assets.upload(await blobDoCanvas()); await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade: F.cidade || "", legenda: F.legenda || "", ts: Date.now() }); msg.textContent = "Foto no mural da caravana."; msg.className = "msg ok"; }
+    catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
+  };
   if (F.img) requestAnimationFrame(() => montaFoto(canvas).catch(() => {}));
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Fotos da travessia" }))),
+    abasFotos(),
     F.img ? h("div", { class: "estudio" },
       h("div", { class: "fotoframe" }, canvas),
       h("div", { class: "fcontrols" },
@@ -1849,6 +1939,7 @@ function vFotos() {
         h("p", { class: "lab", text: "Legenda" }), leg, cid,
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no celular"),
+          h("button", { class: "btn", type: "button", onclick: mural }, "Enviar para o mural"),
           h("button", { class: "btn", type: "button", onclick: enviar }, "Enviar para a Roda"),
           h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "Trocar foto")),
         msg)) :
@@ -2119,17 +2210,255 @@ function editar(tipo, item) {
   form.querySelector("input,select,textarea")?.focus();
 }
 
+// ---------- Hoje, mantra do dia, diário, carta ----------
+const MANTRAS = {
+  1: { nome: "Om Gam Ganapataye Namaha", linhas: ["Om Gam Ganapataye Namaha"], trad: "Saudações a Ganesha, o que remove os obstáculos e abre os caminhos.", nota: "Para começar a travessia." },
+  2: { nome: "Twameva", linhas: ["Twameva mata cha pita twameva", "Twameva bandhu cha sakha twameva", "Twameva vidya dravinam twameva", "Twameva sarvam mama deva deva"], trad: "Tu és minha mãe, tu és o meu pai. És minha família e o meu amigo. És o conhecimento e a minha riqueza. És tudo o que tenho. A Luz de todas as Luzes é você.", nota: "No dia do Taj Mahal, um canto de amor e entrega." },
+  3: { nome: "Baba Hanuman", linhas: ["Jaya Sita Ram", "Jai Jai Hanuman"], trad: "Vitória a Sita e Rama! Vitória a Hanuman!", nota: "Para Galta Ji, o templo dos macacos de Hanuman." },
+  4: { nome: "Govinda Jaya", linhas: ["Govinda jaya jaya", "Gopala jaya jaya", "Radha ramana Hari", "Govinda jaya jaya"], trad: "Glória a Govinda, glória a Gopala, nomes de Krishna, o amado de Radha.", nota: "Para o aarti de Govind Dev Ji, o templo de Krishna em Jaipur." },
+  5: { nome: "Om Namah Shivaya", linhas: ["Om Namah Shivaya", "Shivaya Namaha"], trad: "Eu me curvo a Shiva, o Ser interior que existe em todos.", nota: "Na chegada a Kashi, a cidade de Shiva." },
+  6: { nome: "Maha Mrityunjaya", linhas: ["Om tryambakam yajamahe", "sugandhim pushti vardhanam", "urvarukam iva bandhanan", "mrityor mukshiya mamritat"], trad: "Adoramos Shiva, o de três olhos, perfumado, que nutre todos os seres. Que ele nos solte da morte como o fruto maduro se solta do caule, e não nos afaste da imortalidade.", nota: "No dia dos ghats e do fogo de Manikarnika." },
+  7: { nome: "Sarva Mangala Mangalye", linhas: ["Om sarva mangala mangalye", "shive sarvartha sadhike", "sharanye tryambake gauri", "narayani namostute"], trad: "Ó tu, a mais auspiciosa de todas as bênçãos, que realizas todos os propósitos, refúgio de todos, Gauri de três olhos, Narayani: saudações a ti.", nota: "Para Durga Kund, o templo da Mãe." },
+  8: { nome: "Asatoma", linhas: ["Asato ma sadgamaya", "Tamaso ma jyotirgamaya", "Mrityorma amritam gamaya"], trad: "Leva-me do irreal para o real. Leva-me da escuridão para a luz. Leva-me da morte para a imortalidade.", nota: "Rumo ao Himalaia." },
+  9: { nome: "Purnamadah", linhas: ["Om purnam adah purnam idam", "purnat purnam udachyate", "purnasya purnam adaya", "purnam evavashishyate"], trad: "Aquilo é pleno, isto é pleno. Do pleno nasce o pleno. Tirando o pleno do pleno, o pleno permanece.", nota: "Na capital do yoga." },
+  10: { nome: "Gayatri", linhas: ["Om bhur bhuvah svaha", "tat savitur varenyam", "bhargo devasya dhimahi", "dhiyo yo nah prachodayat"], trad: "Meditamos na luz gloriosa do Sol divino, que ilumina a terra, o espaço e o céu. Que ela desperte o nosso entendimento.", nota: "Para o nascer do sol em Kunjapuri." },
+  11: { nome: "Mantra de Tara", linhas: ["Om Tare Tuttare Ture Svaha"], trad: "Ó Tara, eu te peço que me ajude a transcender o mundo e o meu próprio ego. Eu me entrego a ti, leva-me pelas tuas correntezas.", nota: "No dia de práticas e das águas do Ganges." },
+  12: { nome: "Lokah Samastah", linhas: ["Lokah Samastah Sukhino Bhavantu"], trad: "Que todos os seres de todos os mundos sejam felizes.", nota: "No encerramento da Caravana." },
+  13: { nome: "Guru Stotram", linhas: ["Guru Brahma Guru Vishnu", "Guru Devo Maheshwara", "Guru Sakshat Parabrahma", "Tasmai Shri Gurave Namaha"], trad: "Ó Guru, ó força maior que perpassa o espaço e o tempo, és quem cria e mantém, quem dilui a ignorância. Por tantas vidas tem vindo junto a mim, como uma doce lembrança a me chamar.", nota: "Para a partida." }
+};
+const PERGUNTAS = {
+  1: "Qual é a intenção que você traz para esta travessia?",
+  2: "O que o Taj Mahal despertou em você?",
+  3: "O que ficou da meditação em Galta Ji?",
+  4: "Qual cor, cheiro ou som de Jaipur você quer guardar?",
+  5: "Como foi o seu primeiro encontro com o Ganges?",
+  6: "O que você sentiu diante dos ghats de Kashi?",
+  7: "O que você deixou no rio hoje?",
+  8: "O que muda em você ao trocar Varanasi pelas montanhas?",
+  9: "Qual prática ou lugar de hoje você quer levar para casa?",
+  10: "Como foi ver o sol nascer sobre os Himalaias?",
+  11: "O que o dia de práticas te mostrou?",
+  12: "O que você leva desta caravana para a sua vida?",
+  13: "Uma palavra para esta travessia."
+};
+const HINDI = [
+  ["Olá / saudação", "Namaste", "नमस्ते", "na-mas-TÊ"],
+  ["Obrigado(a)", "Dhanyavaad", "धन्यवाद", "dan-ia-VÁD"],
+  ["Obrigado(a), mais informal", "Shukriya", "शुक्रिया", "chu-KRI-iá"],
+  ["Sim / Não", "Haan / Nahin", "हाँ / नहीं", "hãn / na-HÍN"],
+  ["Não quero, obrigado(a)", "Nahin chahiye, dhanyavaad", "नहीं चाहिए, धन्यवाद", "na-HÍN TCHÁ-hi-ê, dan-ia-VÁD"],
+  ["Quanto custa?", "Kitne ka hai?", "कितने का है?", "KIT-nê ká hé?"],
+  ["Está muito caro", "Bahut mehenga hai", "बहुत महँगा है", "ba-HÚT me-HÊN-gá hé"],
+  ["Água", "Paani", "पानी", "PÁ-ni"],
+  ["Sem pimenta, por favor", "Teekha nahin", "तीखा नहीं", "TI-kha na-HÍN"],
+  ["Onde fica o banheiro?", "Toilet kahaan hai?", "टॉयलेट कहाँ है?", "TÓI-let ka-HÃN hé?"],
+  ["Tudo bem / ok", "Theek hai", "ठीक है", "tík hé"],
+  ["Muito bonito!", "Bahut sundar!", "बहुत सुंदर!", "ba-HÚT SUN-dar"],
+  ["Vamos!", "Chalo!", "चलो!", "TCHA-lô"],
+  ["Socorro / ajuda", "Madad!", "मदद!", "MA-dad"]
+];
+const INICIO = "2026-11-04", FIM = "2026-11-16";
+try { S.simIso = localStorage.getItem("cdi-sim") || ""; } catch (e) { S.simIso = ""; }
+const hojeTrip = () => (S.isOwner && S.simIso) || hojeIso();
+const ehHora = x => /^\d\d:\d\d$/.test(x || "");
+const itensDe = d => (d ? d.agenda.flatMap(p => p.itens) : []).filter(i => ehHora(i.hora));
+function falar(txt) {
+  try { const u = new SpeechSynthesisUtterance(txt); u.lang = "hi-IN"; u.rate = .85; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {}
+}
+const podeFalar = "speechSynthesis" in window;
+
+function vHoje(d, abrir) {
+  const agora = IST(), real = d.iso === hojeIso();
+  const prox = itensDe(d).filter(i => !real || i.hora >= agora);
+  const amanha = diaDe(d.n + 1), prim = itensDe(amanha)[0];
+  const ls = (d.pins || []).map(localDe).filter(Boolean), m = MANTRAS[d.n];
+  return h("section", { class: "hoje" },
+    h("p", { class: "hjtop" }, h("span", { text: "Hoje" }), `Dia ${nn(d.n)} · ${d.data}`),
+    h("h2", { text: d.titulo }),
+    h("p", { class: "hjcid", text: [d.cidade, d.hotel].filter(Boolean).join(" · ") }),
+    prox.length ? h("div", { class: "hjprox" }, h("p", { class: "hjl", text: "A seguir" }),
+        h("p", { class: "hjitem" }, h("b", { text: prox[0].hora }), h("span", { text: prox[0].texto })),
+        prox[1] ? h("p", { class: "hjitem dep" }, h("b", { text: prox[1].hora }), h("span", { text: prox[1].texto })) : null)
+      : h("div", { class: "hjprox" }, h("p", { class: "hjl", text: prim ? "Amanhã" : "Programação encerrada" }),
+        prim ? h("p", { class: "hjitem" }, h("b", { text: prim.hora }), h("span", { text: prim.texto })) : h("p", { class: "hjitem", text: "Boa volta para casa!" })),
+    m ? h("button", { class: "hjmantra", type: "button", onclick: () => { S.diaAberto = 0; abrir(d.n); } }, h("span", { text: "Mantra do dia" }), h("b", { text: m.nome })) : null,
+    ls.length ? h("div", { class: "hjselos" }, ls.map(l => h("button", { type: "button", onclick: () => abrirSelo(l) },
+      h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" }), h("span", { text: aberto(l) ? "Carimbado" : "Carimbar" })))) : null,
+    h("button", { class: "btn gold", type: "button", onclick: () => { S.diaAberto = 0; abrir(d.n); } }, "Ver o dia completo"));
+}
+function vMantra(n) {
+  const m = MANTRAS[n]; if (!m) return null;
+  return h("div", { class: "mantra" },
+    h("p", { class: "eyebrow rule", text: "Mantra do dia" }),
+    h("h4", { text: m.nome }),
+    h("p", { class: "mlin" }, m.linhas.flatMap((l, i) => i ? [h("br"), l] : [l])),
+    h("p", { class: "mtrad", text: m.trad }),
+    h("p", { class: "mnota", text: m.nota + " · Do livreto da Caravana" }));
+}
+// Diário de bordo
+S.diario = {};
+try { S.diario = JSON.parse(localStorage.getItem("cdi-diario") || "{}") || {}; } catch (e) {}
+function salvaDiario(n, txt) {
+  S.diario = { ...S.diario, [n]: txt };
+  try { localStorage.setItem("cdi-diario", JSON.stringify(S.diario)); } catch (e) {}
+  if (S.db && S.uid) return S.db.doc("diarios/" + S.uid).set({ entradas: S.diario, ts: Date.now() }).then(() => true, () => false);
+  return Promise.resolve(false);
+}
+function vDiario(d, liberado) {
+  const q = PERGUNTAS[d.n]; if (!q) return null;
+  const salvo = S.diario[d.n] || "";
+  if (!liberado) return h("div", { class: "diario" }, h("p", { class: "eyebrow rule", text: "Diário de bordo" }), h("p", { class: "dq", text: q }), h("p", { class: "small", text: `Abre no dia ${d.n}, ${d.data}.` }));
+  const ta = h("textarea", { id: "diario-" + d.n, rows: "3", maxlength: "400", placeholder: "Escreva uma linha…" }); ta.value = salvo;
+  const st = h("span", { class: "msg", role: "status" });
+  return h("div", { class: "diario" },
+    h("p", { class: "eyebrow rule", text: "Diário de bordo" }),
+    h("p", { class: "dq", text: q }), ta,
+    h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: async () => {
+      st.textContent = "Guardando…"; await salvaDiario(d.n, ta.value.trim()); st.textContent = "Guardado no seu passaporte."; st.className = "msg ok";
+    } }, salvo ? "Atualizar" : "Guardar no passaporte"), st),
+    h("p", { class: "small", text: "Só você e a líder da travessia podem ler." }));
+}
+// Carta de encerramento
+const CARTA_RASCUNHO = "Treze dias atrás a gente chegou em Delhi com as malas cheias e o coração aberto. Hoje voltamos com o passaporte carimbado e com a Índia morando dentro da gente!\n\nCada selo guarda um amanhecer, um rio, um templo, uma roda.. e cada um de vocês fez parte do caminho do outro.\n\nQue tudo o que foi vivido aqui continue florescendo aí dentro, nos gestos simples de cada dia.\n\nObrigada por atravessarem comigo!";
+const carta = () => S.cartas.find(c => c.id === "final");
+const cartaLiberada = () => { const c = carta(); return !!(c && c.aprovada && hojeTrip() >= FIM); };
+function textoCarta() { const c = carta(); return (c && c.texto) || CARTA_RASCUNHO; }
+function abrirCarta() {
+  closeSheets();
+  const c = carta(), v = eu();
+  const corpo = h("div", { class: "cartapapel" },
+    h("img", { class: "marca", src: "img/simbolo-marrom.png", alt: "" }),
+    h("p", { class: "cpara", text: "Para " + (v ? v.nome.split(" ")[0] : "você") }),
+    textoCarta().split(/\n\s*\n/).map(p => h("p", { text: p.trim() })),
+    h("p", { class: "cass", text: (c && c.assinatura) || "Vivian · Caravana do Céu" }),
+    h("p", { class: "cdata", text: "Delhi, 16 de novembro de 2026" }));
+  const box = h("div", { role: "dialog", "aria-label": "Carta de encerramento", class: "cartabox" }, corpo);
+  if (S.isOwner) {
+    const ta = h("textarea", { id: "carta-texto", rows: "10" }); ta.value = textoCarta();
+    const ass = h("input", { type: "text", id: "carta-ass", value: (c && c.assinatura) || "Vivian · Caravana do Céu" });
+    const st = h("p", { class: "msg", role: "status" });
+    const salvar = aprovada => S.db.doc("carta/final").set({ texto: ta.value.trim(), assinatura: ass.value.trim(), aprovada, ts: Date.now() })
+      .then(() => { st.textContent = aprovada ? "Carta aprovada. Ela se abre para todos em 16 de novembro." : "Rascunho guardado."; st.className = "msg ok"; }, () => { st.textContent = "Não consegui guardar."; st.className = "msg err"; });
+    box.append(h("div", { class: "secret" },
+      h("p", { text: c && c.aprovada ? "Só você vê isto. A carta está aprovada e abre para todos em 16 de novembro." : "Só você vê isto. Este é um rascunho: edite com as suas palavras e aprove para liberar em 16 de novembro." }),
+      h("label", { for: "carta-texto", class: "lab", text: "Texto da carta" }), ta,
+      h("label", { for: "carta-ass", class: "lab", text: "Assinatura" }), ass,
+      h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: () => salvar(false) }, "Guardar rascunho"), h("button", { class: "btn gold", type: "button", onclick: () => salvar(true) }, "Aprovar carta")), st));
+  }
+  box.append(h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  document.body.append(sheet);
+}
+function vCartaBtn() {
+  const lib = cartaLiberada();
+  if (!lib && !S.isOwner) return null;
+  return h("button", { class: "cartabtn", type: "button", onclick: abrirCarta },
+    h("span", { class: "selo", "aria-hidden": "true" }, h("img", { src: "img/simbolo-dourado.png", alt: "" })),
+    h("span", null, h("b", { text: "Uma carta para você" }), h("span", { text: lib ? "A última página da travessia." : "Prévia da líder · abre para todos em 16 nov" })));
+}
+function vSimular() {
+  if (!S.isOwner) return null;
+  const sel = h("select", { id: "sim-dia", "aria-label": "Ver o app como se fosse o dia" }, h("option", { value: "", text: "Data de hoje (real)" }),
+    (S.roteiro?.dias || []).map(d => h("option", { value: d.iso, text: `Dia ${nn(d.n)} · ${d.data}`, selected: S.simIso === d.iso })));
+  sel.addEventListener("change", () => { S.simIso = sel.value; try { localStorage.setItem("cdi-sim", sel.value); } catch (e) {} S.diaAberto = null; render(); });
+  return h("div", { class: "simular" }, h("span", { text: "Só você vê · testar como se fosse:" }), sel);
+}
+// Frases em hindi
+function vHindi() {
+  return h("details", { class: "guide hindi" + (S.lidos.hindi ? " lido" : ""), ontoggle: ev => { if (ev.currentTarget.open) { marcaLido("hindi"); ev.currentTarget.classList.add("lido"); } } },
+    h("summary", null, h("div", null, h("b", { text: "Frases úteis em hindi" }), h("span", { text: "Namaste, obrigado, quanto custa e outras, com a pronúncia." })), h("span", { class: "lidotag", "aria-label": "Lido" }, "✓"), h("span", { text: "▾", "aria-hidden": "true" })),
+    h("div", { class: "gb" },
+      h("p", { class: "small", text: "A sílaba em maiúsculas é a mais forte. O h soa como no inglês house." }),
+      h("ul", { class: "hilist" }, HINDI.map(([pt, rom, dev, pron]) => h("li", null,
+        h("div", null, h("span", { class: "hpt", text: pt }), h("b", { text: rom }), h("span", { class: "hpron", text: "fala-se " + pron }), h("span", { class: "hdev", lang: "hi", text: dev })),
+        podeFalar ? h("button", { class: "hfala", type: "button", "aria-label": "Ouvir " + rom, onclick: () => falar(dev) },
+          h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: "M4 9v6h4l5 4V5L8 9H4zM16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12", fill: "none", stroke: "currentColor", "stroke-width": 1.6, "stroke-linecap": "round", "stroke-linejoin": "round" }))) : null)))));
+}
+// Guardar no celular (sem internet)
+const CACHE_KEYS = ["ens", "locais", "cidades", "cartas"];
+for (const k of CACHE_KEYS) { try { const v = JSON.parse(localStorage.getItem("cdi-c-" + k) || "null"); if (Array.isArray(v)) S[k] = v; } catch (e) {} }
+function guardaCache(k) { if (!CACHE_KEYS.includes(k)) return; try { localStorage.setItem("cdi-c-" + k, JSON.stringify(S[k])); } catch (e) {} }
+const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function htmlOffline() {
+  const dias = S.roteiro?.dias || [], par = t => String(t || "").split(/\n\s*\n/).map(p => `<p>${esc(p.trim())}</p>`).join("");
+  const sab = S.ens.filter(x => x.categoria !== "Guia da travessia" && lib(x)).sort(byOrdem);
+  const guia = S.ens.filter(x => x.categoria === "Guia da travessia").sort(byOrdem);
+  return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Caravana do Céu · Índia 2026</title>
+<style>body{margin:0;background:#F6EFE3;color:#282722;font:16px/1.6 Georgia,serif}main{max-width:640px;margin:0 auto;padding:20px 16px 60px}h1{font-size:28px;margin:.2em 0}h2{font-size:22px;margin:1.6em 0 .3em;border-top:1px solid #C7B493;padding-top:14px}h3{font-size:18px;margin:1em 0 .2em}.e{font:600 11px/1.4 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A3F32}.s{font:14px/1.5 system-ui,sans-serif;color:#6B6556}ul{padding-left:0;list-style:none}li{padding:4px 0;border-bottom:1px dotted #D8CBB0;font-family:system-ui,sans-serif;font-size:15px}li b{display:inline-block;min-width:52px;color:#8A3F32}.m{background:#EFE3C8;border-radius:12px;padding:12px 14px;margin:10px 0}.m i{display:block;color:#3F4938}nav a{display:inline-block;margin:0 10px 6px 0;color:#8A3F32;font-family:system-ui,sans-serif;font-size:14px}</style></head><body><main>
+<p class="e">Caravana do Céu · Índia Sagrada · 4 a 16 nov 2026</p><h1>Travessia da Índia Sagrada</h1><p class="s">Cópia para ler sem internet. Salva em ${esc(new Date().toLocaleDateString("pt-BR"))}.</p>
+<nav>${dias.map(d => `<a href="#d${d.n}">Dia ${d.n}</a>`).join("")}<a href="#hindi">Hindi</a><a href="#saberes">Saberes</a><a href="#guia">Guia</a></nav>
+${dias.map(d => { const m = MANTRAS[d.n]; return `<h2 id="d${d.n}">Dia ${d.n} · ${esc(d.data)} · ${esc(d.titulo)}</h2><p class="s">${esc(d.rota)}<br>Hospedagem: ${esc(d.hotel)}${d.guia ? " · " + esc(d.guia) : ""}</p>
+${d.agenda.map(p => `<p class="e">${esc(p.periodo)}</p><ul>${p.itens.map(i => `<li><b>${esc(i.hora || "·")}</b> ${esc(i.texto)}</li>`).join("")}</ul>`).join("")}
+${d.aviso ? `<h3>${esc(d.aviso.titulo)}</h3>${par(d.aviso.texto)}` : ""}
+${(d.lugares || []).map(l => `<h3>${esc(l.nome)}</h3>${par(l.texto)}`).join("")}
+${m ? `<div class="m"><p class="e">Mantra do dia · ${esc(m.nome)}</p><p>${m.linhas.map(esc).join("<br>")}</p><i>${esc(m.trad)}</i></div>` : ""}`; }).join("")}
+<h2 id="hindi">Frases úteis em hindi</h2><ul>${HINDI.map(([pt, rom, dev, pron]) => `<li><b>${esc(rom)}</b> ${esc(pt)} · fala-se ${esc(pron)}</li>`).join("")}</ul>
+<h2 id="saberes">Saberes da travessia</h2>${sab.map(x => `<h3>${esc(x.titulo)}</h3>${par(x.texto)}`).join("")}
+<h2 id="guia">Guia da travessia</h2>${guia.map(x => `<h3>${esc(x.titulo)}</h3>${par(x.texto)}`).join("")}
+<p class="s" style="margin-top:40px;text-align:center">Lokah Samastah Sukhino Bhavantu</p></main></body></html>`;
+}
+async function baixarOffline(st) {
+  const dl = await (window.claude?.use?.("downloads") ?? null);
+  if (!dl) { st.textContent = "Não consegui salvar neste aparelho."; st.className = "msg err"; return; }
+  try { await dl.save({ filename: "caravana-india-2026.html", data: new Blob([htmlOffline()], { type: "text/html" }) }); st.textContent = "Salvo. Abra o arquivo quando estiver sem sinal."; st.className = "msg ok"; }
+  catch (e) { st.textContent = e && e.code === "declined" ? "" : "Não consegui salvar agora. Tente de novo."; st.className = "msg"; }
+}
+function vOffline() {
+  const st = h("span", { class: "msg", role: "status" });
+  return h("div", { class: "offline" },
+    h("div", null, h("b", { text: "Levar sem internet" }), h("span", { text: "Salve o roteiro, os mantras, as frases em hindi e os saberes abertos num arquivo para ler no ônibus ou no templo, sem sinal." })),
+    h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: () => baixarOffline(st) }, "Salvar no celular"), st));
+}
+// Mural da caravana
+const CIDADES_MURAL = ["Delhi", "Agra", "Jaipur", "Varanasi", "Rishikesh"];
+function abasFotos() {
+  const a = S.fotoAba || "estudio";
+  return h("div", { class: "fcats", role: "tablist", style: "margin-top:-4px" },
+    [["estudio", "Estúdio"], ["mural", "Mural da caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
+}
+function vMural() {
+  const cid = S.muralCidade || "", fotos = S.mural.filter(f => !cid || f.cidade === cid);
+  perfis(fotos.map(f => f.autor));
+  return h("section", { class: "view" },
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Mural da caravana" }))),
+    abasFotos(),
+    h("p", { class: "lede", text: "As fotos que a caravana envia do estúdio, separadas por cidade." }),
+    h("div", { class: "opts" }, [["", "Todas"], ...CIDADES_MURAL.map(c => [c, c])].map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(cid === id), onclick: () => { S.muralCidade = id; render(); } },
+      n + (id ? ` · ${S.mural.filter(f => f.cidade === id).length}` : "")))),
+    fotos.length ? h("div", { class: "mural" }, fotos.map(f => h("button", { type: "button", class: "mfoto", onclick: () => abrirFotoMural(f), "aria-label": (f.legenda || "Foto") + " de " + nomeDe(f.autor) },
+      h("img", { src: blob(f.fotoId), alt: "", loading: "lazy" }), h("span", { text: nomeDe(f.autor).split(" ")[0] + (f.cidade && !cid ? " · " + f.cidade : "") }))))
+      : h("div", { class: "fotovazia" }, h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: cid ? "Nenhuma foto de " + cid + " ainda" : "O mural está esperando" }),
+        h("span", { text: "Monte sua foto no Estúdio e toque em Enviar para o mural." }),
+        h("button", { class: "btn gold", type: "button", onclick: () => { S.fotoAba = "estudio"; render(); } }, "Ir para o Estúdio")));
+}
+function abrirFotoMural(f) {
+  closeSheets();
+  const meu = f.autor === S.uid || S.isOwner, st = h("p", { class: "msg", role: "status" });
+  const box = h("div", { role: "dialog", "aria-label": "Foto do mural" },
+    h("img", { class: "mgrande", src: blob(f.fotoId), alt: f.legenda || "Foto da caravana" }),
+    h("p", { class: "eyebrow", text: [f.cidade, new Date(f.ts).toLocaleDateString("pt-BR")].filter(Boolean).join(" · ") }),
+    f.legenda ? h("h3", { text: f.legenda }) : null,
+    h("p", { class: "small", text: "Enviada por " + nomeDe(f.autor) }), st,
+    h("div", { class: "foot2" },
+      meu ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (!confirm("Tirar esta foto do mural?")) return; S.db.doc("mural/" + f.id).delete().then(closeSheets, () => { st.textContent = "Não consegui tirar a foto."; st.className = "msg err"; }); } }, "Tirar do mural") : h("span"),
+      h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  document.body.append(sheet);
+}
+setInterval(() => { if (S.tab === "travessia" && !document.querySelector(".sheet") && !(document.activeElement && /TEXTAREA|INPUT|SELECT/.test(document.activeElement.tagName))) render(); }, 60000);
+
 // ---------- dados ----------
 function listen(col, key, q, after) {
   (q || S.db.collection(col)).onSnapshot(snap => {
-    S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() })); guardaCache(key);
     S.dbReady = true; if (after) after(); render(); refreshSheet();
   }, () => { S.dbReady = true; if (after) after(); render(); });
 }
 
 fetch("dados/geo.json").then(r => r.ok ? r.json() : null).then(j => { if (j) { S.geo = j; if (S.tab === "mapa") render(); } }).catch(() => {});
 fetch("dados/travessia.json").then(r => { if (!r.ok) throw 0; return r.json(); })
-  .then(j => { S.roteiro = j; render(); }).catch(() => { S.roteiroErro = true; render(); });
+  .then(j => { S.roteiro = j; try { localStorage.setItem("cdi-c-roteiro", JSON.stringify(j)); } catch (e) {} render(); })
+  .catch(() => { try { S.roteiro = JSON.parse(localStorage.getItem("cdi-c-roteiro") || "null"); } catch (e) {} if (!S.roteiro) S.roteiroErro = true; render(); });
 render();
 (async () => {
   const [db, user, assets, room] = await Promise.all(["db", "user", "assets", "room"].map(n => window.claude?.use?.(n) ?? null));
@@ -2155,6 +2484,9 @@ render();
   listen("viajantes", "viajantes", null, () => { S.vReady = true; });
   listen("chat", "chat", db.collection("chat").orderBy("ts", "desc").limit(400));
   listen("posicoes", "posicoes");
+  listen("carta", "cartas");
+  listen("mural", "mural", db.collection("mural").orderBy("ts", "desc").limit(300));
+  if (S.uid) db.doc("diarios/" + S.uid).onSnapshot(sn => { const e = sn.exists && sn.data().entradas; if (e) { S.diario = { ...e, ...S.diario }; try { localStorage.setItem("cdi-diario", JSON.stringify(S.diario)); } catch (x) {} } }, () => {});
   setInterval(() => { if ((S.tab === "mapa" || S.tab === "travessia") && !document.activeElement?.matches?.("input,textarea,select") && !document.querySelector(".sheet")) render(); }, 60000);
 })();
 })();
