@@ -313,6 +313,11 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .sab.locked{background:transparent;box-shadow:none;border:1.5px dashed var(--line2)}
 .sab.locked img{filter:grayscale(1) opacity(.35)}
 .sab.locked b{color:var(--soft)}
+.sab.lido{grid-template-columns:54px 1fr auto}
+.lidotag{width:24px;height:24px;border-radius:50%;background:#3F4938;color:#F1E2BC;display:grid;place-items:center;font-size:13px;font-weight:700;flex:none}
+.guide .lidotag{display:none;margin-left:auto;margin-right:8px;color:#F1E2BC!important;font-size:13px!important}
+.guide.lido .lidotag{display:grid}
+.lidoscont{font-size:13px;color:var(--soft);margin:-6px 0 0}
 .reader{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
 .reader .rbadge{width:120px;height:auto;align-self:center;filter:drop-shadow(0 8px 14px rgba(40,39,34,.2))}
 .reader .rbadge.sym{width:72px;height:72px;filter:none}
@@ -605,6 +610,8 @@ const S = {
 try { const t = localStorage.getItem("cdi-tab2"); if (t) S.tab = t; } catch (e) {}
 try { S.local = JSON.parse(localStorage.getItem("cdi-ins") || "{}") || {}; } catch (e) {}
 try { S.checks = JSON.parse(localStorage.getItem("cdi-checks") || "{}") || {}; } catch (e) {}
+try { S.lidos = JSON.parse(localStorage.getItem("cdi-lidos") || "{}") || {}; } catch (e) { S.lidos = {}; }
+function marcaLido(id) { if (!id || S.lidos[id]) return; S.lidos[id] = Date.now(); try { localStorage.setItem("cdi-lidos", JSON.stringify(S.lidos)); } catch (e) {} }
 
 const SVGTAGS = new Set(["svg","g","path","circle","ellipse","text","line","rect","title","image"]);
 function h(tag, attrs, ...kids) {
@@ -826,10 +833,8 @@ const FRASES = [
   "Vento me leva, vento me eleva pra atravessar todos os mundos.",
   "Onde o sagrado está vivo nas ruas, nos rios e nos gestos.",
   "Nas grandes águas eu aprendo a viver.",
-  "Lakshmi, que meus olhos possam enxergar em tudo tua beleza.",
   "Partimos de madrugada, quando as estrelas orientam a rota.",
   "Especiarias, mapas e força para a longa jornada.",
-  "Desperta minha força adormecida e liberta minha canção interna.",
   "Eu vou seguindo meu caminho no silêncio do meu ser.",
   "Tudo o que você precisa para a travessia, num só lugar.",
   "Eu trarei do silêncio minha paz.",
@@ -927,6 +932,7 @@ function vDia(d, open, isToday, abrir) {
 // ---------- Saberes ----------
 function vSaberes() {
   const e = S.ens.find(x => x.id === S.ensSel);
+  if (e) marcaLido(e.id);
   const lib = x => !x.localId || aberto(localDe(x.localId)) || S.isOwner;
   if (e && lib(e)) {
     const l = e.localId && localDe(e.localId);
@@ -946,16 +952,19 @@ function vSaberes() {
     h("img", { class: "orn", src: "img/mantra-ganesha.webp", alt: "Om Gam Ganapataye Namah" }),
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Para ler pelo caminho" }), h("h1", { text: "Saberes da travessia" }))),
     h("p", { class: "lede", text: "Cada selo guarda uma história. Ela se abre quando você carimba o selo no lugar sagrado." }),
+    sab.length ? h("p", { class: "lidoscont", text: `Você já leu ${sab.filter(x => S.lidos[x.id] && lib(x)).length} de ${sab.length}` }) : null,
     sab.length ? h("div", { class: "sabgrid" }, sab.map(x => {
       const l = x.localId && localDe(x.localId), ok = lib(x);
-      return h("button", { class: "sab" + (ok ? "" : " locked"), type: "button", onclick: () => { if (ok) { S.ensSel = x.id; render(); $("#main").scrollTop = 0; } else if (l) abrirSelo(l); } },
+      const lido = ok && S.lidos[x.id];
+      return h("button", { class: "sab" + (ok ? "" : " locked") + (lido ? " lido" : ""), type: "button", onclick: () => { if (ok) { S.ensSel = x.id; render(); $("#main").scrollTop = 0; } else if (l) abrirSelo(l); } },
         l ? h("img", { src: badgeSrc(l), alt: "" }) : x.figura ? h("img", { src: x.figura, alt: "" }) : h("img", { class: "sym", src: "img/logo.png", alt: "" }),
-        h("span", { class: "tx" }, h("b", { text: x.titulo }), h("span", { text: ok ? (x.resumo || "") : `Carimbe o selo ${l ? l.nome : ""} para ler` })));
+        h("span", { class: "tx" }, h("b", { text: x.titulo }), h("span", { text: ok ? (x.resumo || "") : `Carimbe o selo ${l ? l.nome : ""} para ler` })),
+        lido ? h("span", { class: "lidotag", title: "Você já leu", "aria-label": "Lido" }, "✓") : null);
     })) : carregando(),
     guia.length ? h("div", { style: "display:flex;flex-direction:column;gap:10px" },
       h("p", { class: "eyebrow rule", text: "Guia da travessia · antes de ir" }),
-      guia.map(g => h("details", { class: "guide" },
-        h("summary", null, h("div", null, h("b", { text: g.titulo }), g.resumo ? h("span", { text: g.resumo }) : null), h("span", { text: "▾", "aria-hidden": "true" })),
+      guia.map(g => h("details", { class: "guide" + (S.lidos[g.id] ? " lido" : ""), ontoggle: ev => { if (ev.currentTarget.open) { marcaLido(g.id); ev.currentTarget.classList.add("lido"); } } },
+        h("summary", null, h("div", null, h("b", { text: g.titulo }), g.resumo ? h("span", { text: g.resumo }) : null), h("span", { class: "lidotag", "aria-label": "Lido" }, "✓"), h("span", { text: "▾", "aria-hidden": "true" })),
         h("div", { class: "gb" }, String(g.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })))))) : null,
     h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }));
 }
