@@ -80,7 +80,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--moss);outline:none;bo
 
 /* Roteiro: abertura */
 .hero{text-align:center;padding:18px 8px 4px;display:flex;flex-direction:column;align-items:center;gap:10px}
-.hero .logo{width:92px;height:auto}
+.hero .logo{width:min(62%,250px);height:auto}
 .hero h1{font-weight:500;font-size:clamp(32px,8.5vw,48px);line-height:1.05;letter-spacing:-.01em}
 .hero .route{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--moss)}
 .hero .line{display:none}
@@ -352,7 +352,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .top{background:linear-gradient(180deg,#3B2A1C,#2E2116);border-bottom:1px solid #1E150D;box-shadow:inset 0 -1px 0 rgba(226,190,120,.25);color:#F1E2BC;backdrop-filter:none}
 .top::after{content:"";position:absolute}
 .brand img{width:40px;height:auto}
-.brand img.letreiro{display:block;width:clamp(150px,42vw,220px);height:auto;margin-bottom:4px}
+.brand img.letreiro{display:block;width:clamp(130px,36vw,190px);height:auto;margin-bottom:5px}
 .brand b{color:#F1E2BC;font-family:var(--display);letter-spacing:.14em;text-transform:uppercase;font-size:15.5px;font-weight:600}
 .brand span{color:#C9A56A;letter-spacing:.24em}
 .me{background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.35);box-shadow:none}
@@ -432,7 +432,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .fotovazia b{font-family:var(--display);font-size:22px;font-weight:500}
 .fotovazia span{color:var(--soft);max-width:36ch}
 
-.cover{display:block;width:100%;max-width:100%;height:auto;border-radius:10px;box-shadow:0 18px 40px rgba(40,39,34,.3)}
+.cover{display:block;width:min(64%,260px);max-width:100%;height:auto;margin:0 auto;border-radius:6px 14px 14px 6px;box-shadow:0 18px 40px rgba(40,39,34,.3)}
 
 /* Passaporte em 3D */
 .livrosheet{align-items:center;background:radial-gradient(circle at 50% 40%,rgba(59,42,28,.55),rgba(20,14,8,.85))}
@@ -476,7 +476,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .livrobox .btn.ghost{color:#E2BE78}
 .livrobox .btn:not(.gold):not(.ghost){background:rgba(241,226,188,.12);color:#F1E2BC;border-color:rgba(241,226,188,.35)}
 .folhear{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#3B2A1C,#5A4128);color:#F1E2BC;border:0;border-radius:var(--r);padding:14px 18px;text-align:left;box-shadow:var(--shadow)}
-.folhear img{width:58px;height:auto;border-radius:4px;transform:rotate(-6deg);box-shadow:0 6px 14px rgba(0,0,0,.35)}
+.folhear img{width:44px;height:auto;border-radius:4px;transform:rotate(-6deg);box-shadow:0 6px 14px rgba(0,0,0,.35)}
 .folhear b{display:block;font-family:var(--display);font-size:19px;font-weight:500}
 .folhear span{font-size:13px;color:#D8C09A}
 
@@ -661,7 +661,7 @@ function vCadastro() {
   const erro = h("p", { class: "msg err", role: "alert" });
   if (S.me && S.me.name) nome.value = S.me.name.split(" ")[0];
   return h("section", { class: "welcome" },
-    h("img", { class: "cover", src: "img/passaporte.webp", alt: "Passaporte da Travessia · Caravana do Céu" }),
+    h("img", { class: "cover", src: "img/passaporte-capa.webp", alt: "Passaporte da Travessia · Caravana do Céu" }),
     h("p", { class: "eyebrow", text: "Emissão do passaporte" }),
     h("h1", { text: "Seu passaporte da Índia Sagrada" }),
     h("p", { class: "lede", text: "Com ele você recebe seu número de viajante, conversa com a caravana e carimba os selos de cada lugar sagrado da travessia." }),
@@ -695,7 +695,7 @@ function vTravessia() {
   const abrir = n => { S.diaAberto = S.diaAberto === n ? 0 : n; render(); if (S.diaAberto) requestAnimationFrame(() => document.getElementById("dia-" + n)?.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })); };
   return h("section", { class: "view" },
     h("div", { class: "hero" },
-      h("img", { class: "logo", src: "img/simbolo-marrom.png", alt: "" }),
+      h("img", { class: "logo", src: "img/caravana-marrom.png", alt: "Caravana" }),
       h("p", { class: "eyebrow", text: "Temporada 2026 · Turma 1" }),
       h("h1", null, "Travessia da", h("br"), "Índia Sagrada"),
       h("p", { class: "route", text: "Delhi · Agra · Jaipur · Varanasi · Rishikesh" }),
@@ -808,7 +808,7 @@ function paginasLivro() {
       h("p", { class: "pgdia", text: on ? (ts ? "Carimbado em " + new Date(ts).toLocaleDateString("pt-BR") : "Liberado pela líder") : d ? `Dia ${d.n} · ${d.data}` : "" }));
   };
   const pages = [
-    h("div", { class: "pg capa" }, h("img", { class: "capaimg", src: "img/passaporte.webp", alt: "Passaporte da Travessia" })),
+    h("div", { class: "pg capa" }, h("img", { class: "capaimg", src: "img/passaporte-capa.webp", alt: "Passaporte da Travessia" })),
     pag("dados",
       h("p", { class: "pgtit", text: "Passaporte da Travessia" }), h("p", { class: "pgsub", text: "Índia Sagrada · 4 a 16 nov 2026" }),
       h("div", { class: "pgfoto" }, v && v.foto ? h("img", { src: blob(v.foto), alt: "" }) : bonecoSvg(bonecoDe(S.uid), "bonecosvg")),
@@ -859,7 +859,7 @@ function vPassaporte() {
   const mrz1 = ("P<CDC<INDIA<<" + nomeMrz).padEnd(44, "<").slice(0, 44);
   const mrz2 = ((v && v.lider ? "LIDER" : nn(nums[S.uid] || 0) + "<<<") + "<04NOV26<<16NOV26<<SELOS" + nn(ok)).padEnd(44, "<").slice(0, 44);
   return h("section", { class: "view" },
-    h("img", { class: "cover", src: "img/passaporte.webp", alt: "Passaporte da Travessia · Caravana do Céu" }),
+    h("img", { class: "cover", src: "img/passaporte-capa.webp", alt: "Passaporte da Travessia · Caravana do Céu" }),
     v ? h("div", { class: "datapage" },
       h("div", { class: "top2" }, h("b", { text: "Passaporte da Travessia" }), h("span", { text: "Índia · 2026" })),
       h("div", { class: "dp" }, (() => {
@@ -882,7 +882,7 @@ function vPassaporte() {
     : S.db && S.uid ? h("div", { class: "panel", style: "text-align:center;align-items:center" }, h("p", { class: "lede", text: "Emita seu passaporte para guardar os selos e aparecer para a caravana." }),
         h("button", { class: "btn gold", type: "button", onclick: () => { S.pularCadastro = false; render(); } }, "Emitir meu passaporte")) : null,
     h("button", { class: "folhear", type: "button", onclick: () => abrirLivro(0) },
-      h("img", { src: "img/passaporte.webp", alt: "" }),
+      h("img", { src: "img/passaporte-capa.webp", alt: "" }),
       h("span", null, h("b", { text: "Folhear meu passaporte" }), h("span", { text: "Abra o passaporte e vire as páginas com seus selos carimbados." }))),
     h("div", { class: "pages" },
       h("div", { class: "ph" }, h("p", { class: "eyebrow", text: "Os selos da Índia Sagrada" }), h("h2", { text: "Carimbe em cada lugar sagrado" }),
