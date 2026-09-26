@@ -1,7 +1,7 @@
 <title>Caravana Índia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@400;500;600&family=Cinzel:wght@600;700;900&family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap">
 <style>
 /* Visual claro da Caravana do Céu: papel, carvão, musgo, terracota e areia. */
 :root{
@@ -80,8 +80,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--moss);outline:none;bo
 
 /* Roteiro: abertura */
 .hero{text-align:center;padding:18px 8px 4px;display:flex;flex-direction:column;align-items:center;gap:10px}
-.hero .logo{width:min(62%,250px);height:auto}
-.hero h1{font-weight:500;font-size:clamp(32px,8.5vw,48px);line-height:1.05;letter-spacing:-.01em}
+.hero .logo{width:96px;height:auto}
+.hero h1{font-family:"Cinzel",Georgia,serif;font-weight:700;font-size:clamp(30px,8.6vw,50px);line-height:1.05;letter-spacing:.04em;text-transform:uppercase;color:#6B4424;text-shadow:0 1px 0 #F4E6C4,0 2px 0 rgba(107,68,36,.25)}
 .hero .route{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--moss)}
 .hero .line{display:none}
 .hero .intro{font-family:var(--display);font-style:italic;font-size:18px;line-height:1.5;color:var(--soft);max-width:34ch}
@@ -352,14 +352,16 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .top{background:linear-gradient(180deg,#3B2A1C,#2E2116);border-bottom:1px solid #1E150D;box-shadow:inset 0 -1px 0 rgba(226,190,120,.25);color:#F1E2BC;backdrop-filter:none}
 .top::after{content:"";position:absolute}
 .brand img{width:40px;height:auto}
-.brand img.letreiro{display:block;width:clamp(130px,36vw,190px);height:auto;margin-bottom:5px}
+.brand img.lockup{display:block;width:auto;height:56px}
+.top{padding-block:8px}
 .brand b{color:#F1E2BC;font-family:var(--display);letter-spacing:.14em;text-transform:uppercase;font-size:15.5px;font-weight:600}
 .brand span{color:#C9A56A;letter-spacing:.24em}
 .me{background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.35);box-shadow:none}
 .me b{color:#E2BE78}
-nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(6,minmax(58px,1fr));overflow-x:auto;scrollbar-width:none}
+nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(7,minmax(52px,1fr));overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
-nav.tabs button{color:#BFA67A;font-size:11px}
+nav.tabs button{color:#BFA67A;font-size:10px}
+nav.tabs .ic{width:44px!important}
 nav.tabs .ic{width:48px;color:#E9D7B0}
 nav.tabs button[aria-current="page"]{color:#F1E2BC}
 nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE78,#B98A43);color:#2B1F14;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 2px 8px rgba(0,0,0,.35)}
@@ -482,12 +484,73 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 
 .datapage::after,.pages::after{content:"";position:absolute;inset:0;background:url("img/simbolo-marrom.png") center/46% no-repeat;opacity:.06;pointer-events:none}
 .pages{position:relative}
+
+/* Passaporte realista: máquina de escrever */
+:root{--type:"Special Elite","Courier Prime","Courier New",monospace;--mono:"Courier Prime","Courier New",monospace}
+.datapage .top2 b,.datapage .top2 span{font-family:var(--mono);font-weight:700;font-size:9.5px;letter-spacing:.14em}
+.fds{display:flex;flex-direction:column;gap:7px;min-width:0}
+.fdrow{display:flex;gap:12px;flex-wrap:wrap}
+.fd{display:flex;flex-direction:column;gap:1px;min-width:0}
+.fd.grow{flex:1 1 100%}
+.fd.grow .fv{white-space:nowrap}
+.fl{font-family:var(--mono);font-size:8px;letter-spacing:.06em;color:#8A7B63;text-transform:uppercase;white-space:nowrap}
+.fv{font-family:var(--type);font-size:13px;color:#2A241C;letter-spacing:.04em;line-height:1.2;overflow-wrap:anywhere}
+.fd.big .fv{font-size:16px}
+.mrz{font-family:var(--mono)!important;font-size:clamp(9px,2.6vw,12px)!important;color:#3B3328!important}
+.pgtop{font-family:var(--mono);font-weight:700;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#5A4630;border-bottom:1px solid rgba(40,28,15,.2);padding-bottom:6px;width:100%}
+.pg.dados{justify-content:flex-start;align-items:stretch;text-align:left}
+.pgdados{display:grid;grid-template-columns:38% 1fr;gap:10px;align-items:start;margin-top:6px}
+.pg .pgfoto{width:100%;margin:0}
+.pg .fv{font-size:11.5px}.pg .fd.big .fv{font-size:13.5px}.pg .fl{font-size:7px}
+.pg .fdrow{gap:8px}
+.pg .mrz{margin-top:auto;font-size:8.2px!important;letter-spacing:.06em;white-space:pre;overflow:hidden}
+.pgnum{font-family:var(--mono)!important;font-weight:700;font-size:9px!important;letter-spacing:.14em!important;color:#5A4630!important}
+.pgnome{font-family:var(--type)!important;font-size:13px!important;letter-spacing:.06em}
+.pgdia{font-family:var(--mono)!important;font-size:9.5px!important;letter-spacing:.08em;color:#6B5A43!important}
+
+/* Instrumentos antigos */
+.instrumentos{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:8px;align-items:center}
+.instr{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.relogio{width:100%;max-width:130px;height:auto;filter:drop-shadow(0 6px 10px rgba(59,42,28,.35))}
+.relogio .rom{font:600 8.5px "Cinzel",Georgia,serif;fill:#3B2A1C}
+.relogio .rnome{font:700 6.5px "Courier Prime",monospace;fill:#6B4A1E;letter-spacing:.14em}
+.hora{font-family:"Courier Prime",monospace;font-weight:700;font-size:13px;color:#3B2A1C;letter-spacing:.06em}
+.placa{position:relative;width:100%;background:linear-gradient(135deg,#F3D78E,#B88A3E 45%,#E8C476 70%,#7A5A26);border-radius:10px;padding:14px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -2px 4px rgba(0,0,0,.25),0 6px 12px rgba(59,42,28,.35)}
+.rebite{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFF1C6,#7A5A26);box-shadow:0 1px 1px rgba(0,0,0,.4)}
+.r1{top:5px;left:6px}.r2{top:5px;right:6px}.r3{bottom:5px;left:6px}.r4{bottom:5px;right:6px}
+.gravado{font:700 8.5px "Courier Prime",monospace;letter-spacing:.14em;text-transform:uppercase;color:#4A3312;text-shadow:0 1px 0 rgba(255,240,200,.6);text-align:center}
+.rodas{display:flex;gap:3px;background:#2B1D14;padding:4px;border-radius:5px;box-shadow:inset 0 2px 4px rgba(0,0,0,.6)}
+.roda{display:flex;flex-direction:column;align-items:center;width:24px;height:36px;overflow:hidden;border-radius:3px;background:linear-gradient(180deg,#1A120B,#F4E6C4 30%,#FFF8E6 50%,#F4E6C4 70%,#1A120B);justify-content:center}
+.roda b{font:700 22px "Courier Prime",monospace;color:#2B1D14;line-height:1}
+.roda i{font:700 12px "Courier Prime",monospace;font-style:normal;color:rgba(43,29,20,.25);line-height:1}
+@media (prefers-reduced-motion:no-preference){.rodas.anim .roda b{animation:gira .9s cubic-bezier(.2,1.3,.4,1) both}@keyframes gira{from{transform:translateY(-60%);opacity:.3}to{transform:none;opacity:1}}}
+.foot q{font-size:clamp(11px,3vw,14px)!important;white-space:nowrap;max-width:none!important}
+
+.fcats{display:flex;border-bottom:1px solid var(--line2);gap:4px;margin-bottom:4px}
+.fcat{background:none;border:0;border-bottom:2px solid transparent;padding:8px 12px;font-size:13.5px;font-weight:500;color:var(--soft)}
+.fcat[aria-selected="true"]{color:#3B2A1C;border-bottom-color:#B98A43}
+
+.explorador{cursor:pointer}
+.explorador .onl{fill:#3FA34D;stroke:#F4E6C4;stroke-width:1.5}
+.balao rect{fill:#FFFDF6;stroke:#3B2A1C;stroke-width:1.2}
+.balao path{fill:#FFFDF6;stroke:#3B2A1C;stroke-width:1.2}
+.balao text{font:600 12px var(--ui);fill:#3B2A1C;text-anchor:middle}
+@media (prefers-reduced-motion:no-preference){.balao{animation:sobe .35s ease-out both}@keyframes sobe{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+.pessoa{display:grid;grid-template-columns:70px 1fr;gap:14px;align-items:center}
+.pessoaimg{width:70px;height:auto}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#B7AD9C;margin-right:6px;vertical-align:0}
+.dot.on{background:#3FA34D;box-shadow:0 0 0 3px rgba(63,163,77,.2)}
+.reacoes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.reac{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:8px 4px;font-size:11px;color:var(--soft)}
+.reac .e{font-size:22px;line-height:1.1}
+.reac:active{transform:scale(.95)}
+.toast{position:fixed;left:50%;top:calc(76px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:40;background:#3B2A1C;color:#F1E2BC;padding:10px 16px;border-radius:999px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:90vw}
 </style>
 
 <div class="app">
   <header class="top">
     <span class="topside" aria-hidden="true"></span>
-    <div class="brand"><img src="img/simbolo-dourado.png" alt=""><div><img class="letreiro" src="img/letreiro.png" alt="Caravana do Céu"><span>Índia Sagrada · 2026</span></div></div>
+    <div class="brand"><img class="lockup" src="img/lockup-claro.png" alt="Caravana"></div>
     <div class="topside right"><button class="me" id="me" type="button" hidden></button></div>
   </header>
   <main id="main"></main>
@@ -496,6 +559,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
     <button data-tab="passaporte"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="3" width="13" height="18" rx="1.5"/><circle cx="12" cy="10.5" r="3.2"/><path d="M8.8 10.5h6.4M12 7.3c1 1 1 5.4 0 6.4M12 7.3c-1 1-1 5.4 0 6.4M9 17h6"/></svg></span>Passaporte</button>
     <button data-tab="ensinamentos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-4.5 0-8-2.5-8-6 3 0 6 1.5 8 6zM12 20c4.5 0 8-2.5 8-6-3 0-6 1.5-8 6zM12 20c-2-2.5-3-5.5-2-9 1-2.5 1.5-4 2-6 .5 2 1 3.5 2 6 1 3.5 0 6.5-2 9z"/></svg></span>Saberes</button>
     <button data-tab="mapa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span>Mapa</button>
+    <button data-tab="explorador"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9.5h14"/><path d="M8.5 9.5c0-3 1.5-5 3.5-5s3.5 2 3.5 5"/><circle cx="12" cy="12.5" r="2.6"/><path d="M7.5 21c0-3.5 2-5.5 4.5-5.5s4.5 2 4.5 5.5"/></svg></span>Explorador</button>
     <button data-tab="fotos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h3l1.6-2.2h6.8L17 7.5h3a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.8"/><path d="M17.5 10.3h.01"/></svg></span>Fotos</button>
     <button data-tab="conversa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span>Chat</button>
   </nav>
@@ -633,12 +697,13 @@ function render() {
   pintaMe();
   const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
   main.replaceChildren(precisaCadastro ? vCadastro() :
-    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : vTravessia());
+    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : vTravessia());
   main.scrollTop = scroll;
   if (S.tab === "conversa") {
     const inp = $("#chat-input"); if (inp && chatDraft) inp.value = chatDraft;
     const log = $("#chatlog"); if (log) log.scrollTop = log.scrollHeight;
   }
+  tickRelogios();
   const el = actId && document.getElementById(actId);
   if (el && el !== act) { if (draft != null && "value" in el && el.type !== "file" && el.type !== "checkbox") el.value = draft; el.focus({ preventScroll: true }); if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
 }
@@ -685,6 +750,44 @@ function vCadastro() {
     h("button", { class: "btn ghost", type: "button", onclick: () => { S.pularCadastro = true; render(); } }, "Agora não, só quero olhar"));
 }
 
+// ---------- Instrumentos antigos (relógios e contador) ----------
+function relogio(tz, nome) {
+  const svg = h("svg", { viewBox: "0 0 120 132", class: "relogio", role: "img", "aria-label": "Relógio, hora de " + nome });
+  let marcas = "";
+  for (let i = 0; i < 60; i++) { const a = i * 6 * Math.PI / 180, r1 = i % 5 ? 43 : 39, r2 = 46; marcas += `<line x1="${60 + Math.sin(a) * r1}" y1="${72 - Math.cos(a) * r1}" x2="${60 + Math.sin(a) * r2}" y2="${72 - Math.cos(a) * r2}" stroke="#3B2A1C" stroke-width="${i % 5 ? .6 : 1.6}"/>`; }
+  const rom = ["XII", "III", "VI", "IX"].map((t, i) => { const a = i * 90 * Math.PI / 180; return `<text x="${60 + Math.sin(a) * 31}" y="${72 - Math.cos(a) * 31 + 3.5}" text-anchor="middle" class="rom">${t}</text>`; }).join("");
+  svg.innerHTML = `<defs><linearGradient id="lat-${nome}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F3D78E"/><stop offset=".45" stop-color="#B88A3E"/><stop offset=".7" stop-color="#E8C476"/><stop offset="1" stop-color="#7A5A26"/></linearGradient>
+    <radialGradient id="mostr-${nome}" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#FFF8E6"/><stop offset=".8" stop-color="#EEDDB6"/><stop offset="1" stop-color="#D8C08E"/></radialGradient></defs>
+    <rect x="54" y="6" width="12" height="10" rx="2" fill="url(#lat-${nome})"/><circle cx="60" cy="6" r="5" fill="none" stroke="url(#lat-${nome})" stroke-width="2.5"/>
+    <circle cx="60" cy="72" r="56" fill="url(#lat-${nome})"/><circle cx="60" cy="72" r="51" fill="#6B4A1E"/><circle cx="60" cy="72" r="49.5" fill="url(#mostr-${nome})"/>
+    ${marcas}${rom}<text x="60" y="94" text-anchor="middle" class="rnome">${nome.toUpperCase()}</text>
+    <line class="ph" data-tz="${tz}" x1="60" y1="72" x2="60" y2="50" stroke="#2B1D14" stroke-width="3" stroke-linecap="round"/>
+    <line class="pm" data-tz="${tz}" x1="60" y1="72" x2="60" y2="36" stroke="#2B1D14" stroke-width="2" stroke-linecap="round"/>
+    <line class="ps" data-tz="${tz}" x1="60" y1="80" x2="60" y2="32" stroke="#A3231A" stroke-width=".9"/>
+    <circle cx="60" cy="72" r="3" fill="#A3231A"/><circle cx="60" cy="72" r="1.2" fill="#F3D78E"/>`;
+  return h("figure", { class: "instr" }, svg, h("figcaption", { class: "hora", "data-tz": tz, text: horaEm(tz) }));
+}
+const horaEm = tz => new Date().toLocaleTimeString("pt-BR", { timeZone: tz, hour: "2-digit", minute: "2-digit" });
+function tickRelogios() {
+  const now = new Date();
+  document.querySelectorAll(".relogio line[data-tz]").forEach(l => {
+    const [H, M, Sx] = now.toLocaleTimeString("en-GB", { timeZone: l.dataset.tz, hour12: false }).split(":").map(Number);
+    const ang = l.classList.contains("ph") ? (H % 12 + M / 60) * 30 : l.classList.contains("pm") ? (M + Sx / 60) * 6 : Sx * 6;
+    l.setAttribute("transform", `rotate(${ang} 60 72)`);
+  });
+  document.querySelectorAll(".hora[data-tz]").forEach(e => { e.textContent = horaEm(e.dataset.tz); });
+}
+setInterval(tickRelogios, 1000);
+function contador(n, rotulo) {
+  const dig = String(n).padStart(3, "0").split("");
+  return h("figure", { class: "instr contador" },
+    h("div", { class: "placa" },
+      h("span", { class: "rebite r1" }), h("span", { class: "rebite r2" }), h("span", { class: "rebite r3" }), h("span", { class: "rebite r4" }),
+      h("span", { class: "gravado", text: "Expedição" }),
+      h("div", { class: "rodas" + (contador.visto ? "" : " anim") }, (contador.visto = true, dig).map(d => h("span", { class: "roda" }, h("i", { text: String((+d + 9) % 10) }), h("b", { text: d }), h("i", { text: String((+d + 1) % 10) })))),
+      h("span", { class: "gravado" }, rotulo)));
+}
+
 // ---------- Travessia ----------
 function vTravessia() {
   const R = S.roteiro;
@@ -695,17 +798,15 @@ function vTravessia() {
   const abrir = n => { S.diaAberto = S.diaAberto === n ? 0 : n; render(); if (S.diaAberto) requestAnimationFrame(() => document.getElementById("dia-" + n)?.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })); };
   return h("section", { class: "view" },
     h("div", { class: "hero" },
-      h("img", { class: "logo", src: "img/caravana-marrom.png", alt: "Caravana" }),
-      h("p", { class: "eyebrow", text: "Temporada 2026 · Turma 1" }),
+      h("img", { class: "logo", src: "img/simbolo-marrom.png", alt: "" }),
       h("h1", null, "Travessia da", h("br"), "Índia Sagrada"),
       h("p", { class: "route", text: "Delhi · Agra · Jaipur · Varanasi · Rishikesh" }),
       h("span", { class: "line" }),
       h("p", { class: "intro", text: "Treze dias atravessando uma cultura viva, pulsando em cada oferenda, cada cântico, cada amanhecer à beira do rio." })),
-    h("div", { class: "clock" },
-      f > 0 ? h("div", null, h("b", { text: f }), h("span", { text: f === 1 ? "dia para embarcar" : "dias para embarcar" }))
-            : h("div", null, h("b", { text: "13" }), h("span", { text: "dias de travessia" })),
-      h("div", null, h("b", { text: IST() }), h("span", { text: "Agora na Índia" })),
-      h("div", null, h("b", { text: BRT() }), h("span", { text: "Brasília · +8h30" }))),
+    h("div", { class: "instrumentos" },
+      relogio("Asia/Kolkata", "Índia"),
+      contador(f > 0 ? f : 13, f > 0 ? (f === 1 ? "dia para embarcar" : "dias para embarcar") : "dias de travessia"),
+      relogio("America/Sao_Paulo", "Brasília")),
     ins.length ? h("div", null,
       h("p", { class: "eyebrow rule", text: `Os ${ins.length} selos do passaporte` }),
       h("div", { class: "strip", style: "margin-top:10px" }, ins.map(l => h("button", { type: "button", "aria-label": l.nome, onclick: () => abrirSelo(l) },
@@ -718,7 +819,7 @@ function vTravessia() {
       h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }),
       h("img", { class: "s", src: "img/simbolo-marrom.png", alt: "" }),
       h("q", { text: "Explorando nossa origem nos damos conta de que somos infinitos." }),
-      h("p", { class: "eyebrow", text: "Caravana do Céu · a travessia te espera" })));
+      h("p", { class: "eyebrow", style: "text-align:center;line-height:1.8" }, "Caravana do Céu", h("br"), "a travessia te espera")));
 }
 function vDia(d, open, isToday, abrir) {
   const ls = (d.pins || []).map(localDe).filter(Boolean);
@@ -796,6 +897,28 @@ function vSaberes() {
     h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }));
 }
 
+// ---------- Dados de passaporte (códigos) ----------
+const MESP = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
+const dataDoc = ts => { const d = new Date(ts); return nn(d.getDate()) + " " + MESP[d.getMonth()] + " " + d.getFullYear(); };
+function numPassaporte(id) { const v = S.viajantes.find(x => x.id === id); return "CDC26IN" + (v && v.lider ? "000" : String(numeros()[id] || 0).padStart(3, "0")); }
+function campo(pt, en, valor, cls) { return h("div", { class: "fd" + (cls ? " " + cls : "") }, h("span", { class: "fl", text: pt + " / " + en }), h("span", { class: "fv", text: valor })); }
+function camposPassaporte(v) {
+  return [
+    h("div", { class: "fdrow" }, campo("Tipo", "Type", "P"), campo("Código", "Code", "CDC"), campo("Nº do passaporte", "Passport No.", numPassaporte(S.uid), "grow")),
+    campo("Nome", "Name", (v.nome || "").toUpperCase(), "big"),
+    h("div", { class: "fdrow" }, campo("Nacionalidade", "Nationality", "CARAVANEIRA"), campo(v.lider ? "Função" : "Viajante", v.lider ? "Role" : "Traveller", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0))),
+    campo("Origem", "Place of origin", (v.cidade || "—").toUpperCase()),
+    h("div", { class: "fdrow" }, campo("Emissão", "Date of issue", dataDoc(v.ts)), campo("Validade", "Date of expiry", "16 NOV 2026")),
+    campo("Autoridade", "Authority", "CARAVANA DO CÉU · TRAVESSIA IND"),
+    campo("Rota", "Route", "DEL · AGR · JAI · VNS · RSK · DEL")
+  ];
+}
+function mrzDe(v, ok) {
+  const nome = norm(v ? v.nome : "viajante").toUpperCase().replace(/[^A-Z]+/g, "<");
+  const l1 = ("P<CDC" + "<<" + nome + "<<INDIA<SAGRADA").padEnd(44, "<").slice(0, 44);
+  const l2 = (numPassaporte(S.uid) + "<<CDC<261104<F<261116<<SELOS" + nn(ok || 0)).padEnd(44, "<").slice(0, 44);
+  return l1 + "\n" + l2;
+}
 // ---------- Passaporte em 3D (folhear) ----------
 function paginasLivro() {
   const v = eu(), nums = numeros(), ls = insigniaLocais(), mins = minhas();
@@ -804,20 +927,19 @@ function paginasLivro() {
     const on = aberto(l), ts = mins[l.id], d = diaDe(l.dia);
     return h("div", { class: "pgselo" + (on ? " on" : "") },
       h("div", { class: "pgart" }, h("img", { src: badgeSrc(l), alt: "" }), on ? h("span", { class: "stamp" }, h("b", { text: "Selado" }), h("i", { text: ts ? dataSelo(ts) : "Caravana" })) : null),
-      h("p", { class: "pgnome", text: l.nome }),
-      h("p", { class: "pgdia", text: on ? (ts ? "Carimbado em " + new Date(ts).toLocaleDateString("pt-BR") : "Liberado pela líder") : d ? `Dia ${d.n} · ${d.data}` : "" }));
+      h("p", { class: "pgnome", text: l.nome.toUpperCase() }),
+      h("p", { class: "pgdia", text: on ? "ENTRADA · " + (SIGLA[l.cidadeId] || "IND") + " · " + (ts ? dataDoc(ts) : "LIBERADO") : d ? "AGUARDANDO · DIA " + nn(d.n) : "AGUARDANDO" }));
   };
   const pages = [
     h("div", { class: "pg capa" }, h("img", { class: "capaimg", src: "img/passaporte-capa.webp", alt: "Passaporte da Travessia" })),
     pag("dados",
-      h("p", { class: "pgtit", text: "Passaporte da Travessia" }), h("p", { class: "pgsub", text: "Índia Sagrada · 4 a 16 nov 2026" }),
-      h("div", { class: "pgfoto" }, v && v.foto ? h("img", { src: blob(v.foto), alt: "" }) : bonecoSvg(bonecoDe(S.uid), "bonecosvg")),
-      h("dl", null,
-        h("dt", { text: "Nome" }), h("dd", { text: v ? v.nome : "Viajante" }),
-        h("dt", { text: v && v.lider ? "Função" : "Nº do viajante" }), h("dd", { text: v ? (v.lider ? "Líder da travessia" : nn(nums[S.uid] || 0)) : "—" }),
-        h("dt", { text: "Origem" }), h("dd", { text: (v && v.cidade) || "—" })))
+      h("p", { class: "pgtop", text: "República da Caravana · Passaporte · Passport" }),
+      h("div", { class: "pgdados" },
+        h("div", { class: "pgfoto" }, v && v.foto ? h("img", { src: blob(v.foto), alt: "" }) : bonecoSvg(bonecoDe(S.uid), "bonecosvg")),
+        h("div", { class: "fds" }, camposPassaporte(v || { nome: "Viajante", ts: Date.now() }))),
+      h("div", { class: "mrz", "aria-hidden": "true", text: mrzDe(v, insigniaLocais().filter(aberto).length) }))
   ];
-  for (let i = 0; i < ls.length; i += 2) pages.push(pag("selos", h("p", { class: "pgnum", text: "Vistos · " + (i / 2 + 1) }), ls.slice(i, i + 2).map(selo)));
+  for (let i = 0; i < ls.length; i += 2) pages.push(pag("selos", h("p", { class: "pgnum", text: "Vistos / Visas · Pág. " + nn(i / 2 + 3) }), ls.slice(i, i + 2).map(selo)));
   pages.push(pag("fim", h("img", { class: "fimsim", src: "img/simbolo-marrom.png", alt: "" }), h("p", { class: "pgfrase", text: "Explorando nossa origem nos damos conta de que somos infinitos." }), h("p", { class: "pgsub", text: "Caravana do Céu" })));
   return pages;
 }
@@ -847,6 +969,7 @@ function abrirLivro(pagina) {
   document.body.append(sheet);
   pinta(); book.focus({ preventScroll: true });
 }
+const SIGLA = { delhi: "DEL", agra: "AGR", jaipur: "JAI", varanasi: "VNS", rishikesh: "RSK" };
 const paginaDoSelo = id => 2 + Math.floor(insigniaLocais().findIndex(l => l.id === id) / 2);
 
 // ---------- Passaporte ----------
@@ -861,7 +984,7 @@ function vPassaporte() {
   return h("section", { class: "view" },
     h("img", { class: "cover", src: "img/passaporte-capa.webp", alt: "Passaporte da Travessia · Caravana do Céu" }),
     v ? h("div", { class: "datapage" },
-      h("div", { class: "top2" }, h("b", { text: "Passaporte da Travessia" }), h("span", { text: "Índia · 2026" })),
+      h("div", { class: "top2" }, h("b", { text: "República da Caravana · Passaporte" }), h("span", { text: "Republic of Caravana · Passport" })),
       h("div", { class: "dp" }, (() => {
         const st = h("span", { class: "fotost", role: "status" });
         const fi = S.assets ? campoFoto(id => S.db.doc("viajantes/" + S.uid).update({ foto: id }), st) : null;
@@ -871,13 +994,8 @@ function vPassaporte() {
             v.foto && fi ? h("span", { class: "fototroca", text: "Trocar" }) : null),
           fi, st);
       })(),
-        h("dl", null,
-          h("div", { class: "wide" }, h("dt", { text: "Nome" }), h("dd", { text: v.nome })),
-          h("div", null, h("dt", { text: v.lider ? "Função" : "Nº do viajante" }), h("dd", { text: v.lider ? "Líder" : nn(nums[S.uid] || 0) })),
-          h("div", null, h("dt", { text: "Origem" }), h("dd", { text: v.cidade || "—" })),
-          h("div", null, h("dt", { text: "Emissão" }), h("dd", { text: new Date(v.ts).toLocaleDateString("pt-BR") })),
-          h("div", null, h("dt", { text: "Selos" }), h("dd", { text: `${ok} de ${ls.length}` })))),
-      h("div", { class: "mrz", "aria-hidden": "true", text: mrz1 + "\n" + mrz2 }),
+        h("div", { class: "fds" }, camposPassaporte(v))),
+      h("div", { class: "mrz", "aria-hidden": "true", text: mrzDe(v, ok) }),
       h("div", { class: "actions", style: "margin-top:8px" }, h("button", { class: "btn ghost", type: "button", onclick: editarPerfil }, "Editar meus dados")))
     : S.db && S.uid ? h("div", { class: "panel", style: "text-align:center;align-items:center" }, h("p", { class: "lede", text: "Emita seu passaporte para guardar os selos e aparecer para a caravana." }),
         h("button", { class: "btn gold", type: "button", onclick: () => { S.pularCadastro = false; render(); } }, "Emitir meu passaporte")) : null,
@@ -965,69 +1083,196 @@ function editarPerfil() {
 const BONECO = {
   pele: ["#F3D2B3", "#E4B48C", "#C98E62", "#A0673F", "#7A4A2B", "#4E2F1C"],
   cabeloCor: ["#2B1D14", "#5A3A22", "#8A5A2B", "#C9A063", "#D9D2C5", "#A83E2A"],
-  cabelo: [["curto", "Curto"], ["longo", "Longo"], ["cacheado", "Cacheado"], ["coque", "Coque"], ["careca", "Careca"]],
-  chapeu: [["fedora", "Fedora"], ["safari", "Safári"], ["lenco", "Lenço"], ["turbante", "Turbante"], ["sem", "Sem chapéu"]],
-  roupa: [["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["vestido", "Vestido"]],
-  roupaCor: ["#8B6B43", "#C2A878", "#5F6B45", "#8A3F32", "#E8E0CF", "#3E4A5A"],
-  acessorio: [["bolsa", "Bolsa"], ["chicote", "Chicote"], ["lanterna", "Lanterna"], ["mapa", "Mapa"], ["camera", "Câmera"], ["nenhum", "Nada"]],
-  barba: [["nao", "Sem barba"], ["sim", "Com barba"]]
+  cabelo: [["curto", "Curto"], ["longo", "Longo"], ["cacheado", "Cacheado"], ["coque", "Coque"], ["tranca", "Trança"], ["careca", "Careca"]],
+  chapeu: [["fedora", "Fedora"], ["safari", "Safári"], ["lenco", "Lenço"], ["turbante", "Turbante"], ["flores", "Coroa de flores"], ["sem", "Sem chapéu"]],
+  roupa: [["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
+  roupaCor: ["#8B6B43", "#C2A878", "#5F6B45", "#8A3F32", "#D9822B", "#B83A6B", "#2F5D7C", "#E8E0CF", "#2B2622"],
+  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["tambor", "Tambor"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["chicote", "Chicote"], ["nenhum", "Nada"]],
+  colar: [["nenhum", "Nenhum"], ["guirlanda", "Guirlanda de flores"], ["rudraksha", "Rudraksha"]],
+  testa: [["nada", "Nada"], ["bindi", "Bindi"], ["tilak", "Tilak"]],
+  barba: [["nao", "Sem barba"], ["sim", "Com barba"]],
+  oculos: [["nenhum", "Sem óculos"], ["redondo", "Redondo"], ["aviador", "Aviador"], ["sol", "De sol"], ["grau", "De grau"]],
+  pet: [["nenhum", "Nenhum"], ["gato", "Gato"], ["cachorro", "Cachorro"], ["camelo", "Camelo"], ["elefante", "Elefantinho"], ["vaca", "Vaquinha sagrada"], ["macaco", "Macaco"], ["pavao", "Pavão"]]
 };
 function bonecoPadrao(id) {
   const r = rng(id || "x"), p = arr => arr[Math.floor(r() * arr.length)], v = arr => p(arr)[0];
-  return { pele: p(BONECO.pele), cabeloCor: p(BONECO.cabeloCor), cabelo: v(BONECO.cabelo), chapeu: v(BONECO.chapeu), roupa: v(BONECO.roupa), roupaCor: p(BONECO.roupaCor), acessorio: v(BONECO.acessorio), barba: r() > .75 ? "sim" : "nao" };
+  return { pele: p(BONECO.pele), cabeloCor: p(BONECO.cabeloCor), cabelo: v(BONECO.cabelo), chapeu: v(BONECO.chapeu), roupa: v(BONECO.roupa), roupaCor: p(BONECO.roupaCor),
+    acessorio: v(BONECO.acessorio), colar: r() > .6 ? "guirlanda" : "nenhum", testa: r() > .6 ? v(BONECO.testa) : "nada", barba: r() > .75 ? "sim" : "nao", pet: r() > .5 ? v(BONECO.pet) : "nenhum", acessorio2: "nenhum", oculos: r() > .7 ? v(BONECO.oculos) : "nenhum" };
 }
 const bonecoDe = id => ({ ...bonecoPadrao(id), ...((S.viajantes.find(v => v.id === id) || {}).boneco || {}) });
 function escurece(hex, f) { const n = parseInt(hex.slice(1), 16); const c = k => Math.round(((n >> k) & 255) * f); return `rgb(${c(16)},${c(8)},${c(0)})`; }
-// Desenha o explorador numa caixa de 60 x 90.
+// Bichinho ao lado do explorador (área à direita, de x 56 a 92).
+function desenhaPet(tipo) {
+  const g = h("g", { class: "pet" }), P = (d, fill, x) => h("path", { d, fill, ...(x || {}) }), C = (cx, cy, r, fill) => h("circle", { cx, cy, r, fill }), E = (cx, cy, rx, ry, fill) => h("ellipse", { cx, cy, rx, ry, fill });
+  const olho = (x, y) => C(x, y, .9, "#1E150D");
+  g.append(E(74, 86, 13, 2.4, "rgba(40,28,15,.22)"));
+  if (tipo === "gato") g.append(P("M83 80 Q92 70 86 62", "none", { stroke: "#D9822B", "stroke-width": 2.4, "stroke-linecap": "round" }), E(76, 79, 8, 5.5, "#D9822B"), C(68, 72, 5, "#D9822B"), P("M64.5 69 L65 63 L68.5 67.5 Z M71.5 69 L71 63 L67.5 67.5 Z", "#D9822B"), olho(66.5, 72), olho(69.5, 72), h("rect", { x: 70, y: 82, width: 2, height: 4, fill: "#B86E1E" }), h("rect", { x: 79, y: 82, width: 2, height: 4, fill: "#B86E1E" }));
+  if (tipo === "cachorro") g.append(P("M84 76 Q90 70 88 66", "none", { stroke: "#A0673F", "stroke-width": 2.4, "stroke-linecap": "round" }), E(76, 78, 9, 6, "#C08A55"), C(67, 71, 5.5, "#C08A55"), E(63.8, 72, 2.2, 4, "#8B5A2B"), E(70.2, 72, 2.2, 4, "#8B5A2B"), E(67, 74, 2.4, 1.8, "#E8D2B0"), C(67, 73, .9, "#1E150D"), olho(65.5, 70), olho(68.5, 70),
+    h("rect", { x: 70, y: 82, width: 2.2, height: 4.5, fill: "#8B5A2B" }), h("rect", { x: 80, y: 82, width: 2.2, height: 4.5, fill: "#8B5A2B" }));
+  if (tipo === "camelo") g.append(E(78, 67, 11, 6.5, "#A97A42"), E(79, 60.5, 5, 5, "#A97A42"), P("M68 66 Q63 60 64 50 L68 50 Q67 60 71 64 Z", "#A97A42"), E(64, 49, 4.5, 2.8, "#A97A42"), olho(63, 48.5),
+    ...[70, 74, 82, 86].map(x => h("rect", { x, y: 71, width: 2.2, height: 14, fill: "#8C6435" })), h("rect", { x: 72, y: 63, width: 12, height: 3, fill: "#8A3F32" }));
+  if (tipo === "elefante") g.append(E(77, 75, 11, 8, "#9A9A9E"), C(66, 72, 6.5, "#A6A6AA"), E(70.5, 71, 3.5, 5, "#8C8C90"), P("M61 74 Q58 80 61 84", "none", { stroke: "#A6A6AA", "stroke-width": 2.8, "stroke-linecap": "round" }), olho(64, 70.5),
+    ...[70, 76, 81, 85].map(x => h("rect", { x, y: 80, width: 3, height: 6, fill: "#8C8C90" })), h("rect", { x: 72, y: 67, width: 10, height: 4, rx: 1, fill: "#B83A6B" }));
+  if (tipo === "vaca") g.append(E(77, 74, 11, 6.5, "#F1EAD9"), E(79, 67.5, 4, 3, "#E4DAC4"), C(65, 71, 5, "#F1EAD9"), P("M61.5 66.5 Q60 63 62 62 M68.5 66.5 Q70 63 68 62", "none", { stroke: "#8B6B43", "stroke-width": 1.4 }), E(64, 74, 2.8, 2, "#E8C9B0"), olho(63.5, 70), olho(66.5, 70),
+    ...[69, 73, 81, 85].map(x => h("rect", { x, y: 78, width: 2.2, height: 8, fill: "#DDD2BC" })), C(65, 76.5, 1.3, "#D9A53A"));
+  if (tipo === "macaco") g.append(P("M84 80 Q94 72 88 62 Q86 58 89 56", "none", { stroke: "#8B6B43", "stroke-width": 2, "stroke-linecap": "round" }), E(76, 78, 7, 7, "#8B6B43"), C(71, 68, 5.5, "#8B6B43"), C(66, 67, 2, "#8B6B43"), C(76, 67, 2, "#8B6B43"), E(71, 69.5, 3.6, 3.2, "#D8B892"), olho(69.8, 68.5), olho(72.2, 68.5));
+  if (tipo === "pavao") g.append(...[-50, -25, 0, 25, 50].map(a => E(80 + Math.sin(a * Math.PI / 180) * 9, 66 - Math.cos(a * Math.PI / 180) * 9, 3.6, 7, "#2E7D6B")), ...[-50, -25, 0, 25, 50].map(a => C(80 + Math.sin(a * Math.PI / 180) * 11, 66 - Math.cos(a * Math.PI / 180) * 11, 1.8, "#1F4E8C")),
+    E(78, 76, 5, 7, "#1F5FA8"), C(74, 66, 3, "#1F5FA8"), P("M71.5 66 L69 67 L71.5 67.5 Z", "#D9A53A"), olho(73.5, 65.5), P("M74 63 L73 60 M75 63 L75 60 M76 63 L77 60", "none", { stroke: "#1F5FA8", "stroke-width": .7 }), h("rect", { x: 76.5, y: 82, width: 1.4, height: 4, fill: "#8B6B43" }), h("rect", { x: 79.5, y: 82, width: 1.4, height: 4, fill: "#8B6B43" }));
+  return g;
+}
+// Desenha o explorador numa caixa de 60 x 90 (o pet ocupa até x 92).
 function desenhaBoneco(b) {
   const g = h("g", { class: "boneco" }), P = (d, fill, extra) => h("path", { d, fill, ...(extra || {}) });
-  const pele = b.pele, cab = b.cabeloCor, roupa = b.roupaCor, calca = b.roupa === "kurta" ? "#EDE6D6" : "#5A4630", couro = "#3A2A1C";
+  const pele = b.pele, cab = b.cabeloCor, roupa = b.roupaCor, couro = "#3A2A1C", ouro = "#D9A53A", branco = "#F4EFE3";
+  const longa = ["vestido", "sari", "cigana", "monge", "kurta"].includes(b.roupa);
+  const calca = b.roupa === "terno" ? roupa : b.roupa === "academia" ? "#2B2622" : b.roupa === "yogi" ? branco : b.roupa === "kurta" ? "#EDE6D6" : "#5A4630";
+  const cor = b.roupa === "monge" ? (roupa === "#8B6B43" || roupa === "#C2A878" ? "#D9822B" : roupa) : b.roupa === "yogi" ? branco : roupa;
   g.append(h("ellipse", { cx: 30, cy: 86, rx: 15, ry: 3.2, fill: "rgba(40,28,15,.28)" }));
-  if (b.roupa === "vestido") g.append(P("M19 54 L41 54 L46 81 L14 81 Z", roupa), P("M19 54 L41 54 L42 58 L18 58 Z", escurece(roupa, .85)));
-  else g.append(h("rect", { x: 21.5, y: 56, width: 7.5, height: 24, rx: 2, fill: calca }), h("rect", { x: 31, y: 56, width: 7.5, height: 24, rx: 2, fill: calca }));
-  g.append(h("rect", { x: 20, y: 78, width: 9.5, height: 6, rx: 2.5, fill: couro }), h("rect", { x: 30.5, y: 78, width: 9.5, height: 6, rx: 2.5, fill: couro }));
-  const manga = b.roupa === "colete" ? "#F1EAD9" : roupa;
-  g.append(h("rect", { x: 11.5, y: 36, width: 7, height: 22, rx: 3.5, fill: manga, transform: "rotate(8 15 36)" }), h("rect", { x: 41.5, y: 36, width: 7, height: 22, rx: 3.5, fill: manga, transform: "rotate(-8 45 36)" }));
+  if (b.pet && b.pet !== "nenhum") g.append(desenhaPet(b.pet));
+  // pernas e saias
+  if (b.roupa === "cigana") g.append(P("M18 52 L42 52 L50 80 Q46 83 42 80 Q38 83 34 80 Q30 83 26 80 Q22 83 18 80 Q14 83 10 80 Z", cor), P("M13 72 L47 72 L48 76 L12 76 Z", ouro, { opacity: .8 }));
+  else if (b.roupa === "sari" || b.roupa === "vestido") g.append(P("M19 54 L41 54 L46 81 L14 81 Z", cor), b.roupa === "sari" ? P("M14 78 L46 78 L46 81 L14 81 Z", ouro) : P("M19 54 L41 54 L42 58 L18 58 Z", escurece(cor, .85)));
+  else if (b.roupa === "monge") g.append(P("M18 50 L42 50 L44 82 L16 82 Z", cor), P("M30 50 L44 82 L38 82 Z", escurece(cor, .82)));
+  else {
+    g.append(h("rect", { x: 21.5, y: 56, width: 7.5, height: 24, rx: 2, fill: calca }), h("rect", { x: 31, y: 56, width: 7.5, height: 24, rx: 2, fill: calca }));
+    if (b.roupa === "kurta") g.append(P("M18 50 L42 50 L44 70 L16 70 Z", cor));
+  }
+  const pe = b.roupa === "academia" ? "#F4EFE3" : b.roupa === "monge" || b.roupa === "yogi" || b.roupa === "sari" ? pele : couro;
+  g.append(h("rect", { x: 20, y: 79, width: 9.5, height: 5, rx: 2.5, fill: pe }), h("rect", { x: 30.5, y: 79, width: 9.5, height: 5, rx: 2.5, fill: pe }));
+  if (b.roupa === "monge" || b.roupa === "yogi" || b.roupa === "sari") g.append(h("rect", { x: 20, y: 82.5, width: 9.5, height: 1.8, fill: "#6B4A2A" }), h("rect", { x: 30.5, y: 82.5, width: 9.5, height: 1.8, fill: "#6B4A2A" }));
+  // braços
+  const nuE = b.roupa === "academia" || b.roupa === "monge", nuD = b.roupa === "academia" || b.roupa === "sari";
+  const manga = b.roupa === "colete" || b.roupa === "cigana" ? branco : cor;
+  g.append(h("rect", { x: 11.5, y: 36, width: 7, height: 22, rx: 3.5, fill: nuE ? pele : manga, transform: "rotate(8 15 36)" }), h("rect", { x: 41.5, y: 36, width: 7, height: 22, rx: 3.5, fill: nuD ? pele : manga, transform: "rotate(-8 45 36)" }));
   g.append(h("circle", { cx: 13, cy: 59, r: 3.2, fill: pele }), h("circle", { cx: 47, cy: 59, r: 3.2, fill: pele }));
   g.append(h("rect", { x: 26.5, y: 29, width: 7, height: 7, fill: pele }));
-  if (b.roupa === "colete") {
-    g.append(P("M18 36 Q30 32 42 36 L43 57 L17 57 Z", "#F1EAD9"), P("M18 36 Q24 34 28 35 L27 57 L17 57 Z", roupa), P("M42 36 Q36 34 32 35 L33 57 L43 57 Z", roupa));
-  } else if (b.roupa === "kurta") {
-    g.append(P("M18 36 Q30 32 42 36 L44 68 L16 68 Z", roupa), h("line", { x1: 30, y1: 35, x2: 30, y2: 46, stroke: escurece(roupa, .7), "stroke-width": 1 }));
-  } else if (b.roupa === "vestido") {
-    g.append(P("M19 36 Q30 32 41 36 L41 56 L19 56 Z", roupa));
-  } else {
-    g.append(P("M18 36 Q30 32 42 36 L44 58 L16 58 Z", roupa), P("M26 35 L30 44 L34 35 Z", "#F1EAD9"),
-      P("M26 35 L30 44 L28 50 L23 38 Z", escurece(roupa, .82)), P("M34 35 L30 44 L32 50 L37 38 Z", escurece(roupa, .82)));
-  }
+  // tronco
+  if (b.roupa === "colete") g.append(P("M18 36 Q30 32 42 36 L43 57 L17 57 Z", branco), P("M18 36 Q24 34 28 35 L27 57 L17 57 Z", cor), P("M42 36 Q36 34 32 35 L33 57 L43 57 Z", cor));
+  else if (b.roupa === "kurta") g.append(P("M18 36 Q30 32 42 36 L43 56 L17 56 Z", cor), h("line", { x1: 30, y1: 35, x2: 30, y2: 46, stroke: escurece(cor, .7), "stroke-width": 1 }));
+  else if (b.roupa === "yogi") g.append(P("M17 36 Q30 32 43 36 L45 60 L15 60 Z", branco), P("M26 35 L30 41 L34 35", "none", { stroke: "#D8CFB9", "stroke-width": 1 }));
+  else if (b.roupa === "vestido") g.append(P("M19 36 Q30 32 41 36 L41 56 L19 56 Z", cor));
+  else if (b.roupa === "sari") g.append(P("M19 36 Q30 32 41 36 L41 48 L19 48 Z", escurece(cor, .8)), h("rect", { x: 19, y: 48, width: 22, height: 6, fill: pele }), P("M34 34 L42 36 L41 56 L19 56 L22 52 Z", cor), P("M34 34 L36 34.5 L24 55 L22 54 Z", ouro));
+  else if (b.roupa === "cigana") g.append(P("M18 36 Q30 32 42 36 L42 52 L18 52 Z", branco), P("M17 49 L43 49 L43 54 L17 54 Z", "#A3231A"), ...[23, 27, 30, 33, 37].map((x, i) => h("circle", { cx: x, cy: 38 + (i === 2 ? 3 : Math.abs(2 - i) * .8), r: 1.3, fill: ouro })));
+  else if (b.roupa === "monge") g.append(P("M17 37 Q23 34 28 35 L43 36 L44 52 L16 52 Z", cor), P("M28 35 L44 36 L44 42 Z", escurece(cor, .8)), P("M17 37 L22 36 L25 50 L16 52 Z", pele, { opacity: 0 }));
+  else if (b.roupa === "terno") g.append(P("M18 36 Q30 32 42 36 L44 58 L16 58 Z", cor), P("M26 35 L30 46 L34 35 Z", branco), P("M29 36 L31 36 L32 45 L30 48 L28 45 Z", "#A3231A"),
+    P("M26 35 L30 46 L27 52 L22 38 Z", escurece(cor, .75)), P("M34 35 L30 46 L33 52 L38 38 Z", escurece(cor, .75)));
+  else if (b.roupa === "academia") g.append(P("M21 36 Q30 34 39 36 L41 57 L19 57 Z", cor), P("M21 36 L24 34 L25 40 Z M39 36 L36 34 L35 40 Z", pele), P("M26 37 Q30 41 34 37", "none", { stroke: escurece(cor, .7), "stroke-width": 1 }));
+  else g.append(P("M18 36 Q30 32 42 36 L44 58 L16 58 Z", cor), P("M26 35 L30 44 L34 35 Z", branco),
+    P("M26 35 L30 44 L28 50 L23 38 Z", escurece(cor, .82)), P("M34 35 L30 44 L32 50 L37 38 Z", escurece(cor, .82)));
   if (b.roupa === "jaqueta" || b.roupa === "colete") g.append(h("rect", { x: 17, y: 55, width: 26, height: 3, fill: couro }), h("rect", { x: 28.5, y: 55, width: 3, height: 3, fill: "#C9A063" }));
+  if (b.roupa === "academia") g.append(h("rect", { x: 19, y: 55, width: 22, height: 2.5, fill: "#F4EFE3" }));
+  // colar
+  if (b.colar === "guirlanda") for (let i = 0; i <= 10; i++) { const t = Math.PI * (i / 10), x = 30 - Math.cos(t) * 8, y = 34 + Math.sin(t) * 9; g.append(h("circle", { cx: x, cy: y, r: 2.1, fill: i % 2 ? "#F2A72B" : "#E0661C" })); }
+  if (b.colar === "rudraksha") for (let i = 0; i <= 12; i++) { const t = Math.PI * (i / 12), x = 30 - Math.cos(t) * 7, y = 33.5 + Math.sin(t) * 10; g.append(h("circle", { cx: x, cy: y, r: 1.3, fill: "#6B3A20" })); }
   // cabeça
-  if (b.cabelo === "longo" && b.chapeu !== "turbante") g.append(P("M19 20 Q19 10 30 10 Q41 10 41 20 L42 36 L18 36 Z", cab));
+  const cobre = b.chapeu === "turbante" || b.chapeu === "lenco" || b.roupa === "monge";
+  if ((b.cabelo === "longo" || b.cabelo === "tranca") && !cobre) g.append(P(b.cabelo === "longo" ? "M19 20 Q19 10 30 10 Q41 10 41 20 L42 36 L18 36 Z" : "M19 20 Q19 10 30 10 Q41 10 41 20 L40 26 L20 26 Z", cab));
+  if (b.cabelo === "tranca" && !cobre) g.append(...[28, 33, 38, 43].map(y => h("ellipse", { cx: 40.5, cy: y, rx: 2.4, ry: 3, fill: cab })));
   g.append(h("circle", { cx: 30, cy: 22, r: 10, fill: pele }));
   g.append(h("circle", { cx: 26.6, cy: 22.5, r: 1.15, fill: "#2B1D14" }), h("circle", { cx: 33.4, cy: 22.5, r: 1.15, fill: "#2B1D14" }),
     h("path", { d: "M27 26.4 Q30 28.6 33 26.4", fill: "none", stroke: "#6B3A26", "stroke-width": 1.1, "stroke-linecap": "round" }));
+  if (b.testa === "bindi") g.append(h("circle", { cx: 30, cy: 18.6, r: 1.3, fill: "#B0301F" }));
+  if (b.testa === "tilak") g.append(h("path", { d: "M28.8 20 L30 14.5 L31.2 20 Z", fill: "#D9822B" }), h("rect", { x: 29.6, y: 16, width: .8, height: 3.5, fill: "#B0301F" }));
   if (b.barba === "sim") g.append(P("M20.5 24 Q21 32 30 33.5 Q39 32 39.5 24 Q37 29 30 29.2 Q23 29 20.5 24 Z", cab));
-  const cobre = b.chapeu === "turbante" || b.chapeu === "lenco";
   if (!cobre && b.cabelo !== "careca") {
     if (b.cabelo === "cacheado") [[21, 16], [25, 12], [30, 11], [35, 12], [39, 16], [20.5, 21], [39.5, 21]].forEach(([x, y]) => g.append(h("circle", { cx: x, cy: y, r: 4, fill: cab })));
     else g.append(P("M20 21 Q20 11 30 11 Q40 11 40 21 Q36 15 30 15.5 Q24 15 20 21 Z", cab));
-    if (b.cabelo === "coque" && b.chapeu === "sem") g.append(h("circle", { cx: 30, cy: 9, r: 4.5, fill: cab }));
+    if (b.cabelo === "coque" && (b.chapeu === "sem" || b.chapeu === "flores")) g.append(h("circle", { cx: 30, cy: 9, r: 4.5, fill: cab }));
   }
   // chapéu
+  if (b.roupa === "monge") g.append(P("M16 36 Q14 22 20 14", "none", { stroke: "rgba(0,0,0,0)" }));
   if (b.chapeu === "fedora") g.append(h("ellipse", { cx: 30, cy: 14.5, rx: 17, ry: 3.6, fill: "#6B4F33" }), P("M21.5 14.5 Q21 4 30 5 Q39 4 38.5 14.5 Z", "#7A5B3B"),
     P("M26.5 6 Q30 8.5 33.5 6", "none", { stroke: "#5A4129", "stroke-width": 1 }), h("rect", { x: 21.5, y: 11.2, width: 17, height: 2.8, fill: "#3A2A1C" }));
   if (b.chapeu === "safari") g.append(h("ellipse", { cx: 30, cy: 15, rx: 16, ry: 3.4, fill: "#CDBB8F" }), P("M20 15 Q20 3 30 3.5 Q40 3 40 15 Z", "#D8C8A0"), h("rect", { x: 20.2, y: 12.3, width: 19.6, height: 2.4, fill: "#8A6B43" }));
-  if (b.chapeu === "lenco") g.append(P("M19 23 Q18 9 30 9 Q42 9 41 23 Q40 16 30 15.5 Q20 16 19 23 Z", roupa === "#8A3F32" ? "#C9A063" : "#8A3F32"), P("M39 20 L45 28 L40 27 Z", roupa === "#8A3F32" ? "#C9A063" : "#8A3F32"));
+  if (b.chapeu === "lenco") { const lc = roupa === "#8A3F32" ? "#C9A063" : "#8A3F32"; g.append(P("M19 23 Q18 9 30 9 Q42 9 41 23 Q40 16 30 15.5 Q20 16 19 23 Z", lc), P("M39 20 L45 28 L40 27 Z", lc)); }
   if (b.chapeu === "turbante") g.append(h("ellipse", { cx: 30, cy: 15.5, rx: 11.5, ry: 6, fill: "#D98B2B" }), h("ellipse", { cx: 30, cy: 11, rx: 10, ry: 5, fill: "#E6A03F" }), P("M22 15 Q30 7 38 15", "none", { stroke: "#B86E1E", "stroke-width": 1.2 }), h("circle", { cx: 30, cy: 12, r: 1.8, fill: "#8A3F32" }));
-  // acessório
-  if (b.acessorio === "bolsa") g.append(h("line", { x1: 20, y1: 36, x2: 41, y2: 55, stroke: couro, "stroke-width": 1.8 }), h("rect", { x: 37, y: 51, width: 10, height: 9, rx: 2, fill: "#7A5431" }), h("rect", { x: 37, y: 51, width: 10, height: 3.5, rx: 1.5, fill: "#5E3F24" }));
-  if (b.acessorio === "chicote") g.append(h("circle", { cx: 13, cy: 66, r: 4.5, fill: "none", stroke: "#4A3322", "stroke-width": 1.6 }), h("circle", { cx: 13, cy: 66, r: 2.6, fill: "none", stroke: "#4A3322", "stroke-width": 1.4 }), h("path", { d: "M13 70.5 Q12 78 16 84", fill: "none", stroke: "#4A3322", "stroke-width": 1.3 }));
-  if (b.acessorio === "lanterna") g.append(h("circle", { cx: 48, cy: 67, r: 7, fill: "rgba(255,196,90,.35)" }), h("rect", { x: 45.5, y: 62, width: 5, height: 8, rx: 1, fill: "#C9A063" }), h("rect", { x: 46.5, y: 63.5, width: 3, height: 5, fill: "#FFD27A" }), h("line", { x1: 48, y1: 62, x2: 48, y2: 59, stroke: couro, "stroke-width": 1 }));
-  if (b.acessorio === "mapa") g.append(h("rect", { x: 43, y: 55, width: 11, height: 8, rx: 1, fill: "#EAD9AE", transform: "rotate(-12 48 59)" }), h("path", { d: "M45 58 L49 60 L52 57", fill: "none", stroke: "#A3231A", "stroke-width": .9, transform: "rotate(-12 48 59)" }));
-  if (b.acessorio === "camera") g.append(h("line", { x1: 25, y1: 35, x2: 30, y2: 42, stroke: couro, "stroke-width": 1 }), h("line", { x1: 35, y1: 35, x2: 30, y2: 42, stroke: couro, "stroke-width": 1 }), h("rect", { x: 25.5, y: 41, width: 9, height: 6.5, rx: 1.2, fill: "#2A2622" }), h("circle", { cx: 30, cy: 44.2, r: 2, fill: "#6E7F86" }));
+  if (b.chapeu === "flores") for (let i = 0; i <= 8; i++) { const t = Math.PI * (1 + i / 8), x = 30 + Math.cos(t) * 10.5, y = 17 + Math.sin(t) * 6; g.append(h("circle", { cx: x, cy: y, r: 2.4, fill: ["#E0661C", "#F2A72B", "#E24A7A"][i % 3] }), h("circle", { cx: x, cy: y, r: .8, fill: "#FFE7A3" })); }
+  // óculos
+  const oc = b.oculos;
+  if (oc === "redondo") g.append(h("circle", { cx: 26.4, cy: 22.5, r: 2.8, fill: "rgba(255,255,255,.15)", stroke: "#3A2A1C", "stroke-width": .9 }), h("circle", { cx: 33.6, cy: 22.5, r: 2.8, fill: "rgba(255,255,255,.15)", stroke: "#3A2A1C", "stroke-width": .9 }), h("line", { x1: 29.2, y1: 22.3, x2: 30.8, y2: 22.3, stroke: "#3A2A1C", "stroke-width": .8 }));
+  if (oc === "aviador") g.append(P("M23 20.8 L29 20.8 Q29 25.8 26 25.8 Q23 25.8 23 20.8 Z", "#3E4A5A", { stroke: "#C9A063", "stroke-width": .7 }), P("M31 20.8 L37 20.8 Q37 25.8 34 25.8 Q31 25.8 31 20.8 Z", "#3E4A5A", { stroke: "#C9A063", "stroke-width": .7 }), h("line", { x1: 29, y1: 21, x2: 31, y2: 21, stroke: "#C9A063", "stroke-width": .8 }));
+  if (oc === "sol") g.append(h("rect", { x: 22.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), h("rect", { x: 30.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), h("line", { x1: 29.2, y1: 21.5, x2: 30.8, y2: 21.5, stroke: "#1E1A16", "stroke-width": 1 }));
+  if (oc === "grau") g.append(h("rect", { x: 23, y: 20.6, width: 6.2, height: 4, rx: .8, fill: "rgba(255,255,255,.18)", stroke: "#5A3A22", "stroke-width": .9 }), h("rect", { x: 30.8, y: 20.6, width: 6.2, height: 4, rx: .8, fill: "rgba(255,255,255,.18)", stroke: "#5A3A22", "stroke-width": .9 }), h("line", { x1: 29.2, y1: 22, x2: 30.8, y2: 22, stroke: "#5A3A22", "stroke-width": .8 }));
+  // o que leva nas mãos: a segunda mão é o espelho da primeira
+  for (const [A, T] of [[b.acessorio, g], [b.acessorio2, b.acessorio2 && b.acessorio2 !== "nenhum" ? g.appendChild(h("g", { transform: "translate(60 0) scale(-1 1)" })) : null]]) {
+    if (!A || !T) continue;
+  if (A === "japamala") { for (let i = 0; i < 14; i++) { const t = i / 14 * Math.PI * 2; T.append(h("circle", { cx: 48 + Math.cos(t) * 4.5, cy: 66 + Math.sin(t) * 6, r: 1.15, fill: "#7A4A2B" })); } T.append(h("rect", { x: 47, y: 72, width: 2, height: 5, fill: "#A3231A" })); }
+    if (A === "incenso") T.append(h("line", { x1: 47, y1: 60, x2: 51, y2: 46, stroke: "#7A4A2B", "stroke-width": 1.2 }), h("circle", { cx: 51, cy: 46, r: 1, fill: "#E0661C" }), P("M51 45 Q54 41 51 38 Q48 35 52 31", "none", { stroke: "rgba(120,110,100,.55)", "stroke-width": 1.1, "stroke-linecap": "round" }));
+    if (A === "tambor") T.append(h("ellipse", { cx: 50, cy: 62, rx: 7, ry: 7.5, fill: "#E9D7B0", stroke: "#7A4A2B", "stroke-width": 1.6 }), P("M45 57 L55 67 M55 57 L45 67", "none", { stroke: "#B08A4E", "stroke-width": .7 }), h("line", { x1: 13, y1: 59, x2: 18, y2: 52, stroke: "#6B4A2A", "stroke-width": 1.4 }), h("circle", { cx: 18.5, cy: 51.5, r: 1.8, fill: "#A3231A" }));
+    if (A === "chai") T.append(P("M44 57 L51 57 L50 64 L45 64 Z", "#C98E62"), P("M44 57 L51 57 L50.6 59 L44.4 59 Z", "#F0E0C0"), P("M46 55 Q45 52 47 50 M49 55 Q48 52 50 50", "none", { stroke: "rgba(140,130,120,.55)", "stroke-width": .9 }));
+    if (A === "diya") T.append(P("M42 61 Q47 66 53 61 L51 59 L44 59 Z", "#A0673F"), P("M47.5 58.5 Q45.5 55 47.5 51 Q49.5 55 47.5 58.5 Z", "#F2A72B"), h("circle", { cx: 47.5, cy: 55, r: 4, fill: "rgba(255,200,90,.3)" }));
+    if (A === "lotus") T.append(...[-40, -15, 15, 40].map(a => h("ellipse", { cx: 48 + Math.sin(a * Math.PI / 180) * 4, cy: 54 - Math.cos(a * Math.PI / 180) * 2, rx: 2, ry: 4.5, fill: "#E7849E", transform: `rotate(${a} ${48 + Math.sin(a * Math.PI / 180) * 4} ${54 - Math.cos(a * Math.PI / 180) * 2})` })), h("ellipse", { cx: 48, cy: 56, rx: 5.5, ry: 2, fill: "#5F8A4A" }), h("circle", { cx: 48, cy: 54, r: 1.4, fill: "#F2C94C" }));
+    if (A === "sino") T.append(P("M44 62 Q44 55 48 55 Q52 55 52 62 L53.5 64 L42.5 64 Z", ouro), h("circle", { cx: 48, cy: 65, r: 1.2, fill: "#8A6B2A" }), h("rect", { x: 47, y: 52, width: 2, height: 3.5, fill: "#8A6B2A" }));
+    if (A === "bolsa") T.append(h("line", { x1: 20, y1: 36, x2: 41, y2: 55, stroke: couro, "stroke-width": 1.8 }), h("rect", { x: 37, y: 51, width: 10, height: 9, rx: 2, fill: "#7A5431" }), h("rect", { x: 37, y: 51, width: 10, height: 3.5, rx: 1.5, fill: "#5E3F24" }));
+    if (A === "chicote") T.append(h("circle", { cx: 13, cy: 66, r: 4.5, fill: "none", stroke: "#4A3322", "stroke-width": 1.6 }), h("circle", { cx: 13, cy: 66, r: 2.6, fill: "none", stroke: "#4A3322", "stroke-width": 1.4 }), h("path", { d: "M13 70.5 Q12 78 16 84", fill: "none", stroke: "#4A3322", "stroke-width": 1.3 }));
+    if (A === "lanterna") T.append(h("circle", { cx: 48, cy: 67, r: 7, fill: "rgba(255,196,90,.35)" }), h("rect", { x: 45.5, y: 62, width: 5, height: 8, rx: 1, fill: "#C9A063" }), h("rect", { x: 46.5, y: 63.5, width: 3, height: 5, fill: "#FFD27A" }), h("line", { x1: 48, y1: 62, x2: 48, y2: 59, stroke: couro, "stroke-width": 1 }));
+    if (A === "mapa") T.append(h("rect", { x: 43, y: 55, width: 11, height: 8, rx: 1, fill: "#EAD9AE", transform: "rotate(-12 48 59)" }), h("path", { d: "M45 58 L49 60 L52 57", fill: "none", stroke: "#A3231A", "stroke-width": .9, transform: "rotate(-12 48 59)" }));
+    if (A === "camera") T.append(h("line", { x1: 25, y1: 35, x2: 30, y2: 42, stroke: couro, "stroke-width": 1 }), h("line", { x1: 35, y1: 35, x2: 30, y2: 42, stroke: couro, "stroke-width": 1 }), h("rect", { x: 25.5, y: 41, width: 9, height: 6.5, rx: 1.2, fill: "#2A2622" }), h("circle", { cx: 30, cy: 44.2, r: 2, fill: "#6E7F86" }));
+  }
   return g;
 }
-const bonecoSvg = (b, cls) => h("svg", { viewBox: "0 0 60 90", class: cls || "bonecosvg", role: "img", "aria-label": "Explorador" }, desenhaBoneco(b));
+const bonecoSvg = (b, cls) => h("svg", { viewBox: b.pet && b.pet !== "nenhum" ? "0 0 94 90" : "0 0 60 90", class: cls || "bonecosvg", role: "img", "aria-label": "Explorador" }, desenhaBoneco(b));
+// Fantasias inspiradas nos deuses: mudam roupa, cores e o que a pessoa segura.
+BONECO.deus = [["nenhum", "Nenhuma"], ["shiva", "Shiva"], ["ganesha", "Ganesha"], ["durga", "Durga"], ["krishna", "Krishna"], ["hanuman", "Hanuman"], ["lakshmi", "Lakshmi"],
+  ["saraswati", "Saraswati"], ["vishnu", "Vishnu"], ["parvati", "Parvati"], ["kali", "Kali"], ["surya", "Surya"], ["ganga", "Ganga"], ["brahma", "Brahma"]];
+const DEUS = {
+  shiva: { pele: "#7FA9C9", roupa: "shiva", roupaCor: "#C9822F", acessorio: "tridente", chapeu: "jata", colar: "cobra", testa: "cinzas" },
+  ganesha: { roupa: "kurta", roupaCor: "#E0761C", acessorio: "modak", chapeu: "ganesha", colar: "guirlanda", testa: "nada", barba: "nao" },
+  durga: { roupa: "sari", roupaCor: "#B0301F", acessorio: "tridente", chapeu: "coroa", colar: "ouro", testa: "bindi", bracos: 4 },
+  krishna: { pele: "#5E86B8", roupa: "dhoti", roupaCor: "#E8B321", acessorio: "flauta", chapeu: "pena", colar: "guirlanda", testa: "tilak", barba: "nao" },
+  hanuman: { pele: "#D9822B", roupa: "dhoti", roupaCor: "#B0301F", acessorio: "gada", chapeu: "coroa", colar: "ouro", testa: "tilak", rabo: 1, barba: "nao" },
+  lakshmi: { roupa: "sari", roupaCor: "#D44A7A", acessorio: "moedas", chapeu: "coroa", colar: "ouro", testa: "bindi", bracos: 4 },
+  saraswati: { roupa: "sari", roupaCor: "#F4EFE3", acessorio: "veena", chapeu: "coroa", colar: "ouro", testa: "bindi" },
+  vishnu: { pele: "#4F74A8", roupa: "dhoti", roupaCor: "#E8B321", acessorio: "concha", chapeu: "coroaalta", colar: "guirlanda", testa: "tilak", bracos: 4, barba: "nao" },
+  parvati: { roupa: "sari", roupaCor: "#3F7A4A", acessorio: "lotus", chapeu: "coroa", colar: "ouro", testa: "bindi" },
+  kali: { pele: "#2F3550", roupa: "dhoti", roupaCor: "#A3231A", acessorio: "espada", chapeu: "sem", cabelo: "longo", cabeloCor: "#141018", colar: "flores", testa: "bindi", bracos: 4 },
+  surya: { roupa: "dhoti", roupaCor: "#E0761C", acessorio: "lotus", chapeu: "sol", colar: "ouro", testa: "tilak" },
+  ganga: { roupa: "sari", roupaCor: "#8FB8C9", acessorio: "kalash", chapeu: "coroa", colar: "ouro", testa: "bindi" },
+  brahma: { roupa: "dhoti", roupaCor: "#B0301F", acessorio: "livro", chapeu: "coroa", colar: "rudraksha", testa: "tilak", barba: "sim", cabeloCor: "#E8E2D6" }
+};
+const _desenhaBase = desenhaBoneco;
+desenhaBoneco = function (b0) {
+  const d = b0.deus && DEUS[b0.deus];
+  const b = d ? { ...b0, ...d, cabelo: d.cabelo || (b0.cabelo === "careca" ? "curto" : b0.cabelo) } : b0;
+  const base = { ...b, roupa: ["shiva", "dhoti"].includes(b.roupa) ? "yogi" : b.roupa, acessorio: "nenhum",
+    chapeu: ["jata", "ganesha", "coroa", "coroaalta", "pena", "sol"].includes(b.chapeu) ? "sem" : b.chapeu, colar: ["cobra", "ouro", "flores"].includes(b.colar) ? "nenhum" : b.colar,
+    testa: b.testa === "cinzas" ? "nada" : b.testa, roupaCor: b.roupaCor };
+  const g = h("g", { class: "boneco" }), P = (dd, fill, x) => h("path", { d: dd, fill, ...(x || {}) }), ouro = "#D9A53A";
+  if (b.rabo) g.append(P("M22 56 Q8 60 8 72 Q8 80 14 80", "none", { stroke: b.pele, "stroke-width": 2.6, "stroke-linecap": "round" }));
+  if (b.bracos) g.append(h("rect", { x: 8, y: 38, width: 6, height: 17, rx: 3, fill: b.pele, transform: "rotate(40 11 38)" }), h("rect", { x: 46, y: 38, width: 6, height: 17, rx: 3, fill: b.pele, transform: "rotate(-40 49 38)" }),
+    h("circle", { cx: 3.5, cy: 49, r: 2.8, fill: b.pele }), h("circle", { cx: 56.5, cy: 49, r: 2.8, fill: b.pele }));
+  if (b.chapeu === "sol") g.append(...Array.from({ length: 12 }, (_, i) => { const t = i / 12 * Math.PI * 2; return h("line", { x1: 30 + Math.cos(t) * 12, y1: 20 + Math.sin(t) * 12, x2: 30 + Math.cos(t) * 17, y2: 20 + Math.sin(t) * 17, stroke: "#F2A72B", "stroke-width": 2, "stroke-linecap": "round" }); }), h("circle", { cx: 30, cy: 20, r: 13, fill: "rgba(242,167,43,.35)" }));
+  g.append(_desenhaBase(base));
+  // roupa própria dos deuses: dhoti e pele de tigre de Shiva
+  if (b.roupa === "dhoti") g.append(P("M18 48 L42 48 L44 72 Q38 76 34 70 L30 62 L26 70 Q22 76 16 72 Z", b.roupaCor), P("M18 48 L42 48 L42 51 L18 51 Z", ouro), P("M16 36 Q22 34 28 36 L42 56 L38 58 Z", "#F4EFE3", { opacity: .9 }));
+  if (b.roupa === "shiva") g.append(P("M17 50 L43 50 L45 70 L15 70 Z", "#D98B2B"), ...[20, 26, 32, 38].map(x => P(`M${x} 52 q2 5 0 10`, "none", { stroke: "#3A2A1C", "stroke-width": 1.4 })), h("rect", { x: 17, y: 34, width: 26, height: 16, fill: b.pele, rx: 4 }), h("line", { x1: 18, y1: 34, x2: 42, y2: 50, stroke: "#F4EFE3", "stroke-width": 1, opacity: .6 }));
+  // cabeças e coroas
+  if (b.chapeu === "jata") g.append(h("ellipse", { cx: 30, cy: 9, rx: 5.5, ry: 5, fill: "#2B1D14" }), P("M20 21 Q20 11 30 11 Q40 11 40 21 Q36 15 30 15.5 Q24 15 20 21 Z", "#2B1D14"), P("M33 5 Q37 7 35 11 Q36 7 33 5 Z", "#F4EFE3"), P("M26 6 Q24 1 30 0", "none", { stroke: "#8FB8C9", "stroke-width": 1.4 }));
+  if (b.chapeu === "coroa" || b.chapeu === "coroaalta") { const alt = b.chapeu === "coroaalta" ? 9 : 5; g.append(P(`M21 15 L21 ${12 - alt} L24.5 ${15 - alt} L27 ${10 - alt} L30 ${14 - alt} L33 ${10 - alt} L35.5 ${15 - alt} L39 ${12 - alt} L39 15 Z`, ouro), h("rect", { x: 21, y: 13.5, width: 18, height: 2.5, fill: "#B8862A" }), h("circle", { cx: 30, cy: 12 - alt / 2, r: 1.5, fill: "#A3231A" })); }
+  if (b.chapeu === "pena") g.append(h("rect", { x: 20.5, y: 12.5, width: 19, height: 3, fill: ouro }), P("M33 13 Q38 4 34 -2 Q31 5 33 13 Z", "#2E7D6B"), h("ellipse", { cx: 34.5, cy: 1.5, rx: 1.8, ry: 2.4, fill: "#1F4E8C" }), h("circle", { cx: 34.5, cy: 1.8, r: .8, fill: "#E8B321" }));
+  if (b.chapeu === "ganesha") g.append(h("ellipse", { cx: 18, cy: 22, rx: 6.5, ry: 8.5, fill: "#D9937A" }), h("ellipse", { cx: 42, cy: 22, rx: 6.5, ry: 8.5, fill: "#D9937A" }), h("ellipse", { cx: 18.5, cy: 22, rx: 3.5, ry: 5.5, fill: "#EDB8A2" }), h("ellipse", { cx: 41.5, cy: 22, rx: 3.5, ry: 5.5, fill: "#EDB8A2" }),
+    h("circle", { cx: 30, cy: 22, r: 10.5, fill: "#E7A98A" }), h("circle", { cx: 26.3, cy: 21, r: 1.1, fill: "#2B1D14" }), h("circle", { cx: 33.7, cy: 21, r: 1.1, fill: "#2B1D14" }), P("M27.5 25 Q27 34 24 38 Q23 40 25 40 Q30 36 32.5 25 Z", "#D9937A"),
+    P("M21 13 L22 7 L26 10 L30 5 L34 10 L38 7 L39 13 Z", ouro), h("path", { d: "M34 26 L37 29", stroke: "#F4EFE3", "stroke-width": 1.6, "stroke-linecap": "round" }));
+  if (b.testa === "cinzas") g.append(...[16.5, 18, 19.5].map(y => h("line", { x1: 26.5, y1: y, x2: 33.5, y2: y, stroke: "#F4EFE3", "stroke-width": .9 })), h("circle", { cx: 30, cy: 18, r: .9, fill: "#B0301F" }));
+  // colares
+  if (b.colar === "cobra") g.append(P("M22 34 Q30 42 38 34", "none", { stroke: "#4E8A4A", "stroke-width": 2.4, "stroke-linecap": "round" }), h("ellipse", { cx: 38.5, cy: 33, rx: 2.2, ry: 1.6, fill: "#4E8A4A" }));
+  if (b.colar === "ouro") g.append(P("M23 34 Q30 41 37 34", "none", { stroke: ouro, "stroke-width": 2 }), h("circle", { cx: 30, cy: 39, r: 1.8, fill: "#A3231A" }));
+  if (b.colar === "flores") for (let i = 0; i <= 10; i++) { const t = Math.PI * (i / 10); g.append(h("circle", { cx: 30 - Math.cos(t) * 8, cy: 34 + Math.sin(t) * 10, r: 2, fill: i % 2 ? "#A3231A" : "#E0661C" })); }
+  // o que os deuses seguram (mão direita em x 47 y 59)
+  const A = b.acessorio;
+  if (A === "tridente") g.append(h("line", { x1: 48, y1: 40, x2: 48, y2: 84, stroke: "#6B4A2A", "stroke-width": 1.6 }), P("M43 44 Q43 38 44 36 M48 44 L48 34 M53 44 Q53 38 52 36", "none", { stroke: "#C9CDD2", "stroke-width": 1.8, "stroke-linecap": "round" }), P("M43 44 L53 44", "none", { stroke: "#C9CDD2", "stroke-width": 1.8 }));
+  if (A === "flauta") g.append(h("line", { x1: 38, y1: 30, x2: 56, y2: 38, stroke: "#C9A063", "stroke-width": 2.2, "stroke-linecap": "round" }), ...[44, 48, 52].map(x => h("circle", { cx: x, cy: 30 + (x - 38) * 8 / 18, r: .5, fill: "#6B4A2A" })));
+  if (A === "gada") g.append(h("line", { x1: 48, y1: 62, x2: 50, y2: 44, stroke: "#8A6B2A", "stroke-width": 2 }), h("circle", { cx: 50.5, cy: 40, r: 5, fill: ouro }), h("circle", { cx: 50.5, cy: 35, r: 1.2, fill: ouro }));
+  if (A === "modak") g.append(P("M44 62 Q48 52 52 62 Z", "#F4E3C0"), P("M46 61 Q48 55 48 55 M50 61 Q48 55 48 55", "none", { stroke: "#D8C29A", "stroke-width": .7 }));
+  if (A === "moedas") g.append(...[[46, 64], [48, 68], [50, 72], [47, 76]].map(([x, y]) => h("circle", { cx: x, cy: y, r: 1.7, fill: ouro })));
+  if (A === "veena") g.append(h("line", { x1: 40, y1: 36, x2: 54, y2: 66, stroke: "#8B5A2B", "stroke-width": 2 }), h("circle", { cx: 40, cy: 36, r: 3.5, fill: "#A0673F" }), h("circle", { cx: 53, cy: 64, r: 5, fill: "#A0673F" }));
+  if (A === "concha") g.append(P("M44 61 Q48 53 53 58 Q51 64 44 61 Z", "#F4EFE3"), P("M46 60 Q48 57 51 58", "none", { stroke: "#D8CFB9", "stroke-width": .8 }), h("circle", { cx: 56.5, cy: 45, r: 3.6, fill: "none", stroke: ouro, "stroke-width": 1.4, "stroke-dasharray": "1.2 .8" }));
+  if (A === "espada") g.append(P("M47 60 L57 34 L58.5 35 L49 61 Z", "#C9CDD2"), h("rect", { x: 44.5, y: 58, width: 6, height: 2, fill: ouro, transform: "rotate(-20 47.5 59)" }));
+  if (A === "kalash") g.append(P("M44 58 Q43 66 48 67 Q53 66 52 58 Z", "#B8862A"), h("rect", { x: 45.5, y: 55, width: 5, height: 3, fill: "#B8862A" }), P("M46 55 Q48 50 50 55", "none", { stroke: "#5F8A4A", "stroke-width": 1.4 }));
+  if (A === "livro") g.append(h("rect", { x: 43, y: 56, width: 10, height: 8, rx: 1, fill: "#8A3F32" }), h("rect", { x: 44, y: 57, width: 8, height: 6, fill: "#F1E2BC" }));
+  if (A === "lotus") g.append(...[-40, -15, 15, 40].map(a => h("ellipse", { cx: 48 + Math.sin(a * Math.PI / 180) * 4, cy: 54 - Math.cos(a * Math.PI / 180) * 2, rx: 2, ry: 4.5, fill: "#E7849E", transform: `rotate(${a} ${48 + Math.sin(a * Math.PI / 180) * 4} ${54 - Math.cos(a * Math.PI / 180) * 2})` })), h("ellipse", { cx: 48, cy: 56, rx: 5.5, ry: 2, fill: "#5F8A4A" }));
+  return g;
+};
 
 function vExplorador() {
   const v = eu();
@@ -1037,24 +1282,84 @@ function vExplorador() {
   const cores = (k, arr, rot) => h("div", { class: "opts" }, arr.map(c => h("button", { type: "button", class: "sw", style: `background:${c}`, "aria-label": rot, "aria-pressed": String(b[k] === c), onclick: () => set(k, c) })));
   const msg = h("p", { class: "msg", role: "status" });
   return h("section", { class: "view" },
-    h("div", { class: "actions" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.montando = false; S.bonecoRasc = null; render(); } }, "← Voltar ao mapa")),
+
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Mapa da Expedição" }), h("h1", { text: "Monte seu explorador" }))),
     h("div", { class: "builder" },
       h("div", { class: "preview" }, bonecoSvg(b, "bonecosvg big"), h("p", { class: "tagname", text: v ? v.nome : "Viajante" }),
         h("button", { class: "btn", type: "button", onclick: () => { S.bonecoRasc = bonecoPadrao(Math.random().toString(36)); render(); } }, "Sortear")),
       h("div", { class: "controls" },
+        h("p", { class: "lab", text: "Fantasia dos deuses" }), chips("deus", BONECO.deus),
+        b.deus && b.deus !== "nenhum" ? h("p", { class: "small", text: "A fantasia escolhe roupa, coroa e o que o deus segura. Para voltar às suas escolhas, toque em Nenhuma." }) : null,
         h("p", { class: "lab", text: "Chapéu" }), chips("chapeu", BONECO.chapeu),
         h("p", { class: "lab", text: "Pele" }), cores("pele", BONECO.pele, "Tom de pele"),
         h("p", { class: "lab", text: "Cabelo" }), chips("cabelo", BONECO.cabelo), cores("cabeloCor", BONECO.cabeloCor, "Cor do cabelo"),
         h("p", { class: "lab", text: "Roupa" }), chips("roupa", BONECO.roupa), cores("roupaCor", BONECO.roupaCor, "Cor da roupa"),
         h("p", { class: "lab", text: "Na mão" }), chips("acessorio", BONECO.acessorio),
-        h("p", { class: "lab", text: "Barba" }), chips("barba", BONECO.barba))),
+        h("p", { class: "lab", text: "Na outra mão" }), chips("acessorio2", BONECO.acessorio),
+        h("p", { class: "lab", text: "Óculos" }), chips("oculos", BONECO.oculos),
+        h("p", { class: "lab", text: "Colar" }), chips("colar", BONECO.colar),
+        h("p", { class: "lab", text: "Na testa" }), chips("testa", BONECO.testa),
+        h("p", { class: "lab", text: "Barba" }), chips("barba", BONECO.barba),
+        h("p", { class: "lab", text: "Companheiro de viagem" }), chips("pet", BONECO.pet))),
     v ? h("div", { class: "actions", style: "justify-content:center" },
       h("button", { class: "btn gold", type: "button", onclick: async () => {
-        try { await S.db.doc("viajantes/" + S.uid).update({ boneco: S.bonecoRasc }); S.montando = false; S.bonecoRasc = null; render(); }
+        try { await S.db.doc("viajantes/" + S.uid).update({ boneco: S.bonecoRasc }); S.bonecoRasc = null; msg.textContent = "Explorador salvo. Ele já aparece no mapa."; msg.className = "msg ok"; }
         catch (e) { msg.textContent = "Não consegui salvar. Tente de novo."; msg.className = "msg err"; }
       } }, "Salvar meu explorador"), msg)
       : h("p", { class: "small", style: "text-align:center", text: "Emita seu passaporte para salvar o seu explorador." }));
+}
+
+// ---------- Ao vivo: GPS, quem está online, reações ----------
+const REACOES = [["oi", "👋", "Oi!"], ["namaste", "🙏", "Namaste"], ["amor", "❤️", "Amor"], ["chai", "☕", "Bora um chai?"], ["vem", "📍", "Vem cá!"], ["uau", "✨", "Uau!"], ["risada", "😂", "Haha"], ["espera", "⏳", "Me espera!"]];
+S.online = new Set(); S.aoVivo = {}; S.baloes = {}; S.gpsOn = false; S.gpsMsg = null;
+function posicoesAtuais() {
+  const m = {};
+  for (const p of S.posicoes) if (Date.now() - (p.ts || 0) < FRESCO) m[p.id] = p;
+  for (const id in S.aoVivo) { const v = S.aoVivo[id]; if (Date.now() - v.ts < 10 * 60 * 1000) m[id] = { ...(m[id] || {}), ...v, id, vivoGps: true }; }
+  return Object.values(m);
+}
+function ligarGps() {
+  if (S.gpsWatch != null) { navigator.geolocation.clearWatch(S.gpsWatch); S.gpsWatch = null; S.gpsOn = false; S.gpsMsg = "Localização ao vivo desligada."; S.room?.presence({ lat: null, lng: null, cidadeId: null, ts: null }).catch(() => {}); render(); return; }
+  if (!navigator.geolocation) { S.gpsMsg = "O GPS não está disponível aqui. Use o link ao vivo do Google Maps no Chat ou marque no mapa."; render(); return; }
+  S.gpsMsg = "Ligando o GPS…"; render();
+  let ultimoDb = 0;
+  S.gpsWatch = navigator.geolocation.watchPosition(pos => {
+    const lat = +pos.coords.latitude.toFixed(5), lng = +pos.coords.longitude.toFixed(5), cidadeId = pertoCidade({ lat, lng }), ts = Date.now();
+    S.gpsOn = true; S.gpsMsg = "Você está ao vivo no mapa. A caravana vê você andando enquanto o aplicativo estiver aberto.";
+    S.aoVivo[S.uid] = { lat, lng, cidadeId, ts };
+    S.room?.presence({ uid: S.uid, lat, lng, cidadeId, ts }).catch(() => {});
+    if (ts - ultimoDb > 60000 && S.db && eu()) { ultimoDb = ts; S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: "", nota: "", link: "", ts }).catch(() => {}); }
+    if (S.tab === "mapa") render();
+  }, () => { S.gpsWatch = null; S.gpsOn = false; S.gpsMsg = "O Claude não liberou o GPS neste aparelho. Use o link ao vivo do Google Maps no Chat ou marque no mapa."; render(); },
+  { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 });
+}
+async function reagir(para, r, texto) {
+  if (!S.room) return false;
+  try { await S.room.emit("reacao", { para, r, texto: (texto || "").slice(0, 80) }); return true; } catch (e) { return false; }
+}
+function abrirPessoa(id) {
+  closeSheets();
+  const p = posicoesAtuais().find(x => x.id === id), eu2 = id === S.uid, nome = nomeDe(id), online = S.online.has(id);
+  const msg = h("p", { class: "msg", role: "status" });
+  const txt = h("input", { type: "text", id: "recado-" + id, maxlength: "80", placeholder: "Recado rápido para " + nome });
+  const envia = async (r, t) => { const ok = await reagir(id, r, t); msg.textContent = ok ? "Enviado!" : "Não deu para enviar agora. Tente pelo Chat."; msg.className = "msg " + (ok ? "ok" : "err"); if (ok) setTimeout(closeSheets, 700); };
+  const box = h("div", { role: "dialog", "aria-label": nome },
+    h("div", { class: "pessoa" }, bonecoSvg(bonecoDe(id), "bonecosvg pessoaimg"),
+      h("div", null, h("h2", { style: "text-align:left", text: eu2 ? "Você" : nome }), h("p", { class: "small", text: [rotulo(id), p ? pertoDe(p) : "", p ? (p.vivoGps ? "ao vivo" : haQuanto(p.ts)) : ""].filter(Boolean).join(" · ") }),
+        h("p", { class: "small" }, h("span", { class: "dot" + (online ? " on" : "") }), online ? "Com o aplicativo aberto agora" : "Fora do aplicativo agora"))),
+    !eu2 ? h("div", { class: "reacoes" }, REACOES.map(([r, e, t]) => h("button", { type: "button", class: "reac", onclick: () => envia(r, "") }, h("span", { class: "e", text: e }), h("span", { text: t })))) : null,
+    !eu2 ? h("div", { class: "unlock" }, txt, h("button", { class: "btn gold", type: "button", onclick: () => { if (txt.value.trim()) envia("fala", txt.value.trim()); } }, "Falar")) : null,
+    !eu2 && !S.room ? h("p", { class: "small", text: "Reações ao vivo só funcionam com o aplicativo aberto pelo link do Claude." }) : null,
+    msg,
+    h("div", { class: "actions" },
+      p ? h("a", { class: "btn", href: `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`, target: "_blank", rel: "noopener" }, "Como chegar") : null,
+      p && p.link ? h("a", { class: "btn", href: p.link, target: "_blank", rel: "noopener" }, "Ver ao vivo") : null,
+      h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  document.body.append(sheet);
+}
+function avisoReacao(txt) {
+  const t = h("div", { class: "toast", role: "status", text: txt }); document.body.append(t); setTimeout(() => t.remove(), 4200);
 }
 
 // ---------- Mapa da Expedição ----------
@@ -1129,19 +1434,25 @@ function curva(a, b, dobra) {
   return `Q${(mx - dy * dobra).toFixed(1)} ${(my + dx * dobra).toFixed(1)} ${b[0].toFixed(1)} ${b[1].toFixed(1)}`;
 }
 function exploradoresNoMapa(svg, P, filtro) {
-  const gente = S.posicoes.filter(p => Date.now() - (p.ts || 0) < FRESCO && filtro(p));
+  const gente = posicoesAtuais().filter(filtro);
   const usados = {};
   for (const p of gente) {
     let [x, y] = P.xy(p); if (x < 0 || x > P.W || y < 0 || y > P.H) continue;
     const k = Math.round(x / 28) + ":" + Math.round(y / 28), n = usados[k] = (usados[k] || 0) + 1;
     x += (n - 1) * 26 * (n % 2 ? 1 : -1);
     const nome = nomeDe(p.id), vivo = !!p.link;
-    const g = h("g", { class: "explorador", transform: `translate(${(x - 22).toFixed(1)} ${(y - 64).toFixed(1)})` },
+    const bal = S.baloes[p.id] && Date.now() - S.baloes[p.id].ts < 8000 ? S.baloes[p.id] : null;
+    const g = h("g", { class: "explorador", tabindex: "0", role: "button", "aria-label": nome, transform: `translate(${(x - 22).toFixed(1)} ${(y - 64).toFixed(1)})`,
+      onclick: ev => { if (S.marcando) return; ev.stopPropagation(); abrirPessoa(p.id); }, onkeydown: e => { if (e.key === "Enter") abrirPessoa(p.id); } },
       h("title", { text: nome + (p.nota ? ": " + p.nota : "") }),
       vivo ? h("circle", { class: "vivo", cx: 22, cy: 62, r: 12 }) : null,
       h("g", { class: "bob", transform: "scale(.74)" }, desenhaBoneco(bonecoDe(p.id))),
       h("rect", { x: 22 - Math.min(nome.length, 12) * 3.6 - 6, y: 68, width: Math.min(nome.length, 12) * 7.2 + 12, height: 15, rx: 3, class: "etq" }),
-      h("text", { x: 22, y: 79, class: "etqt", text: nome.length > 12 ? nome.slice(0, 11) + "…" : nome }));
+      h("text", { x: 22, y: 79, class: "etqt", text: nome.length > 12 ? nome.slice(0, 11) + "…" : nome }),
+      S.online.has(p.id) ? h("circle", { cx: 22 + Math.min(nome.length, 12) * 3.6 + 3, cy: 70, r: 3.4, class: "onl" }) : null,
+      bal ? (() => { const t = bal.texto || (REACOES.find(r => r[0] === bal.r) || [, "👋"])[1], w = Math.min(160, 18 + t.length * 7.2);
+        return h("g", { class: "balao" }, h("rect", { x: 22 - w / 2, y: -30, width: w, height: 24, rx: 12 }), h("path", { d: "M18 -6.5 L22 0 L26 -6.5 Z" }),
+          h("text", { x: 22, y: -13, text: t.length > 22 ? t.slice(0, 21) + "…" : t })); })() : null);
     svg.append(g);
   }
 }
@@ -1224,7 +1535,7 @@ function vMapa() {
   return h("section", { class: "view" },
     h("div", { class: "head" },
       h("div", null, h("p", { class: "eyebrow", text: c ? "Índia · " + c.nome : "Mapa da Expedição" }), h("h1", { text: c ? c.nome : "A rota da caravana" })),
-      h("button", { class: "meuexp", type: "button", onclick: () => { S.montando = true; S.bonecoRasc = null; render(); $("#main").scrollTop = 0; } },
+      h("button", { class: "meuexp", type: "button", onclick: () => { S.bonecoRasc = null; go("explorador"); } },
         bonecoSvg(bonecoDe(S.uid), "bonecosvg mini"), h("span", { text: "Meu explorador" }))),
     h("div", { class: "pick", role: "group", "aria-label": "Escolher mapa" },
       h("button", { type: "button", "aria-pressed": String(!c), onclick: () => { S.cidadeSel = "india"; S.localSel = null; render(); } }, "Índia"),
@@ -1242,41 +1553,69 @@ function vMapa() {
 
 // ---------- Estúdio de fotos ----------
 const FILTROS = [
-  { id: "original", nome: "Original" },
-  { id: "expedicao", nome: "Expedição", m: [.62, .52, .16, .30, .62, .14, .20, .40, .28], con: 1.08, vin: .5, grao: 14 },
-  { id: "ganges", nome: "Ganges dourado", m: [1.10, .10, 0, .04, 1.00, 0, -.04, .06, .82], con: 1.06, add: [10, 4, -6], vin: .28 },
-  { id: "rosa", nome: "Cidade Rosa", m: [1.02, .06, .04, .02, .92, .04, .04, .04, .96], con: 1.02, add: [16, -2, 8], vin: .2 },
-  { id: "kashi", nome: "Kashi P&B", m: [.30, .59, .11, .30, .59, .11, .30, .59, .11], con: 1.22, vin: .45, grao: 10 },
-  { id: "himalaia", nome: "Himalaia", m: [.86, .08, .06, .04, .90, .06, .04, .10, 1.02], con: .94, add: [8, 12, 18], vin: .15 }
+  { id: "original", cat: "Clássicos", nome: "Original" },
+  { id: "expedicao", cat: "Clássicos", nome: "Expedição", m: [.62, .52, .16, .30, .62, .14, .20, .40, .28], con: 1.08, vin: .5, grao: 14 },
+  { id: "oldschool", cat: "Clássicos", nome: "Old school", m: [.55, .5, .15, .3, .6, .12, .22, .42, .3], con: 1.18, lift: 22, vin: .62, grao: 34, riscos: 1 },
+  { id: "vintage", cat: "Clássicos", nome: "Vintage 70", m: [1.05, .08, 0, .05, .92, .05, 0, .12, .7], con: .9, lift: 30, add: [14, 4, -10], sat: .85, vin: .3, grao: 12 },
+  { id: "polaroid", cat: "Clássicos", nome: "Polaroid", m: [1, .05, 0, .04, .98, .02, 0, .05, .9], con: .92, lift: 24, add: [6, 8, 0], sat: .9, vin: .2 },
+  { id: "kashi", cat: "Clássicos", nome: "Kashi P&B", m: [.30, .59, .11, .30, .59, .11, .30, .59, .11], con: 1.22, vin: .45, grao: 10 },
+  { id: "filme", cat: "Clássicos", nome: "Filme noir", m: [.30, .59, .11, .30, .59, .11, .30, .59, .11], con: 1.5, vin: .7, grao: 26 },
+  { id: "moderno", cat: "Modernos", nome: "Moderno", con: 1.12, sat: 1.18 },
+  { id: "ganges", cat: "Modernos", nome: "Ganges dourado", m: [1.10, .10, 0, .04, 1.00, 0, -.04, .06, .82], con: 1.06, add: [10, 4, -6], vin: .28 },
+  { id: "rosa", cat: "Modernos", nome: "Cidade Rosa", m: [1.02, .06, .04, .02, .92, .04, .04, .04, .96], con: 1.02, add: [16, -2, 8], vin: .2 },
+  { id: "himalaia", cat: "Modernos", nome: "Himalaia", m: [.86, .08, .06, .04, .90, .06, .04, .10, 1.02], con: .94, add: [8, 12, 18], vin: .15 },
+  { id: "cinema", cat: "Modernos", nome: "Cinema", split: [[20, 70, 80], [255, 170, 90]], con: 1.1, sat: 1.05, vin: .35 },
+  { id: "suave", cat: "Modernos", nome: "Suave", con: .9, lift: 18, sat: .8, add: [6, 4, 2] },
+  { id: "psicodelico", cat: "Criativos", nome: "Psicodélico", arco: 1, con: 1.1, sat: 1.4 },
+  { id: "surreal", cat: "Criativos", nome: "Surreal", split: [[80, 40, 140], [120, 230, 210]], sat: 1.3, con: 1.05, brilho: .45 },
+  { id: "holi", cat: "Criativos", nome: "Holi", sat: 1.6, con: 1.08, holi: 1 },
+  { id: "sonho", cat: "Criativos", nome: "Sonho", con: .88, lift: 20, sat: .9, add: [10, 0, 16], brilho: .55 },
+  { id: "terracota", cat: "Criativos", nome: "Duotone terracota", duo: [[59, 42, 28], [241, 200, 150]] },
+  { id: "musgo", cat: "Criativos", nome: "Duotone musgo", duo: [[34, 44, 30], [229, 218, 197]] }
 ];
+const GRAOS = [["auto", "Do filtro"], ["nenhum", "Sem grão"], ["leve", "Leve"], ["medio", "Médio"], ["forte", "Forte"]];
 const MOLDURAS = [["polaroid", "Polaroid"], ["carimbo", "Carimbo"], ["assinatura", "Assinatura"], ["nenhuma", "Sem moldura"]];
 const imgCache = {};
 function carregaImg(src) { return imgCache[src] ||= new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; }); }
-function aplicaFiltro(ctx, w, hh, f) {
-  if (!f.m) return;
-  const d = ctx.getImageData(0, 0, w, hh), p = d.data, m = f.m, con = f.con || 1, add = f.add || [0, 0, 0], g = f.grao || 0;
+function aplicaFiltro(ctx, w, hh, f, graoEsc) {
+  const g0 = { nenhum: 0, leve: 12, medio: 24, forte: 42 }[graoEsc];
+  const g = g0 != null ? g0 : (f.grao || 0);
+  if (!f.m && !f.con && !f.sat && !f.duo && !f.split && !f.arco && !f.holi && !g) return;
+  const d = ctx.getImageData(0, 0, w, hh), p = d.data, m = f.m, con = f.con || 1, add = f.add || [0, 0, 0], sat = f.sat || 1, lift = f.lift || 0;
   const cx = w / 2, cy = hh / 2, rmax = Math.hypot(cx, cy), vin = f.vin || 0;
   for (let y = 0, i = 0; y < hh; y++) for (let x = 0; x < w; x++, i += 4) {
-    const r = p[i], gg = p[i + 1], b = p[i + 2];
-    let R = r * m[0] + gg * m[1] + b * m[2], G = r * m[3] + gg * m[4] + b * m[5], B = r * m[6] + gg * m[7] + b * m[8];
+    let R = p[i], G = p[i + 1], B = p[i + 2];
+    if (m) { const r = R, gg = G, b = B; R = r * m[0] + gg * m[1] + b * m[2]; G = r * m[3] + gg * m[4] + b * m[5]; B = r * m[6] + gg * m[7] + b * m[8]; }
+    const L = .299 * R + .587 * G + .114 * B;
+    if (sat !== 1) { R = L + (R - L) * sat; G = L + (G - L) * sat; B = L + (B - L) * sat; }
+    if (f.duo) { const t = L / 255, [a, c] = f.duo; R = a[0] + (c[0] - a[0]) * t; G = a[1] + (c[1] - a[1]) * t; B = a[2] + (c[2] - a[2]) * t; }
+    if (f.split) { const t = L / 255, [sh, hi] = f.split; R = R * .7 + (sh[0] * (1 - t) + hi[0] * t) * .3; G = G * .7 + (sh[1] * (1 - t) + hi[1] * t) * .3; B = B * .7 + (sh[2] * (1 - t) + hi[2] * t) * .3; }
+    if (f.arco) { const hue = (L / 255 * 300 + x / w * 120) % 360, k = hue / 60, c = 255, xx = c * (1 - Math.abs(k % 2 - 1));
+      const [r2, g2, b2] = k < 1 ? [c, xx, 0] : k < 2 ? [xx, c, 0] : k < 3 ? [0, c, xx] : k < 4 ? [0, xx, c] : k < 5 ? [xx, 0, c] : [c, 0, xx];
+      R = R * .45 + r2 * .55; G = G * .45 + g2 * .55; B = B * .45 + b2 * .55; }
+    if (f.holi) { const t = (x / w + y / hh) / 2; R += 40 * Math.sin(t * 6.3); G += 30 * Math.sin(t * 6.3 + 2.1); B += 40 * Math.sin(t * 6.3 + 4.2); }
     R = (R - 128) * con + 128 + add[0]; G = (G - 128) * con + 128 + add[1]; B = (B - 128) * con + 128 + add[2];
+    if (lift) { R = lift + R * (1 - lift / 255); G = lift + G * (1 - lift / 255); B = lift + B * (1 - lift / 255); }
     if (vin) { const k = 1 - vin * Math.pow(Math.hypot(x - cx, y - cy) / rmax, 2.2); R *= k; G *= k; B *= k; }
     if (g) { const n = (Math.random() - .5) * g; R += n; G += n; B += n; }
     p[i] = R; p[i + 1] = G; p[i + 2] = B;
   }
   ctx.putImageData(d, 0, 0);
+  if (f.riscos) { ctx.save(); ctx.globalAlpha = .18; ctx.strokeStyle = "#F4EFE3"; for (let k = 0; k < 7; k++) { const x = Math.random() * w; ctx.lineWidth = Math.random() * 1.5 + .4; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + (Math.random() - .5) * 20, hh); ctx.stroke(); } ctx.restore(); }
+  if (f.brilho) { const t = document.createElement("canvas"); t.width = Math.max(1, w >> 4); t.height = Math.max(1, hh >> 4); t.getContext("2d").drawImage(ctx.canvas, 0, 0, t.width, t.height);
+    ctx.save(); ctx.globalAlpha = f.brilho; ctx.globalCompositeOperation = "screen"; ctx.imageSmoothingQuality = "high"; ctx.drawImage(t, 0, 0, w, hh); ctx.restore(); }
 }
 async function montaFoto(canvas) {
   const F = S.foto; if (!F || !F.img) return;
   const img = F.img, max = 1600, k = Math.min(1, max / Math.max(img.width, img.height));
   const w = Math.round(img.width * k), hh = Math.round(img.height * k);
   // o filtro é o passo pesado: guarda o resultado até trocar a foto ou o filtro
-  let tmp = F.img === montaFoto.img && F.filtro === montaFoto.filtro ? montaFoto.tmp : null;
+  let tmp = F.img === montaFoto.img && F.filtro === montaFoto.filtro && F.grao === montaFoto.grao ? montaFoto.tmp : null;
   if (!tmp) {
     tmp = document.createElement("canvas"); tmp.width = w; tmp.height = hh;
     const t = tmp.getContext("2d", { willReadFrequently: true }); t.drawImage(img, 0, 0, w, hh);
-    aplicaFiltro(t, w, hh, FILTROS.find(x => x.id === F.filtro) || FILTROS[0]);
-    Object.assign(montaFoto, { img: F.img, filtro: F.filtro, tmp });
+    aplicaFiltro(t, w, hh, FILTROS.find(x => x.id === F.filtro) || FILTROS[0], F.grao || "auto");
+    Object.assign(montaFoto, { img: F.img, filtro: F.filtro, grao: F.grao, tmp });
   }
   const u = Math.max(w, hh) / 1000, legenda = [F.legenda, F.cidade].filter(Boolean).join(" · "), data = F.data;
   const [marrom, dourado] = await Promise.all([carregaImg("img/simbolo-marrom.png"), carregaImg("img/simbolo-dourado.png")]);
@@ -1312,7 +1651,7 @@ async function montaFoto(canvas) {
   }
 }
 function vFotos() {
-  const F = S.foto || (S.foto = { filtro: "expedicao", moldura: "polaroid", legenda: "", cidade: "", data: "" });
+  const F = S.foto || (S.foto = { filtro: "expedicao", cat: "Clássicos", grao: "auto", moldura: "polaroid", legenda: "", cidade: "", data: "" });
   const hoje = hojeIso(), dia = (S.roteiro?.dias || []).find(d => d.iso === hoje);
   if (!F.cidade && !F._auto) { F.cidade = dia ? dia.cidade.split(" ")[0] : ""; F._auto = true; }
   if (!F.data) { const d = new Date(); F.data = d.getDate() + " " + MES[d.getMonth()].toLowerCase() + " " + d.getFullYear(); }
@@ -1349,7 +1688,10 @@ function vFotos() {
       h("div", { class: "fotoframe" }, canvas),
       h("div", { class: "fcontrols" },
         h("p", { class: "lab", text: "Filtro" }),
-        h("div", { class: "opts" }, FILTROS.map(f => h("button", { type: "button", class: "opt", "aria-pressed": String(F.filtro === f.id), onclick: () => set("filtro", f.id) }, f.nome))),
+        h("div", { class: "fcats", role: "tablist" }, ["Clássicos", "Modernos", "Criativos"].map(c => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String((F.cat || "Clássicos") === c), onclick: () => set("cat", c) }, c))),
+        h("div", { class: "opts" }, FILTROS.filter(f => f.cat === (F.cat || "Clássicos")).map(f => h("button", { type: "button", class: "opt", "aria-pressed": String(F.filtro === f.id), onclick: () => { msg.textContent = "Aplicando o filtro…"; set("filtro", f.id); } }, f.nome))),
+        h("p", { class: "lab", text: "Grão de filme" }),
+        h("div", { class: "opts" }, GRAOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.grao || "auto") === id), onclick: () => set("grao", id) }, n))),
         h("p", { class: "lab", text: "Moldura" }),
         h("div", { class: "opts" }, MOLDURAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: () => set("moldura", id) }, n))),
         h("p", { class: "lab", text: "Legenda" }), leg, cid,
@@ -1374,7 +1716,7 @@ function painelLocal(l) {
 const mapsUrl = l => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(l.busca || l.nome);
 
 function painelPessoas(c) {
-  const gente = S.posicoes.filter(p => Date.now() - (p.ts || 0) < FRESCO && (!c || p.cidadeId === c.id)).sort((a, b) => b.ts - a.ts);
+  const gente = posicoesAtuais().filter(p => !c || p.cidadeId === c.id).sort((a, b) => b.ts - a.ts);
   const minha = S.posicoes.find(p => p.id === S.uid && Date.now() - p.ts < FRESCO);
   const pode = S.db && S.uid && eu();
   const lugares = S.locais.filter(l => !c || l.cidadeId === c.id).sort(byOrdem);
@@ -1397,7 +1739,8 @@ function painelPessoas(c) {
     pode ? h("div", { class: "share" },
       h("p", { class: "eyebrow", text: minha ? "Você está aparecendo no mapa" : "Mostrar onde estou" }),
       h("div", { class: "actions" },
-        h("button", { class: "btn gold", type: "button", onclick: () => {
+        h("button", { class: "btn gold", type: "button", onclick: ligarGps }, S.gpsWatch != null ? "Desligar ao vivo" : "Ligar localização ao vivo"),
+        h("button", { class: "btn", type: "button", hidden: true, onclick: () => {
           if (!navigator.geolocation) { S.posMsg = { ok: false, text: "O GPS não está disponível aqui. Marque no mapa ou cole o link ao vivo do Google Maps." }; render(); return; }
           S.posMsg = { ok: true, text: "Buscando sua localização…" }; render();
           navigator.geolocation.getCurrentPosition(pos => { const lat = +pos.coords.latitude.toFixed(5), lng = +pos.coords.longitude.toFixed(5); salvarPos({ cidadeId: pertoCidade({ lat, lng }), lat, lng, lugar: "" }); },
@@ -1416,6 +1759,7 @@ function painelPessoas(c) {
         else { S.posMsg = { ok: false, text: "Marque no mapa ou escolha um lugar primeiro." }; render(); }
       } }, "Salvar")),
       S.posMsg ? h("p", { class: "msg " + (S.posMsg.ok ? "ok" : "err"), role: "status", text: S.posMsg.text }) : null,
+      S.gpsMsg ? h("p", { class: "msg " + (S.gpsOn ? "ok" : ""), role: "status", text: S.gpsMsg }) : null,
       h("p", { class: "small", text: "O aplicativo não lê o GPS do celular. Para aparecer ao vivo, abra o Google Maps, toque na sua foto, escolha Compartilhamento de local, crie um link e cole aqui. Sua marcação some sozinha em 3 horas e só a caravana vê." })
     ) : null);
 }
@@ -1636,8 +1980,23 @@ fetch("dados/travessia.json").then(r => { if (!r.ok) throw 0; return r.json(); }
   .then(j => { S.roteiro = j; render(); }).catch(() => { S.roteiroErro = true; render(); });
 render();
 (async () => {
-  const [db, user, assets] = await Promise.all(["db", "user", "assets"].map(n => window.claude?.use?.(n) ?? null));
-  S.db = db; S.user = user; S.assets = assets;
+  const [db, user, assets, room] = await Promise.all(["db", "user", "assets", "room"].map(n => window.claude?.use?.(n) ?? null));
+  S.db = db; S.user = user; S.assets = assets; S.room = room;
+  if (room) {
+    room.onPeers(ch => {
+      S.online = new Set(ch.peers.map(p => p.by).filter(Boolean));
+      for (const p of ch.peers) { const pr = p.presence || {}; if (p.by && !p.isMe && isFinite(pr.lat)) S.aoVivo[p.by] = { lat: pr.lat, lng: pr.lng, cidadeId: pr.cidadeId, ts: Date.now() }; }
+      for (const p of ch.left) if (p.by) delete S.aoVivo[p.by];
+      if (S.tab === "mapa") render();
+    }, () => {});
+    room.on("reacao", m => {
+      const d = m.data || {}; if (!d.para || !m.by) return;
+      const r = REACOES.find(x => x[0] === d.r), texto = d.r === "fala" ? String(d.texto || "").slice(0, 80) : r ? r[1] + " " + r[2] : "";
+      S.baloes[d.para] = { de: m.by, r: d.r, texto: d.r === "fala" ? nomeDe(m.by) + ": " + texto : (r ? r[1] : "") + " " + nomeDe(m.by).split(" ")[0], ts: Date.now() };
+      if (d.para === S.uid && !m.isMe) avisoReacao(nomeDe(m.by) + ": " + texto);
+      if (S.tab === "mapa") { render(); setTimeout(() => { if (S.tab === "mapa") render(); }, 8200); }
+    }, () => {});
+  }
   if (user) { const me = await user.me(); S.me = me; S.uid = me.id; S.isOwner = me.isOwner; perfis([me.id]); }
   if (!db) { S.dbReady = true; render(); return; }
   listen("cidades", "cidades"); listen("locais", "locais"); listen("ensinamentos", "ens");
