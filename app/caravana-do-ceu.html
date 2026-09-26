@@ -813,7 +813,6 @@ function contador(n, rotulo) {
 
 // ---------- Frases que se revezam na abertura ----------
 const FRASES = [
-  "Seu caravansaray de bolso.",
   "O pátio onde a caravana para antes de cada partida.",
   "Água, mapas e céu aberto para cada dia da travessia.",
   "Aqui a caravana se abastece. Lá fora, a Índia espera.",
@@ -826,7 +825,7 @@ setInterval(() => {
   const el = document.getElementById("frase-giro"); if (!el) return;
   el.classList.add("sai");
   setTimeout(() => { el.textContent = FRASES[S.fraseIdx]; el.classList.remove("sai"); }, 450);
-}, 6000);
+}, 10000);
 
 // ---------- Travessia ----------
 function vTravessia() {
@@ -842,8 +841,7 @@ function vTravessia() {
       h("h1", null, "Travessia da", h("br"), "Índia Sagrada"),
       h("p", { class: "route", text: "Delhi · Agra · Jaipur · Varanasi · Rishikesh" }),
       h("span", { class: "line" }),
-      h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] }),
-      h("p", { class: "legenda", text: "Roteiro · Passaporte · Saberes · Caravana" })),
+      h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] })),
     h("div", { class: "clock" },
       f > 0 ? h("div", null, h("b", { text: f }), h("span", { text: f === 1 ? "dia para embarcar" : "dias para embarcar" }))
             : h("div", null, h("b", { text: "13" }), h("span", { text: "dias de travessia" })),
