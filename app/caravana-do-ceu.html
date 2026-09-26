@@ -84,7 +84,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--moss);outline:none;bo
 .hero h1{font-family:"Jost",system-ui,sans-serif;font-weight:500;font-size:clamp(32px,8.5vw,48px);line-height:1.05;letter-spacing:.005em;color:#3B2A1C}
 .hero .route{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--moss)}
 .hero .line{display:none}
-.hero .intro{font-family:var(--display);font-style:italic;font-size:18px;line-height:1.5;color:var(--soft);max-width:34ch}
+.hero .intro{font-family:var(--display);font-style:italic;font-size:17px;line-height:1.55;color:var(--soft);max-width:38ch}
 .clock{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .clock div{background:var(--panel);border-radius:16px;box-shadow:var(--shadow);padding:14px 8px;text-align:center}
 .clock b{display:block;font-family:var(--display);font-size:28px;font-weight:500;color:var(--ink);line-height:1.1;font-variant-numeric:tabular-nums}
@@ -817,7 +817,7 @@ function vTravessia() {
       h("h1", null, "Travessia da", h("br"), "Índia Sagrada"),
       h("p", { class: "route", text: "Delhi · Agra · Jaipur · Varanasi · Rishikesh" }),
       h("span", { class: "line" }),
-      h("p", { class: "intro", text: "Treze dias atravessando uma cultura viva, pulsando em cada oferenda, cada cântico, cada amanhecer à beira do rio." })),
+      h("p", { class: "intro", text: "Seu caravansaray de bolso. Como nas rotas antigas, é aqui que a caravana para, se abastece e reencontra o caminho: o roteiro de cada dia, os selos dos lugares sagrados, os saberes da travessia e a roda do grupo." })),
     h("div", { class: "clock" },
       f > 0 ? h("div", null, h("b", { text: f }), h("span", { text: f === 1 ? "dia para embarcar" : "dias para embarcar" }))
             : h("div", null, h("b", { text: "13" }), h("span", { text: "dias de travessia" })),
