@@ -1,191 +1,281 @@
 <title>Caravana Índia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Barlow:wght@300;400;500&family=Barlow+Condensed:wght@400;500;600&display=swap">
 <style>
-/* Visual único e escuro, como O Mapa da Travessia. */
+/* Visual único e escuro da Travessia da Índia Sagrada. */
 :root{
   color-scheme:dark;
-  --bg:#0b0806; --panel:#140f0a; --panel2:#1c150d; --panel3:#241b11;
-  --ink:#e7d9b7; --soft:#b7a37a; --faint:#7d6e52;
-  --gold:#cb9d4d; --gold-deep:#a67d33; --line:rgba(203,157,77,.22); --line2:rgba(203,157,77,.45);
-  --oxblood:#bb6144; --sage:#a9b98f; --on-gold:#140f0a;
-  --display:"Cinzel",Georgia,"Times New Roman",serif;
-  --read:"Cormorant Garamond",Georgia,"Times New Roman",serif;
-  --ui:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --bg:#0a0806; --panel:#120e0a; --panel2:#18130d; --panel3:#211a12;
+  --ink:#e6dac1; --soft:#a89a82; --faint:#6f6454;
+  --gold:#d6a649; --gold-lt:#ecc062; --gold-deep:#a67d33; --line:rgba(200,146,42,.15); --line2:rgba(200,146,42,.38);
+  --oxblood:#c8553f; --sage:#a9b98f; --on-gold:#120e0a; --seal:#c2412f;
+  --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --label:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --ui:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
-body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.55}
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-weight:400;font-size:15px;line-height:1.6}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 a{color:var(--gold)}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-h1,h2,h3{font-family:var(--display);font-weight:500;text-wrap:balance;margin:0;line-height:1.2;letter-spacing:.04em}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0;line-height:1.15}
 p{margin:0}
 
-.app{height:100%;display:grid;grid-template-rows:auto 1fr auto;grid-template-areas:"top" "main" "nav";
-  background:var(--bg) url("img/textura.jpg") center top/cover no-repeat}
-.top{grid-area:top;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line);background:rgba(11,8,6,.82)}
-.brand{display:flex;align-items:center;gap:10px;min-width:0}
-.brand img{width:34px;height:auto;flex:none}
-.brand b{display:block;font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
-.brand span{display:block;font-size:11px;color:var(--soft);letter-spacing:.08em;text-transform:uppercase}
-.me{display:flex;align-items:center;gap:8px;background:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 4px;font-size:12px;color:var(--soft);min-width:0}
-.me img{width:26px;height:26px;border-radius:50%;flex:none}
-.me b{color:var(--gold);font-weight:600;font-variant-numeric:tabular-nums}
-.me span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-main{grid-area:main;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-.view{padding:22px 16px 40px;max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.app{height:100%;display:grid;grid-template-rows:auto 1fr auto;grid-template-areas:"top" "main" "nav";background:var(--bg)}
+.top{grid-area:top;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);background:rgba(10,8,6,.92)}
+.brand{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;text-align:center}
+.topside{display:flex;min-width:0}.topside.right{justify-content:flex-end}
+.brand img{width:34px;height:auto;flex:none;filter:drop-shadow(0 0 10px rgba(200,146,42,.35))}
+.brand b{display:block;font-family:var(--display);font-weight:500;font-size:19px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+.brand span{display:block;font-family:var(--label);font-size:10.5px;color:var(--soft);letter-spacing:.3em;text-transform:uppercase}
+.me{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;padding:0;font-size:11px;color:var(--soft);min-width:0;max-width:100%}
+.me img{width:34px;height:34px;border-radius:50%;flex:none;background:var(--panel3);border:1px solid var(--gold-deep)}
+.me b{font-family:var(--label);color:var(--gold);font-weight:600;letter-spacing:.08em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.me span{display:none}
+.me b{font-size:10.5px}
+main{grid-area:main;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;position:relative}
+.view{padding:22px 16px 48px;max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
 
-nav.tabs{grid-area:nav;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:rgba(11,8,6,.94);padding-bottom:env(safe-area-inset-bottom,0px)}
-nav.tabs button{background:none;border:0;padding:8px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:500;color:var(--faint);letter-spacing:.03em}
-nav.tabs button svg{width:22px;height:22px}
-nav.tabs button[aria-current="page"]{color:var(--gold)}
+nav.tabs{grid-area:nav;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:#050403;padding:10px 4px calc(10px + env(safe-area-inset-bottom,0px))}
+nav.tabs button{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:var(--ui);font-size:12px;font-weight:400;letter-spacing:.02em;color:var(--soft);min-width:0}
+nav.tabs .ic{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;color:var(--ink);transition:background .2s,color .2s}
+nav.tabs button svg{width:27px;height:27px}
+nav.tabs button[aria-current="page"]{color:var(--gold-lt)}
+nav.tabs button[aria-current="page"] .ic{background:linear-gradient(160deg,var(--gold-lt),var(--gold-deep));color:var(--on-gold);box-shadow:0 4px 18px rgba(200,146,42,.35)}
 @media (min-width:900px){
   .app{grid-template-columns:210px 1fr;grid-template-rows:auto 1fr;grid-template-areas:"top top" "nav main"}
   nav.tabs{grid-template-columns:1fr;grid-auto-rows:min-content;border-top:0;border-right:1px solid var(--line);padding:18px 10px;gap:4px}
-  nav.tabs button{flex-direction:row;justify-content:flex-start;gap:12px;font-size:14px;padding:10px 12px;border-radius:10px}
-  nav.tabs button[aria-current="page"]{background:var(--panel2)}
+  nav.tabs{background:var(--bg)}
+  nav.tabs button{flex-direction:row;justify-content:flex-start;gap:12px;font-size:14px;padding:6px 8px}
 }
 
-.eyebrow{font-family:var(--display);font-size:11px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+/* tipografia de apoio */
+.eyebrow{font-family:var(--label);font-size:12px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+.rule{display:flex;align-items:center;gap:12px}
+.rule::after{content:"";flex:1;height:1px;background:var(--line)}
 .head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.head h1{font-size:clamp(24px,5.5vw,34px)}
-.lede{font-family:var(--read);font-size:18px;line-height:1.5;color:var(--soft);max-width:60ch}
-.orn{display:block;margin:0 auto;max-width:min(100%,420px);height:auto;opacity:.9}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:999px;padding:8px 16px;border:1px solid var(--line2);background:none;font-size:13px;font-weight:500;color:var(--ink);text-decoration:none}
-.btn:hover{border-color:var(--gold)}
-.btn.gold{background:var(--gold);border-color:var(--gold);color:var(--on-gold)}
-.btn.ghost{border-color:transparent;padding-inline:8px;color:var(--soft)}
-.btn.danger{color:var(--oxblood);border-color:var(--oxblood)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:999px;border:1px solid var(--line);color:var(--soft)}
-.chip.on{border-color:var(--gold);color:var(--gold)}
-.chip.today{background:var(--gold);border-color:var(--gold);color:var(--on-gold)}
-.panel{background:rgba(20,15,10,.9);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px}
-.panel h2{font-size:21px}
-.small{font-size:12.5px;color:var(--soft)}
-.msg{font-size:13px}
+.head h1{font-size:clamp(28px,6vw,38px);font-weight:300;letter-spacing:.02em}
+.lede{font-family:var(--display);font-style:italic;font-size:19px;line-height:1.5;color:var(--soft);max-width:60ch}
+.small{font-size:13px;color:var(--soft)}
+.msg{font-size:13.5px}
 .msg.err{color:var(--oxblood)}
 .msg.ok{color:var(--sage)}
 .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.empty{border:1px dashed var(--line2);border-radius:14px;padding:28px 20px;text-align:center;color:var(--soft);display:flex;flex-direction:column;gap:10px;align-items:center}
-.empty h3{color:var(--ink);font-size:18px}
-input[type=text],input[type=number],select,textarea{width:100%;background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:2px;padding:9px 16px;border:1px solid var(--line2);background:none;font-family:var(--label);font-size:13px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);text-decoration:none}
+.btn:hover{border-color:var(--gold)}
+.btn.gold{background:linear-gradient(180deg,var(--gold-lt),var(--gold));border-color:var(--gold);color:var(--on-gold)}
+.btn.ghost{border-color:transparent;padding-inline:6px;color:var(--soft)}
+.btn.danger{color:var(--oxblood);border-color:var(--oxblood)}
+.panel{background:var(--panel);border:1px solid var(--line);padding:20px;display:flex;flex-direction:column;gap:14px}
+.panel h2{font-size:24px}
+.empty{border:1px dashed var(--line2);padding:28px 20px;text-align:center;color:var(--soft);display:flex;flex-direction:column;gap:10px;align-items:center}
+.empty h3{color:var(--ink);font-size:21px}
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--bg);border:1px solid var(--line2);border-radius:2px;padding:11px 12px;color:var(--ink)}
 input::placeholder,textarea::placeholder{color:var(--faint)}
 textarea{resize:vertical;min-height:90px;line-height:1.5}
 input:focus,select:focus,textarea:focus{border-color:var(--gold);outline:none}
 
-/* Roteiro */
-.clock{display:flex;gap:10px;flex-wrap:wrap}
-.clock div{flex:1 1 140px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:rgba(20,15,10,.85)}
-.clock b{display:block;font-family:var(--display);font-size:22px;font-weight:500;color:var(--gold);font-variant-numeric:tabular-nums}
-.clock span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
-.days{display:flex;flex-direction:column;gap:10px}
-details.day{background:rgba(20,15,10,.9);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-details.day[open]{border-color:var(--line2)}
-details.day.is-today{border-color:var(--gold)}
-details.day summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:56px 1fr auto;gap:14px;align-items:center;padding:14px 16px}
-details.day summary::-webkit-details-marker{display:none}
-.dnum{font-family:var(--display);text-align:center;line-height:1}
-.dnum small{display:block;font-size:10px;letter-spacing:.2em;color:var(--soft)}
-.dnum b{font-size:28px;font-weight:500;color:var(--gold);font-variant-numeric:tabular-nums}
-.dtit h3{font-size:17px}
-.dtit p{font-size:12.5px;color:var(--soft)}
-.dbadges{display:flex;gap:4px}
-.dbadges img{width:30px;height:auto}
-.dbadges img.off{filter:grayscale(1) brightness(.45)}
-.dbody{padding:0 16px 16px 86px;display:flex;flex-direction:column;gap:12px}
-@media (max-width:520px){.dbody{padding-left:16px}}
-ul.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-ul.items li{display:grid;grid-template-columns:52px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+/* Travessia: abertura */
+.hero{position:relative;text-align:center;padding:30px 12px 10px;display:flex;flex-direction:column;align-items:center;gap:12px;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:-20px -40px 0;z-index:-1;background:radial-gradient(ellipse at 50% 38%,rgba(200,146,42,.16),transparent 62%)}
+.hero .logo{width:84px;height:auto;filter:drop-shadow(0 0 18px rgba(200,146,42,.4))}
+.hero h1{font-weight:300;font-size:clamp(30px,8vw,48px);letter-spacing:.06em;text-transform:uppercase;line-height:1.02}
+.hero .route{font-family:var(--display);font-style:italic;font-size:19px;color:var(--gold)}
+.hero .line{width:1px;height:36px;background:linear-gradient(var(--gold),transparent)}
+.hero .intro{font-family:var(--display);font-style:italic;font-size:18px;line-height:1.45;color:var(--ink);max-width:34ch}
+.clock{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);background:var(--line);gap:1px}
+.clock div{background:var(--panel);padding:12px 8px;text-align:center}
+.clock b{display:block;font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-lt);line-height:1.1;font-variant-numeric:tabular-nums}
+.clock span{font-family:var(--label);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft)}
+.strip{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.strip button{flex:0 0 auto;width:64px;background:none;border:0;padding:0}
+.strip img{width:100%;height:auto;display:block}
+.strip img.off{filter:grayscale(1) brightness(.35)}
+.daychips{position:sticky;top:0;z-index:5;margin:0 -16px;padding:8px 12px;background:rgba(10,8,6,.95);border-block:1px solid var(--line);display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.daychips::-webkit-scrollbar{display:none}
+.daychips button{flex:0 0 auto;background:none;border:0;border-bottom:2px solid transparent;padding:6px 8px;font-family:var(--label);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
+.daychips button b{font-weight:600;color:var(--soft);margin-right:4px}
+.daychips button[aria-current="true"]{color:var(--gold-lt);border-bottom-color:var(--gold)}
+.daychips button.today b{color:var(--gold-lt)}
+
+/* Travessia: dias */
+.days{display:flex;flex-direction:column;gap:2px}
+.day{background:var(--panel);border:1px solid var(--line);scroll-margin-top:56px}
+.day.open{border-color:var(--line2)}
+.day.is-today{box-shadow:inset 3px 0 0 var(--gold)}
+.dayhead{width:100%;display:grid;grid-template-columns:58px 1fr 24px;gap:0;align-items:stretch;background:none;border:0;padding:0;text-align:left}
+.dnum{display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid var(--line);padding:14px 4px;background:rgba(0,0,0,.2)}
+.dnum small{font-family:var(--label);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint)}
+.dnum b{font-family:var(--display);font-size:30px;font-weight:400;color:rgba(214,166,73,.45);line-height:1;font-variant-numeric:tabular-nums}
+.day.open .dnum b,.day.is-today .dnum b{color:var(--gold-lt)}
+.dtit{padding:13px 14px 12px;min-width:0;display:flex;flex-direction:column;gap:4px}
+.dtit h3{font-size:21px;font-weight:500}
+.dtit .fr{font-family:var(--display);font-style:italic;font-size:16px;line-height:1.35;color:var(--soft)}
+.tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px}
+.tag{font-family:var(--label);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border:1px solid var(--line2);color:var(--soft)}
+.tag.date{color:var(--gold-lt);border-color:var(--gold-deep);background:rgba(200,146,42,.08)}
+.tag.today{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
+.chev{align-self:center;color:var(--faint);transition:transform .25s}
+.day.open .chev{transform:rotate(180deg);color:var(--gold)}
+.daybody{padding:4px 16px 22px;display:flex;flex-direction:column;gap:22px}
+.logi{display:flex;flex-wrap:wrap;gap:6px 16px;font-family:var(--label);font-size:13px;letter-spacing:.08em;color:var(--soft);border-bottom:1px solid var(--line);padding-bottom:12px}
+.logi b{color:var(--ink);font-weight:500}
+.per{font-family:var(--label);font-size:12px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin:4px 0 6px}
+ul.items{list-style:none;margin:0 0 6px;padding:0}
+ul.items li{display:grid;grid-template-columns:52px 1fr;gap:10px;padding:7px 0;border-top:1px solid var(--line)}
 ul.items li:first-child{border-top:0}
-ul.items .h{font-weight:600;color:var(--gold);font-variant-numeric:tabular-nums;font-size:13px}
-.nota{font-family:var(--read);font-style:italic;font-size:16px;color:var(--soft);border-left:2px solid var(--gold-deep);padding-left:12px}
+ul.items .h{font-family:var(--label);font-weight:600;color:var(--gold-lt);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.place{border-left:2px solid var(--gold);padding:2px 0 2px 16px;display:flex;flex-direction:column;gap:8px}
+.place .sub{font-family:var(--label);font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.place h4{margin:0;font-family:var(--display);font-size:23px;font-weight:500;color:#fff;line-height:1.15}
+.place p{font-weight:300;font-size:15.5px;line-height:1.7;color:#d3c7ae}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:4px}
+.stats div{background:var(--panel2);padding:10px 8px;text-align:center}
+.stats b{display:block;font-family:var(--display);font-size:22px;font-weight:500;color:var(--gold-lt);line-height:1.1}
+.stats span{font-family:var(--label);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+.note{border:1px solid var(--line2);background:rgba(200,146,42,.05);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.note .t{font-family:var(--label);font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.note p{font-weight:300;line-height:1.65}
+.cer{position:relative;border:1px solid var(--line2);border-left:3px solid var(--gold-lt);background:linear-gradient(135deg,rgba(200,146,42,.09),rgba(200,146,42,.02));padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.cer .t{font-family:var(--label);font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
+.cer h4{margin:0;font-family:var(--display);font-size:23px;font-weight:600;color:var(--gold-lt)}
+.cer p{font-weight:300;line-height:1.65;color:#dccfb5}
+.cer .q{font-family:var(--label);font-size:12.5px;letter-spacing:.1em;color:var(--gold);border-top:1px solid var(--line);padding-top:8px;margin-top:4px}
+.gods{margin:0 -16px;background:#050403;border-block:1px solid var(--line2);padding:18px 16px;display:flex;flex-direction:column;gap:14px}
+.gods .intro{font-family:var(--display);font-style:italic;font-size:17px;color:var(--soft)}
+.godrow{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.god{width:min(30%,140px);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.god img{width:100%;height:auto;display:block;box-shadow:0 4px 16px rgba(0,0,0,.6),0 0 0 1px rgba(200,146,42,.25)}
+.god span{font-family:var(--label);font-size:11.5px;letter-spacing:.08em;color:var(--soft);font-style:italic}
+.gods .story{border-left:2px solid var(--gold-deep);padding-left:14px}
+.gods .story h5{margin:0 0 4px;font-family:var(--display);font-style:italic;font-weight:500;font-size:19px;color:var(--gold-lt)}
+.gods .story p{font-weight:300;line-height:1.7;color:#cdbfa4}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+@media (max-width:420px){.checks{grid-template-columns:1fr}}
+.checks label{display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,.02);border:1px solid var(--line);cursor:pointer;font-weight:300;font-size:14.5px}
+.checks input{appearance:none;width:16px;height:16px;border:1px solid var(--line2);flex:none;display:grid;place-items:center;margin:0}
+.checks input:checked{background:var(--gold);border-color:var(--gold)}
+.checks input:checked::after{content:"";width:8px;height:4px;border:2px solid var(--on-gold);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.checks input:checked+span{color:var(--faint);text-decoration:line-through}
+.seals{display:flex;gap:14px;flex-wrap:wrap}
+.seals button{background:none;border:0;padding:0;width:92px;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:var(--label);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+.seals img{width:100%;height:auto}
+.seals img.off{filter:grayscale(1) brightness(.35)}
+details.guide{background:var(--panel);border:1px solid var(--line)}
+details.guide summary{cursor:pointer;list-style:none;padding:14px 16px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+details.guide summary::-webkit-details-marker{display:none}
+details.guide summary b{font-family:var(--display);font-size:20px;font-weight:500}
+details.guide summary span{font-size:13px;color:var(--soft);display:block}
+details.guide[open]{border-color:var(--line2)}
+details.guide .gb{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}
+details.guide .gb p{font-weight:300;line-height:1.7;color:#d3c7ae}
+.foot{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;padding:26px 0 8px}
+.foot img.s{width:48px;opacity:.6}
+.foot q{font-family:var(--display);font-style:italic;font-size:20px;color:var(--gold-lt);quotes:none;max-width:30ch}
+.orn{display:block;margin:0 auto;max-width:min(100%,420px);height:auto;opacity:.9;mix-blend-mode:lighten}
+
+/* Passaporte */
+.cover{display:block;width:100%;max-width:100%;height:auto;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+.datapage{position:relative;overflow:hidden;background:#efe4cc;color:#2b2217;padding:18px 18px 12px;border-radius:4px;box-shadow:0 10px 30px rgba(0,0,0,.55);
+  background-image:repeating-radial-gradient(circle at 80% 20%,rgba(166,125,51,.10) 0 1px,transparent 1px 9px),repeating-linear-gradient(115deg,rgba(166,125,51,.06) 0 1px,transparent 1px 7px)}
+.datapage .top2{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-bottom:1px solid rgba(43,34,23,.25);padding-bottom:8px;margin-bottom:12px}
+.datapage .top2 b{font-family:var(--label);letter-spacing:.3em;text-transform:uppercase;font-size:12px}
+.datapage .top2 span{font-family:var(--label);letter-spacing:.2em;font-size:11px;text-transform:uppercase;color:#6d5a3c}
+.dp{display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:start}
+.dp img{width:96px;height:120px;object-fit:cover;border:1px solid rgba(43,34,23,.35);background:#d9ccb0;filter:sepia(.25)}
+.dp dl{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
+.dp dt{font-family:var(--label);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#7a6546}
+.dp dd{margin:0;font-family:var(--display);font-size:18px;font-weight:600;line-height:1.1;overflow-wrap:anywhere}
+.dp .wide{grid-column:1/-1}
+.mrz{margin-top:14px;font-family:ui-monospace,"Courier New",monospace;font-size:clamp(10px,2.9vw,13px);letter-spacing:.12em;color:#3b2f20;white-space:pre;overflow:hidden}
+.pages{background:#0d0a07;border:1px solid var(--line2);padding:20px 12px 26px}
+.pages .ph{text-align:center;display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+.pages .ph h2{font-style:italic;font-size:24px;color:var(--gold-lt)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 10px}
+@media (max-width:480px){.grid{grid-template-columns:repeat(2,1fr)}}
+.slot{position:relative;background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.slot img.pin{width:100%;max-width:150px;height:auto;display:block;transition:filter .3s,transform .3s}
+.slot.off img.pin{filter:grayscale(1) brightness(.3) contrast(1.1)}
+.slot.on img.pin{filter:drop-shadow(0 0 14px rgba(200,146,42,.45))}
+.slot:hover img.pin{transform:translateY(-2px)}
+.slot small{font-family:var(--label);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.slot.on small{color:var(--gold)}
+.stamp{position:absolute;top:30%;left:50%;width:74px;height:74px;margin-left:-37px;border-radius:50%;border:2.5px solid var(--seal);color:var(--seal);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-14deg);background:rgba(10,8,6,.35);font-family:var(--label);text-transform:uppercase;line-height:1.05;pointer-events:none;box-shadow:inset 0 0 0 3px rgba(10,8,6,.2),inset 0 0 0 4px rgba(194,65,47,.55)}
+.stamp b{font-size:12px;font-weight:600;letter-spacing:.14em}
+.stamp i{font-style:normal;font-size:9.5px;letter-spacing:.12em}
+@media (prefers-reduced-motion:no-preference){
+  .stamp.new{animation:carimbo .55s cubic-bezier(.2,1.4,.4,1) both}
+  @keyframes carimbo{0%{opacity:0;transform:rotate(-30deg) scale(2)}60%{opacity:1}100%{opacity:1;transform:rotate(-14deg) scale(1)}}
+}
+.roster{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.roster li{display:grid;grid-template-columns:40px 36px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.roster li:first-child{border-top:0}
+.roster .n{font-family:var(--display);color:var(--gold-lt);font-size:19px;font-variant-numeric:tabular-nums;text-align:right}
+.roster img{width:36px;height:36px;border-radius:50%;background:var(--panel3)}
+.roster small{display:block;color:var(--soft);font-size:12.5px}
+.roster .c{font-family:var(--label);font-size:13px;letter-spacing:.08em;color:var(--gold);white-space:nowrap}
 
 /* Mapa */
 .mapwrap{display:grid;gap:16px}
 @media (min-width:980px){.mapwrap{grid-template-columns:1fr 330px;align-items:start}}
-.pick{display:flex;gap:8px;flex-wrap:wrap}
-.pick button{border-radius:999px;border:1px solid var(--line2);background:none;padding:6px 14px;font-size:13px;color:var(--soft)}
+.pick{display:flex;gap:6px;flex-wrap:wrap}
+.pick button{border:1px solid var(--line2);background:none;padding:6px 12px;font-family:var(--label);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
 .pick button[aria-pressed="true"]{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
-.map{background:#100b07;border:1px solid var(--line2);border-radius:16px;overflow:hidden}
+.map{background:#0d0906;border:1px solid var(--line2);overflow:hidden}
 .map svg{display:block;width:100%;height:auto}
-.map .contour{fill:none;stroke:rgba(203,157,77,.10);stroke-width:1.2}
+.map .contour{fill:none;stroke:rgba(200,146,42,.09);stroke-width:1.2}
 .map .route{fill:none;stroke:var(--gold);stroke-width:2.5;stroke-dasharray:2 10;stroke-linecap:round;opacity:.75}
 .map .pin{cursor:pointer}
-.map .pin .ring{fill:#100b07;stroke:var(--gold);stroke-width:2.5}
+.map .pin .ring{fill:#0d0906;stroke:var(--gold);stroke-width:2.5}
 .map .pin.off .ring{stroke:var(--faint);stroke-dasharray:4 4}
-.map .pin .n{font:600 17px var(--ui);fill:var(--faint);text-anchor:middle;dominant-baseline:central}
-.map .pin .lbl{font:500 18px var(--ui);fill:var(--ink);paint-order:stroke;stroke:#100b07;stroke-width:6px;stroke-linejoin:round}
+.map .pin .n{font:600 17px var(--label);fill:var(--faint);text-anchor:middle;dominant-baseline:central}
+.map .pin .lbl{font:500 18px var(--ui);fill:var(--ink);paint-order:stroke;stroke:#0d0906;stroke-width:6px;stroke-linejoin:round}
 .map .pin.off .lbl{fill:var(--soft)}
 .map .pin .halo{fill:none;stroke:var(--gold);stroke-width:2;opacity:0}
 .map .pin.sel .halo{opacity:1}
 .map .hotel rect{fill:var(--panel3);stroke:var(--soft);stroke-width:2}
-.map .hotel text{font:500 15px var(--ui);fill:var(--soft);paint-order:stroke;stroke:#100b07;stroke-width:5px}
+.map .hotel text{font:500 15px var(--ui);fill:var(--soft);paint-order:stroke;stroke:#0d0906;stroke-width:5px}
 .map .city .dot{fill:var(--gold)}
-.map .city text{font:500 22px var(--display);fill:var(--ink);letter-spacing:.08em;paint-order:stroke;stroke:#100b07;stroke-width:6px}
-.map .city .cnt{font:600 15px var(--ui);fill:var(--soft)}
+.map .city text{font:500 24px var(--display);fill:var(--ink);letter-spacing:.08em;paint-order:stroke;stroke:#0d0906;stroke-width:6px}
+.map .city .cnt{font:500 15px var(--label);fill:var(--soft);letter-spacing:.08em}
 .map .ui{fill:var(--soft);font:500 15px var(--ui)}
 .map .ui-line{stroke:var(--soft);stroke-width:2}
-.map .person circle{stroke:#100b07;stroke-width:3}
+.map .person circle{stroke:#0d0906;stroke-width:3}
 .map .person text{font:600 13px var(--ui);fill:#fff;text-anchor:middle;dominant-baseline:central}
 .map .person .pring{fill:none;stroke-width:2;opacity:.5}
 .map.marking svg{cursor:crosshair}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--soft)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--soft)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:12px;height:12px;border-radius:50%;display:inline-block}
 .people{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
 .people li{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:start}
-.people img{width:36px;height:36px;border-radius:50%}
-.people b{font-weight:600}
-.people small{display:block;color:var(--soft);font-size:12px}
+.people img{width:36px;height:36px;border-radius:50%;background:var(--panel3)}
+.people b{font-weight:500}
+.people small{display:block;color:var(--soft);font-size:12.5px}
 .share{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:14px}
 
-/* Insígnias */
-.passport{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;background:rgba(20,15,10,.92);border:1px solid var(--line2);border-radius:18px;padding:18px}
-.passport img{width:96px;height:96px;border-radius:50%;object-fit:cover;border:1px solid var(--line2)}
-.passport .num{font-family:var(--display);font-size:13px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
-.passport h2{font-size:24px;margin:2px 0}
-.bar{height:6px;border-radius:6px;background:var(--panel3);overflow:hidden;margin-top:8px}
-.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold-deep),var(--gold));border-radius:6px}
-.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(46%,150px),1fr));gap:18px 14px}
-.badge{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
-.badge .art{width:100%;max-width:150px;aspect-ratio:3/4;display:grid;place-items:center;position:relative}
-.badge .art img{max-width:100%;max-height:100%;width:auto;height:auto}
-.badge.off .art img{filter:grayscale(1) brightness(.35) contrast(1.1)}
-.badge.off .art::after{content:"";position:absolute;width:44px;height:44px;border-radius:50%;background:#100b07 url("img/cristal.jpg") center/cover;border:1px solid var(--line2)}
-.badge b{font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.06em}
-.badge small{font-size:11.5px;color:var(--soft)}
-.badge.off b{color:var(--soft)}
-@media (prefers-reduced-motion:no-preference){.badge .art img{transition:transform .25s}.badge:not(.off):hover .art img{transform:rotate(-2deg) scale(1.03)}}
-.roster{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.roster li{display:grid;grid-template-columns:44px 36px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
-.roster li:first-child{border-top:0}
-.roster .n{font-family:var(--display);color:var(--gold);font-size:15px;font-variant-numeric:tabular-nums;text-align:right}
-.roster img{width:36px;height:36px;border-radius:50%}
-.roster small{display:block;color:var(--soft);font-size:12px}
-.roster .c{font-size:12px;color:var(--soft);font-variant-numeric:tabular-nums;white-space:nowrap}
-
-/* Conversa */
+/* Roda */
 .chatview{padding:0;max-width:none;height:100%;display:grid;grid-template-rows:auto 1fr auto auto;gap:0}
-.chathead{padding:14px 16px;border-bottom:1px solid var(--line);background:rgba(11,8,6,.85)}
+.chathead{padding:14px 16px;border-bottom:1px solid var(--line);background:rgba(10,8,6,.9)}
 .chatlog{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
 .bubble{display:grid;grid-template-columns:32px 1fr;gap:10px;max-width:640px}
-.bubble>img{width:32px;height:32px;border-radius:50%}
-.bubble .b{background:var(--panel2);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:8px 12px;min-width:0}
+.bubble>img{width:32px;height:32px;border-radius:50%;background:var(--panel3)}
+.bubble .b{background:var(--panel2);border:1px solid var(--line);border-radius:2px 14px 14px 14px;padding:8px 12px;min-width:0}
 .bubble.me{margin-left:auto;grid-template-columns:1fr}
 .bubble.me>img{display:none}
-.bubble.me .b{background:#2a2012;border-color:var(--line2);border-radius:14px 4px 14px 14px}
+.bubble.me .b{background:#271e12;border-color:var(--line2);border-radius:14px 2px 14px 14px}
 .bubble .h{display:flex;gap:8px;align-items:baseline;font-size:12px;color:var(--soft)}
-.bubble .h b{color:var(--gold);font-weight:600}
+.bubble .h b{color:var(--gold);font-weight:500}
 .bubble .t{white-space:pre-wrap;overflow-wrap:anywhere}
 .bubble .del{margin-left:auto;background:none;border:0;color:var(--faint);font-size:11px;padding:0}
 .bubble .ponto{display:flex;flex-direction:column;gap:6px}
-.bubble .ponto b{font-family:var(--display);font-size:15px;font-weight:500;color:var(--ink)}
-.bubble .chatfoto{display:block;max-width:100%;width:280px;border-radius:10px;margin-top:4px}
-.dayline{align-self:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.bubble .ponto b{font-family:var(--display);font-size:18px;font-weight:500;color:var(--ink)}
+.bubble .chatfoto{display:block;max-width:100%;width:280px;margin-top:4px}
+.dayline{align-self:center;font-family:var(--label);font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
 .picker{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;background:var(--panel)}
 .picker select,.picker input{flex:1 1 180px;min-width:0}
 .composer{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;align-items:flex-end;background:var(--panel)}
@@ -196,59 +286,65 @@ ul.items .h{font-weight:600;color:var(--gold);font-variant-numeric:tabular-nums;
 .iconbtn svg{width:20px;height:20px}
 .iconbtn[aria-pressed="true"]{color:var(--gold);border-color:var(--gold)}
 
-/* Ensinamentos */
-.cats{display:flex;flex-direction:column;gap:26px}
-.cat>h2{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
-.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))}
-.card{background:rgba(20,15,10,.9);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:left;display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:start}
-.card h3{font-size:16.5px;grid-column:1}
-.card p{grid-column:1;color:var(--soft);font-family:var(--read);font-size:16px;line-height:1.35}
-.card img{grid-column:2;grid-row:1/span 3;width:46px;height:auto}
-.card .chip{grid-column:1;justify-self:start}
-.card.locked{border-style:dashed;background:none}
-.card.locked h3{color:var(--soft)}
-.card.locked img{filter:grayscale(1) brightness(.4)}
-.card:not(.locked):hover{border-color:var(--line2)}
-.reader{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
-.reader .top-badge{width:110px;height:auto;align-self:center}
-.reader h1{font-size:clamp(26px,6vw,38px);text-align:center}
-.reader .eyebrow{text-align:center}
-.reader .body p{font-family:var(--read);font-size:20px;line-height:1.7;margin-bottom:1em}
-.reader .src{font-size:13px;color:var(--soft);border-top:1px solid var(--line);padding-top:12px}
-.photo{display:block;width:100%;max-width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:12px}
-
-/* Cadastro e editor */
-.welcome{max-width:520px;margin:0 auto;padding:28px 16px 40px;display:flex;flex-direction:column;gap:18px;text-align:center}
-.welcome .emb{width:min(100%,300px);height:auto;margin:0 auto;border-radius:50%}
-.welcome h1{font-size:clamp(26px,6vw,34px)}
+/* Cadastro e folhas */
+.welcome{max-width:520px;margin:0 auto;padding:26px 16px 40px;display:flex;flex-direction:column;gap:18px;text-align:center}
+.welcome h1{font-size:clamp(28px,7vw,38px);font-weight:300}
 .welcome form{display:flex;flex-direction:column;gap:12px;text-align:left}
-.welcome label,.sheet label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:500;color:var(--soft);letter-spacing:.04em}
-.sheet{position:fixed;inset:0;background:rgba(5,4,3,.7);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.welcome label,.sheet label{display:flex;flex-direction:column;gap:5px;font-family:var(--label);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft)}
+.sheet{position:fixed;inset:0;background:rgba(5,4,3,.78);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
 @media (min-width:700px){.sheet{align-items:center}}
-.sheet>div,.sheet form{background:var(--panel);border:1px solid var(--line2);border-radius:18px;padding:20px;width:100%;max-width:560px;max-height:90%;overflow:auto;display:flex;flex-direction:column;gap:12px}
-.sheet .chk{flex-direction:row;align-items:center;gap:8px;font-size:14px;color:var(--ink)}
-.sheet .foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:6px}
-.sheet .big{width:min(60%,220px);height:auto;margin:0 auto}
+.sheet>div,.sheet form{background:var(--panel);border:1px solid var(--line2);padding:22px 20px;width:100%;max-width:520px;max-height:90%;overflow:auto;display:flex;flex-direction:column;gap:12px}
+.sheet .chk{flex-direction:row;align-items:center;gap:8px;font-size:14px;color:var(--ink);text-transform:none;letter-spacing:0}
+.sheet .foot2{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:6px}
+.sheet .bigwrap{position:relative;width:min(60%,210px);margin:0 auto}
+.sheet .bigwrap img{width:100%;height:auto;display:block}
+.sheet .bigwrap.off img{filter:grayscale(1) brightness(.35)}
+.sheet .bigwrap .stamp{width:96px;height:96px;margin-left:-48px}
+.sheet .bigwrap .stamp b{font-size:14px}
+.sheet .bigwrap .stamp i{font-size:11px}
+.sheet h2{text-align:center;font-size:28px;font-weight:400}
+.saber{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.saber h3{font-size:22px;font-style:italic;color:var(--gold-lt)}
+.saber p{font-family:var(--display);font-size:18.5px;line-height:1.6;color:#dccfb5}
+.saber .src{font-family:var(--ui);font-size:12.5px;color:var(--faint)}
+.sabgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.sab{display:grid;grid-template-columns:54px 1fr;gap:14px;align-items:center;background:var(--panel);border:1px solid var(--line);padding:12px 14px;text-align:left}
+.sab img{width:54px;height:auto}
+.sab img.sym{width:40px;justify-self:center}
+.sab .tx{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sab b{font-family:var(--display);font-size:19px;font-weight:500;line-height:1.2}
+.sab .tx span{font-size:13.5px;color:var(--soft);font-weight:300}
+.sab.locked{background:none;border-style:dashed}
+.sab.locked img{filter:grayscale(1) brightness(.35)}
+.sab.locked b{color:var(--soft)}
+.sab:not(.locked):hover{border-color:var(--line2)}
+.reader{max-width:660px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.reader .rbadge{width:120px;height:auto;align-self:center}
+.reader .rbadge.sym{width:70px}
+.reader h1{font-size:clamp(28px,7vw,40px);font-weight:400;text-align:center}
+.reader .body p{font-family:var(--display);font-size:20.5px;line-height:1.7;margin-bottom:1em;color:#e0d4bb}
+.reader .src{font-size:13px;color:var(--soft);border-top:1px solid var(--line);padding-top:12px}
 .fotofield{display:flex;flex-direction:column;gap:8px}
-.fotofield img{width:100%;max-width:100%;max-height:200px;object-fit:cover;border-radius:10px}
+.fotofield img{width:100%;max-width:100%;max-height:200px;object-fit:cover}
 .unlock{display:flex;gap:8px;flex-wrap:wrap}
 .unlock input{flex:1 1 160px;min-width:0}
-.secret{font-size:12px;color:var(--soft);border-top:1px dashed var(--line2);padding-top:10px}
-.secret code{font-family:ui-monospace,Menlo,monospace;background:var(--panel3);padding:1px 6px;border-radius:4px;color:var(--ink)}
+.secret{font-size:12.5px;color:var(--soft);border-top:1px dashed var(--line2);padding-top:10px}
+.secret code{font-family:ui-monospace,Menlo,monospace;background:var(--panel3);padding:1px 6px;color:var(--ink)}
 </style>
 
 <div class="app">
   <header class="top">
-    <div class="brand"><img src="img/simbolo.png" alt=""><div><b>Caravana do Céu</b><span>Índia · 4 a 16 nov 2026</span></div></div>
-    <button class="me" id="me" type="button" hidden></button>
+    <span class="topside" aria-hidden="true"></span>
+    <div class="brand"><img src="img/simbolo.png" alt=""><div><b>Caravana do Céu</b><span>Índia Sagrada · 2026</span></div></div>
+    <div class="topside right"><button class="me" id="me" type="button" hidden></button></div>
   </header>
   <main id="main"></main>
   <nav class="tabs" id="tabs" aria-label="Seções">
-    <button data-tab="roteiro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Roteiro</button>
-    <button data-tab="mapa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Mapa</button>
-    <button data-tab="insignias"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h12v10.5a6 6 0 0 1-12 0z"/><path d="M9.5 10l1.8 1.8 3.4-3.6"/></svg>Insígnias</button>
-    <button data-tab="conversa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/></svg>Conversa</button>
-    <button data-tab="ensinamentos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5z"/><path d="M12 6.5v13"/></svg>Ensinamentos</button>
+    <button data-tab="travessia"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8.5 3v4M15.5 3v4M8 13.5h3M8 16.5h6"/></svg></span>Roteiro</button>
+    <button data-tab="passaporte"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="3" width="13" height="18" rx="1.5"/><circle cx="12" cy="10.5" r="3.2"/><path d="M8.8 10.5h6.4M12 7.3c1 1 1 5.4 0 6.4M12 7.3c-1 1-1 5.4 0 6.4M9 17h6"/></svg></span>Passaporte</button>
+    <button data-tab="ensinamentos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-4.5 0-8-2.5-8-6 3 0 6 1.5 8 6zM12 20c4.5 0 8-2.5 8-6-3 0-6 1.5-8 6zM12 20c-2-2.5-3-5.5-2-9 1-2.5 1.5-4 2-6 .5 2 1 3.5 2 6 1 3.5 0 6.5-2 9z"/></svg></span>Saberes</button>
+    <button data-tab="mapa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span>Mapa</button>
+    <button data-tab="conversa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span>Chat</button>
   </nav>
 </div>
 
@@ -258,16 +354,18 @@ ul.items .h{font-weight:600;color:var(--gold);font-variant-numeric:tabular-nums;
 
 // ---------- estado ----------
 const S = {
-  tab: "roteiro",
+  tab: "travessia",
+  roteiro: null, roteiroErro: false,
   dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [],
   vReady: false, dbReady: false, pularCadastro: false,
   uid: null, me: null, isOwner: false, canChat: null,
   db: null, user: null, assets: null, perfis: {},
-  cidadeSel: "india", localSel: null, ensSel: null, badgeSel: null,
-  unlockMsg: null, marcando: false, posMsg: null, pontoAberto: false, proj: null, local: {}
+  diaAberto: null, ensSel: null, cidadeSel: "india", localSel: null,
+  unlockMsg: null, novoSelo: null, marcando: false, posMsg: null, pontoAberto: false, proj: null, local: {}, checks: {}
 };
-try { const t = localStorage.getItem("cdi-tab"); if (t) S.tab = t; } catch (e) {}
+try { const t = localStorage.getItem("cdi-tab2"); if (t) S.tab = t; } catch (e) {}
 try { S.local = JSON.parse(localStorage.getItem("cdi-ins") || "{}") || {}; } catch (e) {}
+try { S.checks = JSON.parse(localStorage.getItem("cdi-checks") || "{}") || {}; } catch (e) {}
 
 const SVGTAGS = new Set(["svg","g","path","circle","text","line","rect","title","image"]);
 function h(tag, attrs, ...kids) {
@@ -287,15 +385,16 @@ const norm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLow
 const byOrdem = (a, b) => (a.ordem ?? 999) - (b.ordem ?? 999);
 const blob = id => "/_blob/" + id;
 const badgeSrc = l => l && l.insignia ? `insignias/${l.insignia}.webp` : null;
+const deusSrc = n => "deuses/" + norm(n) + ".webp";
 const FRESCO = 3 * 60 * 60 * 1000;
 const BLANK = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
+const nn = n => String(n).padStart(2, "0");
+const MES = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
+const dataSelo = ts => { const d = new Date(ts); return nn(d.getDate()) + " " + MES[d.getMonth()] + " " + String(d.getFullYear()).slice(2); };
 
 // ---------- quem é quem ----------
 const eu = () => S.viajantes.find(v => v.id === S.uid);
-function numeros() {
-  const m = {}; S.viajantes.filter(v => !v.lider).sort((a, b) => (a.ts || 0) - (b.ts || 0)).forEach((v, i) => m[v.id] = i + 1); return m;
-}
-const nn = n => String(n).padStart(2, "0");
+function numeros() { const m = {}; S.viajantes.filter(v => !v.lider).sort((a, b) => (a.ts || 0) - (b.ts || 0)).forEach((v, i) => m[v.id] = i + 1); return m; }
 function rotulo(id) {
   const v = S.viajantes.find(x => x.id === id);
   if (v && v.lider) return "Líder da travessia";
@@ -315,40 +414,41 @@ async function perfis(ids) {
 }
 const avatar = id => S.perfis[id]?.avatarUrl || BLANK;
 
-// ---------- insígnias ----------
+// ---------- selos ----------
 const minhas = () => ({ ...S.local, ...((eu() && eu().insignias) || {}) });
 const aberto = l => !!(l && (l.aberto || minhas()[l.id]));
 const conquistasDe = v => S.locais.filter(l => l.insignia && (l.aberto || (v.insignias || {})[l.id])).length;
 const insigniaLocais = () => S.locais.filter(l => l.insignia).sort(byOrdem);
 const localDe = id => S.locais.find(l => l.id === id);
 const cidadeDe = id => S.cidades.find(c => c.id === id);
-const ensLiberado = e => !e.localId || !localDe(e.localId) || aberto(localDe(e.localId));
-
-async function desbloquear(l, palavra) {
+const hojeIso = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+const diaDe = n => (S.roteiro?.dias || []).find(d => d.n === n);
+function disponivel(l) {
+  if (S.isOwner || l.aberto) return true;
+  const d = diaDe(l.dia); return !d || hojeIso() >= d.iso;
+}
+async function selar(l, palavra) {
   if (norm(palavra) !== norm(l.codigo)) return { ok: false, text: "Essa não é a palavra deste lugar. Confira com a líder e tente de novo." };
   const ts = Date.now();
   S.local = { ...S.local, [l.id]: ts };
   try { localStorage.setItem("cdi-ins", JSON.stringify(S.local)); } catch (e) {}
   if (S.db && S.uid && eu()) { try { await S.db.doc("viajantes/" + S.uid).update({ insignias: { [l.id]: ts } }); } catch (e) {} }
-  return { ok: true, text: "Insígnia conquistada! Ela já está no seu passaporte." };
+  S.novoSelo = l.id;
+  return { ok: true, text: "Selo carimbado no seu passaporte." };
 }
 
-// ---------- datas ----------
+// ---------- relógios ----------
 const IST = () => new Date().toLocaleTimeString("pt-BR", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit" });
 const BRT = () => new Date().toLocaleTimeString("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit" });
-const hojeIso = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
-function faltam() {
-  const ini = new Date("2026-11-04T00:00:00+05:30").getTime(), d = Math.ceil((ini - Date.now()) / 86400000);
-  return d;
-}
+const faltam = () => Math.ceil((new Date("2026-11-04T00:00:00+05:30").getTime() - Date.now()) / 86400000);
 
 // ---------- navegação ----------
 function go(tab) {
-  S.tab = tab; try { localStorage.setItem("cdi-tab", tab); } catch (e) {}
+  S.tab = tab; try { localStorage.setItem("cdi-tab2", tab); } catch (e) {}
   render(); $("#main").scrollTop = 0;
 }
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (!b) return; if (b.dataset.tab === "ensinamentos") S.ensSel = null; go(b.dataset.tab); });
-$("#me").addEventListener("click", () => go("insignias"));
+$("#me").addEventListener("click", () => go("passaporte"));
 
 function render() {
   for (const b of document.querySelectorAll("#tabs button")) {
@@ -356,90 +456,267 @@ function render() {
   }
   const act = document.activeElement, actId = act && act.id, sel = act && "selectionStart" in act ? [act.selectionStart, act.selectionEnd] : null;
   const draft = act && actId && act.value !== undefined ? act.value : null;
-  const openDays = [...document.querySelectorAll("details.day")].map(d => [d.dataset.id, d.open]);
   const chatDraft = $("#chat-input")?.value;
+  const main = $("#main"), scroll = main.scrollTop;
   pintaMe();
-  const main = $("#main");
   const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
   main.replaceChildren(precisaCadastro ? vCadastro() :
-    S.tab === "roteiro" ? vRoteiro() : S.tab === "mapa" ? vMapa() : S.tab === "insignias" ? vInsignias() :
-    S.tab === "conversa" ? vConversa() : vEnsinamentos());
-  for (const [id, open] of openDays) { const d = document.querySelector(`details.day[data-id="${id}"]`); if (d) d.open = open; }
+    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "conversa" ? vConversa() : vTravessia());
+  main.scrollTop = scroll;
   if (S.tab === "conversa") {
     const inp = $("#chat-input"); if (inp && chatDraft) inp.value = chatDraft;
     const log = $("#chatlog"); if (log) log.scrollTop = log.scrollHeight;
   }
   const el = actId && document.getElementById(actId);
-  if (el && el !== act) { if (draft != null && "value" in el && el.type !== "file") el.value = draft; el.focus(); if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
+  if (el && el !== act) { if (draft != null && "value" in el && el.type !== "file" && el.type !== "checkbox") el.value = draft; el.focus({ preventScroll: true }); if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
 }
 function pintaMe() {
   const b = $("#me"), v = eu();
   if (!S.uid) { b.hidden = true; return; }
   b.hidden = false;
-  b.replaceChildren(h("img", { src: avatar(S.uid), alt: "" }), h("b", { text: v ? (v.lider ? "Líder" : "nº " + nn(numeros()[S.uid] || 0)) : "" }), h("span", { text: v ? v.nome : "Fazer cadastro" }));
+  b.setAttribute("aria-label", v ? "Meu passaporte" : "Emitir passaporte");
+  b.replaceChildren(h("img", { src: avatar(S.uid), alt: "" }), h("b", { text: v ? (v.lider ? "Líder" : "Nº " + nn(numeros()[S.uid] || 0)) : "Emitir" }));
 }
-function adminBtn(label, fn) { return S.isOwner ? h("button", { class: "btn", type: "button", onclick: fn }, "+ " + label) : null; }
-function carregando() {
-  return h("div", { class: "empty" }, h("h3", { text: S.dbReady ? "Nada por aqui ainda" : "Abrindo o mapa da travessia…" }),
-    h("p", { text: S.dbReady ? "Quando a líder publicar, aparece aqui." : "Se demorar, abra este aplicativo pelo link do Claude, com a sua conta." }));
+function carregando(txt) {
+  return h("div", { class: "empty" }, h("h3", { text: S.dbReady ? "Nada por aqui ainda" : "Abrindo a travessia…" }),
+    h("p", { text: txt || (S.dbReady ? "Quando a líder publicar, aparece aqui." : "Se demorar, abra este aplicativo pelo link do Claude, com a sua conta.") }));
 }
 
 // ---------- cadastro ----------
 function vCadastro() {
-  const nome = h("input", { type: "text", id: "cad-nome", maxlength: "40", autocomplete: "given-name", placeholder: "Como a caravana vai te chamar", required: true });
+  const nome = h("input", { type: "text", id: "cad-nome", maxlength: "40", autocomplete: "given-name", placeholder: "Como a caravana vai te chamar" });
   const cid = h("input", { type: "text", id: "cad-cidade", maxlength: "40", placeholder: "Ex.: São Paulo" });
   const erro = h("p", { class: "msg err", role: "alert" });
-  const nomePerfil = S.me && S.me.name; if (nomePerfil) nome.value = nomePerfil.split(" ")[0];
+  if (S.me && S.me.name) nome.value = S.me.name.split(" ")[0];
   return h("section", { class: "welcome" },
-    h("img", { class: "emb", src: "img/emblema.jpg", alt: "O Mapa da Travessia · Índia" }),
-    h("p", { class: "eyebrow", text: "Bem-vinda, bem-vindo à travessia" }),
-    h("h1", { text: "Seu passaporte da Índia" }),
-    h("p", { class: "lede", text: "Faça seu cadastro para receber seu número de viajante, conversar com a caravana e guardar as insígnias que você conquistar pelo caminho." }),
+    h("img", { class: "cover", src: "img/passaporte.webp", alt: "Passaporte da Caravana" }),
+    h("p", { class: "eyebrow", text: "Emissão do passaporte" }),
+    h("h1", { text: "Seu passaporte da Índia Sagrada" }),
+    h("p", { class: "lede", text: "Com ele você recebe seu número de viajante, conversa com a caravana e carimba os selos de cada lugar sagrado da travessia." }),
     h("form", { onsubmit: async e => {
       e.preventDefault();
       if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
       const doc = { nome: nome.value.trim(), cidade: cid.value.trim(), ts: Date.now(), insignias: { ...S.local } };
       if (S.isOwner) doc.lider = true;
-      try { await S.db.doc("viajantes/" + S.uid).set(doc); }
-      catch (err) { erro.textContent = "Não consegui fazer seu cadastro. Peça à líder um convite com permissão para participar."; }
+      try { await S.db.doc("viajantes/" + S.uid).set(doc); S.tab = "passaporte"; }
+      catch (err) { erro.textContent = "Não consegui emitir seu passaporte. Peça à líder um convite com permissão para participar."; }
     } },
       h("label", { for: "cad-nome" }, "Seu nome", nome),
       h("label", { for: "cad-cidade" }, "De onde você vem", cid),
-      erro,
-      h("button", { class: "btn gold", type: "submit" }, "Entrar na travessia")),
+      erro, h("button", { class: "btn gold", type: "submit" }, "Emitir meu passaporte")),
     h("button", { class: "btn ghost", type: "button", onclick: () => { S.pularCadastro = true; render(); } }, "Agora não, só quero olhar"));
 }
 
-// ---------- Roteiro ----------
-function vRoteiro() {
-  const dias = S.dias.slice().sort(byOrdem), hoje = hojeIso(), f = faltam();
-  const abrirId = (dias.find(d => d.iso === hoje) || dias.find(d => d.iso > hoje) || dias[0] || {}).id;
+// ---------- Travessia ----------
+function vTravessia() {
+  const R = S.roteiro;
+  if (!R) return h("section", { class: "view" }, carregando(S.roteiroErro ? "Não consegui carregar o roteiro. Feche e abra o aplicativo de novo." : ""));
+  const dias = R.dias, hoje = hojeIso(), f = faltam();
+  if (S.diaAberto == null) S.diaAberto = (dias.find(d => d.iso === hoje) || dias.find(d => d.iso > hoje) || dias[0]).n;
+  const ins = insigniaLocais();
+  const abrir = n => { S.diaAberto = S.diaAberto === n ? 0 : n; render(); if (S.diaAberto) requestAnimationFrame(() => document.getElementById("dia-" + n)?.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })); };
+  return h("section", { class: "view" },
+    h("div", { class: "hero" },
+      h("img", { class: "logo", src: "img/simbolo.png", alt: "" }),
+      h("p", { class: "eyebrow", text: "Temporada 2026 · Turma 1" }),
+      h("h1", null, "Travessia da", h("br"), "Índia Sagrada"),
+      h("p", { class: "route", text: "Delhi · Agra · Jaipur · Varanasi · Rishikesh" }),
+      h("span", { class: "line" }),
+      h("p", { class: "intro", text: "Treze dias atravessando uma cultura viva, pulsando em cada oferenda, cada cântico, cada amanhecer à beira do rio." })),
+    h("div", { class: "clock" },
+      f > 0 ? h("div", null, h("b", { text: f }), h("span", { text: f === 1 ? "dia para embarcar" : "dias para embarcar" }))
+            : h("div", null, h("b", { text: "13" }), h("span", { text: "dias de travessia" })),
+      h("div", null, h("b", { text: IST() }), h("span", { text: "Agora na Índia" })),
+      h("div", null, h("b", { text: BRT() }), h("span", { text: "Brasília · +8h30" }))),
+    ins.length ? h("div", null,
+      h("p", { class: "eyebrow rule", text: `Os ${ins.length} selos do passaporte` }),
+      h("div", { class: "strip", style: "margin-top:10px" }, ins.map(l => h("button", { type: "button", "aria-label": l.nome, onclick: () => abrirSelo(l) },
+        h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off", loading: "lazy" }))))) : null,
+    h("nav", { class: "daychips", "aria-label": "Dias" }, dias.map(d => h("button", { type: "button", class: d.iso === hoje ? "today" : "", "aria-current": String(S.diaAberto === d.n), onclick: () => { S.diaAberto = 0; abrir(d.n); } },
+      h("b", { text: nn(d.n) }), d.cidade))),
+    h("div", { class: "days" }, dias.map(d => vDia(d, d.n === S.diaAberto, d.iso === hoje, abrir))),
+    h("button", { class: "btn", type: "button", style: "align-self:center", onclick: () => go("ensinamentos") }, "Guia da travessia e saberes"),
+    h("div", { class: "foot" },
+      h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }),
+      h("img", { class: "s", src: "img/simbolo.png", alt: "" }),
+      h("q", { text: "Explorando nossa origem nos damos conta de que somos infinitos." }),
+      h("p", { class: "eyebrow", text: "Caravana do Céu · a travessia te espera" })));
+}
+function vDia(d, open, isToday, abrir) {
+  const ls = (d.pins || []).map(localDe).filter(Boolean);
+  const head = h("button", { class: "dayhead", type: "button", "aria-expanded": String(open), onclick: () => abrir(d.n) },
+    h("span", { class: "dnum" }, h("small", { text: "Dia" }), h("b", { text: nn(d.n) })),
+    h("span", { class: "dtit" },
+      h("h3", { text: d.titulo }),
+      h("span", { class: "fr", text: d.frase }),
+      h("span", { class: "tags" }, isToday ? h("span", { class: "tag today", text: "Hoje" }) : null, h("span", { class: "tag date", text: d.data }), h("span", { class: "tag", text: d.rota }))),
+    h("span", { class: "chev", "aria-hidden": "true", text: "▾" }));
+  if (!open) return h("article", { class: "day" + (isToday ? " is-today" : ""), id: "dia-" + d.n }, head);
+  const ck = S.checks[d.n] || {};
+  return h("article", { class: "day open" + (isToday ? " is-today" : ""), id: "dia-" + d.n }, head,
+    h("div", { class: "daybody" },
+      h("div", { class: "logi" }, h("span", null, "Hospedagem ", h("b", { text: d.hotel })), d.guia ? h("span", null, h("b", { text: d.guia })) : null),
+      h("div", null, h("p", { class: "eyebrow rule", text: "Agenda do dia" }),
+        d.agenda.map(p => [h("p", { class: "per", text: p.periodo }),
+          h("ul", { class: "items" }, p.itens.map(it => h("li", null, h("span", { class: "h", text: it.hora || "·" }), h("span", { text: it.texto }))))])),
+      d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
+      (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
+        l.dados && l.dados.length ? h("div", { class: "stats" }, l.dados.map(x => h("div", null, h("b", { text: x.v }), h("span", { text: x.l })))) : null)),
+      d.aviso ? h("div", { class: "note" }, h("p", { class: "t", text: d.aviso.titulo }), h("p", { text: d.aviso.texto })) : null,
+      d.deuses ? h("div", { class: "gods" },
+        h("p", { class: "eyebrow rule", text: "Mapa dos Deuses" }),
+        h("p", { class: "intro", text: d.deuses.intro }),
+        h("div", { class: "godrow" }, d.deuses.cards.map(c => h("figure", { class: "god", style: "margin:0" }, h("img", { src: deusSrc(c.nome), alt: c.nome, loading: "lazy" }), h("span", { text: c.papel })))),
+        h("div", { class: "story" }, h("h5", { text: d.deuses.titulo }), h("p", { text: d.deuses.texto }))) : null,
+      ls.length ? h("div", null, h("p", { class: "eyebrow rule", text: ls.length > 1 ? "Selos deste dia" : "Selo deste dia" }),
+        h("div", { class: "seals", style: "margin-top:12px" }, ls.map(l => h("button", { type: "button", onclick: () => abrirSelo(l) },
+          h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" }), aberto(l) ? "Carimbado" : "Carimbar")))) : null,
+      d.cuidados && d.cuidados.length ? h("div", null, h("p", { class: "eyebrow rule", text: "Leve com você" }),
+        h("div", { class: "checks", style: "margin-top:10px" }, d.cuidados.map((c, i) => {
+          const id = `ck-${d.n}-${i}`;
+          return h("label", { for: id }, h("input", { type: "checkbox", id, checked: !!ck[i], onchange: e => {
+            S.checks = { ...S.checks, [d.n]: { ...(S.checks[d.n] || {}), [i]: e.target.checked } };
+            try { localStorage.setItem("cdi-checks", JSON.stringify(S.checks)); } catch (err) {}
+          } }), h("span", { text: c }));
+        }))) : null));
+}
+
+
+// ---------- Saberes ----------
+function vSaberes() {
+  const e = S.ens.find(x => x.id === S.ensSel);
+  const lib = x => !x.localId || aberto(localDe(x.localId)) || S.isOwner;
+  if (e && lib(e)) {
+    const l = e.localId && localDe(e.localId);
+    return h("section", { class: "view" },
+      h("div", { class: "actions" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.ensSel = null; render(); } }, "← Todos os saberes")),
+      h("article", { class: "reader" },
+        l ? h("img", { class: "rbadge", src: badgeSrc(l), alt: "" }) : h("img", { class: "rbadge sym", src: "img/simbolo.png", alt: "" }),
+        h("p", { class: "eyebrow", style: "text-align:center", text: [e.categoria, l && l.nome].filter(Boolean).join(" · ") }),
+        h("h1", { text: e.titulo }),
+        h("div", { class: "body" }, String(e.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() }))),
+        e.fonte ? h("p", { class: "src", text: "Fontes: " + e.fonte }) : null),
+      h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }));
+  }
+  const sab = S.ens.filter(x => x.categoria !== "Guia da travessia").sort(byOrdem);
+  const guia = S.ens.filter(x => x.categoria === "Guia da travessia").sort(byOrdem);
   return h("section", { class: "view" },
     h("img", { class: "orn", src: "img/mantra-ganesha.webp", alt: "Om Gam Ganapataye Namah" }),
-    h("div", { class: "head" },
-      h("div", null, h("p", { class: "eyebrow", text: "A rota da caravana" }), h("h1", { text: "Índia Sagrada" })),
-      adminBtn("Novo dia", () => editar("dia", { ordem: dias.length + 1 }))),
-    h("p", { class: "lede", text: "Delhi · Agra · Jaipur · Varanasi · Rishikesh. Treze dias atravessando uma cultura viva, pulsando em cada oferenda, cada cântico, cada amanhecer à beira do rio." }),
-    h("div", { class: "clock" },
-      f > 0 ? h("div", null, h("b", { text: f }), h("span", { text: f === 1 ? "dia para embarcar" : "dias para a travessia" })) : null,
-      h("div", null, h("b", { text: IST() }), h("span", { text: "Agora na Índia" })),
-      h("div", null, h("b", { text: BRT() }), h("span", { text: "Agora em Brasília · +8h30" }))),
-    dias.length ? h("div", { class: "days" }, dias.map(d => {
-      const ls = S.locais.filter(l => l.insignia && l.dia === d.n).sort(byOrdem);
-      const itens = Array.isArray(d.itens) ? d.itens : [];
-      const isToday = d.iso === hoje;
-      return h("details", { class: "day" + (isToday ? " is-today" : ""), "data-id": d.id, open: d.id === abrirId },
-        h("summary", null,
-          h("div", { class: "dnum" }, h("small", { text: "DIA" }), h("b", { text: nn(d.n) })),
-          h("div", { class: "dtit" }, h("h3", { text: d.titulo }), h("p", { text: [d.data, d.cidade].filter(Boolean).join(" · ") })),
-          h("div", { class: "dbadges" }, isToday ? h("span", { class: "chip today", text: "Hoje" }) : ls.map(l => h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" })))),
-        h("div", { class: "dbody" },
-          itens.length ? h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h", text: it.hora || "" }), h("span", { text: it.texto })))) : null,
-          d.nota ? h("p", { class: "nota", text: d.nota }) : null,
-          ls.length ? h("div", { class: "actions" }, ls.map(l => h("button", { class: "btn", type: "button", onclick: () => { S.badgeSel = l.id; S.unlockMsg = null; go("insignias"); } }, "Insígnia: " + l.nome))) : null,
-          S.isOwner ? h("div", null, h("button", { class: "btn ghost", type: "button", onclick: () => editar("dia", d) }, "Editar este dia")) : null));
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Para ler pelo caminho" }), h("h1", { text: "Saberes da travessia" }))),
+    h("p", { class: "lede", text: "Cada selo guarda uma história. Ela se abre quando você carimba o selo no lugar sagrado." }),
+    sab.length ? h("div", { class: "sabgrid" }, sab.map(x => {
+      const l = x.localId && localDe(x.localId), ok = lib(x);
+      return h("button", { class: "sab" + (ok ? "" : " locked"), type: "button", onclick: () => { if (ok) { S.ensSel = x.id; render(); $("#main").scrollTop = 0; } else if (l) abrirSelo(l); } },
+        l ? h("img", { src: badgeSrc(l), alt: "" }) : h("img", { class: "sym", src: "img/simbolo.png", alt: "" }),
+        h("span", { class: "tx" }, h("b", { text: x.titulo }), h("span", { text: ok ? (x.resumo || "") : `Carimbe o selo ${l ? l.nome : ""} para ler` })));
     })) : carregando(),
-    h("p", { class: "small", style: "text-align:center", text: "Horários podem mudar. Na dúvida, vale o que a líder combinar na conversa." }));
+    guia.length ? h("div", { style: "display:flex;flex-direction:column;gap:10px" },
+      h("p", { class: "eyebrow rule", text: "Guia da travessia · antes de ir" }),
+      guia.map(g => h("details", { class: "guide" },
+        h("summary", null, h("div", null, h("b", { text: g.titulo }), g.resumo ? h("span", { text: g.resumo }) : null), h("span", { text: "▾", "aria-hidden": "true" })),
+        h("div", { class: "gb" }, String(g.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })))))) : null,
+    h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }));
+}
+
+// ---------- Passaporte ----------
+function vPassaporte() {
+  const ls = insigniaLocais(), v = eu(), nums = numeros(), mins = minhas();
+  const ok = ls.filter(aberto).length;
+  const gente = S.viajantes.slice().sort((a, b) => (b.lider ? 1 : 0) - (a.lider ? 1 : 0) || (nums[a.id] || 0) - (nums[b.id] || 0));
+  perfis(gente.map(g => g.id));
+  const nomeMrz = norm(v ? v.nome : "viajante").toUpperCase().replace(/[^A-Z]+/g, "<");
+  const mrz1 = ("P<CDC<INDIA<<" + nomeMrz).padEnd(44, "<").slice(0, 44);
+  const mrz2 = ((v && v.lider ? "LIDER" : nn(nums[S.uid] || 0) + "<<<") + "<04NOV26<<16NOV26<<SELOS" + nn(ok)).padEnd(44, "<").slice(0, 44);
+  return h("section", { class: "view" },
+    h("img", { class: "cover", src: "img/passaporte.webp", alt: "Passaporte da Caravana" }),
+    v ? h("div", { class: "datapage" },
+      h("div", { class: "top2" }, h("b", { text: "Passaporte da Travessia" }), h("span", { text: "Índia · 2026" })),
+      h("div", { class: "dp" },
+        h("img", { src: avatar(S.uid), alt: "" }),
+        h("dl", null,
+          h("div", { class: "wide" }, h("dt", { text: "Nome" }), h("dd", { text: v.nome })),
+          h("div", null, h("dt", { text: v.lider ? "Função" : "Nº do viajante" }), h("dd", { text: v.lider ? "Líder" : nn(nums[S.uid] || 0) })),
+          h("div", null, h("dt", { text: "Origem" }), h("dd", { text: v.cidade || "—" })),
+          h("div", null, h("dt", { text: "Emissão" }), h("dd", { text: new Date(v.ts).toLocaleDateString("pt-BR") })),
+          h("div", null, h("dt", { text: "Selos" }), h("dd", { text: `${ok} de ${ls.length}` })))),
+      h("div", { class: "mrz", "aria-hidden": "true", text: mrz1 + "\n" + mrz2 }),
+      h("div", { class: "actions", style: "margin-top:8px" }, h("button", { class: "btn ghost", style: "color:#6d5a3c", type: "button", onclick: editarPerfil }, "Editar meus dados")))
+    : S.db && S.uid ? h("div", { class: "panel", style: "text-align:center;align-items:center" }, h("p", { class: "lede", text: "Emita seu passaporte para guardar os selos e aparecer para a caravana." }),
+        h("button", { class: "btn gold", type: "button", onclick: () => { S.pularCadastro = false; render(); } }, "Emitir meu passaporte")) : null,
+    h("div", { class: "pages" },
+      h("div", { class: "ph" }, h("p", { class: "eyebrow", text: "Os selos da Índia Sagrada" }), h("h2", { text: "Carimbe em cada lugar sagrado" }),
+        h("p", { class: "small", text: "Quando a caravana chegar ao lugar, a líder revela a palavra. Toque no selo e carimbe." })),
+      ls.length ? h("div", { class: "grid" }, ls.map(l => {
+        const on = aberto(l), ts = mins[l.id], d = diaDe(l.dia);
+        return h("button", { class: "slot " + (on ? "on" : "off"), type: "button", onclick: () => abrirSelo(l), "aria-label": l.nome + (on ? ", carimbado" : "") },
+          h("img", { class: "pin", src: badgeSrc(l), alt: "", loading: "lazy" }),
+          on ? h("span", { class: "stamp" + (S.novoSelo === l.id ? " new" : "") }, h("b", { text: "Selado" }), h("i", { text: ts ? dataSelo(ts) : "Caravana" })) : null,
+          h("small", { text: on ? l.nome : (d ? `Dia ${d.n} · ${d.cidade}` : l.nome) }));
+      })) : carregando()),
+    gente.length ? h("div", { class: "panel" },
+      h("p", { class: "eyebrow", text: "A caravana" }),
+      h("h2", { text: gente.length === 1 ? "1 passaporte emitido" : gente.length + " passaportes emitidos" }),
+      h("ul", { class: "roster" }, gente.map(g => h("li", null,
+        h("span", { class: "n", text: g.lider ? "✦" : nn(nums[g.id] || 0) }),
+        h("img", { src: avatar(g.id), alt: "" }),
+        h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : "", g.cidade].filter(Boolean).join(" · ") })),
+        h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null);
+}
+function closeSheets() { document.querySelectorAll(".sheet").forEach(s => s.remove()); }
+function conteudoInsignia(l) {
+  const on = aberto(l), ts = minhas()[l.id], d = diaDe(l.dia), livre = disponivel(l);
+  const saberes = S.ens.filter(e => e.localId === l.id);
+  const input = h("input", { type: "text", id: "unlock-" + l.id, placeholder: "Palavra do lugar", autocomplete: "off", "aria-label": "Palavra do lugar" });
+  const tentar = async () => { if (!input.value.trim()) return; S.unlockMsg = await selar(l, input.value); render(); refreshSheet(); };
+  input.addEventListener("keydown", e => { if (e.key === "Enter") tentar(); });
+  return [
+    h("div", { class: "bigwrap" + (on ? "" : " off") }, h("img", { src: badgeSrc(l), alt: "Selo " + l.nome }),
+      on ? h("span", { class: "stamp" + (S.novoSelo === l.id ? " new" : "") }, h("b", { text: "Selado" }), h("i", { text: ts ? dataSelo(ts) : "Caravana" })) : null),
+    h("p", { class: "eyebrow", style: "text-align:center", text: [cidadeDe(l.cidadeId)?.nome, d ? `Dia ${d.n} · ${d.data}` : ""].filter(Boolean).join(" · ") }),
+    h("h2", { text: l.nome }),
+    h("p", { class: "lede", style: "text-align:center;margin:0 auto", text: on ? (l.descricao || "") : (l.dica || "") }),
+    !on && l.codigo && livre ? h("div", { class: "unlock" }, input, h("button", { class: "btn gold", type: "button", onclick: tentar }, "Carimbar")) : null,
+    !on && !livre ? h("p", { class: "small", style: "text-align:center", text: `Este selo se abre no dia ${d.n}, ${d.data}, quando a caravana chegar.` }) : null,
+    S.unlockMsg ? h("p", { class: "msg " + (S.unlockMsg.ok ? "ok" : "err"), style: "text-align:center", role: "status", text: S.unlockMsg.text }) : null,
+    on ? saberes.map(e => h("div", { class: "saber" }, h("p", { class: "eyebrow", text: "O saber deste selo" }), h("h3", { text: e.titulo }),
+      String(e.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })), e.fonte ? h("p", { class: "src", text: "Fontes: " + e.fonte }) : null)) : null,
+    h("div", { class: "actions", style: "justify-content:center" },
+      h("a", { class: "btn", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(l.busca || l.nome), target: "_blank", rel: "noopener" }, "Google Maps"),
+      h("button", { class: "btn ghost", type: "button", onclick: () => { closeSheets(); S.cidadeSel = l.cidadeId; S.localSel = l.id; go("mapa"); } }, "Ver no mapa")),
+    S.isOwner ? h("div", { class: "secret" },
+      h("p", null, "Só você vê isto. Palavra do lugar: ", h("code", { text: l.codigo || "(sem palavra)" }), l.aberto ? " · liberado para todos" : ""),
+      h("div", { class: "actions", style: "margin-top:8px" },
+        h("button", { class: "btn", type: "button", onclick: () => { closeSheets(); editar("local", l); } }, "Editar"),
+        h("button", { class: "btn", type: "button", onclick: () => S.db.doc("locais/" + l.id).update({ aberto: !l.aberto }).catch(() => {}) }, l.aberto ? "Fechar para todos" : "Liberar para todos"))) : null
+  ];
+}
+function abrirSelo(l) {
+  closeSheets(); S.unlockMsg = null; S.novoSelo = null;
+  const box = h("div", { role: "dialog", "aria-label": l.nome });
+  box.append(...conteudoInsignia(l).flat(Infinity).filter(Boolean), h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  sheet.dataset.local = l.id;
+  document.body.append(sheet);
+}
+function refreshSheet() {
+  const sh = document.querySelector(".sheet[data-local]"); if (!sh) return;
+  const l = localDe(sh.dataset.local); if (!l) return;
+  const box = sh.firstChild, act = document.activeElement, id = act && act.id, v = id && act.value;
+  box.replaceChildren(...conteudoInsignia(l).flat(Infinity).filter(Boolean), h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
+  if (id) { const el = document.getElementById(id); if (el) { el.value = v || ""; el.focus(); } }
+}
+function editarPerfil() {
+  const v = eu(); if (!v) return;
+  const nome = h("input", { type: "text", id: "pf-nome", maxlength: "40", value: v.nome || "" });
+  const cid = h("input", { type: "text", id: "pf-cidade", maxlength: "40", value: v.cidade || "" });
+  const erro = h("p", { class: "msg err", role: "alert" });
+  const form = h("form", { onsubmit: async e => { e.preventDefault(); if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
+    try { await S.db.doc("viajantes/" + S.uid).update({ nome: nome.value.trim(), cidade: cid.value.trim() }); closeSheets(); } catch (err) { erro.textContent = "Não consegui salvar. Tente de novo."; } } },
+    h("h2", { text: "Meus dados" }), h("label", { for: "pf-nome" }, "Seu nome", nome), h("label", { for: "pf-cidade" }, "De onde você vem", cid), erro,
+    h("div", { class: "foot2" }, h("span"), h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: closeSheets }, "Cancelar"), h("button", { class: "btn gold", type: "submit" }, "Salvar"))));
+  closeSheets();
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, form);
+  document.body.append(sheet); nome.focus();
 }
 
 // ---------- Mapa ----------
@@ -503,7 +780,7 @@ function mapaIndia(cids) {
       onkeydown: e => { if (e.key === "Enter") { S.cidadeSel = c.id; render(); } } },
       h("circle", { class: "dot", cx: x, cy: y, r: 9 }),
       h("text", { x: right ? x + 20 : x - 20, y: y + 2, "text-anchor": right ? "start" : "end", text: c.nome.toUpperCase() }),
-      ls.length ? h("text", { class: "cnt", x: right ? x + 20 : x - 20, y: y + 22, "text-anchor": right ? "start" : "end", text: `${ok}/${ls.length} insígnias` }) : null));
+      ls.length ? h("text", { class: "cnt", x: right ? x + 20 : x - 20, y: y + 22, "text-anchor": right ? "start" : "end", text: `${ok}/${ls.length} selos` }) : null));
   });
   escala(svg, P); marcarClick(svg, "india");
   return svg;
@@ -525,7 +802,7 @@ function mapaCidade(c, ls) {
   pessoasNoMapa(svg, P, p => p.cidadeId === c.id);
   ins.forEach(l => {
     const [x, y] = P.xy(l), on = aberto(l), right = x < W - 190, i = insigniaLocais().indexOf(l) + 1;
-    svg.append(h("g", { class: `pin ${on ? "on" : "off"}${S.localSel === l.id ? " sel" : ""}`, tabindex: "0", role: "button", "aria-label": `${l.nome}${on ? "" : " (a conquistar)"}`,
+    svg.append(h("g", { class: `pin ${on ? "on" : "off"}${S.localSel === l.id ? " sel" : ""}`, tabindex: "0", role: "button", "aria-label": `${l.nome}${on ? "" : " (a carimbar)"}`,
       onclick: () => { if (S.marcando) return; S.localSel = l.id; S.unlockMsg = null; render(); },
       onkeydown: e => { if (e.key === "Enter") { S.localSel = l.id; render(); } } },
       h("circle", { class: "halo", cx: x, cy: y, r: 30 }),
@@ -573,13 +850,13 @@ function vMapa() {
         S.marcando ? h("p", { class: "msg ok", role: "status", text: "Toque no mapa no ponto onde você está." }) : null,
         h("div", { class: "map" + (S.marcando ? " marking" : "") }, c ? mapaCidade(c, ls) : mapaIndia(cids)),
         h("div", { class: "legend" },
-          c ? h("span", null, h("i", { style: "border:2px solid var(--gold)" }), "Insígnia") : h("span", { text: "Toque numa cidade para ver os lugares." }),
+          c ? h("span", null, h("i", { style: "border:2px solid var(--gold)" }), "Selo") : h("span", { text: "Toque numa cidade para ver os lugares." }),
           c ? h("span", null, h("i", { style: "border-radius:3px;border:2px solid var(--soft)" }), "Hotel") : null,
           h("span", null, h("i", { style: "background:var(--gold-deep)" }), "Pessoas da caravana"),
           h("span", { text: "O relevo é só decorativo." }))),
       h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" },
         loc ? painelLocal(loc) : c ? h("aside", { class: "panel" }, h("p", { class: "eyebrow", text: c.nome }), h("h2", { text: c.frase || "Toque num ponto do mapa" }),
-          h("p", { class: "small", text: "Os pontos com número são insígnias a conquistar. Quando a caravana chegar, a líder revela a palavra do lugar." })) : null,
+          h("p", { class: "small", text: "Os pontos com número são selos a carimbar. Quando a caravana chegar, a líder revela a palavra do lugar." })) : null,
         painelPessoas(c))));
 }
 
@@ -591,31 +868,6 @@ function painelLocal(l) {
   return h("aside", { class: "panel" }, conteudoInsignia(l));
 }
 const mapsUrl = l => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(l.busca || l.nome);
-
-function conteudoInsignia(l) {
-  const on = aberto(l), ens = S.ens.filter(e => e.localId === l.id);
-  const input = h("input", { type: "text", id: "unlock-" + l.id, placeholder: "Palavra do lugar", autocomplete: "off", "aria-label": "Palavra do lugar" });
-  const tentar = async () => { if (!input.value.trim()) return; S.unlockMsg = await desbloquear(l, input.value); render(); refreshSheet(); };
-  input.addEventListener("keydown", e => { if (e.key === "Enter") tentar(); });
-  const quando = minhas()[l.id];
-  return [
-    h("img", { class: "big", src: badgeSrc(l), alt: "Insígnia " + l.nome, style: on ? "" : "filter:grayscale(1) brightness(.4)" }),
-    h("p", { class: "eyebrow", style: "text-align:center", text: [cidadeDe(l.cidadeId)?.nome, l.dia ? "Dia " + l.dia : ""].filter(Boolean).join(" · ") }),
-    h("h2", { style: "text-align:center", text: l.nome }),
-    on ? (l.descricao ? h("p", { class: "lede", text: l.descricao }) : null) : (l.dica ? h("p", { class: "lede", style: "font-style:italic", text: l.dica }) : null),
-    on && quando ? h("p", { class: "small", style: "text-align:center", text: "Conquistada em " + new Date(quando).toLocaleDateString("pt-BR", { day: "numeric", month: "long" }) }) : null,
-    !on && l.codigo ? h("div", { class: "unlock" }, input, h("button", { class: "btn gold", type: "button", onclick: tentar }, "Conquistar")) : null,
-    S.unlockMsg ? h("p", { class: "msg " + (S.unlockMsg.ok ? "ok" : "err"), role: "status", text: S.unlockMsg.text }) : null,
-    h("div", { class: "actions" },
-      on ? ens.map(e => h("button", { class: "btn gold", type: "button", onclick: () => { S.ensSel = e.id; closeSheets(); go("ensinamentos"); } }, "Ler: " + e.titulo)) : null,
-      h("a", { class: "btn", href: mapsUrl(l), target: "_blank", rel: "noopener" }, "Google Maps")),
-    S.isOwner ? h("div", { class: "secret" },
-      h("p", null, "Só você vê isto. Palavra do lugar: ", h("code", { text: l.codigo || "(sem palavra)" }), l.aberto ? " · aberta para todos" : ""),
-      h("div", { class: "actions", style: "margin-top:8px" },
-        h("button", { class: "btn", type: "button", onclick: () => { closeSheets(); editar("local", l); } }, "Editar"),
-        h("button", { class: "btn", type: "button", onclick: () => S.db.doc("locais/" + l.id).update({ aberto: !l.aberto }).catch(() => {}) }, l.aberto ? "Fechar para todos" : "Liberar para todos"))) : null
-  ];
-}
 
 function painelPessoas(c) {
   const gente = S.posicoes.filter(p => Date.now() - (p.ts || 0) < FRESCO && (!c || p.cidadeId === c.id)).sort((a, b) => b.ts - a.ts);
@@ -665,70 +917,6 @@ async function salvarPos(p) {
   render();
 }
 async function pararPos() { try { await S.db.doc("posicoes/" + S.uid).delete(); S.posMsg = { ok: true, text: "Você saiu do mapa." }; } catch (e) {} render(); }
-
-// ---------- Insígnias ----------
-function vInsignias() {
-  const ls = insigniaLocais(), v = eu(), ok = ls.filter(aberto).length, nums = numeros();
-  if (S.badgeSel) { const l = localDe(S.badgeSel); S.badgeSel = null; if (l) setTimeout(() => abrirInsignia(l)); }
-  const gente = S.viajantes.slice().sort((a, b) => (a.lider ? -1 : 0) - (b.lider ? -1 : 0) || (nums[a.id] || 0) - (nums[b.id] || 0));
-  perfis(gente.map(g => g.id));
-  return h("section", { class: "view" },
-    h("div", { class: "passport" },
-      h("img", { src: S.uid ? avatar(S.uid) : "img/emblema.jpg", alt: "" }),
-      h("div", null,
-        h("p", { class: "num", text: v ? rotulo(S.uid) : "Passaporte da travessia" }),
-        h("h2", { text: v ? v.nome : "Viajante" }),
-        v && v.cidade ? h("p", { class: "small", text: "De " + v.cidade }) : null,
-        h("div", { class: "bar" }, h("i", { style: `width:${ls.length ? ok / ls.length * 100 : 0}%` })),
-        h("p", { class: "small", style: "margin-top:6px", text: `${ok} de ${ls.length} insígnias conquistadas` }),
-        !v && S.db && S.uid ? h("button", { class: "btn gold", type: "button", style: "margin-top:10px", onclick: () => { S.pularCadastro = false; render(); } }, "Fazer meu cadastro") : null,
-        v ? h("button", { class: "btn ghost", type: "button", style: "margin-top:6px;padding-left:0", onclick: editarPerfil }, "Editar meus dados") : null)),
-    h("div", null, h("p", { class: "eyebrow", text: "Insígnias da travessia" }),
-      h("p", { class: "lede", style: "margin-top:6px", text: "Em cada lugar sagrado a líder revela uma palavra. Toque na insígnia e digite a palavra para conquistá-la." })),
-    ls.length ? h("div", { class: "badges" }, ls.map(l => {
-      const on = aberto(l);
-      return h("button", { class: "badge" + (on ? "" : " off"), type: "button", onclick: () => { S.unlockMsg = null; abrirInsignia(l); }, "aria-label": l.nome + (on ? ", conquistada" : ", a conquistar") },
-        h("span", { class: "art" }, h("img", { src: badgeSrc(l), alt: "", loading: "lazy" })),
-        h("b", { text: l.nome }), h("small", { text: on ? "Conquistada" : "Dia " + (l.dia || "") + " · " + (cidadeDe(l.cidadeId)?.nome || "") }));
-    })) : carregando(),
-    gente.length ? h("div", { class: "panel" },
-      h("p", { class: "eyebrow", text: "A caravana" }),
-      h("h2", { text: gente.length === 1 ? "1 pessoa cadastrada" : gente.length + " pessoas cadastradas" }),
-      h("ul", { class: "roster" }, gente.map(g => h("li", null,
-        h("span", { class: "n", text: g.lider ? "✦" : nn(nums[g.id] || 0) }),
-        h("img", { src: avatar(g.id), alt: "" }),
-        h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : "", g.cidade].filter(Boolean).join(" · ") })),
-        h("span", { class: "c", text: `${conquistasDe(g)}/${ls.length}` }))))) : null);
-}
-function closeSheets() { document.querySelectorAll(".sheet").forEach(s => s.remove()); }
-function abrirInsignia(l) {
-  closeSheets();
-  const box = h("div", { role: "dialog", "aria-label": l.nome });
-  const pintar = () => box.replaceChildren(...conteudoInsignia(l), h("div", { class: "foot" }, h("span"), h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
-  pintar();
-  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
-  sheet.dataset.local = l.id;
-  document.body.append(sheet);
-}
-function refreshSheet() {
-  const sh = document.querySelector(".sheet[data-local]"); if (!sh) return;
-  const l = localDe(sh.dataset.local); if (!l) return;
-  const box = sh.firstChild, act = document.activeElement, v = act && act.id && act.value;
-  box.replaceChildren(...conteudoInsignia(l), h("div", { class: "foot" }, h("span"), h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
-  if (act && act.id) { const el = document.getElementById(act.id); if (el) { el.value = v || ""; el.focus(); } }
-}
-function editarPerfil() {
-  const v = eu(); if (!v) return;
-  const nome = h("input", { type: "text", id: "pf-nome", maxlength: "40", value: v.nome || "" });
-  const cid = h("input", { type: "text", id: "pf-cidade", maxlength: "40", value: v.cidade || "" });
-  const erro = h("p", { class: "msg err", role: "alert" });
-  const form = h("form", { onsubmit: async e => { e.preventDefault(); if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
-    try { await S.db.doc("viajantes/" + S.uid).update({ nome: nome.value.trim(), cidade: cid.value.trim() }); closeSheets(); } catch (err) { erro.textContent = "Não consegui salvar. Tente de novo."; } } },
-    h("h2", { text: "Meus dados" }), h("label", { for: "pf-nome" }, "Seu nome", nome), h("label", { for: "pf-cidade" }, "De onde você vem", cid), erro,
-    h("div", { class: "foot" }, h("span"), h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: closeSheets }, "Cancelar"), h("button", { class: "btn gold", type: "submit" }, "Salvar"))));
-  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, form);
-  document.body.append(sheet); nome.focus();
-}
 
 // ---------- Conversa ----------
 function vConversa() {
@@ -817,45 +1005,6 @@ function erroFoto(e) {
     c === "quota_or_state" ? "O espaço de fotos do aplicativo acabou." : "Não consegui enviar a foto. Tente de novo.";
 }
 
-// ---------- Ensinamentos ----------
-function vEnsinamentos() {
-  const e = S.ens.find(x => x.id === S.ensSel);
-  if (e && (ensLiberado(e) || S.isOwner)) {
-    const l = e.localId && localDe(e.localId);
-    return h("section", { class: "view" },
-      h("div", { class: "actions" },
-        h("button", { class: "btn ghost", type: "button", onclick: () => { S.ensSel = null; render(); } }, "← Todos os ensinamentos"),
-        S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editar("ens", e) }, "Editar") : null),
-      h("article", { class: "reader" },
-        l && l.insignia ? h("img", { class: "top-badge", src: badgeSrc(l), alt: "" }) : null,
-        h("p", { class: "eyebrow", text: [e.categoria, l && l.nome].filter(Boolean).join(" · ") }),
-        h("h1", { text: e.titulo }),
-        e.foto ? h("img", { class: "photo", src: blob(e.foto), alt: "" }) : null,
-        h("div", { class: "body" }, String(e.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() }))),
-        e.fonte ? h("p", { class: "src", text: "Fontes: " + e.fonte }) : null),
-      h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }));
-  }
-  const cats = {};
-  for (const x of S.ens.slice().sort(byOrdem)) (cats[x.categoria || "Ensinamentos"] ||= []).push(x);
-  return h("section", { class: "view" },
-    h("div", { class: "head" },
-      h("div", null, h("p", { class: "eyebrow", text: "Para ler pelo caminho" }), h("h1", { text: "Ensinamentos" })),
-      adminBtn("Novo ensinamento", () => editar("ens"))),
-    h("p", { class: "lede", text: "O guia da travessia fica aberto desde já. Os saberes de cada lugar se abrem junto com a insígnia dele." }),
-    Object.keys(cats).length ? h("div", { class: "cats" }, Object.entries(cats).map(([cat, xs]) => h("section", { class: "cat" },
-      h("h2", { text: cat }),
-      h("div", { class: "cards" }, xs.map(x => {
-        const lib = ensLiberado(x), l = x.localId && localDe(x.localId);
-        return h("button", { class: "card" + (lib ? "" : " locked"), type: "button", "aria-disabled": String(!lib && !S.isOwner),
-          onclick: () => { if (lib || S.isOwner) { S.ensSel = x.id; render(); $("#main").scrollTop = 0; } } },
-          l && l.insignia ? h("img", { src: badgeSrc(l), alt: "" }) : null,
-          h("h3", { text: x.titulo }),
-          h("p", { text: lib ? (x.resumo || "") : "Abre com a insígnia " + (l ? l.nome : "") + "." }),
-          lib ? null : h("span", { class: "chip", text: l && l.dia ? "Dia " + l.dia : "Em breve" }));
-      }))))) : carregando(),
-    h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }));
-}
-
 // ---------- Editor (só a líder) ----------
 function editar(tipo, item) {
   item = item || {};
@@ -931,17 +1080,19 @@ function listen(col, key, q, after) {
   }, () => { S.dbReady = true; if (after) after(); render(); });
 }
 
+fetch("dados/travessia.json").then(r => { if (!r.ok) throw 0; return r.json(); })
+  .then(j => { S.roteiro = j; render(); }).catch(() => { S.roteiroErro = true; render(); });
 render();
 (async () => {
   const [db, user, assets] = await Promise.all(["db", "user", "assets"].map(n => window.claude?.use?.(n) ?? null));
   S.db = db; S.user = user; S.assets = assets;
   if (user) { const me = await user.me(); S.me = me; S.uid = me.id; S.isOwner = me.isOwner; perfis([me.id]); }
   if (!db) { S.dbReady = true; render(); return; }
-  listen("dias", "dias"); listen("cidades", "cidades"); listen("locais", "locais"); listen("ensinamentos", "ens");
+  listen("cidades", "cidades"); listen("locais", "locais"); listen("ensinamentos", "ens");
   listen("viajantes", "viajantes", null, () => { S.vReady = true; });
   listen("chat", "chat", db.collection("chat").orderBy("ts", "desc").limit(400));
   listen("posicoes", "posicoes");
-  setInterval(() => { if ((S.tab === "mapa" || S.tab === "roteiro") && !document.activeElement?.matches?.("input,textarea,select") && !document.querySelector(".sheet")) render(); }, 60000);
+  setInterval(() => { if ((S.tab === "mapa" || S.tab === "travessia") && !document.activeElement?.matches?.("input,textarea,select") && !document.querySelector(".sheet")) render(); }, 60000);
 })();
 })();
 </script>
