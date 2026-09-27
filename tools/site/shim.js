@@ -48,7 +48,8 @@ if (!pronto) {
   fs.enablePersistence({ synchronizeTabs: true }).catch(() => {});
   const lider = String(CFG.lider || "").toLowerCase();
 
-  auth.getRedirectResult().catch(() => {});
+  // volta do login do Google (celular): se deu erro, mostra na tela de entrar
+  auth.getRedirectResult().catch(e => { erroLogin = e && e.code ? "Não consegui entrar (" + e.code.replace("auth/", "") + "). Tente de novo." : "Não consegui entrar. Tente de novo."; if (!auth.currentUser) telaLogin(); });
   auth.onAuthStateChanged(async u => {
     if (!u) return telaLogin();
     const email = String(u.email || "").toLowerCase();
@@ -65,11 +66,15 @@ if (!pronto) {
     telaPalavra();
   });
 }
+let erroLogin = "";
+// no celular o login abre na mesma aba e volta para o app (a janelinha separada se perde entre as abas do Safari)
+const celular = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent)) || matchMedia("(display-mode: standalone)").matches || navigator.standalone;
 function telaLogin() {
-  const erro = el("p", { className: "err" });
+  const erro = el("p", { className: "err", textContent: erroLogin });
   const b = el("button", { type: "button", onclick: async () => {
-    erro.textContent = "";
+    erro.textContent = ""; erroLogin = "";
     const prov = new firebase.auth.GoogleAuthProvider(); prov.setCustomParameters({ prompt: "select_account" });
+    if (celular) { b.disabled = true; b.textContent = "Abrindo o Google…"; try { await auth.signInWithRedirect(prov); return; } catch (x) { b.disabled = false; b.textContent = "Entrar com Google"; } }
     try { await auth.signInWithPopup(prov); }
     catch (e) {
       if (/popup|operation-not-supported|web-storage/.test(e.code || "")) { try { await auth.signInWithRedirect(prov); return; } catch (x) {} }
