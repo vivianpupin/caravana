@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 10:32";</script>
+<script>window.__VERSAO = "27/09 · 10:33";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1448,7 +1448,7 @@ async function montaVideoPassaporte(cv, aoFim) {
   const v = eu() || { nome: primeiroNome ? primeiroNome() : "Viajante" }, ls = insigniaLocais(), PW = 480, PH = 660;
   try { await document.fonts.ready; } catch (e) {}
   const imgs = {}; await Promise.all(ls.map(async l => { imgs[l.id] = await carregaLivre(badgeSrc(l)); }));
-  const capa = await carregaLivre("img/passaporte-capa.webp");
+  const capa = await carregaLivre("img/passaporte-capa.webp"), simbolo = await carregaLivre("img/simbolo-dourado.png");
   let foto = v.foto ? await carregaLivre(blob(v.foto)) : null;
   if (!foto) { try { const sv = bonecoSvg(bonecoDe(S.uid)); sv.setAttribute("xmlns", "http://www.w3.org/2000/svg"); sv.setAttribute("width", 240); sv.setAttribute("height", 360);
     const u = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(sv)], { type: "image/svg+xml" })); foto = await carregaLivre(u); } catch (e) {} }
@@ -1459,7 +1459,7 @@ async function montaVideoPassaporte(cv, aoFim) {
   if (paginas.length % 2) paginas.splice(paginas.length - 1, 0, (() => { const c = document.createElement("canvas"); c.width = PW; c.height = PH; papelPass(c.getContext("2d"), PW, PH, 1); return c; })());
   // lâminas: a capa, depois cada folha tem frente (direita) e verso (esquerda)
   const nViradas = paginas.length / 2 - 1, T0 = 2.2, TCAPA = 1.4, PAUSA = 1.5, TVIRA = 1.1, fim = T0 + TCAPA + PAUSA + nViradas * (TVIRA + PAUSA) + 2.6;
-  const W = 1080, H = 1920, x = cv.getContext("2d"), CX = 540, CY = 900, poeira = Array.from({ length: 70 }, (_, i) => [((i * 7919) % 1080), ((i * 104729) % 1920), 1 + (i % 3), (i % 7) / 7]);
+  const W = 1080, H = 1920, x = cv.getContext("2d"), CX = 540, CY = 960, poeira = Array.from({ length: 70 }, (_, i) => [((i * 7919) % 1080), ((i * 104729) % 1920), 1 + (i % 3), (i % 7) / 7]);
   const ease = t => t < 0 ? 0 : t > 1 ? 1 : t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
   const folha = (img, ang, sombra) => { // desenha uma página presa na lombada, girando em Y (ang 0 = aberta à direita, PI = à esquerda)
     const cs = Math.cos(ang), w = PW * Math.abs(cs); if (w < 1) return;
@@ -1513,8 +1513,13 @@ async function montaVideoPassaporte(cv, aoFim) {
   const quadro = t => {
     let g;
     cenario(t);
-    x.textAlign = "center"; x.globalAlpha = ease(t / 1.2); x.fillStyle = "#E9C27A"; x.font = '600 30px "Poppins",sans-serif'; x.fillText("M E U   P A S S A P O R T E", CX, 250);
-    x.fillStyle = "#FFF1D6"; x.font = '600 64px "Cinzel",Georgia,serif'; x.shadowColor = "rgba(255,190,100,.6)"; x.shadowBlur = 18; x.fillText("ÍNDIA SAGRADA", CX, 330); x.shadowBlur = 0; x.globalAlpha = 1;
+    // título igual ao da página Roteiro: símbolo, "Travessia da Índia Sagrada" e o mantra
+    x.textAlign = "center"; x.globalAlpha = ease(t / 1.2);
+    if (simbolo) { const sw = 96, sh = sw * simbolo.height / simbolo.width; x.shadowColor = "rgba(255,190,100,.55)"; x.shadowBlur = 20; x.drawImage(simbolo, CX - sw / 2, 120, sw, sh); x.shadowBlur = 0; }
+    x.fillStyle = "#FFF1D6"; x.font = '500 66px "Cinzel",Georgia,serif'; x.shadowColor = "rgba(255,190,100,.55)"; x.shadowBlur = 18;
+    x.fillText("Travessia da", CX, 330); x.fillText("Índia Sagrada", CX, 408); x.shadowBlur = 0;
+    x.fillStyle = "#C9A56A"; x.font = '600 32px "Poppins","Noto Sans Devanagari",sans-serif'; x.fillText("लोकाः समस्ताः सुखिनो भवन्तु", CX, 470);
+    x.strokeStyle = "rgba(201,165,106,.8)"; x.lineWidth = 2; x.beginPath(); x.moveTo(CX - 60, 500); x.lineTo(CX + 60, 500); x.stroke(); x.globalAlpha = 1;
     // livro: flutua e se aproxima
     const tl = t - T0, abre = ease(tl / TCAPA), flutua = Math.sin(t * 1.6) * 8, esc = .66 + .14 * ease(t / 2.2);
     x.save(); x.translate(CX - (1 - abre) * PW / 2 * esc, CY + flutua); x.scale(esc, esc);
@@ -1752,9 +1757,6 @@ function vPassaporte() {
       h("div", { class: "actions", style: "margin-top:8px" }, h("button", { class: "btn ghost", type: "button", onclick: editarPerfil }, "Editar meus dados")))
     : S.db && S.uid ? h("div", { class: "panel", style: "text-align:center;align-items:center" }, h("p", { class: "lede", text: "Emita seu passaporte para guardar os selos e aparecer para a caravana." }),
         h("button", { class: "btn gold", type: "button", onclick: () => { S.pularCadastro = false; render(); } }, "Emitir meu passaporte")) : null,
-    S.isOwner || aberto(localDe("travessia")) ? h("button", { class: "folhear video", type: "button", onclick: abrirVideoPassaporte },
-      h("span", { class: "vidico", "aria-hidden": "true", text: "▶" }),
-      h("span", null, h("b", { text: "Vídeo do meu passaporte" }), h("span", { text: "O passaporte gira, abre e folheia seus selos. Pronto para Reels e Stories." }))) : null,
     h("button", { class: "folhear", type: "button", onclick: () => abrirLivro(0) },
       h("img", { src: "img/passaporte-capa.webp", alt: "" }),
       h("span", null, h("b", { text: "Folhear meu passaporte" }), h("span", { text: "Abra o passaporte e vire as páginas com seus selos carimbados." }))),
@@ -1769,7 +1771,10 @@ function vPassaporte() {
         h("img", { src: avatar(g.id), alt: "" }),
         h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : tituloViajante(g), totalViagens(g) > 1 ? totalViagens(g) + " viagens" : "", g.cidade].filter(Boolean).join(" · ") }), medalhasDe(g, 24)),
         h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null,
-    vEntradasLider());
+    vEntradasLider(),
+    S.isOwner || aberto(localDe("travessia")) ? h("button", { class: "folhear video", type: "button", onclick: abrirVideoPassaporte },
+      h("span", { class: "vidico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("path", { d: "M8 5.5v13l11-6.5z", fill: "#3B2A1C" }))),
+      h("span", null, h("b", { text: "Vídeo do meu passaporte" }), h("span", { text: "O passaporte gira, abre e folheia seus selos. Pronto para Reels e Stories." }))) : null);
 }
 // Só a líder, no site próprio: quem já entrou no app com a palavra da caravana
 function vEntradasLider() {
