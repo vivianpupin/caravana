@@ -3247,6 +3247,7 @@ function vTira() {
   const set = (k, v) => { T[k] = v; render(); };
   const blob = () => new Promise(res => canvas.toBlob(res, "image/jpeg", .92));
   const salvar = async () => {
+    if (noSite()) return salvarNoRolo(blob(), "caravana-tira.jpg", msg);
     const dl = await (window.claude?.use?.("downloads") ?? null);
     if (!dl) { msg.textContent = "Para salvar, toque e segure na imagem e escolha Salvar imagem."; msg.className = "msg"; return; }
     try { await dl.save({ filename: "caravana-tira.jpg", data: await blob() }); msg.textContent = "Tira salva."; msg.className = "msg ok"; }
@@ -3341,6 +3342,7 @@ function vFotos() {
   cid.addEventListener("change", () => set("cidade", cid.value));
   const blobDoCanvas = () => new Promise(res => canvas.toBlob(res, "image/jpeg", .92));
   const salvar = async () => {
+    if (noSite()) return salvarNoRolo(blobDoCanvas(), "caravana-" + (F.cidade || "india").toLowerCase() + ".jpg", msg);
     const dl = await (window.claude?.use?.("downloads") ?? null);
     if (!dl) { msg.textContent = "Para salvar, toque e segure na foto e escolha Salvar imagem."; msg.className = "msg"; return; }
     try { await dl.save({ filename: "caravana-" + (F.cidade || "india").toLowerCase() + ".jpg", data: await blobDoCanvas() }); msg.textContent = "Foto salva."; msg.className = "msg ok"; }
@@ -4078,9 +4080,21 @@ function abasFotos() {
   return h("div", { class: "fcats", role: "tablist", style: "margin-top:-4px" },
     [["estudio", "Estúdio"], ["tira", "Tira de fotos"], ["mural", "Galeria da caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
 }
+// Salvar foto no rolo da câmera: no celular abre o menu de compartilhar, onde aparece "Salvar imagem"
+const podeRolo = () => { try { return !!(navigator.canShare && navigator.canShare({ files: [new File([new Blob(["x"], { type: "image/jpeg" })], "t.jpg", { type: "image/jpeg" })] })); } catch (e) { return false; } };
+async function salvarNoRolo(blobP, nome, msg) {
+  const dl = noSite() ? null : await (window.claude?.use?.("downloads") ?? null);
+  const b = await blobP;
+  if (dl) { try { await dl.save({ filename: nome, data: b }); msg.textContent = "Foto salva."; msg.className = "msg ok"; } catch (e) { msg.textContent = e && e.code === "declined" ? "" : "Não consegui salvar. Toque e segure na foto e escolha Salvar imagem."; msg.className = "msg"; } return; }
+  const f = new File([b], nome, { type: "image/jpeg" });
+  if (podeRolo()) { try { await navigator.share({ files: [f] }); msg.textContent = "Pronto! Se escolheu Salvar imagem, a foto está no rolo da câmera."; msg.className = "msg ok"; } catch (e) { if (e && e.name !== "AbortError") { msg.textContent = "Toque e segure na foto e escolha Salvar imagem."; msg.className = "msg"; } } return; }
+  const a = h("a", { href: URL.createObjectURL(b), download: nome }); document.body.append(a); a.click(); a.remove();
+  msg.textContent = "Foto salva."; msg.className = "msg ok";
+}
 // Álbum da tribo: todas as fotos da galeria (e do chat) num arquivo .zip só
 function carregaScript(src) { return new Promise((ok, erro) => { if (document.querySelector(`script[src="${src}"]`)) return ok(); const sc = document.createElement("script"); sc.src = src; sc.onload = ok; sc.onerror = erro; document.head.append(sc); }); }
 async function baixarAlbum(st, cid) {
+  const rolo = noSite() && podeRolo();
   const itens = [...S.mural.filter(f => f.fotoId && (!cid || f.cidade === cid)).map(f => ({ id: f.fotoId, autor: f.autor, cidade: f.cidade, ts: f.ts })),
     ...(cid ? [] : S.chat.filter(m => m.tipo === "foto" && m.fotoId).map(m => ({ id: m.fotoId, autor: m.autor, cidade: "chat", ts: m.ts })))].sort((a, b) => (a.ts || 0) - (b.ts || 0));
   if (!itens.length) { st.textContent = "Ainda não tem fotos no álbum."; return; }
@@ -4097,6 +4111,20 @@ async function baixarAlbum(st, cid) {
       } catch (e) {}
       if (dados) { zip.file(`${String(i + 1).padStart(3, "0")}-${limpa(f.cidade) || "caravana"}-${limpa(nomeDe(f.autor).split(" ")[0]) || "viajante"}.jpg`, dados, typeof dados === "string" ? { base64: true } : {}); feitas++; }
       st.textContent = `Juntando as fotos… ${i + 1} de ${itens.length}`;
+    }
+    if (rolo) {
+      // no celular: entrega em grupos de 20 fotos, cada grupo com um toque, direto para o rolo da câmera
+      const arqs = Object.values(zip.files).sort((a, b) => a.name.localeCompare(b.name));
+      const files = await Promise.all(arqs.map(async z => new File([await z.async("blob")], z.name, { type: "image/jpeg" })));
+      const caixa = st.parentNode; caixa.querySelectorAll(".rolo").forEach(x => x.remove());
+      for (let i = 0; i < files.length; i += 20) {
+        const grupo = files.slice(i, i + 20);
+        caixa.append(h("button", { class: "btn gold rolo", type: "button", onclick: async ev => {
+          try { await navigator.share({ files: grupo }); ev.target.textContent = "✓ Fotos " + (i + 1) + "–" + (i + grupo.length); ev.target.className = "btn rolo"; } catch (e) {}
+        } }, `Salvar fotos ${i + 1}–${i + grupo.length} no rolo da câmera`));
+      }
+      st.textContent = `${feitas} fotos prontas. Toque em cada botão e escolha "Salvar ${files.length > 1 ? "imagens" : "imagem"}".`;
+      return;
     }
     const arq = await zip.generateAsync({ type: "blob" }), nome = "album-caravana-do-ceu" + (cid ? "-" + limpa(cid) : "") + ".zip";
     const dl = await (window.claude?.use?.("downloads") ?? null);
@@ -4115,7 +4143,7 @@ function vMural() {
     h("div", { class: "opts" }, [["", "Todas"], ...CIDADES_MURAL.map(c => [c, c])].map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(cid === id), onclick: () => { S.muralCidade = id; render(); } },
       n + (id ? ` · ${S.mural.filter(f => f.cidade === id).length}` : "")))),
     fotos.length ? (() => { const st = h("p", { class: "small", role: "status" }); return h("div", { class: "album" },
-      h("button", { class: "btn", type: "button", onclick: () => baixarAlbum(st, cid) }, cid ? `Baixar álbum de ${cid}` : "Baixar álbum da tribo"),
+      h("button", { class: "btn", type: "button", onclick: () => baixarAlbum(st, cid) }, (noSite() && podeRolo() ? "Salvar no celular: " : "Baixar ") + (cid ? `álbum de ${cid}` : "álbum da tribo")),
       h("span", { class: "small", text: cid ? "As fotos desta cidade num arquivo só." : "Todas as fotos da galeria e do chat num arquivo só." }), st); })() : null,
     fotos.length ? h("div", { class: "mural" }, fotos.map(f => h("button", { type: "button", class: "mfoto", onclick: () => abrirFotoMural(f), "aria-label": (f.legenda || "Foto") + " de " + nomeDe(f.autor) },
       h("img", { src: blob(f.fotoId), alt: "", loading: "lazy" }), h("span", { text: nomeDe(f.autor).split(" ")[0] + (f.cidade && !cid ? " · " + f.cidade : "") }))))
@@ -4131,6 +4159,8 @@ function abrirFotoMural(f) {
     h("p", { class: "eyebrow", text: [f.cidade, new Date(f.ts).toLocaleDateString("pt-BR")].filter(Boolean).join(" · ") }),
     f.legenda ? h("h3", { text: f.legenda }) : null,
     h("p", { class: "small", text: "Enviada por " + nomeDe(f.autor) }), st,
+    h("div", { class: "actions", style: "justify-content:center" },
+      h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(fetch(blob(f.fotoId)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + ".jpg", st) }, "Salvar no celular")),
     h("div", { class: "foot2" },
       meu ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (!confirm("Tirar esta foto da galeria?")) return; S.db.doc("mural/" + f.id).delete().then(closeSheets, () => { st.textContent = "Não consegui tirar a foto."; st.className = "msg err"; }); } }, "Tirar da galeria") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
