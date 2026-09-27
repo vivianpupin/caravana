@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 13:15";</script>
+<script>window.__VERSAO = "27/09 · 13:19";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3417,8 +3417,8 @@ function convidaAvisos() {
     const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) { lsSet("cdi-cel-push", String(Date.now())); closeSheets(); } } },
       h("div", { class: "convite", role: "dialog", "aria-label": "Ativar avisos" },
         h("img", { src: "img/simbolo-marrom.png", alt: "", class: "convsimb" }),
-        h("h2", { text: (eu().genero === "o" ? "Bem-vindo" : eu().genero === "a" ? "Bem-vinda" : "Boas-vindas") + " ao app da Caravana" }),
-        h("p", { text: "Ative os avisos para receber no celular as mensagens da caravana, mesmo com o app fechado." }),
+        h("h2", { text: "Boas-vindas ao guia de bolso da Caravana" }),
+        h("p", { text: "Ative as notificações do app para receber as mensagens da tribo." }),
         h("button", { class: "btn gold", type: "button", onclick: () => { closeSheets(); S.tab = "conversa"; ativarAvisos(); } }, "🔔 Ativar avisos"),
         h("button", { class: "btn ghost", type: "button", onclick: () => { lsSet("cdi-cel-push", String(Date.now())); closeSheets(); } }, "Agora não")));
     document.body.append(sheet);
