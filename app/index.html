@@ -4084,7 +4084,26 @@ function pergaminhoCarta(c) {
       h("span", { class: "lacre", "aria-hidden": "true" }, h("img", { src: "img/simbolo-claro.png", alt: "" }))),
     h("span", { class: "rolo bot", "aria-hidden": "true" }));
 }
+// som de asas batendo: rajadas curtas de ruído filtrado, no ritmo da animação do pombo
+function asas() {
+  try {
+    const A = window.AudioContext || window.webkitAudioContext; if (!A) return;
+    const ctx = S.audio || (S.audio = new A()); if (ctx.state === "suspended") ctx.resume();
+    if (ctx.state !== "running") return;
+    const sr = ctx.sampleRate, buf = ctx.createBuffer(1, sr * .2, sr), d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2);
+    const t0 = ctx.currentTime + .05;
+    for (let k = 0; k < 9; k++) {
+      const src = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(), t = t0 + k * .21 + (k % 2) * .02;
+      src.buffer = buf; f.type = "bandpass"; f.frequency.value = 520 + (k % 3) * 90; f.Q.value = .8;
+      const v = .55 * (1 - k / 11);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + .03); g.gain.exponentialRampToValueAtTime(.001, t + .18);
+      src.connect(f); f.connect(g); g.connect(ctx.destination); src.start(t); src.stop(t + .2);
+    }
+  } catch (e) {}
+}
 function abrirCarta(c, chegou) {
+  if (chegou) asas();
   closeSheets(); marcaCarta(c.id); setTimeout(render, 0);
   const box = h("div", { role: "dialog", "aria-label": "Carta: " + (c.titulo || "correspondência"), class: "correiobox" + (chegou ? " chegou" : "") },
     chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: c.pessoal ? "Chegou uma carta só para você!" : "Chegou uma carta por pombo-correio!" })) : null,
