@@ -379,6 +379,8 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .me b{color:#E2BE78}
 nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(10,minmax(52px,1fr));overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
+.navmais{display:none;position:fixed;right:0;bottom:0;width:44px;height:calc(76px + env(safe-area-inset-bottom,0px));background:linear-gradient(90deg,rgba(43,31,20,0),#2B1F14 65%);color:#E2BE78;font-size:26px;align-items:center;justify-content:flex-end;padding:0 8px calc(env(safe-area-inset-bottom,0px) + 6px) 0;pointer-events:none;z-index:30}
+body.navmais-on .navmais{display:flex}
 nav.tabs button{color:#BFA67A;font-size:10px}
 nav.tabs .ic{width:44px!important}
 nav.tabs .ic{width:48px;color:#E9D7B0}
@@ -806,17 +808,18 @@ nav.tabs button{position:relative}
     <div class="topside right"><button class="me" id="me" type="button" hidden></button></div>
   </header>
   <main id="main"></main>
+  <div class="navmais" aria-hidden="true">›</div>
   <nav class="tabs" id="tabs" aria-label="Seções">
     <button data-tab="travessia"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8.5 3v4M15.5 3v4M8 13.5h3M8 16.5h6"/></svg></span>Roteiro</button>
     <button data-tab="passaporte"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="3" width="13" height="18" rx="1.5"/><circle cx="12" cy="10.5" r="3.2"/><path d="M8.8 10.5h6.4M12 7.3c1 1 1 5.4 0 6.4M12 7.3c-1 1-1 5.4 0 6.4M9 17h6"/></svg></span>Passaporte</button>
     <button data-tab="ensinamentos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-4.5 0-8-2.5-8-6 3 0 6 1.5 8 6zM12 20c4.5 0 8-2.5 8-6-3 0-6 1.5-8 6zM12 20c-2-2.5-3-5.5-2-9 1-2.5 1.5-4 2-6 .5 2 1 3.5 2 6 1 3.5 0 6.5-2 9z"/></svg></span>Saberes</button>
     <button data-tab="mapa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span>Mapa</button>
+    <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
     <button data-tab="explorador"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9.5h14"/><path d="M8.5 9.5c0-3 1.5-5 3.5-5s3.5 2 3.5 5"/><circle cx="12" cy="12.5" r="2.6"/><path d="M7.5 21c0-3.5 2-5.5 4.5-5.5s4.5 2 4.5 5.5"/></svg></span>Explorador</button>
     <button data-tab="fotos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h3l1.6-2.2h6.8L17 7.5h3a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.8"/><path d="M17.5 10.3h.01"/></svg></span>Fotos</button>
     <button data-tab="conversa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span>Chat</button>
     <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Mural</button>
     <button data-tab="cambio"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 8h6M9 10.8h6M10.5 8c2.2 0 3.2 1.2 3.2 2.8S12.7 13.6 10.5 13.6H9.5l4.2 3.4"/></svg></span>Câmbio</button>
-    <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
   </nav>
 </div>
 
@@ -939,9 +942,13 @@ const BRT = () => new Date().toLocaleTimeString("pt-BR", { timeZone: "America/Sa
 const faltam = () => Math.ceil((new Date("2026-11-04T00:00:00+05:30").getTime() - Date.now()) / 86400000);
 
 // ---------- navegação ----------
+// barra de abas: esmaece a borda enquanto houver mais abas escondidas à direita
+function marcaMaisAbas() { const n = $("#tabs"), d = $(".navmais"); if (!n) return; if (d) d.style.height = n.offsetHeight + "px"; document.body.classList.toggle("navmais-on", n.scrollLeft + n.clientWidth < n.scrollWidth - 4); }
+setTimeout(() => { const n = $("#tabs"); if (!n) return; n.addEventListener("scroll", marcaMaisAbas, { passive: true }); window.addEventListener("resize", marcaMaisAbas); marcaMaisAbas(); }, 0);
 function go(tab) {
   S.tab = tab; try { localStorage.setItem("cdi-tab2", tab); } catch (e) {}
   render(); $("#main").scrollTop = 0;
+  try { document.querySelector(`#tabs button[data-tab="${tab}"]`)?.scrollIntoView({ inline: "nearest", block: "nearest" }); } catch (e) {}
 }
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (!b) return; if (b.dataset.tab === "ensinamentos") S.ensSel = null; if (b.dataset.tab === "mapa") S.montando = false; go(b.dataset.tab); });
 $("#me").addEventListener("click", () => go("passaporte"));
