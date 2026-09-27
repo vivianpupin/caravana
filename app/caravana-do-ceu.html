@@ -251,6 +251,11 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .fundopass{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;z-index:0}
 .fundopass>svg:first-child{position:absolute;inset:0}
 .fpmarca{position:absolute;pointer-events:none}
+.fpcar{opacity:.14;width:220px;height:auto;mix-blend-mode:multiply;filter:blur(.4px)}
+.fpc0{top:3%;left:-40px;transform:rotate(-12deg)}.fpc1{top:14%;right:-50px;transform:rotate(8deg)}
+.fpc2{top:27%;left:-30px;transform:rotate(-4deg)}.fpc3{top:39%;right:-40px;transform:rotate(14deg)}
+.fpc4{top:52%;left:-45px;transform:rotate(-9deg)}.fpc5{top:64%;right:-30px;transform:rotate(5deg)}
+.fpc6{top:77%;left:-35px;transform:rotate(-15deg)}.fpc7{top:89%;right:-45px;transform:rotate(10deg)}
 .fpmand{opacity:.13;width:300px;height:auto}
 .fp-m1{top:-60px;left:50%;margin-left:-150px}
 .fp-m2{top:22%;left:-110px;transform:rotate(12deg)}
@@ -1016,6 +1021,8 @@ const localDe = id => S.locais.find(l => l.id === id);
 // selos que saíram da travessia (a visita não acontece mais): somem do passaporte e do mapa; o saber ligado a eles fica livre
 const REMOVIDOS = ["galta-ji", "beatles-ashram"];
 const EXTRAS = [
+  { id: "sankat-mochan", nome: "Sankat Mochan", insignia: "sankat-mochan", cidadeId: "varanasi", dia: 7, ordem: 7.6, codigo: "hanuman", lat: 25.2826, lng: 82.9987, busca: "Sankat Mochan Hanuman Temple Varanasi", aberto: false,
+    descricao: "O templo de Hanuman em Varanasi, aquele que livra das dificuldades.", dica: "O devoto que carregou uma montanha espera entre as árvores." },
   { id: "ganesha", nome: "Moti Dungri · Ganesha", insignia: "ganesha", cidadeId: "jaipur", dia: 4, ordem: 3.9, codigo: "ganapati", lat: 26.8950, lng: 75.8176, busca: "Moti Dungri Ganesh Temple Jaipur", aberto: false,
     descricao: "O templo de Ganesha aos pés do forte de Moti Dungri, onde se pede a bênção que abre os caminhos.", dica: "Antes de tudo, saudar quem remove os obstáculos." },
   { id: "govind-dev-ji", nome: "Darshan de Krishna", insignia: "govind-dev-ji", cidadeId: "jaipur", dia: 4, ordem: 4.5, codigo: "govinda", lat: 26.9294, lng: 75.8235, busca: "Govind Dev Ji Temple Jaipur", aberto: false,
@@ -1729,6 +1736,35 @@ function celebraSelo(l) {
 function rosacea(R, r, d, voltas) {
   let p = ""; for (let i = 0; i <= voltas * 360; i += 2) { const t = i * Math.PI / 180, x = (R - r) * Math.cos(t) + d * Math.cos((R - r) / r * t), y = (R - r) * Math.sin(t) - d * Math.sin((R - r) / r * t); p += (i ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1); } return p;
 }
+// carimbos de fundo (retangulares, sem os redondos): tinta desbotada, falhada e arrastada
+const CARIMBOS_FUNDO = [
+  { t: ["ENTRADA · ARRIVAL", "DELHI", "04 NOV 2026"], cor: "#2F4F8A", f: "ret", r: -12 },
+  { t: ["IMMIGRATION", "INDIA", "VISTO · VISA"], cor: "#A8281B", f: "chanfro", r: 8 },
+  { t: ["AGRA", "ताज महल"], cor: "#5B3F7A", f: "ret2", r: -4 },
+  { t: ["JAIPUR", "PINK CITY", "07 NOV"], cor: "#A8281B", f: "chanfro", r: 14 },
+  { t: ["VARANASI", "काशी", "08 NOV 2026"], cor: "#2F4F8A", f: "ret", r: -9 },
+  { t: ["CARAVANA DO CÉU", "✦ VISTO ✦"], cor: "#3F6B4A", f: "ret2", r: 5, simb: 1 },
+  { t: ["RISHIKESH", "ऋषिकेश", "HIMALAIA"], cor: "#5B3F7A", f: "chanfro", r: -15 },
+  { t: ["SAÍDA · DEPARTURE", "DELHI", "16 NOV 2026"], cor: "#A8281B", f: "ret", r: 10 }
+];
+function carimboBorrado(c, simbolo) {
+  const W = 360, H = 200, cv = document.createElement("canvas"); cv.width = W + 40; cv.height = H + 40; const x = cv.getContext("2d");
+  x.translate(20, 20); x.strokeStyle = c.cor; x.fillStyle = c.cor; x.lineJoin = "round";
+  const forma = (m) => { x.beginPath(); if (c.f === "chanfro") { const k = 26; x.moveTo(k + m, m); x.lineTo(W - k - m, m); x.lineTo(W - m, k + m); x.lineTo(W - m, H - k - m); x.lineTo(W - k - m, H - m); x.lineTo(k + m, H - m); x.lineTo(m, H - k - m); x.lineTo(m, k + m); x.closePath(); } else x.rect(m, m, W - 2 * m, H - 2 * m); };
+  x.lineWidth = 7; forma(4); x.stroke(); if (c.f !== "ret2") { x.lineWidth = 2.5; forma(16); x.stroke(); }
+  x.textAlign = "center"; x.textBaseline = "middle";
+  const linhas = c.t, tamanhos = linhas.length === 2 ? [30, 44] : [24, 50, 26];
+  if (c.simb && simbolo) { const sb = simboloEm(simbolo, c.cor, 58); x.drawImage(sb, W / 2 - sb.width / 2, 22); }
+  linhas.forEach((l, i) => { x.font = `700 ${tamanhos[i]}px "Courier Prime","Poppins","Noto Sans Devanagari",monospace`; const y = c.simb ? 118 + i * 44 : (H / (linhas.length + 1)) * (i + 1); x.fillText(l, W / 2, y, W - 50); });
+  // falhas de tinta e borrão arrastado
+  x.globalCompositeOperation = "destination-out";
+  for (let k = 0; k < 1400; k++) { x.globalAlpha = Math.random() * .9; x.beginPath(); x.arc(Math.random() * W, Math.random() * H, Math.random() * 3.2, 0, 7); x.fill(); }
+  x.globalAlpha = .5; const g = x.createLinearGradient(0, 0, W, 0); g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(Math.random() * .5 + .3, "rgba(0,0,0,.8)"); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(0, H * (.2 + Math.random() * .5), W, 26);
+  x.globalCompositeOperation = "source-over"; x.globalAlpha = 1;
+  const out = document.createElement("canvas"); out.width = cv.width; out.height = cv.height; const o = out.getContext("2d");
+  o.globalAlpha = .35; o.drawImage(cv, 5, 2); o.globalAlpha = 1; o.drawImage(cv, 0, 0);
+  return out.toDataURL("image/png");
+}
 function fundoPassaporte() {
   if (fundoPassaporte.el) return fundoPassaporte.el.cloneNode(true);
   const ondas = Array.from({ length: 5 }, (_, k) => { let d = ""; for (let x = 0; x <= 240; x += 4) d += (x ? "L" : "M") + x + " " + (30 + k * 3 + Math.sin(x / 240 * Math.PI * 4 + k * .6) * (9 + k)).toFixed(1); return d; });
@@ -1748,11 +1784,11 @@ function fundoPassaporte() {
   const elefante = `<svg class="fpmarca fp-elef" viewBox="0 0 120 80"><path d="M20 60V44C20 26 34 16 54 16C74 16 86 26 90 38C96 38 102 44 102 52V70M90 38C90 52 96 60 104 62M36 60V72M52 60V72M72 60V72M86 56V72M20 50H14M60 16C58 26 64 34 74 34" fill="none" stroke="rgba(63,122,110,.17)" stroke-width="1.6" stroke-linecap="round"/><circle cx="80" cy="32" r="1.6" fill="rgba(63,122,110,.2)"/><path d="M34 22Q54 6 74 22" fill="none" stroke="rgba(160,110,60,.18)" stroke-width="1.2" stroke-dasharray="2 2"/></svg>`;
   const om = `<span class="fpmarca fp-om" lang="sa">ॐ</span>`;
   const div = h("div", { class: "fundopass", "aria-hidden": "true" });
-  // marcas d'água: as mandalas com o símbolo da Caravana, espalhadas pela página
-  div.innerHTML = svg + ["fp-m1", "fp-m2", "fp-m3", "fp-m4", "fp-m5"].map(c => `<img class="fpmarca fpmand ${c}" alt="">`).join("");
-  const poe = url => document.querySelectorAll(".fpmand").forEach(im => { if (!im.src) im.src = url; });
-  if (fundoPassaporte.mand) div.querySelectorAll(".fpmand").forEach(im => im.src = fundoPassaporte.mand);
-  else carregaImg("img/simbolo-dourado.png").then(img => { fundoPassaporte.mand = mandala(img, 220, "#8A6B43").toDataURL("image/png"); fundoPassaporte.el.querySelectorAll(".fpmand").forEach(im => im.src = fundoPassaporte.mand); poe(fundoPassaporte.mand); }).catch(() => {});
+  // marcas d'água: borrões de carimbo de entrada e saída, como num passaporte bem viajado
+  div.innerHTML = svg + CARIMBOS_FUNDO.map((_, i) => `<img class="fpmarca fpcar fpc${i}" alt="">`).join("");
+  const poe = urls => document.querySelectorAll(".fpcar").forEach(im => { const i = +[...im.classList].find(c => /^fpc\d/.test(c)).slice(3); if (!im.src) im.src = urls[i]; });
+  if (fundoPassaporte.car) div.querySelectorAll(".fpcar").forEach((im, i) => im.src = fundoPassaporte.car[i]);
+  else carregaImg("img/simbolo-dourado.png").then(img => { fundoPassaporte.car = CARIMBOS_FUNDO.map(c => carimboBorrado(c, img)); fundoPassaporte.el.querySelectorAll(".fpcar").forEach((im, i) => im.src = fundoPassaporte.car[i]); poe(fundoPassaporte.car); }).catch(() => {});
   fundoPassaporte.el = div; return div.cloneNode(true);
 }
 // Trilha dos selos: um caminho dourado que vai acendendo a cada lugar carimbado
@@ -3329,7 +3365,7 @@ function erroFoto(e) {
 function editar(tipo, item) {
   item = item || {};
   const cids = S.cidades.slice().sort(byOrdem), locs = S.locais.slice().sort(byOrdem);
-  const INS = ["", "india", "taj-mahal", "ganesha", "jaipur", "govind-dev-ji", "varanasi", "diwali", "ganga-aarti", "manikarnika", "durga-kund", "batismo", "rishikesh", "travessia", "kunjapuri", "caverna"];
+  const INS = ["", "india", "taj-mahal", "ganesha", "jaipur", "govind-dev-ji", "varanasi", "diwali", "ganga-aarti", "manikarnika", "durga-kund", "sankat-mochan", "batismo", "rishikesh", "travessia", "kunjapuri", "caverna"];
   const F = {
     dia: { col: "dias", t: "dia", campos: [["n", "Número do dia", "num"], ["iso", "Data (AAAA-MM-DD)"], ["data", "Data por extenso (ex.: Quarta · 4 nov)"], ["cidade", "Cidade(s)"], ["titulo", "Título"],
       ["itens", "Programação (uma linha por item: 18:00 | Ganga Aarti)", "linhas"], ["nota", "Nota", "area"], ["ordem", "Ordem", "num"]], obrig: "titulo" },
@@ -3583,7 +3619,7 @@ function vDiario(d, liberado) {
     d.n === 13 && leituraAberta() ? h("button", { class: "btn gold", type: "button", onclick: () => abrirLeitura() }, "Abrir a mensagem do meu diário") : null);
 }
 // Correspondência: cartas da líder, em pergaminho, por pombo-correio
-const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nQuinze selos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
+const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nDezesseis selos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
 const ASSINATURA = "Vivian · Caravana do Céu";
 const cartasAbertas = () => S.cartas.filter(c => !c.rascunho && c.envio && c.envio <= Date.now()).sort((a, b) => a.envio - b.envio);
 const dataCarta = ts => new Date(ts).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" });
@@ -4187,7 +4223,7 @@ render();
     setTimeout(checaCorreio, 1200);
     // a carta final foi escrita quando eram doze selos; agora são quinze (a líder corrige uma vez só)
     const f = S.isOwner && S.cartas.find(c => c.id === "final");
-    if (f && /(Doze|Treze|Catorze) selos/.test(f.texto || "")) S.db.doc("cartas/final").update({ texto: f.texto.replace(/(Doze|Treze|Catorze) selos/, "Quinze selos") }).catch(() => {});
+    if (f && /(Doze|Treze|Catorze|Quinze) selos/.test(f.texto || "")) S.db.doc("cartas/final").update({ texto: f.texto.replace(/(Doze|Treze|Catorze|Quinze) selos/, "Dezesseis selos") }).catch(() => {});
   });
   listen("pensamentos", "pedra");
   if (S.isOwner && window.__SITE) listen("membros", "membros");
