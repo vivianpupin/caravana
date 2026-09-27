@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 11:41";</script>
+<script>window.__VERSAO = "27/09 · 11:42";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -2374,8 +2374,8 @@ function vExplorador() {
         h("p", { class: "lab", text: "Pele" }), cores("pele", BONECO.pele, "Tom de pele"),
         h("p", { class: "lab", text: "Cabelo" }), chips("cabelo", BONECO.cabelo), cores("cabeloCor", BONECO.cabeloCor, "Cor do cabelo"),
         h("p", { class: "lab", text: "Roupa" }), chips("roupa", BONECO.roupa), cores("roupaCor", BONECO.roupaCor, "Cor da roupa"),
-        h("p", { class: "lab", text: "Mão esquerda · instrumentos" }), chips("acessorio", BONECO.acessorio.filter(([v]) => v === "nenhum" || INSTRUMENTOS.includes(v))),
-        h("p", { class: "lab", text: "Mão direita · objetos" }), chips("acessorio2", BONECO.acessorio.filter(([v]) => !INSTRUMENTOS.includes(v))),
+        h("p", { class: "lab", text: "Mão esquerda" }), chips("acessorio", BONECO.acessorio.filter(([v]) => v === "nenhum" || INSTRUMENTOS.includes(v))),
+        h("p", { class: "lab", text: "Mão direita" }), chips("acessorio2", BONECO.acessorio.filter(([v]) => !INSTRUMENTOS.includes(v))),
         h("p", { class: "lab", text: "Óculos" }), chips("oculos", BONECO.oculos),
         h("p", { class: "lab", text: "Colar" }), chips("colar", BONECO.colar),
         h("p", { class: "lab", text: "Na testa" }), chips("testa", BONECO.testa),
