@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 11:52";</script>
+<script>window.__VERSAO = "27/09 · 11:55";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -395,8 +395,11 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .bubble{display:grid;grid-template-columns:32px 1fr;gap:10px;max-width:640px}
 .bubble>img{width:32px;height:32px;border-radius:50%;background:var(--panel3)}
 .bubble .b{background:var(--panel);box-shadow:var(--shadow);border-radius:4px 18px 18px 18px;padding:9px 14px;min-width:0}
-.bubble.me{margin-left:auto;grid-template-columns:1fr}
-.bubble.me>img{display:none}
+.bubble.me{margin-left:auto;grid-template-columns:1fr 40px}
+.bubble.me>.rosto{order:2}
+.bubble{grid-template-columns:40px 1fr}
+.rosto{width:40px;height:40px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 35%,#F6E7C8,#E6CFA2);border:1.5px solid var(--line2);align-self:end;display:block}
+.rosto svg{width:100%;height:100%;display:block}
 .bubble.me .b{background:var(--moss);color:var(--on-dark);border-radius:18px 4px 18px 18px}
 .bubble.me .h,.bubble.me .h b{color:rgba(255,252,247,.75)}
 .bubble .h{display:flex;gap:8px;align-items:baseline;font-size:12px;color:var(--soft)}
@@ -2018,21 +2021,31 @@ function desenhaPet(tipo) {
   const P = (d, fill, x) => h("path", { d, fill, ...(x || {}) }), C = (cx, cy, r, fill, x) => h("circle", { cx, cy, r, fill, ...(x || {}) }), E = (cx, cy, rx, ry, fill, x) => h("ellipse", { cx, cy, rx, ry, fill, ...(x || {}) });
   const sem = { stroke: "none" }, olho = (x, y) => [C(x, y, 1.1, "#1E150D", sem), C(x + .35, y - .35, .35, "#fff", sem)];
   g.append(E(75, 86, 13, 2.2, "rgba(40,28,15,.2)", sem));
+  // gato de rua indiano: esguio, rajado, com fio vermelho e sininho no pescoço
   if (tipo === "gato") g.append(
-    P("M79 84 Q91 85 89 75 Q88 70 85 71", "none", { stroke: "#C9762B", "stroke-width": 3.2 }),
-    P("M65 85 Q62 72 70 67 Q79 64 81 74 Q82 82 78 85 Z", "#E8963F"),
-    P("M69 85 Q68 77 72 74 Q75 77 74 85 Z", "#F6D7A8", sem),
-    P("M64 58 L65.5 49.5 L70 55 Z M78 58 L76.5 49.5 L72 55 Z", "#E8963F"), P("M65.6 55.5 L66.3 51.5 L68.4 54.2 Z M76.4 55.5 L75.7 51.5 L73.6 54.2 Z", "#F2B3A0", sem),
-    C(71, 60, 7.5, "#E8963F"), P("M68 54 L69 57 M71 53.2 L71 56.5 M74 54 L73 57", "none", { stroke: "#C9762B", "stroke-width": 1 }),
-    ...olho(68.3, 60.5), ...olho(73.7, 60.5), P("M70.2 63 L71.8 63 L71 64 Z", "#E07A7A", sem), P("M71 64 Q70 65.5 68.8 65 M71 64 Q72 65.5 73.2 65", "none", { "stroke-width": .6 }),
-    P("M66 63.5 L61 62.5 M66 64.5 L61 65 M76 63.5 L81 62.5 M76 64.5 L81 65", "none", { "stroke-width": .4, stroke: "#6B4A2A" }));
+    P("M87.5 71 Q93.5 68.5 92.5 61 Q92 57.5 94 56.5", "none", { stroke: "#B98E62", "stroke-width": 1.9 }),
+    ...[71, 74, 82, 85].map(x => h("rect", { x, y: 73.5, width: 1.9, height: 11.5, rx: .9, fill: x % 2 ? "#A9805A" : "#B98E62" })),
+    P("M69 74 Q68 68 75 68 L84 68 Q88.5 68 88.5 72 Q88.5 76 84 76 L72 76 Q69 76 69 74 Z", "#C9A27A"),
+    ...[76, 79, 82, 85].map(x => P(`M${x} 68.4 q-.6 2.6 .3 4.6`, "none", { stroke: "#8E6A48", "stroke-width": .8 })),
+    P("M71.5 71 Q68 69 67.5 66 L71 64.5 Q73 67 73.5 70 Z", "#C9A27A"),
+    h("circle", { cx: 67.2, cy: 64.6, r: 4.2, fill: "#C9A27A" }),
+    P("M64.2 62 L64.4 57.2 L67.2 60.6 Z M68.2 60.4 L70.6 56.8 L71 61.6 Z", "#C9A27A"), P("M65 60.8 L65.1 58.6 L66.4 60.2 Z", "#E8A999", sem),
+    P("M66 61.5 q-.3 1.2 .2 2 M68 61.2 q-.2 1.2 .2 2", "none", { stroke: "#8E6A48", "stroke-width": .6 }),
+    E(65.2, 64.4, 1.1, .95, "#7FA84A", sem), C(65.1, 64.4, .45, "#1E150D", sem), C(65.4, 64.1, .22, "#fff", sem),
+    P("M63 66 L63.9 66.5 L63.1 67", "#D98A8A", { "stroke-width": .4 }), P("M63.4 66.6 L59.6 65.8 M63.4 66.9 L59.8 67.6", "none", { stroke: "#6B4A2A", "stroke-width": .3 }),
+    P("M68.6 68.4 Q70.6 69.8 72.6 69", "none", { stroke: "#C0392B", "stroke-width": .9 }), C(70.3, 70.4, .9, "#D9A53A", { "stroke-width": .4 }));
+  // cachorro indiano (indog): orelhas em pé, rabo enrolado, guirlanda de cravos e tika vermelha, como no festival Kukur Tihar
   if (tipo === "cachorro") g.append(
-    P("M81 76 Q89 71 87 63", "none", { stroke: "#B9824B", "stroke-width": 3 }),
-    P("M64 85 L64 75 Q65 67 73 67 Q82 67 82 77 L82 85 Z", "#D09A5F"),
-    P("M66 85 L66 76 Q68 72 71 73 L71 85 Z", "#F1D9B6", sem),
-    C(69, 60, 7.5, "#D09A5F"), E(62.5, 63, 5, 3.6, "#F1D9B6"), E(60, 61.8, 1.7, 1.3, "#2B1D14", sem),
-    P("M74 54 Q80 56 78.5 66 Q75 66 73.5 58 Z", "#8B5A2B"), ...olho(66.5, 58.5),
-    P("M61 65.6 Q62.5 69 64.5 66", "#E36A7A", { "stroke-width": .5 }), h("rect", { x: 64.5, y: 65.5, width: 9, height: 2.2, rx: 1, fill: "#A3231A", stroke: "none" }), C(69, 68.5, 1.2, "#D9A53A", sem));
+    P("M89 67 Q95.5 64 93 58.5 Q91.3 56 89.3 58.4 Q90.8 60.6 88.6 63.6", "none", { stroke: "#D9A263", "stroke-width": 2.2 }),
+    ...[70, 73.4, 83, 86.4].map(x => h("rect", { x, y: 72, width: 2.2, height: 13, rx: 1, fill: x > 80 && x < 85 || x < 71 ? "#C48D50" : "#D9A263" })),
+    P("M68 72 Q67 65 75 65 L85 65 Q90.5 65 90.5 70 Q90.5 75 86 75 L71 75 Q68 75 68 72 Z", "#D9A263"),
+    E(79, 74.2, 7, 1.3, "#F1D9B6", sem),
+    P("M71 69.5 Q66.5 66.5 65.5 61.5 L70.5 59.5 Q73.5 63 73.5 67.5 Z", "#D9A263"),
+    E(66.4, 59.2, 4.6, 3.8, "#D9A263"),
+    P("M63 57.8 L57.4 59.8 Q56.8 62 58.8 62.4 L63.8 62.2 Z", "#D9A263"), P("M58.6 62.3 Q61 63.4 63.4 62.4", "none", { "stroke-width": .5 }), E(57.4, 60.2, .9, .7, "#2B1D14", sem),
+    P("M66.4 56 L67.6 50.2 L70.4 55.6 Z", "#C48D50"), P("M64.2 56.2 L64 51 L66.6 55.4 Z", "#B87D40"),
+    ...olho(63.9, 58.2), C(65.6, 56.6, .6, "#C0392B", sem),
+    ...Array.from({ length: 7 }, (_, i) => C(66.4 + i * 1.05, 63.6 + Math.sin(i / 6 * Math.PI) * 2.4, 1.1, i % 2 ? "#F2A72B" : "#E0661C", sem)));
   if (tipo === "camelo") g.append(
     ...[[69, 1], [73, 0], [82, 1], [86, 0]].map(([x, t]) => h("rect", { x, y: 70, width: 2.6, height: 15, rx: 1.2, fill: t ? "#B8864B" : "#C99A5B" })),
     P("M67 72 Q66 63 74 63 Q76 55 81 58 Q84 61 87 63 Q91 65 90 71 Q89 75 84 74 L70 74 Q67 74 67 72 Z", "#D6A86A"),
@@ -2059,13 +2072,18 @@ function desenhaPet(tipo) {
     P("M62 59.5 Q60 55 62.5 54 M66.5 59.5 Q68.5 55 66 54", "none", { stroke: "#8B6B43", "stroke-width": 1.4 }),
     E(68.8, 61.5, 2.6, 1.2, "#EDE5D3"),
     ...Array.from({ length: 7 }, (_, i) => C(64 + i * 1.3, 70 + Math.sin(i / 6 * Math.PI) * 2.5, 1.2, i % 2 ? "#F2A72B" : "#E0661C", sem)));
+  // langur cinza (o macaco de Hanuman): rosto preto, corpo prateado, rabo longo em arco e guirlanda de cravos
   if (tipo === "macaco") g.append(
-    P("M80 80 Q92 82 90 70 Q89 64 85 66 Q84 68 86 69 Q88 71 86 75", "none", { stroke: "#7A5431", "stroke-width": 2.2 }),
-    P("M67 85 Q64 74 72 71 Q81 70 82 79 Q82 85 78 85 Z", "#8B6238"),
-    P("M70.5 85 Q70 78 73.5 76 Q77 78 76.5 85 Z", "#D8B892", sem),
-    C(65.8, 62, 2.6, "#8B6238"), C(78.2, 62, 2.6, "#8B6238"), C(65.8, 62, 1.3, "#D8B892", sem), C(78.2, 62, 1.3, "#D8B892", sem),
-    C(72, 61, 7, "#8B6238"), P("M67.5 60 Q67.5 56 70.5 56.8 Q72 57.6 73.5 56.8 Q76.5 56 76.5 60 Q77 65.5 72 66.5 Q67 65.5 67.5 60 Z", "#E3C49E", sem),
-    ...olho(70, 59.8), ...olho(74, 59.8), P("M71.2 62.3 L72.8 62.3", "none", { "stroke-width": .6 }), P("M70.3 64 Q72 65.3 73.7 64", "none", { "stroke-width": .6 }));
+    P("M88.5 70 Q98 67 97 55 Q96.5 48 92 48.5", "none", { stroke: "#B7B1A6", "stroke-width": 2 }),
+    ...[[70, 71], [73.5, 71], [83, 72], [86.5, 72]].map(([x, y]) => h("rect", { x, y, width: 2.3, height: 85 - y, rx: 1.1, fill: "#B7B1A6" })),
+    ...[70, 73.5, 83, 86.5].map(x => h("rect", { x: x - .2, y: 83.4, width: 2.7, height: 1.8, rx: .8, fill: "#2B2522", stroke: "none" })),
+    P("M67.5 71 Q66.5 63.5 74 63.5 L84 65.5 Q89.5 66.5 89.5 71.5 Q89.5 76 85 76 L71 76 Q67.5 76 67.5 71 Z", "#C9C4BA"),
+    P("M60.5 60 Q60 54 65 53.5 Q70.5 53.5 70.5 59.5 Q70.8 64.5 66 65.5 Q61 65.5 60.5 60 Z", "#D8D3C9"),
+    P("M61 56.5 L59.6 55 M62.6 54.6 L61.8 52.6 M64.8 53.8 L64.8 51.8 M67.2 54 L68 52.2 M69.2 55.4 L70.8 54.2", "none", { stroke: "#D8D3C9", "stroke-width": 1 }),
+    P("M61 59.5 Q61 56.4 63.6 56.6 Q66 56.8 65.8 60 Q65.6 63.6 63.2 63.8 Q61.2 63.6 61 59.5 Z", "#2B2522", sem),
+    C(62.3, 59, .7, "#F1E2BC", sem), C(64.5, 59, .7, "#F1E2BC", sem), C(62.4, 59.1, .38, "#1E150D", sem), C(64.4, 59.1, .38, "#1E150D", sem),
+    P("M62.4 62.2 Q63.4 62.8 64.4 62.2", "none", { stroke: "#6B6259", "stroke-width": .4 }),
+    ...Array.from({ length: 7 }, (_, i) => C(64.8 + i * 1.1, 64.8 + Math.sin(i / 6 * Math.PI) * 2.4, 1.1, i % 2 ? "#F2A72B" : "#E0661C", sem)));
   if (tipo === "cabra") g.append(
     P("M88 67 Q91 64 90.5 61", "none", { stroke: "#E9E1CF", "stroke-width": 2 }),
     ...[70, 74, 82, 86].map(x => h("rect", { x, y: 73, width: 2.4, height: 12, rx: 1.1, fill: "#EDE6D6" })),
@@ -2227,6 +2245,8 @@ function maosSeparadas(b) {
   if (!b || !b.acessorio || b.acessorio === "nenhum" || INSTRUMENTOS.includes(b.acessorio) || (b.acessorio2 && b.acessorio2 !== "nenhum")) return b;
   return { ...b, acessorio2: b.acessorio, acessorio: "nenhum" };
 }
+// rostinho do bonequinho para o chat: cabeça e ombros num círculo
+const bonecoRosto = id => h("span", { class: "rosto", "aria-hidden": "true" }, h("svg", { viewBox: "13 3 34 34", role: "img" }, desenhaBoneco({ ...bonecoDe(id), pet: "nenhum" })));
 const bonecoSvg = (b, cls) => h("svg", { viewBox: b.pet && b.pet !== "nenhum" ? "0 0 99 90" : "0 0 60 90", class: cls || "bonecosvg", role: "img", "aria-label": "Explorador", style: "overflow:visible" }, desenhaBoneco(b));
 // Fantasias inspiradas nos deuses: mudam roupa, cores e o que a pessoa segura.
 BONECO.deus = [["nenhum", "Nenhuma"], ["shiva", "Shiva"], ["ganesha", "Ganesha"], ["durga", "Durga"], ["krishna", "Krishna"], ["hanuman", "Hanuman"], ["lakshmi", "Lakshmi"],
@@ -2827,9 +2847,7 @@ function vMapa() {
   perfis(S.posicoes.map(p => p.id));
   return h("section", { class: "view" },
     h("div", { class: "head" },
-      h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: "Perto de mim" })),
-      h("button", { class: "meuexp", type: "button", onclick: () => { S.bonecoRasc = null; go("explorador"); } },
-        bonecoSvg(bonecoDe(S.uid), "bonecosvg mini"), h("span", { text: "Meu explorador" }))),
+      h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: "Perto de mim" }))),
     h("div", { class: "mapwrap" }, vPerto(),
       h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null), vHotelHoje())));
 }
@@ -3333,7 +3351,7 @@ function vConversa() {
     if (day !== last) { log.append(h("p", { class: "dayline", text: day })); last = day; }
     const mine = m.autor === S.uid;
     log.append(h("div", { class: "bubble" + (mine ? " me" : "") },
-      h("img", { alt: "", src: avatar(m.autor) }),
+      bonecoRosto(m.autor),
       h("div", { class: "b" },
         h("div", { class: "h" }, h("b", { text: nomeDe(m.autor) }), h("span", { text: [mine ? "" : rotulo(m.autor), d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })].filter(Boolean).join(" · ") }),
           (mine || S.isOwner) ? h("button", { class: "del", type: "button", onclick: () => S.db.doc("chat/" + m.id).delete().catch(() => {}) }, "apagar") : null),
@@ -4246,7 +4264,7 @@ function vCambio() {
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Dinheiro na Índia" }), h("h1", { text: "Conversor de rúpias" }))),
     vRupias(),
-    h("p", { class: "small", text: "Dica: nos mercados, pergunte o preço, ofereça perto da metade e negocie com leveza. Guarde notas pequenas para gorjetas e tuk-tuks." }));
+    h("p", { class: "small", text: "Dica para os mercados: na Índia, negociar o preço faz parte da compra. Pergunte quanto custa e ofereça mais ou menos a metade do valor pedido. O vendedor vai baixar um pouco, você sobe um pouco, e vocês fecham num valor entre os dois. Negocie com calma e bom humor. Se não chegarem a um acordo, agradeça e siga andando: muitas vezes o vendedor chama de volta com um preço melhor. Em lojas com preço fixo na etiqueta não se negocia. Guarde notas pequenas para gorjetas e tuk-tuks." }));
 }
 function vRupias() {
   buscaCambio();
