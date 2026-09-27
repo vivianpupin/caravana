@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 15:11";</script>
+<script>window.__VERSAO = "27/09 · 15:29";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -584,6 +584,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .abcidade{margin:0;font-family:var(--display);font-weight:400;font-size:44px;letter-spacing:.02em;color:#FFF3D6;animation:absobe 1.2s 1.1s ease both}
 .abdata{margin:0 0 14px;font:500 12.5px var(--ui);letter-spacing:.14em;color:rgba(244,230,196,.7);animation:absobe 1.2s 1.4s ease both}
 .abfrase{margin:8px 0 0;font-family:var(--display);font-style:italic;font-size:21px;line-height:1.5;color:#FFF3D6;max-width:30ch;text-wrap:pretty;hyphens:none;animation:absobe 1.8s 2.2s ease both}
+.absegue{margin-top:26px;background:none;border:1px solid rgba(226,190,120,.6);color:#E2BE78;border-radius:999px;padding:10px 30px;font:600 12px var(--ui);letter-spacing:.3em;text-transform:uppercase;animation:absobe 1.2s 4s ease both}
+.absegue:active{background:rgba(226,190,120,.15)}
 .abfrase.media{font-size:18.5px;max-width:32ch;line-height:1.48}
 .abfrase.longa{font-size:17px;max-width:34ch;line-height:1.45}
 @keyframes abentra{from{opacity:0}}@keyframes absai{to{opacity:0;transform:scale(1.03)}}
@@ -3833,8 +3835,8 @@ const FRASES_DIA = {
   8: "Hoje o vento que toca seus cabelos desce do Himalaia, a mais alta cordilheira da Terra. Para os hindus, estas montanhas são a morada dos deuses: é no alto delas que Shiva medita desde o princípio dos tempos.",
   9: "Rishi quer dizer vidente, aquele que viu. Os Vedas, os textos sagrados mais antigos da Índia, não foram escritos: foram ouvidos pelos rishis em meditação profunda, nas cavernas e florestas do Himalaia, e passados de boca em boca por milênios. Hoje você respira o ar em que essa escuta aconteceu.",
   10: "Por estas margens passaram sábios que a Índia ainda reverencia. Vasishtha, mestre de Rama, meditou numa caverna à beira deste rio. Hoje você caminha onde eles caminharam e se senta onde eles silenciaram.",
-  11: "Perto daqui, conta a lenda, Shiva bebeu o veneno que surgiu quando deuses e demônios agitaram o oceano primordial. Para salvar o mundo, guardou o veneno na garganta, que ficou azul, e se recolheu nestas montanhas para meditar. Hoje, no dia mais lento da travessia, você pratica no chão em que até um deus veio buscar silêncio para curar o que carregava.",
-  12: "No primeiro dia, você chegou com uma mala e com uma ideia de quem era. Antes de voltar, olhe com calma para quem está voltando: o que a Índia acordou em você.",
+  11: "Perto daqui, conta a lenda, Shiva bebeu o veneno que surgiu quando deuses e demônios agitaram o oceano primordial. Para salvar o mundo, guardou o veneno na garganta, que ficou azul, e se recolheu nestas montanhas para meditar. Hoje você pratica no chão em que até um deus veio buscar silêncio para curar o que carregava.",
+  12: "No primeiro dia, você chegou com uma mala e com uma ideia de quem era. Antes de voltar, olhe com calma para quem está voltando: o que a Índia mudou em você?",
   13: "Lokah Samastah Sukhino Bhavantu: que todos os seres de todos os mundos sejam felizes. É com esse desejo que a travessia se despede."
 };
 const fraseDoDia = d => FRASES_DIA[d.n] || "";
@@ -3852,14 +3854,15 @@ function aberturaDoDia(forcar) {
       h("p", { class: "abdia", text: "Dia " + nn(d.n) }),
       h("h1", { class: "abcidade", text: d.cidade }),
       h("p", { class: "abdata", text: d.data }),
-      h("p", { class: "abfrase" + (fraseDoDia(d).length > 260 ? " longa" : fraseDoDia(d).length > 170 ? " media" : ""), text: fraseDoDia(d) })));
+      h("p", { class: "abfrase" + (fraseDoDia(d).length > 260 ? " longa" : fraseDoDia(d).length > 170 ? " media" : ""), text: fraseDoDia(d) }),
+      h("button", { class: "absegue", type: "button", onclick: () => fecha() }, "Continuar")));
   let fechou = false;
   const fecha = () => { if (fechou) return; fechou = true; ov.classList.add("sai"); setTimeout(() => ov.remove(), 700); };
+  // fica aberta até a pessoa terminar de ler e tocar em Continuar
   // o celular só deixa tocar som depois de um toque: se não tocou sozinho, o primeiro toque toca o sino
   let tocou = sino();
-  ov.addEventListener("pointerdown", () => { if (!tocou) { tocou = sino(); setTimeout(fecha, 3500); } else fecha(); });
+  ov.addEventListener("pointerdown", () => { if (!tocou) tocou = sino(); });
   document.body.append(ov);
-  setTimeout(fecha, 8500);
 }
 
 // abre sozinha no primeiro acesso do dia (e ao voltar para o app num dia novo); ?abertura=6 mostra o dia 6 para conferir
@@ -3919,10 +3922,8 @@ try { localStorage.removeItem("cdi-sim"); } catch (e) {}
 const hojeTrip = () => hojeIso();
 const ehHora = x => /^\d\d:\d\d$/.test(x || "");
 const itensDe = d => (d ? d.agenda.flatMap(p => p.itens) : []).filter(i => ehHora(i.hora));
-function falar(txt) {
-  try { const u = new SpeechSynthesisUtterance(txt); u.lang = "hi-IN"; u.rate = .85; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {}
-}
-const podeFalar = "speechSynthesis" in window;
+function falar(txt) { falarEm(txt, "hi-IN", .85); }
+const podeFalar = "speechSynthesis" in window || typeof Audio !== "undefined";
 
 // ---------- Tradutor: português ↔ hindi / inglês, para conversar na rua ----------
 const LINGUAS = { pt: ["Português", "pt-BR"], hi: ["Hindi", "hi-IN"], en: ["Inglês", "en-IN"] };
@@ -3942,7 +3943,32 @@ async function traduzir(txt, de, para) {
   if (!trad) throw new Error("sem tradução");
   return { trad, rom: "", origRom: "" };
 }
-function falarEm(txt, lang) { try { const u = new SpeechSynthesisUtterance(txt); u.lang = lang; u.rate = .9; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {} }
+// voz do celular: escolhe de propósito uma voz da língua (o iPhone às vezes lê hindi com voz em português e sai mudo)
+function vozDe(lang) {
+  const vs = ("speechSynthesis" in window && speechSynthesis.getVoices()) || [], l = lang.toLowerCase(), base = l.slice(0, 2);
+  return vs.find(v => v.lang.toLowerCase().replace("_", "-") === l) || vs.find(v => v.lang.toLowerCase().startsWith(base));
+}
+try { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices(); } catch (e) {}
+function falarCelular(txt, lang, rate) {
+  try { const u = new SpeechSynthesisUtterance(txt), v = vozDe(lang); u.lang = lang; if (v) u.voice = v; u.rate = rate || .9;
+    if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
+    speechSynthesis.speak(u); return true; } catch (e) { return false; }
+}
+// com internet, a voz do Google fala hindi e inglês com sotaque indiano natural; sem internet (ou se falhar), usa a voz do celular
+let audioFala = null;
+function falarEm(txt, lang, rate) {
+  const t = String(txt || "").trim(); if (!t) return;
+  try { if (audioFala) audioFala.pause(); speechSynthesis.cancel(); } catch (e) {}
+  const semVoz = !vozDe(lang);
+  if (!navigator.onLine || t.length > 190) { if (falarCelular(t, lang, rate) || !navigator.onLine) return; }
+  const a = new Audio(); a.referrerPolicy = "no-referrer"; audioFala = a;
+  let caiu = false, tocando = false; const cai = () => { if (caiu || tocando) return; caiu = true; falarCelular(t, lang, rate); };
+  a.onerror = cai; a.onplaying = () => { tocando = true; };
+  a.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang.slice(0, 2)}&ttsspeed=${(rate || .9) < .9 ? .8 : 1}&q=${encodeURIComponent(t)}`;
+  a.play().catch(cai);
+  // se em 4 segundos não começou a tocar, fala com a voz do celular
+  setTimeout(() => { if (!caiu && !tocando) { a.pause(); cai(); } }, semVoz ? 6000 : 4000);
+}
 const Reconhece = window.SpeechRecognition || window.webkitSpeechRecognition;
 function mostrarGrande(txt, rom) {
   closeSheets();
@@ -3967,13 +3993,38 @@ function vTradutor() {
   };
   const ouvir = () => {
     if (!Reconhece) return;
-    const rec = new Reconhece(); rec.lang = LINGUAS[de][1]; rec.interimResults = false; rec.maxAlternatives = 1;
-    T.ouvindo = true; render();
-    rec.onresult = ev => { T.texto = ev.results[0][0].transcript; T.ouvindo = false; render(); vai(); };
-    rec.onerror = rec.onend = () => { if (T.ouvindo) { T.ouvindo = false; render(); } };
-    try { rec.start(); } catch (e) { T.ouvindo = false; render(); }
+    // tocar de novo enquanto ouve = parar e traduzir o que já ouviu
+    if (T.rec) { try { T.rec.stop(); } catch (e) {} return; }
+    let rec, ouvido = "", fim = false;
+    try { rec = new Reconhece(); } catch (e) { T.erro = "O microfone do app não funcionou neste celular. Toque no campo de texto e use o microfone do teclado."; render(); return; }
+    rec.lang = LINGUAS[de][1]; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+    const campo = () => document.getElementById("trad-texto");
+    const acaba = msg => {
+      if (fim) return; fim = true; clearTimeout(T.recTempo); clearTimeout(T.recPausa); T.rec = null; T.ouvindo = false;
+      if (ouvido.trim()) { T.texto = ouvido.trim(); T.erro = ""; render(); vai(); }
+      else { if (msg) T.erro = msg; render(); }
+    };
+    rec.onresult = ev => {
+      ouvido = [...ev.results].map(r => r[0].transcript).join(" ");
+      T.texto = ouvido; const c = campo(); if (c) c.value = ouvido;
+      // terminou a frase (ou 1,2 s de silêncio depois de falar): já traduz, sem esperar o celular decidir
+      clearTimeout(T.recPausa);
+      if (ev.results[ev.results.length - 1].isFinal) { try { rec.stop(); } catch (e) {} setTimeout(() => acaba(""), 700); }
+      else T.recPausa = setTimeout(() => { try { rec.stop(); } catch (e) {} setTimeout(() => acaba(""), 700); }, 1200);
+    };
+    rec.onerror = ev => {
+      const e = ev && ev.error;
+      acaba(e === "not-allowed" || e === "service-not-allowed" ? "O microfone está bloqueado. Libere o microfone para o app nos ajustes do celular, ou toque no campo e use o microfone do teclado."
+        : e === "no-speech" ? "Não ouvi nada. Toque em Falar e fale perto do celular."
+        : e === "aborted" ? "" : "Não consegui ouvir. Toque no campo de texto e use o microfone do teclado.");
+    };
+    rec.onend = () => acaba(ouvido.trim() ? "" : "Não ouvi nada. Toque em Falar e fale perto do celular.");
+    T.rec = rec; T.ouvindo = true; T.erro = ""; render();
+    // se o celular não responder, destrava sozinho
+    T.recTempo = setTimeout(() => { try { rec.stop(); } catch (e) {} setTimeout(() => acaba("Não consegui ouvir. Toque no campo de texto e use o microfone do teclado."), 1500); }, 12000);
+    try { rec.start(); } catch (e) { acaba("Não consegui ligar o microfone. Toque no campo de texto e use o microfone do teclado."); }
   };
-  const troca = m => { T.modo = m; T.texto = ""; T.res = null; T.erro = ""; render(); };
+  const troca = m => { if (T.rec) { try { T.rec.abort(); } catch (e) {} } T.modo = m; T.texto = ""; T.res = null; T.erro = ""; render(); };
   const R = T.res;
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Fale com a Índia" }), h("h1", { text: "Tradutor" }))),
@@ -3983,7 +4034,7 @@ function vTradutor() {
     h("div", { class: "opts" }, ["hi", "en"].map(l => h("button", { type: "button", class: "opt", "aria-pressed": String(T.outra === l), onclick: () => { T.outra = l; T.res = null; render(); } }, LINGUAS[l][0]))),
     h("div", { class: "panel tradbox" }, ta,
       h("div", { class: "actions" },
-        Reconhece ? h("button", { class: "btn" + (T.ouvindo ? " gold" : ""), type: "button", onclick: ouvir }, T.ouvindo ? "Ouvindo…" : "🎤 Falar") : null,
+        Reconhece ? h("button", { class: "btn" + (T.ouvindo ? " gold" : ""), type: "button", onclick: ouvir }, T.ouvindo ? "Ouvindo… toque para parar" : "🎤 Falar") : null,
         h("button", { class: "btn gold", type: "button", disabled: T.busy, onclick: vai }, T.busy ? "Traduzindo…" : "Traduzir"),
         T.texto ? h("button", { class: "btn ghost", type: "button", onclick: () => { T.texto = ""; T.res = null; render(); } }, "Limpar") : null),
       T.erro ? h("p", { class: "msg err", role: "status", text: T.erro }) : null),
