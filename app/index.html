@@ -2094,11 +2094,13 @@ function minhaPos() {
   const v = S.aoVivo[S.uid]; if (v && isFinite(v.lat)) return v;
   const p = S.posicoes.find(x => x.id === S.uid); return p && isFinite(+p.lat) ? { lat: +p.lat, lng: +p.lng } : null;
 }
+// sem localização ligada, o mapa abre na cidade do hotel de hoje (ou em Delhi)
+function centroPadrao() { const c = COORD_CIDADE[(HOTEIS[hotelAgora()] || {}).cid] || COORD_CIDADE.delhi; return { lat: c[0], lng: c[1] }; }
 function mapaPerto() {
-  const W = 600, H = 600, svg = pergaminho(W, H, "perto"), eu0 = minhaPos(), centro = S.pertoCentro || eu0;
+  const W = 600, H = 600, svg = pergaminho(W, H, "perto"), eu0 = minhaPos(), centro = S.pertoCentro || eu0 || centroPadrao();
   const temEu = !!eu0;
   svg.setAttribute("aria-label", "Mapa perto de mim");
-  const km = S.pertoKm || 0.12, dLat = km / 111, dLng = km / (111 * Math.cos(centro.lat * Math.PI / 180));
+  const km = S.pertoKm || (eu0 ? 0.12 : 3), dLat = km / 111, dLng = km / (111 * Math.cos(centro.lat * Math.PI / 180));
   const P = projetor([{ lat: centro.lat - dLat, lng: centro.lng - dLng }, { lat: centro.lat + dLat, lng: centro.lng + dLng }], W, H, 40, .0004); S.proj = P;
   P.modo = S.camadaMapa === "satelite" ? "satelite" : "ruas";
   const mov = h("g", { class: "movel" });
@@ -2177,16 +2179,11 @@ function autoGps() {
 }
 function vPerto() {
   autoGps();
-  const eu0 = minhaPos(), km = S.pertoKm || 0.12;
+  const eu0 = minhaPos(), km = S.pertoKm || (eu0 ? 0.12 : 3);
   if (eu0) ruaAqui(eu0);
   const perto = eu0 ? posicoesAtuais().filter(p => p.id !== S.uid && isFinite(+p.lat)).map(p => ({ p, km: distKm(eu0, p) })).sort((a, b) => a.km - b.km) : [];
   const zoom = f => { S.pertoKm = Math.max(0.06, Math.min(3000, km * f)); render(); };
   const verTodos = () => { const k = perto.length ? perto[perto.length - 1].km * 1.25 : 1.5; S.pertoCentro = null; S.pertoKm = Math.max(0.15, k); render(); };
-  if (!eu0 && !S.pertoCentro) return h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, h("div", { class: "panel", style: "align-items:center;text-align:center" },
-    h("p", { class: "eyebrow", text: "Perto de mim" }), h("h2", { text: "Ligue a sua localização" }),
-    h("p", { class: "small", text: "O mapa se centraliza onde você estiver e mostra, ao vivo, quem da caravana está por perto." }),
-    h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"),
-    S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null), vHotelHoje());
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   return h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
     window.__SITE ? h("div", { class: "fcats", role: "tablist", style: "margin:0" }, [["ruas", "Ruas"], ["satelite", "Satélite"]].map(([id, n]) =>
@@ -2227,7 +2224,6 @@ function ruaAqui(p) {
     }).catch(() => {}).finally(() => { S.ruaBusca = false; });
 }
 const distKm = (a, b) => { const R = 6371, r = x => x * Math.PI / 180, dLa = r(+b.lat - a.lat), dLo = r(+b.lng - a.lng); const q = Math.sin(dLa / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(+b.lat)) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(q)); };
-const eu0Mapa = () => !!(minhaPos() || S.pertoCentro);
 function vMapa() {
   if (S.montando) return vExplorador();
   perfis(S.posicoes.map(p => p.id));
@@ -2237,7 +2233,7 @@ function vMapa() {
       h("button", { class: "meuexp", type: "button", onclick: () => { S.bonecoRasc = null; go("explorador"); } },
         bonecoSvg(bonecoDe(S.uid), "bonecosvg mini"), h("span", { text: "Meu explorador" }))),
     h("div", { class: "mapwrap" }, vPerto(),
-      h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null), eu0Mapa() ? vHotelHoje() : null)));
+      h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null), vHotelHoje())));
 }
 
 // ---------- Estúdio de fotos ----------
