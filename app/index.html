@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 14:30";</script>
+<script>window.__VERSAO = "27/09 · 14:31";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -907,7 +907,8 @@ nav.tabs button{position:relative}
 .pgmdata{font-family:"Courier Prime",monospace;font-style:normal;font-size:12px;letter-spacing:.04em;color:#7A5A36;text-align:right}
 .pgmtit{font-family:"Special Elite","Courier Prime",monospace;font-style:normal;font-size:19px;font-weight:400;letter-spacing:.04em;margin:0;color:#3B2A1C;text-align:center}
 .pgmpara{font-weight:600}
-.pgmass{margin-top:8px!important;text-align:right;font-style:italic}
+.pgmass{margin-top:8px!important;text-align:right;font-style:italic;display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.pgmass small{font-style:normal;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;opacity:.75}
 .pgm p:not(.pgmdata){text-shadow:0 0 .6px rgba(46,36,25,.55)}
 .lacre{align-self:center;width:78px;height:78px;background:url(img/lacre.webp) center/contain no-repeat;display:grid;place-items:center;filter:sepia(.45) saturate(.6) brightness(.82) contrast(1.05) drop-shadow(0 3px 4px rgba(0,0,0,.35));margin-top:6px}
 .lacre img{width:30px;height:auto;filter:brightness(0) sepia(1) hue-rotate(-30deg) saturate(3) brightness(.32) drop-shadow(0 1px 0 rgba(255,210,190,.35));opacity:.8}
@@ -1777,7 +1778,7 @@ function paginasLivro() {
   ];
   for (let i = 0; i < ls.length; i += 2) pages.push(pag("selos", h("p", { class: "pgnum", text: "Vistos / Visas · Pág. " + nn(i / 2 + 3) }), ls.slice(i, i + 2).map(selo)));
   for (const c of cartasAbertas()) pages.push(pag("cartapg", h("p", { class: "pgnum", text: "Correspondência · " + dataDoc(c.envio) }),
-    h("p", { class: "pgct", text: "Para " + primeiroNome() + "," }), String(c.texto || "").split(/\n\s*\n/).map(p => h("p", { class: "pgct", text: p.trim() })), h("p", { class: "pgct ass", text: c.assinatura || ASSINATURA })));
+    h("p", { class: "pgct", text: "Para " + primeiroNome() + "," }), String(c.texto || "").split(/\n\s*\n/).map(p => h("p", { class: "pgct", text: p.trim() })), h("p", { class: "pgct ass", text: assinaturaDe(c) + " · Caravana do Céu" })));
   pages.push(h("div", { class: "pg fim" }, h("img", { class: "fimsim", src: "img/simbolo-marrom.png", alt: "Caravana do Céu" })));
   return pages;
 }
@@ -2092,6 +2093,7 @@ const BONECO = {
   colar: [["nenhum", "Nenhum"], ["guirlanda", "Guirlanda de flores"], ["rudraksha", "Rudraksha"], ["tulsi", "Contas de tulsi"], ["contas", "Contas coloridas"], ["ouro", "Colar de ouro"], ["moedas", "Colar de moedas"], ["om", "Pingente Om"]],
   testa: [["nada", "Nada"], ["bindi", "Bindi"], ["tilak", "Tilak"], ["cinzas", "Shivaísta · tripundra"], ["vaishnava", "Vaishnava · urdhva pundra"]],
   nariz: [["nenhum", "Sem piercing"], ["argola", "Argola no nariz"], ["ponto", "Brilhante no nariz"]],
+  ombro: [["nenhum", "Nenhum"], ["periquito", "Periquito indiano"], ["maina", "Mainá"]],
   pes: [["nenhum", "Nada"], ["aneis", "Anéis nos pés"], ["payal", "Tornozeleira"], ["os2", "Anéis e tornozeleira"]],
   barba: [["nao", "Sem barba"], ["sim", "Com barba"]],
   oculos: [["nenhum", "Sem óculos"], ["redondo", "Redondo"], ["aviador", "Aviador"], ["sol", "De sol"], ["grau", "De grau"]],
@@ -2121,6 +2123,30 @@ function bolinhasSari(base) {
     [36, 38], [38.5, 42], [40, 46], [33, 44], [35.5, 49], [31, 52], [26, 53], [38, 53], [22, 38], [25, 42], [21, 44]];
   return h("g", { class: "bolinhas" }, pts.map(([x, y], i) => h("circle", { cx: x, cy: y, r: i % 3 ? .9 : 1.25, fill: cores[i % cores.length] })),
     [15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45].map(x => h("circle", { cx: x, cy: 79.5, r: .55, fill: "#FFF1C2" })));
+}
+// pássaros da Índia, pousados no ombro direito do bonequinho
+function passaroOmbro(tipo) {
+  const P = (d, fill, x) => h("path", { d, fill, ...(x || {}) }), C = (cx, cy, r, fill) => h("circle", { cx, cy, r, fill });
+  const g = h("g", { class: "passaro", transform: "translate(17.6 31.2)" });
+  if (tipo === "periquito") g.append(
+    P("M-1.6 1.5 Q-5.5 7.5 -7.4 12.8 Q-4.6 8.6 -.4 3.2 Z", "#3F8E43"),
+    h("ellipse", { cx: 0, cy: 0, rx: 3.1, ry: 4.3, fill: "#57B45B", transform: "rotate(-18)" }),
+    P("M-2.6 -1 Q-1.2 3.6 1.4 3.4 Q.4 .2 -2.6 -1 Z", "#3F8E43"),
+    C(1.7, -4.6, 2.4, "#6CC46E"),
+    P("M3.6 -5.3 Q5.6 -4.8 5 -3 Q4.4 -3.8 3.5 -3.6 Z", "#D83A2E"),
+    P("M-.4 -3.1 Q1.8 -1.6 3.8 -3.1", "none", { stroke: "#1E150D", "stroke-width": .45 }),
+    P("M-.3 -2.6 Q1.8 -1 3.9 -2.5", "none", { stroke: "#E88BA0", "stroke-width": .35 }),
+    C(2.4, -5.1, .5, "#1E150D"),
+    P("M-.8 3.6 L-1.4 5.2 M.6 3.8 L.3 5.4", "none", { stroke: "#8A6B43", "stroke-width": .45 }));
+  if (tipo === "maina") g.append(
+    P("M-2 2 Q-4.8 5.2 -5.6 8.4 Q-3.4 6.6 -.4 3.6 Z", "#3B2A1C"),
+    h("ellipse", { cx: 0, cy: .2, rx: 3.2, ry: 4.2, fill: "#6B4A32", transform: "rotate(-15)" }),
+    P("M-2.8 -.4 Q-1.4 3.4 1.2 3.4 Q.2 .4 -2.8 -.4 Z", "#3B2A1C"), P("M-1.6 2.4 L.2 3.2 L-.6 2 Z", "#F4EFE3"),
+    C(1.6, -4.3, 2.3, "#1E150D"),
+    P("M3.5 -4.8 L5.8 -4.1 L3.6 -3.2 Z", "#F2C230"),
+    h("ellipse", { cx: 2.3, cy: -4.4, rx: 1.1, ry: .8, fill: "#F2C230" }), C(2.4, -4.5, .42, "#1E150D"),
+    P("M-.6 3.8 L-1.1 5.3 M.8 3.9 L.6 5.4", "none", { stroke: "#E0B640", "stroke-width": .5 }));
+  return g;
 }
 function desenhaPet(tipo) {
   const g = h("g", { class: "pet", stroke: "#4A3322", "stroke-width": .7, "stroke-linejoin": "round", "stroke-linecap": "round" });
@@ -2485,6 +2511,8 @@ desenhaBoneco = function (b0) {
   if (A === "kalash") g.append(P("M44 58 Q43 66 48 67 Q53 66 52 58 Z", "#B8862A"), h("rect", { x: 45.5, y: 55, width: 5, height: 3, fill: "#B8862A" }), P("M46 55 Q48 50 50 55", "none", { stroke: "#5F8A4A", "stroke-width": 1.4 }));
   if (A === "livro") g.append(h("rect", { x: 43, y: 56, width: 10, height: 8, rx: 1, fill: "#8A3F32" }), h("rect", { x: 44, y: 57, width: 8, height: 6, fill: "#F1E2BC" }));
   if (A === "lotus") g.append(...[-40, -15, 15, 40].map(a => h("ellipse", { cx: 48 + Math.sin(a * Math.PI / 180) * 4, cy: 54 - Math.cos(a * Math.PI / 180) * 2, rx: 2, ry: 4.5, fill: "#E7849E", transform: `rotate(${a} ${48 + Math.sin(a * Math.PI / 180) * 4} ${54 - Math.cos(a * Math.PI / 180) * 2})` })), h("ellipse", { cx: 48, cy: 56, rx: 5.5, ry: 2, fill: "#5F8A4A" }));
+  // pássaro no ombro (desenhado por último, para ficar por cima de qualquer roupa ou fantasia)
+  if (b.ombro === "periquito" || b.ombro === "maina") g.append(passaroOmbro(b.ombro));
   if (b0.deus === "durga") { const tudo = h("g", { class: "boneco" }); g.setAttribute("transform", "translate(10.5 1) scale(.7)"); const l = leao(); l.setAttribute("transform", "translate(3 18) scale(.8)"); tudo.append(l, g); return tudo; }
   return g;
 };
@@ -2535,6 +2563,7 @@ function vExplorador() {
         h("p", { class: "lab", text: "Na testa" }), chips("testa", BONECO.testa),
         h("p", { class: "lab", text: "Piercing no nariz" }), chips("nariz", BONECO.nariz),
         h("p", { class: "lab", text: "Nos pés" }), chips("pes", BONECO.pes),
+        h("p", { class: "lab", text: "Pássaro no ombro" }), chips("ombro", BONECO.ombro),
         h("p", { class: "lab", text: "Barba" }), chips("barba", BONECO.barba),
         h("p", { class: "lab", text: "Companheiro de viagem" }), chips("pet", BONECO.pet),
         h("p", { class: "lab", text: "Fantasia dos deuses" }), chips("deus", BONECO.deus),
@@ -4027,7 +4056,9 @@ function vDiario(d, liberado) {
 }
 // Correspondência: cartas da líder, em pergaminho, por pombo-correio
 const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nDezesseis selos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
-const ASSINATURA = "Vivian · Caravana do Céu";
+const ASSINATURA = "Vanessa & Vivian";
+// cartas antigas vinham assinadas só por Vivian ou pela Caravana: agora quem assina são as duas, com Caravana do Céu embaixo
+const assinaturaDe = c => { const a = String(c.assinatura || "").replace(/\s*·\s*Caravana do Céu\s*$/i, "").trim(); return !a || /^(Vivian|Caravana do Céu)$/i.test(a) ? ASSINATURA : a; };
 const cartasAbertas = () => [...S.cartas, ...S.cartasP.filter(c => c.para === S.uid).map(c => ({ ...c, pessoal: true }))].filter(c => c && !c.rascunho && c.envio && c.envio <= Date.now()).sort((a, b) => a.envio - b.envio);
 const dataCarta = ts => new Date(ts).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" });
 const horaCarta = ts => new Date(ts).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" });
@@ -4049,7 +4080,7 @@ function pergaminhoCarta(c) {
       c.titulo ? h("h3", { class: "pgmtit", text: c.titulo }) : null,
       h("p", { class: "pgmpara", text: "Para " + primeiroNome() + "," }),
       String(c.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })),
-      h("p", { class: "pgmass", text: c.assinatura || ASSINATURA }),
+      h("div", { class: "pgmass" }, h("span", { text: assinaturaDe(c) }), h("small", { text: "Caravana do Céu" })),
       h("span", { class: "lacre", "aria-hidden": "true" }, h("img", { src: "img/simbolo-claro.png", alt: "" }))),
     h("span", { class: "rolo bot", "aria-hidden": "true" }));
 }
@@ -4172,7 +4203,7 @@ ${(d.lugares || []).map(l => `<h3>${esc(l.nome)}</h3>${par(l.texto)}`).join("")}
 `; }).join("")}
 <h2 id="hindi">Frases úteis em hindi</h2><ul>${HINDI.map(([pt, rom, dev, pron]) => `<li><b>${esc(rom)}</b> ${esc(pt)} · fala-se ${esc(pron)}</li>`).join("")}</ul>
 <h2 id="saberes">Saberes da travessia</h2>${sab.map(x => `<h3>${esc(x.titulo)}</h3>${par(x.texto)}`).join("")}
-${cartasAbertas().length ? `<h2 id="cartas">Cartas da travessia</h2>${cartasAbertas().map(c => `<h3>${esc(c.titulo || "Carta")}</h3>${par(c.texto)}<p class="s">${esc(c.assinatura || ASSINATURA)}</p>`).join("")}` : ""}<h2 id="guia">Guia da travessia</h2>${guia.map(x => `<h3>${esc(x.titulo)}</h3>${par(x.texto)}`).join("")}
+${cartasAbertas().length ? `<h2 id="cartas">Cartas da travessia</h2>${cartasAbertas().map(c => `<h3>${esc(c.titulo || "Carta")}</h3>${par(c.texto)}<p class="s">${esc(assinaturaDe(c) + " · Caravana do Céu")}</p>`).join("")}` : ""}<h2 id="guia">Guia da travessia</h2>${guia.map(x => `<h3>${esc(x.titulo)}</h3>${par(x.texto)}`).join("")}
 <p class="s" style="margin-top:40px;text-align:center">Lokah Samastah Sukhino Bhavantu</p></main></body></html>`;
 }
 async function baixarOffline(st) {
