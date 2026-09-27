@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 11:35";</script>
+<script>window.__VERSAO = "27/09 · 11:41";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1617,7 +1617,7 @@ async function montaVideoPassaporte(cv, aoFim) {
   return { quadro, fim };
 }
 // endereço do site da Caravana, que aparece no rodapé do vídeo (publicidade)
-const SITE_CARAVANA = "";
+const SITE_CARAVANA = "caravanadoceu.com";
 window.__videoPassaporte = (cv) => montaVideoPassaporte(cv);
 async function abrirVideoPassaporte() {
   closeSheets();
@@ -1973,14 +1973,16 @@ const BONECO = {
   cabeloCor: ["#2B1D14", "#5A3A22", "#8A5A2B", "#C9A063", "#D9D2C5", "#A83E2A"],
   cabelo: [["curto", "Curto"], ["longo", "Longo"], ["cacheado", "Cacheado"], ["coque", "Coque"], ["tranca", "Trança"], ["careca", "Careca"]],
   chapeu: [["fedora", "Fedora"], ["safari", "Safári"], ["lenco", "Lenço"], ["turbante", "Turbante"], ["flores", "Coroa de flores"], ["sem", "Sem chapéu"]],
-  roupa: [["basico", "Sem roupa"], ["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
+  roupa: [["basico", "Sem roupa"], ["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["sari2", "Sari de bolinhas"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
   roupaCor: ["#8B6B43", "#C2A878", "#5F6B45", "#8A3F32", "#D9822B", "#B83A6B", "#2F5D7C", "#E8E0CF", "#2B2622"],
   acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["violao", "Violão"], ["tambor", "Tambor"], ["maraca", "Maracá"], ["flautim", "Flauta"], ["sitar", "Sitar"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["chicote", "Chicote"], ["nenhum", "Nada"]],
   colar: [["nenhum", "Nenhum"], ["guirlanda", "Guirlanda de flores"], ["rudraksha", "Rudraksha"]],
   testa: [["nada", "Nada"], ["bindi", "Bindi"], ["tilak", "Tilak"]],
+  nariz: [["nenhum", "Sem piercing"], ["argola", "Argola no nariz"], ["ponto", "Brilhante no nariz"]],
+  pes: [["nenhum", "Nada"], ["aneis", "Anéis nos pés"], ["payal", "Tornozeleira"], ["os2", "Anéis e tornozeleira"]],
   barba: [["nao", "Sem barba"], ["sim", "Com barba"]],
   oculos: [["nenhum", "Sem óculos"], ["redondo", "Redondo"], ["aviador", "Aviador"], ["sol", "De sol"], ["grau", "De grau"]],
-  pet: [["nenhum", "Nenhum"], ["gato", "Gato"], ["cachorro", "Cachorro"], ["camelo", "Camelo"], ["elefante", "Elefantinho"], ["vaca", "Vaquinha sagrada"], ["macaco", "Macaco"], ["pavao", "Pavão"]]
+  pet: [["nenhum", "Nenhum"], ["gato", "Gato"], ["cachorro", "Cachorro"], ["camelo", "Camelo"], ["elefante", "Elefantinho"], ["vaca", "Vaquinha sagrada"], ["macaco", "Macaco"], ["pavao", "Pavão"], ["cabra", "Cabrinha"]]
 };
 function bonecoPadrao(id) {
   const r = rng(id || "x"), p = arr => arr[Math.floor(r() * arr.length)], v = arr => p(arr)[0];
@@ -1990,6 +1992,14 @@ function bonecoPadrao(id) {
 const bonecoDe = id => ({ ...bonecoPadrao(id), ...((S.viajantes.find(v => v.id === id) || {}).boneco || {}) });
 function escurece(hex, f) { const n = parseInt(hex.slice(1), 16); const c = k => Math.round(((n >> k) & 255) * f); return `rgb(${c(16)},${c(8)},${c(0)})`; }
 // Bichinho ao lado do explorador (área à direita, de x 56 a 92).
+// bolinhas coloridas bem indianas por cima do sari (saia e pallu), com barrado dourado pontilhado
+function bolinhasSari(base) {
+  const cores = ["#F2C94C", "#E24A7A", "#3FB5A5", "#F4EFE3", "#E0761C", "#7FBF4D"].filter(c => c.toLowerCase() !== String(base).toLowerCase());
+  const pts = [[21, 60], [27, 58], [33, 61], [39, 59], [19, 66], [25, 65], [31, 67], [37, 65], [43, 68], [17, 72], [23, 71], [29, 73], [35, 71], [41, 73], [45, 76], [20, 76], [26, 77], [32, 76], [38, 77],
+    [36, 38], [38.5, 42], [40, 46], [33, 44], [35.5, 49], [31, 52], [26, 53], [38, 53], [22, 38], [25, 42], [21, 44]];
+  return h("g", { class: "bolinhas" }, pts.map(([x, y], i) => h("circle", { cx: x, cy: y, r: i % 3 ? .9 : 1.25, fill: cores[i % cores.length] })),
+    [15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45].map(x => h("circle", { cx: x, cy: 79.5, r: .55, fill: "#FFF1C2" })));
+}
 function desenhaPet(tipo) {
   const g = h("g", { class: "pet", stroke: "#4A3322", "stroke-width": .7, "stroke-linejoin": "round", "stroke-linecap": "round" });
   const P = (d, fill, x) => h("path", { d, fill, ...(x || {}) }), C = (cx, cy, r, fill, x) => h("circle", { cx, cy, r, fill, ...(x || {}) }), E = (cx, cy, rx, ry, fill, x) => h("ellipse", { cx, cy, rx, ry, fill, ...(x || {}) });
@@ -2043,6 +2053,18 @@ function desenhaPet(tipo) {
     C(65.8, 62, 2.6, "#8B6238"), C(78.2, 62, 2.6, "#8B6238"), C(65.8, 62, 1.3, "#D8B892", sem), C(78.2, 62, 1.3, "#D8B892", sem),
     C(72, 61, 7, "#8B6238"), P("M67.5 60 Q67.5 56 70.5 56.8 Q72 57.6 73.5 56.8 Q76.5 56 76.5 60 Q77 65.5 72 66.5 Q67 65.5 67.5 60 Z", "#E3C49E", sem),
     ...olho(70, 59.8), ...olho(74, 59.8), P("M71.2 62.3 L72.8 62.3", "none", { "stroke-width": .6 }), P("M70.3 64 Q72 65.3 73.7 64", "none", { "stroke-width": .6 }));
+  if (tipo === "cabra") g.append(
+    P("M88 67 Q91 64 90.5 61", "none", { stroke: "#E9E1CF", "stroke-width": 2 }),
+    ...[70, 74, 82, 86].map(x => h("rect", { x, y: 73, width: 2.4, height: 12, rx: 1.1, fill: "#EDE6D6" })),
+    ...[70, 74, 82, 86].map(x => h("rect", { x, y: 83.4, width: 2.4, height: 1.8, fill: "#4A3322", stroke: "none" })),
+    P("M68 73 Q67 65 75 65 L85 65 Q90 65 90 70 Q90 76 85 76 L71 76 Q68 76 68 73 Z", "#F6F1E4"),
+    E(80, 70, 3.2, 2.4, "#C9A77C", sem),
+    P("M70 69 Q66 66 64.5 62 Q63 58 66 56 Q69 55 71 58 Q72.5 62 72 66 Z", "#F6F1E4"),
+    P("M65 60 Q62 61 61 63.5 Q61.5 65.5 63.5 65 Q65 64 66 62 Z", "#F6F1E4"), C(61.9, 63.7, .45, "#6B4A2A", sem),
+    P("M63 65 Q62.5 68.5 64 70 Q64.8 67.5 64.8 65", "#E9E1CF", { "stroke-width": .5 }),
+    P("M67 56.5 Q66 52 69 50 M69 57 Q69.5 52.5 72.5 51.5", "none", { stroke: "#8B6B43", "stroke-width": 1.3 }),
+    P("M70.5 58.5 Q74.5 57.5 75 60 Q72.5 60.5 70.8 60", "#EDE6D6", { "stroke-width": .5 }), ...olho(66.3, 59.5),
+    P("M68 67.8 Q70 69.5 72.5 68.6", "none", { stroke: "#A3231A", "stroke-width": 1.1 }), C(69.8, 70.3, 1.2, "#D9A53A", { "stroke-width": .4 }));
   if (tipo === "pavao") {
     for (let i = 0; i < 9; i++) { const a = (-72 + i * 18) * Math.PI / 180, cx = 81 + Math.sin(a) * 12, cy = 72 - Math.cos(a) * 12;
       g.append(E(cx, cy, 3.4, 7.5, "#2E8A6E", { transform: `rotate(${-72 + i * 18} ${cx} ${cy})`, "stroke-width": .5 }), E(81 + Math.sin(a) * 14.5, 72 - Math.cos(a) * 14.5, 1.9, 2.4, "#1F4E8C", { stroke: "#E8B321", "stroke-width": .6 })); }
@@ -2055,6 +2077,8 @@ function desenhaPet(tipo) {
 }
 // Desenha o explorador numa caixa de 60 x 90 (o pet ocupa até x 92).
 function desenhaBoneco(b) {
+  // o sari de bolinhas é desenhado como sari, com as bolinhas por cima
+  if (b.roupa === "sari2") { const g0 = _desenhaBase({ ...b, roupa: "sari" }); g0.append(bolinhasSari(b.roupaCor)); return g0; }
   const g = h("g", { class: "boneco" }), P = (d, fill, extra) => h("path", { d, fill, ...(extra || {}) });
   const pele = b.pele, cab = b.cabeloCor, roupa = b.roupaCor, couro = "#3A2A1C", ouro = "#D9A53A", branco = "#F4EFE3";
   const longa = ["vestido", "sari", "cigana", "monge", "kurta"].includes(b.roupa);
@@ -2123,14 +2147,20 @@ function desenhaBoneco(b) {
   if (b.chapeu === "lenco") { const lc = roupa === "#8A3F32" ? "#C9A063" : "#8A3F32"; g.append(P("M19 23 Q18 9 30 9 Q42 9 41 23 Q40 16 30 15.5 Q20 16 19 23 Z", lc), P("M39 20 L45 28 L40 27 Z", lc)); }
   if (b.chapeu === "turbante") g.append(h("ellipse", { cx: 30, cy: 15.5, rx: 11.5, ry: 6, fill: "#D98B2B" }), h("ellipse", { cx: 30, cy: 11, rx: 10, ry: 5, fill: "#E6A03F" }), P("M22 15 Q30 7 38 15", "none", { stroke: "#B86E1E", "stroke-width": 1.2 }), h("circle", { cx: 30, cy: 12, r: 1.8, fill: "#8A3F32" }));
   if (b.chapeu === "flores") for (let i = 0; i <= 8; i++) { const t = Math.PI * (1 + i / 8), x = 30 + Math.cos(t) * 10.5, y = 17 + Math.sin(t) * 6; g.append(h("circle", { cx: x, cy: y, r: 2.4, fill: ["#E0661C", "#F2A72B", "#E24A7A"][i % 3] }), h("circle", { cx: x, cy: y, r: .8, fill: "#FFE7A3" })); }
+  // piercing no nariz
+  if (b.nariz === "argola") g.append(h("circle", { cx: 31.6, cy: 26.4, r: 1.5, fill: "none", stroke: ouro, "stroke-width": .7 }), h("circle", { cx: 32.8, cy: 27.4, r: .45, fill: "#C0392B" }));
+  if (b.nariz === "ponto") g.append(h("circle", { cx: 31.4, cy: 25.6, r: .75, fill: "#FFF6D6", stroke: ouro, "stroke-width": .35 }));
+  // anéis nos pés e tornozeleira (payal)
+  if (b.pes === "aneis" || b.pes === "os2") g.append(...[[22.6, 83.2], [25, 83.4], [35.2, 83.4], [37.6, 83.2]].map(([x, y]) => h("rect", { x: x - .8, y: y - .5, width: 1.6, height: 1, rx: .4, fill: ouro })));
+  if (b.pes === "payal" || b.pes === "os2") g.append(...[20.5, 30.8].map(x0 => h("g", null, h("line", { x1: x0, y1: 80.9, x2: x0 + 9, y2: 80.9, stroke: "#E8C46A", "stroke-width": .5 }), ...[0, 1.8, 3.6, 5.4, 7.2, 9].map(dx => h("circle", { cx: x0 + dx, cy: 81.6, r: .45, fill: "#E8C46A" })))));
   // óculos
   const oc = b.oculos;
   if (oc === "redondo") g.append(h("circle", { cx: 26.4, cy: 22.5, r: 2.8, fill: "rgba(255,255,255,.15)", stroke: "#3A2A1C", "stroke-width": .9 }), h("circle", { cx: 33.6, cy: 22.5, r: 2.8, fill: "rgba(255,255,255,.15)", stroke: "#3A2A1C", "stroke-width": .9 }), h("line", { x1: 29.2, y1: 22.3, x2: 30.8, y2: 22.3, stroke: "#3A2A1C", "stroke-width": .8 }));
   if (oc === "aviador") g.append(P("M23 20.8 L29 20.8 Q29 25.8 26 25.8 Q23 25.8 23 20.8 Z", "#3E4A5A", { stroke: "#C9A063", "stroke-width": .7 }), P("M31 20.8 L37 20.8 Q37 25.8 34 25.8 Q31 25.8 31 20.8 Z", "#3E4A5A", { stroke: "#C9A063", "stroke-width": .7 }), h("line", { x1: 29, y1: 21, x2: 31, y2: 21, stroke: "#C9A063", "stroke-width": .8 }));
   if (oc === "sol") g.append(h("rect", { x: 22.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), h("rect", { x: 30.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), h("line", { x1: 29.2, y1: 21.5, x2: 30.8, y2: 21.5, stroke: "#1E1A16", "stroke-width": 1 }));
   if (oc === "grau") g.append(h("rect", { x: 23, y: 20.6, width: 6.2, height: 4, rx: .8, fill: "rgba(255,255,255,.18)", stroke: "#5A3A22", "stroke-width": .9 }), h("rect", { x: 30.8, y: 20.6, width: 6.2, height: 4, rx: .8, fill: "rgba(255,255,255,.18)", stroke: "#5A3A22", "stroke-width": .9 }), h("line", { x1: 29.2, y1: 22, x2: 30.8, y2: 22, stroke: "#5A3A22", "stroke-width": .8 }));
-  // o que leva nas mãos: a segunda mão é o espelho da primeira
-  for (const [A, T] of [[b.acessorio, g]]) {
+  // o que leva nas mãos: instrumento na mão esquerda; o objeto vai na direita, espelhado
+  for (const [A, T] of [[b.acessorio, g], [b.acessorio2, b.acessorio2 && b.acessorio2 !== "nenhum" ? g.appendChild(h("g", { transform: "translate(60 0) scale(-1 1)" })) : null]]) {
     if (!A || !T) continue;
   if (A === "japamala") { for (let i = 0; i < 14; i++) { const t = i / 14 * Math.PI * 2; T.append(h("circle", { cx: 48 + Math.cos(t) * 4.5, cy: 66 + Math.sin(t) * 6, r: 1.15, fill: "#7A4A2B" })); } T.append(h("rect", { x: 47, y: 72, width: 2, height: 5, fill: "#A3231A" })); }
     if (A === "incenso") T.append(h("line", { x1: 47, y1: 60, x2: 51, y2: 46, stroke: "#7A4A2B", "stroke-width": 1.2 }), h("circle", { cx: 51, cy: 46, r: 1, fill: "#E0661C" }), P("M51 45 Q54 41 51 38 Q48 35 52 31", "none", { stroke: "rgba(120,110,100,.55)", "stroke-width": 1.1, "stroke-linecap": "round" }));
@@ -2176,10 +2206,15 @@ function desenhaBoneco(b) {
   return g;
 }
 const INSTRUMENTOS = ["violao", "tambor", "maraca", "flautim", "sitar", "sino"];
+// bonecos antigos guardavam o objeto no mesmo campo do instrumento: o objeto passa para a mão direita
+function maosSeparadas(b) {
+  if (!b || !b.acessorio || b.acessorio === "nenhum" || INSTRUMENTOS.includes(b.acessorio) || (b.acessorio2 && b.acessorio2 !== "nenhum")) return b;
+  return { ...b, acessorio2: b.acessorio, acessorio: "nenhum" };
+}
 const bonecoSvg = (b, cls) => h("svg", { viewBox: b.pet && b.pet !== "nenhum" ? "0 0 99 90" : "0 0 60 90", class: cls || "bonecosvg", role: "img", "aria-label": "Explorador", style: "overflow:visible" }, desenhaBoneco(b));
 // Fantasias inspiradas nos deuses: mudam roupa, cores e o que a pessoa segura.
 BONECO.deus = [["nenhum", "Nenhuma"], ["shiva", "Shiva"], ["ganesha", "Ganesha"], ["durga", "Durga"], ["krishna", "Krishna"], ["hanuman", "Hanuman"], ["lakshmi", "Lakshmi"],
-  ["saraswati", "Saraswati"], ["vishnu", "Vishnu"], ["parvati", "Parvati"], ["kali", "Kali"], ["surya", "Surya"], ["ganga", "Ganga"], ["brahma", "Brahma"]];
+  ["saraswati", "Saraswati"], ["vishnu", "Vishnu"], ["parvati", "Parvati"], ["kali", "Kali"], ["surya", "Surya"], ["ganga", "Ganga"]];
 const DEUS = {
   shiva: { pele: "#7FA9C9", roupa: "shiva", roupaCor: "#C9822F", acessorio: "tridente", chapeu: "jata", colar: "cobra", testa: "cinzas" },
   ganesha: { roupa: "kurta", roupaCor: "#E0761C", acessorio: "modak", chapeu: "ganesha", colar: "guirlanda", testa: "nada", barba: "nao", bracos: 4 },
@@ -2193,13 +2228,12 @@ const DEUS = {
   kali: { pele: "#2F3550", roupa: "dhoti", roupaCor: "#A3231A", acessorio: "espada", chapeu: "sem", cabelo: "longo", cabeloCor: "#141018", colar: "flores", testa: "bindi", bracos: 4 },
   surya: { roupa: "dhoti", roupaCor: "#E0761C", acessorio: "lotus", chapeu: "sol", colar: "ouro", testa: "tilak" },
   ganga: { roupa: "sari", roupaCor: "#8FB8C9", acessorio: "kalash", chapeu: "coroa", colar: "ouro", testa: "bindi", bracos: 4 },
-  brahma: { roupa: "dhoti", roupaCor: "#B0301F", acessorio: "livro", chapeu: "coroa", colar: "rudraksha", testa: "tilak", barba: "sim", cabeloCor: "#E8E2D6", bracos: 4, cabecas: 3 }
 };
 // O que cada deus segura nas mãos extras (em pares: esquerda, direita), como na iconografia tradicional
 const MAOS = {
   shiva: [], ganesha: ["machado", "laco"], durga: ["chakra", "concha", "espada", "arco", "lotus", "gada"], krishna: [],
   hanuman: [], lakshmi: ["lotus", "lotus"], saraswati: ["mala", "livro"], vishnu: ["chakra", "concha"], parvati: [],
-  kali: ["espada", "tigela"], surya: [], ganga: ["lotus", "kalash"], brahma: ["livro", "kamandalu"]
+  kali: ["espada", "tigela"], surya: [], ganga: ["lotus", "kalash"]
 };
 function iconeMao(nome, x, y) {
   const ouro = "#D9A53A", P = (d, fill, e) => h("path", { d, fill, ...(e || {}) });
@@ -2220,9 +2254,10 @@ function iconeMao(nome, x, y) {
 }
 const _desenhaBase = desenhaBoneco;
 desenhaBoneco = function (b0) {
+  b0 = maosSeparadas(b0);
   const d = b0.deus && DEUS[b0.deus];
   const b = d ? { ...b0, ...d, cabelo: d.cabelo || (b0.cabelo === "careca" ? "curto" : b0.cabelo) } : b0;
-  const base = { ...b, roupa: ["shiva", "dhoti"].includes(b.roupa) ? "yogi" : b.roupa, acessorio: d ? "nenhum" : b.acessorio,
+  const base = { ...b, roupa: ["shiva", "dhoti"].includes(b.roupa) ? "yogi" : b.roupa, acessorio: d ? "nenhum" : b.acessorio, acessorio2: d ? "nenhum" : b.acessorio2,
     chapeu: ["jata", "ganesha", "coroa", "coroaalta", "pena", "sol"].includes(b.chapeu) ? "sem" : b.chapeu, colar: ["cobra", "ouro", "flores"].includes(b.colar) ? "nenhum" : b.colar,
     testa: b.testa === "cinzas" ? "nada" : b.testa, roupaCor: b.roupaCor };
   const g = h("g", { class: "boneco" }), P = (dd, fill, x) => h("path", { d: dd, fill, ...(x || {}) }), ouro = "#D9A53A";
@@ -2320,7 +2355,7 @@ function vExplorador() {
   if (!S.bonecoRasc) {
     const salvo = (S.viajantes.find(x => x.id === S.uid) || {}).boneco;
     // quem ainda não montou começa do zero: só o básico, para ir vestindo
-    S.bonecoRasc = salvo ? bonecoDe(S.uid) : { ...bonecoPadrao(S.uid), roupa: "basico", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum", pet: "nenhum", deus: "nenhum", barba: "nao" };
+    S.bonecoRasc = salvo ? maosSeparadas(bonecoDe(S.uid)) : { ...bonecoPadrao(S.uid), roupa: "basico", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum", pet: "nenhum", deus: "nenhum", barba: "nao" };
   }
   const b = S.bonecoRasc, set = (k, val) => { S.bonecoRasc = { ...S.bonecoRasc, [k]: val }; render(); };
   const chips = (k, ops) => h("div", { class: "opts" }, ops.map(([val, lab]) => h("button", { type: "button", class: "opt", "aria-pressed": String(b[k] === val), onclick: () => set(k, val) }, lab)));
@@ -2339,15 +2374,17 @@ function vExplorador() {
         h("p", { class: "lab", text: "Pele" }), cores("pele", BONECO.pele, "Tom de pele"),
         h("p", { class: "lab", text: "Cabelo" }), chips("cabelo", BONECO.cabelo), cores("cabeloCor", BONECO.cabeloCor, "Cor do cabelo"),
         h("p", { class: "lab", text: "Roupa" }), chips("roupa", BONECO.roupa), cores("roupaCor", BONECO.roupaCor, "Cor da roupa"),
-        h("p", { class: "lab", text: "Na mão · instrumentos" }), chips("acessorio", BONECO.acessorio.filter(([v]) => INSTRUMENTOS.includes(v))),
-        h("p", { class: "lab", text: "Na mão · objetos" }), chips("acessorio", BONECO.acessorio.filter(([v]) => !INSTRUMENTOS.includes(v))),
+        h("p", { class: "lab", text: "Mão esquerda · instrumentos" }), chips("acessorio", BONECO.acessorio.filter(([v]) => v === "nenhum" || INSTRUMENTOS.includes(v))),
+        h("p", { class: "lab", text: "Mão direita · objetos" }), chips("acessorio2", BONECO.acessorio.filter(([v]) => !INSTRUMENTOS.includes(v))),
         h("p", { class: "lab", text: "Óculos" }), chips("oculos", BONECO.oculos),
         h("p", { class: "lab", text: "Colar" }), chips("colar", BONECO.colar),
         h("p", { class: "lab", text: "Na testa" }), chips("testa", BONECO.testa),
+        h("p", { class: "lab", text: "Piercing no nariz" }), chips("nariz", BONECO.nariz),
+        h("p", { class: "lab", text: "Nos pés" }), chips("pes", BONECO.pes),
         h("p", { class: "lab", text: "Barba" }), chips("barba", BONECO.barba),
         h("p", { class: "lab", text: "Companheiro de viagem" }), chips("pet", BONECO.pet),
         h("p", { class: "lab", text: "Fantasia dos deuses" }), chips("deus", BONECO.deus),
-        b.deus && b.deus !== "nenhum" ? h("p", { class: "small", text: "A fantasia escolhe roupa, coroa e o que o deus segura. Para voltar às suas escolhas, toque em Nenhuma." }) : null)),
+        null)),
     v ? h("div", { class: "actions", style: "justify-content:center" },
       h("button", { class: "btn gold", type: "button", onclick: async () => {
         try { await S.db.doc("viajantes/" + S.uid).update({ boneco: S.bonecoRasc }); S.bonecoRasc = null; S.expMsg = "Explorador salvo. Ele já aparece no mapa."; msg.textContent = S.expMsg; msg.className = "msg ok"; setTimeout(() => { S.expMsg = null; }, 6000); }
