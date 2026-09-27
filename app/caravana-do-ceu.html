@@ -1683,6 +1683,8 @@ async function abrirVideoPassaporte() {
     st.textContent = "Vídeo pronto!";
     const f = new File([arq], nome, { type: arq.type }), podeCompartilhar = !!(navigator.canShare && navigator.canShare({ files: [f] }));
     const salvar = async () => {
+      // no celular, o menu de compartilhar tem "Salvar vídeo", que manda direto para o rolo da câmera
+      if (noSite() && podeCompartilhar) { try { await navigator.share({ files: [f] }); st.textContent = "Se escolheu Salvar vídeo, ele está no rolo da câmera."; } catch (e) {} return; }
       const dl = await (window.claude?.use?.("downloads") ?? null);
       if (dl) { try { await dl.save({ filename: nome, data: arq }); st.textContent = "Vídeo salvo."; } catch (e) {} return; }
       const a = h("a", { href: URL.createObjectURL(arq), download: nome }); document.body.append(a); a.click(); a.remove();
