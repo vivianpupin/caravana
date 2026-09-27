@@ -2757,7 +2757,6 @@ function vPedra() {
             meu || S.isOwner ? h("button", { class: "apaga", type: "button", "aria-label": "Apagar", onclick: () => { if (confirm("Apagar esta marca?")) S.db.doc("pensamentos/" + p.id).delete().catch(() => {}); } }, "×") : null));
       }) : h("p", { class: "vazia", text: "A pedra ainda está lisa. Seja a primeira marca." })),
     S.isOwner ? h("div", { class: "secret" },
-      h("p", { text: `Só você vê isto. No fim da caravana, baixe os ${ps.length} pensamentos e mande o arquivo para o Claude. Ele escreve o resumo na linguagem do Mapa da Clareza, e você envia pelo pombo-correio (Cartas) para todos.` }),
       (() => { const s2 = h("p", { class: "msg", role: "status" }); return h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: () => baixarPensamentos(s2) }, "Baixar os pensamentos"), s2); })()) : null);
 }
 
