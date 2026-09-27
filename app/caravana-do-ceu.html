@@ -543,6 +543,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .icshare{vertical-align:-3px}
 .fixado{position:relative;margin:10px 0 0;background:#FFF6D8;border:1px solid #E9C45A;border-left:4px solid #F2C230;border-radius:14px;padding:10px 38px 10px 14px}
 .view>.fixado{margin:0 0 16px}
+.fixado.destaque{box-shadow:0 6px 18px rgba(242,194,48,.35)}
 .fixado .t{margin:2px 0 0;font-size:15px;white-space:pre-wrap;color:#3B2A1C}
 .avisolab{color:#9A6A00!important;margin:0}
 .bubble.aviso .b{background:#FFF6D8;border:1px solid #E9C45A;color:#3B2A1C}
@@ -612,6 +613,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .fotoframe{background:#2B1F14;border-radius:var(--r);padding:12px;display:grid;place-items:center;box-shadow:var(--shadow)}
 .fotofixa{position:sticky;top:0;z-index:3;background:var(--bg,#F5EFE3);padding-top:6px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .tirafotos{display:flex;gap:8px;flex-wrap:wrap}.tiramini{display:flex;align-items:center;gap:6px;border:1px solid var(--line2);background:var(--panel);border-radius:999px;padding:5px 12px;font-size:13px;color:var(--ink)}.tiramini b{color:#A3231A}.tiramini.mais{border-style:dashed;color:var(--soft)}
+.tecladica{margin-top:10px;background:#FFF6D8;border:1px solid #E9C45A;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;font-size:13.5px;line-height:1.45;color:#3B2A1C}
+.tecladica .linkbtn{align-self:flex-start;background:none;border:0;padding:4px 0 0;color:var(--terra);font-size:12.5px;text-decoration:underline}
 .tradmodo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tradmodo button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 14px;border-radius:14px;border:1px solid var(--line2);background:var(--panel);text-align:left;color:var(--ink)}
 .tradmodo button span{font-size:12.5px;color:var(--soft)}
@@ -992,8 +995,8 @@ nav.tabs button{position:relative}
     <button data-tab="travessia"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8.5 3v4M15.5 3v4M8 13.5h3M8 16.5h6"/></svg></span>Roteiro</button>
     <button data-tab="passaporte"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="3" width="13" height="18" rx="1.5"/><circle cx="12" cy="10.5" r="3.2"/><path d="M8.8 10.5h6.4M12 7.3c1 1 1 5.4 0 6.4M12 7.3c-1 1-1 5.4 0 6.4M9 17h6"/></svg></span>Passaporte</button>
     <button data-tab="ensinamentos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-4.5 0-8-2.5-8-6 3 0 6 1.5 8 6zM12 20c4.5 0 8-2.5 8-6-3 0-6 1.5-8 6zM12 20c-2-2.5-3-5.5-2-9 1-2.5 1.5-4 2-6 .5 2 1 3.5 2 6 1 3.5 0 6.5-2 9z"/></svg></span>Saberes</button>
-    <button data-tab="mapa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span>Mapa</button>
     <button data-tab="explorador"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9.5h14"/><path d="M8.5 9.5c0-3 1.5-5 3.5-5s3.5 2 3.5 5"/><circle cx="12" cy="12.5" r="2.6"/><path d="M7.5 21c0-3.5 2-5.5 4.5-5.5s4.5 2 4.5 5.5"/></svg></span>Explorador</button>
+    <button data-tab="mapa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span>Mapa</button>
     <button data-tab="conversa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span>Chat</button>
     <button data-tab="cambio"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 8h6M9 10.8h6M10.5 8c2.2 0 3.2 1.2 3.2 2.8S12.7 13.6 10.5 13.6H9.5l4.2 3.4"/></svg></span>Câmbio</button>
     <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
@@ -1149,6 +1152,7 @@ const faltam = () => Math.ceil((new Date("2026-11-04T00:00:00+05:30").getTime() 
 function marcaMaisAbas() { const n = $("#tabs"), d = $(".navmais"); if (!n) return; if (d) d.style.height = n.offsetHeight + "px"; document.body.classList.toggle("navmais-on", n.scrollLeft + n.clientWidth < n.scrollWidth - 4); }
 setTimeout(() => { const n = $("#tabs"); if (!n) return; n.addEventListener("scroll", marcaMaisAbas, { passive: true }); window.addEventListener("resize", marcaMaisAbas); marcaMaisAbas(); }, 0);
 function go(tab) {
+  try { VOZ.parar(); } catch (e) {}
   S.tab = tab; try { localStorage.setItem("cdi-tab2", tab); } catch (e) {}
   render(); $("#main").scrollTop = 0;
   try { document.querySelector(`#tabs button[data-tab="${tab}"]`)?.scrollIntoView({ inline: "nearest", block: "nearest" }); } catch (e) {}
@@ -1190,6 +1194,8 @@ function render() {
   const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
   main.replaceChildren(precisaCadastro ? vCadastro() :
     S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
+  // aviso novo da líder (primeiros 20 min): aparece no topo de qualquer aba
+  if (!precisaCadastro && S.tab !== "travessia" && S.tab !== "conversa" && avisoEmDestaque(avisoAtual())) { const f = avisoFixado(), v = main.firstElementChild; if (f && v) v.prepend(f); }
   main.scrollTop = scroll;
   if (S.tab === "conversa") {
     const inp = $("#chat-input"); if (inp && chatDraft) inp.value = chatDraft;
@@ -3599,12 +3605,21 @@ function cartaoCelular() {
 }
 // avisos da líder: só contam como aviso se quem mandou é a líder; o mais recente (até 2 dias) fica fixado
 const ehLider = uid => !!(S.viajantes.find(v => v.id === uid) || {}).lider;
+// aviso da líder: nos primeiros 20 minutos fica em destaque no topo de todas as abas (sem botão de fechar);
+// depois continua no Roteiro e no Chat por 48 horas, e aí a pessoa pode esconder
+const AVISO_DESTAQUE = 20 * 60 * 1000;
+const avisoAtual = () => S.chat.filter(m => m.tipo === "aviso" && ehLider(m.autor) && Date.now() - (m.ts || 0) < 48 * 3600 * 1000).sort((x, y) => y.ts - x.ts)[0];
+const avisoEmDestaque = a => a && Date.now() - (a.ts || 0) < AVISO_DESTAQUE;
 function avisoFixado() {
-  const a = S.chat.filter(m => m.tipo === "aviso" && ehLider(m.autor) && Date.now() - (m.ts || 0) < 48 * 3600 * 1000).sort((x, y) => y.ts - x.ts)[0];
-  if (!a || lsGet("cdi-aviso-lido") === a.id) return null;
+  const a = avisoAtual();
+  if (!a) return null;
+  const destaque = avisoEmDestaque(a);
+  if (!destaque && lsGet("cdi-aviso-lido") === a.id) return null;
+  // quando os 20 minutos acabarem, redesenha para liberar o botão de fechar
+  if (destaque && S.avisoTimer !== a.id) { S.avisoTimer = a.id; setTimeout(() => { S.avisoTimer = null; if (!document.querySelector(".sheet")) render(); }, AVISO_DESTAQUE - (Date.now() - a.ts) + 500); }
   const d = new Date(a.ts);
-  return h("div", { class: "fixado", role: "note" },
-    h("button", { class: "celx", type: "button", "aria-label": "Esconder aviso", onclick: () => { lsSet("cdi-aviso-lido", a.id); render(); } }, "×"),
+  return h("div", { class: "fixado" + (destaque ? " destaque" : ""), role: "note" },
+    destaque ? null : h("button", { class: "celx", type: "button", "aria-label": "Esconder aviso", onclick: () => { lsSet("cdi-aviso-lido", a.id); render(); } }, "×"),
     h("p", { class: "eyebrow avisolab", text: "📢 Aviso da líder · " + d.toLocaleDateString("pt-BR", { weekday: "short", day: "numeric" }) + " · " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) }),
     h("p", { class: "t", text: a.texto }));
 }
@@ -3973,6 +3988,12 @@ function falarEm(txt, lang, rate) {
   setTimeout(() => { if (!caiu && !tocando) { a.pause(); cai(); } }, semVoz ? 6000 : 4000);
 }
 const Reconhece = window.SpeechRecognition || window.webkitSpeechRecognition;
+const VOZ = { rec: null, parar: () => {} };
+// no iPhone com o app instalado, o microfone do app costuma não abrir: lá usamos o microfone do teclado
+const vozPeloTeclado = () => lsGet("cdi-voz-teclado") === "1";
+function pararFala() { try { if (audioFala) audioFala.pause(); speechSynthesis.cancel(); } catch (e) {} }
+// sair da aba ou do app desliga o microfone na hora
+document.addEventListener("visibilitychange", () => { if (document.hidden) VOZ.parar(); });
 function mostrarGrande(txt, rom) {
   closeSheets();
   const box = h("div", { role: "dialog", "aria-label": "Mostrar tradução", class: "tradgrande" },
@@ -3984,9 +4005,12 @@ function mostrarGrande(txt, rom) {
 function vTradutor() {
   const T = S.trad, de = T.modo === "eu" ? "pt" : T.outra, para = T.modo === "eu" ? T.outra : "pt";
   const ta = h("textarea", { id: "trad-texto", rows: 3, maxlength: "500", placeholder: T.modo === "eu" ? "Escreva ou fale em português…" : (T.outra === "hi" ? "Peça para a pessoa falar em hindi, ou digite…" : "Peça para a pessoa falar em inglês, ou digite…") });
-  ta.value = T.texto; ta.addEventListener("input", () => { T.texto = ta.value; });
+  ta.value = T.texto;
+  // parou de digitar ou de ditar pelo teclado: traduz sozinho
+  ta.addEventListener("input", () => { T.texto = ta.value; clearTimeout(S.tradAuto); if (ta.value.trim().length > 1) S.tradAuto = setTimeout(() => { if (document.getElementById("trad-texto") === ta && !T.busy) vai(); }, 1600); });
   const vai = async () => {
     const txt = (T.texto || "").trim(); if (!txt || T.busy) return;
+    clearTimeout(S.tradAuto); if (T.res && T.res.orig === txt && T.res.para === para) return;
     T.busy = true; T.erro = ""; render();
     try { const r = await traduzir(txt, de, para); T.res = { ...r, orig: txt, de, para };
       S.tradHist = [T.res, ...S.tradHist.filter(x => !(x.orig === txt && x.para === para))].slice(0, 12);
@@ -3994,40 +4018,55 @@ function vTradutor() {
     catch (e) { T.erro = navigator.onLine ? "Não consegui traduzir agora. Tente de novo em instantes." : "Sem internet. Use as frases prontas aqui embaixo, que funcionam sem sinal."; }
     T.busy = false; render();
   };
-  const ouvir = () => {
-    if (!Reconhece) return;
-    // tocar de novo enquanto ouve = parar e traduzir o que já ouviu
-    if (T.rec) { try { T.rec.stop(); } catch (e) {} return; }
-    let rec, ouvido = "", fim = false;
-    try { rec = new Reconhece(); } catch (e) { T.erro = "O microfone do app não funcionou neste celular. Toque no campo de texto e use o microfone do teclado."; render(); return; }
+  // microfone: nunca redesenha a tela enquanto ouve (só o botão muda), destrava sozinho e,
+  // se o microfone do app falhar neste celular, passa a usar o microfone do teclado, que nunca trava
+  const ouvir = ev => {
+    const bt = ev && ev.currentTarget;
+    if (VOZ.rec) { VOZ.parar(true); return; }
+    if (!Reconhece || vozPeloTeclado()) return ditarPeloTeclado();
+    pararFala();
+    const setBt = t => { VOZ.rotulo = t; const b = document.getElementById("trad-mic"); if (b) { b.textContent = t; b.classList.toggle("gold", t !== "🎤 Falar"); } };
+    let rec, ouvido = "", fim = false, comecou = false, pausa = null;
+    try { rec = new Reconhece(); } catch (e) { return ditarPeloTeclado(true); }
     rec.lang = LINGUAS[de][1]; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
-    const campo = () => document.getElementById("trad-texto");
-    const acaba = msg => {
-      if (fim) return; fim = true; clearTimeout(T.recTempo); clearTimeout(T.recPausa); T.rec = null; T.ouvindo = false;
-      if (ouvido.trim()) { T.texto = ouvido.trim(); T.erro = ""; render(); vai(); }
-      else { if (msg) T.erro = msg; render(); }
+    const acaba = (msg, falhou) => {
+      if (fim) return; fim = true; clearTimeout(VOZ.t1); clearTimeout(VOZ.t2); clearTimeout(pausa); VOZ.rec = null; VOZ.parar = () => {};
+      try { rec.onresult = rec.onerror = rec.onend = rec.onstart = rec.onaudiostart = null; rec.abort(); } catch (e) {}
+      setBt("🎤 Falar");
+      if (ouvido.trim()) { lsSet("cdi-voz-falhas", "0"); T.texto = ouvido.trim(); T.erro = ""; vai(); return; }
+      if (falhou) { const n = +(lsGet("cdi-voz-falhas") || 0) + 1; lsSet("cdi-voz-falhas", String(n)); if (n >= 2) lsSet("cdi-voz-teclado", "1"); return ditarPeloTeclado(true); }
+      T.erro = msg || ""; render();
     };
-    rec.onresult = ev => {
-      ouvido = [...ev.results].map(r => r[0].transcript).join(" ");
-      T.texto = ouvido; const c = campo(); if (c) c.value = ouvido;
-      // terminou a frase (ou 1,2 s de silêncio depois de falar): já traduz, sem esperar o celular decidir
-      clearTimeout(T.recPausa);
-      if (ev.results[ev.results.length - 1].isFinal) { try { rec.stop(); } catch (e) {} setTimeout(() => acaba(""), 700); }
-      else T.recPausa = setTimeout(() => { try { rec.stop(); } catch (e) {} setTimeout(() => acaba(""), 700); }, 1200);
+    const terminou = () => { try { rec.stop(); } catch (e) {} setTimeout(() => acaba(""), 600); };
+    rec.onstart = rec.onaudiostart = () => { if (!comecou) { comecou = true; setBt("Pode falar… (toque para parar)"); } };
+    rec.onresult = e => {
+      comecou = true; ouvido = [...e.results].map(r => r[0].transcript).join(" ");
+      T.texto = ouvido; const c = document.getElementById("trad-texto"); if (c) c.value = ouvido;
+      setBt("Ouvindo… (toque para parar)");
+      clearTimeout(pausa);
+      if (e.results[e.results.length - 1].isFinal) terminou(); else pausa = setTimeout(terminou, 1100);
     };
-    rec.onerror = ev => {
-      const e = ev && ev.error;
-      acaba(e === "not-allowed" || e === "service-not-allowed" ? "O microfone está bloqueado. Libere o microfone para o app nos ajustes do celular, ou toque no campo e use o microfone do teclado."
-        : e === "no-speech" ? "Não ouvi nada. Toque em Falar e fale perto do celular."
-        : e === "aborted" ? "" : "Não consegui ouvir. Toque no campo de texto e use o microfone do teclado.");
+    rec.onerror = e => {
+      const er = e && e.error;
+      if (er === "no-speech") return acaba("Não ouvi nada. Toque em Falar e fale perto do celular.");
+      if (er === "aborted") return acaba("");
+      acaba("", true);
     };
     rec.onend = () => acaba(ouvido.trim() ? "" : "Não ouvi nada. Toque em Falar e fale perto do celular.");
-    T.rec = rec; T.ouvindo = true; T.erro = ""; render();
-    // se o celular não responder, destrava sozinho
-    T.recTempo = setTimeout(() => { try { rec.stop(); } catch (e) {} setTimeout(() => acaba("Não consegui ouvir. Toque no campo de texto e use o microfone do teclado."), 1500); }, 12000);
-    try { rec.start(); } catch (e) { acaba("Não consegui ligar o microfone. Toque no campo de texto e use o microfone do teclado."); }
+    VOZ.rec = rec; VOZ.parar = manual => manual && ouvido.trim() ? terminou() : acaba("");
+    T.erro = ""; const er = document.querySelector(".tradbox .err"); if (er) er.remove();
+    setBt("Abrindo o microfone…");
+    // o microfone não abriu em 3 s: este celular não deixa (acontece no app instalado do iPhone) → teclado
+    VOZ.t1 = setTimeout(() => { if (!comecou) acaba("", true); }, 3000);
+    VOZ.t2 = setTimeout(() => ouvido.trim() ? terminou() : acaba("Não ouvi nada. Toque em Falar e fale perto do celular."), 12000);
+    try { rec.start(); } catch (e) { acaba("", true); }
   };
-  const troca = m => { if (T.rec) { try { T.rec.abort(); } catch (e) {} } T.modo = m; T.texto = ""; T.res = null; T.erro = ""; render(); };
+  // ditado pelo microfone do próprio teclado do celular
+  const ditarPeloTeclado = aviso => {
+    T.teclado = true; if (aviso) T.erro = ""; render();
+    const c = document.getElementById("trad-texto"); if (c) { c.focus(); try { c.setSelectionRange(c.value.length, c.value.length); } catch (e) {} }
+  };
+  const troca = m => { VOZ.parar(); T.modo = m; T.texto = ""; T.res = null; T.erro = ""; render(); };
   const R = T.res;
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Fale com a Índia" }), h("h1", { text: "Tradutor" }))),
@@ -4037,9 +4076,13 @@ function vTradutor() {
     h("div", { class: "opts" }, ["hi", "en"].map(l => h("button", { type: "button", class: "opt", "aria-pressed": String(T.outra === l), onclick: () => { T.outra = l; T.res = null; render(); } }, LINGUAS[l][0]))),
     h("div", { class: "panel tradbox" }, ta,
       h("div", { class: "actions" },
-        Reconhece ? h("button", { class: "btn" + (T.ouvindo ? " gold" : ""), type: "button", onclick: ouvir }, T.ouvindo ? "Ouvindo… toque para parar" : "🎤 Falar") : null,
+        h("button", { class: "btn" + (VOZ.rec ? " gold" : ""), id: "trad-mic", type: "button", onclick: ouvir }, VOZ.rec ? VOZ.rotulo || "Ouvindo…" : "🎤 Falar"),
         h("button", { class: "btn gold", type: "button", disabled: T.busy, onclick: vai }, T.busy ? "Traduzindo…" : "Traduzir"),
         T.texto ? h("button", { class: "btn ghost", type: "button", onclick: () => { T.texto = ""; T.res = null; render(); } }, "Limpar") : null),
+      T.teclado ? h("div", { class: "tecladica" },
+        h("b", { text: "🎙️ Use o microfone do teclado" }),
+        h("span", { text: (T.modo === "eu" ? "Toque no microfone do teclado (embaixo, à direita) e fale em português." : "Entregue o celular e peça para a pessoa tocar no microfone do teclado e falar" + (T.outra === "hi" ? " em hindi. Se o teclado não tiver hindi, toque no globo 🌐 para trocar." : " em inglês.")) + " Quando parar de falar, a tradução aparece sozinha." }),
+        vozPeloTeclado() && Reconhece ? h("button", { class: "linkbtn", type: "button", onclick: () => { lsSet("cdi-voz-teclado", "0"); lsSet("cdi-voz-falhas", "0"); T.teclado = false; render(); } }, "Tentar o microfone do app de novo") : null) : null,
       T.erro ? h("p", { class: "msg err", role: "status", text: T.erro }) : null),
     R ? h("div", { class: "panel tradres" },
       h("p", { class: "eyebrow", text: LINGUAS[R.para][0] }),
@@ -4776,7 +4819,10 @@ function listen(col, key, q, after) {
   (q || S.db.collection(col)).onSnapshot(snap => {
     S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() })); if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = ajustaSaberes(S.ens); guardaCache(key);
     S.dbReady = true; if (after) after(); if (key === "chat") marcaChat();
-    if (primeira || !USA[key] || USA[key].includes(S.tab)) render();
+    // aviso novo da líder: redesenha qualquer aba para ele aparecer em destaque na hora
+    let avisoNovo = false;
+    if (key === "chat") { const av = avisoAtual(); if (av && avisoEmDestaque(av) && S.avisoVisto !== av.id) { S.avisoVisto = av.id; avisoNovo = !primeira; } }
+    if (primeira || avisoNovo || !USA[key] || USA[key].includes(S.tab)) render();
     primeira = false; refreshSheet();
   }, () => { S.dbReady = true; if (after) after(); render(); });
 }
