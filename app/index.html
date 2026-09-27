@@ -2145,7 +2145,8 @@ function vPerto() {
     eu0 && S.rua && S.rua.txt ? h("div", { class: "ruaaqui", role: "status" }, h("span", { class: "eyebrow", text: "Você está em" }), h("b", { text: S.rua.txt }), S.rua.sub ? h("small", { text: S.rua.sub }) : null) : null,
     eu0 ? h("p", { class: "coord", style: "text-align:left", text: "Você: " + coordTxt(eu0.lat, eu0.lng) }) : null,
     !S.gpsOn ? h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null)
-      : h("p", { class: "msg ok", text: (S.gpsMsg || "Você está ao vivo.") + (S.aoVivo[S.uid]?.prec ? ` Precisão de ${S.aoVivo[S.uid].prec} m.` : "") }),
+      : h("div", { style: "display:flex;flex-direction:column;gap:6px;align-items:flex-start" }, h("p", { class: "msg ok", text: (S.gpsMsg || "Você está ao vivo.") + (S.aoVivo[S.uid]?.prec ? ` Precisão de ${S.aoVivo[S.uid].prec} m.` : "") }),
+        h("button", { class: "btn ghost", type: "button", onclick: () => ligarGps() }, "Desligar localização ao vivo")),
     perto.length ? h("ul", { class: "pertolist" }, perto.slice(0, 20).map(({ p, km }) => h("li", { onclick: () => abrirPessoa(p.id), style: "cursor:pointer" },
       bonecoSvg(bonecoDe(p.id), "bonecosvg mini"), h("div", null, h("b", { text: nomeDe(p.id) }), h("small", { text: km < 1 ? Math.round(km * 1000) + " m de você" : km.toFixed(km < 10 ? 1 : 0) + " km de você" }))))) :
       h("p", { class: "small", text: "Ninguém da caravana apareceu por perto ainda. Quando alguém ligar a localização, o bonequinho aparece aqui." }));
@@ -2373,8 +2374,6 @@ const mapsUrl = l => "https://www.google.com/maps/search/?api=1&query=" + encode
 
 function painelPessoas(c) {
   const gente = posicoesAtuais().filter(p => !c || p.cidadeId === c.id).sort((a, b) => b.ts - a.ts);
-  const minha = S.posicoes.find(p => p.id === S.uid && Date.now() - p.ts < FRESCO);
-  const pode = S.db && S.uid && eu();
   return h("aside", { class: "panel" },
     h("p", { class: "eyebrow", text: "A caravana agora" }),
     h("h2", { text: c ? "Quem está em " + c.nome : "Onde está cada um" }),
@@ -2386,23 +2385,7 @@ function painelPessoas(c) {
         h("div", { class: "actions", style: "margin-top:6px" },
           p.link ? h("a", { class: "btn", href: p.link, target: "_blank", rel: "noopener" }, "Ver ao vivo") : null,
           h("a", { class: "btn ghost", href: `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`, target: "_blank", rel: "noopener" }, "Como chegar")))))) :
-      h("p", { class: "small", text: "Ninguém mostrou onde está nas últimas 3 horas." }),
-    pode ? h("div", { class: "share" },
-      h("p", { class: "eyebrow", text: minha ? "Você está aparecendo no mapa" : "Mostrar onde estou" }),
-      h("div", { class: "actions" },
-        h("button", { class: "btn gold", type: "button", onclick: ligarGps }, S.gpsWatch != null ? "Desligar ao vivo" : "Ligar localização ao vivo"),
-        h("button", { class: "btn", type: "button", hidden: true, onclick: () => {
-          if (!navigator.geolocation) { S.posMsg = { ok: false, text: "O GPS não está disponível aqui. Marque no mapa ou cole o link ao vivo do Google Maps." }; render(); return; }
-          S.posMsg = { ok: true, text: "Buscando sua localização…" }; render();
-          navigator.geolocation.getCurrentPosition(pos => { const lat = +pos.coords.latitude.toFixed(5), lng = +pos.coords.longitude.toFixed(5); salvarPos({ cidadeId: pertoCidade({ lat, lng }), lat, lng, lugar: "" }); },
-            () => { S.posMsg = { ok: false, text: "O celular não liberou o GPS. Marque no mapa ou cole o link ao vivo do Google Maps." }; render(); },
-            { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
-        } }, "Usar minha localização"),
-        h("button", { class: "btn", type: "button", onclick: () => { S.marcando = !S.marcando; render(); } }, S.marcando ? "Cancelar" : "Marcar no mapa"),
-        minha ? h("button", { class: "btn", type: "button", onclick: pararPos }, "Sair do mapa") : null),
-      S.posMsg ? h("p", { class: "msg " + (S.posMsg.ok ? "ok" : "err"), role: "status", text: S.posMsg.text }) : null,
-      S.gpsMsg ? h("p", { class: "msg " + (S.gpsOn ? "ok" : ""), role: "status", text: S.gpsMsg }) : null,
-    ) : null);
+      h("p", { class: "small", text: "Ninguém mostrou onde está nas últimas 3 horas." }));
 }
 async function salvarPos(p) {
   const doc = { cidadeId: p.cidadeId || "", lat: p.lat, lng: p.lng, lugar: p.lugar || "", nota: p.nota || "", link: p.link || "", ts: Date.now() };
