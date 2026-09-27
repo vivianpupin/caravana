@@ -52,5 +52,7 @@ service cloud.firestore {
       allow delete: if lider() || (membro() && resource.data.autor == request.auth.uid);
     }
     match /diarios/{uid} { allow read, write: if eu(uid) || lider(); }
+    // inscrição de cada celular para receber notificações (só o dono grava; ninguém lê pelo app)
+    match /push/{uid} { allow write: if eu(uid) && membro(); }
   }
 }

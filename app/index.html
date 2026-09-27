@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 12:05";</script>
+<script>window.__VERSAO = "27/09 · 12:09";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -543,6 +543,11 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .pinmsg[hidden]{display:none}
 @keyframes pinpulsa{50%{transform:scale(1.12)}}
 @media (prefers-reduced-motion:reduce){.pinmsg{animation:none}}
+.celcard{position:relative;background:var(--panel);border:1px solid var(--line2);border-left:4px solid #F2C230;border-radius:14px;padding:14px 40px 14px 16px;margin:0 0 16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.celcard p{margin:0}
+.celpassos{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.icshare{vertical-align:-3px}
+.celx{position:absolute;top:6px;right:8px;background:none;border:0;font-size:22px;line-height:1;color:var(--soft);padding:4px 8px}
 .meuexp{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 14px 4px 6px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
 .bonecosvg{display:block}
 .bonecosvg.mini{width:26px;height:39px}
@@ -1320,7 +1325,7 @@ function vTravessia() {
   if (S.diaAberto == null) S.diaAberto = (dias.find(d => d.iso === hoje) || dias.find(d => d.iso > hoje) || dias[0]).n;
   const ins = insigniaLocais();
   const abrir = n => { S.diaAberto = S.diaAberto === n ? 0 : n; render(); if (S.diaAberto) requestAnimationFrame(() => document.getElementById("dia-" + n)?.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })); };
-  return h("section", { class: "view" },
+  return h("section", { class: "view" }, cartaoCelular(),
     h("div", { class: "hero" },
       h("img", { class: "logo", src: "img/simbolo-marrom.png", alt: "" }),
       h("h1", null, "Travessia da", h("br"), "Índia Sagrada"),
@@ -3197,7 +3202,7 @@ function vTira() {
     msg.textContent = "Enviando…"; msg.className = "msg";
     try { const r = await S.assets.upload(await blob());
       if (col === "mural") await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade: "", legenda: "", ts: Date.now() });
-      else await S.db.collection("chat").add({ autor: S.uid, tipo: "foto", fotoId: r.id, texto: "", ts: Date.now() });
+      else await addChat({ autor: S.uid, tipo: "foto", fotoId: r.id, texto: "", ts: Date.now() });
       msg.textContent = col === "mural" ? "Tira na galeria da caravana." : "Tira enviada para a Roda."; msg.className = "msg ok"; }
     catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
   };
@@ -3290,7 +3295,7 @@ function vFotos() {
   const enviar = async () => {
     if (!S.assets || !eu()) { msg.textContent = "Para enviar à Roda, emita seu passaporte e peça à líder um convite de Editor."; msg.className = "msg err"; return; }
     msg.textContent = "Enviando para a Roda…"; msg.className = "msg";
-    try { const r = await S.assets.upload(await blobDoCanvas()); await S.db.collection("chat").add({ autor: S.uid, tipo: "foto", fotoId: r.id, texto: [F.legenda, F.cidade].filter(Boolean).join(" · "), ts: Date.now() }); msg.textContent = "Foto enviada para a Roda."; msg.className = "msg ok"; }
+    try { const r = await S.assets.upload(await blobDoCanvas()); await addChat({ autor: S.uid, tipo: "foto", fotoId: r.id, texto: [F.legenda, F.cidade].filter(Boolean).join(" · "), ts: Date.now() }); msg.textContent = "Foto enviada para a Roda."; msg.className = "msg ok"; }
     catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
   };
   const mural = async () => {
@@ -3365,6 +3370,70 @@ async function salvarPos(p) {
 async function pararPos() { try { await S.db.doc("posicoes/" + S.uid).delete(); S.posMsg = { ok: true, text: "Você saiu do mapa." }; } catch (e) {} render(); }
 
 // ---------- Conversa ----------
+// ---------- Celular: instalar o app e receber notificações (só no site do Netlify) ----------
+const AVISAR = "/.netlify/functions/avisar";
+const noSite = () => !!window.__VERSAO && (location.protocol === "https:" || location.hostname === "localhost");
+async function addChat(d) {
+  const r = await S.db.collection("chat").add(d);
+  if (noSite() && r && r.id) fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: r.id }), keepalive: true }).catch(() => {});
+  return r;
+}
+const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+const instalado = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const ehIphone = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const pushPossivel = () => "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+const avisosLigados = () => pushPossivel() && Notification.permission === "granted" && lsGet("cdi-avisos") === "1";
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); S.instalar = e; render(); });
+window.addEventListener("appinstalled", () => { S.instalar = null; render(); });
+if (navigator.serviceWorker) navigator.serviceWorker.addEventListener("message", e => { if (e.data && e.data.aba) go(e.data.aba); });
+{ const aba = new URLSearchParams(location.search).get("aba"); if (aba === "conversa") S.tab = "conversa"; }
+const b64u8 = b => { const p = (b + "=".repeat((4 - b.length % 4) % 4)).replace(/-/g, "+").replace(/_/g, "/"), r = atob(p); return Uint8Array.from(r, c => c.charCodeAt(0)); };
+async function ativarAvisos() {
+  S.celMsg = "Ativando…"; render();
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm !== "granted") { S.celMsg = "O celular não liberou as notificações. Dá para liberar depois nos Ajustes do celular, em Notificações."; render(); return; }
+    const reg = await navigator.serviceWorker.ready;
+    const { publicKey } = await fetch(AVISAR).then(r => r.json());
+    if (!publicKey) throw new Error("sem chave");
+    const sub = (await reg.pushManager.getSubscription()) || (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u8(publicKey) }));
+    await S.db.doc("push/" + S.uid).set({ sub: JSON.parse(JSON.stringify(sub)), ts: Date.now() });
+    lsSet("cdi-avisos", "1"); S.celMsg = null; render();
+  } catch (e) { S.celMsg = "Não consegui ativar agora. Tente de novo daqui a pouco."; render(); }
+}
+function cartaoCelular() {
+  if (!noSite() || !S.uid || !eu()) return null;
+  const fechar = k => h("button", { class: "celx", type: "button", "aria-label": "Fechar", onclick: () => { lsSet(k, String(Date.now())); render(); } }, "×");
+  const fechadoHa = k => Date.now() - (+lsGet(k) || 0) < 24 * 3600 * 1000;
+  const msg = S.celMsg ? h("p", { class: "small", role: "status", text: S.celMsg }) : null;
+  if (!instalado() && !fechadoHa("cdi-cel-inst")) {
+    if (ehIphone()) {
+      const safari = !/CriOS|FxiOS|EdgiOS|Instagram|FBAN|FBAV|WhatsApp/.test(navigator.userAgent);
+      return h("div", { class: "celcard" }, fechar("cdi-cel-inst"),
+        h("p", { class: "eyebrow", text: "Instale o app no seu iPhone" }),
+        safari ? h("ol", { class: "celpassos" },
+          h("li", null, "Toque no botão de compartilhar ", h("svg", { class: "icshare", viewBox: "0 0 24 24", width: 16, height: 16, "aria-label": "(quadrado com seta para cima)" }, h("path", { d: "M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1", fill: "none", stroke: "#2F6FB0", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" })), " embaixo da tela"),
+          h("li", null, "Desça e toque em ", h("b", { text: "Adicionar à Tela de Início" })),
+          h("li", null, "Toque em ", h("b", { text: "Adicionar" }), " e abra o app pelo ícone da Caravana"))
+          : h("p", { text: "Abra este endereço no Safari para instalar o app e receber as mensagens da caravana no celular." }));
+    }
+    if (S.instalar) return h("div", { class: "celcard" }, fechar("cdi-cel-inst"),
+      h("p", { class: "eyebrow", text: "Instale o app no seu celular" }),
+      h("p", { text: "Fica na tela inicial como um aplicativo e abre mesmo sem sinal." }),
+      h("button", { class: "btn gold", type: "button", onclick: async () => { const e = S.instalar; S.instalar = null; try { await e.prompt(); } catch (x) {} render(); } }, "Instalar o app"));
+  }
+  if (pushPossivel() && !avisosLigados() && !fechadoHa("cdi-cel-push")) {
+    if (Notification.permission === "denied") return h("div", { class: "celcard" }, fechar("cdi-cel-push"),
+      h("p", { class: "eyebrow", text: "Notificações bloqueadas" }),
+      h("p", { text: "Para receber as mensagens da caravana, libere as notificações do app nos Ajustes do celular." }));
+    return h("div", { class: "celcard" }, fechar("cdi-cel-push"),
+      h("p", { class: "eyebrow", text: "Receba as mensagens no celular" }),
+      h("p", { text: "Quando alguém escrever no chat, o aviso chega no seu celular, mesmo com o app fechado." }),
+      h("button", { class: "btn gold", type: "button", onclick: ativarAvisos }, "Ativar notificações"), msg);
+  }
+  return null;
+}
 function vConversa() {
   const msgs = S.chat.slice().sort((a, b) => a.ts - b.ts);
   perfis(msgs.map(m => m.autor));
@@ -3392,6 +3461,7 @@ function vConversa() {
         m.tipo === "foto" ? h("div", null, h("img", { class: "chatfoto", src: blob(m.fotoId), alt: m.texto || "Foto", loading: "lazy" }), m.texto ? h("p", { class: "t", text: m.texto }) : null) :
         h("p", { class: "t", text: m.texto }))));
   }
+  const cel = cartaoCelular(); if (cel) log.prepend(cel);
   if (!msgs.length) log.append(h("div", { class: "empty", style: "margin:auto;max-width:420px" }, h("h3", { text: "A roda está aberta" }), h("p", { text: "Escreva a primeira mensagem para a caravana." })));
 
   const pode = S.db && S.uid && eu() && S.canChat !== false;
@@ -3399,7 +3469,7 @@ function vConversa() {
   const ta = h("textarea", { id: "chat-input", rows: "1", maxlength: "1000", placeholder: "Escreva para a caravana", "aria-label": "Mensagem" });
   const enviar = async () => {
     const texto = ta.value.trim(); if (!texto) return; ta.value = "";
-    try { await S.db.collection("chat").add({ autor: S.uid, texto, ts: Date.now() }); } catch (e) { ta.value = texto; falha(e); }
+    try { await addChat({ autor: S.uid, texto, ts: Date.now() }); } catch (e) { ta.value = texto; falha(e); }
   };
   ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); enviar(); } });
   const minha = S.posicoes.find(p => p.id === S.uid && Date.now() - p.ts < FRESCO);
@@ -3411,7 +3481,7 @@ function vConversa() {
     let m;
     if (pSel.value === "@eu" && minha) m = { nome: minha.lugar || pertoDe(minha).replace(/^em /, "") || "Onde estou", lat: minha.lat, lng: minha.lng, cidadeId: minha.cidadeId };
     else { const l = lugares.find(x => x.id === pSel.value); if (!l) return; m = { nome: l.nome, lat: +l.lat, lng: +l.lng, cidadeId: l.cidadeId, localId: l.id }; }
-    try { await S.db.collection("chat").add({ autor: S.uid, tipo: "local", texto: pNota.value.trim(), ...m, ts: Date.now() }); S.pontoAberto = false; render(); } catch (e) { falha(e); }
+    try { await addChat({ autor: S.uid, tipo: "local", texto: pNota.value.trim(), ...m, ts: Date.now() }); S.pontoAberto = false; render(); } catch (e) { falha(e); }
   };
   // localização: GPS quando o aparelho permitir, ou link ao vivo do Google Maps
   const locMsg = h("p", { class: "small", role: "status" });
@@ -3422,7 +3492,7 @@ function vConversa() {
     navigator.geolocation.getCurrentPosition(async pos => {
       const lat = +pos.coords.latitude.toFixed(5), lng = +pos.coords.longitude.toFixed(5), cidadeId = pertoCidade({ lat, lng });
       try {
-        await S.db.collection("chat").add({ autor: S.uid, tipo: "local", nome: "Onde estou agora", texto: pNota.value.trim(), lat, lng, cidadeId, ts: Date.now() });
+        await addChat({ autor: S.uid, tipo: "local", nome: "Onde estou agora", texto: pNota.value.trim(), lat, lng, cidadeId, ts: Date.now() });
         await S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: "", nota: pNota.value.trim(), link: (minha && minha.link) || "", ts: Date.now() }).catch(() => {});
         S.pontoAberto = false; render();
       } catch (e) { falha(e); }
@@ -3433,7 +3503,7 @@ function vConversa() {
     const l = vivoLink.value.trim();
     if (!/^https:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|(www\.)?google\.[a-z.]+\/maps)/i.test(l)) { locMsg.textContent = "Cole um link do Google Maps (começa com https://maps.app.goo.gl)."; return; }
     try {
-      await S.db.collection("chat").add({ autor: S.uid, tipo: "aovivo", link: l, texto: pNota.value.trim(), ts: Date.now() });
+      await addChat({ autor: S.uid, tipo: "aovivo", link: l, texto: pNota.value.trim(), ts: Date.now() });
       if (minha) await S.db.doc("posicoes/" + S.uid).update({ link: l, ts: Date.now() }).catch(() => {});
       S.pontoAberto = false; render();
     } catch (e) { falha(e); }
@@ -3441,7 +3511,7 @@ function vConversa() {
   const fotoMsg = h("p", { class: "note", role: "status" });
   const fileIn = h("input", { type: "file", accept: "image/*", id: "chat-foto", hidden: true, onchange: async () => {
     const f = fileIn.files[0]; if (!f) return; fotoMsg.textContent = "Enviando a foto…";
-    try { const id = await subirFoto(f); await S.db.collection("chat").add({ autor: S.uid, tipo: "foto", fotoId: id, texto: ta.value.trim(), ts: Date.now() }); ta.value = ""; fotoMsg.textContent = ""; }
+    try { const id = await subirFoto(f); await addChat({ autor: S.uid, tipo: "foto", fotoId: id, texto: ta.value.trim(), ts: Date.now() }); ta.value = ""; fotoMsg.textContent = ""; }
     catch (e) { fotoMsg.textContent = erroFoto(e); falha(e); }
     fileIn.value = "";
   } });
