@@ -3287,7 +3287,7 @@ async function montaFoto(canvas) {
   await colaPatches(c, F, ox, oy, w, hh);
   await colaAdesivos(c, F, ox, oy, w, hh);
   S.fotoGeo = { ox, oy, w, hh, fx: 0, fy: 0, fs: 1 };
-  emFormato(canvas, tmp, F.formato || "reels");
+  emFormato(canvas, tmp, F.formato || "original");
 }
 // coloca a foto INTEIRA num formato de rede social, com a própria foto desfocada no fundo
 function emFormato(canvas, foto, fmt) {
@@ -3759,7 +3759,7 @@ async function colaPatches(c, F, ox, oy, w, hh) {
 function vFotos() {
   if (S.fotoAba === "mural") return vMural();
   if (S.fotoAba === "tira") return vTira();
-  const F = S.foto || (S.foto = { filtro: "original", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "reels", legenda: "", cidade: "", data: "" });
+  const F = S.foto || (S.foto = { filtro: "original", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "original", legenda: "", cidade: "", data: "" });
   const hoje = hojeIso(), dia = (S.roteiro?.dias || []).find(d => d.iso === hoje);
   if (!F.cidade && !F._auto) { F.cidade = dia ? dia.cidade.split(" ")[0] : ""; F._auto = true; }
   if (!F.data) { const d = new Date(); F.data = d.getDate() + " " + MES[d.getMonth()].toLowerCase() + " " + d.getFullYear(); }
@@ -3869,7 +3869,7 @@ function vFotos() {
         h("p", { class: "lab", text: "Grão de filme" }),
         h("div", { class: "opts" }, GRAOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.grao || "auto") === id), onclick: () => set("grao", id) }, n))),
         h("p", { class: "lab", text: "Formato" }),
-        h("div", { class: "opts" }, FORMATOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.formato || "reels") === id), onclick: () => set("formato", id) }, n))),
+        h("div", { class: "opts" }, FORMATOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.formato || "original") === id), onclick: () => set("formato", id) }, n))),
         h("p", { class: "lab", text: "Patches" }),
         h("div", { class: "opts" }, PATCHES.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.patch || "nenhum") === id), onclick: () => set("patch", id) }, n))),
         h("p", { class: "lab", text: "Moldura" }),
