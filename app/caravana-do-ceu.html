@@ -3449,7 +3449,10 @@ const ADESIVOS = {
   // os selos (pins) da travessia, os mesmos do passaporte
   "Selos": [["india", "Índia"], ["taj-mahal", "Taj Mahal"], ["ganesha", "Ganesha"], ["jaipur", "Jaipur"], ["govind-dev-ji", "Govind Dev Ji"], ["varanasi", "Varanasi"], ["diwali", "Diwali"], ["ganga-aarti", "Ganga Aarti"],
     ["manikarnika", "Manikarnika"], ["durga-kund", "Durga Kund"], ["sankat-mochan", "Sankat Mochan"], ["batismo", "Batismo no Ganges"], ["rishikesh", "Rishikesh"], ["kunjapuri", "Kunjapuri"], ["caverna", "Caverna"], ["travessia", "Travessia"]].map(([id, n]) => ["img:insignias/" + id + ".webp", n]),
-  "Caravana": [["img:img/simbolo-dourado.png", "Símbolo dourado"], ["img:img/simbolo-marrom.png", "Símbolo"], ["patch", "Patch bordado"], ["carimbo", "Carimbo"]],
+  // os enfeites que aparecem na Cabine de fotos, soltos para colar na foto
+  "Caravana": [["img:img/simbolo-dourado.png", "Símbolo dourado"], ["img:img/simbolo-marrom.png", "Símbolo"], ["patch", "Patch bordado"], ["carimbo", "Carimbo"],
+    ["postmark", "Carimbo do correio"], ["seloPostal", "Selo postal"], ["data", "Data da câmera"], ["linha", "Caravana do Céu · Índia 2026"], ["fita", "Fita adesiva"],
+    ["estrela", "Estrela"], ["flor", "Flor de cravo"], ["guirlanda", "Guirlanda"]],
   "Bichos": [["pet:elefante", "Elefante"], ["pet:macaco", "Macaco"], ["pet:vaca", "Vaca sagrada"], ["pet:pavao", "Pavão"], ["pet:camelo", "Camelo"], ["pet:cabra", "Cabra"], ["pet:gato", "Gato"], ["pet:cachorro", "Cachorro"], ["ave:periquito", "Periquito"], ["ave:maina", "Mainá"], ["eu", "Meu bonequinho"]],
   "Índia": [["e:🪷", "Lótus"], ["e:🪔", "Diya"], ["e:🕉️", "Om"], ["e:🧿", "Olho grego"], ["e:🛺", "Tuk-tuk"], ["e:☕", "Chai"], ["e:🌶️", "Pimenta"], ["e:🌺", "Flor"], ["e:🥭", "Manga"], ["e:🙏", "Namastê"], ["e:📿", "Japamala"], ["e:🏔️", "Himalaia"], ["e:🐅", "Tigre"], ["e:🐍", "Naja"], ["e:🦚", "Pavão"], ["e:🐘", "Elefante"]],
   "Brilhos": [["e:✨", "Brilho"], ["e:💫", "Estrela"], ["e:🌟", "Estrela"], ["e:🌙", "Lua"], ["e:☀️", "Sol"], ["e:💛", "Coração"], ["e:🧡", "Coração"], ["e:🔥", "Fogo"], ["e:🌈", "Arco-íris"], ["e:🎉", "Festa"]]
@@ -3478,6 +3481,24 @@ function imgAdesivo(k) {
     if (k.startsWith("img:")) return carregaImg(k.slice(4));
     if (k === "patch") return patchCaravana(await carregaImg("img/simbolo-dourado.png"), 400);
     if (k === "carimbo") { const cv = document.createElement("canvas"); cv.width = cv.height = 420; carimbo(cv.getContext("2d"), 210, 210, 180, await carregaImg("img/simbolo-dourado.png"), -.2); return cv; }
+    const tela = (w, hh) => { const cv = document.createElement("canvas"); cv.width = w; cv.height = hh; return [cv, cv.getContext("2d")]; };
+    if (k === "flor") { const [cv, x] = tela(260, 260); florMarigold(x, 130, 130, 110, "#F08A12"); return cv; }
+    if (k === "estrela") { const [cv, x] = tela(260, 260); x.shadowColor = "rgba(255,210,120,.9)"; x.shadowBlur = 30; estrela4(x, 130, 130, 110, "#FFE3A3"); return cv; }
+    if (k === "guirlanda") { const [cv, x] = tela(900, 240); const n = 16; for (let i = 0; i <= n; i++) { const t = i / n; florMarigold(x, 30 + t * 840, 40 + Math.sin(t * Math.PI) * 120, 34, i % 3 ? "#F08A12" : "#E3571A"); }
+      for (const px of [30, 870]) for (let k2 = 1; k2 < 4; k2++) florMarigold(x, px, 40 + k2 * 44, 26, k2 % 2 ? "#F6B324" : "#E3571A"); return cv; }
+    if (k === "fita") { const [cv, x] = tela(420, 110); x.fillStyle = "rgba(236,222,190,.85)"; x.beginPath(); x.moveTo(8, 20); for (let y = 20; y <= 90; y += 10) x.lineTo(y % 20 ? 0 : 12, y); x.lineTo(412, 90); for (let y = 90; y >= 20; y -= 10) x.lineTo(y % 20 ? 420 : 408, y); x.closePath(); x.fill();
+      x.strokeStyle = "rgba(160,130,90,.3)"; x.setLineDash([4, 5]); x.strokeRect(20, 26, 380, 58); return cv; }
+    if (k === "data") { const d = new Date(), txt = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"][d.getMonth()] + " " + String(d.getDate()).padStart(2, "0") + " '" + String(d.getFullYear()).slice(2);
+      const [cv, x] = tela(460, 120); x.font = '700 76px "Courier Prime", monospace'; x.fillStyle = "#FF8A1C"; x.shadowColor = "rgba(255,120,20,.9)"; x.shadowBlur = 16; x.textBaseline = "middle"; x.fillText(txt, 14, 62); return cv; }
+    if (k === "linha") { const [cv, x] = tela(1100, 120); x.font = '600 58px Cinzel, Georgia, serif'; x.textAlign = "center"; x.textBaseline = "middle"; x.shadowColor = "rgba(0,0,0,.55)"; x.shadowBlur = 12; x.fillStyle = "#F1E2BC"; x.fillText("CARAVANA DO CÉU · ÍNDIA 2026", 550, 62); return cv; }
+    if (k === "postmark") { const [cv, x] = tela(520, 300); x.strokeStyle = "rgba(40,30,70,.75)"; x.fillStyle = "rgba(40,30,70,.8)"; x.lineWidth = 6;
+      x.beginPath(); x.arc(150, 150, 130, 0, 7); x.stroke(); x.beginPath(); x.arc(150, 150, 104, 0, 7); x.stroke();
+      x.textAlign = "center"; x.font = '600 34px Poppins, sans-serif'; x.fillText("CARAVANA", 150, 140); x.fillText("DO CÉU", 150, 180); x.font = '500 22px Poppins, sans-serif'; x.fillText("ÍNDIA · 2026", 150, 222);
+      for (let k2 = 0; k2 < 4; k2++) { x.beginPath(); for (let X = 0; X < 230; X += 5) x.lineTo(285 + X, 90 + k2 * 40 + Math.sin(X / 16) * 8); x.stroke(); } return cv; }
+    if (k === "seloPostal") { const dourado = await carregaImg("img/simbolo-dourado.png"), [cv, x] = tela(300, 360), sw = 260, sh = 320;
+      x.translate(150, 180); x.fillStyle = "#FBF6EA"; x.beginPath(); const d = 18; for (let X = -sw / 2; X <= sw / 2; X += d) { x.moveTo(X + 7, -sh / 2); x.arc(X, -sh / 2, 7, 0, 7); } x.fill(); x.fillRect(-sw / 2, -sh / 2, sw, sh);
+      x.fillStyle = "#8A3F32"; x.fillRect(-sw / 2 + 18, -sh / 2 + 18, sw - 36, sh - 36); const sb = simboloEm(dourado, "#E8C07A", 130); x.drawImage(sb, -sb.width / 2, -sh / 2 + 44);
+      x.fillStyle = "#F4E6C4"; x.textAlign = "center"; x.font = '600 34px Cinzel, Georgia, serif'; x.fillText("ÍNDIA", 0, sh / 2 - 70); x.font = '500 26px Poppins, sans-serif'; x.fillText("2026 · ₹ 26", 0, sh / 2 - 36); return cv; }
     if (k.startsWith("txt:")) return letreiro(k.slice(4), false);
     if (k.startsWith("mao:")) return letreiro(k.slice(4), true);
     if (k.startsWith("pet:")) { const g = desenhaPet(k.slice(4)); g.firstChild && g.firstChild.remove(); return svgParaImg(g, 420); }
@@ -3836,7 +3857,7 @@ function vFotos() {
   canvas.style.touchAction = ades.length ? "none" : "";
   const catA = ADESIVOS[S.fotoCatA] ? S.fotoCatA : "Selos";
   const LUGARES = [[.5, .5], [.26, .3], [.74, .3], [.26, .72], [.74, .72], [.5, .22], [.5, .8], [.16, .5], [.84, .5]];
-  const poeAdesivo = k => { const [lx, ly] = LUGARES[ades.length % LUGARES.length]; ades.push({ k, x: lx, y: ly, s: k.startsWith("img:insignias/") ? .26 : .3, r: 0 }); S.fotoSel = ades.length - 1; render(); };
+  const poeAdesivo = k => { const [lx, ly] = LUGARES[ades.length % LUGARES.length]; ades.push({ k, x: lx, y: ly, s: k.startsWith("img:insignias/") ? .26 : k === "linha" || k === "guirlanda" ? .8 : k === "data" ? .35 : .3, r: 0 }); S.fotoSel = ades.length - 1; render(); };
   const sel = S.fotoSel != null ? ades[S.fotoSel] : null;
   // intensidade: desliza e a foto muda na hora, sem redesenhar a tela toda
   const pct = Math.round((F.intens == null ? 1 : F.intens) * 100), rotPct = h("b", { text: pct + "%" });
@@ -3869,7 +3890,6 @@ function vFotos() {
         h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "↺ Trocar foto")),
         barraSel, tiraFiltros(F, id => set("filtro", id)), barraIntensidade),
       h("div", { class: "fcontrols" },
-        painelAdesivos,
         h("p", { class: "lab", text: "Grão de filme" }),
         h("div", { class: "opts" }, GRAOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.grao || "auto") === id), onclick: () => set("grao", id) }, n))),
         h("p", { class: "lab", text: "Formato" }),
@@ -3879,6 +3899,7 @@ function vFotos() {
         h("p", { class: "lab", text: "Moldura" }),
         h("div", { class: "opts" }, MOLDURAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: () => set("moldura", id) }, n))),
         h("p", { class: "lab", text: "Legenda" }), leg, cid,
+        painelAdesivos,
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no celular"),
           h("button", { class: "btn", type: "button", onclick: mural }, "Enviar para a galeria da caravana"),
