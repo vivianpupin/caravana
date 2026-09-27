@@ -1333,7 +1333,6 @@ function vTravessia() {
     h("nav", { class: "daychips", "aria-label": "Dias" }, dias.map(d => h("button", { type: "button", class: d.iso === hoje ? "today" : "", "aria-current": String(S.diaAberto === d.n), onclick: () => { S.diaAberto = 0; abrir(d.n); } },
       h("b", { text: nn(d.n) }), d.cidade))),
     h("div", { class: "days" }, dias.map(d => vDia(d, d.n === S.diaAberto, d.iso === hoje, abrir))),
-    h("button", { class: "btn", type: "button", style: "align-self:center", onclick: () => go("ensinamentos") }, "Guia da travessia e saberes"),
     vOffline(),
     h("div", { class: "foot" },
       h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }),

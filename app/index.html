@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 12:09";</script>
+<script>window.__VERSAO = "27/09 · 12:10";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1347,7 +1347,6 @@ function vTravessia() {
     h("nav", { class: "daychips", "aria-label": "Dias" }, dias.map(d => h("button", { type: "button", class: d.iso === hoje ? "today" : "", "aria-current": String(S.diaAberto === d.n), onclick: () => { S.diaAberto = 0; abrir(d.n); } },
       h("b", { text: nn(d.n) }), d.cidade))),
     h("div", { class: "days" }, dias.map(d => vDia(d, d.n === S.diaAberto, d.iso === hoje, abrir))),
-    h("button", { class: "btn", type: "button", style: "align-self:center", onclick: () => go("ensinamentos") }, "Guia da travessia e saberes"),
     vOffline(),
     h("div", { class: "foot" },
       h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }),
