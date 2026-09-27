@@ -3841,7 +3841,7 @@ function aberturaDoDia(forcar) {
       h("h1", { class: "abcidade", text: d.cidade }),
       h("p", { class: "abdata", text: d.data }),
       h("p", { class: "abfrase" + (fraseDoDia(d).length > 260 ? " longa" : fraseDoDia(d).length > 170 ? " media" : ""), text: fraseDoDia(d) }),
-      h("button", { class: "absegue", type: "button", onclick: () => fecha() }, "Continuar")));
+      h("button", { class: "absegue", type: "button", onclick: () => fecha() }, "Voa com o vento")));
   let fechou = false;
   const fecha = () => { if (fechou) return; fechou = true; ov.classList.add("sai"); setTimeout(() => ov.remove(), 700); };
   // fica aberta até a pessoa terminar de ler e tocar em Continuar

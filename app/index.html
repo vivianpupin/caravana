@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 15:35";</script>
+<script>window.__VERSAO = "27/09 · 15:39";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3855,7 +3855,7 @@ function aberturaDoDia(forcar) {
       h("h1", { class: "abcidade", text: d.cidade }),
       h("p", { class: "abdata", text: d.data }),
       h("p", { class: "abfrase" + (fraseDoDia(d).length > 260 ? " longa" : fraseDoDia(d).length > 170 ? " media" : ""), text: fraseDoDia(d) }),
-      h("button", { class: "absegue", type: "button", onclick: () => fecha() }, "Continuar")));
+      h("button", { class: "absegue", type: "button", onclick: () => fecha() }, "Voa com o vento")));
   let fechou = false;
   const fecha = () => { if (fechou) return; fechou = true; ov.classList.add("sai"); setTimeout(() => ov.remove(), 700); };
   // fica aberta até a pessoa terminar de ler e tocar em Continuar
