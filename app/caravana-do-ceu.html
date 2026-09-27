@@ -620,7 +620,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .pertolist li div{display:flex;flex-direction:column}
 .pertolist small{color:var(--soft)}
 .mapaperto{position:relative}
-.mapaperto svg{display:block;user-select:none;-webkit-user-select:none}
+.mapaperto,.mapaperto svg{touch-action:none;-ms-touch-action:none}
+.mapaperto svg{display:block;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .mapctl{position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px}
 .mapctl button{width:44px;height:44px;border-radius:50%;border:1px solid rgba(91,63,34,.35);background:rgba(251,244,228,.92);color:#3B2A1C;display:grid;place-items:center;box-shadow:0 4px 14px rgba(40,28,15,.25);backdrop-filter:blur(6px)}
 .mapctl button.on{background:#3F4938;color:#F6EDDA;border-color:#3F4938}
@@ -909,6 +910,7 @@ $("#tabs").addEventListener("click", e => { const b = e.target.closest("button[d
 $("#me").addEventListener("click", () => go("passaporte"));
 
 function render() {
+  if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
   for (const b of document.querySelectorAll("#tabs button")) {
     if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
   }
@@ -1768,7 +1770,8 @@ function ligarGps(silencioso) {
     S.aoVivo[S.uid] = { lat, lng, cidadeId, ts, prec: Math.round(pos.coords.accuracy || 0) };
     S.room?.presence({ uid: S.uid, lat, lng, cidadeId, ts }).catch(() => {});
     if (ts - ultimoDb > 60000 && S.db && eu()) { ultimoDb = ts; S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: "", nota: "", link: "", ts }).catch(() => {}); }
-    if ((S.tab === "mapa" || S.tab === "travessia") && !S.arrastando && !document.querySelector(".sheet")) render();
+    if (S.arrastando) { S.pendente = true; return; }
+    if ((S.tab === "mapa" || S.tab === "travessia") && !document.querySelector(".sheet")) render();
   };
   // primeiro uma posição rápida (rede/wi-fi), depois o GPS fino acompanhando
   navigator.geolocation.getCurrentPosition(recebe, () => {}, { enableHighAccuracy: false, maximumAge: 120000, timeout: 8000 });
@@ -1813,11 +1816,11 @@ function km(a, b) {
   const x = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLng / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(x));
 }
-function projetor(pts, W, H, P) {
+function projetor(pts, W, H, P, min = .01) {
   const latC = pts.reduce((s, p) => s + +p.lat, 0) / pts.length, cos = Math.cos(latC * Math.PI / 180);
   const xs = pts.map(p => +p.lng * cos), ys = pts.map(p => -p.lat);
   const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
-  const s = Math.min((W - 2 * P) / Math.max(x1 - x0, .01), (H - 2 * P) / Math.max(y1 - y0, .01)), mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
+  const s = Math.min((W - 2 * P) / Math.max(x1 - x0, min), (H - 2 * P) / Math.max(y1 - y0, min)), mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
   return { W, H, cos, s, mx, my, xy: p => [W / 2 + (+p.lng * cos - mx) * s, H / 2 + (-p.lat - my) * s], inv: (x, y) => ({ lng: ((x - W / 2) / s + mx) / cos, lat: -((y - H / 2) / s + my) }) };
 }
 function pergaminho(W, H, id) {
@@ -2018,7 +2021,7 @@ function mapaPerto() {
   const temEu = !!eu0;
   svg.setAttribute("aria-label", "Mapa perto de mim");
   const km = S.pertoKm || 0.25, dLat = km / 111, dLng = km / (111 * Math.cos(centro.lat * Math.PI / 180));
-  const P = projetor([{ lat: centro.lat - dLat, lng: centro.lng - dLng }, { lat: centro.lat + dLat, lng: centro.lng + dLng }], W, H, 40); S.proj = P;
+  const P = projetor([{ lat: centro.lat - dLat, lng: centro.lng - dLng }, { lat: centro.lat + dLat, lng: centro.lng + dLng }], W, H, 40, .0004); S.proj = P;
   P.modo = S.camadaMapa || "ruas";
   const mov = h("g", { class: "movel" });
   camadasGeo(mov, P, false);
@@ -2033,6 +2036,11 @@ function mapaPerto() {
 // Arrastar com o dedo, pinça para zoom e roda do mouse
 function gestosMapa(svg, mov, P, km) {
   svg.style.touchAction = "none"; svg.style.cursor = "grab";
+  // impede o navegador de dar zoom/rolar a página inteira quando os dedos estão no mapa (iPhone e Android)
+  const trava = e => { if (e.cancelable) e.preventDefault(); };
+  svg.addEventListener("touchstart", e => { if (e.touches.length > 1) trava(e); }, { passive: false });
+  svg.addEventListener("touchmove", trava, { passive: false });
+  for (const ev of ["gesturestart", "gesturechange", "gestureend"]) svg.addEventListener(ev, trava, { passive: false });
   const pts = new Map();
   let base = null, est = { dx: 0, dy: 0, e: 1, ox: P.W / 2, oy: P.H / 2 }, mexeu = false;
   const fator = () => P.W / svg.getBoundingClientRect().width;
@@ -2050,13 +2058,13 @@ function gestosMapa(svg, mov, P, km) {
   };
   const confirma = () => {
     S.arrastando = false; svg.style.cursor = "grab";
-    if (!mexeu) { est = { dx: 0, dy: 0, e: 1, ox: P.W / 2, oy: P.H / 2 }; mov.removeAttribute("transform"); return; }
+    if (!mexeu) { est = { dx: 0, dy: 0, e: 1, ox: P.W / 2, oy: P.H / 2 }; mov.removeAttribute("transform"); if (S.pendente) { S.pendente = false; render(); } return; }
     const cx0 = (P.W / 2 - est.dx - est.ox) / est.e + est.ox, cy0 = (P.H / 2 - est.dy - est.oy) / est.e + est.oy;
     const c = P.inv(cx0, cy0);
     S.pertoCentro = { lat: c.lat, lng: c.lng }; S.pertoKm = Math.max(0.06, Math.min(3000, km / est.e));
     render();
   };
-  svg.addEventListener("pointerdown", e => { pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); mexeu = false; comeca(); });
+  svg.addEventListener("pointerdown", e => { if (!pts.size) mexeu = false; S.arrastando = true; pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); comeca(); });
   svg.addEventListener("pointermove", e => {
     if (!pts.has(e.pointerId) || !base) return;
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
