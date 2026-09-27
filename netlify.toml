@@ -1,6 +1,9 @@
 # Site da Caravana do Céu (versão fora do Claude)
 [build]
   publish = "app"
+  # Cada publicação gasta créditos do Netlify: só publica quando a mensagem do commit tiver [publicar].
+  # Os outros commits ficam guardados no GitHub e entram na próxima publicação.
+  ignore = "git log -1 --pretty=%B | grep -qF '[publicar]' && exit 1 || exit 0"
 [[headers]]
   for = "/sw.js"
   [headers.values]
