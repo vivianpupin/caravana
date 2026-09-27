@@ -4475,6 +4475,10 @@ function vTradutor() {
   const T = S.trad, de = T.modo === "eu" ? "pt" : T.outra, para = T.modo === "eu" ? T.outra : "pt";
   const ta = h("textarea", { id: "trad-texto", rows: 3, maxlength: "500", placeholder: T.modo === "eu" ? "Escreva ou fale em português…" : (T.outra === "hi" ? "Peça para a pessoa falar em hindi, ou digite…" : "Peça para a pessoa falar em inglês, ou digite…") });
   ta.value = T.texto;
+  // frase já traduzida: tocar no campo (ou em Falar) limpa sozinho e já espera a próxima frase; a tradução anterior continua embaixo
+  const jaTraduzida = () => T.texto && T.res && T.texto.trim() === T.res.orig;
+  const novaFrase = () => { if (jaTraduzida()) { T.texto = ""; const c = document.getElementById("trad-texto"); if (c) c.value = ""; } };
+  ta.addEventListener("pointerdown", novaFrase);
   // parou de digitar ou de ditar pelo teclado: traduz sozinho
   ta.addEventListener("input", () => { T.texto = ta.value; clearTimeout(S.tradAuto); if (ta.value.trim().length > 1) S.tradAuto = setTimeout(() => { if (document.getElementById("trad-texto") === ta && !T.busy) vai(); }, 1600); });
   const vai = async () => {
@@ -4492,6 +4496,7 @@ function vTradutor() {
   const ouvir = ev => {
     const bt = ev && ev.currentTarget;
     if (VOZ.rec) { VOZ.parar(true); return; }
+    novaFrase();
     if (!Reconhece || vozPeloTeclado()) return ditarPeloTeclado();
     pararFala();
     const setBt = t => { VOZ.rotulo = t; const b = document.getElementById("trad-mic"); if (b) { b.textContent = t; b.classList.toggle("gold", t !== "🎤 Falar"); } };
