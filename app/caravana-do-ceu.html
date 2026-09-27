@@ -1010,7 +1010,8 @@ const S = {
   diaAberto: null, ensSel: null, cidadeSel: "india", localSel: null,
   unlockMsg: null, novoSelo: null, marcando: false, posMsg: null, pontoAberto: false, proj: null, local: {}, checks: {}
 };
-try { const t = localStorage.getItem("cdi-tab2"); if (t) S.tab = t; } catch (e) {}
+// o app sempre abre no início do Roteiro (só a notificação leva direto para outra aba)
+S.tab = "travessia";
 { const hj = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }); if (hj >= "2026-11-04" && hj <= "2026-11-16") S.tab = "travessia"; }
 try { S.local = JSON.parse(localStorage.getItem("cdi-ins") || "{}") || {}; } catch (e) {}
 try { S.checks = JSON.parse(localStorage.getItem("cdi-checks") || "{}") || {}; } catch (e) {}
@@ -1147,6 +1148,13 @@ function go(tab) {
 }
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (!b) return; if (b.dataset.tab === "ensinamentos") S.ensSel = null; if (b.dataset.tab === "mapa") S.montando = false; go(b.dataset.tab); });
 $("#me").addEventListener("click", () => go("passaporte"));
+// voltou para o app depois de um tempo fora (5 min ou mais): volta para o início do Roteiro
+{ let saiu = 0;
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) { saiu = Date.now(); return; }
+    if (saiu && Date.now() - saiu >= 5 * 60 * 1000 && !document.querySelector(".sheet")) { S.diaAberto = null; go("travessia"); }
+    saiu = 0;
+  }); }
 
 // mensagem nova no chat: pontinho amarelo na aba Chat (e no ícone do app, quando o celular permite)
 function marcaChat() {

@@ -1,13 +1,48 @@
-// Guarda o app no celular para abrir mesmo sem sinal.
-const CACHE = "caravana-v5";
-self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(["./", "index.html", "shim.js", "config.js", "dados/travessia.json", "dados/geo.json", "img/simbolo-marrom.png"]).catch(() => {}))); self.skipWaiting(); });
-self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k))))); self.clients.claim(); });
+// marca: e285f42fbb
+// Guarda o app inteiro no celular para abrir mesmo sem sinal (templo, estrada, wi-fi fraco do hotel).
+const CACHE = "caravana-v6", EXTRA = "caravana-ext", MAPA = "caravana-mapa";
+// lista de arquivos gerada pelo tools/gerar-site.py
+const ARQUIVOS = /*ARQUIVOS*/["index.html", "shim.js", "config.js", "manifest.webmanifest", "dados/geo.json", "dados/saberes/dharma.json", "dados/saberes/ganesha.json", "dados/saberes/kali.json", "dados/saberes/krishna.json", "dados/saberes/lakshmi.json", "dados/saberes/sarasvati.json", "dados/travessia.json", "deuses/brahma.webp", "deuses/durga.webp", "deuses/ganesha.webp", "deuses/ganga.webp", "deuses/hanuman.webp", "deuses/kali.webp", "deuses/krishna.webp", "deuses/lakshmi.webp", "deuses/parvati.webp", "deuses/saraswati.webp", "deuses/shiva.webp", "deuses/surya.webp", "deuses/vishnu.webp", "img/abertura-agra.webp", "img/abertura-delhi.webp", "img/abertura-jaipur.webp", "img/abertura-rishikesh.webp", "img/abertura-varanasi.webp", "img/caravana-marrom.png", "img/cristal.jpg", "img/emblema.jpg", "img/fundo.webp", "img/icone-192.png", "img/icone-512.png", "img/lacre.webp", "img/letreiro.png", "img/lockup-claro.png", "img/logo.png", "img/mantra-ganesha.webp", "img/mantra-vasudeva.webp", "img/papiro.webp", "img/passaporte-capa.webp", "img/passaporte.webp", "img/pedra.webp", "img/simbolo-claro.png", "img/simbolo-dourado.png", "img/simbolo-marrom.png", "img/simbolo.png", "img/tenda.webp", "img/textura.jpg", "insignias/batismo.webp", "insignias/beatles-ashram.webp", "insignias/caverna.webp", "insignias/diwali.webp", "insignias/durga-kund.webp", "insignias/galta-ji.webp", "insignias/ganesha.webp", "insignias/ganga-aarti.webp", "insignias/govind-dev-ji.webp", "insignias/india.webp", "insignias/jaipur.webp", "insignias/kunjapuri.webp", "insignias/manikarnika.webp", "insignias/rishikesh.webp", "insignias/sankat-mochan.webp", "insignias/taj-mahal.webp", "insignias/travessia.webp", "insignias/varanasi.webp"]/*FIM*/;
+self.addEventListener("install", e => {
+  // guarda um por um: se algum falhar, os outros ficam guardados do mesmo jeito
+  e.waitUntil(caches.open(CACHE).then(c => Promise.allSettled(["./", ...ARQUIVOS].map(a => c.add(new Request(a, { cache: "reload" }))))));
+  self.skipWaiting();
+});
+self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => ![CACHE, EXTRA, MAPA].includes(k)).map(k => caches.delete(k))))); self.clients.claim(); });
+const guarda = (nome, req, r) => { if (r && (r.ok || r.type === "opaque")) { const cp = r.clone(); caches.open(nome).then(c => c.put(req, cp)); } return r; };
+// mostra o guardado na hora e atualiza por trás, para a próxima vez
+function guardadoPrimeiro(nome, req) {
+  return caches.match(req).then(g => { const rede = fetch(req).then(r => guarda(nome, req, r)).catch(() => g); return g || rede; });
+}
+// internet primeiro, mas se o sinal estiver fraco e demorar, abre o guardado sem esperar
+function redePrimeiro(req, ms) {
+  return new Promise(ok => {
+    let feito = false; const fim = r => { if (!feito && r) { feito = true; ok(r); } };
+    const rede = fetch(req.mode === "navigate" ? new Request(req.url, { cache: "no-store" }) : req, req.mode === "navigate" ? undefined : { cache: "no-store" });
+    rede.then(r => { guarda(CACHE, req.mode === "navigate" ? "./" : req, r); fim(r); })
+      .catch(() => (req.mode === "navigate" ? caches.match("./") : caches.match(req)).then(g => fim(g || Response.error())));
+    setTimeout(() => (req.mode === "navigate" ? caches.match("./").then(g => g || caches.match("index.html")) : caches.match(req)).then(fim), ms);
+  });
+}
+async function mapa(req) {
+  const g = await caches.match(req); if (g) return g;
+  const r = await fetch(req); const c = await caches.open(MAPA); c.put(req, r.clone());
+  c.keys().then(ks => { if (ks.length > 400) ks.slice(0, ks.length - 400).forEach(k => c.delete(k)); });
+  return r;
+}
 self.addEventListener("fetch", e => {
-  const u = new URL(e.request.url);
-  if (e.request.method !== "GET" || u.origin !== location.origin) return;
-  // a página em si vem sempre fresca da internet (sem cache do navegador); o guardado só serve sem sinal
-  const pega = e.request.mode === "navigate" ? fetch(e.request.url, { cache: "no-store" }) : fetch(e.request);
-  e.respondWith(pega.then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put(e.request, cp)); return r; }).catch(() => caches.match(e.request)));
+  const req = e.request, u = new URL(req.url);
+  if (req.method !== "GET") return;
+  if (u.origin === location.origin) {
+    if (req.mode === "navigate" || u.pathname.endsWith("/index.html")) return e.respondWith(redePrimeiro(req, 3500));
+    if (u.pathname.endsWith("versao.json")) return e.respondWith(fetch(req).catch(() => caches.match(req).then(g => g || new Response("{}"))));
+    if (u.pathname.includes("/.netlify/")) return;
+    return e.respondWith(guardadoPrimeiro(CACHE, req));
+  }
+  // letras (Google Fonts) e o zip do álbum: guardadas depois da primeira vez
+  if (/^(fonts\.googleapis\.com|fonts\.gstatic\.com|cdnjs\.cloudflare\.com)$/.test(u.hostname)) return e.respondWith(guardadoPrimeiro(EXTRA, req));
+  // pedacinhos do mapa já vistos ficam guardados para abrir sem sinal
+  if (/(^|\.)tile\.openstreetmap\.org$|server\.arcgisonline\.com$/.test(u.hostname)) return e.respondWith(mapa(req).catch(() => Response.error()));
 });
 // notificações de mensagem nova no chat
 self.addEventListener("push", e => {

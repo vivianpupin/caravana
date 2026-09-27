@@ -48,4 +48,15 @@ if ("serviceWorker" in navigator) {
 versao = (datetime.datetime.utcnow() - datetime.timedelta(hours=3)).strftime("%d/%m · %H:%M")
 (raiz / "app" / "index.html").write_text(head.replace("%s", versao) + app + tail, encoding="utf-8")
 (raiz / "app" / "versao.json").write_text('{"v": "%s"}\n' % versao, encoding="utf-8")
+# lista de tudo que o celular guarda para abrir sem internet (sw.js); a marca muda quando alguma imagem ou dado muda
+import hashlib, json as _json, re as _re
+_app = raiz / "app"
+_arqs = ["index.html", "shim.js", "config.js", "manifest.webmanifest"] + sorted(
+    str(f.relative_to(_app)) for pasta in ("img", "dados", "deuses", "insignias") for f in (_app / pasta).rglob("*")
+    if f.is_file() and "-antiga" not in f.name and not f.name.startswith("."))
+_marca = hashlib.sha1(b"".join((_app / a).read_bytes() for a in _arqs if a != "index.html")).hexdigest()[:10]
+_sw = (_app / "sw.js").read_text(encoding="utf-8")
+_sw = _re.sub(r"/\*ARQUIVOS\*/.*?/\*FIM\*/", lambda m: "/*ARQUIVOS*/" + _json.dumps(_arqs) + "/*FIM*/", _sw, flags=_re.S)
+_sw = _re.sub(r"^// marca: .*\n", "", _sw, flags=_re.M)
+(_app / "sw.js").write_text("// marca: " + _marca + "\n" + _sw, encoding="utf-8")
 print("app/index.html gerado")
