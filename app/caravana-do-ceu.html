@@ -1751,20 +1751,32 @@ function posicoesAtuais() {
   for (const id in S.aoVivo) { const v = S.aoVivo[id]; if (Date.now() - v.ts < 10 * 60 * 1000) m[id] = { ...(m[id] || {}), ...v, id, vivoGps: true }; }
   return Object.values(m);
 }
-function ligarGps() {
-  if (S.gpsWatch != null) { navigator.geolocation.clearWatch(S.gpsWatch); S.gpsWatch = null; S.gpsOn = false; S.gpsMsg = "Localização ao vivo desligada."; S.room?.presence({ lat: null, lng: null, cidadeId: null, ts: null }).catch(() => {}); render(); return; }
-  if (!navigator.geolocation) { S.gpsMsg = "O GPS não está disponível aqui. Use o link ao vivo do Google Maps no Chat ou marque no mapa."; render(); return; }
-  S.gpsMsg = "Ligando o GPS…"; render();
+function erroGps(e) {
+  const c = e && e.code;
+  return c === 1 ? "A localização está bloqueada para este site. No iPhone: Ajustes → Privacidade e Segurança → Serviços de Localização → Safari (ou Sites do Safari) → Durante o Uso. No Android: toque no cadeado ao lado do endereço → Permissões → Localização → Permitir. Depois toque de novo em Ligar."
+    : c === 3 ? "O GPS demorou para responder. Vá para um lugar aberto ou perto da janela e toque de novo em Ligar."
+    : "Não consegui achar a sua localização agora. Confira se a localização do celular está ligada e tente de novo.";
+}
+function ligarGps(silencioso) {
+  if (S.gpsWatch != null && silencioso !== true) { navigator.geolocation.clearWatch(S.gpsWatch); S.gpsWatch = null; S.gpsOn = false; S.gpsMsg = "Localização ao vivo desligada."; S.room?.presence({ lat: null, lng: null, cidadeId: null, ts: null }).catch(() => {}); render(); return; }
+  if (S.gpsWatch != null) return;
+  if (!navigator.geolocation) { S.gpsMsg = "Este navegador não tem GPS. Abra o app pelo Safari (iPhone) ou Chrome (Android)."; render(); return; }
+  S.gpsMsg = "Procurando você…"; render();
   let ultimoDb = 0;
-  S.gpsWatch = navigator.geolocation.watchPosition(pos => {
+  const recebe = pos => {
     const lat = +pos.coords.latitude.toFixed(5), lng = +pos.coords.longitude.toFixed(5), cidadeId = pertoCidade({ lat, lng }), ts = Date.now();
     S.gpsOn = true; S.gpsMsg = "Você está ao vivo no mapa. A caravana vê você andando enquanto o aplicativo estiver aberto.";
-    S.aoVivo[S.uid] = { lat, lng, cidadeId, ts };
+    S.aoVivo[S.uid] = { lat, lng, cidadeId, ts, prec: Math.round(pos.coords.accuracy || 0) };
     S.room?.presence({ uid: S.uid, lat, lng, cidadeId, ts }).catch(() => {});
     if (ts - ultimoDb > 60000 && S.db && eu()) { ultimoDb = ts; S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: "", nota: "", link: "", ts }).catch(() => {}); }
-    if (S.tab === "mapa" && !S.arrastando) render();
-  }, () => { S.gpsWatch = null; S.gpsOn = false; S.gpsMsg = "O celular não liberou o GPS. Use o link ao vivo do Google Maps no Chat ou marque no mapa."; render(); },
-  { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 });
+    if ((S.tab === "mapa" || S.tab === "travessia") && !S.arrastando && !document.querySelector(".sheet")) render();
+  };
+  // primeiro uma posição rápida (rede/wi-fi), depois o GPS fino acompanhando
+  navigator.geolocation.getCurrentPosition(recebe, () => {}, { enableHighAccuracy: false, maximumAge: 120000, timeout: 8000 });
+  S.gpsWatch = navigator.geolocation.watchPosition(recebe, e => {
+    if (S.gpsOn && e.code !== 1) return;
+    navigator.geolocation.clearWatch(S.gpsWatch); S.gpsWatch = null; S.gpsOn = false; S.gpsMsg = erroGps(e); render();
+  }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
 }
 async function reagir(para, r, texto) {
   if (!S.room) return false;
@@ -1836,10 +1848,11 @@ function molduraECompasso(svg, W, H, id, titulo, sub) {
   svg.querySelector(".cart1").textContent = titulo; svg.querySelector(".cart2").textContent = sub;
 }
 function camadasGeo(svg, P, rios) {
+  if (window.__SITE && P.modo) satelite(svg, P, P.modo);
   const G = S.geo; if (!G) return;
   const perto = P.s > 400; // no zoom de cidade, os contornos gerais ficam imprecisos: só a grade
   const path = pts => pts.map(([x, y], i) => { const [a, b] = P.xy({ lat: y, lng: x }); return (i ? "L" : "M") + a.toFixed(1) + " " + b.toFixed(1); }).join("");
-  if (window.__SITE) satelite(svg, P, P.modo);
+  if (window.__SITE && !P.modo) satelite(svg, P);
   const g = h("g", { class: "geo" + (window.__SITE ? " sat" : "") });
   if (!perto) for (const p of G.paises) for (const r of p.aneis) g.append(h("path", { d: path(r) + "Z", class: p.nome === "India" ? "terra india" : "terra" }));
   svg.append(g);
@@ -1861,20 +1874,25 @@ function camadasGeo(svg, P, rios) {
 function satelite(svg, P, modo) {
   modo = modo || "satelite";
   const tl = P.inv(0, 0), br = P.inv(P.W, P.H);
-  let z = Math.round(Math.log2(360 * P.cos * P.s / 256)); z = Math.max(3, Math.min(17, z));
+  let z = Math.round(Math.log2(360 * P.cos * P.s / 256)); z = Math.max(3, Math.min(18, z));
   const n = 2 ** z, lon2x = lo => Math.floor((lo + 180) / 360 * n), lat2y = la => { const r = la * Math.PI / 180; return Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n); };
   const x2lon = x => x / n * 360 - 180, y2lat = y => { const k = Math.PI - 2 * Math.PI * y / n; return 180 / Math.PI * Math.atan(.5 * (Math.exp(k) - Math.exp(-k))); };
   const g = h("g", { class: "satelite " + modo });
-  const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/";
-  const camadas = modo === "ruas" ? ["World_Street_Map"] : modo === "hibrido" ? ["World_Imagery", "Reference/World_Transportation", "Reference/World_Boundaries_and_Places"] : ["World_Imagery"];
+  const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/", sub = "abcd"[(Math.random() * 4) | 0];
+  const url = (cam, z, x, y) => cam === "ruas" ? `https://${sub}.basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}.png`
+    : cam === "rotulos" ? `https://${sub}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/${z}/${x}/${y}.png`
+    : `${ESRI}World_Imagery/MapServer/tile/${z}/${y}/${x}`;
+  const reserva = (cam, z, x, y) => cam === "ruas" ? `https://tile.openstreetmap.org/${z}/${x}/${y}.png` : cam === "rotulos" ? `${ESRI}Reference/World_Boundaries_and_Places/MapServer/tile/${z}/${y}/${x}` : `${ESRI}World_Imagery/MapServer/tile/${z}/${y}/${x}`;
+  const camadas = modo === "ruas" ? ["ruas"] : modo === "hibrido" ? ["sat", "rotulos"] : ["sat"];
   const x0 = lon2x(tl.lng), x1 = lon2x(br.lng), y0 = lat2y(tl.lat), y1 = lat2y(br.lat);
   if ((x1 - x0 + 1) * (y1 - y0 + 1) > 64) return;
   for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) {
     const [a, b] = P.xy({ lat: y2lat(y), lng: x2lon(x) }), [c, d] = P.xy({ lat: y2lat(y + 1), lng: x2lon(x + 1) });
-    for (const cam of camadas) g.append(h("image", { href: `${ESRI}${cam}/MapServer/tile/${z}/${y}/${x}`, x: a, y: b, width: c - a + .6, height: d - b + .6, preserveAspectRatio: "none" }));
+    for (const cam of camadas) { const im = h("image", { href: url(cam, z, x, y), x: a, y: b, width: c - a + .6, height: d - b + .6, preserveAspectRatio: "none" });
+      im.addEventListener("error", () => { if (!im.dataset.r) { im.dataset.r = 1; im.setAttribute("href", reserva(cam, z, x, y)); } }, { once: false }); g.append(im); }
   }
   svg.append(g);
-  svg.append(h("text", { x: P.W - 22, y: P.H - 20, class: "satcred", "text-anchor": "end", text: modo === "ruas" ? "Mapa: Esri, HERE, Garmin, OpenStreetMap" : "Satélite: Esri, Maxar, Earthstar Geographics" }));
+  svg.append(h("text", { x: P.W - 22, y: P.H - 20, class: "satcred", "text-anchor": "end", text: modo === "ruas" ? "© OpenStreetMap · © CARTO" : modo === "hibrido" ? "Satélite: Esri, Maxar · rótulos © CARTO, OpenStreetMap" : "Satélite: Esri, Maxar, Earthstar Geographics" }));
 }
 function escala(svg, P) {
   const H = P.H, per = P.s / 111.32, nice = [0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
@@ -2068,7 +2086,12 @@ function gestosMapa(svg, mov, P, km) {
     clearTimeout(rodaT); rodaT = setTimeout(confirma, 280);
   }, { passive: false });
 }
+function autoGps() {
+  if (S.gpsWatch != null || S._autoGps) return; S._autoGps = true;
+  try { navigator.permissions?.query({ name: "geolocation" }).then(r => { if (r.state === "granted") ligarGps(true); }).catch(() => {}); } catch (e) {}
+}
 function vPerto() {
+  autoGps();
   const eu0 = minhaPos(), km = S.pertoKm || 0.25;
   const perto = eu0 ? posicoesAtuais().filter(p => p.id !== S.uid && isFinite(+p.lat)).map(p => ({ p, km: distKm(eu0, p) })).sort((a, b) => a.km - b.km) : [];
   const zoom = f => { S.pertoKm = Math.max(0.06, Math.min(3000, km * f)); render(); };
@@ -2076,7 +2099,7 @@ function vPerto() {
   if (!eu0) return h("div", { class: "panel", style: "align-items:center;text-align:center" },
     h("p", { class: "eyebrow", text: "Perto de mim" }), h("h2", { text: "Ligue a sua localização" }),
     h("p", { class: "small", text: "O mapa se centraliza onde você estiver e mostra, ao vivo, quem da caravana está por perto." }),
-    h("button", { class: "btn gold", type: "button", onclick: ligarGps }, "Ligar minha localização ao vivo"),
+    h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"),
     S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null);
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   return h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
@@ -2090,7 +2113,8 @@ function vPerto() {
         perto.length ? h("button", { type: "button", "aria-label": "Ver todos", onclick: verTodos }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")) : null),
       h("p", { class: "mapdica", text: "Arraste com o dedo · pinça para aproximar" })),
     h("p", { class: "coord", style: "text-align:left", text: "Você: " + coordTxt(eu0.lat, eu0.lng) }),
-    !S.gpsOn ? h("button", { class: "btn", type: "button", onclick: ligarGps }, "Ligar minha localização ao vivo") : h("p", { class: "msg ok", text: S.gpsMsg || "Você está ao vivo." }),
+    !S.gpsOn ? h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null)
+      : h("p", { class: "msg ok", text: (S.gpsMsg || "Você está ao vivo.") + (S.aoVivo[S.uid]?.prec ? ` Precisão de ${S.aoVivo[S.uid].prec} m.` : "") }),
     perto.length ? h("ul", { class: "pertolist" }, perto.slice(0, 20).map(({ p, km }) => h("li", { onclick: () => abrirPessoa(p.id), style: "cursor:pointer" },
       bonecoSvg(bonecoDe(p.id), "bonecosvg mini"), h("div", null, h("b", { text: nomeDe(p.id) }), h("small", { text: km < 1 ? Math.round(km * 1000) + " m de você" : km.toFixed(km < 10 ? 1 : 0) + " km de você" }))))) :
       h("p", { class: "small", text: "Ninguém da caravana apareceu por perto ainda. Quando alguém ligar a localização, o bonequinho aparece aqui." }));
