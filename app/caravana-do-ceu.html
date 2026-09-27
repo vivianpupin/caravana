@@ -1120,7 +1120,7 @@ function marcaChat() {
   let visto = 0; try { visto = +localStorage.getItem("cdi-chat-visto") || 0; } catch (e) {}
   const ult = S.chat.reduce((a, m) => Math.max(a, m.ts || 0), 0);
   if (!visto || S.tab === "conversa") { if (ult > visto) { visto = ult; try { localStorage.setItem("cdi-chat-visto", String(ult)); } catch (e) {} } }
-  const n = S.chat.filter(m => m.autor !== S.uid && (m.ts || 0) > visto).length;
+  const n = S.chat.filter(m => m.autor !== S.uid && m.tipo !== "local" && m.tipo !== "aovivo" && (m.ts || 0) > visto).length;
   const bt = document.querySelector('#tabs button[data-tab="conversa"]'); if (!bt) return;
   let pin = bt.querySelector(".pinmsg");
   if (!pin) { pin = h("span", { class: "pinmsg", "aria-hidden": "true" }); bt.append(pin); }
@@ -3530,7 +3530,8 @@ function avisoFixado() {
     h("p", { class: "t", text: a.texto }));
 }
 function vConversa() {
-  const msgs = S.chat.slice().sort((a, b) => a.ts - b.ts);
+  // mapa e localização não aparecem no chat (ficam só na aba Mapa)
+  const msgs = S.chat.filter(m => m.tipo !== "local" && m.tipo !== "aovivo").sort((a, b) => a.ts - b.ts);
   perfis(msgs.map(m => m.autor));
   const log = h("div", { class: "chatlog", id: "chatlog", "aria-live": "polite" });
   let last = "";
@@ -3620,7 +3621,7 @@ function vConversa() {
       S.celMsg ? h("p", { class: "small", role: "status", style: "margin:8px 0 0", text: S.celMsg }) : null,
       avisoFixado()),
     log,
-    pode && S.pontoAberto ? h("div", { class: "picker loc" },
+    false ? h("div", { class: "picker loc" },
       h("div", { class: "locopt" },
         h("p", { class: "eyebrow", text: "Onde estou agora" }),
         h("button", { class: "btn gold", type: "button", onclick: enviarGps }, "Enviar minha localização atual")),
@@ -3633,8 +3634,6 @@ function vConversa() {
         h("div", { class: "unlock" }, pSel, h("button", { class: "btn", type: "button", onclick: enviarPonto }, "Enviar ponto"))),
       pNota, locMsg) : h("span"),
     pode ? h("div", { class: "composer" },
-        h("button", { class: "iconbtn", type: "button", title: "Enviar localização", "aria-label": "Enviar localização", "aria-pressed": String(S.pontoAberto), onclick: () => { S.pontoAberto = !S.pontoAberto; render(); } },
-          ico(["M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z", "M12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"])),
         S.assets ? h("button", { class: "iconbtn", type: "button", title: "Enviar foto", "aria-label": "Enviar foto", onclick: () => fileIn.click() },
           ico(["M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z", "M12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"])) : null,
         S.isOwner ? h("button", { class: "iconbtn" + (S.modoAviso ? " avisoon" : ""), type: "button", title: "Mandar como aviso da líder", "aria-label": "Mandar como aviso da líder", "aria-pressed": String(!!S.modoAviso), onclick: () => { S.modoAviso = !S.modoAviso; render(); } },
