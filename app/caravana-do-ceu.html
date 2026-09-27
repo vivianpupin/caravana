@@ -1125,7 +1125,8 @@ function vTravessia() {
       h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }),
       h("img", { class: "s", src: "img/simbolo-marrom.png", alt: "" }),
       h("q", { text: "Explorando nossa origem nos damos conta de que somos infinitos." }),
-      h("p", { class: "eyebrow", style: "text-align:center;line-height:1.8" }, "Caravana do Céu", h("br"), "a travessia te espera")));
+      h("p", { class: "eyebrow", style: "text-align:center;line-height:1.8" }, "Caravana do Céu", h("br"), "a travessia te espera"),
+      window.__VERSAO ? h("p", { class: "small", style: "text-align:center;opacity:.6;margin-top:6px", text: "versão " + window.__VERSAO }) : null));
 }
 function vDia(d, open, isToday, abrir) {
   const ls = (d.pins || []).map(localDe).filter(Boolean);

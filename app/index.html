@@ -7,6 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
+<script>window.__VERSAO = "26/09 · 23:35";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1138,7 +1139,8 @@ function vTravessia() {
       h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }),
       h("img", { class: "s", src: "img/simbolo-marrom.png", alt: "" }),
       h("q", { text: "Explorando nossa origem nos damos conta de que somos infinitos." }),
-      h("p", { class: "eyebrow", style: "text-align:center;line-height:1.8" }, "Caravana do Céu", h("br"), "a travessia te espera")));
+      h("p", { class: "eyebrow", style: "text-align:center;line-height:1.8" }, "Caravana do Céu", h("br"), "a travessia te espera"),
+      window.__VERSAO ? h("p", { class: "small", style: "text-align:center;opacity:.6;margin-top:6px", text: "versão " + window.__VERSAO }) : null));
 }
 function vDia(d, open, isToday, abrir) {
   const ls = (d.pins || []).map(localDe).filter(Boolean);
@@ -3722,5 +3724,12 @@ render();
 })();
 </script>
 
-<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});</script>
+<script>
+if ("serviceWorker" in navigator) {
+  // procura versão nova sempre que o app abre ou volta para a tela, e recarrega sozinho quando chega
+  const tinha = !!navigator.serviceWorker.controller; let recarregou = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (tinha && !recarregou) { recarregou = true; location.reload(); } });
+  navigator.serviceWorker.register("sw.js").then(r => { r.update(); document.addEventListener("visibilitychange", () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {});
+}
+</script>
 </body></html>

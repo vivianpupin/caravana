@@ -2,7 +2,7 @@
 O shim (tools/site/shim.js) é empacotado em app/shim.js com:
   npx esbuild tools/site/shim.js --bundle --minify --format=iife --loader:.json=json --outfile=app/shim.js
 """
-import pathlib
+import pathlib, datetime
 raiz = pathlib.Path(__file__).resolve().parent.parent
 app = (raiz / "app" / "caravana-do-ceu.html").read_text(encoding="utf-8")
 head = """<!doctype html>
@@ -14,14 +14,23 @@ head = """<!doctype html>
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
+<script>window.__VERSAO = "%s";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
 </head><body>
 """
 tail = """
-<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});</script>
+<script>
+if ("serviceWorker" in navigator) {
+  // procura versão nova sempre que o app abre ou volta para a tela, e recarrega sozinho quando chega
+  const tinha = !!navigator.serviceWorker.controller; let recarregou = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (tinha && !recarregou) { recarregou = true; location.reload(); } });
+  navigator.serviceWorker.register("sw.js").then(r => { r.update(); document.addEventListener("visibilitychange", () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {});
+}
+</script>
 </body></html>
 """
-(raiz / "app" / "index.html").write_text(head + app + tail, encoding="utf-8")
+versao = (datetime.datetime.utcnow() - datetime.timedelta(hours=3)).strftime("%d/%m · %H:%M")
+(raiz / "app" / "index.html").write_text(head.replace("%s", versao) + app + tail, encoding="utf-8")
 print("app/index.html gerado")
