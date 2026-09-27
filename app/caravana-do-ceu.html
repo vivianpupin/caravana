@@ -2254,8 +2254,13 @@ const _desenhaBase = desenhaBoneco;
 desenhaBoneco = function (b0) {
   b0 = maosSeparadas(b0);
   const d = b0.deus && DEUS[b0.deus];
-  const b = d ? { ...b0, ...d, cabelo: d.cabelo || (b0.cabelo === "careca" ? "curto" : b0.cabelo) } : b0;
-  const base = { ...b, roupa: ["shiva", "dhoti"].includes(b.roupa) ? "yogi" : b.roupa, acessorio: d ? "nenhum" : b.acessorio, acessorio2: d ? "nenhum" : b.acessorio2,
+  // na fantasia, o que a pessoa escolheu (instrumento, colar, testa) vale mais que o do deus; objeto, óculos, nariz e pés passam direto
+  const meu = {};
+  if (b0.acessorio && b0.acessorio !== "nenhum") meu.acessorio = b0.acessorio;
+  if (b0.colar && b0.colar !== "nenhum") meu.colar = b0.colar;
+  if (b0.testa && b0.testa !== "nada") meu.testa = b0.testa;
+  const b = d ? { ...b0, ...d, ...meu, cabelo: d.cabelo || (b0.cabelo === "careca" ? "curto" : b0.cabelo) } : b0;
+  const base = { ...b, roupa: ["shiva", "dhoti"].includes(b.roupa) ? "yogi" : b.roupa, acessorio: d && !meu.acessorio ? "nenhum" : b.acessorio, acessorio2: b.acessorio2,
     chapeu: ["jata", "ganesha", "coroa", "coroaalta", "pena", "sol"].includes(b.chapeu) ? "sem" : b.chapeu, colar: ["cobra", "ouro", "flores"].includes(b.colar) ? "nenhum" : b.colar,
     testa: b.testa === "cinzas" ? "nada" : b.testa, roupaCor: b.roupaCor };
   const g = h("g", { class: "boneco" }), P = (dd, fill, x) => h("path", { d: dd, fill, ...(x || {}) }), ouro = "#D9A53A";
