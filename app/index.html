@@ -1095,7 +1095,6 @@ function vDia(d, open, isToday, abrir) {
   const ck = S.checks[d.n] || {};
   return h("article", { class: "day open" + (isToday ? " is-today" : ""), id: "dia-" + d.n }, head,
     h("div", { class: "daybody" },
-      vPrevDia(d),
       h("div", { class: "logi" }, h("span", null, "Hospedagem ", h("b", { text: d.hotel })), d.guia ? h("span", null, h("b", { text: d.guia })) : null),
       h("div", null, h("p", { class: "eyebrow rule", text: "Agenda do dia" }),
         d.agenda.map(p => [h("p", { class: "per", text: p.periodo }),
