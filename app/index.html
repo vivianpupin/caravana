@@ -951,6 +951,7 @@ function render() {
     const log = $("#chatlog"); if (log) log.scrollTop = log.scrollHeight;
   }
   tickRelogios();
+  if (S.tab === "travessia") alturaFrases();
   const el = actId && document.getElementById(actId);
   if (el && el !== act) { if (draft != null && "value" in el && el.type !== "file" && el.type !== "checkbox") el.value = draft; el.focus({ preventScroll: true }); if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
 }
@@ -1065,6 +1066,14 @@ const FRASES = [
   "Vivendo o que estava escrito, o meu caminho eu vou trilhar."
 ];
 S.fraseIdx = 0;
+function alturaFrases() {
+  const el = document.getElementById("frase-giro"); if (!el || !el.offsetWidth) return;
+  if (S.fraseAlt && S.fraseAlt.w === el.offsetWidth) { el.style.minHeight = S.fraseAlt.h + "px"; return; }
+  const t = el.textContent, mh = el.style.minHeight; el.style.minHeight = "0"; let m = 0;
+  for (const f of FRASES) { el.textContent = f; m = Math.max(m, el.offsetHeight); }
+  el.textContent = t; S.fraseAlt = { w: el.offsetWidth, h: m }; el.style.minHeight = m + "px";
+}
+window.addEventListener("resize", () => { S.fraseAlt = null; alturaFrases(); });
 setInterval(() => {
   S.fraseIdx = (S.fraseIdx + 1) % FRASES.length;
   const el = document.getElementById("frase-giro"); if (!el) return;
@@ -1816,7 +1825,7 @@ function ligarGps(silencioso) {
     S.room?.presence({ uid: S.uid, lat, lng, cidadeId, ts }).catch(() => {});
     if (ts - ultimoDb > 60000 && S.db && eu()) { ultimoDb = ts; S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: S.rua && distKm(S.rua, { lat, lng }) < 1 ? S.rua.lugar || "" : "", nota: "", link: "", ts }).catch(() => {}); }
     if (S.arrastando) { S.pendente = true; return; }
-    if ((S.tab === "mapa" || S.tab === "travessia") && !document.querySelector(".sheet")) render();
+    if (S.tab === "mapa" && !document.querySelector(".sheet")) render();
   };
   // primeiro uma posição rápida (rede/wi-fi), depois o GPS fino acompanhando
   navigator.geolocation.getCurrentPosition(recebe, () => {}, { enableHighAccuracy: false, maximumAge: 120000, timeout: 8000 });
@@ -3153,7 +3162,7 @@ function abrirFotoMural(f) {
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
 }
-setInterval(() => { if (S.tab === "travessia" && !document.querySelector(".sheet") && !(document.activeElement && /TEXTAREA|INPUT|SELECT/.test(document.activeElement.tagName))) render(); }, 60000);
+
 
 
 // Mensagem do diário de bordo (último dia), na linguagem do Mapa da Clareza
@@ -3527,10 +3536,15 @@ function vRupias() {
 }
 
 // ---------- dados ----------
+// cada coleção só redesenha as abas que mostram aqueles dados (evita a tela pular à toa)
+const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos"], cartas: ["travessia"] };
 function listen(col, key, q, after) {
+  let primeira = true;
   (q || S.db.collection(col)).onSnapshot(snap => {
     S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() })); guardaCache(key);
-    S.dbReady = true; if (after) after(); render(); refreshSheet();
+    S.dbReady = true; if (after) after();
+    if (primeira || !USA[key] || USA[key].includes(S.tab)) render();
+    primeira = false; refreshSheet();
   }, () => { S.dbReady = true; if (after) after(); render(); });
 }
 
@@ -3567,7 +3581,11 @@ render();
   listen("pensamentos", "pedra");
   if (S.isOwner && window.__SITE) listen("membros", "membros");
   listen("mural", "mural", db.collection("mural").orderBy("ts", "desc").limit(300));
-  setInterval(() => { if ((S.tab === "mapa" || S.tab === "travessia") && !document.activeElement?.matches?.("input,textarea,select") && !document.querySelector(".sheet")) render(); }, 60000);
+  setInterval(() => {
+    if (document.activeElement?.matches?.("input,textarea,select") || document.querySelector(".sheet")) return;
+    if (S.tab === "mapa") return render();
+    if (S.tab === "travessia") { const k = [hojeIso(), S.isOwner ? S.online.size : 0, (S.cartas || []).length, cartasAbertas().length].join("|"); if (k !== S.chaveHome) { S.chaveHome = k; render(); } }
+  }, 60000);
 })();
 })();
 </script>
