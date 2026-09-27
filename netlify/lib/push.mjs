@@ -31,3 +31,12 @@ export async function enviarTodos(d, k, carga, exceto, ttl) {
   return enviados;
 }
 
+
+// manda só para uma pessoa (carta pessoal)
+export async function enviarPara(d, k, uid, carga, ttl) {
+  webpush.setVapidDetails(SITE, k.publicKey, k.privateKey);
+  const s = await d.doc("push/" + uid).get();
+  if (!s.exists || !s.data().sub) return 0;
+  try { await webpush.sendNotification(s.data().sub, JSON.stringify(carga), { TTL: ttl || 24 * 3600 }); return 1; }
+  catch (e) { if (e.statusCode === 404 || e.statusCode === 410) await s.ref.delete().catch(() => {}); return 0; }
+}

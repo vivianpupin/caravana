@@ -54,5 +54,7 @@ service cloud.firestore {
     match /diarios/{uid} { allow read, write: if eu(uid) || lider(); }
     // inscrição de cada celular para receber notificações (só o dono grava; ninguém lê pelo app)
     match /push/{uid} { allow write: if eu(uid) && membro(); }
+    // carta só para uma pessoa: só ela e a líder leem
+    match /cartasPessoais/{id} { allow read: if lider() || (logado() && resource.data.para == request.auth.uid); allow write: if lider(); }
   }
 }

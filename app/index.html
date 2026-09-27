@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 14:23";</script>
+<script>window.__VERSAO = "27/09 · 14:26";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -587,6 +587,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 @keyframes abzoom{from{transform:scale(1.18)}}@keyframes absimb{from{opacity:0;transform:scale(.7)}}
 @keyframes absobe{from{opacity:0;transform:translateY(10px)}}
 @media (prefers-reduced-motion:reduce){.abertura,.abertura *{animation:none!important}}
+.pgmso{margin:0 0 4px;font:600 11px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:#8A2A1F;text-align:center}
 .celx{position:absolute;top:6px;right:8px;background:none;border:0;font-size:22px;line-height:1;color:var(--soft);padding:4px 8px}
 .meuexp{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 14px 4px 6px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
 .bonecosvg{display:block}
@@ -1005,7 +1006,7 @@ nav.tabs button{position:relative}
 const S = {
   tab: "travessia",
   roteiro: null, roteiroErro: false,
-  dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [], cartas: [], diarios: [], pedra: [], membros: [], mural: [], fotoAba: "estudio", muralCidade: "",
+  dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [], cartas: [], diarios: [], pedra: [], membros: [], mural: [], cartasP: [], fotoAba: "estudio", muralCidade: "",
   vReady: false, dbReady: false, pularCadastro: false,
   uid: null, me: null, isOwner: false, canChat: null,
   db: null, user: null, assets: null, perfis: {},
@@ -3831,85 +3832,6 @@ function aberturaDoDia(forcar) {
 function abreDia() { const t = +new URLSearchParams(location.search).get("abertura"); aberturaDoDia(t || 0); }
 document.addEventListener("visibilitychange", () => { if (!document.hidden) abreDia(); });
 
-// transforma o desenho em foto (as imagens entram embutidas para o celular conseguir salvar)
-async function svgParaJpg(svg) {
-  const cp = svg.cloneNode(true);
-  await Promise.all([...cp.querySelectorAll("image")].map(async im => {
-    const src = im.getAttribute("href"); if (!src || src.startsWith("data:")) return;
-    try { const b = await (await fetch(src)).blob(); im.setAttribute("href", await new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result); r.readAsDataURL(b); })); } catch (e) {}
-  }));
-  const W = +cp.getAttribute("width"), H = +cp.getAttribute("height");
-  const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(cp)], { type: "image/svg+xml" }));
-  const img = new Image(); await new Promise((ok, erro) => { img.onload = ok; img.onerror = erro; img.src = url; });
-  const c = document.createElement("canvas"); c.width = W; c.height = H; c.getContext("2d").drawImage(img, 0, 0, W, H); URL.revokeObjectURL(url);
-  return new Promise(ok => c.toBlob(ok, "image/jpeg", .92));
-}
-// ---------- Mapa desenhado da travessia (para salvar e postar, 1080x1350) ----------
-function mapaTravessia(v, todos) {
-  const W = 1080, H = 1350, NS = "http://www.w3.org/2000/svg", serif = "Georgia,'Times New Roman',serif", tinta = "#3A220E";
-  const svg = h("svg", { xmlns: NS, viewBox: `0 0 ${W} ${H}`, width: W, height: H, class: "mapatrav" });
-  // a cena: pergaminho sobre a mesa, com lamparina, bússola, cravos e rudraksha
-  svg.append(h("image", { href: "img/mapa-cena.webp", x: 0, y: 0, width: W, height: H, preserveAspectRatio: "xMidYMid slice" }));
-  const ink = h("g", { style: "mix-blend-mode:multiply", opacity: .88 });
-  const cx = 620;
-  ink.append(h("text", { x: cx, y: 212, "text-anchor": "middle", "font-family": serif, "font-size": 29, "letter-spacing": 5, fill: tinta, text: "TRAVESSIA DA ÍNDIA SAGRADA" }),
-    h("path", { d: `M${cx - 210} 232 H${cx - 16} M${cx + 16} 232 H${cx + 210}`, stroke: tinta, "stroke-width": 1.2 }), h("circle", { cx, cy: 232, r: 3.5, fill: tinta }),
-    h("text", { x: cx, y: 262, "text-anchor": "middle", "font-family": serif, "font-size": 19, "letter-spacing": 2, fill: tinta, text: "Caravana do Céu · 4 a 16 de novembro de 2026" }),
-    h("text", { x: cx, y: 298, "text-anchor": "middle", "font-family": serif, "font-style": "italic", "font-size": 27, fill: tinta, text: "o mapa de " + ((v && v.nome) || "Viajante") }));
-  // mapa do norte da Índia, a bico de pena
-  const MX = 250, MY = 320, MW = 700, MH = 520;
-  const P = projetor([{ lat: 22.8, lng: 72.6 }, { lat: 32, lng: 85.6 }], MW, MH, 0);
-  const xy = p => { const [a, b] = P.xy(p); return [a + MX, b + MY]; };
-  const path = pts => pts.map(([x, y], i) => { const [a, b] = xy({ lat: y, lng: x }); return (i ? "L" : "M") + a.toFixed(1) + " " + b.toFixed(1); }).join("");
-  const mapa = h("g", { "clip-path": "url(#mtc)" });
-  svg.append(h("defs", null, h("clipPath", { id: "mtc" }, h("ellipse", { cx: MX + MW / 2, cy: MY + MH / 2, rx: MW / 2 + 70, ry: MH / 2 + 40 }))));
-  const G = S.geo;
-  if (G) {
-    for (const p of G.paises) for (const r of p.aneis) {
-      const ind = p.nome === "India";
-      if (ind) mapa.append(h("path", { d: path(r) + "Z", fill: "rgba(120,70,25,.10)", stroke: "rgba(80,45,15,.22)", "stroke-width": 8, "stroke-linejoin": "round" }));
-      mapa.append(h("path", { d: path(r) + "Z", fill: "none", stroke: ind ? tinta : "rgba(58,34,14,.5)", "stroke-width": ind ? 2.2 : 1.1, "stroke-dasharray": ind ? "none" : "5 5", "stroke-linejoin": "round" }));
-    }
-    for (const r of G.rios) if (/Ganges|Yamuna/.test(r.nome)) mapa.append(h("path", { d: path(r.pts), fill: "none", stroke: "#3E5A60", "stroke-width": r.nome === "Ganges" ? 3.2 : 2.2, "stroke-linecap": "round", "stroke-linejoin": "round" }));
-    for (let i = 0; i < 14; i++) { const lng = 76.2 + i * .62, lat = 31.7 - i * .22 - (i % 2) * .22, [x, y] = xy({ lat, lng }); if (lng > 77.3 && lng < 80.4) continue; mapa.append(h("path", { d: `M${x - 14} ${y + 9} L${x} ${y - 12} L${x + 14} ${y + 9} M${x - 3} ${y - 7} L${x + 2} ${y + 7}`, fill: "none", stroke: tinta, "stroke-width": 1.6 })); }
-    const [hx, hy] = xy({ lat: 31.75, lng: 82.2 });
-    mapa.append(h("text", { x: hx, y: hy, "text-anchor": "middle", "font-family": serif, "font-style": "italic", "font-size": 19, "letter-spacing": 6, fill: tinta, text: "HIMALAIA" }));
-  }
-  ink.append(mapa);
-  // o caminho da caravana
-  const C = { delhi: { n: "Delhi", lat: 28.61, lng: 77.21 }, agra: { n: "Agra", lat: 27.18, lng: 78.01 }, jaipur: { n: "Jaipur", lat: 26.91, lng: 75.79 }, varanasi: { n: "Varanasi", lat: 25.32, lng: 82.97 }, rishikesh: { n: "Rishikesh", lat: 30.09, lng: 78.27 } };
-  const rota = ["delhi", "agra", "jaipur", "varanasi", "rishikesh", "delhi"];
-  let d = "";
-  rota.forEach((c, i) => { const [x, y] = xy(C[c]); if (!i) { d = `M${x} ${y}`; return; } const [x0, y0] = xy(C[rota[i - 1]]), mx = (x0 + x) / 2, my = (y0 + y) / 2, dx = x - x0, dy = y - y0, k = .18; d += ` Q${(mx - dy * k).toFixed(1)} ${(my + dx * k).toFixed(1)} ${x} ${y}`; });
-  ink.append(h("path", { d, fill: "none", stroke: "#7E1A0E", "stroke-width": 4, "stroke-dasharray": "13 9", "stroke-linecap": "round" }));
-  const diasDe = id => (S.roteiro?.dias || []).filter(x => String(x.cidade || "").toLowerCase().includes(C[id].n.toLowerCase())).map(x => x.n);
-  const rot = { delhi: [-16, -22, "end"], agra: [18, 38, "start"], jaipur: [-18, 42, "end"], varanasi: [0, 46, "middle"], rishikesh: [20, -18, "start"] };
-  for (const id in C) {
-    const [x, y] = xy(C[id]), [ox, oy, an] = rot[id], ds = diasDe(id);
-    ink.append(h("circle", { cx: x, cy: y, r: 9, fill: "none", stroke: tinta, "stroke-width": 2.2 }), h("circle", { cx: x, cy: y, r: 4, fill: "#7E1A0E" }),
-      h("text", { x: x + ox, y: y + oy, "text-anchor": an, "font-family": serif, "font-style": "italic", "font-size": 30, fill: tinta, text: C[id].n }),
-      ds.length ? h("text", { x: x + ox, y: y + oy + 22, "text-anchor": an, "font-family": serif, "font-size": 16, fill: tinta, text: (ds.length > 1 ? "dias " : "dia ") + ds.join(" · ") }) : null);
-  }
-  // rosa dos ventos
-  ink.append(h("g", { transform: `translate(${MX + MW - 50} ${MY + MH - 70})`, fill: tinta, stroke: tinta },
-    h("circle", { r: 34, fill: "none", "stroke-width": 1.3 }), h("path", { d: "M0 -46 L7 0 L0 46 L-7 0 Z", "stroke-width": .5 }), h("path", { d: "M-46 0 L0 -7 L46 0 L0 7 Z", fill: "none", "stroke-width": 1.2 }),
-    h("text", { y: -52, "text-anchor": "middle", "font-family": serif, "font-size": 18, stroke: "none", text: "N" })));
-  // os selos
-  const ls = insigniaLocais();
-  ink.append(h("text", { x: cx, y: 885, "text-anchor": "middle", "font-family": serif, "font-size": 20, "letter-spacing": 5, fill: tinta, text: `OS ${ls.length} SELOS DA TRAVESSIA` }));
-  svg.append(ink);
-  const cols = 8, w = 78, hh = 104, gap = 10, x0 = cx - (cols * w + (cols - 1) * gap) / 2;
-  ls.forEach((l, i) => {
-    const x = x0 + (i % cols) * (w + gap), y = 902 + Math.floor(i / cols) * (hh + 10), on = todos || aberto(l);
-    svg.append(h("image", { href: badgeSrc(l), x, y, width: w, height: hh, opacity: on ? 1 : .25, preserveAspectRatio: "xMidYMid meet" }));
-  });
-  svg.append(h("text", { x: cx, y: 1165, "text-anchor": "middle", "font-family": serif, "font-size": 17, "letter-spacing": 3, fill: tinta, opacity: .85, style: "mix-blend-mode:multiply", text: "caravanadoceu.com" }));
-  // o bonequinho, parado ao lado de Delhi
-  const [bx, by] = xy(C.delhi);
-  svg.append(h("g", { transform: `translate(${bx - 200} ${by - 100}) scale(1.35)` }, desenhaBoneco({ ...bonecoDe(S.uid), pet: "nenhum" })));
-  return svg;
-}
-window.__mapaTravessia = (todos) => mapaTravessia(eu(), todos);
 
 // ---------- Hoje, mantra do dia, diário, carta ----------
 const MANTRAS = {
@@ -4104,7 +4026,7 @@ function vDiario(d, liberado) {
 // Correspondência: cartas da líder, em pergaminho, por pombo-correio
 const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nDezesseis selos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
 const ASSINATURA = "Vivian · Caravana do Céu";
-const cartasAbertas = () => S.cartas.filter(c => !c.rascunho && c.envio && c.envio <= Date.now()).sort((a, b) => a.envio - b.envio);
+const cartasAbertas = () => [...S.cartas, ...S.cartasP.filter(c => c.para === S.uid).map(c => ({ ...c, pessoal: true }))].filter(c => c && !c.rascunho && c.envio && c.envio <= Date.now()).sort((a, b) => a.envio - b.envio);
 const dataCarta = ts => new Date(ts).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" });
 const horaCarta = ts => new Date(ts).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" });
 const primeiroNome = () => { const v = eu(); return v && v.nome ? v.nome.split(" ")[0] : "viajante"; };
@@ -4121,6 +4043,7 @@ function pergaminhoCarta(c) {
     h("span", { class: "rolo top", "aria-hidden": "true" }),
     h("div", { class: "pgm" },
       h("p", { class: "pgmdata", text: (c.local || "Índia") + " · " + dataCarta(c.envio || Date.now()) }),
+      c.pessoal ? h("p", { class: "pgmso", text: "Só para você" }) : null,
       c.titulo ? h("h3", { class: "pgmtit", text: c.titulo }) : null,
       h("p", { class: "pgmpara", text: "Para " + primeiroNome() + "," }),
       String(c.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })),
@@ -4131,7 +4054,7 @@ function pergaminhoCarta(c) {
 function abrirCarta(c, chegou) {
   closeSheets(); marcaCarta(c.id); setTimeout(render, 0);
   const box = h("div", { role: "dialog", "aria-label": "Carta: " + (c.titulo || "correspondência"), class: "correiobox" + (chegou ? " chegou" : "") },
-    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: "Chegou uma carta por pombo-correio!" })) : null,
+    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: c.pessoal ? "Chegou uma carta só para você!" : "Chegou uma carta por pombo-correio!" })) : null,
     pergaminhoCarta(c),
     h("div", { class: "foot2" }, S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editarCarta(c) }, "Editar") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Guardar a carta")));
@@ -4149,53 +4072,63 @@ function editarCarta(c) {
   const loc = h("input", { type: "text", id: "cc-loc", placeholder: "De onde (ex.: Varanasi)", value: c.local || "" });
   const d = h("input", { type: "date", id: "cc-dia", value: dia });
   const hr = h("input", { type: "time", id: "cc-hora", value: horaCarta(ini) });
+  const para = h("select", { id: "cc-para", "aria-label": "Para quem" }, h("option", { value: "", text: "Toda a caravana" }),
+    S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || ""))).map(v => h("option", { value: v.id, text: "Só para " + (v.nome || "viajante"), selected: c.para === v.id })));
+  if (c.id) para.disabled = true; // uma carta já criada não muda de destino
   const st = h("p", { class: "msg", role: "status" });
   const grava = async modo => {
     if (!ta.value.trim()) { st.textContent = "Escreva a carta antes."; st.className = "msg err"; return; }
     const envio = modo === "agora" ? Date.now() : Date.parse(`${d.value}T${hr.value || "07:00"}:00+05:30`);
     if (!isFinite(envio)) { st.textContent = "Confira a data e a hora."; st.className = "msg err"; return; }
     const dados = { titulo: tit.value.trim(), texto: ta.value.trim(), assinatura: ass.value.trim() || ASSINATURA, local: loc.value.trim(), envio, rascunho: modo === "rascunho", ts: Date.now() };
+    const pv = c.id ? c.para || "" : para.value, col = pv ? "cartasPessoais" : "cartas";
+    if (pv) dados.para = pv;
     try {
       if (c.avisada && c.envio === dados.envio) dados.avisada = true; // carta já avisada não avisa de novo ao ser corrigida
-      if (c.id) await S.db.doc("cartas/" + c.id).set(dados); else { const r = await S.db.collection("cartas").add(dados); c.id = r && r.id; }
+      if (c.id) await S.db.doc(col + "/" + c.id).set(dados); else { const r = await S.db.collection(col).add(dados); c.id = r && r.id; c.para = pv; }
       st.textContent = modo === "rascunho" ? "Rascunho guardado. Ninguém vê ainda." : modo === "agora" ? "Carta enviada! Ela chega agora para a caravana." : `Carta programada para ${dataCarta(envio)}, às ${horaCarta(envio)} na Índia.`;
       st.className = "msg ok";
     } catch (e) { st.textContent = "Não consegui guardar a carta."; st.className = "msg err"; }
   };
   const box = h("form", { class: "correioform", onsubmit: e => e.preventDefault() },
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: c.id ? "Editar carta" : "Nova carta" }))),
+    h("label", { class: "lab", for: "cc-para", text: "Para quem" }), para,
     h("label", { class: "lab", for: "cc-tit", text: "Título" }), tit,
     h("label", { class: "lab", for: "cc-txt", text: "Carta" }), ta,
-    h("p", { class: "small", text: "Cada viajante recebe com o próprio nome no começo: Para Ana, Para Bia…" }),
+    h("p", { class: "small", text: "Para toda a caravana, cada viajante recebe com o próprio nome no começo. Só para uma pessoa, a carta chega lacrada com selo de cera e só ela lê." }),
     h("div", { class: "ccrow" }, h("div", null, h("label", { class: "lab", for: "cc-loc", text: "Enviada de" }), loc), h("div", null, h("label", { class: "lab", for: "cc-ass", text: "Assinatura" }), ass)),
     h("div", { class: "ccrow" }, h("div", null, h("label", { class: "lab", for: "cc-dia", text: "Dia da entrega" }), d), h("div", null, h("label", { class: "lab", for: "cc-hora", text: "Hora na Índia" }), hr)),
     h("div", { class: "actions" },
-      h("button", { class: "btn gold", type: "button", onclick: () => grava("agora") }, "Enviar agora para todos"),
+      h("button", { class: "btn gold", type: "button", onclick: () => grava("agora") }, "Enviar agora"),
       h("button", { class: "btn", type: "button", onclick: () => grava("programar") }, "Programar para o dia e hora"),
       h("button", { class: "btn ghost", type: "button", onclick: () => grava("rascunho") }, "Guardar rascunho")),
     st,
     h("div", { class: "foot2" },
-      c.id ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (confirm("Apagar esta carta?")) S.db.doc("cartas/" + c.id).delete().then(closeSheets, () => {}); } }, "Apagar carta") : h("span"),
+      c.id ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (confirm("Apagar esta carta?")) S.db.doc((c.para ? "cartasPessoais/" : "cartas/") + c.id).delete().then(closeSheets, () => {}); } }, "Apagar carta") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
 }
 function vCorrespondencia() {
   const abertas = cartasAbertas().slice().reverse();
-  const futuras = S.isOwner ? S.cartas.filter(c => c.rascunho || !c.envio || c.envio > Date.now()).sort((a, b) => (a.envio || 0) - (b.envio || 0)) : [];
+  const pessoais = S.isOwner ? S.cartasP.filter(c => c.para !== S.uid) : [];
+  const futuras = S.isOwner ? [...S.cartas, ...pessoais].filter(c => c.rascunho || !c.envio || c.envio > Date.now()).sort((a, b) => (a.envio || 0) - (b.envio || 0)) : [];
+  const enviadasP = pessoais.filter(c => !c.rascunho && c.envio && c.envio <= Date.now()).sort((a, b) => b.envio - a.envio);
   if (!abertas.length && !S.isOwner) return h("section", { class: "correio" },
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: "Cartas da travessia" }))),
     h("p", { class: "small", text: "Quando a líder mandar uma carta, o pombo-correio traz até aqui." }));
   const env = (c, fut) => h("button", { type: "button", class: "envelope" + (fut ? " fut" : ""), onclick: () => fut ? editarCarta(c) : abrirCarta(c) },
     h("span", { class: "rolinho", "aria-hidden": "true" }, h("i")),
-    h("span", { class: "ctx" }, h("b", { text: c.titulo || "Carta da líder" }),
-      h("span", { text: fut ? (c.rascunho ? "Rascunho · ninguém vê ainda" : `Programada · ${dataCarta(c.envio)}, ${horaCarta(c.envio)} na Índia`) : (c.local ? c.local + " · " : "") + dataCarta(c.envio) })));
+    h("span", { class: "ctx" }, h("b", { text: (c.para || c.pessoal ? "💌 " : "") + (c.titulo || "Carta da líder") }),
+      h("span", { text: (c.para && S.isOwner ? "Só para " + nomeDe(c.para).split(" ")[0] + " · " : c.pessoal ? "Só para você · " : "") + (fut ? (c.rascunho ? "Rascunho · ninguém vê ainda" : `Programada · ${dataCarta(c.envio)}, ${horaCarta(c.envio)} na Índia`) : (c.local ? c.local + " · " : "") + dataCarta(c.envio)) })));
   return h("section", { class: "correio" },
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: "Cartas da travessia" }))),
     abertas.length ? h("div", { class: "envs" }, abertas.map(c => env(c, false))) : null,
     S.isOwner ? h("div", { class: "secret" },
       h("p", { text: "Só você vê isto. Escreva cartas e escolha quando o pombo-correio entrega. Na hora marcada, a carta abre sozinha no celular de cada viajante." }),
       futuras.length ? h("div", { class: "envs" }, futuras.map(c => env(c, true))) : null,
+      enviadasP.length ? h("p", { class: "small", text: "Cartas pessoais já entregues:" }) : null,
+      enviadasP.length ? h("div", { class: "envs" }, enviadasP.map(c => env(c, true))) : null,
       h("div", { class: "actions" }, h("button", { class: "btn gold", type: "button", onclick: () => editarCarta(null) }, "Escrever nova carta"))) : null);
 }
 function cartasVistas() { try { return JSON.parse(localStorage.getItem("cdi-cartas") || "{}") || {}; } catch (e) { return S._vistas || (S._vistas = {}); } }
@@ -4728,7 +4661,7 @@ function vRupias() {
 
 // ---------- dados ----------
 // cada coleção só redesenha as abas que mostram aqueles dados (evita a tela pular à toa)
-const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos"], cartas: ["travessia"] };
+const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos"], cartas: ["travessia"], cartasP: ["travessia"] };
 function listen(col, key, q, after) {
   let primeira = true;
   (q || S.db.collection(col)).onSnapshot(snap => {
@@ -4774,6 +4707,8 @@ render();
     const f = S.isOwner && S.cartas.find(c => c.id === "final");
     if (f && /(Doze|Treze|Catorze|Quinze) selos/.test(f.texto || "")) S.db.doc("cartas/final").update({ texto: f.texto.replace(/(Doze|Treze|Catorze|Quinze) selos/, "Dezesseis selos") }).catch(() => {});
   });
+  // cartas só para uma pessoa: cada viajante lê só as suas; a líder vê todas
+  { const cp = db.collection("cartasPessoais"); listen("cartasPessoais", "cartasP", S.isOwner || !cp.where ? cp : cp.where("para", "==", S.uid), () => setTimeout(checaCorreio, 1200)); }
   listen("pensamentos", "pedra");
   if (S.isOwner && window.__SITE) listen("membros", "membros");
   listen("mural", "mural", db.collection("mural").orderBy("ts", "desc").limit(300));
