@@ -1,0 +1,56 @@
+rules_version = '2';
+// Regras do banco de dados da Caravana do Céu.
+// Cole este texto inteiro em Firebase → Firestore Database → Regras → Publicar.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function logado() { return request.auth != null; }
+    function lider() { return logado() && request.auth.token.email == 'vivianpupin@gmail.com' && request.auth.token.email_verified == true; }
+    function membro() { return lider() || (logado() && exists(/databases/$(database)/documents/membros/$(request.auth.uid))); }
+    function eu(uid) { return logado() && request.auth.uid == uid; }
+    function autor() { return request.resource.data.autor == request.auth.uid; }
+
+    match /privado/{doc} { allow read, write: if lider(); }
+    match /membros/{uid} {
+      allow read: if eu(uid) || lider();
+      allow create: if eu(uid) && request.resource.data.palavra == get(/databases/$(database)/documents/privado/acesso).data.palavra;
+      allow update, delete: if lider();
+    }
+    match /perfis/{uid} { allow read: if membro(); allow write: if eu(uid); }
+
+    match /cidades/{id} { allow read: if membro(); allow write: if lider(); }
+    match /locais/{id} { allow read: if membro(); allow write: if lider(); }
+    match /ensinamentos/{id} { allow read: if membro(); allow write: if lider(); }
+    match /cartas/{id} { allow read: if membro(); allow write: if lider(); }
+
+    match /viajantes/{uid} {
+      allow read: if membro();
+      allow create, update: if lider() || (eu(uid) && membro() && request.resource.data.get('lider', false) != true);
+      allow delete: if lider() || eu(uid);
+    }
+    match /posicoes/{uid} { allow read: if membro(); allow write: if eu(uid) && membro(); }
+    match /presenca/{uid} { allow read: if membro(); allow write: if eu(uid) && membro(); }
+    match /reacoes/{id} { allow read: if membro(); allow create: if membro() && request.resource.data.by == request.auth.uid; }
+
+    match /chat/{id} {
+      allow read: if membro();
+      allow create: if membro() && autor();
+      allow update, delete: if lider() || (membro() && resource.data.autor == request.auth.uid);
+    }
+    match /mural/{id} {
+      allow read: if membro();
+      allow create: if membro() && autor();
+      allow update, delete: if lider() || (membro() && resource.data.autor == request.auth.uid);
+    }
+    match /pensamentos/{id} {
+      allow read: if membro();
+      allow create: if membro() && autor();
+      allow update, delete: if lider() || (membro() && resource.data.autor == request.auth.uid);
+    }
+    match /fotos/{id} {
+      allow read: if membro();
+      allow create: if membro() && autor();
+      allow delete: if lider() || (membro() && resource.data.autor == request.auth.uid);
+    }
+    match /diarios/{uid} { allow read, write: if eu(uid) || lider(); }
+  }
+}
