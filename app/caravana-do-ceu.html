@@ -4104,14 +4104,6 @@ async function apagaFotoMural(f) {
   await S.db.doc("mural/" + f.id).delete();
   if (f.fotoId && !S.chat.some(m => m.fotoId === f.fotoId)) { try { await S.assets?.delete(f.fotoId); } catch (e) {} }
 }
-// só a líder: zera a galeria inteira (para começar a viagem limpa)
-async function zeraGaleria(st) {
-  const n = S.mural.length;
-  if (!n || !confirm(`Apagar as ${n} fotos da galeria? Isso não tem volta.`) || !confirm("Tem certeza? Todas as fotos da galeria vão sumir para todo mundo.")) return;
-  st.textContent = "Apagando…";
-  let ok = 0; for (const f of S.mural.slice()) { try { await apagaFotoMural(f); ok++; } catch (e) {} st.textContent = `Apagando… ${ok} de ${n}`; }
-  st.textContent = ok === n ? "Galeria zerada." : `Apaguei ${ok} de ${n}. Tente de novo para as que faltaram.`;
-}
 // Álbum da tribo: todas as fotos da galeria (e do chat) num arquivo .zip só
 function carregaScript(src) { return new Promise((ok, erro) => { if (document.querySelector(`script[src="${src}"]`)) return ok(); const sc = document.createElement("script"); sc.src = src; sc.onload = ok; sc.onerror = erro; document.head.append(sc); }); }
 async function baixarAlbum(st, cid) {
@@ -4165,8 +4157,7 @@ function vMural() {
       n + (id ? ` · ${S.mural.filter(f => f.cidade === id).length}` : "")))),
     fotos.length ? (() => { const st = h("p", { class: "small", role: "status" }); return h("div", { class: "album" },
       h("button", { class: "btn", type: "button", onclick: () => baixarAlbum(st, cid) }, (noSite() && podeRolo() ? "Salvar no celular: " : "Baixar ") + (cid ? `álbum de ${cid}` : "álbum da tribo")),
-      h("span", { class: "small", text: cid ? "As fotos desta cidade num arquivo só." : "Todas as fotos da galeria e do chat num arquivo só." }), st,
-      S.isOwner && !cid ? h("button", { class: "btn ghost zera", type: "button", onclick: () => zeraGaleria(st) }, "Apagar todas as fotos da galeria") : null); })() : null,
+      h("span", { class: "small", text: cid ? "As fotos desta cidade num arquivo só." : "Todas as fotos da galeria e do chat num arquivo só." }), st); })() : null,
     fotos.length ? h("div", { class: "mural" }, fotos.map(f => h("div", { class: "mwrap" },
       h("button", { type: "button", class: "mfoto", onclick: () => abrirFotoMural(f), "aria-label": (f.legenda || "Foto") + " de " + nomeDe(f.autor) },
         h("img", { src: blob(f.fotoId), alt: "", loading: "lazy" }), h("span", { text: nomeDe(f.autor).split(" ")[0] + (f.cidade && !cid ? " · " + f.cidade : "") })),
