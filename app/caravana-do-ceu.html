@@ -1020,6 +1020,8 @@ const insigniaLocais = () => S.locais.filter(l => l.insignia).sort(byOrdem);
 const localDe = id => S.locais.find(l => l.id === id);
 // selos que saíram da travessia (a visita não acontece mais): somem do passaporte e do mapa; o saber ligado a eles fica livre
 const REMOVIDOS = ["galta-ji", "beatles-ashram"];
+// saberes que saíram do app
+const SABERES_REMOVIDOS = ["beatles"];
 const EXTRAS = [
   { id: "sankat-mochan", nome: "Sankat Mochan", insignia: "sankat-mochan", cidadeId: "varanasi", dia: 7, ordem: 7.6, codigo: "hanuman", lat: 25.2826, lng: 82.9987, busca: "Sankat Mochan Hanuman Temple Varanasi", aberto: false,
     descricao: "O templo de Hanuman em Varanasi, aquele que livra das dificuldades.", dica: "O devoto que carregou uma montanha espera entre as árvores." },
@@ -1400,10 +1402,9 @@ function camposPassaporte(v) {
     h("div", { class: "fdrow" }, campo("Categoria", "Rank", tituloViajante(v).toUpperCase(), "grow"), campo("Viagens", "Trips", String(totalViagens(v)))),
     campo("Nº do passaporte", "Passport No.", numPassaporte(S.uid)),
     campo("Nome", "Name", (v.nome || "").toUpperCase(), "big"),
-    h("div", { class: "fdrow" }, campo("Nacionalidade", "Nationality", v.genero === "o" ? "CARAVANEIRO" : v.genero === "a" ? "CARAVANEIRA" : "DA CARAVANA"), campo(v.lider ? "Função" : "Viajante", v.lider ? "Role" : "Traveller", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0))),
+    h("div", { class: "fdrow" }, campo(v.lider ? "Função" : "Viajante", v.lider ? "Role" : "Traveller", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0))),
     campo("Origem", "Place of origin", (v.cidade || "—").toUpperCase()),
     h("div", { class: "fdrow" }, campo("Emissão", "Date of issue", dataDoc(v.ts)), campo("Validade", "Date of expiry", "16 NOV 2026")),
-    campo("Autoridade", "Authority", "CARAVANA DO CÉU · TRAVESSIA IND"),
     campo("Rota", "Route", "DEL · AGR · JAI · VNS · RSK · DEL"),
     h("div", { class: "fd" }, h("span", { class: "fl", text: "Medalhas da Caravana / Caravan medals" }), medalhasDe(v, 40))
   ];
@@ -1433,8 +1434,8 @@ function paginaDados(v, foto, W, H) {
   x.strokeStyle = "rgba(90,63,34,.4)"; x.strokeRect(30, 84, 170, 214);
   const campo = (rot, val, y) => { x.fillStyle = "#8A6B43"; x.font = '500 12px "Poppins",sans-serif'; x.fillText(rot, 222, y); x.fillStyle = "#282722"; x.font = '600 22px "Courier Prime",monospace'; x.fillText(val, 222, y + 26, W - 250); };
   campo("NOME / NAME", (v.nome || "Viajante").toUpperCase(), 100);
-  campo("NACIONALIDADE", v.genero === "o" ? "CARAVANEIRO" : v.genero === "a" ? "CARAVANEIRA" : "DA CARAVANA", 162);
-  campo(v.lider ? "FUNÇÃO" : "VIAJANTE", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0), 224);
+  campo(v.lider ? "FUNÇÃO" : "VIAJANTE", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0), 162);
+  campo("CATEGORIA", tituloViajante(v).toUpperCase(), 224);
   campo("ORIGEM", (v.cidade || "—").toUpperCase(), 286);
   x.fillStyle = "#8A6B43"; x.font = '500 12px "Poppins",sans-serif'; x.fillText("ROTA", 30, 340); x.fillText("VALIDADE", 30, 404);
   x.fillStyle = "#282722"; x.font = '600 21px "Courier Prime",monospace'; x.fillText("DEL · AGR · JAI · VNS · RSK · DEL", 30, 366, W - 60); x.fillText("4 – 16 NOV 2026", 30, 430);
@@ -1469,8 +1470,16 @@ async function montaVideoPassaporte(cv, aoFim) {
   const qtd = ls.filter(aberto).length;
   const paginas = [paginaDados(v, foto, PW, PH), ...grupos.map((g, i) => paginaSelos(g, imgs, PW, PH, i + 1)), paginaFinal(fin && imgs[fin.id], qtd, ls.length, PW, PH)];
   if (paginas.length % 2) paginas.splice(paginas.length - 1, 0, (() => { const c = document.createElement("canvas"); c.width = PW; c.height = PH; papelPass(c.getContext("2d"), PW, PH, 1); return c; })());
+  // última página (só o símbolo) e o verso da contracapa; depois o passaporte se fecha
+  const ultima = document.createElement("canvas"); ultima.width = PW; ultima.height = PH; { const u = ultima.getContext("2d"); papelPass(u, PW, PH, 1); if (simbolo) { const sb = simboloEm(simbolo, "#8A6B43", 150); u.globalAlpha = .9; u.drawImage(sb, PW / 2 - sb.width / 2, PH / 2 - 75); } }
+  const couro = (lado) => { const c = document.createElement("canvas"); c.width = PW; c.height = PH; const u = c.getContext("2d"); const g = u.createLinearGradient(0, 0, PW, PH); g.addColorStop(0, "#1B2C48"); g.addColorStop(1, "#0E1A2E"); u.fillStyle = g; u.fillRect(0, 0, PW, PH);
+    for (let i = 0; i < 2600; i++) { u.fillStyle = `rgba(255,255,255,${Math.random() * .035})`; u.fillRect(Math.random() * PW, Math.random() * PH, 2, 2); }
+    if (lado === "fora") { u.strokeStyle = "rgba(201,160,99,.75)"; u.lineWidth = 2; u.strokeRect(22, 22, PW - 44, PH - 44); if (simbolo) { const sb = simboloEm(simbolo, "#C9A063", 120); u.drawImage(sb, PW / 2 - sb.width / 2, PH / 2 - 60); } }
+    return c; };
+  const contraDentro = couro("dentro"), contraFora = couro("fora");
+  paginas.push(ultima, contraDentro);
   // lâminas: a capa, depois cada folha tem frente (direita) e verso (esquerda)
-  const nViradas = paginas.length / 2 - 1, T0 = 2.2, TCAPA = 1.9, PAUSA = 1.7, TVIRA = 1.7, fim = T0 + TCAPA + PAUSA + nViradas * (TVIRA + PAUSA) + 2.8;
+  const nViradas = paginas.length / 2 - 1, T0 = 2.2, TCAPA = 1.9, PAUSA = 1.7, TVIRA = 1.7, TFECHA = 1.8, fim = T0 + TCAPA + PAUSA + nViradas * (TVIRA + PAUSA) + TFECHA + 3;
   const W = 1080, H = 1920, x = cv.getContext("2d"), CX = 540, CY = 960, poeira = Array.from({ length: 70 }, (_, i) => [((i * 7919) % 1080), ((i * 104729) % 1920), 1 + (i % 3), (i % 7) / 7]);
   const ease = t => t < 0 ? 0 : t > 1 ? 1 : t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
   // folha virando com perspectiva: desenhada em fatias; a ponta que levanta cresce (vem para perto), com luz e sombra
@@ -1505,9 +1514,8 @@ async function montaVideoPassaporte(cv, aoFim) {
   const cenarioTenda = t => {
     const k = Math.max(W / tenda.width, H / tenda.height) * (1.04 + .02 * Math.sin(t * .3)), tw = tenda.width * k, th = tenda.height * k;
     x.drawImage(tenda, (W - tw) / 2, (H - th) / 2, tw, th);
-    let g = x.createRadialGradient(CX, CY, 200, CX, CY, 1150); g.addColorStop(0, "rgba(20,10,4,.15)"); g.addColorStop(1, "rgba(10,5,2,.72)"); x.fillStyle = g; x.fillRect(0, 0, W, H);
+    let g = x.createRadialGradient(CX, CY, 200, CX, CY, 1150); g.addColorStop(0, "rgba(20,10,4,.08)"); g.addColorStop(1, "rgba(10,5,2,.6)"); x.fillStyle = g; x.fillRect(0, 0, W, H);
     x.fillStyle = `rgba(255,170,80,${.05 + .03 * Math.sin(t * 2.3)})`; x.fillRect(0, 0, W, H);
-    poeira.forEach(([px, py, r, f]) => { const yy = ((py - t * 16 * (1 + f)) % H + H) % H, rr = 6 + r * 7; const gg = x.createRadialGradient(px, yy, 0, px, yy, rr); gg.addColorStop(0, `rgba(255,200,120,${.18 + .14 * Math.sin(t * 1.5 + f * 6)})`); gg.addColorStop(1, "rgba(255,200,120,0)"); x.fillStyle = gg; x.beginPath(); x.arc(px, yy, rr, 0, 7); x.fill(); });
   };
   const cenario = t => {
     if (tenda) return cenarioTenda(t);
@@ -1550,15 +1558,21 @@ async function montaVideoPassaporte(cv, aoFim) {
     x.fillStyle = "#FFF1D6"; x.font = '500 66px "Cinzel",Georgia,serif'; x.shadowColor = "rgba(255,190,100,.55)"; x.shadowBlur = 18;
     x.fillText("Travessia da", CX, 330); x.fillText("Índia Sagrada", CX, 408); x.shadowBlur = 0;
     x.fillStyle = "#C9A56A"; x.font = '600 32px "Poppins","Noto Sans Devanagari",sans-serif'; x.fillText("लोकाः समस्ताः सुखिनो भवन्तु", CX, 470);
-    x.strokeStyle = "rgba(201,165,106,.8)"; x.lineWidth = 2; x.beginPath(); x.moveTo(CX - 60, 500); x.lineTo(CX + 60, 500); x.stroke(); x.globalAlpha = 1;
+    x.globalAlpha = 1;
     // livro: flutua e se aproxima
     const tl = t - T0, abre = ease(tl / TCAPA), flutua = Math.sin(t * 1.6) * 8, esc = .68 + .18 * ease(t / 2.2);
-    x.save(); x.translate(CX - (1 - abre) * PW / 2 * esc, CY + flutua); x.scale(esc, esc);
+    const tcl = tl - TCAPA - PAUSA - nViradas * (TVIRA + PAUSA), fecha = tcl > 0 ? ease(tcl / TFECHA) : 0;
+    x.save(); x.translate(CX - (1 - abre) * PW / 2 * esc + fecha * PW / 2 * esc, CY + flutua); x.scale(esc, esc);
     x.fillStyle = "rgba(0,0,0,.45)"; x.beginPath(); x.ellipse(PW / 2 * (1 - abre), PH / 2 + 50, PW * (.6 + .5 * abre), 34, 0, 0, 7); x.fill();
     if (tl < 0) { // capa fechada girando no ar
       const giro = (1 - ease(t / T0)) * 1.2, cs = Math.cos(giro), w = PW * cs;
       x.save(); x.translate(-PW / 2 * 0, 0); x.transform(1, 0, .1 * Math.sin(giro), 1, 0, 0);
       if (capa) x.drawImage(capa, (PW - w) / 2, -PH / 2, w, PH); x.restore(); x.restore();
+    } else if (tcl > 0) {
+      // fechando: a contracapa vira da direita para a esquerda e o passaporte termina fechado
+      x.fillStyle = "#0E1A2E"; x.fillRect(-PW - 6, -PH / 2 - 6, PW + 8, PH + 12);
+      if (fecha < 1) { x.drawImage(paginas[paginas.length - 2], -PW, -PH / 2, PW, PH); folha(contraDentro, contraFora, fecha * Math.PI); }
+      else x.drawImage(contraFora, -PW, -PH / 2, PW, PH);
     } else {
       // páginas por baixo (miolo): esquerda e direita da abertura atual
       let virou = 0; const tv = tl - TCAPA - PAUSA; if (tv > 0) virou = Math.min(nViradas, Math.floor(tv / (TVIRA + PAUSA)));
@@ -1582,12 +1596,15 @@ async function montaVideoPassaporte(cv, aoFim) {
     }
     x.restore();
     // final: brilho e assinatura
-    const tf = t - (fim - 2.6); if (tf > 0) { x.globalAlpha = ease(tf / .8); x.textAlign = "center"; x.fillStyle = "#FFF1D6"; x.font = '600 46px "Cinzel",Georgia,serif'; x.shadowColor = "rgba(0,0,0,.7)"; x.shadowBlur = 14; x.fillText("TRAVESSIA COMPLETA", CX, 1640);
+    const tf = t - (fim - 3); if (tf > 0) { x.globalAlpha = ease(tf / .8); x.textAlign = "center"; x.fillStyle = "#FFF1D6"; x.font = '600 46px "Cinzel",Georgia,serif'; x.shadowColor = "rgba(0,0,0,.7)"; x.shadowBlur = 14; x.fillText("TRAVESSIA COMPLETA", CX, 1640);
       x.fillStyle = "#E2BE78"; x.font = '500 30px "Poppins",sans-serif'; x.fillText((v.nome || "") + " · " + qtd + " de " + ls.length + " selos", CX, 1696); x.shadowBlur = 0; x.globalAlpha = 1; }
-    x.textAlign = "center"; x.fillStyle = "rgba(232,211,174,.85)"; x.font = '600 28px "Cinzel",Georgia,serif'; x.fillText("CARAVANA DO CÉU · 2026", CX, 1795);
+    x.textAlign = "center"; x.fillStyle = "rgba(232,211,174,.85)"; x.font = '600 28px "Cinzel",Georgia,serif'; x.fillText("CARAVANA DO CÉU · 2026", CX, SITE_CARAVANA ? 1760 : 1795);
+    if (SITE_CARAVANA) { x.fillStyle = "#F4E6C4"; x.font = '600 34px "Poppins",sans-serif'; x.fillText(SITE_CARAVANA, CX, 1812); }
   };
   return { quadro, fim };
 }
+// endereço do site da Caravana, que aparece no rodapé do vídeo (publicidade)
+const SITE_CARAVANA = "";
 window.__videoPassaporte = (cv) => montaVideoPassaporte(cv);
 async function abrirVideoPassaporte() {
   closeSheets();
@@ -1639,13 +1656,12 @@ function dadosLivro(v) {
       h("div", { class: "pgfoto" }, v.foto ? h("img", { src: blob(v.foto), alt: "" }) : bonecoSvg(bonecoDe(S.uid), "bonecosvg")),
       h("div", { class: "livprinc" },
         c("Nome / Name", (v.nome || "").toUpperCase(), "big"),
-        c("Nacionalidade", v.genero === "o" ? "CARAVANEIRO" : v.genero === "a" ? "CARAVANEIRA" : "DA CARAVANA"),
         c(v.lider ? "Função" : "Viajante", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0)),
         c("Categoria / Rank", tituloViajante(v).toUpperCase()))),
     h("div", { class: "livgrade" },
       c("Nº passaporte", numPassaporte(S.uid)), c("Viagens", String(totalViagens(v))),
       c("Origem", (v.cidade || "—").toUpperCase()), c("Emissão", dataDoc(v.ts)),
-      c("Validade", "16 NOV 2026"), c("Autoridade", "CARAVANA DO CÉU"),
+      c("Validade", "16 NOV 2026"),
       c("Rota / Route", "DEL · AGR · JAI · VNS · RSK · DEL", "todo")),
     h("div", { class: "livmed" }, h("span", { class: "ldr", text: "Medalhas" }), medalhasDe(v, 22)));
 }
@@ -3735,7 +3751,7 @@ function vHindi() {
 }
 // Guardar no celular (sem internet)
 const CACHE_KEYS = ["ens", "locais", "cidades", "cartas"];
-for (const k of CACHE_KEYS) { try { const v = JSON.parse(localStorage.getItem("cdi-c-" + k) || "null"); if (Array.isArray(v)) S[k] = k === "locais" ? ajustaLocais(v) : v; } catch (e) {} }
+for (const k of CACHE_KEYS) { try { const v = JSON.parse(localStorage.getItem("cdi-c-" + k) || "null"); if (Array.isArray(v)) S[k] = k === "locais" ? ajustaLocais(v) : k === "ens" ? v.filter(x => !SABERES_REMOVIDOS.includes(x.id)) : v; } catch (e) {} }
 function guardaCache(k) { if (!CACHE_KEYS.includes(k)) return; try { localStorage.setItem("cdi-c-" + k, JSON.stringify(S[k])); } catch (e) {} }
 const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 function htmlOffline() {
@@ -4183,7 +4199,7 @@ const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedr
 function listen(col, key, q, after) {
   let primeira = true;
   (q || S.db.collection(col)).onSnapshot(snap => {
-    S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() })); if (key === "locais") S.locais = ajustaLocais(S.locais); guardaCache(key);
+    S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() })); if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = S.ens.filter(x => !SABERES_REMOVIDOS.includes(x.id)); guardaCache(key);
     S.dbReady = true; if (after) after();
     if (primeira || !USA[key] || USA[key].includes(S.tab)) render();
     primeira = false; refreshSheet();
