@@ -3819,71 +3819,67 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden) abre
 
 // ---------- Mapa desenhado da travessia (para salvar e postar, 1080x1350) ----------
 function mapaTravessia(v, todos) {
-  const W = 1080, H = 1350, NS = "http://www.w3.org/2000/svg";
+  const W = 1080, H = 1350, NS = "http://www.w3.org/2000/svg", serif = "Georgia,'Times New Roman',serif", tinta = "#3A220E";
   const svg = h("svg", { xmlns: NS, viewBox: `0 0 ${W} ${H}`, width: W, height: H, class: "mapatrav" });
-  const tinta = "#7A2A18", ouro = "#8A6420", serif = "Georgia,'Times New Roman',serif";
-  svg.append(h("defs", null,
-    h("radialGradient", { id: "mtv", cx: "50%", cy: "45%", r: "75%" }, h("stop", { offset: "60%", "stop-color": "#F4E7C9" }), h("stop", { offset: "100%", "stop-color": "#DCC49A" })),
-    h("clipPath", { id: "mtc" }, h("rect", { x: 90, y: 250, width: 900, height: 640, rx: 40 }))),
-    h("rect", { width: W, height: H, fill: "#2B1F14" }),
-    h("image", { href: "img/pergaminho.webp", x: 0, y: 0, width: W, height: H, preserveAspectRatio: "none" }),
-    h("rect", { x: 70, y: 60, width: W - 140, height: H - 120, fill: "none", stroke: "#5A3A1C", "stroke-width": 2, opacity: .55 }),
-    h("text", { x: W / 2, y: 132, "text-anchor": "middle", "font-family": serif, "font-size": 40, "letter-spacing": 7, fill: "#3A1E0C", text: "TRAVESSIA DA ÍNDIA SAGRADA" }),
-    h("path", { d: `M${W / 2 - 250} 152 H${W / 2 - 20} M${W / 2 + 20} 152 H${W / 2 + 250}`, stroke: "#5A3A1C", "stroke-width": 1.2 }), h("circle", { cx: W / 2, cy: 152, r: 4, fill: "#5A3A1C" }),
-    h("text", { x: W / 2, y: 186, "text-anchor": "middle", "font-family": serif, "font-size": 22, "letter-spacing": 3, fill: "#5A3A1C", text: "Caravana do Céu · 4 a 16 de novembro de 2026" }),
-    h("text", { x: W / 2, y: 226, "text-anchor": "middle", "font-family": serif, "font-style": "italic", "font-size": 30, fill: "#2E1C0C", text: "o mapa de " + ((v && v.nome) || "Viajante") }));
-  // mapa do norte da Índia
-  const P = projetor([{ lat: 21.6, lng: 71.8 }, { lat: 32.4, lng: 86.2 }], 940, 660, 0);
-  const xy = p => { const [a, b] = P.xy(p); return [a + 70, b + 230]; };
+  // a cena: pergaminho sobre a mesa, com lamparina, bússola, cravos e rudraksha
+  svg.append(h("image", { href: "img/mapa-cena.webp", x: 0, y: 0, width: W, height: H, preserveAspectRatio: "xMidYMid slice" }));
+  const ink = h("g", { style: "mix-blend-mode:multiply", opacity: .88 });
+  const cx = 620;
+  ink.append(h("text", { x: cx, y: 212, "text-anchor": "middle", "font-family": serif, "font-size": 29, "letter-spacing": 5, fill: tinta, text: "TRAVESSIA DA ÍNDIA SAGRADA" }),
+    h("path", { d: `M${cx - 210} 232 H${cx - 16} M${cx + 16} 232 H${cx + 210}`, stroke: tinta, "stroke-width": 1.2 }), h("circle", { cx, cy: 232, r: 3.5, fill: tinta }),
+    h("text", { x: cx, y: 262, "text-anchor": "middle", "font-family": serif, "font-size": 19, "letter-spacing": 2, fill: tinta, text: "Caravana do Céu · 4 a 16 de novembro de 2026" }),
+    h("text", { x: cx, y: 298, "text-anchor": "middle", "font-family": serif, "font-style": "italic", "font-size": 27, fill: tinta, text: "o mapa de " + ((v && v.nome) || "Viajante") }));
+  // mapa do norte da Índia, a bico de pena
+  const MX = 250, MY = 320, MW = 700, MH = 520;
+  const P = projetor([{ lat: 22.8, lng: 72.6 }, { lat: 32, lng: 85.6 }], MW, MH, 0);
+  const xy = p => { const [a, b] = P.xy(p); return [a + MX, b + MY]; };
   const path = pts => pts.map(([x, y], i) => { const [a, b] = xy({ lat: y, lng: x }); return (i ? "L" : "M") + a.toFixed(1) + " " + b.toFixed(1); }).join("");
-  const mapa = h("g", { "clip-path": "url(#mtc)", opacity: .92 });
+  const mapa = h("g", { "clip-path": "url(#mtc)" });
+  svg.append(h("defs", null, h("clipPath", { id: "mtc" }, h("ellipse", { cx: MX + MW / 2, cy: MY + MH / 2, rx: MW / 2 + 70, ry: MH / 2 + 40 }))));
   const G = S.geo;
   if (G) {
-    // contornos a bico de pena: a Índia com traço duplo e sombra de tinta, os vizinhos em traço fino
     for (const p of G.paises) for (const r of p.aneis) {
       const ind = p.nome === "India";
-      if (ind) mapa.append(h("path", { d: path(r) + "Z", fill: "rgba(122,72,28,.10)", stroke: "rgba(90,58,28,.25)", "stroke-width": 9, "stroke-linejoin": "round" }));
-      mapa.append(h("path", { d: path(r) + "Z", fill: "none", stroke: ind ? "#4A2E16" : "rgba(74,46,22,.45)", "stroke-width": ind ? 2.4 : 1.2, "stroke-dasharray": ind ? "none" : "6 5", "stroke-linejoin": "round" }));
+      if (ind) mapa.append(h("path", { d: path(r) + "Z", fill: "rgba(120,70,25,.10)", stroke: "rgba(80,45,15,.22)", "stroke-width": 8, "stroke-linejoin": "round" }));
+      mapa.append(h("path", { d: path(r) + "Z", fill: "none", stroke: ind ? tinta : "rgba(58,34,14,.5)", "stroke-width": ind ? 2.2 : 1.1, "stroke-dasharray": ind ? "none" : "5 5", "stroke-linejoin": "round" }));
     }
-    for (const r of G.rios) if (/Ganges|Yamuna/.test(r.nome)) mapa.append(h("path", { d: path(r.pts), fill: "none", stroke: "#4E6E78", opacity: .75, "stroke-width": r.nome === "Ganges" ? 3.6 : 2.4, "stroke-linecap": "round", "stroke-linejoin": "round" }));
-    // o Himalaia em pequenas montanhas desenhadas
-    for (let i = 0; i < 16; i++) { const lng = 75.6 + i * .62, lat = 32 - i * .23 - (i % 2) * .25, [x, y] = xy({ lat, lng }); mapa.append(h("path", { d: `M${x - 16} ${y + 10} L${x} ${y - 14} L${x + 16} ${y + 10} M${x - 4} ${y - 8} L${x + 2} ${y + 8}`, fill: "none", stroke: "#4A2E16", "stroke-width": 1.8, opacity: .7 })); }
-    const [hx, hy] = xy({ lat: 31.2, lng: 80.2 });
-    mapa.append(h("text", { x: hx, y: hy, "text-anchor": "middle", "font-family": serif, "font-style": "italic", "font-size": 22, "letter-spacing": 6, fill: "#4A2E16", opacity: .75, text: "HIMALAIA" }));
+    for (const r of G.rios) if (/Ganges|Yamuna/.test(r.nome)) mapa.append(h("path", { d: path(r.pts), fill: "none", stroke: "#3E5A60", "stroke-width": r.nome === "Ganges" ? 3.2 : 2.2, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+    for (let i = 0; i < 14; i++) { const lng = 76.2 + i * .62, lat = 31.7 - i * .22 - (i % 2) * .22, [x, y] = xy({ lat, lng }); if (lng > 77.3 && lng < 80.4) continue; mapa.append(h("path", { d: `M${x - 14} ${y + 9} L${x} ${y - 12} L${x + 14} ${y + 9} M${x - 3} ${y - 7} L${x + 2} ${y + 7}`, fill: "none", stroke: tinta, "stroke-width": 1.6 })); }
+    const [hx, hy] = xy({ lat: 31.75, lng: 82.2 });
+    mapa.append(h("text", { x: hx, y: hy, "text-anchor": "middle", "font-family": serif, "font-style": "italic", "font-size": 19, "letter-spacing": 6, fill: tinta, text: "HIMALAIA" }));
   }
-  svg.append(mapa);
+  ink.append(mapa);
   // o caminho da caravana
   const C = { delhi: { n: "Delhi", lat: 28.61, lng: 77.21 }, agra: { n: "Agra", lat: 27.18, lng: 78.01 }, jaipur: { n: "Jaipur", lat: 26.91, lng: 75.79 }, varanasi: { n: "Varanasi", lat: 25.32, lng: 82.97 }, rishikesh: { n: "Rishikesh", lat: 30.09, lng: 78.27 } };
   const rota = ["delhi", "agra", "jaipur", "varanasi", "rishikesh", "delhi"];
   let d = "";
   rota.forEach((c, i) => { const [x, y] = xy(C[c]); if (!i) { d = `M${x} ${y}`; return; } const [x0, y0] = xy(C[rota[i - 1]]), mx = (x0 + x) / 2, my = (y0 + y) / 2, dx = x - x0, dy = y - y0, k = .18; d += ` Q${(mx - dy * k).toFixed(1)} ${(my + dx * k).toFixed(1)} ${x} ${y}`; });
-  svg.append(h("path", { d, fill: "none", stroke: "#8E1F12", "stroke-width": 4.5, "stroke-dasharray": "14 10", "stroke-linecap": "round", opacity: .9 }));
+  ink.append(h("path", { d, fill: "none", stroke: "#7E1A0E", "stroke-width": 4, "stroke-dasharray": "13 9", "stroke-linecap": "round" }));
   const diasDe = id => (S.roteiro?.dias || []).filter(x => String(x.cidade || "").toLowerCase().includes(C[id].n.toLowerCase())).map(x => x.n);
-  const rot = { delhi: [-18, -26, "end"], agra: [22, 44, "start"], jaipur: [-22, 48, "end"], varanasi: [0, 52, "middle"], rishikesh: [24, -20, "start"] };
+  const rot = { delhi: [-16, -22, "end"], agra: [18, 38, "start"], jaipur: [-18, 42, "end"], varanasi: [0, 46, "middle"], rishikesh: [20, -18, "start"] };
   for (const id in C) {
     const [x, y] = xy(C[id]), [ox, oy, an] = rot[id], ds = diasDe(id);
-    svg.append(h("circle", { cx: x, cy: y, r: 11, fill: "none", stroke: "#4A2E16", "stroke-width": 2.5 }), h("circle", { cx: x, cy: y, r: 5, fill: "#8E1F12" }),
-      h("text", { x: x + ox, y: y + oy, "text-anchor": an, "font-family": serif, "font-style": "italic", "font-size": 36, fill: "#2E1C0C", text: C[id].n }),
-      ds.length ? h("text", { x: x + ox, y: y + oy + 26, "text-anchor": an, "font-family": serif, "font-size": 19, fill: "#5A3A1C", text: (ds.length > 1 ? "dias " : "dia ") + ds.join(" · ") }) : null);
+    ink.append(h("circle", { cx: x, cy: y, r: 9, fill: "none", stroke: tinta, "stroke-width": 2.2 }), h("circle", { cx: x, cy: y, r: 4, fill: "#7E1A0E" }),
+      h("text", { x: x + ox, y: y + oy, "text-anchor": an, "font-family": serif, "font-style": "italic", "font-size": 30, fill: tinta, text: C[id].n }),
+      ds.length ? h("text", { x: x + ox, y: y + oy + 22, "text-anchor": an, "font-family": serif, "font-size": 16, fill: tinta, text: (ds.length > 1 ? "dias " : "dia ") + ds.join(" · ") }) : null);
   }
-  // o bonequinho no fim do caminho, em Delhi
-  const [bx, by] = xy(C.delhi);
-  svg.append(h("g", { transform: `translate(${bx - 330} ${by - 120}) scale(1.75)` }, desenhaBoneco({ ...bonecoDe(S.uid), pet: "nenhum" })));
   // rosa dos ventos
-  svg.append(h("g", { transform: "translate(930 790)", fill: "#4A2E16", stroke: "#4A2E16" },
-    h("circle", { r: 44, fill: "none", "stroke-width": 1.5 }), h("circle", { r: 36, fill: "none", "stroke-width": .8 }),
-    h("path", { d: "M0 -58 L9 0 L0 58 L-9 0 Z", "stroke-width": .6 }), h("path", { d: "M-58 0 L0 -9 L58 0 L0 9 Z", fill: "none", "stroke-width": 1.4 }),
-    h("path", { d: "M-30 -30 L4 -4 M30 -30 L-4 -4 M-30 30 L4 4 M30 30 L-4 4", "stroke-width": 1 }),
-    h("text", { y: -66, "text-anchor": "middle", "font-family": serif, "font-size": 22, stroke: "none", text: "N" })));
-  // os 16 selos
+  ink.append(h("g", { transform: `translate(${MX + MW - 50} ${MY + MH - 70})`, fill: tinta, stroke: tinta },
+    h("circle", { r: 34, fill: "none", "stroke-width": 1.3 }), h("path", { d: "M0 -46 L7 0 L0 46 L-7 0 Z", "stroke-width": .5 }), h("path", { d: "M-46 0 L0 -7 L46 0 L0 7 Z", fill: "none", "stroke-width": 1.2 }),
+    h("text", { y: -52, "text-anchor": "middle", "font-family": serif, "font-size": 18, stroke: "none", text: "N" })));
+  // os selos
   const ls = insigniaLocais();
-  svg.append(h("text", { x: W / 2, y: 950, "text-anchor": "middle", "font-family": serif, "font-size": 24, "letter-spacing": 6, fill: "#3A1E0C", text: `OS ${ls.length} SELOS DA TRAVESSIA` }));
-  const cols = 8, w = 100, hh = 133, gap = 18, x0 = (W - (cols * w + (cols - 1) * gap)) / 2;
+  ink.append(h("text", { x: cx, y: 885, "text-anchor": "middle", "font-family": serif, "font-size": 20, "letter-spacing": 5, fill: tinta, text: `OS ${ls.length} SELOS DA TRAVESSIA` }));
+  svg.append(ink);
+  const cols = 8, w = 78, hh = 104, gap = 10, x0 = cx - (cols * w + (cols - 1) * gap) / 2;
   ls.forEach((l, i) => {
-    const x = x0 + (i % cols) * (w + gap), y = 975 + Math.floor(i / cols) * (hh + 14), on = todos || aberto(l);
-    svg.append(h("image", { href: badgeSrc(l), x, y, width: w, height: hh, opacity: on ? 1 : .22, preserveAspectRatio: "xMidYMid meet" }));
+    const x = x0 + (i % cols) * (w + gap), y = 902 + Math.floor(i / cols) * (hh + 10), on = todos || aberto(l);
+    svg.append(h("image", { href: badgeSrc(l), x, y, width: w, height: hh, opacity: on ? 1 : .25, preserveAspectRatio: "xMidYMid meet" }));
   });
-  svg.append(h("text", { x: W / 2, y: H - 78, "text-anchor": "middle", "font-family": serif, "font-size": 20, "letter-spacing": 3, fill: "#5A3A1C", text: "caravanadoceu.com" }));
+  svg.append(h("text", { x: cx, y: 1165, "text-anchor": "middle", "font-family": serif, "font-size": 17, "letter-spacing": 3, fill: tinta, opacity: .85, style: "mix-blend-mode:multiply", text: "caravanadoceu.com" }));
+  // o bonequinho, parado ao lado de Delhi
+  const [bx, by] = xy(C.delhi);
+  svg.append(h("g", { transform: `translate(${bx - 200} ${by - 100}) scale(1.35)` }, desenhaBoneco({ ...bonecoDe(S.uid), pet: "nenhum" })));
   return svg;
 }
 window.__mapaTravessia = (todos) => mapaTravessia(eu(), todos);
