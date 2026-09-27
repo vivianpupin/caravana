@@ -1102,7 +1102,7 @@ function tituloViajante(v) {
 const nomeDestino = id => (DESTINOS.find(d => d.id === id) || {}).nome || id.replace(/^outro:/, "");
 // medalha bordada: anel dourado costurado, miolo na cor do destino, sigla e quantas vezes
 function medalha(id, n, tam) {
-  const d = DESTINOS.find(x => x.id === id), india = id === "india", car = id === "caravana", cor = india ? "#B8431F" : car ? "#3F4938" : d ? d.cor : ["#2F5D7C", "#8A3F32", "#6B4A8A", "#8A6B2A"][id.length % 4];
+  const d = DESTINOS.find(x => x.id === id), india = id === "india", car = id === "caravana" || id === "veterano", cor = india ? "#B8431F" : id === "veterano" ? "#A3231A" : car ? "#3F4938" : d ? d.cor : ["#2F5D7C", "#8A3F32", "#6B4A8A", "#8A6B2A"][id.length % 4];
   const sigla = india ? "IN" : car ? "✦" : d ? d.sigla : id.replace(/^outro:/, "").split(/\s+/).map(p => p[0] || "").join("").slice(0, 2).toUpperCase();
   const svg = h("svg", { viewBox: "0 0 60 70", width: tam || 46, height: (tam || 46) * 70 / 60, class: "medalha", role: "img", "aria-label": (india ? "Índia Sagrada 2026" : car ? "Viagem com a Caravana" : nomeDestino(id)) + (n > 1 ? `, ${n} vezes` : "") });
   svg.innerHTML = `<path d="M18 2h9l5 18h-9z" fill="${cor}" opacity=".9"/><path d="M42 2h-9l-5 18h9z" fill="${cor}" opacity=".7"/>
@@ -1112,21 +1112,22 @@ function medalha(id, n, tam) {
     ${n > 1 ? `<circle cx="49" cy="58" r="9" fill="#3B2A1C" stroke="#F4E6C4" stroke-width="1.4"/><text x="49" y="61.6" text-anchor="middle" font-family="Poppins,sans-serif" font-weight="700" font-size="10" fill="#F4E6C4">${n}x</text>` : ""}`;
   return svg;
 }
-// uma medalhinha da Caravana para cada viagem anterior (até 6; depois, o número)
+// uma medalhinha da Caravana para cada viagem anterior (até 6; depois, o número); vermelhas para veteranos
 function medalhasDe(v, tam) {
-  const n = viagensAntes(v), mostra = Math.min(n, 6);
-  return h("div", { class: "medalhas" }, medalha("india", 1, tam), Array.from({ length: mostra }, (_, i) => medalha("caravana", i === mostra - 1 && n > 6 ? n : 1, tam)));
+  const n = viagensAntes(v), mostra = Math.min(n, 6), tipo = n >= 3 ? "veterano" : "caravana";
+  if (!n) return null;
+  return h("div", { class: "medalhas" }, Array.from({ length: mostra }, (_, i) => medalha(tipo, i === mostra - 1 && n > 6 ? n : 1, tam)));
 }
 // no cadastro: quantas vezes já viajou com a Caravana (antes desta), mostrando as medalhinhas de cada opção
 function campoViagens(estado, genero) {
   const ops = [[0, "Não"], [1, "1x"], [2, "2x"], [3, "3x"], [4, "4x"], [5, "5x ou mais"]];
   const previa = h("div", { class: "viagprevia" });
   const mostra = n => { const v = { viagensAntes: n, genero: genero ? genero() : "" };
-    previa.replaceChildren(medalhasDe(v, 30), h("span", null, h("b", { text: tituloViajante(v) }), h("small", { text: totalViagens(v) === 1 ? "esta é a primeira viagem" : totalViagens(v) + " viagens com a Caravana" }))); };
+    previa.replaceChildren(medalhasDe(v, 30) || h("span", { class: "small", text: "Sem medalhas ainda" }), h("span", null, h("b", { text: tituloViajante(v) }), h("small", { text: totalViagens(v) === 1 ? "esta é a primeira viagem" : totalViagens(v) + " viagens com a Caravana" }))); };
   mostra(estado.n || 0);
   return h("div", { class: "viagbox" }, h("span", { class: "viagperg", text: "Você já viajou com a Caravana antes? Quantas vezes?" }),
     h("div", { class: "viagops" }, ops.map(([n, t]) => h("button", { type: "button", class: "viagop", "aria-pressed": String((estado.n || 0) === n), onclick: ev => { estado.n = n; ev.currentTarget.parentNode.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === ev.currentTarget))); mostra(n); } },
-      h("b", { text: t }), h("span", { class: "viagmini" }, Array.from({ length: Math.min(n, 5) }, () => medalha("caravana", 1, 14)))))),
+      h("b", { text: t }), h("span", { class: "viagmini" }, Array.from({ length: Math.min(n, 5) }, () => medalha(n >= 3 ? "veterano" : "caravana", 1, 14)))))),
     h("span", { class: "small", text: "No seu passaporte:" }), previa);
 }
 function vCadastro() {
@@ -1380,7 +1381,7 @@ function camposPassaporte(v) {
     h("div", { class: "fdrow" }, campo("Emissão", "Date of issue", dataDoc(v.ts)), campo("Validade", "Date of expiry", "16 NOV 2026")),
     campo("Autoridade", "Authority", "CARAVANA DO CÉU · TRAVESSIA IND"),
     campo("Rota", "Route", "DEL · AGR · JAI · VNS · RSK · DEL"),
-    h("div", { class: "fd" }, h("span", { class: "fl", text: "Medalhas da Caravana / Caravan medals" }), medalhasDe(v, 40))
+    viagensAntes(v) ? h("div", { class: "fd" }, h("span", { class: "fl", text: "Medalhas da Caravana / Caravan medals" }), medalhasDe(v, 40)) : null
   ];
 }
 function mrzDe(v, ok) {
