@@ -2210,6 +2210,13 @@ function vMapa() {
 const FILTROS = [
   { id: "original", cat: "Clássicos", nome: "Original" },
   { id: "super8", cat: "Clássicos", nome: "Super 8", m: [.98, .10, 0, .06, .90, .04, 0, .10, .72], con: 1.06, lift: 26, add: [16, 6, -12], sat: .82, vin: .62, grao: 10, super8: 1 },
+  { id: "luz-ambar", cat: "Luzes", nome: "Luz âmbar", m: [1.02, .06, 0, .03, .95, .02, 0, .08, .82], con: 1.04, lift: 14, add: [10, 4, -6], sat: .92, vin: .3, grao: 10, leak: "ambar" },
+  { id: "luz-rosa", cat: "Luzes", nome: "Luz rosa", m: [1, .05, .04, .02, .94, .04, .04, .04, .96], con: 1.02, lift: 16, add: [8, 0, 8], sat: .9, vin: .25, grao: 8, leak: "rosa" },
+  { id: "luz-dourada", cat: "Luzes", nome: "Hora dourada", m: [1.08, .08, 0, .04, 1, 0, -.04, .06, .8], con: 1.05, add: [12, 6, -10], vin: .3, grao: 6, leak: "dourada" },
+  { id: "prisma", cat: "Luzes", nome: "Prisma", con: 1.04, lift: 10, sat: 1.05, vin: .2, grao: 6, leak: "prisma" },
+  { id: "queimado", cat: "Luzes", nome: "Filme queimado", m: [.98, .1, 0, .06, .9, .04, 0, .1, .74], con: 1.08, lift: 22, add: [14, 4, -10], sat: .85, vin: .5, grao: 16, leak: "queimado" },
+  { id: "janela", cat: "Luzes", nome: "Luz de janela", m: [1.02, .06, 0, .03, .96, .02, 0, .06, .86], con: 1.06, add: [6, 3, -4], vin: .35, grao: 8, leak: "janela" },
+  { id: "aurora", cat: "Luzes", nome: "Aurora", con: 1, lift: 18, sat: .95, add: [4, 0, 10], vin: .2, grao: 8, leak: "aurora", brilho: .25 },
   { id: "expedicao", cat: "Clássicos", nome: "Expedição", m: [.62, .52, .16, .30, .62, .14, .20, .40, .28], con: 1.08, vin: .5, grao: 14 },
   { id: "oldschool", cat: "Clássicos", nome: "Old school", m: [.55, .5, .15, .3, .6, .12, .22, .42, .3], con: 1.18, lift: 22, vin: .62, grao: 34, riscos: 1 },
   { id: "vintage", cat: "Clássicos", nome: "Vintage 70", m: [1.05, .08, 0, .05, .92, .05, 0, .12, .7], con: .9, lift: 30, add: [14, 4, -10], sat: .85, vin: .3, grao: 12 },
@@ -2230,6 +2237,7 @@ const FILTROS = [
   { id: "musgo", cat: "Criativos", nome: "Duotone musgo", duo: [[34, 44, 30], [229, 218, 197]] }
 ];
 const GRAOS = [["auto", "Do filtro"], ["nenhum", "Sem grão"], ["leve", "Leve"], ["medio", "Médio"], ["forte", "Forte"], ["super8", "Super 8"]];
+const FORMATOS = [["original", "Original"], ["reels", "Reels 9:16"], ["post", "Post 4:5"], ["quadrado", "Quadrado"]];
 const PATCHES = [["caravana", "Caravana"], ["india", "Índia + Caravana"], ["lugar", "Do lugar"], ["colecao", "Coleção"], ["nenhum", "Sem patch"]];
 const PATCH_CIDADE = { Delhi: "india", Agra: "taj-mahal", Jaipur: "jaipur", Varanasi: "varanasi", Rishikesh: "rishikesh" };
 const MOLDURAS = [["polaroid", "Polaroid"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
@@ -2239,7 +2247,7 @@ function aplicaFiltro(ctx, w, hh, f, graoEsc) {
   const g0 = { nenhum: 0, leve: 12, medio: 24, forte: 42, super8: 16 }[graoEsc];
   const g = g0 != null ? g0 : (f.grao || 0);
   if (graoEsc === "super8" || (f.super8 && (graoEsc || "auto") === "auto")) f = { ...f, pelicula: 1 };
-  if (!f.m && !f.con && !f.sat && !f.duo && !f.split && !f.arco && !f.holi && !g) return;
+  if (!f.m && !f.con && !f.sat && !f.duo && !f.split && !f.arco && !f.holi && !g && !f.leak) return;
   const d = ctx.getImageData(0, 0, w, hh), p = d.data, m = f.m, con = f.con || 1, add = f.add || [0, 0, 0], sat = f.sat || 1, lift = f.lift || 0;
   const cx = w / 2, cy = hh / 2, rmax = Math.hypot(cx, cy), vin = f.vin || 0;
   for (let y = 0, i = 0; y < hh; y++) for (let x = 0; x < w; x++, i += 4) {
@@ -2261,6 +2269,7 @@ function aplicaFiltro(ctx, w, hh, f, graoEsc) {
   }
   ctx.putImageData(d, 0, 0);
   if (f.riscos) { ctx.save(); ctx.globalAlpha = .18; ctx.strokeStyle = "#F4EFE3"; for (let k = 0; k < 7; k++) { const x = Math.random() * w; ctx.lineWidth = Math.random() * 1.5 + .4; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + (Math.random() - .5) * 20, hh); ctx.stroke(); } ctx.restore(); }
+  if (f.leak) vazaLuz(ctx, w, hh, f.leak);
   if (f.super8) super8Luz(ctx, w, hh);
   if (f.pelicula) pelicula(ctx, w, hh);
   if (f.brilho) { const t = document.createElement("canvas"); t.width = Math.max(1, w >> 4); t.height = Math.max(1, hh >> 4); t.getContext("2d").drawImage(ctx.canvas, 0, 0, t.width, t.height);
@@ -2293,6 +2302,20 @@ function pelicula(ctx, w, hh) {
   nc.putImageData(d, 0, 0);
   ctx.save(); ctx.imageSmoothingEnabled = true; ctx.globalCompositeOperation = "overlay"; ctx.globalAlpha = .26; ctx.drawImage(n, 0, 0, w, hh);
   ctx.globalCompositeOperation = "soft-light"; ctx.globalAlpha = .3; ctx.drawImage(n, 0, 0, gw, gh, 0, 0, w * 1.003, hh * 1.003); ctx.restore();
+}
+// luz vazando no filme (light leaks): sempre no mesmo lugar, para a prévia bater com a foto salva
+function vazaLuz(ctx, w, hh, tipo) {
+  const M = Math.max(w, hh), rad = (x, y, r, cores) => { const g = ctx.createRadialGradient(x, y, 0, x, y, r); cores.forEach(([p, c]) => g.addColorStop(p, c)); ctx.fillStyle = g; ctx.fillRect(0, 0, w, hh); };
+  const lin = (x0, y0, x1, y1, cores) => { const g = ctx.createLinearGradient(x0, y0, x1, y1); cores.forEach(([p, c]) => g.addColorStop(p, c)); ctx.fillStyle = g; ctx.fillRect(0, 0, w, hh); };
+  ctx.save(); ctx.globalCompositeOperation = "screen";
+  if (tipo === "ambar") { rad(-w * .05, hh * .35, M * .75, [[0, "rgba(255,140,40,.9)"], [.4, "rgba(255,90,30,.35)"], [1, "rgba(255,60,20,0)"]]); rad(w * 1.02, hh * .95, M * .35, [[0, "rgba(255,60,40,.5)"], [1, "rgba(255,60,40,0)"]]); }
+  if (tipo === "rosa") { rad(w * 1.05, hh * .25, M * .8, [[0, "rgba(255,90,170,.85)"], [.45, "rgba(230,70,150,.3)"], [1, "rgba(200,60,140,0)"]]); rad(-w * .05, hh * 1.05, M * .4, [[0, "rgba(255,170,90,.45)"], [1, "rgba(255,170,90,0)"]]); }
+  if (tipo === "dourada") lin(0, 0, w, hh, [[0, "rgba(255,200,90,.65)"], [.35, "rgba(255,170,70,.18)"], [.7, "rgba(0,0,0,0)"], [1, "rgba(255,150,60,.2)"]]);
+  if (tipo === "prisma") { ctx.globalAlpha = .45; lin(w * .1, 0, w * .75, hh, [[0, "rgba(0,0,0,0)"], [.3, "rgba(255,60,60,.6)"], [.38, "rgba(255,200,60,.6)"], [.46, "rgba(80,255,120,.5)"], [.54, "rgba(60,160,255,.55)"], [.62, "rgba(170,80,255,.5)"], [.72, "rgba(0,0,0,0)"], [1, "rgba(0,0,0,0)"]]); }
+  if (tipo === "queimado") { rad(w * 1.02, hh * 1.02, M * .6, [[0, "rgba(255,250,220,1)"], [.18, "rgba(255,190,90,.95)"], [.4, "rgba(240,80,30,.6)"], [.75, "rgba(160,20,10,.15)"], [1, "rgba(120,0,0,0)"]]); rad(w * .9, -hh * .05, M * .3, [[0, "rgba(255,120,40,.5)"], [1, "rgba(255,120,40,0)"]]); }
+  if (tipo === "janela") { ctx.globalAlpha = .5; for (let i = 0; i < 4; i++) { ctx.save(); ctx.translate(w * (.15 + i * .2), 0); ctx.rotate(.35); const g = ctx.createLinearGradient(-M * .05, 0, M * .05, 0); g.addColorStop(0, "rgba(255,210,140,0)"); g.addColorStop(.5, "rgba(255,210,140,.55)"); g.addColorStop(1, "rgba(255,210,140,0)"); ctx.fillStyle = g; ctx.fillRect(-M * .05, -M, M * .1, M * 3); ctx.restore(); } }
+  if (tipo === "aurora") { rad(w * .2, -hh * .1, M * .7, [[0, "rgba(120,200,255,.55)"], [1, "rgba(120,200,255,0)"]]); rad(w * .95, hh * .5, M * .6, [[0, "rgba(255,120,200,.45)"], [1, "rgba(255,120,200,0)"]]); }
+  ctx.restore();
 }
 // pinta o símbolo numa cor só (para carimbo, cera, película)
 function simboloEm(img, cor, alt) {
@@ -2365,6 +2388,23 @@ async function montaFoto(canvas) {
     carimbo(c, w - 200 * u, hh - 200 * u, 140 * u, dourado, -0.22);
   }
   await colaPatches(c, F, ox, oy, w, hh);
+  emFormato(canvas, tmp, F.formato || "original");
+}
+// coloca a foto INTEIRA num formato de rede social, com a própria foto desfocada no fundo
+function emFormato(canvas, foto, fmt) {
+  const r = { reels: 9 / 16, post: 4 / 5, quadrado: 1 }[fmt]; if (!r) return;
+  const pronta = document.createElement("canvas"); pronta.width = canvas.width; pronta.height = canvas.height; pronta.getContext("2d").drawImage(canvas, 0, 0);
+  const W = 1080, H = Math.round(W / r); canvas.width = W; canvas.height = H;
+  const c = canvas.getContext("2d");
+  // desfoque barato que funciona em todo celular: encolhe muito e estica de volta
+  const p1 = document.createElement("canvas"); p1.width = 24; p1.height = Math.max(1, Math.round(24 * H / W));
+  const k = Math.max(p1.width / foto.width, p1.height / foto.height), sw = p1.width / k, sh = p1.height / k;
+  p1.getContext("2d").drawImage(foto, (foto.width - sw) / 2, (foto.height - sh) / 2, sw, sh, 0, 0, p1.width, p1.height);
+  c.imageSmoothingEnabled = true; c.imageSmoothingQuality = "high"; c.drawImage(p1, 0, 0, W, H);
+  c.fillStyle = "rgba(20,12,6,.28)"; c.fillRect(0, 0, W, H);
+  const m = W * .06, esc = Math.min((W - m * 2) / pronta.width, (H - m * 2) / pronta.height), pw = pronta.width * esc, ph = pronta.height * esc;
+  c.save(); c.shadowColor = "rgba(0,0,0,.4)"; c.shadowBlur = 40; c.shadowOffsetY = 12;
+  c.drawImage(pronta, (W - pw) / 2, (H - ph) / 2, pw, ph); c.restore();
 }
 // fita de filtros: cada um com a miniatura da própria foto; desliza para o lado
 function tiraFiltros(F, escolhe) {
@@ -2598,6 +2638,8 @@ function vFotos() {
       h("div", { class: "fcontrols" },
         h("p", { class: "lab", text: "Grão de filme" }),
         h("div", { class: "opts" }, GRAOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.grao || "auto") === id), onclick: () => set("grao", id) }, n))),
+        h("p", { class: "lab", text: "Formato" }),
+        h("div", { class: "opts" }, FORMATOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.formato || "original") === id), onclick: () => set("formato", id) }, n))),
         h("p", { class: "lab", text: "Patches" }),
         h("div", { class: "opts" }, PATCHES.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.patch || "caravana") === id), onclick: () => set("patch", id) }, n))),
         h("p", { class: "lab", text: "Moldura" }),
