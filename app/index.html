@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 16:37";</script>
+<script>window.__VERSAO = "27/09 · 18:46";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -567,7 +567,11 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .prhead{display:flex;justify-content:flex-end;gap:6px;font-size:11px;color:var(--soft);font-weight:600}
 .roster .rosto{align-self:center}
 .prhead span{width:30px;text-align:center;font-size:16px}
-.roster.prontos li{grid-template-columns:40px 1fr auto}
+.roster.prontos li{grid-template-columns:40px 1fr;align-items:start}
+.roster.prontos li > :first-child{margin-top:2px}
+.prchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.prchip{font:500 11.5px/1 var(--ui);padding:6px 9px;white-space:nowrap;border-radius:999px;border:1px dashed #CDBFA6;color:#9A8C76;background:transparent}
+.prchip.on{border:1px solid #3F4938;background:#3F4938;color:#F4ECD9;font-weight:600}
 .prs{display:flex;gap:6px}
 .pr{width:30px;text-align:center;font-weight:700;font-size:16px;color:var(--faint)}
 .pr.on{color:var(--ok)}
@@ -1996,18 +2000,17 @@ function vProntos() {
   if (!gente.length) return null;
   const ok = v => v.app || {};
   const prontos = gente.filter(v => ok(v).instalado && ok(v).avisos && ok(v).local).length;
-  const marca = (on, rot) => h("span", { class: "pr" + (on ? " on" : ""), title: rot, "aria-label": rot + (on ? ": sim" : ": não") }, on ? "✓" : "·");
+  // cada item escrito por extenso: verde com ✓ quando está ligado, apagado quando falta
+  const marca = (on, rot) => h("span", { class: "prchip" + (on ? " on" : ""), "aria-label": rot + (on ? ": sim" : ": falta") }, (on ? "✓ " : "") + rot);
   return h("div", { class: "panel" },
     h("p", { class: "eyebrow", text: "Só você vê · celulares prontos" }),
     h("h2", { text: `${prontos} de ${gente.length} prontos` }),
     h("p", { class: "small", text: "Pronto = app instalado na tela inicial, avisos ligados e localização ligada. Atualiza quando a pessoa abre o app." }),
-    h("div", { class: "prhead" }, h("span", { title: "App instalado", text: "📲" }), h("span", { title: "Avisos", text: "🔔" }), h("span", { title: "Localização", text: "📍" })),
-    h("p", { class: "small", style: "text-align:right;margin:-6px 0 0", text: "📲 app instalado · 🔔 avisos · 📍 localização" }),
     h("ul", { class: "roster prontos" }, gente.map(v => {
       const a = ok(v);
       return h("li", null, bonecoRosto(v.id),
-        h("div", null, h("b", { text: v.nome || "Viajante" }), h("small", { text: a.ts ? "abriu o app em " + new Date(a.ts).toLocaleDateString("pt-BR", { day: "numeric", month: "short" }) + " às " + new Date(a.ts).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "ainda não abriu o app instalado" })),
-        h("div", { class: "prs" }, marca(a.instalado, "App instalado"), marca(a.avisos, "Avisos"), marca(a.local, "Localização")));
+        h("div", null, h("b", { text: v.nome || "Viajante" }), h("small", { text: a.ts ? "abriu o app em " + new Date(a.ts).toLocaleDateString("pt-BR", { day: "numeric", month: "short" }) + " às " + new Date(a.ts).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "ainda não abriu o app instalado" }),
+          h("div", { class: "prchips" }, marca(a.instalado, "Instalado"), marca(a.avisos, "Avisos"), marca(a.local, "Local"))));
     })));
 }
 // cada celular registra no próprio passaporte se instalou, ligou avisos e localização (para o painel da líder)
