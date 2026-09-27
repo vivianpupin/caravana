@@ -1095,8 +1095,9 @@ const DESTINOS = [{ id: "chapada", nome: "Chapada dos Veadeiros", cor: "#3F7A3A"
 const viagensAntes = v => { if (!v) return 0; if (v.viagensAntes != null) return +v.viagensAntes || 0; const o = v.viagens || {}; return Object.values(o).reduce((a, n) => a + (+n || 0), 0); };
 const totalViagens = v => 1 + viagensAntes(v);
 function tituloViajante(v) {
-  const t = totalViagens(v), g = v && v.genero;
-  return t >= 5 ? (g === "o" ? "Veterano da Caravana" : g === "a" ? "Veterana da Caravana" : "Veterania da Caravana") : t >= 3 ? "Viajante experiente" : t === 2 ? "Viajante da Caravana" : "Primeira travessia";
+  // conta as viagens anteriores: 3x ou mais já é veterana/veterano
+  const n = viagensAntes(v), g = v && v.genero;
+  return n >= 3 ? (g === "o" ? "Veterano da Caravana" : g === "a" ? "Veterana da Caravana" : "Veterania da Caravana") : n === 2 ? "Viajante experiente" : n === 1 ? "Viajante da Caravana" : "Primeira travessia";
 }
 const nomeDestino = id => (DESTINOS.find(d => d.id === id) || {}).nome || id.replace(/^outro:/, "");
 // medalha bordada: anel dourado costurado, miolo na cor do destino, sigla e quantas vezes
