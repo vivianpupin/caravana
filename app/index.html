@@ -4586,8 +4586,7 @@ function vTradutor() {
       h("ul", { class: "tradhist" }, S.tradHist.map(x => h("li", null, h("button", { type: "button", onclick: () => { S.trad.res = x; render(); $("#main").scrollTop = 0; } },
         h("span", { text: x.orig }), h("b", { lang: x.para, text: x.trad })))))) : null,
     h("p", { class: "eyebrow rule", text: "Frases prontas · funcionam sem internet" }),
-    vHindi(),
-    h("p", { class: "small", text: "A tradução automática ajuda na conversa do dia a dia. Para assuntos importantes, como saúde e dinheiro, confirme com o guia." }));
+    vHindi());
 }
 
 function vHoje(d, abrir) {
