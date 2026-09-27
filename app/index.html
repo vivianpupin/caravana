@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 13:47";</script>
+<script>window.__VERSAO = "27/09 · 13:57";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -573,6 +573,20 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .album{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:4px 0 12px}
 .album .small{margin:0}
 .imapa{display:inline-block;margin-top:4px;font-size:12.5px;font-weight:600;color:var(--terra)}
+.abertura{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:#1A120B;overflow:hidden;animation:abentra .6s ease both}
+.abertura.sai{animation:absai .7s ease both}
+.abfundo{position:absolute;inset:-20px;background:var(--abimg,url(img/tenda.webp)) center/cover;filter:blur(3px) brightness(.45);transform:scale(1.08);animation:abzoom 9s ease-out both}
+.abfundo::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 42%,rgba(242,194,48,.18),rgba(20,12,6,.75) 70%)}
+.abconteudo{position:relative;text-align:center;color:#F4E6C4;padding:24px;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.absimb{width:74px;height:auto;margin-bottom:10px;filter:drop-shadow(0 0 18px rgba(242,194,48,.45));animation:absimb 1.8s ease both}
+.abdia{margin:0;font:600 12px var(--ui);letter-spacing:.38em;text-transform:uppercase;color:#E2BE78;animation:absobe 1.2s .7s ease both}
+.abcidade{margin:0;font-family:var(--display);font-weight:400;font-size:44px;letter-spacing:.02em;color:#FFF3D6;animation:absobe 1.2s 1.1s ease both}
+.abdata{margin:0 0 14px;font:500 12.5px var(--ui);letter-spacing:.14em;color:rgba(244,230,196,.7);animation:absobe 1.2s 1.4s ease both}
+.abfrase{margin:8px 0 0;font-family:var(--display);font-style:italic;font-size:21px;line-height:1.5;color:#FFF3D6;max-width:26ch;animation:absobe 1.8s 2.2s ease both}
+@keyframes abentra{from{opacity:0}}@keyframes absai{to{opacity:0;transform:scale(1.03)}}
+@keyframes abzoom{from{transform:scale(1.18)}}@keyframes absimb{from{opacity:0;transform:scale(.7)}}
+@keyframes absobe{from{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion:reduce){.abertura,.abertura *{animation:none!important}}
 .celx{position:absolute;top:6px;right:8px;background:none;border:0;font-size:22px;line-height:1;color:var(--soft);padding:4px 8px}
 .meuexp{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 14px 4px 6px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
 .bonecosvg{display:block}
@@ -1005,7 +1019,7 @@ try { S.checks = JSON.parse(localStorage.getItem("cdi-checks") || "{}") || {}; }
 try { S.lidos = JSON.parse(localStorage.getItem("cdi-lidos") || "{}") || {}; } catch (e) { S.lidos = {}; }
 function marcaLido(id) { if (!id || S.lidos[id]) return; S.lidos[id] = Date.now(); try { localStorage.setItem("cdi-lidos", JSON.stringify(S.lidos)); } catch (e) {} }
 
-const SVGTAGS = new Set(["svg","g","path","circle","ellipse","text","line","rect","title","image","filter","feTurbulence","feDisplacementMap"]);
+const SVGTAGS = new Set(["svg","g","path","circle","ellipse","text","line","rect","title","image","filter","feTurbulence","feDisplacementMap","defs","clipPath","radialGradient","linearGradient","stop"]);
 function h(tag, attrs, ...kids) {
   const el = SVGTAGS.has(tag) ? document.createElementNS("http://www.w3.org/2000/svg", tag) : document.createElement(tag);
   if (attrs) for (const k in attrs) {
@@ -3756,12 +3770,136 @@ function editar(tipo, item) {
   form.querySelector("input,select,textarea")?.focus();
 }
 
+// ---------- Abertura do dia: 5 segundos de ritual ao abrir o app pela primeira vez no dia ----------
+function sino() {
+  try {
+    const A = window.AudioContext || window.webkitAudioContext; if (!A) return false;
+    const ctx = S.audio || (S.audio = new A()); if (ctx.state === "suspended") ctx.resume();
+    if (ctx.state !== "running") return false;
+    const t = ctx.currentTime, out = ctx.createGain(); out.gain.value = .22; out.connect(ctx.destination);
+    // sino de templo: fundamental com parciais inarmônicos que somem devagar
+    [[392, 1, 4.5], [392 * 2.76, .45, 3.2], [392 * 5.4, .22, 2.2], [392 * 8.93, .1, 1.4], [393.5, .6, 4.5]].forEach(([f, a, d]) => {
+      const o = ctx.createOscillator(), g = ctx.createGain(); o.type = "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(a, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + d + .1);
+    });
+    return true;
+  } catch (e) { return false; }
+}
+// frases da abertura, por cidade (uma por dia, alternando)
+const FRASES_CIDADE = {
+  Delhi: ["Toda travessia começa com um passo para fora de casa. O seu já foi dado.", "Delhi guarda sete cidades, uma sobre a outra. Hoje você caminha por todas elas.", "Respire fundo: o barulho de Delhi também é um jeito de dar boas-vindas."],
+  Agra: ["Um imperador ergueu um poema de mármore por amor. Que amor você carrega hoje?", "O mármore do Taj muda de cor com a luz do dia. Deixe o seu dia mudar também.", "Hoje a beleza chega devagar. Olhe com calma."],
+  Jaipur: ["Uma cidade inteira pintada com a cor da hospitalidade. Chegue de coração aberto.", "Pelas janelinhas do Palácio dos Ventos, o mundo era visto em silêncio. Observe antes de falar.", "Krishna toca a flauta para chamar quem o escuta. O que chama você hoje?"],
+  Varanasi: ["Em Kashi, a vida e a morte dividem a mesma escadaria. Esteja presente para as duas.", "A cidade da luz recebe você. Deixe o rio levar o que já pode ir.", "Aqui o fogo arde há milênios. Cuide do fogo que arde em você."],
+  Rishikesh: ["O Ganges desce verde e gelado do Himalaia. Beba desse silêncio.", "Na capital do yoga, o corpo também reza.", "Por séculos, os sábios desceram destas montanhas. Hoje é a sua vez de escutar."]
+};
+const fraseDoDia = d => { const c = Object.keys(FRASES_CIDADE).find(k => String(d.cidade || "").includes(k)), l = FRASES_CIDADE[c] || []; return l.length ? l[d.n % l.length] : ""; };
+function aberturaDoDia(forcar) {
+  const R = S.roteiro; if (!R || document.querySelector(".abertura")) return;
+  const hoje = hojeIso(), d = forcar ? (R.dias.find(x => x.n === forcar) || R.dias[0]) : R.dias.find(x => x.iso === hoje);
+  if (!d) return;
+  if (!forcar) { if (lsGet("cdi-abertura") === hoje) return; lsSet("cdi-abertura", hoje); }
+  // fundo de cada cidade, no mesmo estilo escuro e desfocado da tenda
+  const cid = ["Delhi", "Agra", "Jaipur", "Varanasi", "Rishikesh"].find(k => String(d.cidade || "").includes(k));
+  const ov = h("div", { class: "abertura", role: "dialog", "aria-label": `Dia ${d.n}, ${d.cidade}`, style: cid ? `--abimg:url(img/abertura-${cid.toLowerCase()}.webp)` : "" },
+    h("div", { class: "abfundo", "aria-hidden": "true" }),
+    h("div", { class: "abconteudo" },
+      h("img", { class: "absimb", src: "img/simbolo-dourado.png", alt: "" }),
+      h("p", { class: "abdia", text: "Dia " + nn(d.n) }),
+      h("h1", { class: "abcidade", text: d.cidade }),
+      h("p", { class: "abdata", text: d.data }),
+      h("p", { class: "abfrase", text: fraseDoDia(d) })));
+  let fechou = false;
+  const fecha = () => { if (fechou) return; fechou = true; ov.classList.add("sai"); setTimeout(() => ov.remove(), 700); };
+  // o celular só deixa tocar som depois de um toque: se não tocou sozinho, o primeiro toque toca o sino
+  let tocou = sino();
+  ov.addEventListener("pointerdown", () => { if (!tocou) { tocou = sino(); setTimeout(fecha, 3500); } else fecha(); });
+  document.body.append(ov);
+  setTimeout(fecha, 8500);
+}
+
+// abre sozinha no primeiro acesso do dia (e ao voltar para o app num dia novo); ?abertura=6 mostra o dia 6 para conferir
+function abreDia() { const t = +new URLSearchParams(location.search).get("abertura"); aberturaDoDia(t || 0); }
+document.addEventListener("visibilitychange", () => { if (!document.hidden) abreDia(); });
+
+// ---------- Mapa desenhado da travessia (para salvar e postar, 1080x1350) ----------
+function mapaTravessia(v, todos) {
+  const W = 1080, H = 1350, NS = "http://www.w3.org/2000/svg";
+  const svg = h("svg", { xmlns: NS, viewBox: `0 0 ${W} ${H}`, width: W, height: H, class: "mapatrav" });
+  const tinta = "#7A2A18", ouro = "#8A6420", serif = "Georgia,'Times New Roman',serif";
+  svg.append(h("defs", null,
+    h("radialGradient", { id: "mtv", cx: "50%", cy: "45%", r: "75%" }, h("stop", { offset: "60%", "stop-color": "#F4E7C9" }), h("stop", { offset: "100%", "stop-color": "#DCC49A" })),
+    h("clipPath", { id: "mtc" }, h("rect", { x: 90, y: 250, width: 900, height: 640, rx: 40 }))),
+    h("rect", { width: W, height: H, fill: "#2B1F14" }),
+    h("image", { href: "img/pergaminho.webp", x: 0, y: 0, width: W, height: H, preserveAspectRatio: "none" }),
+    h("rect", { x: 70, y: 60, width: W - 140, height: H - 120, fill: "none", stroke: "#5A3A1C", "stroke-width": 2, opacity: .55 }),
+    h("text", { x: W / 2, y: 132, "text-anchor": "middle", "font-family": serif, "font-size": 40, "letter-spacing": 7, fill: "#3A1E0C", text: "TRAVESSIA DA ÍNDIA SAGRADA" }),
+    h("path", { d: `M${W / 2 - 250} 152 H${W / 2 - 20} M${W / 2 + 20} 152 H${W / 2 + 250}`, stroke: "#5A3A1C", "stroke-width": 1.2 }), h("circle", { cx: W / 2, cy: 152, r: 4, fill: "#5A3A1C" }),
+    h("text", { x: W / 2, y: 186, "text-anchor": "middle", "font-family": serif, "font-size": 22, "letter-spacing": 3, fill: "#5A3A1C", text: "Caravana do Céu · 4 a 16 de novembro de 2026" }),
+    h("text", { x: W / 2, y: 226, "text-anchor": "middle", "font-family": serif, "font-style": "italic", "font-size": 30, fill: "#2E1C0C", text: "o mapa de " + ((v && v.nome) || "Viajante") }));
+  // mapa do norte da Índia
+  const P = projetor([{ lat: 21.6, lng: 71.8 }, { lat: 32.4, lng: 86.2 }], 940, 660, 0);
+  const xy = p => { const [a, b] = P.xy(p); return [a + 70, b + 230]; };
+  const path = pts => pts.map(([x, y], i) => { const [a, b] = xy({ lat: y, lng: x }); return (i ? "L" : "M") + a.toFixed(1) + " " + b.toFixed(1); }).join("");
+  const mapa = h("g", { "clip-path": "url(#mtc)", opacity: .92 });
+  const G = S.geo;
+  if (G) {
+    // contornos a bico de pena: a Índia com traço duplo e sombra de tinta, os vizinhos em traço fino
+    for (const p of G.paises) for (const r of p.aneis) {
+      const ind = p.nome === "India";
+      if (ind) mapa.append(h("path", { d: path(r) + "Z", fill: "rgba(122,72,28,.10)", stroke: "rgba(90,58,28,.25)", "stroke-width": 9, "stroke-linejoin": "round" }));
+      mapa.append(h("path", { d: path(r) + "Z", fill: "none", stroke: ind ? "#4A2E16" : "rgba(74,46,22,.45)", "stroke-width": ind ? 2.4 : 1.2, "stroke-dasharray": ind ? "none" : "6 5", "stroke-linejoin": "round" }));
+    }
+    for (const r of G.rios) if (/Ganges|Yamuna/.test(r.nome)) mapa.append(h("path", { d: path(r.pts), fill: "none", stroke: "#4E6E78", opacity: .75, "stroke-width": r.nome === "Ganges" ? 3.6 : 2.4, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+    // o Himalaia em pequenas montanhas desenhadas
+    for (let i = 0; i < 16; i++) { const lng = 75.6 + i * .62, lat = 32 - i * .23 - (i % 2) * .25, [x, y] = xy({ lat, lng }); mapa.append(h("path", { d: `M${x - 16} ${y + 10} L${x} ${y - 14} L${x + 16} ${y + 10} M${x - 4} ${y - 8} L${x + 2} ${y + 8}`, fill: "none", stroke: "#4A2E16", "stroke-width": 1.8, opacity: .7 })); }
+    const [hx, hy] = xy({ lat: 31.2, lng: 80.2 });
+    mapa.append(h("text", { x: hx, y: hy, "text-anchor": "middle", "font-family": serif, "font-style": "italic", "font-size": 22, "letter-spacing": 6, fill: "#4A2E16", opacity: .75, text: "HIMALAIA" }));
+  }
+  svg.append(mapa);
+  // o caminho da caravana
+  const C = { delhi: { n: "Delhi", lat: 28.61, lng: 77.21 }, agra: { n: "Agra", lat: 27.18, lng: 78.01 }, jaipur: { n: "Jaipur", lat: 26.91, lng: 75.79 }, varanasi: { n: "Varanasi", lat: 25.32, lng: 82.97 }, rishikesh: { n: "Rishikesh", lat: 30.09, lng: 78.27 } };
+  const rota = ["delhi", "agra", "jaipur", "varanasi", "rishikesh", "delhi"];
+  let d = "";
+  rota.forEach((c, i) => { const [x, y] = xy(C[c]); if (!i) { d = `M${x} ${y}`; return; } const [x0, y0] = xy(C[rota[i - 1]]), mx = (x0 + x) / 2, my = (y0 + y) / 2, dx = x - x0, dy = y - y0, k = .18; d += ` Q${(mx - dy * k).toFixed(1)} ${(my + dx * k).toFixed(1)} ${x} ${y}`; });
+  svg.append(h("path", { d, fill: "none", stroke: "#8E1F12", "stroke-width": 4.5, "stroke-dasharray": "14 10", "stroke-linecap": "round", opacity: .9 }));
+  const diasDe = id => (S.roteiro?.dias || []).filter(x => String(x.cidade || "").toLowerCase().includes(C[id].n.toLowerCase())).map(x => x.n);
+  const rot = { delhi: [-18, -26, "end"], agra: [22, 44, "start"], jaipur: [-22, 48, "end"], varanasi: [0, 52, "middle"], rishikesh: [24, -20, "start"] };
+  for (const id in C) {
+    const [x, y] = xy(C[id]), [ox, oy, an] = rot[id], ds = diasDe(id);
+    svg.append(h("circle", { cx: x, cy: y, r: 11, fill: "none", stroke: "#4A2E16", "stroke-width": 2.5 }), h("circle", { cx: x, cy: y, r: 5, fill: "#8E1F12" }),
+      h("text", { x: x + ox, y: y + oy, "text-anchor": an, "font-family": serif, "font-style": "italic", "font-size": 36, fill: "#2E1C0C", text: C[id].n }),
+      ds.length ? h("text", { x: x + ox, y: y + oy + 26, "text-anchor": an, "font-family": serif, "font-size": 19, fill: "#5A3A1C", text: (ds.length > 1 ? "dias " : "dia ") + ds.join(" · ") }) : null);
+  }
+  // o bonequinho no fim do caminho, em Delhi
+  const [bx, by] = xy(C.delhi);
+  svg.append(h("g", { transform: `translate(${bx - 330} ${by - 120}) scale(1.75)` }, desenhaBoneco({ ...bonecoDe(S.uid), pet: "nenhum" })));
+  // rosa dos ventos
+  svg.append(h("g", { transform: "translate(930 790)", fill: "#4A2E16", stroke: "#4A2E16" },
+    h("circle", { r: 44, fill: "none", "stroke-width": 1.5 }), h("circle", { r: 36, fill: "none", "stroke-width": .8 }),
+    h("path", { d: "M0 -58 L9 0 L0 58 L-9 0 Z", "stroke-width": .6 }), h("path", { d: "M-58 0 L0 -9 L58 0 L0 9 Z", fill: "none", "stroke-width": 1.4 }),
+    h("path", { d: "M-30 -30 L4 -4 M30 -30 L-4 -4 M-30 30 L4 4 M30 30 L-4 4", "stroke-width": 1 }),
+    h("text", { y: -66, "text-anchor": "middle", "font-family": serif, "font-size": 22, stroke: "none", text: "N" })));
+  // os 16 selos
+  const ls = insigniaLocais();
+  svg.append(h("text", { x: W / 2, y: 950, "text-anchor": "middle", "font-family": serif, "font-size": 24, "letter-spacing": 6, fill: "#3A1E0C", text: `OS ${ls.length} SELOS DA TRAVESSIA` }));
+  const cols = 8, w = 100, hh = 133, gap = 18, x0 = (W - (cols * w + (cols - 1) * gap)) / 2;
+  ls.forEach((l, i) => {
+    const x = x0 + (i % cols) * (w + gap), y = 975 + Math.floor(i / cols) * (hh + 14), on = todos || aberto(l);
+    svg.append(h("image", { href: badgeSrc(l), x, y, width: w, height: hh, opacity: on ? 1 : .22, preserveAspectRatio: "xMidYMid meet" }));
+  });
+  svg.append(h("text", { x: W / 2, y: H - 78, "text-anchor": "middle", "font-family": serif, "font-size": 20, "letter-spacing": 3, fill: "#5A3A1C", text: "caravanadoceu.com" }));
+  return svg;
+}
+window.__mapaTravessia = (todos) => mapaTravessia(eu(), todos);
+
 // ---------- Hoje, mantra do dia, diário, carta ----------
 const MANTRAS = {
   1: { dev: ["ॐ गं गणपतये नमः"], nome: "Om Gam Ganapataye Namaha", linhas: ["Om Gam Ganapataye Namaha"], trad: "Saudações a Ganesha, o que remove os obstáculos e abre os caminhos.", nota: "Para começar a travessia." },
   2: { dev: ["त्वमेव माता च पिता त्वमेव", "त्वमेव बन्धुश्च सखा त्वमेव", "त्वमेव विद्या द्रविणं त्वमेव", "त्वमेव सर्वं मम देव देव"], nome: "Twameva", linhas: ["Twameva mata cha pita twameva", "Twameva bandhu cha sakha twameva", "Twameva vidya dravinam twameva", "Twameva sarvam mama deva deva"], trad: "Tu és minha mãe, tu és o meu pai. És minha família e o meu amigo. És o conhecimento e a minha riqueza. És tudo o que tenho. A Luz de todas as Luzes é você.", nota: "No dia do Taj Mahal, um canto de amor e entrega." },
-  3: { dev: ["जय सीता राम", "जय जय हनुमान"], nome: "Baba Hanuman", linhas: ["Jaya Sita Ram", "Jai Jai Hanuman"], trad: "Vitória a Sita e Rama! Vitória a Hanuman!", nota: "Para Galta Ji, o templo dos macacos de Hanuman." },
-  4: { dev: ["गोविन्द जय जय गोपाल जय जय", "राधा रमण हरि गोविन्द जय जय"], nome: "Govinda Jaya", linhas: ["Govinda jaya jaya, Gopala jaya jaya", "Radha Ramana Hari, Govinda jaya jaya"], trad: "Glória a Govinda, glória a Gopala, nomes de Krishna, o amado de Radha.", nota: "Para o aarti de Govind Dev Ji, o templo de Krishna em Jaipur." },
+  3: { dev: ["गोविन्द जय जय गोपाल जय जय", "राधा रमण हरि गोविन्द जय जय"], nome: "Govinda Jaya", linhas: ["Govinda jaya jaya, Gopala jaya jaya", "Radha Ramana Hari, Govinda jaya jaya"], trad: "Glória a Govinda, glória a Gopala, nomes de Krishna, o amado de Radha.", nota: "Para o aarti de Govind Dev Ji, o templo de Krishna em Jaipur." },
+  4: { dev: ["जय सीता राम", "जय जय हनुमान"], nome: "Baba Hanuman", linhas: ["Jaya Sita Ram", "Jai Jai Hanuman"], trad: "Vitória a Sita e Rama! Vitória a Hanuman!", nota: "Para a força do caminho." },
   5: { dev: ["ॐ नमः शिवाय", "शिवाय नमः"], nome: "Om Namah Shivaya", linhas: ["Om Namah Shivaya", "Shivaya Namaha"], trad: "Eu me curvo a Shiva, o Ser interior que existe em todos.", nota: "Na chegada a Kashi, a cidade de Shiva." },
   6: { dev: ["ॐ त्र्यम्बकं यजामहे", "सुगन्धिं पुष्टिवर्धनम्", "उर्वारुकमिव बन्धनान्", "मृत्योर्मुक्षीय माऽमृतात्"], nome: "Maha Mrityunjaya", linhas: ["Om tryambakam yajamahe", "sugandhim pushti vardhanam", "urvarukam iva bandhanan", "mrityor mukshiya mamritat"], trad: "Adoramos Shiva, o de três olhos, perfumado, que nutre todos os seres. Que ele nos solte da morte como o fruto maduro se solta do caule, e não nos afaste da imortalidade.", nota: "No dia dos ghats e do fogo de Manikarnika." },
   7: { dev: ["ॐ सर्वमङ्गलमाङ्गल्ये", "शिवे सर्वार्थसाधिके", "शरण्ये त्र्यम्बके गौरि", "नारायणि नमोऽस्तु ते"], nome: "Sarva Mangala Mangalye", linhas: ["Om sarva mangala mangalye", "shive sarvartha sadhike", "sharanye tryambake gauri", "narayani namostute"], trad: "Ó tu, a mais auspiciosa de todas as bênçãos, que realizas todos os propósitos, refúgio de todos, Gauri de três olhos, Narayani: saudações a ti.", nota: "Para Durga Kund, o templo da Mãe." },
@@ -4586,7 +4724,7 @@ function listen(col, key, q, after) {
 
 fetch("dados/geo.json").then(r => r.ok ? r.json() : null).then(j => { if (j) { S.geo = j; if (S.tab === "mapa") render(); } }).catch(() => {});
 fetch("dados/travessia.json").then(r => { if (!r.ok) throw 0; return r.json(); })
-  .then(j => { S.roteiro = j; try { localStorage.setItem("cdi-c-roteiro", JSON.stringify(j)); } catch (e) {} render(); })
+  .then(j => { S.roteiro = j; try { localStorage.setItem("cdi-c-roteiro", JSON.stringify(j)); } catch (e) {} render(); abreDia(); })
   .catch(() => { try { S.roteiro = JSON.parse(localStorage.getItem("cdi-c-roteiro") || "null"); } catch (e) {} if (!S.roteiro) S.roteiroErro = true; render(); });
 render();
 (async () => {
