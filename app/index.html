@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 19:24";</script>
+<script>window.__VERSAO = "27/09 · 19:27";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3118,7 +3118,7 @@ const GRAOS = [["auto", "Do filtro"], ["nenhum", "Sem grão"], ["leve", "Leve"],
 const FORMATOS = [["original", "Original"], ["reels", "Reels 9:16"], ["post", "Post 4:5"], ["quadrado", "Quadrado"]];
 const PATCHES = [["caravana", "Caravana"], ["india", "Índia + Caravana"], ["lugar", "Do lugar"], ["colecao", "Coleção"], ["nenhum", "Sem patch"]];
 const PATCH_CIDADE = { Delhi: "india", Agra: "taj-mahal", Jaipur: "jaipur", Varanasi: "varanasi", Rishikesh: "rishikesh" };
-const MOLDURAS = [["polaroid", "Polaroid"], ["postal", "Cartão-postal"], ["ingresso", "Ingresso"], ["arco", "Janela de palácio"], ["guirlanda", "Guirlanda de flores"], ["bandeirinhas", "Bandeirinhas"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
+const MOLDURAS = [["polaroid", "Polaroid"], ["postal", "Cartão-postal"], ["ingresso", "Ingresso"], ["arco", "Janela de palácio"], ["guirlanda", "Guirlanda de flores"], ["bandeirinhas", "Bandeirinhas de oração"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
 const imgCache = {};
 function carregaImg(src) { return imgCache[src] ||= new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; }); }
 // filtro copiado de uma foto (LUT 3D): cada cor da foto vira a cor que o filtro de referência dá
@@ -3409,13 +3409,30 @@ function guirlanda(c, ox, oy, w, hh, u) {
   for (const x of [ox + w * .33, ox + w * .66]) { c.fillStyle = "#3F7A3A"; c.beginPath(); c.ellipse(x, oy + r * 1.8, r * .9, r * .35, .5, 0, 7); c.fill(); }
 }
 function bandeirinhas(c, ox, oy, w, u) {
-  const cores = ["#8A3F32", "#E3A21A", "#3F4938", "#C94F7C", "#E8DCC0", "#2F6D8C"], n = 11, L = w / n, y0 = oy + w * .02;
-  c.strokeStyle = "rgba(50,35,20,.85)"; c.lineWidth = Math.max(2, 3 * u); c.beginPath();
-  for (let i = 0; i <= 40; i++) { const t = i / 40; c.lineTo(ox + w * t, y0 + Math.sin(t * Math.PI) * w * .05); } c.stroke();
-  for (let i = 0; i < n; i++) { const t0 = i / n, t1 = (i + 1) / n, x0 = ox + w * t0 + L * .08, x1 = ox + w * t1 - L * .08, ya = y0 + Math.sin(t0 * Math.PI) * w * .05, yb = y0 + Math.sin(t1 * Math.PI) * w * .05;
-    c.save(); c.shadowColor = "rgba(0,0,0,.3)"; c.shadowBlur = 6 * u; c.shadowOffsetY = 3 * u; c.fillStyle = cores[i % cores.length];
-    c.beginPath(); c.moveTo(x0, ya); c.lineTo(x1, yb); c.lineTo((x0 + x1) / 2, (ya + yb) / 2 + L * 1.1); c.closePath(); c.fill(); c.restore();
-    c.strokeStyle = "rgba(255,240,210,.55)"; c.setLineDash([4 * u, 4 * u]); c.lineWidth = 1.5 * u; c.beginPath(); c.moveTo(x0 + L * .12, ya + L * .1); c.lineTo(x1 - L * .12, yb + L * .1); c.lineTo((x0 + x1) / 2, (ya + yb) / 2 + L * .9); c.closePath(); c.stroke(); c.setLineDash([]); }
+  // bandeirinhas de oração tibetanas (lungta), como nos templos do Himalaia: azul, branca, vermelha, verde e amarela,
+  // retângulos de pano pendurados num cordão, com as orações carimbadas e o tecido gasto pelo vento
+  const cores = ["#2F5F9E", "#F1ECDF", "#B5332A", "#3E7B45", "#E0B03A"], n = 13, L = w / n, bw = L * .86, bh = L * 1.18, y0 = oy + w * .015, cai = w * .06, R = sorteio(21);
+  const yCord = t => y0 + Math.sin(t * Math.PI) * cai;
+  c.strokeStyle = "rgba(60,45,30,.9)"; c.lineWidth = Math.max(2, 2.4 * u); c.beginPath();
+  for (let i = 0; i <= 60; i++) { const t = i / 60; c.lineTo(ox + w * t, yCord(t)); } c.stroke();
+  for (let i = 0; i < n; i++) {
+    const t = (i + .5) / n, cx = ox + w * t, cy = yCord(t), ang = Math.atan2(yCord(t + .01) - yCord(t - .01), w * .02) * .6 + (R() - .5) * .06;
+    c.save(); c.translate(cx, cy); c.rotate(ang);
+    c.shadowColor = "rgba(0,0,0,.25)"; c.shadowBlur = 5 * u; c.shadowOffsetY = 2 * u;
+    // pano com a barra dobrada no cordão e a ponta de baixo um pouco ondulada pelo vento
+    c.fillStyle = cores[i % 5]; c.beginPath(); c.moveTo(-bw / 2, 0); c.lineTo(bw / 2, 0);
+    c.lineTo(bw / 2 + (R() - .5) * bw * .06, bh); for (let k = 1; k <= 6; k++) c.lineTo(bw / 2 - bw * k / 6, bh + Math.sin(k * 1.7 + i) * bh * .03); c.closePath(); c.fill();
+    c.shadowColor = "transparent"; c.fillStyle = "rgba(0,0,0,.12)"; c.fillRect(-bw / 2, 0, bw, bh * .07);
+    // orações carimbadas: o cavalo do vento no meio e linhas de texto em volta, em tinta escura desbotada
+    const tinta = i % 5 === 1 ? "rgba(40,40,60,.45)" : "rgba(20,15,10,.32)"; c.fillStyle = tinta; c.strokeStyle = tinta; c.lineWidth = Math.max(1, .9 * u);
+    for (let k = 0; k < 7; k++) { if (k >= 2 && k <= 4) continue; const yy = bh * (.16 + k * .11); c.beginPath(); for (let x = -bw * .38; x < bw * .38; x += bw * .05) { c.moveTo(x, yy); c.lineTo(x + bw * .03, yy + (R() - .5) * bh * .01); } c.stroke(); }
+    c.beginPath(); c.ellipse(0, bh * .5, bw * .2, bh * .09, 0, 0, 7); c.fill(); c.beginPath(); c.moveTo(bw * .14, bh * .46); c.lineTo(bw * .24, bh * .36); c.lineTo(bw * .28, bh * .4); c.lineTo(bw * .2, bh * .5); c.fill();
+    for (const lx of [-.12, -.04, .06, .13]) c.fillRect(bw * lx, bh * .56, bw * .025, bh * .1);
+    c.beginPath(); c.arc(0, bh * .35, bw * .05, 0, 7); c.fill();
+    // desgaste: pano mais claro em manchas, como o sol e o vento deixam
+    for (let k = 0; k < 14; k++) { c.fillStyle = `rgba(255,250,235,${R() * .12})`; c.beginPath(); c.arc((R() - .5) * bw, R() * bh, bw * (.05 + R() * .12), 0, 7); c.fill(); }
+    c.restore();
+  }
 }
 async function cartaoPostal(c, W, H, u, ox, oy, w, hh, F, dourado) {
   // selo postal no canto de cima, carimbo ondulado e "Saudações da Índia" escrito à mão
@@ -3466,7 +3483,7 @@ const ADESIVOS = {
   // os enfeites que aparecem na Cabine de fotos, soltos para colar na foto
   "Caravana": [["img:img/simbolo-dourado.png", "Símbolo dourado"], ["img:img/simbolo-marrom.png", "Símbolo"], ["patch", "Patch bordado"], ["carimbo", "Carimbo"],
     ["postmark", "Carimbo do correio"], ["seloPostal", "Selo postal"], ["data", "Data da câmera"], ["linha", "Caravana do Céu · Índia 2026"], ["fita", "Fita adesiva"],
-    ["estrela", "Estrela"], ["flor", "Flor de cravo"], ["guirlanda", "Guirlanda"]],
+    ["estrela", "Estrela"], ["flor", "Flor de cravo"], ["guirlanda", "Guirlanda"], ["lungta", "Bandeirinhas de oração"]],
   "Bichos": [["pet:elefante", "Elefante"], ["pet:macaco", "Macaco"], ["pet:vaca", "Vaca sagrada"], ["pet:pavao", "Pavão"], ["pet:camelo", "Camelo"], ["pet:cabra", "Cabra"], ["pet:gato", "Gato"], ["pet:cachorro", "Cachorro"], ["ave:periquito", "Periquito"], ["ave:maina", "Mainá"], ["eu", "Meu bonequinho"]]
 };
 const adesivoCache = {};
@@ -3498,6 +3515,7 @@ function imgAdesivo(k) {
     if (k === "estrela") { const [cv, x] = tela(260, 260); x.shadowColor = "rgba(255,210,120,.9)"; x.shadowBlur = 30; estrela4(x, 130, 130, 110, "#FFE3A3"); return cv; }
     if (k === "guirlanda") { const [cv, x] = tela(900, 240); const n = 16; for (let i = 0; i <= n; i++) { const t = i / n; florMarigold(x, 30 + t * 840, 40 + Math.sin(t * Math.PI) * 120, 34, i % 3 ? "#F08A12" : "#E3571A"); }
       for (const px of [30, 870]) for (let k2 = 1; k2 < 4; k2++) florMarigold(x, px, 40 + k2 * 44, 26, k2 % 2 ? "#F6B324" : "#E3571A"); return cv; }
+    if (k === "lungta") { const [cv, x] = tela(1000, 260); bandeirinhas(x, 10, 0, 980, 1); return cv; }
     if (k === "fita") { const [cv, x] = tela(420, 110); x.fillStyle = "rgba(236,222,190,.85)"; x.beginPath(); x.moveTo(8, 20); for (let y = 20; y <= 90; y += 10) x.lineTo(y % 20 ? 0 : 12, y); x.lineTo(412, 90); for (let y = 90; y >= 20; y -= 10) x.lineTo(y % 20 ? 420 : 408, y); x.closePath(); x.fill();
       x.strokeStyle = "rgba(160,130,90,.3)"; x.setLineDash([4, 5]); x.strokeRect(20, 26, 380, 58); return cv; }
     if (k === "data") { const d = new Date(), txt = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"][d.getMonth()] + " " + String(d.getDate()).padStart(2, "0") + " '" + String(d.getFullYear()).slice(2);
@@ -3833,7 +3851,7 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
   canvas.style.touchAction = ades.length ? "none" : "";
   const catA = ADESIVOS[S.fotoCatA] ? S.fotoCatA : "Selos";
   const LUGARES = [[.5, .5], [.26, .3], [.74, .3], [.26, .72], [.74, .72], [.5, .22], [.5, .8], [.16, .5], [.84, .5]];
-  const poeAdesivo = k => { const [lx, ly] = LUGARES[ades.length % LUGARES.length]; ades.push({ k, x: lx, y: ly, s: k.startsWith("img:insignias/") ? .26 : k === "linha" || k === "guirlanda" ? .8 : k === "data" ? .35 : .3, r: 0 }); S[SEL] = ades.length - 1; render(); };
+  const poeAdesivo = k => { const [lx, ly] = LUGARES[ades.length % LUGARES.length]; ades.push({ k, x: lx, y: ly, s: k.startsWith("img:insignias/") ? .26 : k === "linha" || k === "guirlanda" || k === "lungta" ? .9 : k === "data" ? .35 : .3, r: 0 }); S[SEL] = ades.length - 1; render(); };
   const sel = S[SEL] != null ? ades[S[SEL]] : null;
   const mexe = fn => { if (!sel) return; fn(sel); render(); };
   if (S.fotoAdesThumbs == null) S.fotoAdesThumbs = {};
@@ -3921,7 +3939,6 @@ function vFotos() {
         h("div", { class: "opts" }, PATCHES.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.patch || "nenhum") === id), onclick: () => set("patch", id) }, n))),
         h("p", { class: "lab", text: "Moldura" }),
         h("div", { class: "opts" }, MOLDURAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: () => set("moldura", id) }, n))),
-        h("p", { class: "lab", text: "Legenda" }), leg, cid,
         painelAdesivos,
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no celular"),
