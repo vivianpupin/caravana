@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 09:46";</script>
+<script>window.__VERSAO = "27/09 · 09:47";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -999,6 +999,8 @@ const localDe = id => S.locais.find(l => l.id === id);
 // selos que saíram da travessia (a visita não acontece mais): somem do passaporte e do mapa; o saber ligado a eles fica livre
 const REMOVIDOS = ["galta-ji", "beatles-ashram"];
 const EXTRAS = [
+  { id: "ganesha", nome: "Bênção dos Caminhos", insignia: "ganesha", cidadeId: "jaipur", dia: 4, ordem: 3.9, codigo: "ganapati", lat: 26.8950, lng: 75.8176, busca: "Moti Dungri Ganesh Temple Jaipur", aberto: false,
+    descricao: "O templo de Ganesha aos pés do forte de Moti Dungri, onde se pede a bênção que abre os caminhos.", dica: "Antes de tudo, saudar quem remove os obstáculos." },
   { id: "govind-dev-ji", nome: "Darshan de Krishna", insignia: "govind-dev-ji", cidadeId: "jaipur", dia: 4, ordem: 4.5, codigo: "govinda", lat: 26.9294, lng: 75.8235, busca: "Govind Dev Ji Temple Jaipur", aberto: false,
     descricao: "O templo de Krishna dentro do Palácio da Cidade de Jaipur, onde as cortinas se abrem para o darshan, o encontro com o olhar da divindade.", dica: "As cortinas se abrem e Krishna olha de volta." },
   { id: "diwali", nome: "Diwali", insignia: "diwali", cidadeId: "varanasi", dia: 5, ordem: 5.5, codigo: "deepavali", lat: 25.2869, lng: 83.0066, busca: "Assi Ghat Varanasi", aberto: false,
@@ -3027,7 +3029,7 @@ function erroFoto(e) {
 function editar(tipo, item) {
   item = item || {};
   const cids = S.cidades.slice().sort(byOrdem), locs = S.locais.slice().sort(byOrdem);
-  const INS = ["", "india", "taj-mahal", "jaipur", "govind-dev-ji", "varanasi", "diwali", "ganga-aarti", "manikarnika", "durga-kund", "batismo", "rishikesh", "travessia", "kunjapuri", "caverna"];
+  const INS = ["", "india", "taj-mahal", "ganesha", "jaipur", "govind-dev-ji", "varanasi", "diwali", "ganga-aarti", "manikarnika", "durga-kund", "batismo", "rishikesh", "travessia", "kunjapuri", "caverna"];
   const F = {
     dia: { col: "dias", t: "dia", campos: [["n", "Número do dia", "num"], ["iso", "Data (AAAA-MM-DD)"], ["data", "Data por extenso (ex.: Quarta · 4 nov)"], ["cidade", "Cidade(s)"], ["titulo", "Título"],
       ["itens", "Programação (uma linha por item: 18:00 | Ganga Aarti)", "linhas"], ["nota", "Nota", "area"], ["ordem", "Ordem", "num"]], obrig: "titulo" },
@@ -3281,7 +3283,7 @@ function vDiario(d, liberado) {
     d.n === 13 && leituraAberta() ? h("button", { class: "btn gold", type: "button", onclick: () => abrirLeitura() }, "Abrir a mensagem do meu diário") : null);
 }
 // Correspondência: cartas da líder, em pergaminho, por pombo-correio
-const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nCatorze selos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
+const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nQuinze selos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
 const ASSINATURA = "Vivian · Caravana do Céu";
 const cartasAbertas = () => S.cartas.filter(c => !c.rascunho && c.envio && c.envio <= Date.now()).sort((a, b) => a.envio - b.envio);
 const dataCarta = ts => new Date(ts).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" });
@@ -3883,9 +3885,9 @@ render();
   listen("posicoes", "posicoes");
   listen("cartas", "cartas", null, () => {
     setTimeout(checaCorreio, 1200);
-    // a carta final foi escrita quando eram doze selos; agora são catorze (a líder corrige uma vez só)
+    // a carta final foi escrita quando eram doze selos; agora são quinze (a líder corrige uma vez só)
     const f = S.isOwner && S.cartas.find(c => c.id === "final");
-    if (f && /(Doze|Treze) selos/.test(f.texto || "")) S.db.doc("cartas/final").update({ texto: f.texto.replace(/(Doze|Treze) selos/, "Catorze selos") }).catch(() => {});
+    if (f && /(Doze|Treze|Catorze) selos/.test(f.texto || "")) S.db.doc("cartas/final").update({ texto: f.texto.replace(/(Doze|Treze|Catorze) selos/, "Quinze selos") }).catch(() => {});
   });
   listen("pensamentos", "pedra");
   if (S.isOwner && window.__SITE) listen("membros", "membros");
