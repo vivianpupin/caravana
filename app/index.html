@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 11:42";</script>
+<script>window.__VERSAO = "27/09 · 11:43";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -2148,11 +2148,11 @@ function desenhaBoneco(b) {
   if (b.chapeu === "turbante") g.append(h("ellipse", { cx: 30, cy: 15.5, rx: 11.5, ry: 6, fill: "#D98B2B" }), h("ellipse", { cx: 30, cy: 11, rx: 10, ry: 5, fill: "#E6A03F" }), P("M22 15 Q30 7 38 15", "none", { stroke: "#B86E1E", "stroke-width": 1.2 }), h("circle", { cx: 30, cy: 12, r: 1.8, fill: "#8A3F32" }));
   if (b.chapeu === "flores") for (let i = 0; i <= 8; i++) { const t = Math.PI * (1 + i / 8), x = 30 + Math.cos(t) * 10.5, y = 17 + Math.sin(t) * 6; g.append(h("circle", { cx: x, cy: y, r: 2.4, fill: ["#E0661C", "#F2A72B", "#E24A7A"][i % 3] }), h("circle", { cx: x, cy: y, r: .8, fill: "#FFE7A3" })); }
   // piercing no nariz
-  if (b.nariz === "argola") g.append(h("circle", { cx: 31.6, cy: 26.4, r: 1.5, fill: "none", stroke: ouro, "stroke-width": .7 }), h("circle", { cx: 32.8, cy: 27.4, r: .45, fill: "#C0392B" }));
-  if (b.nariz === "ponto") g.append(h("circle", { cx: 31.4, cy: 25.6, r: .75, fill: "#FFF6D6", stroke: ouro, "stroke-width": .35 }));
+  if (b.nariz === "argola") g.append(h("circle", { cx: 32, cy: 27, r: 2.5, fill: "none", stroke: ouro, "stroke-width": 1.2 }), h("circle", { cx: 33.8, cy: 28.6, r: .9, fill: "#C0392B", stroke: ouro, "stroke-width": .4 }));
+  if (b.nariz === "ponto") g.append(h("path", { d: "M31.6 23.6 L32.2 25 L33.6 25.6 L32.2 26.2 L31.6 27.6 L31 26.2 L29.6 25.6 L31 25 Z", fill: "#FFF6D6", stroke: ouro, "stroke-width": .4 }));
   // anéis nos pés e tornozeleira (payal)
-  if (b.pes === "aneis" || b.pes === "os2") g.append(...[[22.6, 83.2], [25, 83.4], [35.2, 83.4], [37.6, 83.2]].map(([x, y]) => h("rect", { x: x - .8, y: y - .5, width: 1.6, height: 1, rx: .4, fill: ouro })));
-  if (b.pes === "payal" || b.pes === "os2") g.append(...[20.5, 30.8].map(x0 => h("g", null, h("line", { x1: x0, y1: 80.9, x2: x0 + 9, y2: 80.9, stroke: "#E8C46A", "stroke-width": .5 }), ...[0, 1.8, 3.6, 5.4, 7.2, 9].map(dx => h("circle", { cx: x0 + dx, cy: 81.6, r: .45, fill: "#E8C46A" })))));
+  if (b.pes === "aneis" || b.pes === "os2") g.append(...[[22.4, 82.8], [25.4, 83], [34.8, 83], [37.8, 82.8]].map(([x, y]) => h("rect", { x: x - 1.3, y: y - .9, width: 2.6, height: 1.8, rx: .7, fill: ouro, stroke: "#8A6420", "stroke-width": .35 })));
+  if (b.pes === "payal" || b.pes === "os2") g.append(...[20.5, 30.8].map(x0 => h("g", null, h("line", { x1: x0, y1: 80.6, x2: x0 + 9, y2: 80.6, stroke: ouro, "stroke-width": 1.1 }), ...[.5, 2.5, 4.5, 6.5, 8.5].map(dx => h("circle", { cx: x0 + dx, cy: 81.9, r: .95, fill: "#E8C46A", stroke: "#8A6420", "stroke-width": .3 })))));
   // óculos
   const oc = b.oculos;
   if (oc === "redondo") g.append(h("circle", { cx: 26.4, cy: 22.5, r: 2.8, fill: "rgba(255,255,255,.15)", stroke: "#3A2A1C", "stroke-width": .9 }), h("circle", { cx: 33.6, cy: 22.5, r: 2.8, fill: "rgba(255,255,255,.15)", stroke: "#3A2A1C", "stroke-width": .9 }), h("line", { x1: 29.2, y1: 22.3, x2: 30.8, y2: 22.3, stroke: "#3A2A1C", "stroke-width": .8 }));
