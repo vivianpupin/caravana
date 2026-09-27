@@ -16,3 +16,14 @@
   for = "/sw.js"
   [headers.values]
     Cache-Control = "no-cache"
+# Login do Google pelo próprio endereço do app (o iPhone bloqueia o login quando ele volta de outro site)
+[[redirects]]
+  from = "/__/auth/*"
+  to = "https://app-caravana-70c8a.firebaseapp.com/__/auth/:splat"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/__/firebase/*"
+  to = "https://app-caravana-70c8a.firebaseapp.com/__/firebase/:splat"
+  status = 200
+  force = true

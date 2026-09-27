@@ -1,4 +1,4 @@
-// marca: e285f42fbb
+// marca: c3bc60f29a
 // Guarda o app inteiro no celular para abrir mesmo sem sinal (templo, estrada, wi-fi fraco do hotel).
 const CACHE = "caravana-v6", EXTRA = "caravana-ext", MAPA = "caravana-mapa";
 // lista de arquivos gerada pelo tools/gerar-site.py
@@ -34,9 +34,11 @@ self.addEventListener("fetch", e => {
   const req = e.request, u = new URL(req.url);
   if (req.method !== "GET") return;
   if (u.origin === location.origin) {
+    // login do Google (/__/auth/...) e funções do Netlify: sempre direto da internet, nunca do guardado
+    if (u.pathname.startsWith("/__/") || u.pathname.includes("/.netlify/")) return;
+    if (req.mode === "navigate" && !/^\/(index\.html)?$/.test(u.pathname)) return;
     if (req.mode === "navigate" || u.pathname.endsWith("/index.html")) return e.respondWith(redePrimeiro(req, 3500));
     if (u.pathname.endsWith("versao.json")) return e.respondWith(fetch(req).catch(() => caches.match(req).then(g => g || new Response("{}"))));
-    if (u.pathname.includes("/.netlify/")) return;
     return e.respondWith(guardadoPrimeiro(CACHE, req));
   }
   // letras (Google Fonts) e o zip do álbum: guardadas depois da primeira vez
