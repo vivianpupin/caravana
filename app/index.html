@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 10:35";</script>
+<script>window.__VERSAO = "27/09 · 10:37";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -275,6 +275,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .pages>*:not(.fundopass){position:relative;z-index:1}
 .folhear.video{background:linear-gradient(135deg,#3B2A1C,#6B4424)}
 .vidico{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#F2C46A,#C98A2A);color:#3B2A1C;font-size:20px;flex:0 0 auto;box-shadow:0 0 18px rgba(242,196,106,.6)}
+.btninsta{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#F58529,#DD2A7B 55%,#8134AF)!important;color:#fff!important;border:0!important}
 .sheet>.vidbox{align-items:center;max-width:420px}
 .vidcanvas{width:100%;max-width:300px;height:auto;aspect-ratio:9/16;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);background:#140C07}
 .medalhas{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;margin-top:4px}
@@ -1116,20 +1117,21 @@ function tituloViajante(v) {
 const nomeDestino = id => (DESTINOS.find(d => d.id === id) || {}).nome || id.replace(/^outro:/, "");
 // medalha bordada: anel dourado costurado, miolo na cor do destino, sigla e quantas vezes
 function medalha(id, n, tam) {
-  const d = DESTINOS.find(x => x.id === id), india = id === "india", car = id === "caravana" || id === "veterano", cor = india ? "#B8431F" : id === "veterano" ? "#A3231A" : car ? "#3F4938" : d ? d.cor : ["#2F5D7C", "#8A3F32", "#6B4A8A", "#8A6B2A"][id.length % 4];
+  const d = DESTINOS.find(x => x.id === id), india = id === "india", car = id === "caravana" || id === "veterano" || id === "primeira", cor = india ? "#B8431F" : id === "primeira" ? "#F7F2E6" : id === "veterano" ? "#A3231A" : car ? "#3F4938" : d ? d.cor : ["#2F5D7C", "#8A3F32", "#6B4A8A", "#8A6B2A"][id.length % 4];
   const sigla = india ? "IN" : car ? "✦" : d ? d.sigla : id.replace(/^outro:/, "").split(/\s+/).map(p => p[0] || "").join("").slice(0, 2).toUpperCase();
-  const svg = h("svg", { viewBox: "0 0 60 70", width: tam || 46, height: (tam || 46) * 70 / 60, class: "medalha", role: "img", "aria-label": (india ? "Índia Sagrada 2026" : car ? "Viagem com a Caravana" : nomeDestino(id)) + (n > 1 ? `, ${n} vezes` : "") });
-  svg.innerHTML = `<path d="M18 2h9l5 18h-9z" fill="${cor}" opacity=".9"/><path d="M42 2h-9l-5 18h9z" fill="${cor}" opacity=".7"/>
+  const svg = h("svg", { viewBox: "0 0 60 70", width: tam || 46, height: (tam || 46) * 70 / 60, class: "medalha", role: "img", "aria-label": (india ? "Índia Sagrada 2026" : id === "primeira" ? "Primeira travessia" : car ? "Viagem com a Caravana" : nomeDestino(id)) + (n > 1 ? `, ${n} vezes` : "") });
+  const fita = id === "primeira" ? "#B9975E" : cor;
+  svg.innerHTML = `<path d="M18 2h9l5 18h-9z" fill="${fita}" opacity=".9"/><path d="M42 2h-9l-5 18h9z" fill="${fita}" opacity=".7"/>
     <circle cx="30" cy="40" r="25" fill="#C9A063"/><circle cx="30" cy="40" r="25" fill="none" stroke="#8A6B2A" stroke-width="1.2" stroke-dasharray="2 1.6"/>
     <circle cx="30" cy="40" r="19.5" fill="${cor}"/><circle cx="30" cy="40" r="17" fill="none" stroke="#F4E6C4" stroke-width=".8" stroke-dasharray="1.6 1.4" opacity=".8"/>
-    <text x="30" y="${india ? 44.5 : 45}" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="${india ? 13 : 14}" fill="#FFF3D9">${sigla}</text>
+    <text x="30" y="${india ? 44.5 : 45}" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="${india ? 13 : id === "primeira" ? 17 : 14}" fill="${id === "primeira" ? "#B9975E" : "#FFF3D9"}">${sigla}</text>
     ${n > 1 ? `<circle cx="49" cy="58" r="9" fill="#3B2A1C" stroke="#F4E6C4" stroke-width="1.4"/><text x="49" y="61.6" text-anchor="middle" font-family="Poppins,sans-serif" font-weight="700" font-size="10" fill="#F4E6C4">${n}x</text>` : ""}`;
   return svg;
 }
 // uma medalhinha da Caravana para cada viagem anterior (até 6; depois, o número); vermelhas para veteranos
 function medalhasDe(v, tam) {
   const n = viagensAntes(v), mostra = Math.min(n, 6), tipo = n >= 3 ? "veterano" : "caravana";
-  if (!n) return null;
+  if (!n) return h("div", { class: "medalhas" }, medalha("primeira", 1, tam));
   return h("div", { class: "medalhas" }, Array.from({ length: mostra }, (_, i) => medalha(tipo, i === mostra - 1 && n > 6 ? n : 1, tam)));
 }
 // no cadastro: quantas vezes já viajou com a Caravana (antes desta), mostrando as medalhinhas de cada opção
@@ -1137,11 +1139,11 @@ function campoViagens(estado, genero) {
   const ops = [[0, "Não"], [1, "1x"], [2, "2x"], [3, "3x"], [4, "4x"], [5, "5x ou mais"]];
   const previa = h("div", { class: "viagprevia" });
   const mostra = n => { const v = { viagensAntes: n, genero: genero ? genero() : "" };
-    previa.replaceChildren(medalhasDe(v, 30) || h("span", { class: "small", text: "Sem medalhas ainda" }), h("span", null, h("b", { text: tituloViajante(v) }), h("small", { text: totalViagens(v) === 1 ? "esta é a primeira viagem" : totalViagens(v) + " viagens com a Caravana" }))); };
+    previa.replaceChildren(medalhasDe(v, 30), h("span", null, h("b", { text: tituloViajante(v) }), h("small", { text: totalViagens(v) === 1 ? "esta é a primeira viagem" : totalViagens(v) + " viagens com a Caravana" }))); };
   mostra(estado.n || 0);
   return h("div", { class: "viagbox" }, h("span", { class: "viagperg", text: "Você já viajou com a Caravana antes? Quantas vezes?" }),
     h("div", { class: "viagops" }, ops.map(([n, t]) => h("button", { type: "button", class: "viagop", "aria-pressed": String((estado.n || 0) === n), onclick: ev => { estado.n = n; ev.currentTarget.parentNode.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === ev.currentTarget))); mostra(n); } },
-      h("b", { text: t }), h("span", { class: "viagmini" }, Array.from({ length: Math.min(n, 5) }, () => medalha(n >= 3 ? "veterano" : "caravana", 1, 14)))))),
+      h("b", { text: t }), h("span", { class: "viagmini" }, n ? Array.from({ length: Math.min(n, 5) }, () => medalha(n >= 3 ? "veterano" : "caravana", 1, 14)) : medalha("primeira", 1, 14))))),
     h("span", { class: "small", text: "No seu passaporte:" }), previa);
 }
 function vCadastro() {
@@ -1395,7 +1397,7 @@ function camposPassaporte(v) {
     h("div", { class: "fdrow" }, campo("Emissão", "Date of issue", dataDoc(v.ts)), campo("Validade", "Date of expiry", "16 NOV 2026")),
     campo("Autoridade", "Authority", "CARAVANA DO CÉU · TRAVESSIA IND"),
     campo("Rota", "Route", "DEL · AGR · JAI · VNS · RSK · DEL"),
-    viagensAntes(v) ? h("div", { class: "fd" }, h("span", { class: "fl", text: "Medalhas da Caravana / Caravan medals" }), medalhasDe(v, 40)) : null
+    h("div", { class: "fd" }, h("span", { class: "fl", text: "Medalhas da Caravana / Caravan medals" }), medalhasDe(v, 40))
   ];
 }
 function mrzDe(v, ok) {
@@ -1460,16 +1462,26 @@ async function montaVideoPassaporte(cv, aoFim) {
   const paginas = [paginaDados(v, foto, PW, PH), ...grupos.map((g, i) => paginaSelos(g, imgs, PW, PH, i + 1)), paginaFinal(fin && imgs[fin.id], qtd, ls.length, PW, PH)];
   if (paginas.length % 2) paginas.splice(paginas.length - 1, 0, (() => { const c = document.createElement("canvas"); c.width = PW; c.height = PH; papelPass(c.getContext("2d"), PW, PH, 1); return c; })());
   // lâminas: a capa, depois cada folha tem frente (direita) e verso (esquerda)
-  const nViradas = paginas.length / 2 - 1, T0 = 2.2, TCAPA = 1.4, PAUSA = 1.5, TVIRA = 1.1, fim = T0 + TCAPA + PAUSA + nViradas * (TVIRA + PAUSA) + 2.6;
+  const nViradas = paginas.length / 2 - 1, T0 = 2.2, TCAPA = 1.9, PAUSA = 1.7, TVIRA = 1.7, fim = T0 + TCAPA + PAUSA + nViradas * (TVIRA + PAUSA) + 2.8;
   const W = 1080, H = 1920, x = cv.getContext("2d"), CX = 540, CY = 960, poeira = Array.from({ length: 70 }, (_, i) => [((i * 7919) % 1080), ((i * 104729) % 1920), 1 + (i % 3), (i % 7) / 7]);
   const ease = t => t < 0 ? 0 : t > 1 ? 1 : t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-  const folha = (img, ang, sombra) => { // desenha uma página presa na lombada, girando em Y (ang 0 = aberta à direita, PI = à esquerda)
-    const cs = Math.cos(ang), w = PW * Math.abs(cs); if (w < 1) return;
-    x.save(); x.translate(0, 0); const esq = cs < 0;
-    x.transform(1, 0, esq ? .08 * Math.sin(ang) : -.08 * Math.sin(ang), 1, 0, 0);
-    x.drawImage(img, esq ? -w : 0, -PH / 2, w, PH);
-    if (sombra) { const g = x.createLinearGradient(esq ? -w : 0, 0, esq ? 0 : w, 0); const a = .35 * Math.sin(ang); g.addColorStop(esq ? 1 : 0, `rgba(0,0,0,${a})`); g.addColorStop(esq ? 0 : 1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(esq ? -w : 0, -PH / 2, w, PH); }
-    x.restore(); };
+  // folha virando com perspectiva: desenhada em fatias; a ponta que levanta cresce (vem para perto), com luz e sombra
+  const folha = (frente, verso, ang) => {
+    const cs = Math.cos(ang), lev = Math.sin(ang), img = cs >= 0 ? frente : verso, N = 36;
+    // sombra que a folha joga na página de baixo
+    const lado = cs >= 0 ? 1 : -1, alc = PW * Math.abs(cs);
+    let g = x.createLinearGradient(0, 0, lado * (alc + 90), 0); g.addColorStop(0, `rgba(0,0,0,${.28 * lev})`); g.addColorStop(1, "rgba(0,0,0,0)");
+    x.fillStyle = g; x.fillRect(lado > 0 ? 0 : -(alc + 90), -PH / 2, alc + 90, PH);
+    for (let i = 0; i < N; i++) {
+      const u0 = i / N, u1 = (i + 1) / N, x0 = u0 * PW * cs, x1 = u1 * PW * cs, esc = 1 + .2 * ((u0 + u1) / 2) * lev, hh = PH * esc;
+      const sx = cs >= 0 ? u0 * img.width : (1 - u1) * img.width, sw = img.width / N;
+      x.drawImage(img, sx, 0, sw, img.height, Math.min(x0, x1), -hh / 2 - (esc - 1) * 18, Math.abs(x1 - x0) + .8, hh);
+      const luz = cs >= 0 ? (.22 * lev * (1 - u0)) : (.12 * lev * u0);
+      x.fillStyle = cs >= 0 ? `rgba(0,0,0,${luz})` : `rgba(255,240,210,${luz})`; x.fillRect(Math.min(x0, x1), -hh / 2 - (esc - 1) * 18, Math.abs(x1 - x0) + .8, hh);
+    }
+    // brilho na borda da folha
+    if (lev > .05) { const ex = PW * cs, eh = PH * (1 + .2 * lev); x.strokeStyle = `rgba(255,236,200,${.5 * lev})`; x.lineWidth = 2; x.beginPath(); x.moveTo(ex, -eh / 2 - .2 * lev * 18); x.lineTo(ex, eh / 2 - .2 * lev * 18); x.stroke(); }
+  };
   // cenário: noite no deserto, céu estrelado, lua, dunas, o caravançarai com lanternas e a caravana de camelos passando
   const estrelas = Array.from({ length: 160 }, (_, i) => [((i * 7919) % 1080), ((i * 104729) % 1150), .6 + (i % 4) * .45, (i % 9) / 9]);
   const lanterna = (lx, ly, r, t, f) => { const a = .75 + .25 * Math.sin(t * 3 + f); let g = x.createRadialGradient(lx, ly, 0, lx, ly, r * 5); g.addColorStop(0, `rgba(255,190,90,${.45 * a})`); g.addColorStop(1, "rgba(255,160,60,0)"); x.fillStyle = g; x.beginPath(); x.arc(lx, ly, r * 5, 0, 7); x.fill();
@@ -1523,7 +1535,7 @@ async function montaVideoPassaporte(cv, aoFim) {
     x.fillStyle = "#C9A56A"; x.font = '600 32px "Poppins","Noto Sans Devanagari",sans-serif'; x.fillText("लोकाः समस्ताः सुखिनो भवन्तु", CX, 470);
     x.strokeStyle = "rgba(201,165,106,.8)"; x.lineWidth = 2; x.beginPath(); x.moveTo(CX - 60, 500); x.lineTo(CX + 60, 500); x.stroke(); x.globalAlpha = 1;
     // livro: flutua e se aproxima
-    const tl = t - T0, abre = ease(tl / TCAPA), flutua = Math.sin(t * 1.6) * 8, esc = .66 + .14 * ease(t / 2.2);
+    const tl = t - T0, abre = ease(tl / TCAPA), flutua = Math.sin(t * 1.6) * 8, esc = .68 + .18 * ease(t / 2.2);
     x.save(); x.translate(CX - (1 - abre) * PW / 2 * esc, CY + flutua); x.scale(esc, esc);
     x.fillStyle = "rgba(0,0,0,.45)"; x.beginPath(); x.ellipse(PW / 2 * (1 - abre), PH / 2 + 50, PW * (.6 + .5 * abre), 34, 0, 0, 7); x.fill();
     if (tl < 0) { // capa fechada girando no ar
@@ -1535,15 +1547,13 @@ async function montaVideoPassaporte(cv, aoFim) {
       let virou = 0; const tv = tl - TCAPA - PAUSA; if (tv > 0) virou = Math.min(nViradas, Math.floor(tv / (TVIRA + PAUSA)));
       const emVirada = tv > 0 && virou < nViradas && (tv - virou * (TVIRA + PAUSA)) < TVIRA, pv = emVirada ? ease((tv - virou * (TVIRA + PAUSA)) / TVIRA) : 0;
       const esqI = virou * 2, dirI = virou * 2 + 1;
-      x.fillStyle = "#3A2A1C"; x.fillRect(-PW - 10, -PH / 2 - 10, PW * 2 + 20, PH + 20); // capa de fora (bordinha)
+      x.fillStyle = "#3A2A1C"; if (abre >= .5 || tl > TCAPA) x.fillRect(-PW - 10, -PH / 2 - 10, PW * 2 + 20, PH + 20); else x.fillRect(-2, -PH / 2 - 10, PW + 12, PH + 20); // capa de fora (bordinha)
       if (abre > .5 || tl > TCAPA) x.drawImage(paginas[esqI], -PW, -PH / 2, PW, PH);
       x.drawImage(emVirada ? paginas[dirI + 2] : paginas[dirI], 0, -PH / 2, PW, PH);
-      if (emVirada) { folha(pv < .5 ? paginas[dirI] : paginas[dirI + 1], pv * Math.PI, true); }
+      if (emVirada) folha(paginas[dirI], paginas[dirI + 1], pv * Math.PI);
       // lombada
       g = x.createLinearGradient(-30, 0, 30, 0); g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(.5, "rgba(0,0,0,.28)"); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(-30, -PH / 2, 60, PH);
-      if (tl < TCAPA && capa) { const ang = abre * Math.PI, cs = Math.cos(ang), w = PW * Math.abs(cs);
-        if (cs > 0) { x.save(); x.transform(1, 0, -.08 * Math.sin(ang), 1, 0, 0); x.drawImage(capa, 0, -PH / 2, w, PH); x.restore(); }
-        else { x.save(); x.transform(1, 0, .08 * Math.sin(ang), 1, 0, 0); x.drawImage(paginas[0], -w, -PH / 2, w, PH); x.restore(); } }
+      if (tl < TCAPA && capa) folha(capa, paginas[0], abre * Math.PI);
       // checks verdes aparecendo nos selos da página da direita/esquerda visíveis
       const mostra = [esqI, emVirada ? dirI + 2 : dirI];
       mostra.forEach((pi, lado) => { const gi = pi - 1; const grupo = grupos[gi]; if (!grupo) return;
@@ -1583,13 +1593,21 @@ async function abrirVideoPassaporte() {
     const pronto = new Promise(ok => rec.onstop = ok); rec.start(200); await toca(); rec.stop(); await pronto;
     const ext = tipo.includes("mp4") ? "mp4" : "webm", arq = new Blob(partes, { type: tipo.split(";")[0] }), nome = "passaporte-caravana." + ext;
     st.textContent = "Vídeo pronto!";
-    acoes.replaceChildren(h("button", { class: "btn gold", type: "button", onclick: async () => {
-      const f = new File([arq], nome, { type: arq.type });
-      try { if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f] }); return; } } catch (e) { if (e && e.name === "AbortError") return; }
+    const f = new File([arq], nome, { type: arq.type }), podeCompartilhar = !!(navigator.canShare && navigator.canShare({ files: [f] }));
+    const salvar = async () => {
       const dl = await (window.claude?.use?.("downloads") ?? null);
       if (dl) { try { await dl.save({ filename: nome, data: arq }); st.textContent = "Vídeo salvo."; } catch (e) {} return; }
-      const a = h("a", { href: URL.createObjectURL(arq), download: nome }); document.body.append(a); a.click(); a.remove(); st.textContent = "Vídeo salvo.";
-    } }, "Salvar vídeo"), h("button", { class: "btn", type: "button", onclick: () => toca() }, "Ver de novo"));
+      const a = h("a", { href: URL.createObjectURL(arq), download: nome }); document.body.append(a); a.click(); a.remove();
+      st.textContent = /iPhone|iPad/.test(navigator.userAgent) ? "Se abrir o vídeo, toque no ícone de compartilhar e em Salvar vídeo." : "Vídeo salvo na pasta de downloads.";
+    };
+    const insta = async () => {
+      if (podeCompartilhar) { try { await navigator.share({ files: [f] }); st.textContent = "Escolha Instagram (Reels ou Stories) na lista."; } catch (e) {} return; }
+      await salvar(); st.textContent = "Vídeo salvo. Abra o Instagram, toque em + e escolha Reels ou Story com este vídeo.";
+    };
+    acoes.replaceChildren(
+      h("button", { class: "btn gold btninsta", type: "button", onclick: insta }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, "aria-hidden": "true" }, h("rect", { x: 3, y: 3, width: 18, height: 18, rx: 5, fill: "none", stroke: "currentColor", "stroke-width": 2 }), h("circle", { cx: 12, cy: 12, r: 4, fill: "none", stroke: "currentColor", "stroke-width": 2 }), h("circle", { cx: 17.3, cy: 6.7, r: 1.2, fill: "currentColor" })), " Compartilhar no Instagram"),
+      h("button", { class: "btn", type: "button", onclick: salvar }, "Salvar vídeo"),
+      h("button", { class: "btn ghost", type: "button", onclick: () => toca() }, "Ver de novo"));
   };
   st.textContent = "";
   acoes.replaceChildren(h("button", { class: "btn gold", type: "button", onclick: gravar }, "Gerar vídeo para postar"), h("button", { class: "btn", type: "button", onclick: () => toca() }, "Ver de novo"));
