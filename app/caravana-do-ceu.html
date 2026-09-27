@@ -564,6 +564,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .abertura.sai{animation:absai .7s ease both}
 .abfundo{position:absolute;inset:-20px;background:var(--abimg,url(img/tenda.webp)) center/cover;filter:blur(2.1px) brightness(.45);transform:scale(1.08);animation:abzoom 9s ease-out both}
 .abfundo::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 42%,rgba(242,194,48,.18),rgba(20,12,6,.75) 70%)}
+.ab-rishikesh .abfundo{filter:blur(2.1px) brightness(1) saturate(1.1)}
+.ab-rishikesh .abfundo::after{background:radial-gradient(ellipse at 50% 42%,rgba(242,194,48,.12),rgba(20,12,6,.55) 75%)}
 .abconteudo{position:relative;text-align:center;color:#F4E6C4;padding:24px;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:6px}
 .absimb{width:74px;height:auto;margin-bottom:10px;filter:drop-shadow(0 0 18px rgba(242,194,48,.45));animation:absimb 1.8s ease both}
 .abdia{margin:0;font:600 12px var(--ui);letter-spacing:.38em;text-transform:uppercase;color:#E2BE78;animation:absobe 1.2s .7s ease both}
@@ -3834,7 +3836,7 @@ function aberturaDoDia(forcar) {
   if (!forcar) { if (lsGet("cdi-abertura") === hoje) return; lsSet("cdi-abertura", hoje); }
   // fundo de cada cidade, no mesmo estilo escuro e desfocado da tenda
   const cid = ["Delhi", "Agra", "Jaipur", "Varanasi", "Rishikesh"].find(k => String(d.cidade || "").includes(k));
-  const ov = h("div", { class: "abertura", role: "dialog", "aria-label": `Dia ${d.n}, ${d.cidade}`, style: cid ? `--abimg:url(img/abertura-${cid.toLowerCase()}.webp)` : "" },
+  const ov = h("div", { class: "abertura" + (cid ? " ab-" + cid.toLowerCase() : ""), role: "dialog", "aria-label": `Dia ${d.n}, ${d.cidade}`, style: cid ? `--abimg:url(img/abertura-${cid.toLowerCase()}.webp)` : "" },
     h("div", { class: "abfundo", "aria-hidden": "true" }),
     h("div", { class: "abconteudo" },
       h("img", { class: "absimb", src: "img/simbolo-dourado.png", alt: "" }),
