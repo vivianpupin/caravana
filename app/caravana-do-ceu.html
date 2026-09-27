@@ -918,7 +918,10 @@ nav.tabs button{position:relative}
 .offline span{font-size:13.5px;color:var(--soft)}
 /* Mural */
 .mural{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
-.mfoto{position:relative;border:0;padding:0;border-radius:12px;overflow:hidden;background:#2B1F14;aspect-ratio:1;box-shadow:var(--shadow)}
+.mwrap{position:relative}
+.mdel{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(20,14,8,.6);color:#fff;font-size:18px;line-height:28px;padding:0}
+.album .zera{color:var(--err)}
+.mfoto{position:relative;width:100%;border:0;padding:0;border-radius:12px;overflow:hidden;background:#2B1F14;aspect-ratio:1;box-shadow:var(--shadow)}
 .mfoto img{width:100%;height:100%;object-fit:cover;display:block}
 .mfoto span{position:absolute;left:0;right:0;bottom:0;padding:18px 8px 6px;font-size:12px;color:#F6EDDA;text-align:left;background:linear-gradient(transparent,rgba(20,14,8,.7))}
 .mgrande{width:100%;height:auto;border-radius:12px;display:block}
@@ -1064,6 +1067,9 @@ const localDe = id => S.locais.find(l => l.id === id);
 const REMOVIDOS = ["galta-ji", "beatles-ashram"];
 // saberes que saíram do app
 const SABERES_REMOVIDOS = ["beatles"];
+const ajustaSaberes = arr => arr.filter(x => !SABERES_REMOVIDOS.includes(x.id)).map(x => SABERES_AJUSTES[x.id] ? SABERES_AJUSTES[x.id](x) : x);
+// ajustes em saberes que já estão no banco: Hanuman passa a ser o saber do selo de Sankat Mochan
+const SABERES_AJUSTES = { hanuman: x => ({ ...x, localId: "sankat-mochan", texto: String(x.texto || "").replace(/^Os macacos de Galta Ji[^\n]*\n\n/, "Em Varanasi, o templo de Sankat Mochan é dedicado a Hanuman. O nome quer dizer aquele que livra das aflições.\n\n") }) };
 const EXTRAS = [
   { id: "sankat-mochan", nome: "Sankat Mochan", insignia: "sankat-mochan", cidadeId: "varanasi", dia: 7, ordem: 7.6, codigo: "hanuman", lat: 25.2826, lng: 82.9987, busca: "Sankat Mochan Hanuman Temple Varanasi", aberto: false,
     descricao: "O templo de Hanuman em Varanasi, aquele que livra das dificuldades.", dica: "O devoto que carregou uma montanha espera entre as árvores." },
@@ -1389,7 +1395,7 @@ function vDia(d, open, isToday, abrir) {
       d.aviso ? h("div", { class: "note" }, h("p", { class: "t", text: d.aviso.titulo }), h("p", { text: d.aviso.texto })) : null,
       d.deuses ? h("div", { class: "gods" },
         h("p", { class: "eyebrow rule", text: "Mapa dos Deuses" }),
-        h("p", { class: "intro", text: d.deuses.intro }),
+        d.deuses.intro ? h("p", { class: "intro", text: d.deuses.intro }) : null,
         h("div", { class: "godrow" }, d.deuses.cards.map(c => h("figure", { class: "god", style: "margin:0" }, h("img", { src: deusSrc(c.nome), alt: c.nome, loading: "lazy" }), h("span", { text: c.papel })))),
         h("div", { class: "story" }, h("h5", { text: d.deuses.titulo }), h("p", { text: d.deuses.texto }))) : null,
       ls.length ? h("div", null, h("p", { class: "eyebrow rule", text: ls.length > 1 ? "Selos deste dia" : "Selo deste dia" }),
@@ -3754,7 +3760,7 @@ const MANTRAS = {
 const PERGUNTAS = {
   1: "Qual é a intenção que você traz para esta travessia?",
   2: "O que o Taj Mahal despertou em você?",
-  3: "O que ficou da meditação em Galta Ji?",
+  3: "O que ficou da estrada até o Rajastão?",
   4: "Qual cor, cheiro ou som de Jaipur você quer guardar?",
   5: "Como foi o seu primeiro encontro com o Ganges?",
   6: "O que você sentiu diante dos ghats de Kashi?",
@@ -4042,7 +4048,7 @@ function vHindi() {
 }
 // Guardar no celular (sem internet)
 const CACHE_KEYS = ["ens", "locais", "cidades", "cartas"];
-for (const k of CACHE_KEYS) { try { const v = JSON.parse(localStorage.getItem("cdi-c-" + k) || "null"); if (Array.isArray(v)) S[k] = k === "locais" ? ajustaLocais(v) : k === "ens" ? v.filter(x => !SABERES_REMOVIDOS.includes(x.id)) : v; } catch (e) {} }
+for (const k of CACHE_KEYS) { try { const v = JSON.parse(localStorage.getItem("cdi-c-" + k) || "null"); if (Array.isArray(v)) S[k] = k === "locais" ? ajustaLocais(v) : k === "ens" ? ajustaSaberes(v) : v; } catch (e) {} }
 function guardaCache(k) { if (!CACHE_KEYS.includes(k)) return; try { localStorage.setItem("cdi-c-" + k, JSON.stringify(S[k])); } catch (e) {} }
 const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 function htmlOffline() {
@@ -4092,6 +4098,19 @@ async function salvarNoRolo(blobP, nome, msg) {
   if (podeRolo()) { try { await navigator.share({ files: [f] }); msg.textContent = "Pronto! Se escolheu Salvar imagem, a foto está no rolo da câmera."; msg.className = "msg ok"; } catch (e) { if (e && e.name !== "AbortError") { msg.textContent = "Toque e segure na foto e escolha Salvar imagem."; msg.className = "msg"; } } return; }
   const a = h("a", { href: URL.createObjectURL(b), download: nome }); document.body.append(a); a.click(); a.remove();
   msg.textContent = "Foto salva."; msg.className = "msg ok";
+}
+// apagar foto da galeria (a foto em si também sai do banco, para não ocupar espaço)
+async function apagaFotoMural(f) {
+  await S.db.doc("mural/" + f.id).delete();
+  if (f.fotoId && !S.chat.some(m => m.fotoId === f.fotoId)) { try { await S.assets?.delete(f.fotoId); } catch (e) {} }
+}
+// só a líder: zera a galeria inteira (para começar a viagem limpa)
+async function zeraGaleria(st) {
+  const n = S.mural.length;
+  if (!n || !confirm(`Apagar as ${n} fotos da galeria? Isso não tem volta.`) || !confirm("Tem certeza? Todas as fotos da galeria vão sumir para todo mundo.")) return;
+  st.textContent = "Apagando…";
+  let ok = 0; for (const f of S.mural.slice()) { try { await apagaFotoMural(f); ok++; } catch (e) {} st.textContent = `Apagando… ${ok} de ${n}`; }
+  st.textContent = ok === n ? "Galeria zerada." : `Apaguei ${ok} de ${n}. Tente de novo para as que faltaram.`;
 }
 // Álbum da tribo: todas as fotos da galeria (e do chat) num arquivo .zip só
 function carregaScript(src) { return new Promise((ok, erro) => { if (document.querySelector(`script[src="${src}"]`)) return ok(); const sc = document.createElement("script"); sc.src = src; sc.onload = ok; sc.onerror = erro; document.head.append(sc); }); }
@@ -4146,9 +4165,12 @@ function vMural() {
       n + (id ? ` · ${S.mural.filter(f => f.cidade === id).length}` : "")))),
     fotos.length ? (() => { const st = h("p", { class: "small", role: "status" }); return h("div", { class: "album" },
       h("button", { class: "btn", type: "button", onclick: () => baixarAlbum(st, cid) }, (noSite() && podeRolo() ? "Salvar no celular: " : "Baixar ") + (cid ? `álbum de ${cid}` : "álbum da tribo")),
-      h("span", { class: "small", text: cid ? "As fotos desta cidade num arquivo só." : "Todas as fotos da galeria e do chat num arquivo só." }), st); })() : null,
-    fotos.length ? h("div", { class: "mural" }, fotos.map(f => h("button", { type: "button", class: "mfoto", onclick: () => abrirFotoMural(f), "aria-label": (f.legenda || "Foto") + " de " + nomeDe(f.autor) },
-      h("img", { src: blob(f.fotoId), alt: "", loading: "lazy" }), h("span", { text: nomeDe(f.autor).split(" ")[0] + (f.cidade && !cid ? " · " + f.cidade : "") }))))
+      h("span", { class: "small", text: cid ? "As fotos desta cidade num arquivo só." : "Todas as fotos da galeria e do chat num arquivo só." }), st,
+      S.isOwner && !cid ? h("button", { class: "btn ghost zera", type: "button", onclick: () => zeraGaleria(st) }, "Apagar todas as fotos da galeria") : null); })() : null,
+    fotos.length ? h("div", { class: "mural" }, fotos.map(f => h("div", { class: "mwrap" },
+      h("button", { type: "button", class: "mfoto", onclick: () => abrirFotoMural(f), "aria-label": (f.legenda || "Foto") + " de " + nomeDe(f.autor) },
+        h("img", { src: blob(f.fotoId), alt: "", loading: "lazy" }), h("span", { text: nomeDe(f.autor).split(" ")[0] + (f.cidade && !cid ? " · " + f.cidade : "") })),
+      f.autor === S.uid || S.isOwner ? h("button", { type: "button", class: "mdel", "aria-label": "Apagar esta foto", onclick: () => { if (confirm("Apagar esta foto da galeria?")) apagaFotoMural(f).catch(() => alert("Não consegui apagar a foto.")); } }, "×") : null)))
       : h("div", { class: "fotovazia" }, h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: cid ? "Nenhuma foto de " + cid + " ainda" : "A galeria está esperando" }),
         h("span", { text: "Monte sua foto no Estúdio e toque em Enviar para a galeria da caravana." }),
         h("button", { class: "btn gold", type: "button", onclick: () => { S.fotoAba = "estudio"; render(); } }, "Ir para o Estúdio")));
@@ -4164,7 +4186,7 @@ function abrirFotoMural(f) {
     h("div", { class: "actions", style: "justify-content:center" },
       h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(fetch(blob(f.fotoId)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + ".jpg", st) }, "Salvar no celular")),
     h("div", { class: "foot2" },
-      meu ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (!confirm("Tirar esta foto da galeria?")) return; S.db.doc("mural/" + f.id).delete().then(closeSheets, () => { st.textContent = "Não consegui tirar a foto."; st.className = "msg err"; }); } }, "Tirar da galeria") : h("span"),
+      meu ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (!confirm("Apagar esta foto da galeria?")) return; apagaFotoMural(f).then(closeSheets, () => { st.textContent = "Não consegui apagar a foto."; st.className = "msg err"; }); } }, "Apagar foto") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
@@ -4548,7 +4570,7 @@ const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedr
 function listen(col, key, q, after) {
   let primeira = true;
   (q || S.db.collection(col)).onSnapshot(snap => {
-    S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() })); if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = S.ens.filter(x => !SABERES_REMOVIDOS.includes(x.id)); guardaCache(key);
+    S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() })); if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = ajustaSaberes(S.ens); guardaCache(key);
     S.dbReady = true; if (after) after(); if (key === "chat") marcaChat();
     if (primeira || !USA[key] || USA[key].includes(S.tab)) render();
     primeira = false; refreshSheet();
