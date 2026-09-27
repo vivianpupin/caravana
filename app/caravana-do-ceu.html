@@ -877,25 +877,27 @@ nav.tabs button{position:relative}
 .envs{display:flex;flex-direction:column;gap:8px}
 .envelope{display:flex;align-items:center;gap:12px;background:#FBF1DA;border:1px solid #D9BE8C;border-radius:12px;padding:10px 12px;text-align:left}
 .envelope.fut{background:#fff8ea;border-style:dashed}
-.rolinho{position:relative;width:34px;height:40px;flex:none;border-radius:4px;background:linear-gradient(90deg,#D9B97E,#F1DDB0 30%,#F1DDB0 70%,#D9B97E);box-shadow:inset 0 3px 0 #C9A56A,inset 0 -3px 0 #C9A56A}
-.rolinho i{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#B3473A,#7A1F16);box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.rolinho{position:relative;width:38px;height:46px;flex:none;border-radius:2px;background:url(img/papiro.webp) center/cover;box-shadow:0 2px 5px rgba(0,0,0,.25)}
+.rolinho i{position:absolute;left:50%;top:50%;width:24px;height:24px;margin:-12px 0 0 -12px;background:url(img/lacre.webp) center/contain no-repeat;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
 .envelope .ctx{display:flex;flex-direction:column;min-width:0}
 .envelope b{font-family:"Special Elite","Courier Prime",monospace;font-size:15px;font-weight:400;color:#3B2A1C}
 .envelope .ctx span{font-size:12.5px;color:#6B5A43}
 .correiosheet .correiobox{background:transparent;box-shadow:none;padding:8px 0;overflow:visible;max-height:92%}
 .correiosheet{align-items:center}
 .correiobox .btn.ghost{color:#F1E2BC;border-color:rgba(241,226,188,.5)}
-.pergaminho{position:relative;margin:0 6px;border-radius:4px}
+.pergaminho{position:relative;margin:0 6px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+.pergaminho .pgm{clip-path:polygon(0% 1.5%,4% 0%,9% 1%,15% .2%,22% 1.2%,30% .3%,38% 1%,46% 0%,55% 1.1%,63% .2%,71% 1%,79% 0%,87% 1.2%,94% .3%,100% 1.4%,99.3% 12%,100% 25%,99.2% 38%,100% 52%,99.4% 66%,100% 80%,99.3% 92%,100% 98.6%,95% 100%,88% 99%,80% 100%,72% 99.1%,63% 100%,54% 99%,45% 100%,36% 99.2%,27% 100%,18% 99%,9% 100%,3% 99.2%,0% 98.4%,.7% 86%,0% 72%,.8% 58%,0% 44%,.6% 30%,0% 16%)}
 .pergaminho .pgm{max-height:58vh;overflow:auto}
-.pgm{position:relative;padding:30px 24px 34px;background:radial-gradient(ellipse at 50% 45%,#F6E7C4 0%,#EDD6A4 60%,#D8B679 100%);color:#2E2419;font-family:"Courier Prime","Courier New",monospace;font-style:normal;font-size:15px;line-height:1.65;display:flex;flex-direction:column;gap:12px;box-shadow:inset 0 0 40px rgba(120,80,30,.35)}
+.pgm{position:relative;padding:34px 26px 36px;background:radial-gradient(ellipse at 50% 45%,rgba(255,248,230,.25),rgba(120,80,30,.28) 100%),url(img/papiro.webp) center/cover;color:#2E2419;font-family:"Courier Prime","Courier New",monospace;font-style:normal;font-size:15px;line-height:1.65;display:flex;flex-direction:column;gap:12px;box-shadow:inset 0 0 40px rgba(120,80,30,.35)}
 .pgm p{margin:0}
 .pgmdata{font-family:"Courier Prime",monospace;font-style:normal;font-size:12px;letter-spacing:.04em;color:#7A5A36;text-align:right}
 .pgmtit{font-family:"Special Elite","Courier Prime",monospace;font-style:normal;font-size:19px;font-weight:400;letter-spacing:.04em;margin:0;color:#3B2A1C;text-align:center}
 .pgmpara{font-weight:600}
 .pgmass{margin-top:8px!important;text-align:right;font-style:italic}
 .pgm p:not(.pgmdata){text-shadow:0 0 .6px rgba(46,36,25,.55)}
-.lacre{align-self:center;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#B94A3C,#7A1F16 70%);display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.35),inset 0 0 0 4px rgba(0,0,0,.12);margin-top:6px}
-.lacre img{width:26px;height:auto;opacity:.9}
+.lacre{align-self:center;width:78px;height:78px;background:url(img/lacre.webp) center/contain no-repeat;display:grid;place-items:center;filter:drop-shadow(0 3px 4px rgba(0,0,0,.35));margin-top:6px}
+.lacre img{width:30px;height:auto;filter:brightness(0) sepia(1) hue-rotate(-30deg) saturate(3) brightness(.32) drop-shadow(0 1px 0 rgba(255,210,190,.35));opacity:.8}
+.pergaminho .rolo{display:none}
 .rolo{display:block;height:18px;border-radius:9px;background:linear-gradient(180deg,#B8904F,#E9CF96 45%,#A77D3E);box-shadow:0 3px 6px rgba(0,0,0,.3);position:relative;z-index:1}
 .rolo.top{margin-bottom:-6px}.rolo.bot{margin-top:-6px}
 .voo{display:flex;flex-direction:column;align-items:center;gap:4px;color:#F6EDDA;font-family:var(--display);font-style:italic;font-size:17px;text-shadow:0 1px 4px rgba(0,0,0,.5)}
