@@ -51,6 +51,6 @@ async function avisarSelo(d, k, selo) {
     return x;
   });
   if (!l) return Response.json({ ok: false });
-  const enviados = await enviarTodos(d, k, { title: "🏅 Selo liberado: " + (l.nome || "selo novo"), body: "Abra o passaporte para carimbar.", tag: "selo-" + selo, url: "./?aba=passaporte" }, null, 24 * 3600);
+  const enviados = await enviarTodos(d, k, { title: "🏅 Seu passaporte ganhou um selo!", body: (l.nome || "Selo novo") + ". Abra o passaporte para ver.", tag: "selo-" + selo, url: "./?aba=passaporte" }, null, 24 * 3600);
   return Response.json({ ok: true, enviados });
 }
