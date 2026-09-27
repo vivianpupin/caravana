@@ -439,6 +439,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 @media (min-width:820px){.estudio{grid-template-columns:minmax(0,1fr) 300px;align-items:start}}
 .fotoframe{background:#2B1F14;border-radius:var(--r);padding:12px;display:grid;place-items:center;box-shadow:var(--shadow)}
 .fotofixa{position:sticky;top:0;z-index:3;background:var(--bg,#F5EFE3);padding-top:6px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.tirafotos{display:flex;gap:8px;flex-wrap:wrap}.tiramini{display:flex;align-items:center;gap:6px;border:1px solid var(--line2);background:var(--panel);border-radius:999px;padding:5px 12px;font-size:13px;color:var(--ink)}.tiramini b{color:#A3231A}.tiramini.mais{border-style:dashed;color:var(--soft)}
 .filmstrip{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .filmstrip::-webkit-scrollbar{display:none}
 .fthumb{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:0;padding:0;scroll-snap-align:start;font-size:12px;color:var(--soft);cursor:pointer}
@@ -1393,7 +1394,7 @@ const BONECO = {
   chapeu: [["fedora", "Fedora"], ["safari", "Safári"], ["lenco", "Lenço"], ["turbante", "Turbante"], ["flores", "Coroa de flores"], ["sem", "Sem chapéu"]],
   roupa: [["basico", "Sem roupa"], ["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
   roupaCor: ["#8B6B43", "#C2A878", "#5F6B45", "#8A3F32", "#D9822B", "#B83A6B", "#2F5D7C", "#E8E0CF", "#2B2622"],
-  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["tambor", "Tambor"], ["baqueta", "Baqueta"], ["violao", "Violão"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["chicote", "Chicote"], ["nenhum", "Nada"]],
+  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["violao", "Violão"], ["tambor", "Tambor"], ["maraca", "Maracá"], ["flautim", "Flauta"], ["sitar", "Sitar"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["chicote", "Chicote"], ["nenhum", "Nada"]],
   colar: [["nenhum", "Nenhum"], ["guirlanda", "Guirlanda de flores"], ["rudraksha", "Rudraksha"]],
   testa: [["nada", "Nada"], ["bindi", "Bindi"], ["tilak", "Tilak"]],
   barba: [["nao", "Sem barba"], ["sim", "Com barba"]],
@@ -1548,13 +1549,26 @@ function desenhaBoneco(b) {
   if (oc === "sol") g.append(h("rect", { x: 22.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), h("rect", { x: 30.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), h("line", { x1: 29.2, y1: 21.5, x2: 30.8, y2: 21.5, stroke: "#1E1A16", "stroke-width": 1 }));
   if (oc === "grau") g.append(h("rect", { x: 23, y: 20.6, width: 6.2, height: 4, rx: .8, fill: "rgba(255,255,255,.18)", stroke: "#5A3A22", "stroke-width": .9 }), h("rect", { x: 30.8, y: 20.6, width: 6.2, height: 4, rx: .8, fill: "rgba(255,255,255,.18)", stroke: "#5A3A22", "stroke-width": .9 }), h("line", { x1: 29.2, y1: 22, x2: 30.8, y2: 22, stroke: "#5A3A22", "stroke-width": .8 }));
   // o que leva nas mãos: a segunda mão é o espelho da primeira
-  for (const [A, T] of [[b.acessorio, g], [b.acessorio2, b.acessorio2 && b.acessorio2 !== "nenhum" ? g.appendChild(h("g", { transform: "translate(60 0) scale(-1 1)" })) : null]]) {
+  for (const [A, T] of [[b.acessorio, g]]) {
     if (!A || !T) continue;
   if (A === "japamala") { for (let i = 0; i < 14; i++) { const t = i / 14 * Math.PI * 2; T.append(h("circle", { cx: 48 + Math.cos(t) * 4.5, cy: 66 + Math.sin(t) * 6, r: 1.15, fill: "#7A4A2B" })); } T.append(h("rect", { x: 47, y: 72, width: 2, height: 5, fill: "#A3231A" })); }
     if (A === "incenso") T.append(h("line", { x1: 47, y1: 60, x2: 51, y2: 46, stroke: "#7A4A2B", "stroke-width": 1.2 }), h("circle", { cx: 51, cy: 46, r: 1, fill: "#E0661C" }), P("M51 45 Q54 41 51 38 Q48 35 52 31", "none", { stroke: "rgba(120,110,100,.55)", "stroke-width": 1.1, "stroke-linecap": "round" }));
     if (A === "tambor") T.append(h("circle", { cx: 50, cy: 61, r: 8.5, fill: "#E9D7B0", stroke: "#7A4A2B", "stroke-width": 1.8 }), h("circle", { cx: 50, cy: 61, r: 6.6, fill: "none", stroke: "#D8BF8E", "stroke-width": .6 }),
       P("M50 57.2 L51 60 L53.8 61 L51 62 L50 64.8 L49 62 L46.2 61 L49 60 Z", "#A3231A"), ...[0, 60, 120, 180, 240, 300].map(a => h("circle", { cx: 50 + Math.cos(a * Math.PI / 180) * 5, cy: 61 + Math.sin(a * Math.PI / 180) * 5, r: .55, fill: "#7A4A2B" })));
-    if (A === "baqueta") T.append(h("line", { x1: 47, y1: 63, x2: 53, y2: 51, stroke: "#6B4A2A", "stroke-width": 1.5, "stroke-linecap": "round" }), h("ellipse", { cx: 53.6, cy: 49.8, rx: 2.6, ry: 2.2, fill: "#D9C29A", stroke: "#8A6B43", "stroke-width": .6 }));
+    if (A === "tambor") T.append(h("line", { x1: 53, y1: 57, x2: 58.5, y2: 47, stroke: "#6B4A2A", "stroke-width": 1.4, "stroke-linecap": "round" }), h("ellipse", { cx: 59, cy: 46, rx: 2.4, ry: 2, fill: "#D9C29A", stroke: "#8A6B43", "stroke-width": .5 }));
+    if (A === "maraca") T.append(h("line", { x1: 48, y1: 63, x2: 50.5, y2: 53, stroke: "#7A4A2B", "stroke-width": 1.6, "stroke-linecap": "round" }),
+      h("ellipse", { cx: 51.3, cy: 49, rx: 4, ry: 4.8, fill: "#C0472B", stroke: "#7A2A18", "stroke-width": .6 }), P("M47.6 49 Q51.3 51 55 49", "none", { stroke: "#F2C94C", "stroke-width": 1 }),
+      ...[[50, 46.5], [52.6, 46.8], [49.8, 51.4], [52.8, 51.5]].map(([x, y]) => h("circle", { cx: x, cy: y, r: .55, fill: "#F4EFE3" })),
+      P("M56.5 44 Q58 45.5 57.5 47.5 M58.8 42.8 Q61 45.3 60.2 48.4", "none", { stroke: "rgba(90,63,34,.55)", "stroke-width": .6, "stroke-linecap": "round" }));
+    if (A === "flautim") T.append(h("line", { x1: 44.5, y1: 67, x2: 53.5, y2: 45, stroke: "#C9A063", "stroke-width": 2.2, "stroke-linecap": "round" }),
+      ...[.25, .38, .5, .62].map(t => h("circle", { cx: 44.5 + 9 * t, cy: 67 - 22 * t, r: .45, fill: "#5A3A22" })),
+      ...[.08, .88].map(t => h("line", { x1: 43.4 + 9 * t, y1: 66.6 - 22 * t, x2: 45.6 + 9 * t, y2: 67.4 - 22 * t, stroke: "#A3231A", "stroke-width": .9 })));
+    if (A === "sitar") T.append(h("g", { transform: "rotate(-14 48 60)" },
+      h("rect", { x: 46.9, y: 33, width: 2.4, height: 38, rx: .6, fill: "#6B4A2A" }),
+      ...[38, 42, 46, 50, 54, 58].map(y => h("line", { x1: 46.6, y1: y, x2: 49.6, y2: y, stroke: "#E0B24A", "stroke-width": .4 })),
+      h("circle", { cx: 48.1, cy: 34, r: 2.3, fill: "#A0673F" }),
+      h("ellipse", { cx: 48.1, cy: 74, rx: 7, ry: 6.4, fill: "#B07A45", stroke: "#6B4A2A", "stroke-width": .8 }), h("ellipse", { cx: 48.1, cy: 74, rx: 4, ry: 3.4, fill: "none", stroke: "#E0B24A", "stroke-width": .5 }),
+      P("M47.6 35 L47.6 76 M48.6 35 L48.6 76", "none", { stroke: "#F1E2BC", "stroke-width": .22 })));
     if (A === "violao") T.append(h("g", { transform: "rotate(10 48 61)" },
       h("rect", { x: 47, y: 41, width: 3.2, height: 4.5, rx: .8, fill: "#3A2414" }),
       h("rect", { x: 47.6, y: 45, width: 2, height: 21, fill: "#5A3A22" }),
@@ -1580,6 +1594,7 @@ function desenhaBoneco(b) {
   }
   return g;
 }
+const INSTRUMENTOS = ["violao", "tambor", "maraca", "flautim", "sitar", "sino"];
 const bonecoSvg = (b, cls) => h("svg", { viewBox: b.pet && b.pet !== "nenhum" ? "0 0 99 90" : "0 0 60 90", class: cls || "bonecosvg", role: "img", "aria-label": "Explorador", style: "overflow:visible" }, desenhaBoneco(b));
 // Fantasias inspiradas nos deuses: mudam roupa, cores e o que a pessoa segura.
 BONECO.deus = [["nenhum", "Nenhuma"], ["shiva", "Shiva"], ["ganesha", "Ganesha"], ["durga", "Durga"], ["krishna", "Krishna"], ["hanuman", "Hanuman"], ["lakshmi", "Lakshmi"],
@@ -1743,8 +1758,8 @@ function vExplorador() {
         h("p", { class: "lab", text: "Pele" }), cores("pele", BONECO.pele, "Tom de pele"),
         h("p", { class: "lab", text: "Cabelo" }), chips("cabelo", BONECO.cabelo), cores("cabeloCor", BONECO.cabeloCor, "Cor do cabelo"),
         h("p", { class: "lab", text: "Roupa" }), chips("roupa", BONECO.roupa), cores("roupaCor", BONECO.roupaCor, "Cor da roupa"),
-        h("p", { class: "lab", text: "Na mão esquerda" }), chips("acessorio", BONECO.acessorio),
-        h("p", { class: "lab", text: "Na mão direita" }), chips("acessorio2", BONECO.acessorio),
+        h("p", { class: "lab", text: "Na mão · instrumentos" }), chips("acessorio", BONECO.acessorio.filter(([v]) => INSTRUMENTOS.includes(v))),
+        h("p", { class: "lab", text: "Na mão · objetos" }), chips("acessorio", BONECO.acessorio.filter(([v]) => !INSTRUMENTOS.includes(v))),
         h("p", { class: "lab", text: "Óculos" }), chips("oculos", BONECO.oculos),
         h("p", { class: "lab", text: "Colar" }), chips("colar", BONECO.colar),
         h("p", { class: "lab", text: "Na testa" }), chips("testa", BONECO.testa),
@@ -2283,6 +2298,32 @@ function mandala(img, t) {
   for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2 + Math.PI / 8; x.save(); x.translate(m + Math.cos(a) * t * .99, m + Math.sin(a) * t * .99); x.rotate(a + Math.PI / 2); x.beginPath(); x.moveTo(0, -t * .05); x.lineTo(t * .03, t * .02); x.lineTo(-t * .03, t * .02); x.closePath(); x.fill(); x.restore(); }
   return c;
 }
+// carimbo de tinta vermelha com o símbolo (R = raio)
+function carimbo(c, cx, cy, R, dourado, rot) {
+  const u = R / 140, tc = document.createElement("canvas"); tc.width = tc.height = Math.ceil(R * 2.4); const x = tc.getContext("2d"), m = tc.width / 2, cor = "#A8281B";
+  x.strokeStyle = cor; x.fillStyle = cor;
+  x.lineWidth = 8 * u; x.beginPath(); x.arc(m, m, R, 0, 7); x.stroke();
+  x.lineWidth = 2.5 * u; x.beginPath(); x.arc(m, m, R - 18 * u, 0, 7); x.stroke();
+  for (let i = 0; i < 36; i++) { const a = i / 36 * Math.PI * 2; x.beginPath(); x.arc(m + Math.cos(a) * (R - 9 * u), m + Math.sin(a) * (R - 9 * u), (i % 3 ? 2 : 3.6) * u, 0, 7); x.fill(); }
+  for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2 + Math.PI / 4; x.save(); x.translate(m + Math.cos(a) * (R - 44 * u), m + Math.sin(a) * (R - 44 * u)); x.rotate(a + Math.PI / 4); x.fillRect(-5 * u, -5 * u, 10 * u, 10 * u); x.restore(); }
+  const sb = simboloEm(dourado, cor, R * 1.05); x.drawImage(sb, m - sb.width / 2, m - sb.height / 2);
+  x.globalCompositeOperation = "destination-out";
+  for (let k = 0; k < 900; k++) { x.globalAlpha = Math.random() * .8; x.beginPath(); x.arc(Math.random() * tc.width, Math.random() * tc.height, Math.random() * 2.4 * u, 0, 7); x.fill(); }
+  c.save(); c.translate(cx, cy); c.rotate(rot || 0); c.globalAlpha = .9; c.globalCompositeOperation = "multiply"; c.drawImage(tc, -m, -m); c.restore();
+}
+// selo de lacre vermelho com o símbolo em relevo
+function seloCera(c, cx, cy, R, dourado) {
+  const u = R / 118;
+  c.save(); c.shadowColor = "rgba(0,0,0,.45)"; c.shadowBlur = 22 * u; c.shadowOffsetY = 8 * u;
+  c.beginPath(); for (let i = 0; i <= 40; i++) { const a = i / 40 * Math.PI * 2, r = R * (1 + (Math.sin(i * 2.7) * .05 + Math.sin(i * 1.3) * .04)); i ? c.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r) : c.moveTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r); }
+  const gr = c.createRadialGradient(cx - R * .3, cy - R * .35, R * .1, cx, cy, R * 1.1); gr.addColorStop(0, "#C8322A"); gr.addColorStop(.6, "#8E1A14"); gr.addColorStop(1, "#5A0C08");
+  c.fillStyle = gr; c.fill(); c.restore();
+  c.save(); c.lineWidth = 5 * u; c.strokeStyle = "rgba(60,6,4,.55)"; c.beginPath(); c.arc(cx, cy, R * .74, 0, 7); c.stroke();
+  c.strokeStyle = "rgba(255,160,140,.35)"; c.lineWidth = 2.5 * u; c.beginPath(); c.arc(cx - 1.5 * u, cy - 2 * u, R * .78, Math.PI * .9, Math.PI * 1.6); c.stroke();
+  const al = R * .95, luz = simboloEm(dourado, "rgba(255,170,150,.55)", al), sombra = simboloEm(dourado, "#4A0806", al);
+  c.drawImage(luz, cx - luz.width / 2 - 2 * u, cy - al / 2 - 2 * u); c.drawImage(sombra, cx - sombra.width / 2 + 1.5 * u, cy - al / 2 + 1.5 * u);
+  c.drawImage(simboloEm(dourado, "#7A1410", al), cx - luz.width / 2, cy - al / 2); c.restore();
+}
 async function montaFoto(canvas) {
   const F = S.foto; if (!F || !F.img) return;
   const img = F.img, max = 1600, k = Math.min(1, max / Math.max(img.width, img.height));
@@ -2340,29 +2381,9 @@ async function montaFoto(canvas) {
       c.save(); c.translate(ox + sw + 40 * u, by + 116 * u); c.rotate(-.025); c.fillText(texto, 0, 0, w - sw - 70 * u); c.restore();
     } else c.drawImage(marrom, ox + (w - sw) / 2, by + 46 * u, sw, s);
   } else if (F.moldura === "carimbo") {
-    // carimbo de tinta: anéis, pontos e o símbolo, com falhas de tinta
-    const R = 140 * u, tc = document.createElement("canvas"); tc.width = tc.height = Math.ceil(R * 2.4); const x = tc.getContext("2d"), m = tc.width / 2, cor = "#A8281B";
-    x.strokeStyle = cor; x.fillStyle = cor;
-    x.lineWidth = 8 * u; x.beginPath(); x.arc(m, m, R, 0, 7); x.stroke();
-    x.lineWidth = 2.5 * u; x.beginPath(); x.arc(m, m, R - 18 * u, 0, 7); x.stroke();
-    for (let i = 0; i < 36; i++) { const a = i / 36 * Math.PI * 2; x.beginPath(); x.arc(m + Math.cos(a) * (R - 9 * u), m + Math.sin(a) * (R - 9 * u), (i % 3 ? 2 : 3.6) * u, 0, 7); x.fill(); }
-    for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2 + Math.PI / 4; x.save(); x.translate(m + Math.cos(a) * (R - 44 * u), m + Math.sin(a) * (R - 44 * u)); x.rotate(a + Math.PI / 4); x.fillRect(-5 * u, -5 * u, 10 * u, 10 * u); x.restore(); }
-    const sb = simboloEm(dourado, cor, R * 1.05); x.drawImage(sb, m - sb.width / 2, m - sb.height / 2);
-    x.globalCompositeOperation = "destination-out";
-    for (let k = 0; k < 900; k++) { x.globalAlpha = Math.random() * .8; x.beginPath(); x.arc(Math.random() * tc.width, Math.random() * tc.height, Math.random() * 2.4 * u, 0, 7); x.fill(); }
-    c.save(); c.translate(w - R - 60 * u, hh - R - 60 * u); c.rotate(-0.22); c.globalAlpha = .9; c.globalCompositeOperation = "multiply"; c.drawImage(tc, -m, -m); c.restore();
+    carimbo(c, w - 200 * u, hh - 200 * u, 140 * u, dourado, -0.22);
   } else if (F.moldura === "cera") {
-    // selo de lacre vermelho com o símbolo em relevo
-    const R = 118 * u, cx = w - R - 70 * u, cy = hh - R - 70 * u;
-    c.save(); c.shadowColor = "rgba(0,0,0,.45)"; c.shadowBlur = 22 * u; c.shadowOffsetY = 8 * u;
-    c.beginPath(); for (let i = 0; i <= 40; i++) { const a = i / 40 * Math.PI * 2, r = R * (1 + (Math.sin(i * 2.7) * .05 + Math.sin(i * 1.3) * .04)); i ? c.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r) : c.moveTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r); }
-    const gr = c.createRadialGradient(cx - R * .3, cy - R * .35, R * .1, cx, cy, R * 1.1); gr.addColorStop(0, "#C8322A"); gr.addColorStop(.6, "#8E1A14"); gr.addColorStop(1, "#5A0C08");
-    c.fillStyle = gr; c.fill(); c.restore();
-    c.lineWidth = 5 * u; c.strokeStyle = "rgba(60,6,4,.55)"; c.beginPath(); c.arc(cx, cy, R * .74, 0, 7); c.stroke();
-    c.strokeStyle = "rgba(255,160,140,.35)"; c.lineWidth = 2.5 * u; c.beginPath(); c.arc(cx - 1.5 * u, cy - 2 * u, R * .78, Math.PI * .9, Math.PI * 1.6); c.stroke();
-    const al = R * .95, luz = simboloEm(dourado, "rgba(255,170,150,.55)", al), sombra = simboloEm(dourado, "#4A0806", al);
-    c.drawImage(luz, cx - luz.width / 2 - 2 * u, cy - al / 2 - 2 * u); c.drawImage(sombra, cx - sombra.width / 2 + 1.5 * u, cy - al / 2 + 1.5 * u);
-    c.drawImage(simboloEm(dourado, "#7A1410", al), cx - luz.width / 2, cy - al / 2);
+    seloCera(c, w - 188 * u, hh - 188 * u, 118 * u, dourado);
   } else if (F.moldura === "assinatura") {
     const grd = c.createLinearGradient(0, hh * .7, 0, hh); grd.addColorStop(0, "rgba(20,14,8,0)"); grd.addColorStop(1, "rgba(20,14,8,.55)");
     c.fillStyle = grd; c.fillRect(0, hh * .7, w, hh * .3);
@@ -2390,8 +2411,141 @@ function tiraFiltros(F, escolhe) {
   requestAnimationFrame(() => { tira.scrollLeft = S.fotoTiraX || 0; requestAnimationFrame(() => { pronto = true; }); });
   return tira;
 }
+// ---------- Tira de fotos: várias fotos numa peça só ----------
+const TIRAS = [["cabine", "Cabine"], ["pelicula", "Película Super 8"], ["negativo", "Negativo"], ["polaroids", "Polaroids no mural"], ["carimbada", "Carimbada"], ["mosaico", "Mosaico com selo"]];
+const TIRA_FILTROS = ["super8", "original", "expedicao", "oldschool", "vintage", "kashi", "filme", "ganges", "cinema", "terracota"];
+// desenha a foto cobrindo o espaço (corta o que sobra), com cantos arredondados se r
+function cobre(c, img, x, y, w, h, r) {
+  const k = Math.max(w / img.width, h / img.height), sw = w / k, sh = h / k;
+  c.save(); c.beginPath(); r ? c.roundRect(x, y, w, h, r) : c.rect(x, y, w, h); c.clip();
+  c.drawImage(img, (img.width - sw) / 2, (img.height - sh) / 2, sw, sh, x, y, w, h); c.restore();
+}
+function papelKraft(c, W, H) {
+  c.fillStyle = "#C8A273"; c.fillRect(0, 0, W, H);
+  for (let i = 0; i < 1400; i++) { c.strokeStyle = `rgba(${90 + (i % 5) * 20},${60 + (i % 7) * 10},30,${.06 + (i % 4) * .03})`; c.lineWidth = 1 + (i % 3); const x = (i * 7919) % W, y = (i * 104729) % H; c.beginPath(); c.moveTo(x, y); c.lineTo(x + (i % 11) * 3 - 15, y + (i % 13) - 6); c.stroke(); }
+}
+function fitaAdesiva(c, x, y, w, rot) {
+  c.save(); c.translate(x, y); c.rotate(rot); c.fillStyle = "rgba(236,222,190,.78)"; c.fillRect(-w / 2, -18, w, 36);
+  c.strokeStyle = "rgba(160,130,90,.25)"; c.setLineDash([3, 4]); c.strokeRect(-w / 2, -18, w, 36); c.restore();
+}
+async function montaTira(canvas) {
+  const T = S.tira; if (!T || !T.imgs.length) return;
+  const f = FILTROS.find(x => x.id === T.filtro) || FILTROS[0];
+  T.prontas = T.prontas || {};
+  const fotos = T.imgs.map((img, i) => {
+    const chave = T.filtro + ":" + i + ":" + T.ids[i];
+    if (T.prontas[chave]) return T.prontas[chave];
+    const k = Math.min(1, 900 / Math.max(img.width, img.height)), t = document.createElement("canvas");
+    t.width = Math.round(img.width * k); t.height = Math.round(img.height * k);
+    const x = t.getContext("2d", { willReadFrequently: true }); x.drawImage(img, 0, 0, t.width, t.height);
+    aplicaFiltro(x, t.width, t.height, f, "auto"); return (T.prontas[chave] = t);
+  });
+  const [marrom, dourado] = await Promise.all([carregaImg("img/simbolo-marrom.png"), carregaImg("img/simbolo-dourado.png")]);
+  const n = fotos.length, e = T.estilo;
+  let W, H; const c = canvas.getContext("2d");
+  const simb = (img, cor, alt, cx, cy) => { const sb = simboloEm(img, cor, alt); c.drawImage(sb, cx - sb.width / 2, cy - sb.height / 2); };
+  if (e === "cabine" || e === "carimbada") {
+    const fw = 620, fh = 465, m = 40, gap = 28, pad = e === "carimbada" ? 110 : 0;
+    const sw = fw + m * 2, sh = m + n * fh + (n - 1) * gap + 190;
+    W = sw + pad * 2; H = sh + pad * 2; canvas.width = W; canvas.height = H;
+    if (pad) papelKraft(c, W, H);
+    c.save(); c.translate(pad, pad); if (pad) { c.translate(sw / 2, sh / 2); c.rotate(-.025); c.translate(-sw / 2, -sh / 2); c.shadowColor = "rgba(40,25,10,.4)"; c.shadowBlur = 30; c.shadowOffsetY = 10; }
+    c.fillStyle = "#F4ECDB"; c.fillRect(0, 0, sw, sh); c.shadowColor = "transparent";
+    fotos.forEach((ft, i) => cobre(c, ft, m, m + i * (fh + gap), fw, fh));
+    simb(marrom, "#5A3F22", 96, sw / 2, sh - 100);
+    if (pad) fitaAdesiva(c, sw / 2, -4, 220, .04);
+    c.restore();
+    if (pad) carimbo(c, W - pad - 60, H - pad - 170, 150, dourado, -.28);
+  } else if (e === "pelicula") {
+    const fw = 600, fh = 450, lado = 80, gap = 40, top = 50;
+    W = fw + lado * 2; H = top + n * fh + (n - 1) * gap + 150; canvas.width = W; canvas.height = H;
+    c.fillStyle = "#0D0A08"; c.fillRect(0, 0, W, H);
+    fotos.forEach((ft, i) => cobre(c, ft, lado, top + i * (fh + gap), fw, fh, 26));
+    for (let y = 24; y < H - 40; y += 90) for (const x of [lado / 2 - 18, W - lado / 2 - 18]) { c.fillStyle = "#EFE4CC"; c.beginPath(); c.roundRect(x, y, 36, 52, 8); c.fill(); }
+    c.fillStyle = "rgba(255,190,120,.08)"; c.fillRect(0, 0, W, H);
+    simb(dourado, "#D9A24A", 80, W / 2, H - 75);
+  } else if (e === "negativo") {
+    const fw = 600, fh = 450, banda = 80, gap = 34, esq = 40, fim = 200;
+    W = esq + n * fw + (n - 1) * gap + fim; H = fh + banda * 2; canvas.width = W; canvas.height = H;
+    c.fillStyle = "#2A1C12"; c.fillRect(0, 0, W, H);
+    const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "rgba(190,110,40,.25)"); g.addColorStop(.5, "rgba(190,110,40,0)"); g.addColorStop(1, "rgba(190,110,40,.25)"); c.fillStyle = g; c.fillRect(0, 0, W, H);
+    for (let x = 16; x < W - 30; x += 64) for (const y of [banda / 2 - 16, H - banda / 2 - 16]) { c.fillStyle = "#EFE4CC"; c.beginPath(); c.roundRect(x, y, 34, 32, 6); c.fill(); }
+    fotos.forEach((ft, i) => cobre(c, ft, esq + i * (fw + gap), banda, fw, fh, 10));
+    for (let i = 0; i < n; i++) { c.fillStyle = "#E0A24A"; c.beginPath(); const x = esq + i * (fw + gap) + fw / 2; c.moveTo(x - 10, 12); c.lineTo(x + 10, 12); c.lineTo(x, 26); c.fill(); }
+    c.save(); c.translate(W - fim / 2, H / 2); c.rotate(-Math.PI / 2); simb(dourado, "#E0A24A", 110, 0, 0); c.restore();
+  } else if (e === "polaroids") {
+    W = 1080; H = 1350; canvas.width = W; canvas.height = H; papelKraft(c, W, H);
+    const L = n === 1 ? 640 : n === 2 ? 470 : 420;
+    const pos = { 1: [[540, 640, -.04]], 2: [[330, 470, -.09], [740, 860, .07]], 3: [[300, 400, -.1], [780, 520, .08], [520, 960, -.03]], 4: [[290, 380, -.08], [790, 400, .09], [300, 950, .06], [780, 960, -.07]] }[n];
+    fotos.forEach((ft, i) => { const [cx, cy, r] = pos[i], pw = L + 40, ph = L + 150;
+      c.save(); c.translate(cx, cy); c.rotate(r); c.shadowColor = "rgba(40,25,10,.45)"; c.shadowBlur = 26; c.shadowOffsetY = 10;
+      c.fillStyle = "#F6EFE1"; c.fillRect(-pw / 2, -ph / 2, pw, ph); c.shadowColor = "transparent";
+      cobre(c, ft, -L / 2, -ph / 2 + 20, L, L);
+      simb(marrom, "#5A3F22", 60, 0, ph / 2 - 62);
+      fitaAdesiva(c, 0, -ph / 2, 160, (i % 2 ? -.12 : .1)); c.restore(); });
+  } else {
+    W = 1080; H = 1080; canvas.width = W; canvas.height = H; c.fillStyle = "#F4ECDB"; c.fillRect(0, 0, W, H);
+    const g2 = 18, M = 18, A = W - M * 2;
+    const q = n === 1 ? [[0, 0, 1, 1]] : n === 2 ? [[0, 0, .5, 1], [.5, 0, .5, 1]] : n === 3 ? [[0, 0, 1, .55], [0, .55, .5, .45], [.5, .55, .5, .45]] : [[0, 0, .5, .5], [.5, 0, .5, .5], [0, .5, .5, .5], [.5, .5, .5, .5]];
+    fotos.forEach((ft, i) => { const [a, b, w, hh] = q[i], l = a > 0 ? g2 / 2 : 0, r = a + w < .999 ? g2 / 2 : 0, t = b > 0 ? g2 / 2 : 0, bt = b + hh < .999 ? g2 / 2 : 0;
+      cobre(c, ft, M + a * A + l, M + b * A + t, w * A - l - r, hh * A - t - bt); });
+    seloCera(c, W / 2, n === 3 ? M + .55 * A : H / 2, 110, dourado);
+  }
+}
+function vTira() {
+  const T = S.tira || (S.tira = { imgs: [], ids: [], estilo: "cabine", filtro: "super8" });
+  const canvas = S.tiraCanvas || (S.tiraCanvas = h("canvas", { class: "fotocanvas", "aria-label": "Prévia da tira de fotos" }));
+  const msg = h("p", { class: "msg", role: "status" });
+  const fi = h("input", { type: "file", accept: "image/*", multiple: true, id: "tira-fotos", hidden: true, onchange: async () => {
+    const fs = [...fi.files].slice(0, 4 - T.imgs.length);
+    for (const f of fs) { try { T.imgs.push(await createImageBitmap(f)); T.ids.push(Math.random().toString(36).slice(2)); } catch (e) {} }
+    if (fi.files.length > fs.length) msg.textContent = "A tira leva até 4 fotos.";
+    fi.value = ""; render();
+  } });
+  const set = (k, v) => { T[k] = v; render(); };
+  const blob = () => new Promise(res => canvas.toBlob(res, "image/jpeg", .92));
+  const salvar = async () => {
+    const dl = await (window.claude?.use?.("downloads") ?? null);
+    if (!dl) { msg.textContent = "Para salvar, toque e segure na imagem e escolha Salvar imagem."; msg.className = "msg"; return; }
+    try { await dl.save({ filename: "caravana-tira.jpg", data: await blob() }); msg.textContent = "Tira salva."; msg.className = "msg ok"; }
+    catch (e) { msg.textContent = e && e.code === "declined" ? "" : "Não consegui salvar. Toque e segure na imagem e escolha Salvar imagem."; msg.className = "msg"; }
+  };
+  const envia = async col => {
+    if (!S.assets || !eu()) { msg.textContent = "Para enviar, emita seu passaporte e peça à líder um convite de Editor."; msg.className = "msg err"; return; }
+    msg.textContent = "Enviando…"; msg.className = "msg";
+    try { const r = await S.assets.upload(await blob());
+      if (col === "mural") await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade: "", legenda: "", ts: Date.now() });
+      else await S.db.collection("chat").add({ autor: S.uid, tipo: "foto", fotoId: r.id, texto: "", ts: Date.now() });
+      msg.textContent = col === "mural" ? "Tira na galeria da caravana." : "Tira enviada para a Roda."; msg.className = "msg ok"; }
+    catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
+  };
+  if (T.imgs.length) requestAnimationFrame(() => montaTira(canvas).catch(() => {}));
+  return h("section", { class: "view" },
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Fotos da travessia" }))),
+    abasFotos(),
+    T.imgs.length ? h("div", { class: "estudio" },
+      h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas),
+        h("div", { class: "tirafotos" }, T.imgs.map((im, i) => h("button", { type: "button", class: "tiramini", "aria-label": "Tirar esta foto", onclick: () => { T.imgs.splice(i, 1); T.ids.splice(i, 1); render(); } },
+          h("span", { text: String(i + 1) }), h("b", { text: "×" }))),
+          T.imgs.length < 4 ? h("button", { type: "button", class: "tiramini mais", onclick: () => fi.click() }, "+ foto") : null)),
+      h("div", { class: "fcontrols" },
+        h("p", { class: "lab", text: "Estilo da tira" }),
+        h("div", { class: "opts" }, TIRAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(T.estilo === id), onclick: () => set("estilo", id) }, n))),
+        h("p", { class: "lab", text: "Filtro para todas" }),
+        h("div", { class: "opts" }, TIRA_FILTROS.map(id => FILTROS.find(f => f.id === id)).filter(Boolean).map(f => h("button", { type: "button", class: "opt", "aria-pressed": String(T.filtro === f.id), onclick: () => set("filtro", f.id) }, f.nome))),
+        h("div", { class: "actions" },
+          h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no celular"),
+          h("button", { class: "btn", type: "button", onclick: () => envia("mural") }, "Enviar para a galeria"),
+          h("button", { class: "btn", type: "button", onclick: () => envia("chat") }, "Enviar para a Roda")),
+        msg)) :
+      h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
+        h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "Escolha de 2 a 4 fotos" }),
+        h("span", { text: "Monte uma tira de cabine, uma película Super 8, um negativo, polaroids no mural ou um mosaico com selo." })),
+    fi);
+}
 function vFotos() {
   if (S.fotoAba === "mural") return vMural();
+  if (S.fotoAba === "tira") return vTira();
   const F = S.foto || (S.foto = { filtro: "expedicao", cat: "Clássicos", grao: "auto", moldura: "polaroid", legenda: "", cidade: "", data: "" });
   const hoje = hojeIso(), dia = (S.roteiro?.dias || []).find(d => d.iso === hoje);
   if (!F.cidade && !F._auto) { F.cidade = dia ? dia.cidade.split(" ")[0] : ""; F._auto = true; }
@@ -2949,7 +3103,7 @@ const CIDADES_MURAL = ["Delhi", "Agra", "Jaipur", "Varanasi", "Rishikesh"];
 function abasFotos() {
   const a = S.fotoAba || "estudio";
   return h("div", { class: "fcats", role: "tablist", style: "margin-top:-4px" },
-    [["estudio", "Estúdio"], ["mural", "Galeria da caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
+    [["estudio", "Estúdio"], ["tira", "Tira de fotos"], ["mural", "Galeria da caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
 }
 function vMural() {
   const cid = S.muralCidade || "", fotos = S.mural.filter(f => !cid || f.cidade === cid);
