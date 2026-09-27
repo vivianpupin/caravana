@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 12:53";</script>
+<script>window.__VERSAO = "27/09 · 12:55";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3465,7 +3465,7 @@ function vConversa() {
 
   const pode = S.db && S.uid && eu() && S.canChat !== false;
   const falha = e => { if (e && e.code === "invalid_argument") { S.canChat = false; render(); } };
-  const ta = h("textarea", { id: "chat-input", rows: "1", maxlength: "1000", placeholder: "Escreva para a caravana", "aria-label": "Mensagem" });
+  const ta = h("textarea", { id: "chat-input", rows: "1", maxlength: "1000", placeholder: "Escreva aqui…", "aria-label": "Mensagem" });
   const enviar = async () => {
     const texto = ta.value.trim(); if (!texto) return; ta.value = "";
     try { await addChat({ autor: S.uid, texto, ts: Date.now() }); } catch (e) { ta.value = texto; falha(e); }
