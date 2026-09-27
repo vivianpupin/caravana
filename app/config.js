@@ -12,7 +12,7 @@ window.CARAVANA_CONFIG = {
 };
 // Login pelo próprio endereço do app: liga depois que o endereço
 // https://caravanaindiaapp.netlify.app/__/auth/handler estiver cadastrado no Google Cloud (credenciais OAuth).
-const LOGIN_PELO_APP = false;
+const LOGIN_PELO_APP = true;
 if (LOGIN_PELO_APP && location.hostname === "caravanaindiaapp.netlify.app") window.CARAVANA_CONFIG.firebase.authDomain = location.host;
 
 // Link aberto de dentro do Instagram, Facebook, WhatsApp etc.: o Google não deixa entrar por esses navegadores.
