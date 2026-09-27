@@ -251,6 +251,12 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .fundopass{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;z-index:0}
 .fundopass>svg:first-child{position:absolute;inset:0}
 .fpmarca{position:absolute;pointer-events:none}
+.fpmand{opacity:.13;width:300px;height:auto}
+.fp-m1{top:-60px;left:50%;margin-left:-150px}
+.fp-m2{top:22%;left:-110px;transform:rotate(12deg)}
+.fp-m3{top:42%;right:-120px;transform:rotate(-18deg)}
+.fp-m4{top:63%;left:50%;margin-left:-150px;transform:rotate(6deg)}
+.fp-m5{top:84%;left:-90px;transform:rotate(-8deg)}
 .fp-ros1{top:-40px;left:50%;width:280px;margin-left:-140px}
 .fp-rosa{top:26%;left:-30px;width:150px;transform:rotate(-12deg)}
 .fp-lotus{top:44%;right:-10px;width:160px}
@@ -627,6 +633,15 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .mrz{font-family:var(--mono)!important;font-size:clamp(9px,2.6vw,12px)!important;color:#3B3328!important}
 .pgtop{font-family:var(--mono);font-weight:700;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#5A4630;border-bottom:1px solid rgba(40,28,15,.2);padding-bottom:6px;width:100%}
 .pg.dados{justify-content:flex-start;align-items:stretch;text-align:left}
+.livdados{display:flex;flex-direction:column;gap:7px;width:100%;text-align:left;margin-top:4px}
+.livtopo{display:grid;grid-template-columns:34% 1fr;gap:9px;align-items:start}
+.livprinc{display:flex;flex-direction:column;gap:4px;min-width:0}
+.livgrade{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px}
+.ld{display:flex;flex-direction:column;min-width:0}.ld.todo{grid-column:1/-1}
+.ldr{font:600 6.5px/1.2 "Poppins",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8A6B43}
+.ldv{font:600 10.5px/1.25 "Courier Prime",monospace;color:#282722;overflow-wrap:anywhere}
+.ld.big .ldv{font-size:12.5px}
+.livmed{display:flex;align-items:center;gap:8px}.livmed .medalhas{margin:0}
 .pgdados{display:grid;grid-template-columns:38% 1fr;gap:10px;align-items:start;margin-top:6px}
 .pg .pgfoto{width:100%;margin:0}
 .pg .fv{font-size:11.5px}.pg .fd.big .fv{font-size:13.5px}.pg .fl{font-size:7px}
@@ -1438,7 +1453,7 @@ async function montaVideoPassaporte(cv, aoFim) {
   const v = eu() || { nome: primeiroNome ? primeiroNome() : "Viajante" }, ls = insigniaLocais(), PW = 480, PH = 660;
   try { await document.fonts.ready; } catch (e) {}
   const imgs = {}; await Promise.all(ls.map(async l => { imgs[l.id] = await carregaLivre(badgeSrc(l)); }));
-  const capa = await carregaLivre("img/passaporte-capa.webp"), simbolo = await carregaLivre("img/simbolo-dourado.png");
+  const capa = await carregaLivre("img/passaporte-capa.webp"), simbolo = await carregaLivre("img/simbolo-dourado.png"), tenda = await carregaLivre("img/tenda.webp");
   let foto = v.foto ? await carregaLivre(blob(v.foto)) : null;
   if (!foto) { try { const sv = bonecoSvg(bonecoDe(S.uid)); sv.setAttribute("xmlns", "http://www.w3.org/2000/svg"); sv.setAttribute("width", 240); sv.setAttribute("height", 360);
     const u = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(sv)], { type: "image/svg+xml" })); foto = await carregaLivre(u); } catch (e) {} }
@@ -1479,7 +1494,16 @@ async function montaVideoPassaporte(cv, aoFim) {
     x.lineWidth = 6; x.strokeStyle = "#1A1008"; x.lineCap = "round"; const s = Math.sin(passo) * 7;
     [[-24, s], [-14, -s], [16, -s], [26, s]].forEach(([lx, d]) => { x.beginPath(); x.moveTo(lx, -38); x.lineTo(lx + d, 0); x.stroke(); });
     x.beginPath(); x.ellipse(-6, -80, 8, 12, 0, 0, 7); x.fill(); x.fillStyle = "#6B2A1A"; x.fillRect(-20, -54, 30, 8); x.restore(); };
+  // dentro da tenda no caravançarai: foto escura e desfocada, com a luz das lanternas respirando
+  const cenarioTenda = t => {
+    const k = Math.max(W / tenda.width, H / tenda.height) * (1.04 + .02 * Math.sin(t * .3)), tw = tenda.width * k, th = tenda.height * k;
+    x.drawImage(tenda, (W - tw) / 2, (H - th) / 2, tw, th);
+    let g = x.createRadialGradient(CX, CY, 200, CX, CY, 1150); g.addColorStop(0, "rgba(20,10,4,.15)"); g.addColorStop(1, "rgba(10,5,2,.72)"); x.fillStyle = g; x.fillRect(0, 0, W, H);
+    x.fillStyle = `rgba(255,170,80,${.05 + .03 * Math.sin(t * 2.3)})`; x.fillRect(0, 0, W, H);
+    poeira.forEach(([px, py, r, f]) => { const yy = ((py - t * 16 * (1 + f)) % H + H) % H, rr = 6 + r * 7; const gg = x.createRadialGradient(px, yy, 0, px, yy, rr); gg.addColorStop(0, `rgba(255,200,120,${.18 + .14 * Math.sin(t * 1.5 + f * 6)})`); gg.addColorStop(1, "rgba(255,200,120,0)"); x.fillStyle = gg; x.beginPath(); x.arc(px, yy, rr, 0, 7); x.fill(); });
+  };
   const cenario = t => {
+    if (tenda) return cenarioTenda(t);
     let g = x.createLinearGradient(0, 0, 0, 1500); g.addColorStop(0, "#0E0B22"); g.addColorStop(.45, "#2A1838"); g.addColorStop(.75, "#6B3326"); g.addColorStop(1, "#C27434"); x.fillStyle = g; x.fillRect(0, 0, W, H);
     estrelas.forEach(([ex, ey, r, f]) => { x.fillStyle = `rgba(255,244,214,${.35 + .55 * Math.abs(Math.sin(t * 1.3 + f * 9))})`; x.beginPath(); x.arc(ex, ey, r, 0, 7); x.fill(); });
     x.fillStyle = "#FFF1CF"; x.shadowColor = "rgba(255,230,170,.8)"; x.shadowBlur = 40; x.beginPath(); x.arc(860, 170, 46, 0, 7); x.fill(); x.shadowBlur = 0; x.fillStyle = "#1A1430"; x.beginPath(); x.arc(880, 158, 42, 0, 7); x.fill();
@@ -1600,6 +1624,24 @@ async function abrirVideoPassaporte() {
   await toca();
 }
 // ---------- Passaporte em 3D (folhear) ----------
+// página de dados do livro: organizada para caber inteira na folha pequena
+function dadosLivro(v) {
+  const c = (rot, val, cls) => h("div", { class: "ld" + (cls ? " " + cls : "") }, h("span", { class: "ldr", text: rot }), h("span", { class: "ldv", text: val }));
+  return h("div", { class: "livdados" },
+    h("div", { class: "livtopo" },
+      h("div", { class: "pgfoto" }, v.foto ? h("img", { src: blob(v.foto), alt: "" }) : bonecoSvg(bonecoDe(S.uid), "bonecosvg")),
+      h("div", { class: "livprinc" },
+        c("Nome / Name", (v.nome || "").toUpperCase(), "big"),
+        c("Nacionalidade", v.genero === "o" ? "CARAVANEIRO" : v.genero === "a" ? "CARAVANEIRA" : "DA CARAVANA"),
+        c(v.lider ? "Função" : "Viajante", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0)),
+        c("Categoria / Rank", tituloViajante(v).toUpperCase()))),
+    h("div", { class: "livgrade" },
+      c("Nº passaporte", numPassaporte(S.uid)), c("Viagens", String(totalViagens(v))),
+      c("Origem", (v.cidade || "—").toUpperCase()), c("Emissão", dataDoc(v.ts)),
+      c("Validade", "16 NOV 2026"), c("Autoridade", "CARAVANA DO CÉU"),
+      c("Rota / Route", "DEL · AGR · JAI · VNS · RSK · DEL", "todo")),
+    h("div", { class: "livmed" }, h("span", { class: "ldr", text: "Medalhas" }), medalhasDe(v, 22)));
+}
 function paginasLivro() {
   const v = eu(), nums = numeros(), ls = insigniaLocais(), mins = minhas();
   const pag = (cls, ...kids) => h("div", { class: "pg " + cls }, h("img", { class: "marca", src: "img/simbolo-marrom.png", alt: "" }), ...kids);
@@ -1614,15 +1656,13 @@ function paginasLivro() {
     h("div", { class: "pg capa" }, h("img", { class: "capaimg", src: "img/passaporte-capa.webp", alt: "Passaporte da Travessia" })),
     pag("dados",
       h("p", { class: "pgtop", text: "República da Caravana · Passaporte · Passport" }),
-      h("div", { class: "pgdados" },
-        h("div", { class: "pgfoto" }, v && v.foto ? h("img", { src: blob(v.foto), alt: "" }) : bonecoSvg(bonecoDe(S.uid), "bonecosvg")),
-        h("div", { class: "fds" }, camposPassaporte(v || { nome: "Viajante", ts: Date.now() }))),
+      dadosLivro(v || { nome: "Viajante", ts: Date.now() }),
       h("div", { class: "mrz", "aria-hidden": "true", text: mrzDe(v, insigniaLocais().filter(aberto).length) }))
   ];
   for (let i = 0; i < ls.length; i += 2) pages.push(pag("selos", h("p", { class: "pgnum", text: "Vistos / Visas · Pág. " + nn(i / 2 + 3) }), ls.slice(i, i + 2).map(selo)));
   for (const c of cartasAbertas()) pages.push(pag("cartapg", h("p", { class: "pgnum", text: "Correspondência · " + dataDoc(c.envio) }),
     h("p", { class: "pgct", text: "Para " + primeiroNome() + "," }), String(c.texto || "").split(/\n\s*\n/).map(p => h("p", { class: "pgct", text: p.trim() })), h("p", { class: "pgct ass", text: c.assinatura || ASSINATURA })));
-  pages.push(pag("fim", h("img", { class: "fimsim", src: "img/simbolo-marrom.png", alt: "" }), h("p", { class: "pgfrase", text: "Explorando nossa origem nos damos conta de que somos infinitos." }), h("p", { class: "pgsub", text: "Caravana do Céu" })));
+  pages.push(h("div", { class: "pg fim" }, h("img", { class: "fimsim", src: "img/simbolo-marrom.png", alt: "Caravana do Céu" })));
   return pages;
 }
 function abrirLivro(pagina) {
@@ -1696,7 +1736,7 @@ function fundoPassaporte() {
   <defs>
     <pattern id="fp-onda" width="240" height="64" patternUnits="userSpaceOnUse">${ondas.map((d, k) => `<path d="${d}" fill="none" stroke="${k % 2 ? "rgba(63,122,110,.11)" : "rgba(160,110,60,.10)"}" stroke-width=".7"/>`).join("")}</pattern>
     <pattern id="fp-micro" width="300" height="22" patternUnits="userSpaceOnUse"><text x="0" y="14" font-family="Georgia,serif" font-size="5.2" letter-spacing="1.2" fill="rgba(90,63,34,.10)">CARAVANA DO CÉU · ÍNDIA SAGRADA · TRAVESSIA 2026 · REPÚBLICA DA CARAVANA · CARAVANA DO CÉU · ÍNDIA SAGRADA ·</text></pattern>
-    <pattern id="fp-simb" width="120" height="150" patternUnits="userSpaceOnUse"><image href="img/simbolo-marrom.png" x="44" y="50" width="32" height="40" opacity=".045"/><text x="100" y="140" font-size="10" fill="rgba(160,110,60,.08)">✦</text><text x="14" y="30" font-size="8" fill="rgba(63,122,110,.09)">✧</text></pattern>
+    <pattern id="fp-simb" width="120" height="150" patternUnits="userSpaceOnUse"><image href="img/simbolo-marrom.png" x="44" y="50" width="32" height="40" opacity=".045"/></pattern>
   </defs>
   <rect width="100%" height="100%" fill="url(#fp-onda)"/>
   <rect width="100%" height="100%" fill="url(#fp-micro)"/>
@@ -1708,7 +1748,11 @@ function fundoPassaporte() {
   const elefante = `<svg class="fpmarca fp-elef" viewBox="0 0 120 80"><path d="M20 60V44C20 26 34 16 54 16C74 16 86 26 90 38C96 38 102 44 102 52V70M90 38C90 52 96 60 104 62M36 60V72M52 60V72M72 60V72M86 56V72M20 50H14M60 16C58 26 64 34 74 34" fill="none" stroke="rgba(63,122,110,.17)" stroke-width="1.6" stroke-linecap="round"/><circle cx="80" cy="32" r="1.6" fill="rgba(63,122,110,.2)"/><path d="M34 22Q54 6 74 22" fill="none" stroke="rgba(160,110,60,.18)" stroke-width="1.2" stroke-dasharray="2 2"/></svg>`;
   const om = `<span class="fpmarca fp-om" lang="sa">ॐ</span>`;
   const div = h("div", { class: "fundopass", "aria-hidden": "true" });
-  div.innerHTML = svg + ros("fp-ros1", 100, 37, 58, "rgba(63,122,110,.18)") + rosa + lotus + ros("fp-ros2", 100, 29, 46, "rgba(160,110,60,.16)") + elefante + om + `<img class="fpmarca fp-simbg" src="img/simbolo-marrom.png" alt="">`;
+  // marcas d'água: as mandalas com o símbolo da Caravana, espalhadas pela página
+  div.innerHTML = svg + ["fp-m1", "fp-m2", "fp-m3", "fp-m4", "fp-m5"].map(c => `<img class="fpmarca fpmand ${c}" alt="">`).join("");
+  const poe = url => document.querySelectorAll(".fpmand").forEach(im => { if (!im.src) im.src = url; });
+  if (fundoPassaporte.mand) div.querySelectorAll(".fpmand").forEach(im => im.src = fundoPassaporte.mand);
+  else carregaImg("img/simbolo-dourado.png").then(img => { fundoPassaporte.mand = mandala(img, 220, "#8A6B43").toDataURL("image/png"); fundoPassaporte.el.querySelectorAll(".fpmand").forEach(im => im.src = fundoPassaporte.mand); poe(fundoPassaporte.mand); }).catch(() => {});
   fundoPassaporte.el = div; return div.cloneNode(true);
 }
 // Trilha dos selos: um caminho dourado que vai acendendo a cada lugar carimbado
@@ -1730,7 +1774,6 @@ function trilhaSelos(ls, mins) {
         return h("button", { class: "parada " + (on ? "on" : "off") + (eProx ? " prox" : "") + (i % 2 ? " dir" : " esq") + (S.trilhaChegou === l.id ? " chegou" : ""), type: "button", style: `top:${topo + i * passo}px`, onclick: () => abrirSelo(l), "aria-label": l.nome + (on ? ", carimbado" : "") },
           h("span", { class: "pinwrap", style: `--r:${[-7, 5, -3, 8, -5, 3][i % 6]}deg` },
             h("img", { class: "pin", src: badgeSrc(l), alt: "", loading: "lazy" }),
-            on ? h("span", { class: "brilhos", "aria-hidden": "true" }, h("i", { text: "✦" }), h("i", { text: "✧" }), h("i", { text: "✦" })) : null,
             on ? checkSelo(S.novoSelo === l.id ? "new" : "") : null,
             !on ? h("span", { class: "misterio", "aria-hidden": "true", text: eProx ? "✦" : "?" }) : null),
           eProx ? h("span", { class: "proxtag", text: "próximo destino" }) : null,
@@ -2784,8 +2827,8 @@ function simboloEm(img, cor, alt) {
   const x = c.getContext("2d"); x.drawImage(img, 0, 0, c.width, c.height); x.globalCompositeOperation = "source-in"; x.fillStyle = cor; x.fillRect(0, 0, c.width, c.height); return c;
 }
 // mandala: o símbolo no centro, pétalas e pontos em volta
-function mandala(img, t) {
-  const c = document.createElement("canvas"); c.width = c.height = Math.round(t * 2.1); const x = c.getContext("2d"), m = c.width / 2, cor = "#E8B45A";
+function mandala(img, t, corM) {
+  const c = document.createElement("canvas"); c.width = c.height = Math.round(t * 2.1); const x = c.getContext("2d"), m = c.width / 2, cor = corM || "#E8B45A";
   const s = simboloEm(img, cor, t * .62); x.drawImage(s, m - s.width / 2, m - s.height / 2);
   x.strokeStyle = cor; x.fillStyle = cor;
   x.lineWidth = t * .012; x.beginPath(); x.arc(m, m, t * .5, 0, 7); x.stroke();
