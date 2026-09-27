@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 13:20";</script>
+<script>window.__VERSAO = "27/09 · 13:21";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3418,8 +3418,8 @@ function convidaAvisos() {
       h("div", { class: "convite", role: "dialog", "aria-label": "Ativar avisos" },
         h("img", { src: "img/simbolo-marrom.png", alt: "", class: "convsimb" }),
         h("h2", { text: "Boas-vindas ao guia de bolso da Caravana" }),
-        h("p", { text: "Ative as notificações do app para receber as mensagens da tribo." }),
-        h("button", { class: "btn gold", type: "button", onclick: () => { closeSheets(); S.tab = "conversa"; ativarAvisos(); } }, "🔔 Ativar avisos"),
+        h("p", { text: "Ative as notificações e a localização do app para receber as mensagens da tribo e aparecer no mapa da caravana." }),
+        h("button", { class: "btn gold", type: "button", onclick: () => { closeSheets(); ativarAvisos().finally(() => { if (navigator.geolocation) ligarGps(true); }); } }, "Ativar notificações e localização"),
         h("button", { class: "btn ghost", type: "button", onclick: () => { lsSet("cdi-cel-push", String(Date.now())); closeSheets(); } }, "Agora não")));
     document.body.append(sheet);
   }, 1200);
