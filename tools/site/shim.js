@@ -54,9 +54,10 @@ if (!pronto) {
     if (!u) return telaLogin();
     const email = String(u.email || "").toLowerCase();
     me = { id: u.uid, name: u.displayName || email.split("@")[0], avatarUrl: u.photoURL || "", email, isOwner: !!lider && email === lider && u.emailVerified };
-    try { await fs.doc("perfis/" + u.uid).set({ name: me.name, avatarUrl: me.avatarUrl, ts: Date.now() }); } catch (e) {}
+    // não espera a internet confirmar: com sinal fraco isso segurava a entrada no app
+    fs.doc("perfis/" + u.uid).set({ name: me.name, avatarUrl: me.avatarUrl, ts: Date.now() }).catch(() => {});
     if (me.isOwner) {
-      await semear();
+      semear();
       const ac = await fs.doc("privado/acesso").get().catch(() => null);
       if (!ac || !ac.exists) return telaCriarPalavra();
       return entrar();
