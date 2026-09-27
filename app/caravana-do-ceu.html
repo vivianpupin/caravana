@@ -614,6 +614,17 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .diario textarea{width:100%;border:1px solid #DCC9A6;border-radius:6px;padding:4px 14px 6px 44px;min-height:132px;resize:vertical;color:#27406B;font:24px/32px "Caveat","Segoe Script","Bradley Hand",cursive;background:linear-gradient(90deg,transparent 34px,rgba(200,80,70,.45) 34px,rgba(200,80,70,.45) 35.5px,transparent 35.5px),repeating-linear-gradient(180deg,#FBF4E2 0 31px,#C9D3DF 31px 32px);background-attachment:local;box-shadow:inset 0 1px 3px rgba(60,40,20,.12)}
 .diario textarea::placeholder{color:#8A93A3}
 .coord{font:500 12.5px "Courier Prime",monospace;letter-spacing:.04em;color:#7A5A36;text-align:center;margin:0}
+.pertolist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.pertolist li{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+.pertolist li div{display:flex;flex-direction:column}
+.pertolist small{color:var(--soft)}
+.mapazoom{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mapazoom button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);font-size:22px;line-height:1;color:var(--ink)}
+.mapazoom button.todos{width:auto;border-radius:999px;padding:0 14px;font-size:14px}
+.mapazoom span{font-size:13.5px;color:var(--soft);min-width:110px;text-align:center}
+.map .eu-pulso{fill:rgba(63,73,56,.18);stroke:#3F4938;stroke-width:1.2}
+.map .eu-ponto{fill:#3F4938;stroke:#F4EFE3;stroke-width:2}
+@media (prefers-reduced-motion:no-preference){.map .eu-pulso{animation:pulsaeu 2s ease-out infinite;transform-box:fill-box;transform-origin:center}@keyframes pulsaeu{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(1.4)}}}
 /* Mensagem do diário */
 .leitlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .leitlist li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
@@ -1936,22 +1947,69 @@ function pertoDe(p) {
 }
 function haQuanto(ts) { const m = Math.round((Date.now() - ts) / 60000); return m < 1 ? "agora" : m < 60 ? `há ${m} min` : `há ${Math.floor(m / 60)} h`; }
 
+
+// Mapa "Perto de mim": centrado na pessoa, em qualquer lugar do mundo, com quem está por perto ao vivo
+const RAIOS = [0.25, 0.6, 1.5, 4, 12, 40, 150, 600, 2500];
+function minhaPos() {
+  const v = S.aoVivo[S.uid]; if (v && isFinite(v.lat)) return v;
+  const p = S.posicoes.find(x => x.id === S.uid); return p && isFinite(+p.lat) ? { lat: +p.lat, lng: +p.lng } : null;
+}
+function mapaPerto() {
+  const W = 600, H = 600, svg = pergaminho(W, H, "perto"), eu0 = minhaPos();
+  svg.setAttribute("aria-label", "Mapa perto de mim");
+  const km = RAIOS[S.pertoZoom ?? 2], dLat = km / 111, dLng = km / (111 * Math.cos(eu0.lat * Math.PI / 180));
+  const P = projetor([{ lat: eu0.lat - dLat, lng: eu0.lng - dLng }, { lat: eu0.lat + dLat, lng: eu0.lng + dLng }], W, H, 40); S.proj = P;
+  camadasGeo(svg, P, false);
+  const [cx, cy] = P.xy(eu0);
+  svg.append(h("circle", { cx, cy, r: 26, class: "eu-pulso" }), h("circle", { cx, cy, r: 5, class: "eu-ponto" }));
+  for (const l of S.locais.filter(l => isFinite(+l.lat))) { const [x, y] = P.xy(l); if (x > 20 && x < W - 20 && y > 20 && y < H - 20) svg.append(h("g", { class: "hotel pin" }, h("rect", { x: x - 6, y: y - 6, width: 12, height: 12, rx: 2 }), h("text", { x: x + 11, y: y + 5, text: l.nome }))); }
+  exploradoresNoMapa(svg, P, () => true);
+  escala(svg, P); molduraECompasso(svg, W, H, "perto", "AO VIVO", "Quem está perto de você");
+  return svg;
+}
+function vPerto() {
+  const eu0 = minhaPos(), z = S.pertoZoom ?? 2;
+  const perto = eu0 ? posicoesAtuais().filter(p => p.id !== S.uid && isFinite(+p.lat)).map(p => ({ p, km: distKm(eu0, p) })).sort((a, b) => a.km - b.km) : [];
+  const zoom = d => { S.pertoZoom = Math.max(0, Math.min(RAIOS.length - 1, z + d)); render(); };
+  const verTodos = () => { const k = perto.length ? perto[perto.length - 1].km * 1.25 : 1.5; S.pertoZoom = RAIOS.findIndex(r => r >= k); if (S.pertoZoom < 0) S.pertoZoom = RAIOS.length - 1; render(); };
+  if (!eu0) return h("div", { class: "panel", style: "align-items:center;text-align:center" },
+    h("p", { class: "eyebrow", text: "Perto de mim" }), h("h2", { text: "Ligue a sua localização" }),
+    h("p", { class: "small", text: "O mapa se centraliza onde você estiver e mostra, ao vivo, quem da caravana está por perto." }),
+    h("button", { class: "btn gold", type: "button", onclick: ligarGps }, "Ligar minha localização ao vivo"),
+    S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null);
+  return h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
+    h("div", { class: "mapazoom" },
+      h("button", { type: "button", "aria-label": "Afastar", onclick: () => zoom(1) }, "−"),
+      h("span", { text: RAIOS[z] < 1 ? Math.round(RAIOS[z] * 1000) + " m ao redor" : RAIOS[z] + " km ao redor" }),
+      h("button", { type: "button", "aria-label": "Aproximar", onclick: () => zoom(-1) }, "+"),
+      perto.length ? h("button", { type: "button", class: "todos", onclick: verTodos }, "Ver todos") : null),
+    h("div", { class: "map" }, mapaPerto()),
+    h("p", { class: "coord", style: "text-align:left", text: "Você: " + coordTxt(eu0.lat, eu0.lng) }),
+    !S.gpsOn ? h("button", { class: "btn", type: "button", onclick: ligarGps }, "Ligar minha localização ao vivo") : h("p", { class: "msg ok", text: S.gpsMsg || "Você está ao vivo." }),
+    perto.length ? h("ul", { class: "pertolist" }, perto.slice(0, 20).map(({ p, km }) => h("li", { onclick: () => abrirPessoa(p.id), style: "cursor:pointer" },
+      bonecoSvg(bonecoDe(p.id), "bonecosvg mini"), h("div", null, h("b", { text: nomeDe(p.id) }), h("small", { text: km < 1 ? Math.round(km * 1000) + " m de você" : km.toFixed(km < 10 ? 1 : 0) + " km de você" }))))) :
+      h("p", { class: "small", text: "Ninguém da caravana apareceu por perto ainda. Quando alguém ligar a localização, o bonequinho aparece aqui." }));
+}
+const distKm = (a, b) => { const R = 6371, r = x => x * Math.PI / 180, dLa = r(+b.lat - a.lat), dLo = r(+b.lng - a.lng); const q = Math.sin(dLa / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(+b.lat)) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(q)); };
 function vMapa() {
   if (S.montando) return vExplorador();
   const cids = S.cidades.slice().sort(byOrdem);
   if (!cids.length) return h("section", { class: "view" }, h("h1", { text: "Mapa da Expedição" }), carregando());
-  if (S.cidadeSel !== "india" && !cidadeDe(S.cidadeSel)) S.cidadeSel = "india";
+  if (S.cidadeSel !== "india" && S.cidadeSel !== "perto" && !cidadeDe(S.cidadeSel)) S.cidadeSel = "india";
+  const pertoOn = S.cidadeSel === "perto";
   const c = cidadeDe(S.cidadeSel), ls = c ? S.locais.filter(l => l.cidadeId === c.id).sort(byOrdem) : [];
   const loc = ls.find(l => l.id === S.localSel);
   perfis(S.posicoes.map(p => p.id));
   return h("section", { class: "view" },
     h("div", { class: "head" },
-      h("div", null, h("p", { class: "eyebrow", text: c ? "Índia · " + c.nome : "Mapa da Expedição" }), h("h1", { text: c ? c.nome : "A rota da caravana" })),
+      h("div", null, h("p", { class: "eyebrow", text: pertoOn ? "Ao vivo" : c ? "Índia · " + c.nome : "Mapa da Expedição" }), h("h1", { text: pertoOn ? "Perto de mim" : c ? c.nome : "A rota da caravana" })),
       h("button", { class: "meuexp", type: "button", onclick: () => { S.bonecoRasc = null; go("explorador"); } },
         bonecoSvg(bonecoDe(S.uid), "bonecosvg mini"), h("span", { text: "Meu explorador" }))),
     h("div", { class: "pick", role: "group", "aria-label": "Escolher mapa" },
-      h("button", { type: "button", "aria-pressed": String(!c), onclick: () => { S.cidadeSel = "india"; S.localSel = null; render(); } }, "Índia"),
+      h("button", { type: "button", "aria-pressed": String(pertoOn), onclick: () => { S.cidadeSel = "perto"; S.localSel = null; render(); } }, "📍 Perto de mim"),
+      h("button", { type: "button", "aria-pressed": String(!c && !pertoOn), onclick: () => { S.cidadeSel = "india"; S.localSel = null; render(); } }, "Índia"),
       cids.map(x => h("button", { type: "button", "aria-pressed": String(c && x.id === c.id), onclick: () => { S.cidadeSel = x.id; S.localSel = null; render(); } }, x.nome))),
+    pertoOn ? h("div", { class: "mapwrap" }, vPerto(), h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null))) :
     h("div", { class: "mapwrap" },
       h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
         S.marcando ? h("p", { class: "msg ok", role: "status", text: "Toque no mapa no ponto onde você está." }) : null,
