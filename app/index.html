@@ -2243,7 +2243,7 @@ const FILTROS = [
 const GRAOS = [["auto", "Do filtro"], ["nenhum", "Sem grão"], ["leve", "Leve"], ["medio", "Médio"], ["forte", "Forte"], ["super8", "Super 8"]];
 const PATCHES = [["caravana", "Caravana"], ["india", "Índia + Caravana"], ["lugar", "Do lugar"], ["colecao", "Coleção"], ["nenhum", "Sem patch"]];
 const PATCH_CIDADE = { Delhi: "india", Agra: "taj-mahal", Jaipur: "jaipur", Varanasi: "varanasi", Rishikesh: "rishikesh" };
-const MOLDURAS = [["polaroid", "Polaroid"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["assinatura", "Assinatura"], ["nenhuma", "Sem moldura"]];
+const MOLDURAS = [["polaroid", "Polaroid"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
 const imgCache = {};
 function carregaImg(src) { return imgCache[src] ||= new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; }); }
 function aplicaFiltro(ctx, w, hh, f, graoEsc) {
@@ -2351,7 +2351,7 @@ async function montaFoto(canvas) {
   const [marrom, dourado] = await Promise.all([carregaImg("img/simbolo-marrom.png"), carregaImg("img/simbolo-dourado.png")]);
   let W = w, H = hh, ox = 0, oy = 0;
   if (F.moldura === "polaroid") { const m = Math.round(40 * u); W = w + m * 2; H = hh + m + Math.round(190 * u); ox = m; oy = m; }
-  if (F.moldura === "super8") { const m = Math.round(34 * u), banda = Math.round(120 * u); W = w + banda + m; H = hh + m + Math.round(110 * u); ox = banda; oy = m; }
+  if (F.moldura === "super8") { const m = Math.round(34 * u), banda = Math.round(120 * u); W = w + banda + m; H = hh + m * 2; ox = banda; oy = m; }
   canvas.width = W; canvas.height = H;
   const c = canvas.getContext("2d");
   if (F.moldura === "polaroid") { c.fillStyle = "#F6EFE1"; c.fillRect(0, 0, W, H); }
@@ -2362,25 +2362,18 @@ async function montaFoto(canvas) {
     const fw = 50 * u, fh = 74 * u, passo = 150 * u;
     for (let y = (H % passo) / 2 + (passo - fh) / 2; y < H - fh / 2; y += passo) { c.fillStyle = "#EFE4CC"; c.beginPath(); c.roundRect((ox - fw) / 2, y, fw, fh, 10 * u); c.fill(); }
     c.fillStyle = "rgba(255,190,120,.10)"; c.fillRect(0, 0, W, H);
-    const sb = simboloEm(dourado, "#D9A24A", 62 * u); c.save(); c.globalAlpha = .9; c.drawImage(sb, ox + (w - sb.width) / 2, oy + hh + (H - oy - hh - sb.height) / 2); c.restore();
   } else
   c.drawImage(tmp, ox, oy);
   const serif = "Lora, Georgia, serif", sans = "Poppins, system-ui, sans-serif";
   if (F.moldura === "polaroid") {
-    // só o símbolo; a legenda aparece à mão, se a pessoa escrever
-    const by = oy + hh, s = 96 * u, sw = s * marrom.width / marrom.height, texto = [F.legenda, F.cidade].filter(Boolean).join(" · ");
+    // sem símbolo embaixo; só a legenda à mão, se a pessoa escrever
+    const by = oy + hh, texto = [F.legenda, F.cidade].filter(Boolean).join(" · ");
     if (texto) {
-      c.drawImage(marrom, ox + 10 * u, by + 46 * u, sw, s);
-      c.fillStyle = "#2E2A3A"; c.font = `600 ${62 * u}px Caveat, "Segoe Print", cursive`; c.textBaseline = "alphabetic";
-      c.save(); c.translate(ox + sw + 40 * u, by + 116 * u); c.rotate(-.025); c.fillText(texto, 0, 0, w - sw - 70 * u); c.restore();
-    } else c.drawImage(marrom, ox + (w - sw) / 2, by + 46 * u, sw, s);
+      c.fillStyle = "#2E2A3A"; c.font = `600 ${62 * u}px Caveat, "Segoe Print", cursive`; c.textBaseline = "alphabetic"; c.textAlign = "center";
+      c.save(); c.translate(ox + w / 2, by + 116 * u); c.rotate(-.02); c.fillText(texto, 0, 0, w - 80 * u); c.restore(); c.textAlign = "start";
+    }
   } else if (F.moldura === "carimbo") {
     carimbo(c, w - 200 * u, hh - 200 * u, 140 * u, dourado, -0.22);
-  } else if (F.moldura === "assinatura") {
-    const grd = c.createLinearGradient(0, hh * .7, 0, hh); grd.addColorStop(0, "rgba(20,14,8,0)"); grd.addColorStop(1, "rgba(20,14,8,.55)");
-    c.fillStyle = grd; c.fillRect(0, hh * .7, w, hh * .3);
-    const s = 110 * u, sw = s * dourado.width / dourado.height;
-    c.drawImage(dourado, (w - sw) / 2, hh - s - 56 * u, sw, s);
   }
   await colaPatches(c, F, ox, oy, w, hh);
 }
@@ -2439,42 +2432,38 @@ async function montaTira(canvas) {
   const simb = (img, cor, alt, cx, cy) => { const sb = simboloEm(img, cor, alt); c.drawImage(sb, cx - sb.width / 2, cy - sb.height / 2); };
   if (e === "cabine" || e === "carimbada") {
     const fw = 620, fh = 465, m = 40, gap = 28, pad = e === "carimbada" ? 110 : 0;
-    const sw = fw + m * 2, sh = m + n * fh + (n - 1) * gap + 190;
+    const sw = fw + m * 2, sh = m + n * fh + (n - 1) * gap + 90;
     W = sw + pad * 2; H = sh + pad * 2; canvas.width = W; canvas.height = H;
     if (pad) papelKraft(c, W, H);
     c.save(); c.translate(pad, pad); if (pad) { c.translate(sw / 2, sh / 2); c.rotate(-.025); c.translate(-sw / 2, -sh / 2); c.shadowColor = "rgba(40,25,10,.4)"; c.shadowBlur = 30; c.shadowOffsetY = 10; }
     c.fillStyle = "#F4ECDB"; c.fillRect(0, 0, sw, sh); c.shadowColor = "transparent";
     fotos.forEach((ft, i) => cobre(c, ft, m, m + i * (fh + gap), fw, fh));
-    simb(marrom, "#5A3F22", 96, sw / 2, sh - 100);
     if (pad) fitaAdesiva(c, sw / 2, -4, 220, .04);
     c.restore();
     if (pad) carimbo(c, W - pad - 60, H - pad - 170, 150, dourado, -.28);
   } else if (e === "pelicula") {
     const fw = 600, fh = 450, lado = 80, gap = 40, top = 50;
-    W = fw + lado * 2; H = top + n * fh + (n - 1) * gap + 150; canvas.width = W; canvas.height = H;
+    W = fw + lado * 2; H = top + n * fh + (n - 1) * gap + top; canvas.width = W; canvas.height = H;
     c.fillStyle = "#0D0A08"; c.fillRect(0, 0, W, H);
     fotos.forEach((ft, i) => cobre(c, ft, lado, top + i * (fh + gap), fw, fh, 26));
     for (let y = 24; y < H - 40; y += 90) for (const x of [lado / 2 - 18, W - lado / 2 - 18]) { c.fillStyle = "#EFE4CC"; c.beginPath(); c.roundRect(x, y, 36, 52, 8); c.fill(); }
     c.fillStyle = "rgba(255,190,120,.08)"; c.fillRect(0, 0, W, H);
-    simb(dourado, "#D9A24A", 80, W / 2, H - 75);
   } else if (e === "negativo") {
-    const fw = 600, fh = 450, banda = 80, gap = 34, esq = 40, fim = 200;
+    const fw = 600, fh = 450, banda = 80, gap = 34, esq = 40, fim = 40;
     W = esq + n * fw + (n - 1) * gap + fim; H = fh + banda * 2; canvas.width = W; canvas.height = H;
     c.fillStyle = "#2A1C12"; c.fillRect(0, 0, W, H);
     const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "rgba(190,110,40,.25)"); g.addColorStop(.5, "rgba(190,110,40,0)"); g.addColorStop(1, "rgba(190,110,40,.25)"); c.fillStyle = g; c.fillRect(0, 0, W, H);
     for (let x = 16; x < W - 30; x += 64) for (const y of [banda / 2 - 16, H - banda / 2 - 16]) { c.fillStyle = "#EFE4CC"; c.beginPath(); c.roundRect(x, y, 34, 32, 6); c.fill(); }
     fotos.forEach((ft, i) => cobre(c, ft, esq + i * (fw + gap), banda, fw, fh, 10));
     for (let i = 0; i < n; i++) { c.fillStyle = "#E0A24A"; c.beginPath(); const x = esq + i * (fw + gap) + fw / 2; c.moveTo(x - 10, 12); c.lineTo(x + 10, 12); c.lineTo(x, 26); c.fill(); }
-    c.save(); c.translate(W - fim / 2, H / 2); c.rotate(-Math.PI / 2); simb(dourado, "#E0A24A", 110, 0, 0); c.restore();
   } else if (e === "polaroids") {
     W = 1080; H = 1350; canvas.width = W; canvas.height = H; papelKraft(c, W, H);
     const L = n === 1 ? 640 : n === 2 ? 470 : 420;
     const pos = { 1: [[540, 640, -.04]], 2: [[330, 470, -.09], [740, 860, .07]], 3: [[300, 400, -.1], [780, 520, .08], [520, 960, -.03]], 4: [[290, 380, -.08], [790, 400, .09], [300, 950, .06], [780, 960, -.07]] }[n];
-    fotos.forEach((ft, i) => { const [cx, cy, r] = pos[i], pw = L + 40, ph = L + 150;
+    fotos.forEach((ft, i) => { const [cx, cy, r] = pos[i], pw = L + 40, ph = L + 130;
       c.save(); c.translate(cx, cy); c.rotate(r); c.shadowColor = "rgba(40,25,10,.45)"; c.shadowBlur = 26; c.shadowOffsetY = 10;
       c.fillStyle = "#F6EFE1"; c.fillRect(-pw / 2, -ph / 2, pw, ph); c.shadowColor = "transparent";
       cobre(c, ft, -L / 2, -ph / 2 + 20, L, L);
-      simb(marrom, "#5A3F22", 60, 0, ph / 2 - 62);
       fitaAdesiva(c, 0, -ph / 2, 160, (i % 2 ? -.12 : .1)); c.restore(); });
   } else {
     W = 1080; H = 1080; canvas.width = W; canvas.height = H; c.fillStyle = "#F4ECDB"; c.fillRect(0, 0, W, H);
@@ -2633,7 +2622,7 @@ function vFotos() {
         msg)) :
       h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
         h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "Escolha uma foto" }),
-        h("span", { text: "Aplique os filtros da Caravana, coloque a moldura com o nosso símbolo e salve ou mande para a Roda." })),
+        h("span", { text: "Aplique os filtros da Caravana, escolha a moldura e os patches, e salve ou mande para a Roda." })),
     fi);
 }
 
