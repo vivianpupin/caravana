@@ -8,7 +8,7 @@ app = (raiz / "app" / "caravana-do-ceu.html").read_text(encoding="utf-8")
 head = """<!doctype html>
 <html lang="pt-BR"><head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#2E2116">
 <meta name="description" content="O aplicativo da Caravana do Céu · Travessia da Índia Sagrada 2026">
 <link rel="icon" href="img/icone-192.png">
