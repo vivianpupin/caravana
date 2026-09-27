@@ -756,7 +756,7 @@ nav.tabs button{position:relative}
 const S = {
   tab: "travessia",
   roteiro: null, roteiroErro: false,
-  dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [], cartas: [], diarios: [], pedra: [], mural: [], fotoAba: "estudio", muralCidade: "",
+  dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [], cartas: [], diarios: [], pedra: [], membros: [], mural: [], fotoAba: "estudio", muralCidade: "",
   vReady: false, dbReady: false, pularCadastro: false,
   uid: null, me: null, isOwner: false, canChat: null,
   db: null, user: null, assets: null, perfis: {},
@@ -1259,7 +1259,24 @@ function vPassaporte() {
         h("span", { class: "n", text: g.lider ? "✦" : nn(nums[g.id] || 0) }),
         h("img", { src: avatar(g.id), alt: "" }),
         h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : "", g.cidade].filter(Boolean).join(" · ") })),
-        h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null);
+        h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null,
+    vEntradasLider());
+}
+// Só a líder, no site próprio: quem já entrou no app com a palavra da caravana
+function vEntradasLider() {
+  if (!S.isOwner || !S.membros.length) return null;
+  const lista = S.membros.slice().sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  const semPass = lista.filter(m => !S.viajantes.some(v => v.id === m.id)).length;
+  return h("div", { class: "panel" },
+    h("p", { class: "eyebrow", text: "Só você vê · entradas no app" }),
+    h("h2", { text: lista.length === 1 ? "1 pessoa entrou no app" : lista.length + " pessoas entraram no app" }),
+    semPass ? h("p", { class: "small", text: semPass === 1 ? "1 pessoa entrou mas ainda não emitiu o passaporte." : semPass + " pessoas entraram mas ainda não emitiram o passaporte." }) : null,
+    h("ul", { class: "roster" }, lista.map(m => {
+      const v = S.viajantes.find(x => x.id === m.id);
+      return h("li", null, h("img", { src: avatar(m.id), alt: "" }),
+        h("div", null, h("b", { text: (v && v.nome) || m.nome || "Viajante" }), h("small", { text: [m.email, m.ts ? "entrou em " + new Date(m.ts).toLocaleDateString("pt-BR") : ""].filter(Boolean).join(" · ") })),
+        h("span", { class: "c", text: v ? "passaporte ✓" : "sem passaporte" }));
+    })));
 }
 document.addEventListener("keydown", e => { if (e.key === "Escape" && document.querySelector(".sheet")) closeSheets(); });
 function closeSheets() { document.querySelectorAll(".sheet").forEach(s => s.remove()); }
@@ -2886,6 +2903,7 @@ render();
   listen("posicoes", "posicoes");
   listen("cartas", "cartas", null, () => setTimeout(checaCorreio, 1200));
   listen("pensamentos", "pedra");
+  if (S.isOwner && window.__SITE) listen("membros", "membros");
   listen("mural", "mural", db.collection("mural").orderBy("ts", "desc").limit(300));
   setInterval(() => { if ((S.tab === "mapa" || S.tab === "travessia") && !document.activeElement?.matches?.("input,textarea,select") && !document.querySelector(".sheet")) render(); }, 60000);
 })();
