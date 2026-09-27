@@ -782,6 +782,13 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .hero .legenda{font-size:10.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--terra);margin-top:-2px}
 
 .brand b{font-family:"Raleway",var(--ui)!important;font-weight:300!important;letter-spacing:.22em!important;font-size:13.5px!important}
+/* título sempre no centro exato da barra marrom, não importa o tamanho do selo da direita */
+.top{position:relative;grid-template-columns:1fr 1fr}
+.top .brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap}
+.top .brand b{padding-left:.22em}.top .brand span{padding-left:.24em}
+.topside.right{justify-self:end;max-width:calc(100% - 96px);min-width:0}
+.topside.right .me:not(.bubble){max-width:100%;min-width:0;overflow:hidden}
+.topside.right .me:not(.bubble) b{overflow:hidden;text-overflow:ellipsis;min-width:0}
 
 /* Hoje */
 .hero .route{font-size:12px;letter-spacing:.1em}
