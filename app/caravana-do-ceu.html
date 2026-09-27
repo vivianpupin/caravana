@@ -2505,7 +2505,7 @@ async function montaTira(canvas) {
   }
 }
 function vTira() {
-  const T = S.tira || (S.tira = { imgs: [], ids: [], estilo: "cabine", filtro: "super8" });
+  const T = S.tira || (S.tira = { imgs: [], ids: [], estilo: "cabine", filtro: "original" });
   const canvas = S.tiraCanvas || (S.tiraCanvas = h("canvas", { class: "fotocanvas", "aria-label": "Prévia da tira de fotos" }));
   const msg = h("p", { class: "msg", role: "status" });
   const fi = h("input", { type: "file", accept: "image/*", multiple: true, id: "tira-fotos", hidden: true, onchange: async () => {
@@ -2573,7 +2573,7 @@ function patchCaravana(img, alt) {
 }
 // cola os patches (como os do passaporte) nos cantos da foto
 async function colaPatches(c, F, ox, oy, w, hh) {
-  const tipo = F.patch || "caravana"; if (tipo === "nenhum") return;
+  const tipo = F.patch || "nenhum"; if (tipo === "nenhum") return;
   const dourado = await carregaImg("img/simbolo-dourado.png"), base = Math.min(w, hh) * .3, pad = Math.min(w, hh) * .04;
   const lugar = PATCH_CIDADE[F.cidade] || "india";
   const lista = tipo === "caravana" ? ["caravana"] : tipo === "india" ? ["india", "caravana"] : tipo === "lugar" ? [lugar, "caravana"] : [...new Set(["india", lugar === "india" ? "taj-mahal" : lugar, "caravana"])];
@@ -2592,7 +2592,7 @@ async function colaPatches(c, F, ox, oy, w, hh) {
 function vFotos() {
   if (S.fotoAba === "mural") return vMural();
   if (S.fotoAba === "tira") return vTira();
-  const F = S.foto || (S.foto = { filtro: "expedicao", cat: "Clássicos", grao: "auto", moldura: "polaroid", legenda: "", cidade: "", data: "" });
+  const F = S.foto || (S.foto = { filtro: "original", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "original", legenda: "", cidade: "", data: "" });
   const hoje = hojeIso(), dia = (S.roteiro?.dias || []).find(d => d.iso === hoje);
   if (!F.cidade && !F._auto) { F.cidade = dia ? dia.cidade.split(" ")[0] : ""; F._auto = true; }
   if (!F.data) { const d = new Date(); F.data = d.getDate() + " " + MES[d.getMonth()].toLowerCase() + " " + d.getFullYear(); }
@@ -2641,7 +2641,7 @@ function vFotos() {
         h("p", { class: "lab", text: "Formato" }),
         h("div", { class: "opts" }, FORMATOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.formato || "original") === id), onclick: () => set("formato", id) }, n))),
         h("p", { class: "lab", text: "Patches" }),
-        h("div", { class: "opts" }, PATCHES.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.patch || "caravana") === id), onclick: () => set("patch", id) }, n))),
+        h("div", { class: "opts" }, PATCHES.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.patch || "nenhum") === id), onclick: () => set("patch", id) }, n))),
         h("p", { class: "lab", text: "Moldura" }),
         h("div", { class: "opts" }, MOLDURAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: () => set("moldura", id) }, n))),
         h("p", { class: "lab", text: "Legenda" }), leg, cid,
