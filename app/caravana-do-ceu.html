@@ -613,6 +613,9 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .fotoframe{background:#2B1F14;border-radius:var(--r);padding:12px;display:grid;place-items:center;box-shadow:var(--shadow)}
 .fotofixa{position:sticky;top:0;z-index:3;background:var(--bg,#F5EFE3);padding-top:6px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .tirafotos{display:flex;gap:8px;flex-wrap:wrap}.tiramini{display:flex;align-items:center;gap:6px;border:1px solid var(--line2);background:var(--panel);border-radius:999px;padding:5px 12px;font-size:13px;color:var(--ink)}.tiramini b{color:#A3231A}.tiramini.mais{border-style:dashed;color:var(--soft)}
+.intens{display:grid;grid-template-columns:auto 1fr 44px;align-items:center;gap:10px;margin:8px 2px 0;font-size:13px;color:var(--soft)}
+.intens input{width:100%;accent-color:#3F4938}
+.intens b{text-align:right;color:var(--ink);font-weight:600}
 .adesbox{display:flex;flex-direction:column;gap:8px}
 .adesgrade{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:8px}
 .adesbt{aspect-ratio:1;border:1px solid var(--line);border-radius:14px;background:var(--panel);display:grid;place-items:center;padding:6px}
@@ -3071,7 +3074,23 @@ const PATCH_CIDADE = { Delhi: "india", Agra: "taj-mahal", Jaipur: "jaipur", Vara
 const MOLDURAS = [["polaroid", "Polaroid"], ["postal", "Cartão-postal"], ["ingresso", "Ingresso"], ["arco", "Janela de palácio"], ["guirlanda", "Guirlanda de flores"], ["bandeirinhas", "Bandeirinhas"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
 const imgCache = {};
 function carregaImg(src) { return imgCache[src] ||= new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; }); }
+// filtro copiado de uma foto (LUT 3D): cada cor da foto vira a cor que o filtro de referência dá
+const lutCache = {};
+function aplicaLut(ctx, w, hh, f) {
+  const N = f.lutN || 17, L = lutCache[f.id] ||= Uint8Array.from(atob(f.lut), ch => ch.charCodeAt(0));
+  const d = ctx.getImageData(0, 0, w, hh), p = d.data, k = (N - 1) / 255;
+  for (let i = 0; i < p.length; i += 4) {
+    const r = p[i] * k, g = p[i + 1] * k, b = p[i + 2] * k, r0 = r | 0, g0 = g | 0, b0 = b | 0, r1 = Math.min(N - 1, r0 + 1), g1 = Math.min(N - 1, g0 + 1), b1 = Math.min(N - 1, b0 + 1), fr = r - r0, fg = g - g0, fb = b - b0;
+    for (let c = 0; c < 3; c++) {
+      const v = (R, G, B) => L[((B * N + G) * N + R) * 3 + c];
+      const c00 = v(r0, g0, b0) * (1 - fr) + v(r1, g0, b0) * fr, c10 = v(r0, g1, b0) * (1 - fr) + v(r1, g1, b0) * fr, c01 = v(r0, g0, b1) * (1 - fr) + v(r1, g0, b1) * fr, c11 = v(r0, g1, b1) * (1 - fr) + v(r1, g1, b1) * fr;
+      p[i + c] = (c00 * (1 - fg) + c10 * fg) * (1 - fb) + (c01 * (1 - fg) + c11 * fg) * fb;
+    }
+  }
+  ctx.putImageData(d, 0, 0);
+}
 function aplicaFiltro(ctx, w, hh, f, graoEsc) {
+  if (f.lut) aplicaLut(ctx, w, hh, f);
   const g0 = { nenhum: 0, leve: 12, medio: 24, forte: 42, super8: 16 }[graoEsc];
   const g = g0 != null ? g0 : (f.grao || 0);
   if (graoEsc === "super8" || (f.super8 && (graoEsc || "auto") === "auto")) f = { ...f, pelicula: 1 };
@@ -3186,7 +3205,13 @@ async function montaFoto(canvas) {
     tmp = document.createElement("canvas"); tmp.width = w; tmp.height = hh;
     const t = tmp.getContext("2d", { willReadFrequently: true }); t.drawImage(img, 0, 0, w, hh);
     aplicaFiltro(t, w, hh, FILTROS.find(x => x.id === F.filtro) || FILTROS[0], F.grao || "auto");
-    Object.assign(montaFoto, { img: F.img, filtro: F.filtro, grao: F.grao, tmp });
+    Object.assign(montaFoto, { img: F.img, filtro: F.filtro, grao: F.grao, tmp, mix: null });
+  }
+  // intensidade do filtro: mistura a foto original com a filtrada (100% = filtro inteiro)
+  const intens = F.intens == null ? 1 : F.intens;
+  if (intens < .999) {
+    let mix = montaFoto.mix; if (!mix || mix.width !== w || mix.height !== hh) { mix = document.createElement("canvas"); mix.width = w; mix.height = hh; montaFoto.mix = mix; }
+    const mc = mix.getContext("2d"); mc.globalAlpha = 1; mc.drawImage(img, 0, 0, w, hh); mc.globalAlpha = intens; mc.drawImage(tmp, 0, 0); mc.globalAlpha = 1; tmp = mix;
   }
   const u = Math.max(w, hh) / 1000, legenda = [F.legenda, F.cidade].filter(Boolean).join(" · "), data = F.data;
   const [marrom, dourado] = await Promise.all([carregaImg("img/simbolo-marrom.png"), carregaImg("img/simbolo-dourado.png")]);
@@ -3705,6 +3730,11 @@ function vFotos() {
   const LUGARES = [[.5, .5], [.26, .3], [.74, .3], [.26, .72], [.74, .72], [.5, .22], [.5, .8], [.16, .5], [.84, .5]];
   const poeAdesivo = k => { const [lx, ly] = LUGARES[ades.length % LUGARES.length]; ades.push({ k, x: lx, y: ly, s: k.startsWith("txt:") || k.startsWith("mao:") ? .5 : .3, r: 0 }); S.fotoSel = ades.length - 1; render(); };
   const sel = S.fotoSel != null ? ades[S.fotoSel] : null;
+  // intensidade: desliza e a foto muda na hora, sem redesenhar a tela toda
+  const pct = Math.round((F.intens == null ? 1 : F.intens) * 100), rotPct = h("b", { text: pct + "%" });
+  const faixa = h("input", { type: "range", min: "0", max: "100", step: "1", value: String(pct), "aria-label": "Intensidade do filtro" });
+  faixa.addEventListener("input", () => { S.foto.intens = +faixa.value / 100; rotPct.textContent = faixa.value + "%"; redesenha(); });
+  const barraIntensidade = F.filtro && F.filtro !== "original" ? h("label", { class: "intens" }, h("span", { text: "Intensidade" }), faixa, rotPct) : null;
   const mexe = fn => { if (!sel) return; fn(sel); render(); };
   if (S.fotoAdesThumbs == null) S.fotoAdesThumbs = {};
   const thumbAdesivo = k => { const im = h("img", { alt: "", src: S.fotoAdesThumbs[k] || "img/simbolo-marrom.png", class: S.fotoAdesThumbs[k] ? "" : "carregando" });
@@ -3727,7 +3757,7 @@ function vFotos() {
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Fotos da travessia" }))),
     abasFotos(),
     F.img ? h("div", { class: "estudio" },
-      h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas), barraSel, tiraFiltros(F, id => set("filtro", id))),
+      h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas), barraSel, tiraFiltros(F, id => set("filtro", id)), barraIntensidade),
       h("div", { class: "fcontrols" },
         painelAdesivos,
         h("p", { class: "lab", text: "Grão de filme" }),
