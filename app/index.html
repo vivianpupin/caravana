@@ -656,6 +656,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .tgrau{font-family:var(--display);font-size:34px;line-height:1.1;color:var(--ink)}.tdesc{font-size:13px;color:var(--soft)}
 .tprev{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-top:1px solid var(--line);padding-top:10px}
 .tprev div{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12.5px;color:var(--soft)}.tprev b{font-size:20px}
+.prevdia{display:flex;align-items:center;gap:12px;background:#F4E9D2;border-radius:14px;padding:10px 14px}
+.prevdia .tic{font-size:28px;line-height:1}.prevdia b{display:block;font-size:14.5px;font-weight:600}.prevdia small{font-size:12.5px;color:var(--soft)}
 /* Mensagem do diário */
 .leitlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .leitlist li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
@@ -1063,6 +1065,7 @@ function vTravessia() {
       h("div", null, h("b", { class: "hora", "data-tz": "Asia/Kolkata", text: horaEm("Asia/Kolkata") }), h("span", { text: "Agora na Índia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +8h30" }))),
     vOnlineLider(),
+    vTempo(),
     vCorrespondencia(),
     ins.length ? h("div", null,
       h("p", { class: "eyebrow rule", text: `Os ${ins.length} selos do passaporte` }),
@@ -1092,6 +1095,7 @@ function vDia(d, open, isToday, abrir) {
   const ck = S.checks[d.n] || {};
   return h("article", { class: "day open" + (isToday ? " is-today" : ""), id: "dia-" + d.n }, head,
     h("div", { class: "daybody" },
+      vPrevDia(d),
       h("div", { class: "logi" }, h("span", null, "Hospedagem ", h("b", { text: d.hotel })), d.guia ? h("span", null, h("b", { text: d.guia })) : null),
       h("div", null, h("p", { class: "eyebrow rule", text: "Agenda do dia" }),
         d.agenda.map(p => [h("p", { class: "per", text: p.periodo }),
@@ -3086,7 +3090,7 @@ const TEMPO = { 0: ["☀️", "Céu limpo"], 1: ["🌤️", "Quase limpo"], 2: [
 const COORD_CIDADE = { delhi: [28.6139, 77.209, "Delhi"], agra: [27.1767, 78.0081, "Agra"], jaipur: [26.9124, 75.7873, "Jaipur"], varanasi: [25.3176, 82.9739, "Varanasi"], rishikesh: [30.0869, 78.2676, "Rishikesh"] };
 function lugarDoTempo() {
   const eu0 = S.aoVivo[S.uid] && Date.now() - S.aoVivo[S.uid].ts < 3600000 ? S.aoVivo[S.uid] : null;
-  if (eu0) return { lat: eu0.lat, lng: eu0.lng, nome: eu0.cidadeId && COORD_CIDADE[eu0.cidadeId] ? COORD_CIDADE[eu0.cidadeId][2] : "Onde você está", aqui: true };
+  if (eu0) { const c = COORD_CIDADE[pertoCidade(eu0)], perto = c && km(eu0, { lat: c[0], lng: c[1] }) < 60; return { lat: eu0.lat, lng: eu0.lng, nome: perto ? c[2] : "Onde você está", aqui: true }; }
   const hoje = hojeIso(), d = (S.roteiro?.dias || []).find(x => x.iso === hoje);
   const id = d ? norm(d.cidade.split(" ")[0]) : "delhi", c = COORD_CIDADE[id] || COORD_CIDADE.delhi;
   return { lat: c[0], lng: c[1], nome: c[2], aqui: false, primeiro: !d };
@@ -3111,6 +3115,30 @@ function vTempo() {
         h("p", { class: "tgrau", text: Math.round(c.temperature_2m) + "°" }),
         h("p", { class: "tdesc", text: desc + " · sensação de " + Math.round(c.apparent_temperature) + "°" }))),
     h("div", { class: "tprev" }, d.time.slice(0, 4).map((t, i) => h("div", null, h("span", { text: i ? dia(t) : "hoje" }), h("b", { text: (TEMPO[d.weather_code[i]] || ["🌡️"])[0] }), h("span", { text: Math.round(d.temperature_2m_max[i]) + "° " + Math.round(d.temperature_2m_min[i]) + "°" })))));
+}
+
+
+// Previsão do dia do roteiro, na cidade onde a caravana vai estar (disponível até 16 dias antes)
+S.prevDia = {};
+const cidadeDoDia = d => COORD_CIDADE[norm(String(d.cidade).split(/[ ·→]/)[0])] || COORD_CIDADE.delhi;
+function vPrevDia(d) {
+  const c = cidadeDoDia(d), chave = d.iso + c[2], hoje = hojeIso();
+  const dias = Math.round((Date.parse(d.iso) - Date.parse(hoje)) / 864e5);
+  if (dias < 0) return null;
+  if (dias > 15) { const abre = new Date(Date.parse(d.iso) - 15 * 864e5).toLocaleDateString("pt-BR", { day: "numeric", month: "long", timeZone: "UTC" });
+    return h("div", { class: "prevdia" }, h("span", { class: "tic", text: "🌡️" }), h("span", null, h("b", { text: "Previsão do tempo em " + c[2] }), h("small", { text: `Aparece aqui a partir de ${abre}. Em novembro, os dias costumam ser amenos e as noites frescas.` }))); }
+  const P = S.prevDia[chave];
+  if (!P && !S.prevDia["_" + chave]) {
+    S.prevDia["_" + chave] = 1;
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c[0]}&longitude=${c[1]}&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max&timezone=Asia%2FKolkata&start_date=${d.iso}&end_date=${d.iso}`)
+      .then(r => r.ok ? r.json() : Promise.reject()).then(j => { S.prevDia[chave] = j.daily; render(); }).catch(() => {});
+    return null;
+  }
+  if (!P) return null;
+  const [ic, desc] = TEMPO[P.weather_code[0]] || ["🌡️", ""];
+  return h("div", { class: "prevdia" }, h("span", { class: "tic", text: ic }),
+    h("span", null, h("b", { text: `${c[2]}: ${Math.round(P.temperature_2m_max[0])}° de dia, ${Math.round(P.temperature_2m_min[0])}° à noite` }),
+      h("small", { text: desc + (P.precipitation_probability_max?.[0] != null ? ` · ${P.precipitation_probability_max[0]}% de chance de chuva` : "") })));
 }
 
 // ---------- dados ----------
