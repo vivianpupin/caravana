@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 09:35";</script>
+<script>window.__VERSAO = "27/09 · 09:38";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -224,6 +224,35 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .pages .ph h2{font-size:24px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 10px}
 @media (max-width:480px){.grid{grid-template-columns:repeat(2,1fr)}}
+.celebra{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 50% 40%,rgba(80,46,20,.98),rgba(18,10,6,.99));animation:celEntra .35s ease-out both}
+.celebra.sai{animation:celSai .35s ease-in both}
+.celcont{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;max-width:360px}
+.celpalco{position:relative;width:220px;height:280px;display:grid;place-items:center;margin-bottom:6px}
+.celraios{position:absolute;inset:-60px;background:repeating-conic-gradient(from 0deg,rgba(255,210,120,.16) 0 8deg,transparent 8deg 20deg);border-radius:50%;-webkit-mask-image:radial-gradient(circle,#000 30%,transparent 70%);mask-image:radial-gradient(circle,#000 30%,transparent 70%);animation:celGira 14s linear infinite,celAparece .8s .5s both}
+.celpin{position:relative;width:190px;height:auto;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55));animation:celCai .75s cubic-bezier(.2,1.3,.4,1) both}
+.celstamp{top:34%;width:104px!important;height:104px!important;margin-left:-52px!important;background:rgba(255,248,236,.72)!important;animation:celCarimbo .45s .75s cubic-bezier(.2,1.6,.4,1) both}
+.celstamp b{font-size:15px!important}.celstamp i{font-size:11px!important}
+.celpalco{animation:celTreme .3s 1.1s both}
+.faiscas{position:absolute;left:50%;top:45%;width:0;height:0}
+.faiscas i{position:absolute;left:0;top:0;color:#F7CD72;font-style:normal;font-size:16px;text-shadow:0 0 8px rgba(255,200,90,.95);opacity:0;animation:celFaisca var(--t) 1.05s cubic-bezier(.1,.7,.3,1) both}
+.celeye{margin:6px 0 0;font:600 12px/1 var(--ui);letter-spacing:.28em;text-transform:uppercase;color:#E2BE78;animation:celSobe .5s 1.2s both}
+.celnome{margin:0;font-family:"Cinzel",Georgia,serif;font-size:30px;color:#FFF1D6;animation:celSobe .5s 1.3s both}
+.celsub{margin:0 0 10px;color:#E8D3AE;font-size:14px;animation:celSobe .5s 1.4s both}
+.celebra .actions{animation:celSobe .5s 1.55s both}.celfecha{color:#E8D3AE!important;border-color:rgba(232,211,174,.4)!important}
+.parada.chegou .pinwrap{animation:celChegou 1.4s .3s cubic-bezier(.2,1.4,.4,1) both}
+.parada.chegou .pinwrap::after{content:"";position:absolute;inset:-14px;border-radius:40%;box-shadow:0 0 0 0 rgba(233,178,80,.8);animation:pulsaProx 1.6s .5s ease-out 3}
+@keyframes celEntra{from{opacity:0}to{opacity:1}}
+@keyframes celSai{to{opacity:0}}
+@keyframes celGira{to{transform:rotate(360deg)}}
+@keyframes celAparece{from{opacity:0}to{opacity:1}}
+@keyframes celCai{0%{opacity:0;transform:translateY(-260px) rotate(-25deg) scale(.6)}70%{opacity:1;transform:translateY(8px) rotate(4deg) scale(1.04)}100%{transform:translateY(0) rotate(-3deg) scale(1)}}
+@keyframes celCarimbo{0%{opacity:0;transform:rotate(-40deg) scale(2.6)}70%{opacity:1;transform:rotate(-10deg) scale(.92)}100%{opacity:1;transform:rotate(-14deg) scale(1)}}
+@keyframes celTreme{0%,100%{transform:translate(0,0)}25%{transform:translate(-4px,3px)}50%{transform:translate(4px,-2px)}75%{transform:translate(-2px,-3px)}}
+@keyframes celFaisca{0%{opacity:0;transform:rotate(var(--a)) translateX(0) scale(.4)}15%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateX(var(--d)) scale(1.1)}}
+@keyframes celSobe{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes celChegou{0%{transform:rotate(var(--r)) scale(1)}35%{transform:rotate(0) scale(1.18)}100%{transform:rotate(var(--r)) scale(1)}}
+@media (prefers-reduced-motion:reduce){.celebra *,.celebra{animation:none!important}.faiscas{display:none}}
+.generobox{display:flex;flex-direction:column;gap:6px}
 .trilhawrap{display:flex;flex-direction:column;gap:6px}
 .trilhacont{display:flex;flex-direction:column;align-items:center;gap:6px;margin:4px 0 2px}
 .trilhacont b{font:600 13px/1 var(--ui);letter-spacing:.16em;text-transform:uppercase;color:#8A6B43}
@@ -946,7 +975,9 @@ const aberto = l => !!(l && (l.aberto || minhas()[l.id]));
 const conquistasDe = v => S.locais.filter(l => l.insignia && (l.aberto || (v.insignias || {})[l.id])).length;
 const insigniaLocais = () => S.locais.filter(l => l.insignia).sort(byOrdem);
 const localDe = id => S.locais.find(l => l.id === id);
-const lib = x => !x.localId || aberto(localDe(x.localId)) || S.isOwner;
+// selos que saíram da travessia (a visita não acontece mais): somem do passaporte e do mapa; o saber ligado a eles fica livre
+const REMOVIDOS = ["galta-ji", "beatles-ashram"];
+const lib = x => !x.localId || REMOVIDOS.includes(x.localId) || aberto(localDe(x.localId)) || S.isOwner;
 const cidadeDe = id => S.cidades.find(c => c.id === id);
 const hojeIso = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
 const diaDe = n => (S.roteiro?.dias || []).find(d => d.n === n);
@@ -1017,6 +1048,11 @@ function carregando(txt) {
 }
 
 // ---------- cadastro ----------
+// a pessoa escolhe como aparece no passaporte (o app não tem como saber sozinho)
+function escolhaGenero(atual, muda) {
+  const bt = (val, txt) => h("button", { type: "button", class: "opt", "aria-pressed": String(atual() === val), onclick: ev => { muda(val); ev.currentTarget.parentNode.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === ev.currentTarget))); } }, txt);
+  return h("div", { class: "generobox" }, h("span", { class: "small", text: "No passaporte, escrever" }), h("div", { class: "opts" }, bt("a", "Caravaneira"), bt("o", "Caravaneiro")));
+}
 function vCadastro() {
   const nome = h("input", { type: "text", id: "cad-nome", maxlength: "40", autocomplete: "given-name", placeholder: "Como a caravana vai te chamar" });
   const cid = h("input", { type: "text", id: "cad-cidade", maxlength: "40", placeholder: "Ex.: São Paulo" });
@@ -1030,7 +1066,8 @@ function vCadastro() {
     h("form", { onsubmit: async e => {
       e.preventDefault();
       if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
-      const doc = { nome: nome.value.trim(), cidade: cid.value.trim(), ts: Date.now(), insignias: { ...S.local } };
+      if (!S.cadGenero) { erro.textContent = "Escolha Caravaneira ou Caravaneiro."; return; }
+      const doc = { nome: nome.value.trim(), cidade: cid.value.trim(), genero: S.cadGenero, ts: Date.now(), insignias: { ...S.local } };
       if (S.cadFoto) doc.foto = S.cadFoto;
       if (S.isOwner) doc.lider = true;
       try { await S.db.doc("viajantes/" + S.uid).set(doc); S.tab = "passaporte"; }
@@ -1038,6 +1075,7 @@ function vCadastro() {
     } },
       h("label", { for: "cad-nome" }, "Seu nome", nome),
       h("label", { for: "cad-cidade" }, "De onde você vem", cid),
+      escolhaGenero(() => S.cadGenero, g => { S.cadGenero = g; }),
       S.assets ? (() => {
         const st = h("span", { class: "small", role: "status" }), prev = h("img", { alt: "", hidden: true, class: "cadfoto" });
         const fi = campoFoto(async id => { S.cadFoto = id; prev.src = blob(id); prev.hidden = false; }, st);
@@ -1259,7 +1297,7 @@ function camposPassaporte(v) {
   return [
     h("div", { class: "fdrow" }, campo("Tipo", "Type", "P"), campo("Código", "Code", "CDC"), campo("Nº do passaporte", "Passport No.", numPassaporte(S.uid), "grow")),
     campo("Nome", "Name", (v.nome || "").toUpperCase(), "big"),
-    h("div", { class: "fdrow" }, campo("Nacionalidade", "Nationality", "CARAVANEIRA"), campo(v.lider ? "Função" : "Viajante", v.lider ? "Role" : "Traveller", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0))),
+    h("div", { class: "fdrow" }, campo("Nacionalidade", "Nationality", v.genero === "o" ? "CARAVANEIRO" : v.genero === "a" ? "CARAVANEIRA" : "DA CARAVANA"), campo(v.lider ? "Função" : "Viajante", v.lider ? "Role" : "Traveller", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0))),
     campo("Origem", "Place of origin", (v.cidade || "—").toUpperCase()),
     h("div", { class: "fdrow" }, campo("Emissão", "Date of issue", dataDoc(v.ts)), campo("Validade", "Date of expiry", "16 NOV 2026")),
     campo("Autoridade", "Authority", "CARAVANA DO CÉU · TRAVESSIA IND"),
@@ -1333,6 +1371,29 @@ const SIGLA = { delhi: "DEL", agra: "AGR", jaipur: "JAI", varanasi: "VNS", rishi
 const paginaDoSelo = id => 2 + Math.floor(insigniaLocais().findIndex(l => l.id === id) / 2);
 
 // ---------- Passaporte ----------
+// Festa do carimbo: o selo cai do céu, o carimbo bate, estrelas douradas explodem
+function celebraSelo(l) {
+  document.querySelector(".celebra")?.remove();
+  try { navigator.vibrate && navigator.vibrate([25, 60, 90]); } catch (e) {}
+  const d = diaDe(l.dia), ls = S.locais.filter(x => x.insignia).sort(byOrdem), qtd = ls.filter(aberto).length;
+  const faiscas = h("div", { class: "faiscas", "aria-hidden": "true" }, Array.from({ length: 34 }, (_, i) => {
+    const a = i / 34 * 360 + (i % 3) * 7, dist = 120 + (i % 5) * 34;
+    return h("i", { style: `--a:${a}deg;--d:${dist}px;--t:${.9 + (i % 4) * .18}s`, text: i % 3 ? "✦" : "•" });
+  }));
+  const fechar = () => { ov.classList.add("sai"); setTimeout(() => ov.remove(), 350); };
+  const ov = h("div", { class: "celebra", role: "dialog", "aria-label": "Selo carimbado: " + l.nome, onclick: e => { if (e.target === ov) fechar(); } },
+    h("div", { class: "celcont" },
+      h("div", { class: "celpalco" }, h("div", { class: "celraios", "aria-hidden": "true" }), faiscas,
+        h("img", { class: "celpin", src: badgeSrc(l), alt: "" }),
+        h("span", { class: "stamp celstamp" }, h("b", { text: "Selado" }), h("i", { text: dataSelo(Date.now()) }))),
+      h("p", { class: "celeye", text: "Selo carimbado" }),
+      h("h2", { class: "celnome", text: l.nome }),
+      h("p", { class: "celsub", text: [d ? `Dia ${d.n} · ${d.cidade}` : "", `${qtd} de ${ls.length} selos`].filter(Boolean).join("  ·  ") }),
+      h("div", { class: "actions", style: "justify-content:center" },
+        h("button", { class: "btn gold", type: "button", onclick: () => { fechar(); S.trilhaChegou = l.id; if (S.tab !== "passaporte") go("passaporte"); else render(); setTimeout(() => document.querySelector(".parada.chegou")?.scrollIntoView({ block: "center", behavior: "smooth" }), 120); } }, "Ver na minha trilha"),
+        h("button", { class: "btn ghost celfecha", type: "button", onclick: fechar }, "Fechar"))));
+  document.body.append(ov);
+}
 // Trilha dos selos: um caminho dourado que vai acendendo a cada lugar carimbado
 function trilhaSelos(ls, mins) {
   const n = ls.length, passo = 168, topo = 20, H = topo + (n - 1) * passo + 250;
@@ -1349,7 +1410,7 @@ function trilhaSelos(ls, mins) {
     h("div", { class: "trilha", style: `height:${H}px` }, svg,
       ls.map((l, i) => {
         const on = feitos[i], ts = mins[l.id], d = diaDe(l.dia), eProx = i === prox;
-        return h("button", { class: "parada " + (on ? "on" : "off") + (eProx ? " prox" : "") + (i % 2 ? " dir" : " esq"), type: "button", style: `top:${topo + i * passo}px`, onclick: () => abrirSelo(l), "aria-label": l.nome + (on ? ", carimbado" : "") },
+        return h("button", { class: "parada " + (on ? "on" : "off") + (eProx ? " prox" : "") + (i % 2 ? " dir" : " esq") + (S.trilhaChegou === l.id ? " chegou" : ""), type: "button", style: `top:${topo + i * passo}px`, onclick: () => abrirSelo(l), "aria-label": l.nome + (on ? ", carimbado" : "") },
           h("span", { class: "pinwrap", style: `--r:${[-7, 5, -3, 8, -5, 3][i % 6]}deg` },
             h("img", { class: "pin", src: badgeSrc(l), alt: "", loading: "lazy" }),
             on ? h("span", { class: "brilhos", "aria-hidden": "true" }, h("i", { text: "✦" }), h("i", { text: "✧" }), h("i", { text: "✦" })) : null,
@@ -1389,8 +1450,7 @@ function vPassaporte() {
       h("img", { src: "img/passaporte-capa.webp", alt: "" }),
       h("span", null, h("b", { text: "Folhear meu passaporte" }), h("span", { text: "Abra o passaporte e vire as páginas com seus selos carimbados." }))),
     h("div", { class: "pages" },
-      h("div", { class: "ph" }, h("p", { class: "eyebrow", text: "Os selos da Índia Sagrada" }), h("h2", { text: "Carimbe em cada lugar sagrado" }),
-        h("p", { class: "small", text: "Quando a caravana chegar ao lugar, a líder revela a palavra. Toque no selo e carimbe." })),
+      h("div", { class: "ph" }, h("p", { class: "eyebrow", text: "Os selos da Índia Sagrada" }), h("h2", { text: "Carimbe em cada lugar sagrado" })),
       ls.length ? trilhaSelos(ls, mins) : carregando()),
     gente.length ? h("div", { class: "panel" },
       h("p", { class: "eyebrow", text: "A caravana" }),
@@ -1424,7 +1484,7 @@ function conteudoInsignia(l) {
   const on = aberto(l), ts = minhas()[l.id], d = diaDe(l.dia), livre = disponivel(l);
   const saberes = S.ens.filter(e => e.localId === l.id);
   const input = h("input", { type: "text", id: "unlock-" + l.id, placeholder: "Palavra do lugar", autocomplete: "off", "aria-label": "Palavra do lugar" });
-  const tentar = async () => { if (!input.value.trim()) return; S.unlockMsg = await selar(l, input.value); render(); refreshSheet(); };
+  const tentar = async () => { if (!input.value.trim()) return; S.unlockMsg = await selar(l, input.value); if (S.unlockMsg.ok) { closeSheets(); render(); celebraSelo(l); return; } render(); refreshSheet(); };
   input.addEventListener("keydown", e => { if (e.key === "Enter") tentar(); });
   return [
     h("div", { class: "bigwrap" + (on ? "" : " off") }, h("img", { src: badgeSrc(l), alt: "Selo " + l.nome }),
@@ -1469,9 +1529,11 @@ function editarPerfil() {
   const nome = h("input", { type: "text", id: "pf-nome", maxlength: "40", value: v.nome || "" });
   const cid = h("input", { type: "text", id: "pf-cidade", maxlength: "40", value: v.cidade || "" });
   const erro = h("p", { class: "msg err", role: "alert" });
+  let genero = v.genero || "";
   const form = h("form", { onsubmit: async e => { e.preventDefault(); if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
-    try { await S.db.doc("viajantes/" + S.uid).update({ nome: nome.value.trim(), cidade: cid.value.trim() }); closeSheets(); } catch (err) { erro.textContent = "Não consegui salvar. Tente de novo."; } } },
-    h("h2", { text: "Meus dados" }), h("label", { for: "pf-nome" }, "Seu nome", nome), h("label", { for: "pf-cidade" }, "De onde você vem", cid), erro,
+    try { await S.db.doc("viajantes/" + S.uid).update({ nome: nome.value.trim(), cidade: cid.value.trim(), genero }); closeSheets(); } catch (err) { erro.textContent = "Não consegui salvar. Tente de novo."; } } },
+    h("h2", { text: "Meus dados" }), h("label", { for: "pf-nome" }, "Seu nome", nome), h("label", { for: "pf-cidade" }, "De onde você vem", cid),
+    escolhaGenero(() => genero, g => { genero = g; }), erro,
     h("div", { class: "foot2" }, h("span"), h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: closeSheets }, "Cancelar"), h("button", { class: "btn gold", type: "submit" }, "Salvar"))));
   closeSheets();
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, form);
@@ -2904,7 +2966,7 @@ function erroFoto(e) {
 function editar(tipo, item) {
   item = item || {};
   const cids = S.cidades.slice().sort(byOrdem), locs = S.locais.slice().sort(byOrdem);
-  const INS = ["", "india", "taj-mahal", "jaipur", "galta-ji", "varanasi", "ganga-aarti", "manikarnika", "batismo", "beatles-ashram", "rishikesh", "kunjapuri", "caverna"];
+  const INS = ["", "india", "taj-mahal", "jaipur", "varanasi", "ganga-aarti", "manikarnika", "batismo", "rishikesh", "kunjapuri", "caverna"];
   const F = {
     dia: { col: "dias", t: "dia", campos: [["n", "Número do dia", "num"], ["iso", "Data (AAAA-MM-DD)"], ["data", "Data por extenso (ex.: Quarta · 4 nov)"], ["cidade", "Cidade(s)"], ["titulo", "Título"],
       ["itens", "Programação (uma linha por item: 18:00 | Ganga Aarti)", "linhas"], ["nota", "Nota", "area"], ["ordem", "Ordem", "num"]], obrig: "titulo" },
@@ -3158,7 +3220,7 @@ function vDiario(d, liberado) {
     d.n === 13 && leituraAberta() ? h("button", { class: "btn gold", type: "button", onclick: () => abrirLeitura() }, "Abrir a mensagem do meu diário") : null);
 }
 // Correspondência: cartas da líder, em pergaminho, por pombo-correio
-const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nDoze selos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
+const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nDez selos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
 const ASSINATURA = "Vivian · Caravana do Céu";
 const cartasAbertas = () => S.cartas.filter(c => !c.rascunho && c.envio && c.envio <= Date.now()).sort((a, b) => a.envio - b.envio);
 const dataCarta = ts => new Date(ts).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" });
@@ -3274,7 +3336,7 @@ function vHindi() {
 }
 // Guardar no celular (sem internet)
 const CACHE_KEYS = ["ens", "locais", "cidades", "cartas"];
-for (const k of CACHE_KEYS) { try { const v = JSON.parse(localStorage.getItem("cdi-c-" + k) || "null"); if (Array.isArray(v)) S[k] = v; } catch (e) {} }
+for (const k of CACHE_KEYS) { try { const v = JSON.parse(localStorage.getItem("cdi-c-" + k) || "null"); if (Array.isArray(v)) S[k] = k === "locais" ? v.filter(x => !REMOVIDOS.includes(x.id)) : v; } catch (e) {} }
 function guardaCache(k) { if (!CACHE_KEYS.includes(k)) return; try { localStorage.setItem("cdi-c-" + k, JSON.stringify(S[k])); } catch (e) {} }
 const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 function htmlOffline() {
@@ -3722,7 +3784,7 @@ const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedr
 function listen(col, key, q, after) {
   let primeira = true;
   (q || S.db.collection(col)).onSnapshot(snap => {
-    S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() })); guardaCache(key);
+    S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(x => key !== "locais" || !REMOVIDOS.includes(x.id)); guardaCache(key);
     S.dbReady = true; if (after) after();
     if (primeira || !USA[key] || USA[key].includes(S.tab)) render();
     primeira = false; refreshSheet();
