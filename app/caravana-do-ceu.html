@@ -435,11 +435,19 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .sw[aria-pressed="true"]{box-shadow:0 0 0 3px #B98A43}
 
 /* Estúdio de fotos */
-.estudio{display:grid;gap:18px}
-@media (min-width:820px){.estudio{grid-template-columns:1fr 300px;align-items:start}}
+.estudio{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}.estudio>*{min-width:0}
+@media (min-width:820px){.estudio{grid-template-columns:minmax(0,1fr) 300px;align-items:start}}
 .fotoframe{background:#2B1F14;border-radius:var(--r);padding:12px;display:grid;place-items:center;box-shadow:var(--shadow)}
-.fotocanvas{max-width:100%;max-height:70vh;height:auto;display:block;border-radius:4px}
-.fcontrols{display:flex;flex-direction:column;gap:8px}
+.fotofixa{position:sticky;top:0;z-index:3;background:var(--bg,#F5EFE3);padding-top:6px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.filmstrip{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.filmstrip::-webkit-scrollbar{display:none}
+.fthumb{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:0;padding:0;scroll-snap-align:start;font-size:12px;color:var(--soft);cursor:pointer}
+.fthumb img{width:72px;height:72px;object-fit:cover;border-radius:10px;border:2px solid transparent;box-shadow:0 2px 6px rgba(40,30,20,.18)}
+.fthumb[aria-selected="true"] img{border-color:#B98A43}
+.fthumb[aria-selected="true"] span{color:#3B2A1C;font-weight:600}
+.fotocanvas{max-width:100%;max-height:38vh;height:auto;display:block;border-radius:4px}
+@media (min-width:820px){.fotocanvas{max-height:70vh}}
+.fcontrols{display:flex;flex-direction:column;gap:8px;min-width:0}
 .fotovazia{background:var(--panel);border:1.5px dashed var(--sand);border-radius:var(--r);padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
 .fotovazia img{width:90px;height:auto}
 .fotovazia b{font-family:var(--display);font-size:22px;font-weight:500}
@@ -2031,7 +2039,7 @@ function mapaPerto() {
   svg.setAttribute("aria-label", "Mapa perto de mim");
   const km = S.pertoKm || 0.12, dLat = km / 111, dLng = km / (111 * Math.cos(centro.lat * Math.PI / 180));
   const P = projetor([{ lat: centro.lat - dLat, lng: centro.lng - dLng }, { lat: centro.lat + dLat, lng: centro.lng + dLng }], W, H, 40, .0004); S.proj = P;
-  P.modo = S.camadaMapa || "ruas";
+  P.modo = S.camadaMapa === "satelite" ? "satelite" : "ruas";
   const mov = h("g", { class: "movel" });
   camadasGeo(mov, P, false);
   for (const l of S.locais.filter(l => isFinite(+l.lat))) { const [x, y] = P.xy(l); if (x > -40 && x < W + 40 && y > -40 && y < H + 40) mov.append(h("g", { class: "hotel pin" }, h("rect", { x: x - 6, y: y - 6, width: 12, height: 12, rx: 2 }), h("text", { x: x + 11, y: y + 5, text: l.nome }))); }
@@ -2120,8 +2128,8 @@ function vPerto() {
     S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null);
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   return h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
-    window.__SITE ? h("div", { class: "fcats", role: "tablist", style: "margin:0" }, [["ruas", "Ruas"], ["hibrido", "Satélite com ruas"], ["satelite", "Satélite"]].map(([id, n]) =>
-      h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String((S.camadaMapa || "ruas") === id), onclick: () => { S.camadaMapa = id; render(); } }, n))) : null,
+    window.__SITE ? h("div", { class: "fcats", role: "tablist", style: "margin:0" }, [["ruas", "Ruas"], ["satelite", "Satélite"]].map(([id, n]) =>
+      h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String((S.camadaMapa === "satelite" ? "satelite" : "ruas") === id), onclick: () => { S.camadaMapa = id; render(); } }, n))) : null,
     h("div", { class: "map mapaperto" }, mapaPerto(),
       h("div", { class: "mapctl" },
         h("button", { type: "button", "aria-label": "Aproximar", onclick: () => zoom(.5) }, ic("M12 5v14M5 12h14")),
@@ -2166,8 +2174,9 @@ function vMapa() {
       h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: "Perto de mim" })),
       h("button", { class: "meuexp", type: "button", onclick: () => { S.bonecoRasc = null; go("explorador"); } },
         bonecoSvg(bonecoDe(S.uid), "bonecosvg mini"), h("span", { text: "Meu explorador" }))),
+    vHotelHoje(),
     h("div", { class: "mapwrap" }, vPerto(),
-      h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, vHotelHoje(), painelPessoas(null))));
+      h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null))));
 }
 
 // ---------- Estúdio de fotos ----------
@@ -2361,13 +2370,34 @@ async function montaFoto(canvas) {
     c.drawImage(dourado, (w - sw) / 2, hh - s - 56 * u, sw, s);
   }
 }
+// fita de filtros: cada um com a miniatura da própria foto; desliza para o lado
+function tiraFiltros(F, escolhe) {
+  if (S.fotoThumbsDe !== F.img) { S.fotoThumbs = {}; S.fotoThumbsDe = F.img; }
+  const tira = h("div", { class: "filmstrip", role: "listbox", "aria-label": "Filtros" }, FILTROS.map(f => {
+    let t = S.fotoThumbs[f.id];
+    if (!t) {
+      const k = 150 / Math.max(F.img.width, F.img.height); t = document.createElement("canvas");
+      t.width = Math.max(1, Math.round(F.img.width * k)); t.height = Math.max(1, Math.round(F.img.height * k));
+      const x = t.getContext("2d", { willReadFrequently: true }); x.drawImage(F.img, 0, 0, t.width, t.height);
+      try { aplicaFiltro(x, t.width, t.height, f, "auto"); } catch (e) {}
+      S.fotoThumbs[f.id] = t;
+    }
+    const img = h("img", { alt: "", src: t._url || (t._url = t.toDataURL("image/jpeg", .8)) });
+    return h("button", { type: "button", role: "option", class: "fthumb", "aria-selected": String(F.filtro === f.id), onclick: () => escolhe(f.id) }, img, h("span", { text: f.nome }));
+  }));
+  let pronto = false;
+  tira.addEventListener("scroll", () => { if (pronto && tira.isConnected) S.fotoTiraX = tira.scrollLeft; }, { passive: true });
+  requestAnimationFrame(() => { tira.scrollLeft = S.fotoTiraX || 0; requestAnimationFrame(() => { pronto = true; }); });
+  return tira;
+}
 function vFotos() {
   if (S.fotoAba === "mural") return vMural();
   const F = S.foto || (S.foto = { filtro: "expedicao", cat: "Clássicos", grao: "auto", moldura: "polaroid", legenda: "", cidade: "", data: "" });
   const hoje = hojeIso(), dia = (S.roteiro?.dias || []).find(d => d.iso === hoje);
   if (!F.cidade && !F._auto) { F.cidade = dia ? dia.cidade.split(" ")[0] : ""; F._auto = true; }
   if (!F.data) { const d = new Date(); F.data = d.getDate() + " " + MES[d.getMonth()].toLowerCase() + " " + d.getFullYear(); }
-  const canvas = h("canvas", { class: "fotocanvas", "aria-label": "Prévia da foto" });
+  // a mesma tela da foto em todas as trocas: a foto fica parada e só o filtro muda
+  const canvas = S.fotoCanvas || (S.fotoCanvas = h("canvas", { class: "fotocanvas", "aria-label": "Prévia da foto" }));
   const msg = h("p", { class: "msg", role: "status" });
   const fi = h("input", { type: "file", accept: "image/*", id: "estudio-foto", hidden: true, onchange: async () => {
     const f = fi.files[0]; if (!f) return;
@@ -2404,11 +2434,8 @@ function vFotos() {
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Fotos da travessia" }))),
     abasFotos(),
     F.img ? h("div", { class: "estudio" },
-      h("div", { class: "fotoframe" }, canvas),
+      h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas), tiraFiltros(F, id => set("filtro", id))),
       h("div", { class: "fcontrols" },
-        h("p", { class: "lab", text: "Filtro" }),
-        h("div", { class: "fcats", role: "tablist" }, ["Clássicos", "Modernos", "Criativos"].map(c => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String((F.cat || "Clássicos") === c), onclick: () => set("cat", c) }, c))),
-        h("div", { class: "opts" }, FILTROS.filter(f => f.cat === (F.cat || "Clássicos")).map(f => h("button", { type: "button", class: "opt", "aria-pressed": String(F.filtro === f.id), onclick: () => { msg.textContent = "Aplicando o filtro…"; set("filtro", f.id); } }, f.nome))),
         h("p", { class: "lab", text: "Grão de filme" }),
         h("div", { class: "opts" }, GRAOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.grao || "auto") === id), onclick: () => set("grao", id) }, n))),
         h("p", { class: "lab", text: "Símbolo no fundo" }),
