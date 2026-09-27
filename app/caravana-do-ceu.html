@@ -259,6 +259,15 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .fp-om{top:88%;right:18px;font-size:120px;line-height:1;color:rgba(160,110,60,.08);font-family:"Noto Sans Devanagari",serif}
 .fp-simbg{top:12%;right:8%;width:90px;opacity:.06;transform:rotate(14deg)}
 .pages>*:not(.fundopass){position:relative;z-index:1}
+.folhear.video{background:linear-gradient(135deg,#3B2A1C,#6B4424)}
+.vidico{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#F2C46A,#C98A2A);color:#3B2A1C;font-size:20px;flex:0 0 auto;box-shadow:0 0 18px rgba(242,196,106,.6)}
+.sheet>.vidbox{align-items:center;max-width:420px}
+.vidcanvas{width:100%;max-width:300px;height:auto;aspect-ratio:9/16;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);background:#140C07}
+.medalhas{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;margin-top:4px}
+.medalha{filter:drop-shadow(0 2px 3px rgba(40,25,10,.3));flex:0 0 auto}
+.viagbox{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border:1px dashed #C9B08A;border-radius:12px;background:rgba(251,244,228,.6)}
+.viaglinha{display:flex;flex-direction:column;gap:4px}.viaglinha>span{font-weight:600;font-size:14px;color:var(--ink)}
+.viagbox .opts .opt{padding:5px 12px}
 .trilhawrap{display:flex;flex-direction:column;gap:6px}
 .trilhacont{display:flex;flex-direction:column;align-items:center;gap:6px;margin:4px 0 2px}
 .trilhacont b{font:600 13px/1 var(--ui);letter-spacing:.16em;text-transform:uppercase;color:#8A6B43}
@@ -878,12 +887,12 @@ nav.tabs button{position:relative}
     <button data-tab="passaporte"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="3" width="13" height="18" rx="1.5"/><circle cx="12" cy="10.5" r="3.2"/><path d="M8.8 10.5h6.4M12 7.3c1 1 1 5.4 0 6.4M12 7.3c-1 1-1 5.4 0 6.4M9 17h6"/></svg></span>Passaporte</button>
     <button data-tab="ensinamentos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-4.5 0-8-2.5-8-6 3 0 6 1.5 8 6zM12 20c4.5 0 8-2.5 8-6-3 0-6 1.5-8 6zM12 20c-2-2.5-3-5.5-2-9 1-2.5 1.5-4 2-6 .5 2 1 3.5 2 6 1 3.5 0 6.5-2 9z"/></svg></span>Saberes</button>
     <button data-tab="mapa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span>Mapa</button>
-    <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
     <button data-tab="explorador"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9.5h14"/><path d="M8.5 9.5c0-3 1.5-5 3.5-5s3.5 2 3.5 5"/><circle cx="12" cy="12.5" r="2.6"/><path d="M7.5 21c0-3.5 2-5.5 4.5-5.5s4.5 2 4.5 5.5"/></svg></span>Explorador</button>
     <button data-tab="fotos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h3l1.6-2.2h6.8L17 7.5h3a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.8"/><path d="M17.5 10.3h.01"/></svg></span>Fotos</button>
     <button data-tab="conversa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span>Chat</button>
     <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Mural</button>
     <button data-tab="cambio"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 8h6M9 10.8h6M10.5 8c2.2 0 3.2 1.2 3.2 2.8S12.7 13.6 10.5 13.6H9.5l4.2 3.4"/></svg></span>Câmbio</button>
+    <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
   </nav>
 </div>
 
@@ -985,7 +994,7 @@ const localDe = id => S.locais.find(l => l.id === id);
 // selos que saíram da travessia (a visita não acontece mais): somem do passaporte e do mapa; o saber ligado a eles fica livre
 const REMOVIDOS = ["galta-ji", "beatles-ashram"];
 const EXTRAS = [
-  { id: "ganesha", nome: "Ganesha · Moti Dungri", insignia: "ganesha", cidadeId: "jaipur", dia: 4, ordem: 3.9, codigo: "ganapati", lat: 26.8950, lng: 75.8176, busca: "Moti Dungri Ganesh Temple Jaipur", aberto: false,
+  { id: "ganesha", nome: "Moti Dungri · Ganesha", insignia: "ganesha", cidadeId: "jaipur", dia: 4, ordem: 3.9, codigo: "ganapati", lat: 26.8950, lng: 75.8176, busca: "Moti Dungri Ganesh Temple Jaipur", aberto: false,
     descricao: "O templo de Ganesha aos pés do forte de Moti Dungri, onde se pede a bênção que abre os caminhos.", dica: "Antes de tudo, saudar quem remove os obstáculos." },
   { id: "govind-dev-ji", nome: "Darshan de Krishna", insignia: "govind-dev-ji", cidadeId: "jaipur", dia: 4, ordem: 4.5, codigo: "govinda", lat: 26.9294, lng: 75.8235, busca: "Govind Dev Ji Temple Jaipur", aberto: false,
     descricao: "O templo de Krishna dentro do Palácio da Cidade de Jaipur, onde as cortinas se abrem para o darshan, o encontro com o olhar da divindade.", dica: "As cortinas se abrem e Krishna olha de volta." },
@@ -1074,6 +1083,40 @@ function escolhaGenero(atual, muda) {
   const bt = (val, txt) => h("button", { type: "button", class: "opt", "aria-pressed": String(atual() === val), onclick: ev => { muda(val); ev.currentTarget.parentNode.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === ev.currentTarget))); } }, txt);
   return h("div", { class: "generobox" }, h("span", { class: "small", text: "No passaporte, escrever" }), h("div", { class: "opts" }, bt("a", "Caravaneira"), bt("o", "Caravaneiro")));
 }
+// ---------- Viagens anteriores com a Caravana: medalhas e ranking ----------
+const DESTINOS = [{ id: "chapada", nome: "Chapada dos Veadeiros", cor: "#3F7A3A", sigla: "CV" }];
+const viagensDe = v => { const o = (v && v.viagens) || {}; return Object.keys(o).map(k => ({ id: k, n: +o[k] || 0 })).filter(x => x.n > 0); };
+const totalViagens = v => 1 + viagensDe(v).reduce((a, x) => a + x.n, 0);
+function tituloViajante(v) {
+  const t = totalViagens(v), g = v && v.genero;
+  return t >= 5 ? (g === "o" ? "Veterano da Caravana" : g === "a" ? "Veterana da Caravana" : "Veterania da Caravana") : t >= 3 ? "Viajante experiente" : t === 2 ? "Viajante da Caravana" : "Primeira travessia";
+}
+const nomeDestino = id => (DESTINOS.find(d => d.id === id) || {}).nome || id.replace(/^outro:/, "");
+// medalha bordada: anel dourado costurado, miolo na cor do destino, sigla e quantas vezes
+function medalha(id, n, tam) {
+  const d = DESTINOS.find(x => x.id === id), india = id === "india", cor = india ? "#B8431F" : d ? d.cor : ["#2F5D7C", "#8A3F32", "#6B4A8A", "#8A6B2A"][id.length % 4];
+  const sigla = india ? "IN" : d ? d.sigla : id.replace(/^outro:/, "").split(/\s+/).map(p => p[0] || "").join("").slice(0, 2).toUpperCase();
+  const svg = h("svg", { viewBox: "0 0 60 70", width: tam || 46, height: (tam || 46) * 70 / 60, class: "medalha", role: "img", "aria-label": (india ? "Índia Sagrada 2026" : nomeDestino(id)) + (n > 1 ? `, ${n} vezes` : "") });
+  svg.innerHTML = `<path d="M18 2h9l5 18h-9z" fill="${cor}" opacity=".9"/><path d="M42 2h-9l-5 18h9z" fill="${cor}" opacity=".7"/>
+    <circle cx="30" cy="40" r="25" fill="#C9A063"/><circle cx="30" cy="40" r="25" fill="none" stroke="#8A6B2A" stroke-width="1.2" stroke-dasharray="2 1.6"/>
+    <circle cx="30" cy="40" r="19.5" fill="${cor}"/><circle cx="30" cy="40" r="17" fill="none" stroke="#F4E6C4" stroke-width=".8" stroke-dasharray="1.6 1.4" opacity=".8"/>
+    <text x="30" y="${india ? 44.5 : 45}" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="${india ? 13 : 14}" fill="#FFF3D9">${sigla}</text>
+    ${n > 1 ? `<circle cx="49" cy="58" r="9" fill="#3B2A1C" stroke="#F4E6C4" stroke-width="1.4"/><text x="49" y="61.6" text-anchor="middle" font-family="Poppins,sans-serif" font-weight="700" font-size="10" fill="#F4E6C4">${n}x</text>` : ""}`;
+  return svg;
+}
+function medalhasDe(v, tam) {
+  return h("div", { class: "medalhas" }, medalha("india", 1, tam), viagensDe(v).map(x => medalha(x.id, x.n, tam)));
+}
+// no cadastro: para onde já foi com a Caravana, e quantas vezes
+function campoViagens(estado) {
+  const linha = (id, nome) => h("div", { class: "viaglinha" }, h("span", { text: nome }),
+    h("div", { class: "opts" }, [0, 1, 2, 3, 4].map(n => h("button", { type: "button", class: "opt", "aria-pressed": String((estado[id] || 0) === n), onclick: ev => { if (n) estado[id] = n; else delete estado[id]; ev.currentTarget.parentNode.querySelectorAll("button").forEach((b, i) => b.setAttribute("aria-pressed", String(i === n))); } }, n ? n + "x" : "Não"))));
+  const outro = h("input", { type: "text", maxlength: "30", placeholder: "Outro destino da Caravana (ex.: Peru)" });
+  const outros = h("div", { class: "viagoutros" }, Object.keys(estado).filter(k => k.startsWith("outro:")).map(k => linha(k, k.slice(6))));
+  return h("div", { class: "viagbox" }, h("span", { class: "small", text: "Você já viajou com a Caravana? Marque para onde e quantas vezes. Cada destino vira uma medalha no seu passaporte." }),
+    DESTINOS.map(d => linha(d.id, d.nome)), outros,
+    h("div", { class: "unlock" }, outro, h("button", { class: "btn", type: "button", onclick: () => { const t = outro.value.trim(); if (!t) return; const k = "outro:" + t; if (!estado[k]) estado[k] = 1; outros.append(linha(k, t)); outro.value = ""; } }, "Adicionar")));
+}
 function vCadastro() {
   const nome = h("input", { type: "text", id: "cad-nome", maxlength: "40", autocomplete: "given-name", placeholder: "Como a caravana vai te chamar" });
   const cid = h("input", { type: "text", id: "cad-cidade", maxlength: "40", placeholder: "Ex.: São Paulo" });
@@ -1088,7 +1131,7 @@ function vCadastro() {
       e.preventDefault();
       if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
       if (!S.cadGenero) { erro.textContent = "Escolha Caravaneira ou Caravaneiro."; return; }
-      const doc = { nome: nome.value.trim(), cidade: cid.value.trim(), genero: S.cadGenero, ts: Date.now(), insignias: { ...S.local } };
+      const doc = { nome: nome.value.trim(), cidade: cid.value.trim(), genero: S.cadGenero, viagens: { ...S.cadViagens }, ts: Date.now(), insignias: { ...S.local } };
       if (S.cadFoto) doc.foto = S.cadFoto;
       if (S.isOwner) doc.lider = true;
       try { await S.db.doc("viajantes/" + S.uid).set(doc); S.tab = "passaporte"; }
@@ -1097,6 +1140,7 @@ function vCadastro() {
       h("label", { for: "cad-nome" }, "Seu nome", nome),
       h("label", { for: "cad-cidade" }, "De onde você vem", cid),
       escolhaGenero(() => S.cadGenero, g => { S.cadGenero = g; }),
+      campoViagens(S.cadViagens || (S.cadViagens = {})),
       S.assets ? (() => {
         const st = h("span", { class: "small", role: "status" }), prev = h("img", { alt: "", hidden: true, class: "cadfoto" });
         const fi = campoFoto(async id => { S.cadFoto = id; prev.src = blob(id); prev.hidden = false; }, st);
@@ -1316,13 +1360,15 @@ function numPassaporte(id) { const v = S.viajantes.find(x => x.id === id); retur
 function campo(pt, en, valor, cls) { return h("div", { class: "fd" + (cls ? " " + cls : "") }, h("span", { class: "fl", text: pt + " / " + en }), h("span", { class: "fv", text: valor })); }
 function camposPassaporte(v) {
   return [
-    h("div", { class: "fdrow" }, campo("Tipo", "Type", "P"), campo("Código", "Code", "CDC"), campo("Nº do passaporte", "Passport No.", numPassaporte(S.uid), "grow")),
+    h("div", { class: "fdrow" }, campo("Categoria", "Rank", tituloViajante(v).toUpperCase(), "grow"), campo("Viagens", "Trips", String(totalViagens(v)))),
+    campo("Nº do passaporte", "Passport No.", numPassaporte(S.uid)),
     campo("Nome", "Name", (v.nome || "").toUpperCase(), "big"),
     h("div", { class: "fdrow" }, campo("Nacionalidade", "Nationality", v.genero === "o" ? "CARAVANEIRO" : v.genero === "a" ? "CARAVANEIRA" : "DA CARAVANA"), campo(v.lider ? "Função" : "Viajante", v.lider ? "Role" : "Traveller", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0))),
     campo("Origem", "Place of origin", (v.cidade || "—").toUpperCase()),
     h("div", { class: "fdrow" }, campo("Emissão", "Date of issue", dataDoc(v.ts)), campo("Validade", "Date of expiry", "16 NOV 2026")),
     campo("Autoridade", "Authority", "CARAVANA DO CÉU · TRAVESSIA IND"),
-    campo("Rota", "Route", "DEL · AGR · JAI · VNS · RSK · DEL")
+    campo("Rota", "Route", "DEL · AGR · JAI · VNS · RSK · DEL"),
+    h("div", { class: "fd" }, h("span", { class: "fl", text: "Medalhas da Caravana / Caravan medals" }), medalhasDe(v, 40))
   ];
 }
 function mrzDe(v, ok) {
@@ -1330,6 +1376,192 @@ function mrzDe(v, ok) {
   const l1 = ("P<CDC" + "<<" + nome + "<<INDIA<SAGRADA").padEnd(44, "<").slice(0, 44);
   const l2 = (numPassaporte(S.uid) + "<<CDC<261104<F<261116<<SELOS" + nn(ok || 0)).padEnd(44, "<").slice(0, 44);
   return l1 + "\n" + l2;
+}
+// ---------- Vídeo do passaporte (Reels e Stories, 9:16) ----------
+const carregaLivre = src => new Promise(ok => { const i = new Image(); i.crossOrigin = "anonymous"; i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; });
+function papelPass(x, W, H, tom) {
+  const g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, tom ? "#F7EEDC" : "#FBF4E6"); g.addColorStop(1, tom ? "#EFE2C8" : "#F3E7D0");
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.lineWidth = .8;
+  for (let k = 0; k < 9; k++) { x.strokeStyle = k % 2 ? "rgba(63,122,110,.10)" : "rgba(160,110,60,.10)"; x.beginPath();
+    for (let X = 0; X <= W; X += 6) { const Y = 40 + k * 70 + Math.sin(X / W * Math.PI * 4 + k) * 12; X ? x.lineTo(X, Y) : x.moveTo(X, Y); } x.stroke(); }
+  x.fillStyle = "rgba(90,63,34,.07)"; x.font = "7px Georgia"; for (let Y = 18; Y < H; Y += 26) x.fillText("CARAVANA DO CÉU · ÍNDIA SAGRADA · TRAVESSIA 2026 · ".repeat(4), -((Y * 7) % 60), Y);
+}
+function paginaDados(v, foto, W, H) {
+  const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d"); papelPass(x, W, H, 1);
+  x.fillStyle = "#5A3F22"; x.font = '600 15px "Poppins",sans-serif'; x.fillText("REPÚBLICA DA CARAVANA · PASSAPORTE", 30, 44);
+  x.strokeStyle = "rgba(90,63,34,.3)"; x.beginPath(); x.moveTo(30, 58); x.lineTo(W - 30, 58); x.stroke();
+  x.fillStyle = "#E9DCC0"; x.fillRect(30, 84, 170, 214);
+  if (foto) { const k = Math.max(170 / foto.width, 214 / foto.height), sw = 170 / k, sh = 214 / k; x.drawImage(foto, (foto.width - sw) / 2, (foto.height - sh) / 2, sw, sh, 30, 84, 170, 214); }
+  x.strokeStyle = "rgba(90,63,34,.4)"; x.strokeRect(30, 84, 170, 214);
+  const campo = (rot, val, y) => { x.fillStyle = "#8A6B43"; x.font = '500 12px "Poppins",sans-serif'; x.fillText(rot, 222, y); x.fillStyle = "#282722"; x.font = '600 22px "Courier Prime",monospace'; x.fillText(val, 222, y + 26, W - 250); };
+  campo("NOME / NAME", (v.nome || "Viajante").toUpperCase(), 100);
+  campo("NACIONALIDADE", v.genero === "o" ? "CARAVANEIRO" : v.genero === "a" ? "CARAVANEIRA" : "DA CARAVANA", 162);
+  campo(v.lider ? "FUNÇÃO" : "VIAJANTE", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0), 224);
+  campo("ORIGEM", (v.cidade || "—").toUpperCase(), 286);
+  x.fillStyle = "#8A6B43"; x.font = '500 12px "Poppins",sans-serif'; x.fillText("ROTA", 30, 340); x.fillText("VALIDADE", 30, 404);
+  x.fillStyle = "#282722"; x.font = '600 21px "Courier Prime",monospace'; x.fillText("DEL · AGR · JAI · VNS · RSK · DEL", 30, 366, W - 60); x.fillText("4 – 16 NOV 2026", 30, 430);
+  x.fillStyle = "rgba(40,39,34,.75)"; x.font = '500 15px "Courier Prime",monospace'; mrzDe(v, 0).split("\n").forEach((l, i) => x.fillText(l, 30, H - 58 + i * 22, W - 60));
+  return c;
+}
+function paginaSelos(lista, imgs, W, H, n0) {
+  const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d"); papelPass(x, W, H, 0);
+  x.fillStyle = "#8A6B43"; x.font = '600 13px "Poppins",sans-serif'; x.textAlign = "center"; x.fillText("VISTOS · SELOS DA TRAVESSIA", W / 2, 38); x.textAlign = "start";
+  lista.forEach((l, i) => { const im = imgs[l.id]; if (!im) return; const col = i % 2, lin = Math.floor(i / 2), pw = 176, ph = pw * im.height / im.width;
+    const cx = W / 2 + (col ? 108 : -108), cy = 190 + lin * 300, rot = [-.08, .06, .05, -.07][i % 4];
+    x.save(); x.translate(cx, cy); x.rotate(rot); if (!aberto(l)) x.globalAlpha = .25; x.shadowColor = "rgba(60,40,20,.35)"; x.shadowBlur = 14; x.shadowOffsetY = 6; x.drawImage(im, -pw / 2, -ph / 2, pw, ph); x.restore(); });
+  x.fillStyle = "#B09A78"; x.font = 'italic 14px "Lora",Georgia,serif'; x.textAlign = "center"; x.fillText(String(n0), W / 2, H - 22); return c;
+}
+function paginaFinal(im, qtd, tot, W, H) {
+  const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d"); papelPass(x, W, H, 0);
+  const g = x.createRadialGradient(W / 2, 290, 20, W / 2, 290, 260); g.addColorStop(0, "rgba(255,210,120,.55)"); g.addColorStop(1, "rgba(255,210,120,0)"); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  if (im) { const pw = 250, ph = pw * im.height / im.width; x.save(); x.shadowColor = "rgba(60,40,20,.4)"; x.shadowBlur = 20; x.shadowOffsetY = 8; x.drawImage(im, W / 2 - pw / 2, 290 - ph / 2, pw, ph); x.restore(); }
+  x.textAlign = "center"; x.fillStyle = "#3B2A1C"; x.font = '600 30px "Cinzel",Georgia,serif'; x.fillText("TRAVESSIA", W / 2, 540);
+  x.fillStyle = "#8A6B43"; x.font = '500 17px "Poppins",sans-serif'; x.fillText(`${qtd} de ${tot} selos`, W / 2, 572); return c;
+}
+async function montaVideoPassaporte(cv, aoFim) {
+  const v = eu() || { nome: primeiroNome ? primeiroNome() : "Viajante" }, ls = insigniaLocais(), PW = 480, PH = 660;
+  try { await document.fonts.ready; } catch (e) {}
+  const imgs = {}; await Promise.all(ls.map(async l => { imgs[l.id] = await carregaLivre(badgeSrc(l)); }));
+  const capa = await carregaLivre("img/passaporte-capa.webp");
+  let foto = v.foto ? await carregaLivre(blob(v.foto)) : null;
+  if (!foto) { try { const sv = bonecoSvg(bonecoDe(S.uid)); sv.setAttribute("xmlns", "http://www.w3.org/2000/svg"); sv.setAttribute("width", 240); sv.setAttribute("height", 360);
+    const u = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(sv)], { type: "image/svg+xml" })); foto = await carregaLivre(u); } catch (e) {} }
+  const fin = ls.find(l => l.id === "travessia"), resto = ls.filter(l => l.id !== "travessia"), grupos = [];
+  for (let i = 0; i < resto.length; i += 4) grupos.push(resto.slice(i, i + 4));
+  const qtd = ls.filter(aberto).length;
+  const paginas = [paginaDados(v, foto, PW, PH), ...grupos.map((g, i) => paginaSelos(g, imgs, PW, PH, i + 1)), paginaFinal(fin && imgs[fin.id], qtd, ls.length, PW, PH)];
+  if (paginas.length % 2) paginas.splice(paginas.length - 1, 0, (() => { const c = document.createElement("canvas"); c.width = PW; c.height = PH; papelPass(c.getContext("2d"), PW, PH, 1); return c; })());
+  // lâminas: a capa, depois cada folha tem frente (direita) e verso (esquerda)
+  const nViradas = paginas.length / 2 - 1, T0 = 2.2, TCAPA = 1.4, PAUSA = 1.5, TVIRA = 1.1, fim = T0 + TCAPA + PAUSA + nViradas * (TVIRA + PAUSA) + 2.6;
+  const W = 1080, H = 1920, x = cv.getContext("2d"), CX = 540, CY = 900, poeira = Array.from({ length: 70 }, (_, i) => [((i * 7919) % 1080), ((i * 104729) % 1920), 1 + (i % 3), (i % 7) / 7]);
+  const ease = t => t < 0 ? 0 : t > 1 ? 1 : t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  const folha = (img, ang, sombra) => { // desenha uma página presa na lombada, girando em Y (ang 0 = aberta à direita, PI = à esquerda)
+    const cs = Math.cos(ang), w = PW * Math.abs(cs); if (w < 1) return;
+    x.save(); x.translate(0, 0); const esq = cs < 0;
+    x.transform(1, 0, esq ? .08 * Math.sin(ang) : -.08 * Math.sin(ang), 1, 0, 0);
+    x.drawImage(img, esq ? -w : 0, -PH / 2, w, PH);
+    if (sombra) { const g = x.createLinearGradient(esq ? -w : 0, 0, esq ? 0 : w, 0); const a = .35 * Math.sin(ang); g.addColorStop(esq ? 1 : 0, `rgba(0,0,0,${a})`); g.addColorStop(esq ? 0 : 1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(esq ? -w : 0, -PH / 2, w, PH); }
+    x.restore(); };
+  // cenário: noite no deserto, céu estrelado, lua, dunas, o caravançarai com lanternas e a caravana de camelos passando
+  const estrelas = Array.from({ length: 160 }, (_, i) => [((i * 7919) % 1080), ((i * 104729) % 1150), .6 + (i % 4) * .45, (i % 9) / 9]);
+  const lanterna = (lx, ly, r, t, f) => { const a = .75 + .25 * Math.sin(t * 3 + f); let g = x.createRadialGradient(lx, ly, 0, lx, ly, r * 5); g.addColorStop(0, `rgba(255,190,90,${.45 * a})`); g.addColorStop(1, "rgba(255,160,60,0)"); x.fillStyle = g; x.beginPath(); x.arc(lx, ly, r * 5, 0, 7); x.fill();
+    x.fillStyle = `rgba(255,214,140,${a})`; x.beginPath(); x.ellipse(lx, ly, r * .7, r, 0, 0, 7); x.fill(); x.strokeStyle = "rgba(60,35,15,.9)"; x.lineWidth = 1.5; x.beginPath(); x.moveTo(lx, ly - r); x.lineTo(lx, ly - r - 14); x.stroke(); };
+  const arco = (ax, base, w, h) => { x.beginPath(); x.moveTo(ax - w / 2, base); x.lineTo(ax - w / 2, base - h * .55); x.quadraticCurveTo(ax - w / 2, base - h * .9, ax, base - h); x.quadraticCurveTo(ax + w / 2, base - h * .9, ax + w / 2, base - h * .55); x.lineTo(ax + w / 2, base); x.closePath(); };
+  const camelo = (cx, cy, e, passo) => { x.save(); x.translate(cx, cy); x.scale(e, e); x.fillStyle = "#1A1008";
+    x.beginPath(); x.ellipse(0, -46, 34, 16, 0, 0, 7); x.fill(); x.beginPath(); x.ellipse(-6, -62, 14, 12, 0, 0, 7); x.fill();
+    x.beginPath(); x.moveTo(26, -52); x.quadraticCurveTo(44, -60, 44, -86); x.lineTo(52, -90); x.lineTo(58, -84); x.lineTo(50, -80); x.quadraticCurveTo(50, -58, 32, -40); x.fill();
+    x.lineWidth = 6; x.strokeStyle = "#1A1008"; x.lineCap = "round"; const s = Math.sin(passo) * 7;
+    [[-24, s], [-14, -s], [16, -s], [26, s]].forEach(([lx, d]) => { x.beginPath(); x.moveTo(lx, -38); x.lineTo(lx + d, 0); x.stroke(); });
+    x.beginPath(); x.ellipse(-6, -80, 8, 12, 0, 0, 7); x.fill(); x.fillStyle = "#6B2A1A"; x.fillRect(-20, -54, 30, 8); x.restore(); };
+  const cenario = t => {
+    let g = x.createLinearGradient(0, 0, 0, 1500); g.addColorStop(0, "#0E0B22"); g.addColorStop(.45, "#2A1838"); g.addColorStop(.75, "#6B3326"); g.addColorStop(1, "#C27434"); x.fillStyle = g; x.fillRect(0, 0, W, H);
+    estrelas.forEach(([ex, ey, r, f]) => { x.fillStyle = `rgba(255,244,214,${.35 + .55 * Math.abs(Math.sin(t * 1.3 + f * 9))})`; x.beginPath(); x.arc(ex, ey, r, 0, 7); x.fill(); });
+    x.fillStyle = "#FFF1CF"; x.shadowColor = "rgba(255,230,170,.8)"; x.shadowBlur = 40; x.beginPath(); x.arc(860, 170, 46, 0, 7); x.fill(); x.shadowBlur = 0; x.fillStyle = "#1A1430"; x.beginPath(); x.arc(880, 158, 42, 0, 7); x.fill();
+    // dunas ao longe
+    const duna = (y0, amp, cor, fase) => { x.fillStyle = cor; x.beginPath(); x.moveTo(0, H); for (let X = 0; X <= W; X += 20) x.lineTo(X, y0 - Math.sin(X / 260 + fase) * amp - Math.sin(X / 90 + fase * 2) * amp * .25); x.lineTo(W, H); x.fill(); };
+    duna(1240, 40, "#4A2A22", 1); duna(1300, 30, "#3A2018", 2.4);
+    // caravançarai: muralha com arcos acesos, portal grande, cúpulas e torres
+    const base = 1370; x.fillStyle = "#24140C"; x.fillRect(60, base - 170, 960, 170);
+    x.fillStyle = "#2C180E"; [70, 1010].forEach(tx => { x.fillRect(tx - 40, base - 620, 80, 620); for (let k = 1; k < 4; k++) x.fillRect(tx - 48, base - 620 + k * 140, 96, 10); x.beginPath(); x.arc(tx, base - 620, 40, Math.PI, 0); x.fill(); x.fillRect(tx - 3, base - 690, 6, 40); x.beginPath(); x.arc(tx, base - 694, 6, 0, 7); x.fill();
+      for (let k = 0; k < 3; k++) { x.fillStyle = `rgba(255,180,90,${.55 + .25 * Math.sin(t * 2 + k + tx)})`; arco(tx, base - 470 + k * 140, 22, 50); x.fill(); x.fillStyle = "#2C180E"; } });
+    [[300, 1.25], [780, 1.25]].forEach(([dx, e]) => { x.beginPath(); x.ellipse(dx, base - 300, 60 * e, 72 * e, 0, Math.PI, 0); x.fill(); x.fillRect(dx - 75, base - 300, 150, 300); x.fillRect(dx - 3, base - 300 - 72 * e - 30, 6, 30); });
+    x.beginPath(); x.arc(540, base - 250, 110, Math.PI, 0); x.fill(); x.fillRect(420, base - 250, 240, 250);
+    [[330, 70], [750, 70]].forEach(([dx, r]) => { x.beginPath(); x.arc(dx, base - 170, r, Math.PI, 0); x.fill(); });
+    x.fillStyle = "#3A2214"; for (let i = 0; i < 18; i++) x.fillRect(60 + i * 54, base - 186, 30, 16);
+    for (let i = 0; i < 12; i++) { const ax = 110 + i * 78; if (ax > 400 && ax < 680) continue; const g2 = x.createLinearGradient(0, base - 120, 0, base); g2.addColorStop(0, `rgba(255,170,80,${.7 + .2 * Math.sin(t * 2 + i)})`); g2.addColorStop(1, "rgba(160,70,20,.8)"); x.fillStyle = g2; arco(ax, base - 20, 40, 100); x.fill(); }
+    g = x.createLinearGradient(0, base - 230, 0, base); g.addColorStop(0, "rgba(255,200,110,.95)"); g.addColorStop(1, "rgba(200,90,30,.9)"); x.fillStyle = g; arco(540, base, 150, 230); x.fill();
+    x.fillStyle = "rgba(40,22,12,.9)"; arco(540, base, 120, 200); x.fill(); x.fillStyle = "rgba(255,190,100,.25)"; x.fillRect(480, base - 60, 120, 60);
+    [[250, base - 150], [470, base - 170], [610, base - 170], [830, base - 150], [150, base - 230], [930, base - 230]].forEach(([lx, ly], i) => lanterna(lx, ly, 9, t, i));
+    // areia da frente e a caravana de camelos atravessando
+    g = x.createLinearGradient(0, base, 0, H); g.addColorStop(0, "#5A3420"); g.addColorStop(1, "#1C0F08"); x.fillStyle = g; x.fillRect(0, base, W, H - base);
+    duna(1480, 22, "#43261A", .3);
+    for (let i = 0; i < 5; i++) { const cx = ((t * 38 + i * 150) % 1400) - 160; camelo(cx, 1500 - Math.sin(cx / 260 + .3) * 22, .9, t * 5 + i); }
+    x.strokeStyle = "rgba(26,16,8,.9)"; x.lineWidth = 2; x.beginPath(); for (let i = 0; i < 5; i++) { const cx = ((t * 38 + i * 150) % 1400) - 160; x.lineTo(cx + 44, 1500 - Math.sin(cx / 260 + .3) * 22 - 70); } x.stroke();
+    // brasas de lanterna subindo
+    poeira.forEach(([px, py, r, f]) => { const yy = ((py - t * 40 * (1 + f)) % H + H) % H; x.fillStyle = `rgba(255,200,120,${.2 + .4 * Math.sin(t * 2 + f * 6)})`; x.beginPath(); x.arc(px, yy, r, 0, 7); x.fill(); });
+    // moldura de tapeçaria: faixas com arcos e losangos
+    [[0, 70], [H - 70, 70]].forEach(([fy, fh]) => { x.fillStyle = "rgba(20,10,6,.85)"; x.fillRect(0, fy, W, fh); x.strokeStyle = "#C9A063"; x.lineWidth = 2;
+      for (let X = 0; X < W; X += 60) { x.beginPath(); x.moveTo(X, fy + fh / 2); x.lineTo(X + 30, fy + 12); x.lineTo(X + 60, fy + fh / 2); x.lineTo(X + 30, fy + fh - 12); x.closePath(); x.stroke(); x.fillStyle = "#8A3F32"; x.beginPath(); x.arc(X + 30, fy + fh / 2, 5, 0, 7); x.fill(); }
+      x.fillStyle = "#C9A063"; x.fillRect(0, fy + (fy ? 0 : fh - 3), W, 3); });
+  };
+  const quadro = t => {
+    let g;
+    cenario(t);
+    x.textAlign = "center"; x.globalAlpha = ease(t / 1.2); x.fillStyle = "#E9C27A"; x.font = '600 30px "Poppins",sans-serif'; x.fillText("M E U   P A S S A P O R T E", CX, 250);
+    x.fillStyle = "#FFF1D6"; x.font = '600 64px "Cinzel",Georgia,serif'; x.shadowColor = "rgba(255,190,100,.6)"; x.shadowBlur = 18; x.fillText("ÍNDIA SAGRADA", CX, 330); x.shadowBlur = 0; x.globalAlpha = 1;
+    // livro: flutua e se aproxima
+    const tl = t - T0, abre = ease(tl / TCAPA), flutua = Math.sin(t * 1.6) * 8, esc = .66 + .14 * ease(t / 2.2);
+    x.save(); x.translate(CX - (1 - abre) * PW / 2 * esc, CY + flutua); x.scale(esc, esc);
+    x.fillStyle = "rgba(0,0,0,.45)"; x.beginPath(); x.ellipse(PW / 2 * (1 - abre), PH / 2 + 50, PW * (.6 + .5 * abre), 34, 0, 0, 7); x.fill();
+    if (tl < 0) { // capa fechada girando no ar
+      const giro = (1 - ease(t / T0)) * 1.2, cs = Math.cos(giro), w = PW * cs;
+      x.save(); x.translate(-PW / 2 * 0, 0); x.transform(1, 0, .1 * Math.sin(giro), 1, 0, 0);
+      if (capa) x.drawImage(capa, (PW - w) / 2, -PH / 2, w, PH); x.restore(); x.restore();
+    } else {
+      // páginas por baixo (miolo): esquerda e direita da abertura atual
+      let virou = 0; const tv = tl - TCAPA - PAUSA; if (tv > 0) virou = Math.min(nViradas, Math.floor(tv / (TVIRA + PAUSA)));
+      const emVirada = tv > 0 && virou < nViradas && (tv - virou * (TVIRA + PAUSA)) < TVIRA, pv = emVirada ? ease((tv - virou * (TVIRA + PAUSA)) / TVIRA) : 0;
+      const esqI = virou * 2, dirI = virou * 2 + 1;
+      x.fillStyle = "#3A2A1C"; x.fillRect(-PW - 10, -PH / 2 - 10, PW * 2 + 20, PH + 20); // capa de fora (bordinha)
+      if (abre > .5 || tl > TCAPA) x.drawImage(paginas[esqI], -PW, -PH / 2, PW, PH);
+      x.drawImage(emVirada ? paginas[dirI + 2] : paginas[dirI], 0, -PH / 2, PW, PH);
+      if (emVirada) { folha(pv < .5 ? paginas[dirI] : paginas[dirI + 1], pv * Math.PI, true); }
+      // lombada
+      g = x.createLinearGradient(-30, 0, 30, 0); g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(.5, "rgba(0,0,0,.28)"); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(-30, -PH / 2, 60, PH);
+      if (tl < TCAPA && capa) { const ang = abre * Math.PI, cs = Math.cos(ang), w = PW * Math.abs(cs);
+        if (cs > 0) { x.save(); x.transform(1, 0, -.08 * Math.sin(ang), 1, 0, 0); x.drawImage(capa, 0, -PH / 2, w, PH); x.restore(); }
+        else { x.save(); x.transform(1, 0, .08 * Math.sin(ang), 1, 0, 0); x.drawImage(paginas[0], -w, -PH / 2, w, PH); x.restore(); } }
+      // checks verdes aparecendo nos selos da página da direita/esquerda visíveis
+      const mostra = [esqI, emVirada ? dirI + 2 : dirI];
+      mostra.forEach((pi, lado) => { const gi = pi - 1; const grupo = grupos[gi]; if (!grupo) return;
+        const tIn = T0 + TCAPA + (gi === 0 ? 0 : (Math.ceil(gi / 2) - 1) * (TVIRA + PAUSA) + PAUSA + TVIRA) + .2;
+        grupo.forEach((l, i) => { if (!aberto(l)) return; const k = ease((t - tIn - i * .18) / .35); if (k <= 0) return;
+          const col = i % 2, lin = Math.floor(i / 2), ox = (lado ? 0 : -PW) + PW / 2 + (col ? 108 : -108) + 70, oy = -PH / 2 + 190 + lin * 300 + 95;
+          x.save(); x.translate(ox, oy); x.scale(k, k); x.fillStyle = "#3F7A3A"; x.strokeStyle = "#F4E6C4"; x.lineWidth = 4; x.beginPath(); x.arc(0, 0, 22, 0, 7); x.fill(); x.stroke();
+          x.strokeStyle = "#fff"; x.lineWidth = 5; x.lineCap = "round"; x.beginPath(); x.moveTo(-10, 1); x.lineTo(-3, 8); x.lineTo(11, -8); x.stroke(); x.restore(); }); });
+    }
+    x.restore();
+    // final: brilho e assinatura
+    const tf = t - (fim - 2.6); if (tf > 0) { x.globalAlpha = ease(tf / .8); x.textAlign = "center"; x.fillStyle = "#FFF1D6"; x.font = '600 46px "Cinzel",Georgia,serif'; x.shadowColor = "rgba(0,0,0,.7)"; x.shadowBlur = 14; x.fillText("TRAVESSIA COMPLETA", CX, 1640);
+      x.fillStyle = "#E2BE78"; x.font = '500 30px "Poppins",sans-serif'; x.fillText((v.nome || "") + " · " + qtd + " de " + ls.length + " selos", CX, 1696); x.shadowBlur = 0; x.globalAlpha = 1; }
+    x.textAlign = "center"; x.fillStyle = "rgba(232,211,174,.85)"; x.font = '600 28px "Cinzel",Georgia,serif'; x.fillText("CARAVANA DO CÉU · 2026", CX, 1795);
+  };
+  return { quadro, fim };
+}
+window.__videoPassaporte = (cv) => montaVideoPassaporte(cv);
+async function abrirVideoPassaporte() {
+  closeSheets();
+  const cv = h("canvas", { class: "vidcanvas", width: 1080, height: 1920 });
+  const st = h("p", { class: "msg", role: "status", text: "Preparando o seu passaporte…" });
+  const acoes = h("div", { class: "actions", style: "justify-content:center" });
+  const box = h("div", { role: "dialog", "aria-label": "Vídeo do passaporte", class: "vidbox" }, h("p", { class: "eyebrow", text: "Vídeo do passaporte" }), cv, st, acoes,
+    h("button", { class: "btn ghost", type: "button", onclick: () => { parar = true; closeSheets(); } }, "Fechar"));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) { parar = true; closeSheets(); } } }, box);
+  document.body.append(sheet);
+  let parar = false;
+  const { quadro, fim } = await montaVideoPassaporte(cv);
+  const toca = () => new Promise(ok => { const t0 = performance.now(); const passo = now => { if (parar) return ok(); const t = (now - t0) / 1000; quadro(Math.min(t, fim)); if (t < fim) requestAnimationFrame(passo); else ok(); }; requestAnimationFrame(passo); });
+  const gravar = async () => {
+    const tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m));
+    if (!tipo || !cv.captureStream) { st.textContent = "Este celular não grava vídeo pelo navegador. Grave a tela enquanto o passaporte toca."; return; }
+    acoes.replaceChildren(); st.textContent = "Gravando o vídeo… deixe esta tela aberta.";
+    const rec = new MediaRecorder(cv.captureStream(30), { mimeType: tipo, videoBitsPerSecond: 8e6 }), partes = [];
+    rec.ondataavailable = e => e.data.size && partes.push(e.data);
+    const pronto = new Promise(ok => rec.onstop = ok); rec.start(200); await toca(); rec.stop(); await pronto;
+    const ext = tipo.includes("mp4") ? "mp4" : "webm", arq = new Blob(partes, { type: tipo.split(";")[0] }), nome = "passaporte-caravana." + ext;
+    st.textContent = "Vídeo pronto!";
+    acoes.replaceChildren(h("button", { class: "btn gold", type: "button", onclick: async () => {
+      const f = new File([arq], nome, { type: arq.type });
+      try { if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f] }); return; } } catch (e) { if (e && e.name === "AbortError") return; }
+      const dl = await (window.claude?.use?.("downloads") ?? null);
+      if (dl) { try { await dl.save({ filename: nome, data: arq }); st.textContent = "Vídeo salvo."; } catch (e) {} return; }
+      const a = h("a", { href: URL.createObjectURL(arq), download: nome }); document.body.append(a); a.click(); a.remove(); st.textContent = "Vídeo salvo.";
+    } }, "Salvar vídeo"), h("button", { class: "btn", type: "button", onclick: () => toca() }, "Ver de novo"));
+  };
+  st.textContent = "";
+  acoes.replaceChildren(h("button", { class: "btn gold", type: "button", onclick: gravar }, "Gerar vídeo para postar"), h("button", { class: "btn", type: "button", onclick: () => toca() }, "Ver de novo"));
+  await toca();
 }
 // ---------- Passaporte em 3D (folhear) ----------
 function paginasLivro() {
@@ -1472,7 +1704,7 @@ function trilhaSelos(ls, mins) {
 function vPassaporte() {
   const ls = insigniaLocais(), v = eu(), nums = numeros(), mins = minhas();
   const ok = ls.filter(aberto).length;
-  const gente = S.viajantes.slice().sort((a, b) => (b.lider ? 1 : 0) - (a.lider ? 1 : 0) || (nums[a.id] || 0) - (nums[b.id] || 0));
+  const gente = S.viajantes.slice().sort((a, b) => (b.lider ? 1 : 0) - (a.lider ? 1 : 0) || totalViagens(b) - totalViagens(a) || (nums[a.id] || 0) - (nums[b.id] || 0));
   perfis(gente.map(g => g.id));
   const nomeMrz = norm(v ? v.nome : "viajante").toUpperCase().replace(/[^A-Z]+/g, "<");
   const mrz1 = ("P<CDC<INDIA<<" + nomeMrz).padEnd(44, "<").slice(0, 44);
@@ -1495,11 +1727,14 @@ function vPassaporte() {
       h("div", { class: "actions", style: "margin-top:8px" }, h("button", { class: "btn ghost", type: "button", onclick: editarPerfil }, "Editar meus dados")))
     : S.db && S.uid ? h("div", { class: "panel", style: "text-align:center;align-items:center" }, h("p", { class: "lede", text: "Emita seu passaporte para guardar os selos e aparecer para a caravana." }),
         h("button", { class: "btn gold", type: "button", onclick: () => { S.pularCadastro = false; render(); } }, "Emitir meu passaporte")) : null,
+    S.isOwner || aberto(localDe("travessia")) ? h("button", { class: "folhear video", type: "button", onclick: abrirVideoPassaporte },
+      h("span", { class: "vidico", "aria-hidden": "true", text: "▶" }),
+      h("span", null, h("b", { text: "Vídeo do meu passaporte" }), h("span", { text: "O passaporte gira, abre e folheia seus selos. Pronto para Reels e Stories." }))) : null,
     h("button", { class: "folhear", type: "button", onclick: () => abrirLivro(0) },
       h("img", { src: "img/passaporte-capa.webp", alt: "" }),
       h("span", null, h("b", { text: "Folhear meu passaporte" }), h("span", { text: "Abra o passaporte e vire as páginas com seus selos carimbados." }))),
     h("div", { class: "pages" }, fundoPassaporte(),
-      h("div", { class: "ph" }, h("p", { class: "eyebrow", text: "Os selos da Índia Sagrada" }), h("h2", { text: "Carimbe em cada lugar sagrado" })),
+      h("div", { class: "ph" }, h("p", { class: "eyebrow", text: "Os selos da Índia Sagrada" })),
       ls.length ? trilhaSelos(ls, mins) : carregando()),
     gente.length ? h("div", { class: "panel" },
       h("p", { class: "eyebrow", text: "A caravana" }),
@@ -1507,7 +1742,7 @@ function vPassaporte() {
       h("ul", { class: "roster" }, gente.map(g => h("li", null,
         h("span", { class: "n", text: g.lider ? "✦" : nn(nums[g.id] || 0) }),
         h("img", { src: avatar(g.id), alt: "" }),
-        h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : "", g.cidade].filter(Boolean).join(" · ") })),
+        h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : tituloViajante(g), totalViagens(g) > 1 ? totalViagens(g) + " viagens" : "", g.cidade].filter(Boolean).join(" · ") }), medalhasDe(g, 24)),
         h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null,
     vEntradasLider());
 }
@@ -1578,11 +1813,11 @@ function editarPerfil() {
   const nome = h("input", { type: "text", id: "pf-nome", maxlength: "40", value: v.nome || "" });
   const cid = h("input", { type: "text", id: "pf-cidade", maxlength: "40", value: v.cidade || "" });
   const erro = h("p", { class: "msg err", role: "alert" });
-  let genero = v.genero || "";
+  let genero = v.genero || ""; const viagens = { ...(v.viagens || {}) };
   const form = h("form", { onsubmit: async e => { e.preventDefault(); if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
-    try { await S.db.doc("viajantes/" + S.uid).update({ nome: nome.value.trim(), cidade: cid.value.trim(), genero }); closeSheets(); } catch (err) { erro.textContent = "Não consegui salvar. Tente de novo."; } } },
+    try { await S.db.doc("viajantes/" + S.uid).update({ nome: nome.value.trim(), cidade: cid.value.trim(), genero, viagens }); closeSheets(); } catch (err) { erro.textContent = "Não consegui salvar. Tente de novo."; } } },
     h("h2", { text: "Meus dados" }), h("label", { for: "pf-nome" }, "Seu nome", nome), h("label", { for: "pf-cidade" }, "De onde você vem", cid),
-    escolhaGenero(() => genero, g => { genero = g; }), erro,
+    escolhaGenero(() => genero, g => { genero = g; }), campoViagens(viagens), erro,
     h("div", { class: "foot2" }, h("span"), h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: closeSheets }, "Cancelar"), h("button", { class: "btn gold", type: "submit" }, "Salvar"))));
   closeSheets();
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, form);
