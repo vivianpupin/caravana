@@ -4,7 +4,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function logado() { return request.auth != null; }
-    function lider() { return logado() && request.auth.token.email == 'vivianpupin@gmail.com' && request.auth.token.email_verified == true; }
+    function lider() { return logado() && request.auth.token.email in ['vivianpupin@gmail.com', 'vanessadeleu@gmail.com'] && request.auth.token.email_verified == true; }
     function membro() { return lider() || (logado() && exists(/databases/$(database)/documents/membros/$(request.auth.uid))); }
     function eu(uid) { return logado() && request.auth.uid == uid; }
     function autor() { return request.resource.data.autor == request.auth.uid; }

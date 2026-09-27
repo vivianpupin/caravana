@@ -46,14 +46,15 @@ if (!pronto) {
   fs = firebase.firestore();
   fs.settings({ ignoreUndefinedProperties: true, merge: true });
   fs.enablePersistence({ synchronizeTabs: true }).catch(() => {});
-  const lider = String(CFG.lider || "").toLowerCase();
+  // líderes: um ou mais e-mails separados por vírgula no config.js
+  const lideres = String(CFG.lider || "").toLowerCase().split(/[\s,;]+/).filter(Boolean);
 
   // volta do login do Google (celular): se deu erro, mostra na tela de entrar
   auth.getRedirectResult().catch(e => { erroLogin = e && e.code ? "Não consegui entrar (" + e.code.replace("auth/", "") + "). Tente de novo." : "Não consegui entrar. Tente de novo."; if (!auth.currentUser) telaLogin(); });
   auth.onAuthStateChanged(async u => {
     if (!u) return telaLogin();
     const email = String(u.email || "").toLowerCase();
-    me = { id: u.uid, name: u.displayName || email.split("@")[0], avatarUrl: u.photoURL || "", email, isOwner: !!lider && email === lider && u.emailVerified };
+    me = { id: u.uid, name: u.displayName || email.split("@")[0], avatarUrl: u.photoURL || "", email, isOwner: lideres.includes(email) && u.emailVerified };
     // não espera a internet confirmar: com sinal fraco isso segurava a entrada no app
     fs.doc("perfis/" + u.uid).set({ name: me.name, avatarUrl: me.avatarUrl, ts: Date.now() }).catch(() => {});
     if (me.isOwner) {

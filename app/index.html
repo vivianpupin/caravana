@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 18:47";</script>
+<script>window.__VERSAO = "27/09 · 18:49";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -4821,7 +4821,11 @@ render();
   if (user) { const me = await user.me(); S.me = me; S.uid = me.id; S.isOwner = me.isOwner; perfis([me.id]); }
   if (!db) { S.dbReady = true; render(); return; }
   listen("cidades", "cidades"); listen("locais", "locais"); listen("ensinamentos", "ens");
-  listen("viajantes", "viajantes", null, () => { S.vReady = true; });
+  listen("viajantes", "viajantes", null, () => {
+    S.vReady = true;
+    // quem virou líder depois de já ter passaporte (ex.: Vanessa) passa a aparecer como Líder
+    const v = eu(); if (S.isOwner && v && !v.lider && !S.virandoLider) { S.virandoLider = true; S.db.doc("viajantes/" + S.uid).update({ lider: true }).catch(() => { S.virandoLider = false; }); }
+  });
   listen("chat", "chat", db.collection("chat").orderBy("ts", "desc").limit(400));
   listen("posicoes", "posicoes");
   listen("cartas", "cartas", null, () => {

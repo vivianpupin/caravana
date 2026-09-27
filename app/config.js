@@ -1,6 +1,6 @@
 // Configuração do Firebase (projeto app-caravana-70c8a). Não é senha: é o endereço público do banco de dados.
 window.CARAVANA_CONFIG = {
-  lider: "vivianpupin@gmail.com",
+  lider: "vivianpupin@gmail.com, vanessadeleu@gmail.com",
   firebase: {
     apiKey: "AIzaSyDsbhcih3hK-j7bV6-BV-tJpVnCjnu2_1I",
     authDomain: "app-caravana-70c8a.firebaseapp.com",
