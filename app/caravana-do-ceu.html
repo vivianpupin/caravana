@@ -3431,16 +3431,7 @@ function cartaoCelular() {
   const fechadoHa = k => Date.now() - (+lsGet(k) || 0) < 24 * 3600 * 1000;
   const msg = S.celMsg ? h("p", { class: "small", role: "status", text: S.celMsg }) : null;
   if (!instalado() && !fechadoHa("cdi-cel-inst")) {
-    if (ehIphone()) {
-      const safari = !/CriOS|FxiOS|EdgiOS|Instagram|FBAN|FBAV|WhatsApp/.test(navigator.userAgent);
-      return h("div", { class: "celcard" }, fechar("cdi-cel-inst"),
-        h("p", { class: "eyebrow", text: "Instale o app no seu iPhone" }),
-        safari ? h("ol", { class: "celpassos" },
-          h("li", null, "Toque no botão de compartilhar ", h("svg", { class: "icshare", viewBox: "0 0 24 24", width: 16, height: 16, "aria-label": "(quadrado com seta para cima)" }, h("path", { d: "M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1", fill: "none", stroke: "#2F6FB0", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" })), " embaixo da tela"),
-          h("li", null, "Desça e toque em ", h("b", { text: "Adicionar à Tela de Início" })),
-          h("li", null, "Toque em ", h("b", { text: "Adicionar" }), " e abra o app pelo ícone da Caravana"))
-          : h("p", { text: "Abra este endereço no Safari para instalar o app e receber as mensagens da caravana no celular." }));
-    }
+    // no iPhone a instalação é feita pela líder com cada viajante, sem cartão
     if (S.instalar) return h("div", { class: "celcard" }, fechar("cdi-cel-inst"),
       h("p", { class: "eyebrow", text: "Instale o app no seu celular" }),
       h("p", { text: "Fica na tela inicial como um aplicativo e abre mesmo sem sinal." }),
