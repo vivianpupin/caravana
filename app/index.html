@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 19:16";</script>
+<script>window.__VERSAO = "27/09 · 19:18";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1105,9 +1105,19 @@ async function perfis(ids) {
   try { Object.assign(S.perfis, await S.user.profiles(falta)); render(); } catch (e) { falta.forEach(id => perfis.pend.delete(id)); }
 }
 const avatar = id => { const v = S.viajantes.find(x => x.id === id); return v && v.foto ? blob(v.foto) : (S.perfis[id]?.avatarUrl || BLANK); };
+// abre a foto do celular já na posição certa (em pé fica em pé): o <img> respeita a orientação gravada pela câmera
+async function abreFoto(file, max = 3000) {
+  const url = URL.createObjectURL(file);
+  try {
+    const im = new Image(); im.decoding = "async"; im.src = url; await im.decode();
+    const w = im.naturalWidth, hh = im.naturalHeight, k = Math.min(1, max / Math.max(w, hh)), c = document.createElement("canvas");
+    c.width = Math.round(w * k); c.height = Math.round(hh * k); c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); return c;
+  } catch (e) { return createImageBitmap(file, { imageOrientation: "from-image" }).catch(() => createImageBitmap(file)); }
+  finally { setTimeout(() => URL.revokeObjectURL(url), 1000); }
+}
 // Foto do passaporte: recorta no centro em 3x4 e reduz antes de enviar.
 async function fotoPassaporte(file) {
-  const bmp = await createImageBitmap(file), alvo = 3 / 4;
+  const bmp = await abreFoto(file), alvo = 3 / 4;
   let w = bmp.width, hh = bmp.height, sx = 0, sy = 0;
   if (w / hh > alvo) { const nw = hh * alvo; sx = (w - nw) / 2; w = nw; } else { const nh = w / alvo; sy = (hh - nh) / 3; hh = nh; }
   const c = document.createElement("canvas"); c.width = 600; c.height = 800;
@@ -3681,7 +3691,7 @@ function vTira() {
   const msg = h("p", { class: "msg", role: "status" });
   const fi = h("input", { type: "file", accept: "image/*", multiple: true, id: "tira-fotos", hidden: true, onchange: async () => {
     const fs = [...fi.files].slice(0, 4 - T.imgs.length);
-    for (const f of fs) { try { T.imgs.push(await createImageBitmap(f)); T.ids.push(Math.random().toString(36).slice(2)); } catch (e) {} }
+    for (const f of fs) { try { T.imgs.push(await abreFoto(f)); T.ids.push(Math.random().toString(36).slice(2)); } catch (e) {} }
     if (fi.files.length > fs.length) msg.textContent = "A cabine leva até 4 fotos.";
     fi.value = ""; render();
   } });
@@ -3772,7 +3782,7 @@ function vFotos() {
   const msg = h("p", { class: "msg", role: "status" });
   const fi = h("input", { type: "file", accept: "image/*", id: "estudio-foto", hidden: true, onchange: async () => {
     const f = fi.files[0]; if (!f) return;
-    try { const bmp = await createImageBitmap(f); S.foto = { ...S.foto, img: bmp }; render(); } catch (e) { msg.textContent = "Não consegui abrir essa foto. Tente outra, em JPG ou PNG."; msg.className = "msg err"; }
+    try { const bmp = await abreFoto(f); S.foto = { ...S.foto, img: bmp }; render(); } catch (e) { msg.textContent = "Não consegui abrir essa foto. Tente outra, em JPG ou PNG."; msg.className = "msg err"; }
     fi.value = "";
   } });
   const set = (k, v) => { S.foto = { ...S.foto, [k]: v }; render(); };
@@ -4164,7 +4174,7 @@ function vConversa() {
 async function reduzir(file) {
   if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return file;
   try {
-    const bmp = await createImageBitmap(file), k = Math.min(1, 1800 / Math.max(bmp.width, bmp.height));
+    const bmp = await abreFoto(file), k = Math.min(1, 1800 / Math.max(bmp.width, bmp.height));
     if (k === 1 && file.size < 2.5e6) return file;
     const c = document.createElement("canvas"); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
     c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);

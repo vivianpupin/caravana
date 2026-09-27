@@ -196,11 +196,12 @@ window.__blobUrl = id => {
   return VAZIO;
 };
 async function comprime(blob) {
-  const bmp = await createImageBitmap(blob);
-  let lado = 1600, q = .85, url = "";
+  // foto direto da câmera: o <img> já vira para a posição certa
+  let bmp; try { const u = URL.createObjectURL(blob), im = new Image(); im.src = u; await im.decode(); bmp = im; setTimeout(() => URL.revokeObjectURL(u), 1000); } catch (e) { bmp = await createImageBitmap(blob); }
+  let lado = 1600, q = .85, url = ""; const bw = bmp.naturalWidth || bmp.width, bh = bmp.naturalHeight || bmp.height;
   for (let i = 0; i < 8; i++) {
-    const k = Math.min(1, lado / Math.max(bmp.width, bmp.height));
-    const c = document.createElement("canvas"); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+    const k = Math.min(1, lado / Math.max(bw, bh));
+    const c = document.createElement("canvas"); c.width = Math.round(bw * k); c.height = Math.round(bh * k);
     c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
     url = c.toDataURL("image/jpeg", q);
     if (url.length < 900000) break;
