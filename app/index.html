@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 19:06";</script>
+<script>window.__VERSAO = "27/09 · 19:09";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -660,6 +660,12 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .fthumb[aria-selected="true"] span{color:#3B2A1C;font-weight:600}
 .fotocanvas{max-width:100%;max-height:38vh;height:auto;display:block;border-radius:4px}
 @media (min-width:820px){.fotocanvas{max-height:70vh}}
+/* celular: só a foto acompanha a rolagem (como o bonequinho do Explorador); filtros, adesivos e o resto rolam normalmente */
+@media (max-width:819px){
+  .fotofixa{display:contents}
+  .fotoframe{position:sticky;top:6px;z-index:3;padding:8px;box-shadow:0 10px 24px rgba(40,24,12,.3);justify-self:center;width:fit-content;max-width:100%}
+  .fotoframe .fotocanvas{max-height:32vh}
+}
 .fcontrols{display:flex;flex-direction:column;gap:8px;min-width:0}
 .fotovazia{background:var(--panel);border:1.5px dashed var(--sand);border-radius:var(--r);padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
 .fotovazia img{width:90px;height:auto}
@@ -1707,11 +1713,14 @@ async function montaVideoPassaporte(cv, aoFim) {
       else x.drawImage(contraFora, -PW, -PH / 2, PW, PH);
     } else {
       // páginas por baixo (miolo): esquerda e direita da abertura atual
-      let virou = 0; const tv = tl - TCAPA - PAUSA; if (tv > 0) virou = Math.min(nViradas, Math.floor(tv / (TVIRA + PAUSA)));
-      const emVirada = tv > 0 && virou < nViradas && (tv - virou * (TVIRA + PAUSA)) < TVIRA, pv = emVirada ? ease((tv - virou * (TVIRA + PAUSA)) / TVIRA) : 0;
+      // cada ciclo: a folha vira (TVIRA) e depois o livro fica parado mostrando as páginas novas (PAUSA)
+      const tv = tl - TCAPA - PAUSA, ciclo = TVIRA + PAUSA, idx = tv > 0 ? Math.floor(tv / ciclo) : 0, dentro = tv > 0 ? tv - idx * ciclo : 0;
+      const emVirada = tv > 0 && idx < nViradas && dentro < TVIRA, pv = emVirada ? ease(dentro / TVIRA) : 0;
+      const virou = tv <= 0 ? 0 : Math.min(nViradas, emVirada ? idx : idx + 1);
       const esqI = virou * 2, dirI = virou * 2 + 1;
       x.fillStyle = "#3A2A1C"; if (abre >= .5 || tl > TCAPA) x.fillRect(-PW - 10, -PH / 2 - 10, PW * 2 + 20, PH + 20); else x.fillRect(-2, -PH / 2 - 10, PW + 12, PH + 20); // capa de fora (bordinha)
-      if (abre > .5 || tl > TCAPA) x.drawImage(paginas[esqI], -PW, -PH / 2, PW, PH);
+      // a página da esquerda só aparece inteira depois que a capa terminou de abrir (antes, é a própria capa virando)
+      if (tl >= TCAPA) x.drawImage(paginas[esqI], -PW, -PH / 2, PW, PH);
       x.drawImage(emVirada ? paginas[dirI + 2] : paginas[dirI], 0, -PH / 2, PW, PH);
       if (emVirada) folha(paginas[dirI], paginas[dirI + 1], pv * Math.PI);
       // lombada
@@ -1719,8 +1728,11 @@ async function montaVideoPassaporte(cv, aoFim) {
       if (tl < TCAPA && capa) folha(capa, paginas[0], abre * Math.PI);
       // checks verdes aparecendo nos selos da página da direita/esquerda visíveis
       const mostra = [esqI, emVirada ? dirI + 2 : dirI];
+      // o check de cada selo aparece logo depois que a página dele fica à vista
+      const base = T0 + TCAPA + PAUSA;
+      const tVis = pi => { const sp = Math.floor(pi / 2); if (sp === 0) return T0 + TCAPA; return pi % 2 ? base + (sp - 1) * ciclo + TVIRA : base + (sp - 1) * ciclo + TVIRA; };
       mostra.forEach((pi, lado) => { const gi = pi - 1; const grupo = grupos[gi]; if (!grupo) return;
-        const tIn = T0 + TCAPA + (gi === 0 ? 0 : (Math.ceil(gi / 2) - 1) * (TVIRA + PAUSA) + PAUSA + TVIRA) + .2;
+        const tIn = tVis(pi) + .3;
         grupo.forEach((l, i) => { if (!aberto(l)) return; const k = ease((t - tIn - i * .18) / .35); if (k <= 0) return;
           const col = i % 2, lin = Math.floor(i / 2), ox = (lado ? 0 : -PW) + PW / 2 + (col ? 108 : -108) + 70, oy = -PH / 2 + 190 + lin * 300 + 95;
           x.save(); x.translate(ox, oy); x.scale(k, k); x.fillStyle = "#3F7A3A"; x.strokeStyle = "#F4E6C4"; x.lineWidth = 4; x.beginPath(); x.arc(0, 0, 22, 0, 7); x.fill(); x.stroke();
