@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 11:56";</script>
+<script>window.__VERSAO = "27/09 · 11:57";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -538,6 +538,11 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .map .hotel text{font:italic 500 15px var(--display);fill:#3B2A1C;stroke:#EAD6A8}
 .explorador .etq{fill:#F4E6C4;stroke:#6B4A2A;stroke-width:1}
 .explorador .etqt{font:600 10.5px var(--ui);fill:#3B2A1C;text-anchor:middle}
+#tabs button[data-tab="conversa"]{position:relative}
+.pinmsg{position:absolute;top:2px;left:50%;margin-left:6px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#F2C230;color:#3B2A1C;font:700 10.5px/17px var(--ui);text-align:center;box-shadow:0 0 0 2px #2B1F14,0 0 10px rgba(242,194,48,.7);animation:pinpulsa 2s ease-in-out infinite}
+.pinmsg[hidden]{display:none}
+@keyframes pinpulsa{50%{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.pinmsg{animation:none}}
 .meuexp{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 14px 4px 6px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
 .bonecosvg{display:block}
 .bonecosvg.mini{width:26px;height:39px}
@@ -1094,8 +1099,22 @@ function go(tab) {
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (!b) return; if (b.dataset.tab === "ensinamentos") S.ensSel = null; if (b.dataset.tab === "mapa") S.montando = false; go(b.dataset.tab); });
 $("#me").addEventListener("click", () => go("passaporte"));
 
+// mensagem nova no chat: pontinho amarelo na aba Chat (e no ícone do app, quando o celular permite)
+function marcaChat() {
+  let visto = 0; try { visto = +localStorage.getItem("cdi-chat-visto") || 0; } catch (e) {}
+  const ult = S.chat.reduce((a, m) => Math.max(a, m.ts || 0), 0);
+  if (!visto || S.tab === "conversa") { if (ult > visto) { visto = ult; try { localStorage.setItem("cdi-chat-visto", String(ult)); } catch (e) {} } }
+  const n = S.chat.filter(m => m.autor !== S.uid && (m.ts || 0) > visto).length;
+  const bt = document.querySelector('#tabs button[data-tab="conversa"]'); if (!bt) return;
+  let pin = bt.querySelector(".pinmsg");
+  if (!pin) { pin = h("span", { class: "pinmsg", "aria-hidden": "true" }); bt.append(pin); }
+  pin.textContent = n > 9 ? "9+" : n ? String(n) : ""; pin.hidden = !n;
+  bt.setAttribute("aria-label", n ? `Chat, ${n} ${n > 1 ? "mensagens novas" : "mensagem nova"}` : "Chat");
+  try { if (navigator.setAppBadge) n ? navigator.setAppBadge(n) : navigator.clearAppBadge(); } catch (e) {}
+}
 function render() {
   if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
+  marcaChat();
   for (const b of document.querySelectorAll("#tabs button")) {
     if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
   }
@@ -3428,7 +3447,7 @@ function vConversa() {
   } });
   const ico = d => h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "1.7", "stroke-linecap": "round", "stroke-linejoin": "round" }, d.map(p => h("path", { d: p })));
   return h("section", { class: "view chatview" },
-    h("div", { class: "chathead" }, h("p", { class: "eyebrow", text: "Conversa" }), h("h1", { style: "font-size:22px", text: "Roda da Caravana" })),
+    h("div", { class: "chathead" }, h("p", { class: "eyebrow", text: "Conversa" }), h("h1", { style: "font-size:22px", text: "Roda de Chai" })),
     log,
     pode && S.pontoAberto ? h("div", { class: "picker loc" },
       h("div", { class: "locopt" },
@@ -4295,7 +4314,7 @@ function listen(col, key, q, after) {
   let primeira = true;
   (q || S.db.collection(col)).onSnapshot(snap => {
     S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() })); if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = S.ens.filter(x => !SABERES_REMOVIDOS.includes(x.id)); guardaCache(key);
-    S.dbReady = true; if (after) after();
+    S.dbReady = true; if (after) after(); if (key === "chat") marcaChat();
     if (primeira || !USA[key] || USA[key].includes(S.tab)) render();
     primeira = false; refreshSheet();
   }, () => { S.dbReady = true; if (after) after(); render(); });
