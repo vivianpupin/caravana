@@ -558,6 +558,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .pr.on{color:var(--ok)}
 .album{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:4px 0 12px}
 .album .small{margin:0}
+.imapa{display:inline-block;margin-top:4px;font-size:12.5px;font-weight:600;color:var(--terra)}
 .celx{position:absolute;top:6px;right:8px;background:none;border:0;font-size:22px;line-height:1;color:var(--soft);padding:4px 8px}
 .meuexp{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 14px 4px 6px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
 .bonecosvg{display:block}
@@ -1075,7 +1076,7 @@ const EXTRAS = [
     descricao: "O templo de Hanuman em Varanasi, aquele que livra das dificuldades.", dica: "O devoto que carregou uma montanha espera entre as árvores." },
   { id: "ganesha", nome: "Moti Dungri · Ganesha", insignia: "ganesha", cidadeId: "jaipur", dia: 4, ordem: 3.9, codigo: "ganapati", lat: 26.8950, lng: 75.8176, busca: "Moti Dungri Ganesh Temple Jaipur", aberto: false,
     descricao: "O templo de Ganesha aos pés do forte de Moti Dungri, onde se pede a bênção que abre os caminhos.", dica: "Antes de tudo, saudar quem remove os obstáculos." },
-  { id: "govind-dev-ji", nome: "Darshan de Krishna", insignia: "govind-dev-ji", cidadeId: "jaipur", dia: 4, ordem: 4.5, codigo: "govinda", lat: 26.9294, lng: 75.8235, busca: "Govind Dev Ji Temple Jaipur", aberto: false,
+  { id: "govind-dev-ji", nome: "Darshan de Krishna", insignia: "govind-dev-ji", cidadeId: "jaipur", dia: 3, ordem: 3.5, codigo: "govinda", lat: 26.9294, lng: 75.8235, busca: "Govind Dev Ji Temple Jaipur", aberto: false,
     descricao: "O templo de Krishna dentro do Palácio da Cidade de Jaipur, onde as cortinas se abrem para o darshan, o encontro com o olhar da divindade.", dica: "As cortinas se abrem e Krishna olha de volta." },
   { id: "diwali", nome: "Diwali", insignia: "diwali", cidadeId: "varanasi", dia: 5, ordem: 5.5, codigo: "deepavali", lat: 25.2869, lng: 83.0066, busca: "Assi Ghat Varanasi", aberto: false,
     descricao: "O Festival das Luzes: lamparinas acesas nas portas, nos ghats e no rio para celebrar a vitória da luz.", dica: "A noite em que a Índia inteira se acende." },
@@ -1388,7 +1389,7 @@ function vDia(d, open, isToday, abrir) {
       h("div", { class: "logi" }, h("span", null, "Hospedagem ", h("b", { text: d.hotel })), d.guia ? h("span", null, h("b", { text: d.guia })) : null),
       h("div", null, h("p", { class: "eyebrow rule", text: "Agenda do dia" }),
         d.agenda.map(p => [h("p", { class: "per", text: p.periodo }),
-          h("ul", { class: "items" }, p.itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "depois" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null))))])),
+          h("ul", { class: "items" }, p.itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "depois" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
         l.dados && l.dados.length ? h("div", { class: "stats" }, l.dados.map(x => h("div", null, h("b", { text: x.v }), h("span", { text: x.l })))) : null)),
@@ -3986,6 +3987,7 @@ function editarCarta(c) {
     if (!isFinite(envio)) { st.textContent = "Confira a data e a hora."; st.className = "msg err"; return; }
     const dados = { titulo: tit.value.trim(), texto: ta.value.trim(), assinatura: ass.value.trim() || ASSINATURA, local: loc.value.trim(), envio, rascunho: modo === "rascunho", ts: Date.now() };
     try {
+      if (c.avisada && c.envio === dados.envio) dados.avisada = true; // carta já avisada não avisa de novo ao ser corrigida
       if (c.id) await S.db.doc("cartas/" + c.id).set(dados); else { const r = await S.db.collection("cartas").add(dados); c.id = r && r.id; }
       st.textContent = modo === "rascunho" ? "Rascunho guardado. Ninguém vê ainda." : modo === "agora" ? "Carta enviada! Ela chega agora para a caravana." : `Carta programada para ${dataCarta(envio)}, às ${horaCarta(envio)} na Índia.`;
       st.className = "msg ok";
