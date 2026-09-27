@@ -1789,7 +1789,8 @@ const REACOES = [["oi", "👋", "Oi!"], ["namaste", "🙏", "Namaste"], ["amor",
 S.online = new Set(); S.aoVivo = {}; S.baloes = {}; S.gpsOn = false; S.gpsMsg = null;
 function posicoesAtuais() {
   const m = {};
-  for (const p of S.posicoes) if (Date.now() - (p.ts || 0) < FRESCO) m[p.id] = p;
+  // só vale posição que veio do GPS (as antigas, marcadas à mão numa lista, ficam de fora)
+  for (const p of S.posicoes) if (p.gps && Date.now() - (p.ts || 0) < FRESCO) m[p.id] = p;
   for (const id in S.aoVivo) { const v = S.aoVivo[id]; if (Date.now() - v.ts < 10 * 60 * 1000) m[id] = { ...(m[id] || {}), ...v, id, vivoGps: true }; }
   return Object.values(m);
 }
@@ -1810,7 +1811,7 @@ function ligarGps(silencioso) {
     S.gpsOn = true; S.gpsMsg = "Você está ao vivo no mapa. A caravana vê você andando enquanto o aplicativo estiver aberto.";
     S.aoVivo[S.uid] = { lat, lng, cidadeId, ts, prec: Math.round(pos.coords.accuracy || 0) };
     S.room?.presence({ uid: S.uid, lat, lng, cidadeId, ts }).catch(() => {});
-    if (ts - ultimoDb > 60000 && S.db && eu()) { ultimoDb = ts; S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: S.rua && distKm(S.rua, { lat, lng }) < 1 ? S.rua.lugar || "" : "", nota: "", link: "", ts }).catch(() => {}); }
+    if (ts - ultimoDb > 60000 && S.db && eu()) { ultimoDb = ts; S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: S.rua && distKm(S.rua, { lat, lng }) < 1 ? S.rua.lugar || "" : "", nota: "", link: "", gps: true, ts }).catch(() => {}); }
     if (S.arrastando) { S.pendente = true; return; }
     if (S.tab === "mapa" && !document.querySelector(".sheet")) render();
   };
@@ -1837,7 +1838,7 @@ function abrirPessoa(id) {
         h("p", { class: "small" }, h("span", { class: "dot" + (online ? " on" : "") }), online ? "Com o aplicativo aberto agora" : "Fora do aplicativo agora"))),
     !eu2 ? h("div", { class: "reacoes" }, REACOES.map(([r, e, t]) => h("button", { type: "button", class: "reac", onclick: () => envia(r, "") }, h("span", { class: "e", text: e }), h("span", { text: t })))) : null,
     !eu2 ? h("div", { class: "unlock" }, txt, h("button", { class: "btn gold", type: "button", onclick: () => { if (txt.value.trim()) envia("fala", txt.value.trim()); } }, "Falar")) : null,
-    !eu2 && !S.room ? h("p", { class: "small", text: "Reações ao vivo aparecem quando o aplicativo está aberto e conectado." }) : null,
+    !eu2 ? h("p", { class: "small", text: online ? "Com o app aberto: a reação aparece na hora, na tela de " + nome.split(" ")[0] + "." : "A reação só aparece para quem está com o app aberto. Para um recado que fica guardado, use a Roda." }) : null,
     msg,
     h("div", { class: "actions" },
       p ? h("a", { class: "btn", href: `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`, target: "_blank", rel: "noopener" }, "Como chegar") : null,
@@ -2046,6 +2047,7 @@ function pertoCidade(p) { let b = null; for (const c of S.cidades) { const d = k
 function pertoDe(p) {
   let b = null; for (const l of S.locais.filter(l => isFinite(+l.lat))) { const d = km(p, { lat: +l.lat, lng: +l.lng }); if (!b || d < b.d) b = { l, d }; }
   // longe dos lugares da travessia: mostra o bairro/cidade de verdade (do GPS), nunca a cidade da caravana mais próxima
+  if ((!b || b.d > 30) && p.id === S.uid && S.rua && S.rua.lugar) return "em " + S.rua.lugar;
   if (!b || b.d > 30) { const c = p.cidadeId && cidadeDe(p.cidadeId), cc = c && km(p, { lat: +c.lat, lng: +c.lng }) < 60 ? c.nome : ""; return p.lugar ? "em " + p.lugar : cc ? "em " + cc : ""; }
   return b.d < 0.15 ? "em " + b.l.nome : `a ${b.d < 10 ? b.d.toFixed(1).replace(".", ",") : Math.round(b.d)} km de ${b.l.nome}`;
 }
@@ -2636,6 +2638,7 @@ function painelPessoas(c) {
         p.nota ? h("p", { class: "small", style: "color:var(--ink)", text: p.nota }) : null,
         h("div", { class: "actions", style: "margin-top:6px" },
           p.link ? h("a", { class: "btn", href: p.link, target: "_blank", rel: "noopener" }, "Ver ao vivo") : null,
+          p.id !== S.uid ? h("button", { class: "btn gold", type: "button", onclick: () => abrirPessoa(p.id) }, "👋 Mandar reação") : null,
           h("a", { class: "btn ghost", href: `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`, target: "_blank", rel: "noopener" }, "Como chegar")))))) :
       h("p", { class: "small", text: "Ninguém mostrou onde está nas últimas 3 horas." }));
 }
