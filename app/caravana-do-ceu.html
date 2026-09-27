@@ -1,7 +1,7 @@
 <title>Caravana Índia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@400;500;600&family=Cinzel:wght@500;600;700;900&family=Jost:wght@500;600&family=Julius+Sans+One&family=Caveat:wght@400;600&family=Rock+Salt&family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@400;500;600&family=Raleway:wght@300&family=Cinzel:wght@500;600;700;900&family=Jost:wght@500;600&family=Julius+Sans+One&family=Caveat:wght@400;600&family=Rock+Salt&family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap">
 <style>
 /* Visual claro da Caravana do Céu: papel, carvão, musgo, terracota e areia. */
 :root{
@@ -722,7 +722,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 @media (prefers-reduced-motion:reduce){#frase-giro{transition:none}}
 .hero .legenda{font-size:10.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--terra);margin-top:-2px}
 
-.brand b{font-family:var(--ui)!important;font-weight:600!important;letter-spacing:.16em!important;font-size:13px!important}
+.brand b{font-family:"Raleway",var(--ui)!important;font-weight:300!important;letter-spacing:.22em!important;font-size:13.5px!important}
 
 /* Hoje */
 .hero .route{font-size:12px;letter-spacing:.1em}
@@ -2058,18 +2058,23 @@ function desenhaPet(tipo) {
     P("M62 59.5 Q60 55 62.5 54 M66.5 59.5 Q68.5 55 66 54", "none", { stroke: "#8B6B43", "stroke-width": 1.4 }),
     E(68.8, 61.5, 2.6, 1.2, "#EDE5D3"),
     ...Array.from({ length: 7 }, (_, i) => C(64 + i * 1.3, 70 + Math.sin(i / 6 * Math.PI) * 2.5, 1.2, i % 2 ? "#F2A72B" : "#E0661C", sem)));
-  // langur cinza (o macaco de Hanuman): rosto preto, corpo prateado, rabo longo em arco e guirlanda de cravos
+  // macaco rhesus sentado, com banana na mão e guirlanda de cravos
   if (tipo === "macaco") g.append(
-    P("M88.5 70 Q98 67 97 55 Q96.5 48 92 48.5", "none", { stroke: "#B7B1A6", "stroke-width": 2 }),
-    ...[[70, 71], [73.5, 71], [83, 72], [86.5, 72]].map(([x, y]) => h("rect", { x, y, width: 2.3, height: 85 - y, rx: 1.1, fill: "#B7B1A6" })),
-    ...[70, 73.5, 83, 86.5].map(x => h("rect", { x: x - .2, y: 83.4, width: 2.7, height: 1.8, rx: .8, fill: "#2B2522", stroke: "none" })),
-    P("M67.5 71 Q66.5 63.5 74 63.5 L84 65.5 Q89.5 66.5 89.5 71.5 Q89.5 76 85 76 L71 76 Q67.5 76 67.5 71 Z", "#C9C4BA"),
-    P("M60.5 60 Q60 54 65 53.5 Q70.5 53.5 70.5 59.5 Q70.8 64.5 66 65.5 Q61 65.5 60.5 60 Z", "#D8D3C9"),
-    P("M61 56.5 L59.6 55 M62.6 54.6 L61.8 52.6 M64.8 53.8 L64.8 51.8 M67.2 54 L68 52.2 M69.2 55.4 L70.8 54.2", "none", { stroke: "#D8D3C9", "stroke-width": 1 }),
-    P("M61 59.5 Q61 56.4 63.6 56.6 Q66 56.8 65.8 60 Q65.6 63.6 63.2 63.8 Q61.2 63.6 61 59.5 Z", "#2B2522", sem),
-    C(62.3, 59, .7, "#F1E2BC", sem), C(64.5, 59, .7, "#F1E2BC", sem), C(62.4, 59.1, .38, "#1E150D", sem), C(64.4, 59.1, .38, "#1E150D", sem),
-    P("M62.4 62.2 Q63.4 62.8 64.4 62.2", "none", { stroke: "#6B6259", "stroke-width": .4 }),
-    ...Array.from({ length: 7 }, (_, i) => C(64.8 + i * 1.1, 64.8 + Math.sin(i / 6 * Math.PI) * 2.4, 1.1, i % 2 ? "#F2A72B" : "#E0661C", sem)));
+    P("M81 83 Q93 85 92.5 74 Q92 66 86.5 64.5", "none", { stroke: "#8A6A45", "stroke-width": 2 }),
+    P("M66 85 Q63 74 68 67 Q72 63.5 77 64 Q83 66 84 74 Q86 82 82 85 Z", "#9B7A52"),
+    E(75, 76.5, 4.2, 6, "#C9AE86", sem),
+    P("M65.5 85 Q63.5 78 68.5 76.5 Q72 78.5 71 85 Z", "#8A6A45"), P("M78.5 85 Q77.5 78.5 81.5 77 Q85.5 78 84.5 85 Z", "#8A6A45"),
+    E(68, 85.2, 3, 1, "#D9A488"), E(81.5, 85.2, 3, 1, "#D9A488"),
+    P("M68.5 68.5 Q65 74.5 67 79", "none", { stroke: "#8A6A45", "stroke-width": 2.4 }), C(67.2, 79.5, 1.3, "#D9A488"),
+    P("M77.5 77.5 Q73.8 73.2 76.2 68.6 Q77.8 72 80.2 75.2 Z", "#F2C94C", { "stroke-width": .5 }), P("M76.2 68.6 L75.9 67.8", "none", { stroke: "#5A4630", "stroke-width": .8 }),
+    P("M81.5 69 Q84.5 74 80 76.4", "none", { stroke: "#8A6A45", "stroke-width": 2.4 }), C(79.4, 76.2, 1.3, "#D9A488"),
+    C(67.8, 58.5, 2.2, "#D9A488"), C(80.2, 58.5, 2.2, "#D9A488"), C(67.8, 58.5, 1.1, "#C48A6E", sem), C(80.2, 58.5, 1.1, "#C48A6E", sem),
+    C(74, 58, 6.2, "#9B7A52"), P("M71 52.4 Q74 50.4 77 52.4", "none", { stroke: "#8A6A45", "stroke-width": 1 }),
+    P("M70 56 Q70 53 72.5 53.6 Q74 54.4 75.5 53.6 Q78 53 78 56 Q78.6 61.5 74 63 Q69.4 61.5 70 56 Z", "#E3B7A0"),
+    P("M70.8 55.3 Q72.3 54.5 73.5 55.5 M74.5 55.5 Q75.7 54.5 77.2 55.3", "none", { stroke: "#6B4A2A", "stroke-width": .55 }),
+    C(72.6, 57, .85, "#1E150D", sem), C(75.4, 57, .85, "#1E150D", sem), C(72.9, 56.7, .3, "#fff", sem), C(75.7, 56.7, .3, "#fff", sem),
+    C(73.5, 59.7, .3, "#6B4A2A", sem), C(74.5, 59.7, .3, "#6B4A2A", sem), P("M72.6 61.1 Q74 61.9 75.4 61.1", "none", { stroke: "#6B4A2A", "stroke-width": .5 }),
+    ...Array.from({ length: 7 }, (_, i) => C(70 + i * 1.33, 64.4 + Math.sin(i / 6 * Math.PI) * 1.8, 1.05, i % 2 ? "#F2A72B" : "#E0661C", sem)));
   if (tipo === "cabra") g.append(
     P("M88 67 Q91 64 90.5 61", "none", { stroke: "#E9E1CF", "stroke-width": 2 }),
     ...[70, 74, 82, 86].map(x => h("rect", { x, y: 73, width: 2.4, height: 12, rx: 1.1, fill: "#EDE6D6" })),
@@ -3339,7 +3344,7 @@ function vConversa() {
     log.append(h("div", { class: "bubble" + (mine ? " me" : "") },
       bonecoRosto(m.autor),
       h("div", { class: "b" },
-        h("div", { class: "h" }, h("b", { text: nomeDe(m.autor) }), h("span", { text: [mine ? "" : rotulo(m.autor), d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })].filter(Boolean).join(" · ") }),
+        h("div", { class: "h" }, h("b", { text: nomeDe(m.autor) }), h("span", { text: d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) }),
           (mine || S.isOwner) ? h("button", { class: "del", type: "button", onclick: () => S.db.doc("chat/" + m.id).delete().catch(() => {}) }, "apagar") : null),
         m.tipo === "local" ? h("div", { class: "ponto" },
           h("span", { class: "eyebrow", text: "Ponto de encontro" }), h("b", { text: m.nome || "Local marcado" }),
