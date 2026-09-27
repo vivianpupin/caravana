@@ -613,6 +613,13 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .fotoframe{background:#2B1F14;border-radius:var(--r);padding:12px;display:grid;place-items:center;box-shadow:var(--shadow)}
 .fotofixa{position:sticky;top:0;z-index:3;background:var(--bg,#F5EFE3);padding-top:6px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .tirafotos{display:flex;gap:8px;flex-wrap:wrap}.tiramini{display:flex;align-items:center;gap:6px;border:1px solid var(--line2);background:var(--panel);border-radius:999px;padding:5px 12px;font-size:13px;color:var(--ink)}.tiramini b{color:#A3231A}.tiramini.mais{border-style:dashed;color:var(--soft)}
+.adesbox{display:flex;flex-direction:column;gap:8px}
+.adesgrade{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:8px}
+.adesbt{aspect-ratio:1;border:1px solid var(--line);border-radius:14px;background:var(--panel);display:grid;place-items:center;padding:6px}
+.adesbt img{max-width:100%;max-height:100%;object-fit:contain}
+.adesbt img.carregando{opacity:.15}
+.adesbt:active{transform:scale(.94)}
+.adessel{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0 4px}
 .tecladica{margin-top:10px;background:#FFF6D8;border:1px solid #E9C45A;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;font-size:13.5px;line-height:1.45;color:#3B2A1C}
 .tecladica .linkbtn{align-self:flex-start;background:none;border:0;padding:4px 0 0;color:var(--terra);font-size:12.5px;text-decoration:underline}
 .tradmodo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -1001,7 +1008,7 @@ nav.tabs button{position:relative}
     <button data-tab="cambio"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 8h6M9 10.8h6M10.5 8c2.2 0 3.2 1.2 3.2 2.8S12.7 13.6 10.5 13.6H9.5l4.2 3.4"/></svg></span>Câmbio</button>
     <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
     <button data-tab="fotos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h3l1.6-2.2h6.8L17 7.5h3a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.8"/><path d="M17.5 10.3h.01"/></svg></span>Fotos</button>
-    <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Mural</button>
+    <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Pedra</button>
   </nav>
 </div>
 
@@ -3047,13 +3054,21 @@ const FILTROS = [
   { id: "holi", cat: "Criativos", nome: "Holi", sat: 1.6, con: 1.08, holi: 1 },
   { id: "sonho", cat: "Criativos", nome: "Sonho", con: .88, lift: 20, sat: .9, add: [10, 0, 16], brilho: .55 },
   { id: "terracota", cat: "Criativos", nome: "Duotone terracota", duo: [[59, 42, 28], [241, 200, 150]] },
-  { id: "musgo", cat: "Criativos", nome: "Duotone musgo", duo: [[34, 44, 30], [229, 218, 197]] }
+  { id: "musgo", cat: "Criativos", nome: "Duotone musgo", duo: [[34, 44, 30], [229, 218, 197]] },
+  // festa: efeitos desenhados por cima da foto
+  { id: "diwali", cat: "Festa", nome: "Diwali", m: [1.06, .08, 0, .04, .98, 0, -.02, .06, .84], con: 1.06, add: [10, 4, -8], sat: 1.05, vin: .45, festa: "diwali" },
+  { id: "petalas", cat: "Festa", nome: "Pétalas", con: 1.04, add: [8, 4, -4], sat: 1.08, vin: .2, festa: "petalas" },
+  { id: "poeira", cat: "Festa", nome: "Poeira dourada", m: [1.04, .06, 0, .03, .98, .02, 0, .06, .88], con: 1.04, add: [8, 5, -6], vin: .3, festa: "poeira" },
+  { id: "bollywood", cat: "Festa", nome: "Bollywood", con: 1.1, sat: 1.35, add: [10, 0, 6], vin: .25, leak: "rosa", festa: "estrelas" },
+  { id: "holipo", cat: "Festa", nome: "Pó do Holi", con: 1.05, sat: 1.25, festa: "holi" },
+  { id: "lanternas", cat: "Festa", nome: "Lanternas", m: [1.02, .06, 0, .03, .95, .02, 0, .08, .82], con: 1.05, add: [6, 2, -8], vin: .5, festa: "lanternas" },
+  { id: "confete", cat: "Festa", nome: "Confete", con: 1.05, sat: 1.15, festa: "confete" }
 ];
 const GRAOS = [["auto", "Do filtro"], ["nenhum", "Sem grão"], ["leve", "Leve"], ["medio", "Médio"], ["forte", "Forte"], ["super8", "Super 8"]];
 const FORMATOS = [["original", "Original"], ["reels", "Reels 9:16"], ["post", "Post 4:5"], ["quadrado", "Quadrado"]];
 const PATCHES = [["caravana", "Caravana"], ["india", "Índia + Caravana"], ["lugar", "Do lugar"], ["colecao", "Coleção"], ["nenhum", "Sem patch"]];
 const PATCH_CIDADE = { Delhi: "india", Agra: "taj-mahal", Jaipur: "jaipur", Varanasi: "varanasi", Rishikesh: "rishikesh" };
-const MOLDURAS = [["polaroid", "Polaroid"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
+const MOLDURAS = [["polaroid", "Polaroid"], ["postal", "Cartão-postal"], ["ingresso", "Ingresso"], ["arco", "Janela de palácio"], ["guirlanda", "Guirlanda de flores"], ["bandeirinhas", "Bandeirinhas"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
 const imgCache = {};
 function carregaImg(src) { return imgCache[src] ||= new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; }); }
 function aplicaFiltro(ctx, w, hh, f, graoEsc) {
@@ -3085,6 +3100,7 @@ function aplicaFiltro(ctx, w, hh, f, graoEsc) {
   if (f.leak) vazaLuz(ctx, w, hh, f.leak);
   if (f.super8) super8Luz(ctx, w, hh);
   if (f.pelicula) pelicula(ctx, w, hh);
+  if (f.festa) efeitoFesta(ctx, w, hh, f.festa);
   if (f.brilho) { const t = document.createElement("canvas"); t.width = Math.max(1, w >> 4); t.height = Math.max(1, hh >> 4); t.getContext("2d").drawImage(ctx.canvas, 0, 0, t.width, t.height);
     ctx.save(); ctx.globalAlpha = f.brilho; ctx.globalCompositeOperation = "screen"; ctx.imageSmoothingQuality = "high"; ctx.drawImage(t, 0, 0, w, hh); ctx.restore(); }
 }
@@ -3177,6 +3193,9 @@ async function montaFoto(canvas) {
   let W = w, H = hh, ox = 0, oy = 0;
   if (F.moldura === "polaroid") { const m = Math.round(40 * u); W = w + m * 2; H = hh + m + Math.round(190 * u); ox = m; oy = m; }
   if (F.moldura === "super8") { const m = Math.round(34 * u), banda = Math.round(120 * u); W = w + banda + m; H = hh + m * 2; ox = banda; oy = m; }
+  if (F.moldura === "postal") { const m = Math.round(56 * u); W = w + m * 2; H = hh + m + Math.round(170 * u); ox = m; oy = m; }
+  if (F.moldura === "ingresso") { const m = Math.round(46 * u), stub = Math.round(230 * u); W = w + m * 2 + stub; H = hh + m * 2; ox = m; oy = m; }
+  if (F.moldura === "arco") { const m = Math.round(70 * u); W = w + m * 2; H = hh + m * 2; ox = m; oy = m; }
   canvas.width = W; canvas.height = H;
   const c = canvas.getContext("2d");
   if (F.moldura === "polaroid") { c.fillStyle = "#F6EFE1"; c.fillRect(0, 0, W, H); }
@@ -3187,8 +3206,17 @@ async function montaFoto(canvas) {
     const fw = 50 * u, fh = 74 * u, passo = 150 * u;
     for (let y = (H % passo) / 2 + (passo - fh) / 2; y < H - fh / 2; y += passo) { c.fillStyle = "#EFE4CC"; c.beginPath(); c.roundRect((ox - fw) / 2, y, fw, fh, 10 * u); c.fill(); }
     c.fillStyle = "rgba(255,190,120,.10)"; c.fillRect(0, 0, W, H);
+  } else if (F.moldura === "postal") {
+    c.fillStyle = "#F7F1E3"; c.fillRect(0, 0, W, H); c.drawImage(tmp, ox, oy);
+  } else if (F.moldura === "ingresso") {
+    molduraIngresso(c, W, H, u, ox, oy, w, hh, tmp);
+  } else if (F.moldura === "arco") {
+    molduraArco(c, W, H, u, ox, oy, w, hh, tmp);
   } else
   c.drawImage(tmp, ox, oy);
+  if (F.moldura === "guirlanda") guirlanda(c, ox, oy, w, hh, u);
+  if (F.moldura === "bandeirinhas") bandeirinhas(c, ox, oy, w, u);
+  if (F.moldura === "postal") await cartaoPostal(c, W, H, u, ox, oy, w, hh, F, dourado);
   const serif = "Lora, Georgia, serif", sans = "Poppins, system-ui, sans-serif";
   if (F.moldura === "polaroid") {
     // sem símbolo embaixo; só a legenda à mão, se a pessoa escrever
@@ -3201,6 +3229,8 @@ async function montaFoto(canvas) {
     carimbo(c, w - 200 * u, hh - 200 * u, 140 * u, dourado, -0.22);
   }
   await colaPatches(c, F, ox, oy, w, hh);
+  await colaAdesivos(c, F, ox, oy, w, hh);
+  S.fotoGeo = { ox, oy, w, hh, fx: 0, fy: 0, fs: 1 };
   emFormato(canvas, tmp, F.formato || "original");
 }
 // coloca a foto INTEIRA num formato de rede social, com a própria foto desfocada no fundo
@@ -3218,11 +3248,14 @@ function emFormato(canvas, foto, fmt) {
   const m = W * .06, esc = Math.min((W - m * 2) / pronta.width, (H - m * 2) / pronta.height), pw = pronta.width * esc, ph = pronta.height * esc;
   c.save(); c.shadowColor = "rgba(0,0,0,.4)"; c.shadowBlur = 40; c.shadowOffsetY = 12;
   c.drawImage(pronta, (W - pw) / 2, (H - ph) / 2, pw, ph); c.restore();
+  if (S.fotoGeo) Object.assign(S.fotoGeo, { fx: (W - pw) / 2, fy: (H - ph) / 2, fs: esc });
 }
 // fita de filtros: cada um com a miniatura da própria foto; desliza para o lado
 function tiraFiltros(F, escolhe) {
   if (S.fotoThumbsDe !== F.img) { S.fotoThumbs = {}; S.fotoThumbsDe = F.img; }
-  const tira = h("div", { class: "filmstrip", role: "listbox", "aria-label": "Filtros" }, FILTROS.map(f => {
+  // os de festa logo depois do Original, para aparecerem primeiro
+  const ordem = [FILTROS[0], ...FILTROS.filter(f => f.cat === "Festa"), ...FILTROS.slice(1).filter(f => f.cat !== "Festa")];
+  const tira = h("div", { class: "filmstrip", role: "listbox", "aria-label": "Filtros" }, ordem.map(f => {
     let t = S.fotoThumbs[f.id];
     if (!t) {
       const k = 150 / Math.max(F.img.width, F.img.height); t = document.createElement("canvas");
@@ -3239,9 +3272,176 @@ function tiraFiltros(F, escolhe) {
   requestAnimationFrame(() => { tira.scrollLeft = S.fotoTiraX || 0; requestAnimationFrame(() => { pronto = true; }); });
   return tira;
 }
+// ---------- Festa, molduras novas e adesivos do estúdio ----------
+// sorteio que se repete igual (a prévia pequena e a foto grande ficam com os mesmos enfeites)
+function sorteio(seed) { let t = seed >>> 0; return () => { t += 0x6D2B79F5; let r = Math.imul(t ^ (t >>> 15), 1 | t); r ^= r + Math.imul(r ^ (r >>> 7), 61 | r); return ((r ^ (r >>> 14)) >>> 0) / 4294967296; }; }
+function florMarigold(c, x, y, r, cor) {
+  c.save(); c.translate(x, y);
+  for (let k = 0; k < 3; k++) { const rr = r * (1 - k * .28); c.fillStyle = k === 0 ? cor : k === 1 ? "#F7A21B" : "#FFC53A";
+    for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2 + k * .3; c.beginPath(); c.ellipse(Math.cos(a) * rr * .55, Math.sin(a) * rr * .55, rr * .42, rr * .26, a, 0, 7); c.fill(); } }
+  c.fillStyle = "#B8520E"; c.beginPath(); c.arc(0, 0, r * .16, 0, 7); c.fill(); c.restore();
+}
+function estrela4(c, x, y, r, cor) {
+  c.save(); c.translate(x, y); c.fillStyle = cor; c.beginPath();
+  for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2 - Math.PI / 2, rr = i % 2 ? r * .22 : r; c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); }
+  c.closePath(); c.fill(); c.restore();
+}
+function efeitoFesta(c, w, hh, tipo) {
+  const R = sorteio(tipo.length * 977 + 13), M = Math.min(w, hh);
+  c.save();
+  if (tipo === "diwali" || tipo === "lanternas") {
+    // luzinhas desfocadas (bokeh) e, nas lanternas, lanternas de papel pendendo do alto
+    c.globalCompositeOperation = "screen";
+    for (let i = 0; i < 38; i++) { const x = R() * w, y = R() * hh * (tipo === "diwali" ? 1 : .7), r = M * (.02 + R() * .06);
+      const g = c.createRadialGradient(x, y, 0, x, y, r); const cor = R() < .7 ? "255,190,90" : "255,120,60";
+      g.addColorStop(0, `rgba(${cor},${.35 + R() * .3})`); g.addColorStop(.6, `rgba(${cor},${.12 + R() * .1})`); g.addColorStop(1, `rgba(${cor},0)`); c.fillStyle = g; c.fillRect(x - r, y - r, r * 2, r * 2); }
+    c.globalCompositeOperation = "source-over";
+    if (tipo === "lanternas") for (let i = 0; i < 5; i++) {
+      const x = w * (.1 + i * .2 + (R() - .5) * .06), fio = hh * (.05 + R() * .16), L = M * (.07 + R() * .03);
+      c.strokeStyle = "rgba(60,40,20,.7)"; c.lineWidth = Math.max(1, M * .002); c.beginPath(); c.moveTo(x, 0); c.lineTo(x, fio); c.stroke();
+      const g = c.createRadialGradient(x, fio + L * .7, 0, x, fio + L * .7, L * 1.6); g.addColorStop(0, "rgba(255,200,110,.55)"); g.addColorStop(1, "rgba(255,160,60,0)"); c.fillStyle = g; c.fillRect(x - L * 2, fio - L, L * 4, L * 4);
+      c.fillStyle = ["#C8412B", "#E07B24", "#B8322A", "#D9A036", "#A8323F"][i]; c.beginPath(); c.ellipse(x, fio + L * .7, L * .55, L * .7, 0, 0, 7); c.fill();
+      c.strokeStyle = "rgba(255,220,150,.6)"; for (let k = -1; k <= 1; k++) { c.beginPath(); c.ellipse(x, fio + L * .7, L * .55 * Math.abs(k * .6 + (k ? 0 : .01)), L * .7, 0, 0, 7); c.stroke(); }
+      c.fillStyle = "#3B2A1C"; c.fillRect(x - L * .3, fio - L * .04, L * .6, L * .12); c.fillRect(x - L * .3, fio + L * 1.34, L * .6, L * .1);
+    }
+  }
+  if (tipo === "diwali") for (let i = 0; i < 4; i++) { const x = w * (.14 + i * .24), y = hh * .93; // diyas acesas embaixo
+    c.fillStyle = "#8A3F32"; c.beginPath(); c.ellipse(x, y, M * .05, M * .022, 0, 0, Math.PI); c.fill();
+    const g = c.createRadialGradient(x, y - M * .035, 0, x, y - M * .035, M * .09); g.addColorStop(0, "rgba(255,210,120,.8)"); g.addColorStop(1, "rgba(255,170,60,0)"); c.fillStyle = g; c.fillRect(x - M * .1, y - M * .13, M * .2, M * .2);
+    c.fillStyle = "#FFD27A"; c.beginPath(); c.ellipse(x, y - M * .03, M * .012, M * .026, 0, 0, 7); c.fill(); }
+  if (tipo === "petalas") for (let i = 0; i < 70; i++) { const x = R() * w, y = R() * hh, r = M * (.012 + R() * .018), a = R() * 7;
+    c.save(); c.translate(x, y); c.rotate(a); c.fillStyle = ["#F29A1D", "#F7B52C", "#E8671C", "#D93A5A", "#F6C84C"][i % 5]; c.globalAlpha = .75 + R() * .25;
+    c.beginPath(); c.ellipse(0, 0, r, r * .55, 0, 0, 7); c.fill(); c.restore(); }
+  if (tipo === "poeira") { c.globalCompositeOperation = "screen";
+    for (let i = 0; i < 260; i++) { const x = R() * w, y = hh * (R() ** .6), r = M * (.0015 + R() * .004); c.fillStyle = `rgba(255,${200 + R() * 40 | 0},${110 + R() * 60 | 0},${.5 + R() * .5})`; c.beginPath(); c.arc(x, y, r, 0, 7); c.fill(); }
+    for (let i = 0; i < 14; i++) estrela4(c, R() * w, R() * hh, M * (.01 + R() * .018), "rgba(255,236,190,.9)"); }
+  if (tipo === "estrelas") { c.globalCompositeOperation = "screen"; for (let i = 0; i < 26; i++) estrela4(c, R() * w, R() * hh, M * (.012 + R() * .03), R() < .5 ? "rgba(255,230,160,.95)" : "rgba(255,170,210,.9)"); }
+  if (tipo === "holi") { const cores = ["230,40,120", "255,170,0", "40,170,230", "130,60,200", "40,190,90"];
+    for (let i = 0; i < 9; i++) { const canto = i % 4, x = (canto % 2 ? w : 0) + (R() - .5) * w * .5, y = (canto > 1 ? hh : 0) + (R() - .5) * hh * .5, r = M * (.25 + R() * .25), cor = cores[i % 5];
+      const g = c.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(${cor},.55)`); g.addColorStop(.7, `rgba(${cor},.2)`); g.addColorStop(1, `rgba(${cor},0)`); c.fillStyle = g; c.fillRect(x - r, y - r, r * 2, r * 2); }
+    for (let i = 0; i < 160; i++) { c.fillStyle = `rgba(${cores[i % 5]},${.4 + R() * .4})`; c.beginPath(); c.arc(R() * w, R() * hh, M * (.002 + R() * .005), 0, 7); c.fill(); } }
+  if (tipo === "confete") for (let i = 0; i < 110; i++) { c.save(); c.translate(R() * w, R() * hh); c.rotate(R() * 7); c.fillStyle = ["#E2BE78", "#8A3F32", "#3F4938", "#E8671C", "#D93A5A", "#F6C84C"][i % 6];
+    const L = M * (.008 + R() * .012); R() < .5 ? c.fillRect(-L, -L * .4, L * 2, L * .8) : (c.beginPath(), c.arc(0, 0, L * .7, 0, 7), c.fill()); c.restore(); }
+  c.restore();
+}
+function guirlanda(c, ox, oy, w, hh, u) {
+  // cordão de cravos (marigold) caindo em curva pelo alto, como nas portas dos templos
+  const M = Math.min(w, hh), r = M * .032, voltas = 3;
+  for (let v = 0; v < voltas; v++) { const x0 = ox + w * v / voltas, x1 = ox + w * (v + 1) / voltas, desce = hh * .09;
+    const n = Math.round((x1 - x0) / (r * 1.25));
+    for (let i = 0; i <= n; i++) { const t = i / n, x = x0 + (x1 - x0) * t, y = oy + r * .6 + Math.sin(t * Math.PI) * desce; florMarigold(c, x, y, r, i % 3 ? "#F08A12" : "#E3571A"); }
+    // pingente
+    const px = x1, py = oy + r * .6; for (let k = 1; k < 5; k++) florMarigold(c, px, py + k * r * 1.3, r * .8, k % 2 ? "#F6B324" : "#E3571A");
+  }
+  for (let k = 1; k < 5; k++) florMarigold(c, ox, oy + r * .6 + k * r * 1.3, r * .8, k % 2 ? "#F6B324" : "#E3571A");
+  for (const x of [ox + w * .33, ox + w * .66]) { c.fillStyle = "#3F7A3A"; c.beginPath(); c.ellipse(x, oy + r * 1.8, r * .9, r * .35, .5, 0, 7); c.fill(); }
+}
+function bandeirinhas(c, ox, oy, w, u) {
+  const cores = ["#8A3F32", "#E3A21A", "#3F4938", "#C94F7C", "#E8DCC0", "#2F6D8C"], n = 11, L = w / n, y0 = oy + w * .02;
+  c.strokeStyle = "rgba(50,35,20,.85)"; c.lineWidth = Math.max(2, 3 * u); c.beginPath();
+  for (let i = 0; i <= 40; i++) { const t = i / 40; c.lineTo(ox + w * t, y0 + Math.sin(t * Math.PI) * w * .05); } c.stroke();
+  for (let i = 0; i < n; i++) { const t0 = i / n, t1 = (i + 1) / n, x0 = ox + w * t0 + L * .08, x1 = ox + w * t1 - L * .08, ya = y0 + Math.sin(t0 * Math.PI) * w * .05, yb = y0 + Math.sin(t1 * Math.PI) * w * .05;
+    c.save(); c.shadowColor = "rgba(0,0,0,.3)"; c.shadowBlur = 6 * u; c.shadowOffsetY = 3 * u; c.fillStyle = cores[i % cores.length];
+    c.beginPath(); c.moveTo(x0, ya); c.lineTo(x1, yb); c.lineTo((x0 + x1) / 2, (ya + yb) / 2 + L * 1.1); c.closePath(); c.fill(); c.restore();
+    c.strokeStyle = "rgba(255,240,210,.55)"; c.setLineDash([4 * u, 4 * u]); c.lineWidth = 1.5 * u; c.beginPath(); c.moveTo(x0 + L * .12, ya + L * .1); c.lineTo(x1 - L * .12, yb + L * .1); c.lineTo((x0 + x1) / 2, (ya + yb) / 2 + L * .9); c.closePath(); c.stroke(); c.setLineDash([]); }
+}
+async function cartaoPostal(c, W, H, u, ox, oy, w, hh, F, dourado) {
+  // selo postal no canto de cima, carimbo ondulado e "Saudações da Índia" escrito à mão
+  const sw = 190 * u, sh = 230 * u, sx = ox + w - sw - 26 * u, sy = oy - 20 * u;
+  c.save(); c.translate(sx + sw / 2, sy + sh / 2); c.rotate(.06); c.shadowColor = "rgba(0,0,0,.35)"; c.shadowBlur = 12 * u; c.shadowOffsetY = 4 * u;
+  c.fillStyle = "#FBF6EA"; c.beginPath(); const d = 12 * u;
+  for (let x = -sw / 2; x <= sw / 2; x += d) c.arc(x, -sh / 2, d * .38, 0, 7); c.fill(); c.fillRect(-sw / 2, -sh / 2, sw, sh); c.shadowColor = "transparent";
+  c.fillStyle = "#8A3F32"; c.fillRect(-sw / 2 + 14 * u, -sh / 2 + 14 * u, sw - 28 * u, sh - 28 * u);
+  const sb = simboloEm(dourado, "#E8C07A", sh * .42); c.drawImage(sb, -sb.width / 2, -sh / 2 + 34 * u);
+  c.fillStyle = "#F4E6C4"; c.textAlign = "center"; c.font = `600 ${24 * u}px Cinzel, Georgia, serif`; c.fillText("ÍNDIA", 0, sh / 2 - 58 * u); c.font = `500 ${20 * u}px Poppins, sans-serif`; c.fillText("2026 · ₹ 26", 0, sh / 2 - 30 * u); c.restore();
+  c.save(); c.strokeStyle = "rgba(40,30,70,.55)"; c.lineWidth = 3 * u; const px = sx - 40 * u, py = sy + sh * .75;
+  c.beginPath(); c.arc(px, py, 70 * u, 0, 7); c.stroke(); c.beginPath(); c.arc(px, py, 56 * u, 0, 7); c.stroke();
+  c.fillStyle = "rgba(40,30,70,.6)"; c.textAlign = "center"; c.font = `600 ${15 * u}px Poppins, sans-serif`; c.fillText("CARAVANA", px, py - 6 * u); c.fillText("DO CÉU", px, py + 14 * u);
+  for (let k = 0; k < 4; k++) { c.beginPath(); for (let x = 0; x < 200 * u; x += 4 * u) c.lineTo(px + 76 * u + x, py - 30 * u + k * 20 * u + Math.sin(x / (14 * u)) * 5 * u); c.stroke(); } c.restore();
+  const texto = F.legenda || ("Saudações da Índia" + (F.cidade ? " · " + F.cidade : ""));
+  c.fillStyle = "#2E2A3A"; c.textAlign = "center"; c.font = `600 ${64 * u}px Caveat, "Segoe Print", cursive`; c.save(); c.translate(ox + w / 2, oy + hh + 112 * u); c.rotate(-.015); c.fillText(texto, 0, 0, w - 60 * u); c.restore(); c.textAlign = "start";
+}
+function molduraIngresso(c, W, H, u, ox, oy, w, hh, tmp) {
+  const stubX = W - 230 * u, raio = 28 * u;
+  c.fillStyle = "#3B2A1C"; c.beginPath(); c.roundRect(0, 0, W, H, 26 * u); c.fill();
+  c.globalCompositeOperation = "destination-out"; for (const y of [0, H]) { c.beginPath(); c.arc(stubX, y, raio, 0, 7); c.fill(); } c.globalCompositeOperation = "source-over";
+  c.strokeStyle = "#C9A063"; c.lineWidth = 3 * u; c.strokeRect(14 * u, 14 * u, W - 28 * u, H - 28 * u);
+  c.save(); c.beginPath(); c.roundRect(ox, oy, w, hh, 14 * u); c.clip(); c.drawImage(tmp, ox, oy); c.restore();
+  c.setLineDash([10 * u, 10 * u]); c.strokeStyle = "rgba(233,210,160,.7)"; c.beginPath(); c.moveTo(stubX, raio + 8 * u); c.lineTo(stubX, H - raio - 8 * u); c.stroke(); c.setLineDash([]);
+  c.save(); c.translate(stubX + 115 * u, H / 2); c.rotate(-Math.PI / 2); c.textAlign = "center"; c.fillStyle = "#E8C07A";
+  c.font = `700 ${38 * u}px Cinzel, Georgia, serif`; c.fillText("CARAVANA DO CÉU", 0, -30 * u);
+  c.font = `500 ${24 * u}px Poppins, sans-serif`; c.fillStyle = "#F4E6C4"; c.fillText("ADMIT ONE · ÍNDIA SAGRADA 2026", 0, 14 * u);
+  c.font = `600 ${22 * u}px "Courier Prime", monospace`; c.fillStyle = "#C9A063"; c.fillText("Nº 0" + (4 + (w | 0) % 90) + " · 04–16 NOV", 0, 52 * u); c.restore();
+}
+function molduraArco(c, W, H, u, ox, oy, w, hh, tmp) {
+  // parede terracota com a foto dentro de um arco de palácio mogol
+  const g = c.createLinearGradient(0, 0, W, H); g.addColorStop(0, "#A5563F"); g.addColorStop(1, "#7E3A2B"); c.fillStyle = g; c.fillRect(0, 0, W, H);
+  c.globalAlpha = .12; c.strokeStyle = "#F4E6C4"; c.lineWidth = 2 * u;
+  for (let y = 20 * u; y < H; y += 60 * u) for (let x = (y / (60 * u) % 2) * 30 * u; x < W; x += 60 * u) { c.beginPath(); c.moveTo(x, y - 12 * u); c.lineTo(x + 10 * u, y); c.lineTo(x, y + 12 * u); c.lineTo(x - 10 * u, y); c.closePath(); c.stroke(); }
+  c.globalAlpha = 1;
+  const arco = e => { const x0 = ox - e, x1 = ox + w + e, y1 = oy + hh + e, topo = oy - e, meio = (x0 + x1) / 2, ombro = oy + Math.min(w, hh) * .38;
+    c.beginPath(); c.moveTo(x0, y1); c.lineTo(x0, ombro); c.bezierCurveTo(x0, topo + (ombro - topo) * .25, meio - w * .12, topo + (ombro - topo) * .2, meio, topo);
+    c.bezierCurveTo(meio + w * .12, topo + (ombro - topo) * .2, x1, topo + (ombro - topo) * .25, x1, ombro); c.lineTo(x1, y1); c.closePath(); };
+  c.save(); arco(26 * u); c.fillStyle = "#E8D3A6"; c.shadowColor = "rgba(0,0,0,.35)"; c.shadowBlur = 20 * u; c.fill(); c.restore();
+  arco(12 * u); c.fillStyle = "#C9A063"; c.fill();
+  c.save(); arco(0); c.clip(); c.drawImage(tmp, ox, oy); c.restore();
+}
+// Adesivos: logos da Caravana, bichos da Índia (os mesmos do Explorador), coisas da Índia, brilhos e frases
+const ADESIVOS = {
+  "Caravana": [["img:img/simbolo-dourado.png", "Símbolo dourado"], ["img:img/simbolo-marrom.png", "Símbolo"], ["patch", "Patch bordado"], ["carimbo", "Carimbo"],
+    ["txt:Caravana do Céu", "Caravana do Céu"], ["txt:Índia Sagrada 2026", "Índia 2026"], ["txt:Namastê", "Namastê"], ["mao:Jai Ho!", "Jai Ho!"], ["mao:Om Shanti", "Om Shanti"], ["mao:Eu fui!", "Eu fui!"]],
+  "Bichos": [["pet:elefante", "Elefante"], ["pet:macaco", "Macaco"], ["pet:vaca", "Vaca sagrada"], ["pet:pavao", "Pavão"], ["pet:camelo", "Camelo"], ["pet:cabra", "Cabra"], ["pet:gato", "Gato"], ["pet:cachorro", "Cachorro"], ["ave:periquito", "Periquito"], ["ave:maina", "Mainá"], ["eu", "Meu bonequinho"]],
+  "Índia": [["e:🪷", "Lótus"], ["e:🪔", "Diya"], ["e:🕉️", "Om"], ["e:🧿", "Olho grego"], ["e:🛺", "Tuk-tuk"], ["e:☕", "Chai"], ["e:🌶️", "Pimenta"], ["e:🌺", "Flor"], ["e:🥭", "Manga"], ["e:🙏", "Namastê"], ["e:📿", "Japamala"], ["e:🏔️", "Himalaia"], ["e:🐅", "Tigre"], ["e:🐍", "Naja"], ["e:🦚", "Pavão"], ["e:🐘", "Elefante"]],
+  "Brilhos": [["e:✨", "Brilho"], ["e:💫", "Estrela"], ["e:🌟", "Estrela"], ["e:🌙", "Lua"], ["e:☀️", "Sol"], ["e:💛", "Coração"], ["e:🧡", "Coração"], ["e:🔥", "Fogo"], ["e:🌈", "Arco-íris"], ["e:🎉", "Festa"]]
+};
+const adesivoCache = {};
+async function svgParaImg(g, lado) {
+  const NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("xmlns", NS); svg.style.cssText = "position:absolute;left:-9999px;top:0;width:300px;height:300px"; svg.append(g); document.body.append(svg);
+  const b = g.getBBox(), p = Math.max(b.width, b.height) * .06; svg.setAttribute("viewBox", `${b.x - p} ${b.y - p} ${b.width + p * 2} ${b.height + p * 2}`);
+  const k = lado / Math.max(b.width, b.height); svg.setAttribute("width", Math.round((b.width + p * 2) * k)); svg.setAttribute("height", Math.round((b.height + p * 2) * k)); svg.style.cssText = "";
+  const txt = new XMLSerializer().serializeToString(svg); svg.remove();
+  const im = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(txt); });
+  const cv = document.createElement("canvas"); cv.width = im.width; cv.height = im.height; cv.getContext("2d").drawImage(im, 0, 0); return cv;
+}
+function letreiro(texto, mao) {
+  const cv = document.createElement("canvas"), x = cv.getContext("2d"), f = mao ? '700 120px Caveat, "Segoe Print", cursive' : '600 70px Cinzel, Georgia, serif';
+  x.font = f; const L = x.measureText(texto).width, pad = mao ? 30 : 46; cv.width = Math.ceil(L + pad * 2); cv.height = mao ? 170 : 130;
+  x.font = f; x.textAlign = "center"; x.textBaseline = "middle";
+  if (mao) { x.lineWidth = 16; x.strokeStyle = "#3B2A1C"; x.lineJoin = "round"; x.strokeText(texto, cv.width / 2, cv.height / 2); x.fillStyle = "#FFD27A"; x.fillText(texto, cv.width / 2, cv.height / 2); }
+  else { x.fillStyle = "#3B2A1C"; x.beginPath(); x.roundRect(4, 4, cv.width - 8, cv.height - 8, 60); x.fill(); x.strokeStyle = "#C9A063"; x.lineWidth = 5; x.beginPath(); x.roundRect(14, 14, cv.width - 28, cv.height - 28, 50); x.stroke();
+    x.fillStyle = "#F1E2BC"; x.fillText(texto.toUpperCase(), cv.width / 2, cv.height / 2 + 4); }
+  return cv;
+}
+function imgAdesivo(k) {
+  return adesivoCache[k] ||= (async () => {
+    if (k.startsWith("img:")) return carregaImg(k.slice(4));
+    if (k === "patch") return patchCaravana(await carregaImg("img/simbolo-dourado.png"), 400);
+    if (k === "carimbo") { const cv = document.createElement("canvas"); cv.width = cv.height = 420; carimbo(cv.getContext("2d"), 210, 210, 180, await carregaImg("img/simbolo-dourado.png"), -.2); return cv; }
+    if (k.startsWith("txt:")) return letreiro(k.slice(4), false);
+    if (k.startsWith("mao:")) return letreiro(k.slice(4), true);
+    if (k.startsWith("pet:")) { const g = desenhaPet(k.slice(4)); g.firstChild && g.firstChild.remove(); return svgParaImg(g, 420); }
+    if (k.startsWith("ave:")) return svgParaImg(h("g", null, passaroOmbro(k.slice(4))), 360);
+    if (k === "eu") return svgParaImg(h("g", null, desenhaBoneco({ ...bonecoDe(S.uid) })), 480);
+    if (k.startsWith("e:")) { const cv = document.createElement("canvas"); cv.width = cv.height = 260; const x = cv.getContext("2d");
+      x.font = '210px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(k.slice(2), 130, 142); return cv; }
+    throw new Error("adesivo");
+  })().catch(e => { delete adesivoCache[k]; throw e; });
+}
+async function colaAdesivos(c, F, ox, oy, w, hh) {
+  const lista = F.adesivos || [], M = Math.min(w, hh); S.fotoAdesRect = [];
+  for (let i = 0; i < lista.length; i++) {
+    const a = lista[i]; let im; try { im = await imgAdesivo(a.k); } catch (e) { S.fotoAdesRect.push(null); continue; }
+    const alt = a.s * M * (im.height / Math.max(im.width, im.height)), lar = a.s * M * (im.width / Math.max(im.width, im.height)), cx = ox + a.x * w, cy = oy + a.y * hh;
+    c.save(); c.translate(cx, cy); c.rotate(a.r || 0); if (a.esp) c.scale(-1, 1);
+    c.shadowColor = "rgba(0,0,0,.35)"; c.shadowBlur = M * .012; c.shadowOffsetY = M * .006; c.drawImage(im, -lar / 2, -alt / 2, lar, alt); c.restore();
+    if (S.fotoSel === i) { c.save(); c.translate(cx, cy); c.rotate(a.r || 0); c.setLineDash([M * .012, M * .01]); c.lineWidth = Math.max(2, M * .004); c.strokeStyle = "rgba(255,255,255,.95)"; c.strokeRect(-lar / 2 - M * .01, -alt / 2 - M * .01, lar + M * .02, alt + M * .02); c.restore(); }
+    S.fotoAdesRect.push({ cx, cy, r: Math.max(lar, alt) / 2 });
+  }
+}
 // ---------- Tira de fotos: várias fotos numa peça só ----------
-const TIRAS = [["cabine", "Cabine"], ["pelicula", "Película Super 8"], ["negativo", "Negativo"], ["polaroids", "Polaroids no mural"], ["carimbada", "Carimbada"], ["mosaico", "Mosaico com patch"]];
-const TIRA_FILTROS = ["super8", "original", "expedicao", "oldschool", "vintage", "kashi", "filme", "ganges", "cinema", "terracota"];
+const TIRAS = [["cabine", "Tirinha clássica"], ["bollywood", "Bollywood"], ["guirlanda", "Guirlanda de flores"], ["bichos", "Com os bichos"], ["pelicula", "Película Super 8"], ["negativo", "Negativo"], ["polaroids", "Polaroids no mural"], ["carimbada", "Carimbada"], ["mosaico", "Mosaico com patch"]];
+const TIRA_FILTROS = ["super8", "original", "expedicao", "oldschool", "vintage", "kashi", "filme", "ganges", "cinema", "terracota", "diwali", "petalas", "poeira", "bollywood", "holipo", "confete"];
 // desenha a foto cobrindo o espaço (corta o que sobra), com cantos arredondados se r
 function cobre(c, img, x, y, w, h, r) {
   const k = Math.max(w / img.width, h / img.height), sw = w / k, sh = h / k;
@@ -3272,6 +3472,29 @@ async function montaTira(canvas) {
   const n = fotos.length, e = T.estilo;
   let W, H; const c = canvas.getContext("2d");
   const simb = (img, cor, alt, cx, cy) => { const sb = simboloEm(img, cor, alt); c.drawImage(sb, cx - sb.width / 2, cy - sb.height / 2); };
+  if (e === "bollywood" || e === "guirlanda" || e === "bichos") {
+    // tirinha de cabine com festa: fundo e enfeites de cada estilo
+    const fw = 620, fh = 465, m = 46, gap = 30, topo = e === "guirlanda" ? 150 : 60, rod = 170;
+    W = fw + m * 2; H = topo + n * fh + (n - 1) * gap + rod; canvas.width = W; canvas.height = H;
+    if (e === "bollywood") { const g = c.createLinearGradient(0, 0, W, H); g.addColorStop(0, "#C2185B"); g.addColorStop(.5, "#E0457B"); g.addColorStop(1, "#F29A1D"); c.fillStyle = g; c.fillRect(0, 0, W, H);
+      const R = sorteio(7); for (let i = 0; i < 60; i++) estrela4(c, R() * W, R() * H, 6 + R() * 16, "rgba(255,236,180,.85)"); }
+    else if (e === "guirlanda") { c.fillStyle = "#F4ECDB"; c.fillRect(0, 0, W, H); }
+    else { c.fillStyle = "#3F4938"; c.fillRect(0, 0, W, H); c.strokeStyle = "rgba(232,211,174,.12)"; c.lineWidth = 2; for (let x = -H; x < W; x += 26) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x + H, H); c.stroke(); } }
+    fotos.forEach((ft, i) => { const y = topo + i * (fh + gap);
+      if (e === "bollywood") { c.save(); c.shadowColor = "rgba(255,210,120,.9)"; c.shadowBlur = 22; c.fillStyle = "#FFE3A3"; c.fillRect(m - 8, y - 8, fw + 16, fh + 16); c.restore(); }
+      cobre(c, ft, m, y, fw, fh, e === "bichos" ? 18 : 0); });
+    if (e === "guirlanda") { guirlanda(c, 0, 0, W, 520, 1); }
+    if (e === "bichos") { const bichos = ["pet:elefante", "pet:macaco", "pet:pavao", "pet:vaca", "pet:gato", "ave:periquito"];
+      for (let i = 0; i < n; i++) { const k = bichos[i % bichos.length]; let im; try { im = await imgAdesivo(k); } catch (x) { continue; }
+        const alt = 250, lar = alt * im.width / im.height, y = topo + i * (fh + gap) + fh - alt * .72, esq = i % 2 === 1;
+        c.save(); c.translate(esq ? m - 30 + lar / 2 : W - m + 30 - lar / 2, y + alt / 2); if (esq) c.scale(-1, 1); c.shadowColor = "rgba(0,0,0,.4)"; c.shadowBlur = 14; c.drawImage(im, -lar / 2, -alt / 2, lar, alt); c.restore(); } }
+    c.textAlign = "center"; const by = H - rod / 2;
+    if (e === "bollywood") { c.font = '700 96px Caveat, "Segoe Print", cursive'; c.lineWidth = 12; c.strokeStyle = "#5A0E2E"; c.lineJoin = "round"; c.strokeText("Jai Ho!", W / 2, by + 6); c.fillStyle = "#FFD27A"; c.fillText("Jai Ho!", W / 2, by + 6);
+      c.font = '600 26px Cinzel, Georgia, serif'; c.fillStyle = "#FFF1D6"; c.fillText("CARAVANA DO CÉU · ÍNDIA 2026", W / 2, by + 58); }
+    else { const cor = e === "bichos" ? "#E8C07A" : "#3B2A1C"; simb(e === "bichos" ? dourado : marrom, cor, 70, W / 2, by - 26);
+      c.font = '600 28px Cinzel, Georgia, serif'; c.fillStyle = cor; c.fillText("CARAVANA DO CÉU · ÍNDIA 2026", W / 2, by + 44); }
+    c.textAlign = "start";
+  } else
   if (e === "cabine" || e === "carimbada") {
     const fw = 620, fh = 465, m = 40, gap = 28, pad = e === "carimbada" ? 110 : 0;
     const sw = fw + m * 2, sh = m + n * fh + (n - 1) * gap + 90;
@@ -3319,21 +3542,21 @@ async function montaTira(canvas) {
 }
 function vTira() {
   const T = S.tira || (S.tira = { imgs: [], ids: [], estilo: "cabine", filtro: "original" });
-  const canvas = S.tiraCanvas || (S.tiraCanvas = h("canvas", { class: "fotocanvas", "aria-label": "Prévia da tira de fotos" }));
+  const canvas = S.tiraCanvas || (S.tiraCanvas = h("canvas", { class: "fotocanvas", "aria-label": "Prévia da cabine de fotos" }));
   const msg = h("p", { class: "msg", role: "status" });
   const fi = h("input", { type: "file", accept: "image/*", multiple: true, id: "tira-fotos", hidden: true, onchange: async () => {
     const fs = [...fi.files].slice(0, 4 - T.imgs.length);
     for (const f of fs) { try { T.imgs.push(await createImageBitmap(f)); T.ids.push(Math.random().toString(36).slice(2)); } catch (e) {} }
-    if (fi.files.length > fs.length) msg.textContent = "A tira leva até 4 fotos.";
+    if (fi.files.length > fs.length) msg.textContent = "A cabine leva até 4 fotos.";
     fi.value = ""; render();
   } });
   const set = (k, v) => { T[k] = v; render(); };
   const blob = () => new Promise(res => canvas.toBlob(res, "image/jpeg", .92));
   const salvar = async () => {
-    if (noSite()) return salvarNoRolo(blob(), "caravana-tira.jpg", msg);
+    if (noSite()) return salvarNoRolo(blob(), "caravana-cabine.jpg", msg);
     const dl = await (window.claude?.use?.("downloads") ?? null);
     if (!dl) { msg.textContent = "Para salvar, toque e segure na imagem e escolha Salvar imagem."; msg.className = "msg"; return; }
-    try { await dl.save({ filename: "caravana-tira.jpg", data: await blob() }); msg.textContent = "Tira salva."; msg.className = "msg ok"; }
+    try { await dl.save({ filename: "caravana-cabine.jpg", data: await blob() }); msg.textContent = "Fotos salvas."; msg.className = "msg ok"; }
     catch (e) { msg.textContent = e && e.code === "declined" ? "" : "Não consegui salvar. Toque e segure na imagem e escolha Salvar imagem."; msg.className = "msg"; }
   };
   const envia = async col => {
@@ -3342,7 +3565,7 @@ function vTira() {
     try { const r = await S.assets.upload(await blob());
       if (col === "mural") await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade: "", legenda: "", ts: Date.now() });
       else await addChat({ autor: S.uid, tipo: "foto", fotoId: r.id, texto: "", ts: Date.now() });
-      msg.textContent = col === "mural" ? "Tira na galeria da caravana." : "Tira enviada para a Roda."; msg.className = "msg ok"; }
+      msg.textContent = col === "mural" ? "Fotos na galeria da caravana." : "Fotos enviadas para a Roda."; msg.className = "msg ok"; }
     catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
   };
   if (T.imgs.length) requestAnimationFrame(() => montaTira(canvas).catch(() => {}));
@@ -3355,7 +3578,7 @@ function vTira() {
           h("span", { text: String(i + 1) }), h("b", { text: "×" }))),
           T.imgs.length < 4 ? h("button", { type: "button", class: "tiramini mais", onclick: () => fi.click() }, "+ foto") : null)),
       h("div", { class: "fcontrols" },
-        h("p", { class: "lab", text: "Estilo da tira" }),
+        h("p", { class: "lab", text: "Estilo" }),
         h("div", { class: "opts" }, TIRAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(T.estilo === id), onclick: () => set("estilo", id) }, n))),
         h("p", { class: "lab", text: "Filtro para todas" }),
         h("div", { class: "opts" }, TIRA_FILTROS.map(id => FILTROS.find(f => f.id === id)).filter(Boolean).map(f => h("button", { type: "button", class: "opt", "aria-pressed": String(T.filtro === f.id), onclick: () => set("filtro", f.id) }, f.nome))),
@@ -3365,7 +3588,7 @@ function vTira() {
         msg)) :
       h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
         h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "Escolha de 2 a 4 fotos" }),
-        h("span", { text: "Monte uma tira de cabine, uma película Super 8, um negativo, polaroids no mural ou um mosaico com patch." })),
+        h("span", { text: "Como nas cabines de foto: a tirinha clássica, Bollywood, guirlanda de flores, com os bichos da Índia, película Super 8, negativo, polaroids ou mosaico com patch." })),
     fi);
 }
 // patch bordado da caravana: tecido escuro, borda costurada e o símbolo em linha dourada
@@ -3423,7 +3646,8 @@ function vFotos() {
   const cid = h("select", { id: "estudio-cidade", "aria-label": "Cidade" }, h("option", { value: "", text: "Sem cidade" }),
     ["Delhi", "Agra", "Jaipur", "Varanasi", "Rishikesh"].map(c => h("option", { value: c, text: c, selected: F.cidade === c })));
   cid.addEventListener("change", () => set("cidade", cid.value));
-  const blobDoCanvas = () => new Promise(res => canvas.toBlob(res, "image/jpeg", .92));
+  // antes de salvar, tira o pontilhado de seleção do adesivo
+  const blobDoCanvas = async () => { if (S.fotoSel != null) { S.fotoSel = null; await montaFoto(canvas).catch(() => {}); } return new Promise(res => canvas.toBlob(res, "image/jpeg", .92)); };
   const salvar = async () => {
     if (noSite()) return salvarNoRolo(blobDoCanvas(), "caravana-" + (F.cidade || "india").toLowerCase() + ".jpg", msg);
     const dl = await (window.claude?.use?.("downloads") ?? null);
@@ -3444,12 +3668,68 @@ function vFotos() {
     catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
   };
   if (F.img) requestAnimationFrame(() => montaFoto(canvas).catch(() => {}));
+  // adesivos: tocar num adesivo da lista coloca na foto; na foto, arrastar muda de lugar e dois dedos aumentam e giram
+  const ades = F.adesivos || (F.adesivos = []);
+  const redesenha = () => { if (redesenha.pend) return; redesenha.pend = true; requestAnimationFrame(() => { redesenha.pend = false; montaFoto(canvas).catch(() => {}); }); };
+  const pontoFoto = ev => { const G = S.fotoGeo, r = canvas.getBoundingClientRect(); if (!G || !r.width) return null;
+    const px = (ev.clientX - r.left) * canvas.width / r.width, py = (ev.clientY - r.top) * canvas.height / r.height;
+    const x = (px - G.fx) / G.fs, y = (py - G.fy) / G.fs; return { x, y, rx: (x - G.ox) / G.w, ry: (y - G.oy) / G.hh }; };
+  if (!canvas._ades) { canvas._ades = true;
+    const toques = new Map(); let arr = null;
+    canvas.addEventListener("pointerdown", ev => {
+      const Fa = S.foto; if (!Fa || !(Fa.adesivos || []).length) return;
+      const p = pontoFoto(ev); if (!p) return; toques.set(ev.pointerId, p);
+      if (toques.size === 1) {
+        const rs = S.fotoAdesRect || []; let achou = -1;
+        for (let i = rs.length - 1; i >= 0; i--) { const q = rs[i]; if (q && Math.hypot(p.x - q.cx, p.y - q.cy) <= q.r * 1.15) { achou = i; break; } }
+        if (achou < 0) { if (S.fotoSel != null) { S.fotoSel = null; render(); } return; }
+        ev.preventDefault(); canvas.setPointerCapture(ev.pointerId);
+        const a = Fa.adesivos[achou]; arr = { i: achou, dx: a.x - p.rx, dy: a.y - p.ry };
+        if (S.fotoSel !== achou) { S.fotoSel = achou; render(); }
+      } else if (toques.size === 2 && arr) { const [p1, p2] = [...toques.values()], a = Fa.adesivos[arr.i];
+        arr.d0 = Math.hypot(p1.x - p2.x, p1.y - p2.y); arr.a0 = Math.atan2(p2.y - p1.y, p2.x - p1.x); arr.s0 = a.s; arr.r0 = a.r || 0; }
+    });
+    canvas.addEventListener("pointermove", ev => {
+      if (!arr || !toques.has(ev.pointerId)) return; const p = pontoFoto(ev); if (!p) return; toques.set(ev.pointerId, p); ev.preventDefault();
+      const a = S.foto.adesivos[arr.i]; if (!a) return;
+      if (toques.size >= 2 && arr.d0) { const [p1, p2] = [...toques.values()];
+        a.s = Math.min(1.6, Math.max(.06, arr.s0 * Math.hypot(p1.x - p2.x, p1.y - p2.y) / arr.d0)); a.r = arr.r0 + Math.atan2(p2.y - p1.y, p2.x - p1.x) - arr.a0; }
+      else { a.x = Math.min(1.1, Math.max(-.1, p.rx + arr.dx)); a.y = Math.min(1.1, Math.max(-.1, p.ry + arr.dy)); }
+      redesenha();
+    });
+    const solta = ev => { toques.delete(ev.pointerId); if (!toques.size) arr = null; else if (arr) arr.d0 = 0; };
+    canvas.addEventListener("pointerup", solta); canvas.addEventListener("pointercancel", solta);
+  }
+  canvas.style.touchAction = ades.length ? "none" : "";
+  const catA = S.fotoCatA || "Caravana";
+  const LUGARES = [[.5, .5], [.26, .3], [.74, .3], [.26, .72], [.74, .72], [.5, .22], [.5, .8], [.16, .5], [.84, .5]];
+  const poeAdesivo = k => { const [lx, ly] = LUGARES[ades.length % LUGARES.length]; ades.push({ k, x: lx, y: ly, s: k.startsWith("txt:") || k.startsWith("mao:") ? .5 : .3, r: 0 }); S.fotoSel = ades.length - 1; render(); };
+  const sel = S.fotoSel != null ? ades[S.fotoSel] : null;
+  const mexe = fn => { if (!sel) return; fn(sel); render(); };
+  if (S.fotoAdesThumbs == null) S.fotoAdesThumbs = {};
+  const thumbAdesivo = k => { const im = h("img", { alt: "", src: S.fotoAdesThumbs[k] || "img/simbolo-marrom.png", class: S.fotoAdesThumbs[k] ? "" : "carregando" });
+    if (!S.fotoAdesThumbs[k]) imgAdesivo(k).then(i => { const cv = document.createElement("canvas"), L = 96, e = L / Math.max(i.width, i.height); cv.width = Math.max(1, i.width * e); cv.height = Math.max(1, i.height * e); cv.getContext("2d").drawImage(i, 0, 0, cv.width, cv.height); S.fotoAdesThumbs[k] = cv.toDataURL(); im.src = S.fotoAdesThumbs[k]; im.className = ""; }).catch(() => {});
+    return im; };
+  const painelAdesivos = h("div", { class: "adesbox" },
+    h("p", { class: "lab", text: "Adesivos" }),
+    h("div", { class: "opts" }, Object.keys(ADESIVOS).map(cn => h("button", { type: "button", class: "opt", "aria-pressed": String(catA === cn), onclick: () => { S.fotoCatA = cn; render(); } }, cn))),
+    h("div", { class: "adesgrade" }, ADESIVOS[catA].map(([k, n]) => h("button", { type: "button", class: "adesbt", title: n, "aria-label": "Colocar " + n, onclick: () => poeAdesivo(k) }, thumbAdesivo(k)))),
+    ades.length ? h("p", { class: "small", style: "margin:6px 0 0", text: "Toque no adesivo na foto para escolher. Arraste para mudar de lugar; com dois dedos, aumenta e gira." }) : null);
+  const barraSel = sel ? h("div", { class: "adessel" },
+    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.s = Math.max(.06, a.s / 1.2); }) }, "Menor"),
+    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.s = Math.min(1.6, a.s * 1.2); }) }, "Maior"),
+    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.r = (a.r || 0) - .26; }) }, "↺"),
+    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.r = (a.r || 0) + .26; }) }, "↻"),
+    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.esp = !a.esp; }) }, "Espelhar"),
+    h("button", { type: "button", class: "opt", onclick: () => { ades.splice(S.fotoSel, 1); S.fotoSel = null; render(); } }, "Tirar"),
+    h("button", { type: "button", class: "opt", "aria-pressed": "true", onclick: () => { S.fotoSel = null; render(); } }, "Pronto")) : null;
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Fotos da travessia" }))),
     abasFotos(),
     F.img ? h("div", { class: "estudio" },
-      h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas), tiraFiltros(F, id => set("filtro", id))),
+      h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas), barraSel, tiraFiltros(F, id => set("filtro", id))),
       h("div", { class: "fcontrols" },
+        painelAdesivos,
         h("p", { class: "lab", text: "Grão de filme" }),
         h("div", { class: "opts" }, GRAOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.grao || "auto") === id), onclick: () => set("grao", id) }, n))),
         h("p", { class: "lab", text: "Formato" }),
@@ -3466,7 +3746,7 @@ function vFotos() {
         msg)) :
       h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
         h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "Escolha uma foto" }),
-        h("span", { text: "Aplique os filtros da Caravana, escolha a moldura e os patches, e salve ou envie para a galeria da caravana." })),
+        h("span", { text: "Filtros da Caravana, adesivos com os bichos da Índia e os logos da Caravana, molduras de cartão-postal, ingresso, guirlanda e mais. Depois é só salvar ou enviar para a galeria." })),
     fi);
 }
 
@@ -4342,7 +4622,7 @@ const CIDADES_MURAL = ["Delhi", "Agra", "Jaipur", "Varanasi", "Rishikesh"];
 function abasFotos() {
   const a = S.fotoAba || "estudio";
   return h("div", { class: "fcats", role: "tablist", style: "margin-top:-4px" },
-    [["estudio", "Estúdio"], ["tira", "Tira de fotos"], ["mural", "Galeria da caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
+    [["estudio", "Estúdio"], ["tira", "Cabine de fotos"], ["mural", "Galeria da caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
 }
 // Salvar foto no rolo da câmera: no celular abre o menu de compartilhar, onde aparece "Salvar imagem"
 const podeRolo = () => { try { return !!(navigator.canShare && navigator.canShare({ files: [new File([new Blob(["x"], { type: "image/jpeg" })], "t.jpg", { type: "image/jpeg" })] })); } catch (e) { return false; } };
