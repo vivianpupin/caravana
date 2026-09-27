@@ -615,6 +615,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .diario textarea{width:100%;border:1px solid #DCC9A6;border-radius:6px;padding:4px 14px 6px 44px;min-height:132px;resize:vertical;color:#27406B;font:24px/32px "Caveat","Segoe Script","Bradley Hand",cursive;background:linear-gradient(90deg,transparent 34px,rgba(200,80,70,.45) 34px,rgba(200,80,70,.45) 35.5px,transparent 35.5px),repeating-linear-gradient(180deg,#FBF4E2 0 31px,#C9D3DF 31px 32px);background-attachment:local;box-shadow:inset 0 1px 3px rgba(60,40,20,.12)}
 .diario textarea::placeholder{color:#8A93A3}
 .coord{font:500 12.5px "Courier Prime",monospace;letter-spacing:.04em;color:#7A5A36;text-align:center;margin:0}
+.ruaaqui{display:flex;flex-direction:column;gap:2px;padding:10px 14px;border-radius:12px;background:#FBF4E4;border:1px solid #D9C49A}.ruaaqui b{font-size:17px;color:var(--ink)}.ruaaqui small{color:#7A5A36}
 .pertolist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .pertolist li{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
 .pertolist li div{display:flex;flex-direction:column}
@@ -1080,6 +1081,7 @@ function vTravessia() {
       h("b", { text: nn(d.n) }), d.cidade))),
     h("div", { class: "days" }, dias.map(d => vDia(d, d.n === S.diaAberto, d.iso === hoje, abrir))),
     h("button", { class: "btn", type: "button", style: "align-self:center", onclick: () => go("ensinamentos") }, "Guia da travessia e saberes"),
+    vEspalhe(),
     vOffline(),
     h("div", { class: "foot" },
       h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }),
@@ -1384,7 +1386,7 @@ const BONECO = {
   chapeu: [["fedora", "Fedora"], ["safari", "Safári"], ["lenco", "Lenço"], ["turbante", "Turbante"], ["flores", "Coroa de flores"], ["sem", "Sem chapéu"]],
   roupa: [["basico", "Sem roupa"], ["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
   roupaCor: ["#8B6B43", "#C2A878", "#5F6B45", "#8A3F32", "#D9822B", "#B83A6B", "#2F5D7C", "#E8E0CF", "#2B2622"],
-  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["tambor", "Tambor"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["chicote", "Chicote"], ["nenhum", "Nada"]],
+  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["tambor", "Tambor"], ["baqueta", "Baqueta"], ["violao", "Violão"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["chicote", "Chicote"], ["nenhum", "Nada"]],
   colar: [["nenhum", "Nenhum"], ["guirlanda", "Guirlanda de flores"], ["rudraksha", "Rudraksha"]],
   testa: [["nada", "Nada"], ["bindi", "Bindi"], ["tilak", "Tilak"]],
   barba: [["nao", "Sem barba"], ["sim", "Com barba"]],
@@ -1543,7 +1545,15 @@ function desenhaBoneco(b) {
     if (!A || !T) continue;
   if (A === "japamala") { for (let i = 0; i < 14; i++) { const t = i / 14 * Math.PI * 2; T.append(h("circle", { cx: 48 + Math.cos(t) * 4.5, cy: 66 + Math.sin(t) * 6, r: 1.15, fill: "#7A4A2B" })); } T.append(h("rect", { x: 47, y: 72, width: 2, height: 5, fill: "#A3231A" })); }
     if (A === "incenso") T.append(h("line", { x1: 47, y1: 60, x2: 51, y2: 46, stroke: "#7A4A2B", "stroke-width": 1.2 }), h("circle", { cx: 51, cy: 46, r: 1, fill: "#E0661C" }), P("M51 45 Q54 41 51 38 Q48 35 52 31", "none", { stroke: "rgba(120,110,100,.55)", "stroke-width": 1.1, "stroke-linecap": "round" }));
-    if (A === "tambor") T.append(h("ellipse", { cx: 50, cy: 62, rx: 7, ry: 7.5, fill: "#E9D7B0", stroke: "#7A4A2B", "stroke-width": 1.6 }), P("M45 57 L55 67 M55 57 L45 67", "none", { stroke: "#B08A4E", "stroke-width": .7 }), h("line", { x1: 13, y1: 59, x2: 18, y2: 52, stroke: "#6B4A2A", "stroke-width": 1.4 }), h("circle", { cx: 18.5, cy: 51.5, r: 1.8, fill: "#A3231A" }));
+    if (A === "tambor") T.append(h("circle", { cx: 50, cy: 61, r: 8.5, fill: "#E9D7B0", stroke: "#7A4A2B", "stroke-width": 1.8 }), h("circle", { cx: 50, cy: 61, r: 6.6, fill: "none", stroke: "#D8BF8E", "stroke-width": .6 }),
+      P("M50 57.2 L51 60 L53.8 61 L51 62 L50 64.8 L49 62 L46.2 61 L49 60 Z", "#A3231A"), ...[0, 60, 120, 180, 240, 300].map(a => h("circle", { cx: 50 + Math.cos(a * Math.PI / 180) * 5, cy: 61 + Math.sin(a * Math.PI / 180) * 5, r: .55, fill: "#7A4A2B" })));
+    if (A === "baqueta") T.append(h("line", { x1: 47, y1: 63, x2: 53, y2: 51, stroke: "#6B4A2A", "stroke-width": 1.5, "stroke-linecap": "round" }), h("ellipse", { cx: 53.6, cy: 49.8, rx: 2.6, ry: 2.2, fill: "#D9C29A", stroke: "#8A6B43", "stroke-width": .6 }));
+    if (A === "violao") T.append(h("g", { transform: "rotate(10 48 61)" },
+      h("rect", { x: 47, y: 41, width: 3.2, height: 4.5, rx: .8, fill: "#3A2414" }),
+      h("rect", { x: 47.6, y: 45, width: 2, height: 21, fill: "#5A3A22" }),
+      P("M48.6 64 C43.5 64 43.3 68.5 45.3 70.5 C42 72.5 42.2 80.5 48.6 80.5 C55 80.5 55.2 72.5 51.9 70.5 C53.9 68.5 53.7 64 48.6 64 Z", "#C27A3A", { stroke: "#7A4A2B", "stroke-width": .8 }),
+      h("circle", { cx: 48.6, cy: 70.8, r: 1.9, fill: "#3A2414" }), h("rect", { x: 46.4, y: 75.5, width: 4.4, height: 1.1, fill: "#3A2414" }),
+      P("M48.2 45 L48.2 76 M49 45 L49 76", "none", { stroke: "#F1E2BC", "stroke-width": .25 })));
     if (A === "chai") T.append(P("M44 57 L51 57 L50 64 L45 64 Z", "#C98E62"), P("M44 57 L51 57 L50.6 59 L44.4 59 Z", "#F0E0C0"), P("M46 55 Q45 52 47 50 M49 55 Q48 52 50 50", "none", { stroke: "rgba(140,130,120,.55)", "stroke-width": .9 }));
     if (A === "diya") T.append(P("M42 61 Q47 66 53 61 L51 59 L44 59 Z", "#A0673F"), P("M47.5 58.5 Q45.5 55 47.5 51 Q49.5 55 47.5 58.5 Z", "#F2A72B"), h("circle", { cx: 47.5, cy: 55, r: 4, fill: "rgba(255,200,90,.3)" }));
     if (A === "lotus") T.append(...[-40, -15, 15, 40].map(a => h("ellipse", { cx: 48 + Math.sin(a * Math.PI / 180) * 4, cy: 54 - Math.cos(a * Math.PI / 180) * 2, rx: 2, ry: 4.5, fill: "#E7849E", transform: `rotate(${a} ${48 + Math.sin(a * Math.PI / 180) * 4} ${54 - Math.cos(a * Math.PI / 180) * 2})` })), h("ellipse", { cx: 48, cy: 56, rx: 5.5, ry: 2, fill: "#5F8A4A" }), h("circle", { cx: 48, cy: 54, r: 1.4, fill: "#F2C94C" }));
@@ -1726,8 +1736,8 @@ function vExplorador() {
         h("p", { class: "lab", text: "Pele" }), cores("pele", BONECO.pele, "Tom de pele"),
         h("p", { class: "lab", text: "Cabelo" }), chips("cabelo", BONECO.cabelo), cores("cabeloCor", BONECO.cabeloCor, "Cor do cabelo"),
         h("p", { class: "lab", text: "Roupa" }), chips("roupa", BONECO.roupa), cores("roupaCor", BONECO.roupaCor, "Cor da roupa"),
-        h("p", { class: "lab", text: "Na mão" }), chips("acessorio", BONECO.acessorio),
-        h("p", { class: "lab", text: "Na outra mão" }), chips("acessorio2", BONECO.acessorio),
+        h("p", { class: "lab", text: "Na mão esquerda" }), chips("acessorio", BONECO.acessorio),
+        h("p", { class: "lab", text: "Na mão direita" }), chips("acessorio2", BONECO.acessorio),
         h("p", { class: "lab", text: "Óculos" }), chips("oculos", BONECO.oculos),
         h("p", { class: "lab", text: "Colar" }), chips("colar", BONECO.colar),
         h("p", { class: "lab", text: "Na testa" }), chips("testa", BONECO.testa),
@@ -1876,15 +1886,15 @@ function camadasGeo(svg, P, rios) {
 function satelite(svg, P, modo) {
   modo = modo || "satelite";
   const tl = P.inv(0, 0), br = P.inv(P.W, P.H);
-  let z = Math.round(Math.log2(360 * P.cos * P.s / 256)); z = Math.max(3, Math.min(18, z));
+  let z = Math.round(Math.log2(360 * P.cos * P.s / 256)); z = Math.max(3, Math.min(modo === "satelite" ? 18 : 19, z));
   const n = 2 ** z, lon2x = lo => Math.floor((lo + 180) / 360 * n), lat2y = la => { const r = la * Math.PI / 180; return Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n); };
   const x2lon = x => x / n * 360 - 180, y2lat = y => { const k = Math.PI - 2 * Math.PI * y / n; return 180 / Math.PI * Math.atan(.5 * (Math.exp(k) - Math.exp(-k))); };
   const g = h("g", { class: "satelite " + modo });
   const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/", sub = "abcd"[(Math.random() * 4) | 0];
-  const url = (cam, z, x, y) => cam === "ruas" ? `https://${sub}.basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}.png`
+  const url = (cam, z, x, y) => cam === "ruas" ? `https://tile.openstreetmap.org/${z}/${x}/${y}.png`
     : cam === "rotulos" ? `https://${sub}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/${z}/${x}/${y}.png`
     : `${ESRI}World_Imagery/MapServer/tile/${z}/${y}/${x}`;
-  const reserva = (cam, z, x, y) => cam === "ruas" ? `https://tile.openstreetmap.org/${z}/${x}/${y}.png` : cam === "rotulos" ? `${ESRI}Reference/World_Boundaries_and_Places/MapServer/tile/${z}/${y}/${x}` : `${ESRI}World_Imagery/MapServer/tile/${z}/${y}/${x}`;
+  const reserva = (cam, z, x, y) => cam === "ruas" ? `https://${sub}.basemaps.cartocdn.com/rastertiles/voyager/${Math.min(z, 18)}/${x}/${y}.png` : cam === "rotulos" ? `${ESRI}Reference/World_Boundaries_and_Places/MapServer/tile/${z}/${y}/${x}` : `${ESRI}World_Imagery/MapServer/tile/${z}/${y}/${x}`;
   const camadas = modo === "ruas" ? ["ruas"] : modo === "hibrido" ? ["sat", "rotulos"] : ["sat"];
   const x0 = lon2x(tl.lng), x1 = lon2x(br.lng), y0 = lat2y(tl.lat), y1 = lat2y(br.lat);
   if ((x1 - x0 + 1) * (y1 - y0 + 1) > 64) return;
@@ -1894,7 +1904,7 @@ function satelite(svg, P, modo) {
       im.addEventListener("error", () => { if (!im.dataset.r) { im.dataset.r = 1; im.setAttribute("href", reserva(cam, z, x, y)); } }, { once: false }); g.append(im); }
   }
   svg.append(g);
-  svg.append(h("text", { x: P.W - 22, y: P.H - 20, class: "satcred", "text-anchor": "end", text: modo === "ruas" ? "© OpenStreetMap · © CARTO" : modo === "hibrido" ? "Satélite: Esri, Maxar · rótulos © CARTO, OpenStreetMap" : "Satélite: Esri, Maxar, Earthstar Geographics" }));
+  svg.append(h("text", { x: P.W - 22, y: P.H - 20, class: "satcred", "text-anchor": "end", text: modo === "ruas" ? "© OpenStreetMap" : modo === "hibrido" ? "Satélite: Esri, Maxar · rótulos © CARTO, OpenStreetMap" : "Satélite: Esri, Maxar, Earthstar Geographics" }));
 }
 function escala(svg, P) {
   const H = P.H, per = P.s / 111.32, nice = [0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
@@ -2020,7 +2030,7 @@ function mapaPerto() {
   const W = 600, H = 600, svg = pergaminho(W, H, "perto"), eu0 = minhaPos(), centro = S.pertoCentro || eu0;
   const temEu = !!eu0;
   svg.setAttribute("aria-label", "Mapa perto de mim");
-  const km = S.pertoKm || 0.25, dLat = km / 111, dLng = km / (111 * Math.cos(centro.lat * Math.PI / 180));
+  const km = S.pertoKm || 0.12, dLat = km / 111, dLng = km / (111 * Math.cos(centro.lat * Math.PI / 180));
   const P = projetor([{ lat: centro.lat - dLat, lng: centro.lng - dLng }, { lat: centro.lat + dLat, lng: centro.lng + dLng }], W, H, 40, .0004); S.proj = P;
   P.modo = S.camadaMapa || "ruas";
   const mov = h("g", { class: "movel" });
@@ -2099,7 +2109,8 @@ function autoGps() {
 }
 function vPerto() {
   autoGps();
-  const eu0 = minhaPos(), km = S.pertoKm || 0.25;
+  const eu0 = minhaPos(), km = S.pertoKm || 0.12;
+  if (eu0) ruaAqui(eu0);
   const perto = eu0 ? posicoesAtuais().filter(p => p.id !== S.uid && isFinite(+p.lat)).map(p => ({ p, km: distKm(eu0, p) })).sort((a, b) => a.km - b.km) : [];
   const zoom = f => { S.pertoKm = Math.max(0.06, Math.min(3000, km * f)); render(); };
   const verTodos = () => { const k = perto.length ? perto[perto.length - 1].km * 1.25 : 1.5; S.pertoCentro = null; S.pertoKm = Math.max(0.15, k); render(); };
@@ -2119,12 +2130,32 @@ function vPerto() {
         h("button", { type: "button", "aria-label": "Centralizar em mim", class: S.pertoCentro ? "" : "on", onclick: () => { S.pertoCentro = null; render(); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")),
         perto.length ? h("button", { type: "button", "aria-label": "Ver todos", onclick: verTodos }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")) : null),
       h("p", { class: "mapdica", text: "Arraste com o dedo · pinça para aproximar" })),
+    eu0 && S.rua && S.rua.txt ? h("div", { class: "ruaaqui", role: "status" }, h("span", { class: "eyebrow", text: "Você está em" }), h("b", { text: S.rua.txt }), S.rua.sub ? h("small", { text: S.rua.sub }) : null) : null,
     eu0 ? h("p", { class: "coord", style: "text-align:left", text: "Você: " + coordTxt(eu0.lat, eu0.lng) }) : null,
     !S.gpsOn ? h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null)
       : h("p", { class: "msg ok", text: (S.gpsMsg || "Você está ao vivo.") + (S.aoVivo[S.uid]?.prec ? ` Precisão de ${S.aoVivo[S.uid].prec} m.` : "") }),
     perto.length ? h("ul", { class: "pertolist" }, perto.slice(0, 20).map(({ p, km }) => h("li", { onclick: () => abrirPessoa(p.id), style: "cursor:pointer" },
       bonecoSvg(bonecoDe(p.id), "bonecosvg mini"), h("div", null, h("b", { text: nomeDe(p.id) }), h("small", { text: km < 1 ? Math.round(km * 1000) + " m de você" : km.toFixed(km < 10 ? 1 : 0) + " km de você" }))))) :
       h("p", { class: "small", text: "Ninguém da caravana apareceu por perto ainda. Quando alguém ligar a localização, o bonequinho aparece aqui." }));
+}
+// nome da rua (ou beco) onde a pessoa está, pelo OpenStreetMap; pergunta no máximo a cada 15 s e só se andou uns 20 m
+function ruaAqui(p) {
+  if (!window.__SITE || !navigator.onLine) return;
+  const r = S.rua, agora = Date.now();
+  if (S.ruaBusca || (r && distKm(r, p) < .02) || (S.ruaT && agora - S.ruaT < 15000)) return;
+  S.ruaBusca = true; S.ruaT = agora;
+  fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${p.lat}&lon=${p.lng}&zoom=18&addressdetails=1&accept-language=pt,en`)
+    .then(x => x.ok ? x.json() : null).then(j => {
+      if (!j || !j.address) return;
+      const a = j.address, via = a.road || a.pedestrian || a.footway || a.path || a.steps || a.living_street || a.service || a.track;
+      const lugar = j.name && j.name !== via ? j.name : "";
+      const bairro = a.neighbourhood || a.quarter || a.suburb || a.hamlet || a.village || "";
+      const cidade = a.city || a.town || a.village || a.county || "";
+      const txt = via || lugar || bairro || cidade;
+      const sub = [via && lugar ? "perto de " + lugar : "", txt !== bairro ? bairro : "", txt !== cidade ? cidade : ""].filter(Boolean).join(" · ");
+      S.rua = { lat: p.lat, lng: p.lng, txt: via ? txt : (txt ? "Beco sem nome, perto de " + txt : ""), sub };
+      if (S.tab === "mapa") render();
+    }).catch(() => {}).finally(() => { S.ruaBusca = false; });
 }
 const distKm = (a, b) => { const R = 6371, r = x => x * Math.PI / 180, dLa = r(+b.lat - a.lat), dLo = r(+b.lng - a.lng); const q = Math.sin(dLa / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(+b.lat)) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(q)); };
 function vMapa() {
@@ -2293,6 +2324,7 @@ function vFotos() {
         h("p", { class: "lab", text: "Legenda" }), leg, cid,
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no celular"),
+          h("button", { class: "btn", type: "button", onclick: async () => { const r = await compartilharImagem(await blobDoCanvas(), "caravana-" + (F.cidade || "india").toLowerCase() + ".jpg", textoConvite()); if (r) { msg.textContent = r; msg.className = "msg"; } } }, "Compartilhar"),
           h("button", { class: "btn", type: "button", onclick: mural }, "Enviar para a galeria"),
           h("button", { class: "btn", type: "button", onclick: enviar }, "Enviar para a Roda"),
           h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "Trocar foto")),
@@ -2318,11 +2350,6 @@ function painelPessoas(c) {
   const gente = posicoesAtuais().filter(p => !c || p.cidadeId === c.id).sort((a, b) => b.ts - a.ts);
   const minha = S.posicoes.find(p => p.id === S.uid && Date.now() - p.ts < FRESCO);
   const pode = S.db && S.uid && eu();
-  const lugares = S.locais.filter(l => !c || l.cidadeId === c.id).sort(byOrdem);
-  const sel = h("select", { id: "pos-lugar", "aria-label": "Estou em" }, h("option", { value: "", text: "Escolha um lugar" }), lugares.map(l => h("option", { value: l.id, text: l.nome })));
-  const nota = h("input", { type: "text", id: "pos-nota", maxlength: "140", placeholder: "Recado (ex.: tomando chai na escadaria)" });
-  const link = h("input", { type: "text", id: "pos-link", inputmode: "url", placeholder: "Link do Google Maps (localização ao vivo)" });
-  if (minha) { nota.value = minha.nota || ""; link.value = minha.link || ""; }
   return h("aside", { class: "panel" },
     h("p", { class: "eyebrow", text: "A caravana agora" }),
     h("h2", { text: c ? "Quem está em " + c.nome : "Onde está cada um" }),
@@ -2348,15 +2375,6 @@ function painelPessoas(c) {
         } }, "Usar minha localização"),
         h("button", { class: "btn", type: "button", onclick: () => { S.marcando = !S.marcando; render(); } }, S.marcando ? "Cancelar" : "Marcar no mapa"),
         minha ? h("button", { class: "btn", type: "button", onclick: pararPos }, "Sair do mapa") : null),
-      h("label", { class: "small", for: "pos-lugar" }, "Ou diga em qual lugar você está"), sel, nota, link,
-      h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: () => {
-        const l = link.value.trim();
-        if (l && !/^https:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|(www\.)?google\.[a-z.]+\/maps)/i.test(l)) { S.posMsg = { ok: false, text: "Cole um link do Google Maps (começa com https://maps.app.goo.gl)." }; render(); return; }
-        const x = lugares.find(y => y.id === sel.value), ex = { nota: nota.value.trim(), link: l };
-        if (x) salvarPos({ cidadeId: x.cidadeId, lat: +x.lat, lng: +x.lng, lugar: x.nome, ...ex });
-        else if (minha) salvarPos({ ...minha, ...ex });
-        else { S.posMsg = { ok: false, text: "Marque no mapa ou escolha um lugar primeiro." }; render(); }
-      } }, "Salvar")),
       S.posMsg ? h("p", { class: "msg " + (S.posMsg.ok ? "ok" : "err"), role: "status", text: S.posMsg.text }) : null,
       S.gpsMsg ? h("p", { class: "msg " + (S.gpsOn ? "ok" : ""), role: "status", text: S.gpsMsg }) : null,
     ) : null);
@@ -3089,6 +3107,80 @@ async function abrirResumo() {
   document.body.append(sheet);
 }
 
+
+// ---------- Espalhe a Caravana: cartão no formato story para postar ----------
+const INSTA = "@___caravana", INSTA_URL = "https://instagram.com/___caravana";
+function textoConvite() {
+  const hoje = hojeTrip(), R = S.roteiro, d = R && R.dias.find(x => x.iso === hoje);
+  const ini = R && R.dias[0] && R.dias[0].iso, fim = R && R.dias[R.dias.length - 1] && R.dias[R.dias.length - 1].iso;
+  const frase = d ? `Dia ${d.n} da Travessia da Índia Sagrada com a Caravana do Céu, em ${d.cidade}.`
+    : fim && hoje > fim ? "Atravessei a Índia Sagrada com a Caravana do Céu."
+    : "Vou atravessar a Índia Sagrada com a Caravana do Céu.";
+  return `${frase}\n${INSTA} · ${INSTA_URL}`;
+}
+async function compartilharImagem(blob, nome, texto) {
+  if (!blob) return "Não consegui montar a imagem.";
+  const file = new File([blob], nome, { type: blob.type || "image/png" });
+  try {
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text: texto }); return ""; }
+  } catch (e) { if (e && e.name === "AbortError") return ""; }
+  const dl = await (window.claude?.use?.("downloads") ?? null);
+  if (dl) { try { await dl.save({ filename: nome, data: blob }); return "Imagem salva. Poste no Instagram e marque " + INSTA + "."; } catch (e) { return ""; } }
+  const a = h("a", { href: URL.createObjectURL(blob), download: nome }); document.body.append(a); a.click(); a.remove();
+  return "Imagem salva. Poste no Instagram e marque " + INSTA + ".";
+}
+async function cartaoConvite() {
+  const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d");
+  try { await document.fonts.ready; } catch (e) {}
+  const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#F4E8CC"); g.addColorStop(1, "#E4CFA2");
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.strokeStyle = "#8A6B43"; x.lineWidth = 4; x.strokeRect(48, 48, W - 96, H - 96); x.lineWidth = 1.5; x.strokeRect(64, 64, W - 128, H - 128);
+  x.textAlign = "center"; x.fillStyle = "#3B2A1C";
+  try { const sim = await carregaImg("img/simbolo-marrom.png"); const t = 150; x.drawImage(sim, W / 2 - t / 2, 150, t, t * sim.height / sim.width); } catch (e) {}
+  x.font = '600 74px "Cinzel", Georgia, serif'; x.fillText("CARAVANA DO CÉU", W / 2, 420);
+  x.font = '500 34px "Poppins", sans-serif'; x.fillStyle = "#8A6B43";
+  const esp = t => t.split("").join(String.fromCharCode(8202)); x.fillText(esp("ÍNDIA SAGRADA · 2026"), W / 2, 480);
+  x.font = '600 40px "Poppins", "Noto Sans Devanagari", sans-serif'; x.fillStyle = "#C9A56A"; x.fillText("लोकाः समस्ताः सुखिनो भवन्तु", W / 2, 560);
+  // o explorador da pessoa
+  try {
+    const sv = bonecoSvg(bonecoDe(S.uid)); sv.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    const vb = sv.getAttribute("viewBox").split(" ").map(Number), alt = 820, larg = alt * vb[2] / vb[3];
+    sv.setAttribute("width", larg); sv.setAttribute("height", alt);
+    const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(sv)], { type: "image/svg+xml" }));
+    const im = await new Promise((ok, erro) => { const i = new Image(); i.onload = () => ok(i); i.onerror = erro; i.src = url; }); URL.revokeObjectURL(url);
+    x.drawImage(im, W / 2 - larg / 2, 1480 - alt + 20, larg, alt);
+  } catch (e) {}
+  const frase = textoConvite().split("\n")[0];
+  x.fillStyle = "#3B2A1C"; x.font = 'italic 500 46px "Lora", Georgia, serif';
+  const linhas = [], pal = frase.split(" "); let l = "";
+  for (const w of pal) { const t = l ? l + " " + w : w; if (x.measureText(t).width > W - 220 && l) { linhas.push(l); l = w; } else l = t; } if (l) linhas.push(l);
+  linhas.forEach((t, i) => x.fillText(t, W / 2, 1600 + i * 62));
+  x.font = '600 44px "Poppins", sans-serif'; x.fillStyle = "#8A3F32"; x.fillText(INSTA, W / 2, 1790);
+  return new Promise(res => c.toBlob(res, "image/png"));
+}
+async function abrirConvite() {
+  closeSheets();
+  const st = h("p", { class: "msg", role: "status", text: "Montando o seu cartão…" });
+  const prev = h("img", { alt: "Cartão da Caravana do Céu com o seu explorador", style: "width:100%;max-width:280px;align-self:center;border-radius:12px;box-shadow:0 6px 20px rgba(60,40,20,.25)" });
+  let blob = null;
+  const btn = h("button", { class: "btn gold", type: "button", disabled: true, onclick: async () => { const r = await compartilharImagem(blob, "caravana-do-ceu.png", textoConvite()); st.textContent = r; } }, "Compartilhar");
+  const box = h("div", { class: "box", role: "dialog", "aria-modal": "true", "aria-label": "Espalhe a Caravana", style: "display:flex;flex-direction:column;gap:12px" },
+    h("p", { class: "eyebrow", text: "Espalhe a Caravana" }), h("h2", { text: "Seu cartão para o story" }),
+    prev, st,
+    h("div", { class: "actions" }, btn, h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  document.body.append(sheet);
+  blob = await cartaoConvite();
+  if (blob) { prev.src = URL.createObjectURL(blob); btn.disabled = false; st.textContent = "Poste no story e marque " + INSTA + "."; }
+  else st.textContent = "Não consegui montar o cartão.";
+}
+function vEspalhe() {
+  return h("div", { class: "panel", style: "align-items:center;text-align:center" },
+    h("p", { class: "eyebrow", text: "Espalhe a Caravana" }),
+    h("p", { class: "small", text: "Um cartão com o seu explorador, pronto para o story. Marque " + INSTA + "." }),
+    h("button", { class: "btn gold", type: "button", onclick: abrirConvite }, "Compartilhar a Caravana"));
+}
 
 // Só a líder: quem está com o app aberto agora
 function vOnlineLider() {
