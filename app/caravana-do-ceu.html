@@ -210,6 +210,33 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .pages .ph h2{font-size:24px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 10px}
 @media (max-width:480px){.grid{grid-template-columns:repeat(2,1fr)}}
+.trilhawrap{display:flex;flex-direction:column;gap:6px}
+.trilhacont{display:flex;flex-direction:column;align-items:center;gap:6px;margin:4px 0 2px}
+.trilhacont b{font:600 13px/1 var(--ui);letter-spacing:.16em;text-transform:uppercase;color:#8A6B43}
+.contas{display:flex;gap:6px}.contas i{width:9px;height:9px;border-radius:50%;border:1.5px solid #C9A063;background:transparent}
+.contas i.on{background:radial-gradient(circle at 35% 35%,#FFE3A0,#C9A063 60%,#8A6B2A);box-shadow:0 0 8px rgba(233,178,80,.8)}
+.trilha{position:relative;margin:0 -6px}
+.trilhasvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.tr-futuro{fill:none;stroke:#C9B08A;stroke-width:2.2;stroke-dasharray:1 9;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.tr-feito{fill:none;stroke:#D9A24A;stroke-width:3.4;stroke-linecap:round;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 4px rgba(233,178,80,.9))}
+.parada{position:absolute;width:46%;background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+.parada.esq{left:4%}.parada.dir{left:50%}
+.pinwrap{position:relative;display:block;width:78%;max-width:150px;transform:rotate(var(--r));transition:transform .35s cubic-bezier(.2,1.4,.4,1)}
+.parada:hover .pinwrap,.parada:focus-visible .pinwrap{transform:rotate(0) scale(1.05)}
+.pinwrap img.pin{width:100%;height:auto;display:block}
+.parada.on img.pin{filter:drop-shadow(0 10px 16px rgba(60,40,20,.35)) saturate(1.08)}
+.parada.off img.pin{filter:grayscale(1) sepia(.35) blur(.6px) opacity(.32)}
+.parada small{font-family:Caveat,"Segoe Print",cursive;font-size:19px;line-height:1.1;color:#8A6B43;text-align:center}
+.parada.on small{color:#3F4938;font-weight:600}
+.misterio{position:absolute;top:50%;left:50%;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;display:grid;place-items:center;font:600 18px/1 Georgia,serif;color:#8A6B43;background:rgba(251,244,228,.85);border:1.5px dashed #C9A063}
+.parada.prox .misterio{color:#fff;background:radial-gradient(circle,#F2C46A,#C98A2A);border:0;box-shadow:0 0 0 0 rgba(233,178,80,.7);animation:pulsaProx 2.2s ease-out infinite}
+.parada.prox img.pin{filter:grayscale(.6) sepia(.4) opacity(.55)}
+.proxtag{font:600 10.5px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:#fff;background:#8A3F32;padding:5px 9px;border-radius:999px;margin-top:-2px}
+.brilhos i{position:absolute;color:#F2C46A;font-style:normal;text-shadow:0 0 6px rgba(255,210,120,.9);animation:cintila 2.8s ease-in-out infinite;pointer-events:none}
+.brilhos i:nth-child(1){top:-6px;right:4px;font-size:16px}.brilhos i:nth-child(2){top:38%;left:-10px;font-size:12px;animation-delay:.9s}.brilhos i:nth-child(3){bottom:10%;right:-8px;font-size:13px;animation-delay:1.7s}
+@keyframes cintila{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1.15)}}
+@keyframes pulsaProx{0%{box-shadow:0 0 0 0 rgba(233,178,80,.75)}70%{box-shadow:0 0 0 16px rgba(233,178,80,0)}100%{box-shadow:0 0 0 0 rgba(233,178,80,0)}}
+@media (prefers-reduced-motion:reduce){.brilhos i,.parada.prox .misterio{animation:none}}
 .slot{position:relative;background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px}
 .slot img.pin{width:100%;max-width:140px;height:auto;display:block;transition:filter .3s,transform .3s}
 .slot.off img.pin{filter:grayscale(1) opacity(.28)}
@@ -1292,6 +1319,32 @@ const SIGLA = { delhi: "DEL", agra: "AGR", jaipur: "JAI", varanasi: "VNS", rishi
 const paginaDoSelo = id => 2 + Math.floor(insigniaLocais().findIndex(l => l.id === id) / 2);
 
 // ---------- Passaporte ----------
+// Trilha dos selos: um caminho dourado que vai acendendo a cada lugar carimbado
+function trilhaSelos(ls, mins) {
+  const n = ls.length, passo = 168, topo = 20, H = topo + (n - 1) * passo + 250;
+  const xs = ls.map((_, i) => i % 2 ? 72 : 28), ys = ls.map((_, i) => topo + i * passo + 95);
+  const feitos = ls.map(aberto), ult = feitos.lastIndexOf(true), prox = feitos.indexOf(false);
+  const caminho = ate => { let d = `M${xs[0]} ${ys[0] - 80}L${xs[0]} ${ys[0]}`; for (let i = 1; i <= ate; i++) d += `C${xs[i - 1]} ${ys[i - 1] + passo * .55},${xs[i]} ${ys[i] - passo * .55},${xs[i]} ${ys[i]}`; return d; };
+  const svg = h("svg", { class: "trilhasvg", viewBox: `0 0 100 ${H}`, preserveAspectRatio: "none", "aria-hidden": "true" },
+    h("path", { d: caminho(n - 1), class: "tr-futuro" }),
+    ult >= 0 ? h("path", { d: caminho(ult), class: "tr-feito" }) : null);
+  const qtd = feitos.filter(Boolean).length;
+  return h("div", { class: "trilhawrap" },
+    h("div", { class: "trilhacont" }, h("span", { class: "contas", "aria-hidden": "true" }, feitos.map(f => h("i", { class: f ? "on" : "" }))),
+      h("b", { text: `${qtd} de ${n} selos` })),
+    h("div", { class: "trilha", style: `height:${H}px` }, svg,
+      ls.map((l, i) => {
+        const on = feitos[i], ts = mins[l.id], d = diaDe(l.dia), eProx = i === prox;
+        return h("button", { class: "parada " + (on ? "on" : "off") + (eProx ? " prox" : "") + (i % 2 ? " dir" : " esq"), type: "button", style: `top:${topo + i * passo}px`, onclick: () => abrirSelo(l), "aria-label": l.nome + (on ? ", carimbado" : "") },
+          h("span", { class: "pinwrap", style: `--r:${[-7, 5, -3, 8, -5, 3][i % 6]}deg` },
+            h("img", { class: "pin", src: badgeSrc(l), alt: "", loading: "lazy" }),
+            on ? h("span", { class: "brilhos", "aria-hidden": "true" }, h("i", { text: "✦" }), h("i", { text: "✧" }), h("i", { text: "✦" })) : null,
+            on ? h("span", { class: "stamp" + (S.novoSelo === l.id ? " new" : "") }, h("b", { text: "Selado" }), h("i", { text: ts ? dataSelo(ts) : "Caravana" })) : null,
+            !on ? h("span", { class: "misterio", "aria-hidden": "true", text: eProx ? "✦" : "?" }) : null),
+          eProx ? h("span", { class: "proxtag", text: "próximo destino" }) : null,
+          h("small", { text: on ? l.nome : (d ? `Dia ${d.n} · ${d.cidade}` : l.nome) }));
+      })));
+}
 function vPassaporte() {
   const ls = insigniaLocais(), v = eu(), nums = numeros(), mins = minhas();
   const ok = ls.filter(aberto).length;
@@ -1324,13 +1377,7 @@ function vPassaporte() {
     h("div", { class: "pages" },
       h("div", { class: "ph" }, h("p", { class: "eyebrow", text: "Os selos da Índia Sagrada" }), h("h2", { text: "Carimbe em cada lugar sagrado" }),
         h("p", { class: "small", text: "Quando a caravana chegar ao lugar, a líder revela a palavra. Toque no selo e carimbe." })),
-      ls.length ? h("div", { class: "grid" }, ls.map(l => {
-        const on = aberto(l), ts = mins[l.id], d = diaDe(l.dia);
-        return h("button", { class: "slot " + (on ? "on" : "off"), type: "button", onclick: () => abrirSelo(l), "aria-label": l.nome + (on ? ", carimbado" : "") },
-          h("img", { class: "pin", src: badgeSrc(l), alt: "", loading: "lazy" }),
-          on ? h("span", { class: "stamp" + (S.novoSelo === l.id ? " new" : "") }, h("b", { text: "Selado" }), h("i", { text: ts ? dataSelo(ts) : "Caravana" })) : null,
-          h("small", { text: on ? l.nome : (d ? `Dia ${d.n} · ${d.cidade}` : l.nome) }));
-      })) : carregando()),
+      ls.length ? trilhaSelos(ls, mins) : carregando()),
     gente.length ? h("div", { class: "panel" },
       h("p", { class: "eyebrow", text: "A caravana" }),
       h("h2", { text: gente.length === 1 ? "1 passaporte emitido" : gente.length + " passaportes emitidos" }),
