@@ -266,7 +266,13 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .medalhas{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;margin-top:4px}
 .medalha{filter:drop-shadow(0 2px 3px rgba(40,25,10,.3));flex:0 0 auto}
 .viagbox{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border:1px dashed #C9B08A;border-radius:12px;background:rgba(251,244,228,.6)}
-.viaglinha{display:flex;flex-direction:column;gap:4px}.viaglinha>span{font-weight:600;font-size:14px;color:var(--ink)}
+.viagops{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.viagop{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-size:13px;min-height:58px}
+.viagop[aria-pressed="true"]{background:#3B2A1C;border-color:#3B2A1C;color:#F4E6C4}
+.viagmini{display:flex;gap:1px;min-height:17px}
+.viagprevia{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 10px;border-radius:10px;background:#FFFCF7;border:1px solid var(--line2)}
+.viagprevia span{display:flex;flex-direction:column}.viagprevia b{font-size:14px}.viagprevia small{color:var(--soft)}
+.viagperg{font-weight:600;font-size:14px;color:var(--ink)}
 .viagbox .opts .opt{padding:5px 12px}
 .trilhawrap{display:flex;flex-direction:column;gap:6px}
 .trilhacont{display:flex;flex-direction:column;align-items:center;gap:6px;margin:4px 0 2px}
@@ -1085,8 +1091,9 @@ function escolhaGenero(atual, muda) {
 }
 // ---------- Viagens anteriores com a Caravana: medalhas e ranking ----------
 const DESTINOS = [{ id: "chapada", nome: "Chapada dos Veadeiros", cor: "#3F7A3A", sigla: "CV" }];
-const viagensDe = v => { const o = (v && v.viagens) || {}; return Object.keys(o).map(k => ({ id: k, n: +o[k] || 0 })).filter(x => x.n > 0); };
-const totalViagens = v => 1 + viagensDe(v).reduce((a, x) => a + x.n, 0);
+// quantas vezes a pessoa já viajou com a Caravana antes desta (ela mesma informa)
+const viagensAntes = v => { if (!v) return 0; if (v.viagensAntes != null) return +v.viagensAntes || 0; const o = v.viagens || {}; return Object.values(o).reduce((a, n) => a + (+n || 0), 0); };
+const totalViagens = v => 1 + viagensAntes(v);
 function tituloViajante(v) {
   const t = totalViagens(v), g = v && v.genero;
   return t >= 5 ? (g === "o" ? "Veterano da Caravana" : g === "a" ? "Veterana da Caravana" : "Veterania da Caravana") : t >= 3 ? "Viajante experiente" : t === 2 ? "Viajante da Caravana" : "Primeira travessia";
@@ -1094,9 +1101,9 @@ function tituloViajante(v) {
 const nomeDestino = id => (DESTINOS.find(d => d.id === id) || {}).nome || id.replace(/^outro:/, "");
 // medalha bordada: anel dourado costurado, miolo na cor do destino, sigla e quantas vezes
 function medalha(id, n, tam) {
-  const d = DESTINOS.find(x => x.id === id), india = id === "india", cor = india ? "#B8431F" : d ? d.cor : ["#2F5D7C", "#8A3F32", "#6B4A8A", "#8A6B2A"][id.length % 4];
-  const sigla = india ? "IN" : d ? d.sigla : id.replace(/^outro:/, "").split(/\s+/).map(p => p[0] || "").join("").slice(0, 2).toUpperCase();
-  const svg = h("svg", { viewBox: "0 0 60 70", width: tam || 46, height: (tam || 46) * 70 / 60, class: "medalha", role: "img", "aria-label": (india ? "Índia Sagrada 2026" : nomeDestino(id)) + (n > 1 ? `, ${n} vezes` : "") });
+  const d = DESTINOS.find(x => x.id === id), india = id === "india", car = id === "caravana", cor = india ? "#B8431F" : car ? "#3F4938" : d ? d.cor : ["#2F5D7C", "#8A3F32", "#6B4A8A", "#8A6B2A"][id.length % 4];
+  const sigla = india ? "IN" : car ? "✦" : d ? d.sigla : id.replace(/^outro:/, "").split(/\s+/).map(p => p[0] || "").join("").slice(0, 2).toUpperCase();
+  const svg = h("svg", { viewBox: "0 0 60 70", width: tam || 46, height: (tam || 46) * 70 / 60, class: "medalha", role: "img", "aria-label": (india ? "Índia Sagrada 2026" : car ? "Viagem com a Caravana" : nomeDestino(id)) + (n > 1 ? `, ${n} vezes` : "") });
   svg.innerHTML = `<path d="M18 2h9l5 18h-9z" fill="${cor}" opacity=".9"/><path d="M42 2h-9l-5 18h9z" fill="${cor}" opacity=".7"/>
     <circle cx="30" cy="40" r="25" fill="#C9A063"/><circle cx="30" cy="40" r="25" fill="none" stroke="#8A6B2A" stroke-width="1.2" stroke-dasharray="2 1.6"/>
     <circle cx="30" cy="40" r="19.5" fill="${cor}"/><circle cx="30" cy="40" r="17" fill="none" stroke="#F4E6C4" stroke-width=".8" stroke-dasharray="1.6 1.4" opacity=".8"/>
@@ -1104,18 +1111,22 @@ function medalha(id, n, tam) {
     ${n > 1 ? `<circle cx="49" cy="58" r="9" fill="#3B2A1C" stroke="#F4E6C4" stroke-width="1.4"/><text x="49" y="61.6" text-anchor="middle" font-family="Poppins,sans-serif" font-weight="700" font-size="10" fill="#F4E6C4">${n}x</text>` : ""}`;
   return svg;
 }
+// uma medalhinha da Caravana para cada viagem anterior (até 6; depois, o número)
 function medalhasDe(v, tam) {
-  return h("div", { class: "medalhas" }, medalha("india", 1, tam), viagensDe(v).map(x => medalha(x.id, x.n, tam)));
+  const n = viagensAntes(v), mostra = Math.min(n, 6);
+  return h("div", { class: "medalhas" }, medalha("india", 1, tam), Array.from({ length: mostra }, (_, i) => medalha("caravana", i === mostra - 1 && n > 6 ? n : 1, tam)));
 }
-// no cadastro: para onde já foi com a Caravana, e quantas vezes
-function campoViagens(estado) {
-  const linha = (id, nome) => h("div", { class: "viaglinha" }, h("span", { text: nome }),
-    h("div", { class: "opts" }, [0, 1, 2, 3, 4].map(n => h("button", { type: "button", class: "opt", "aria-pressed": String((estado[id] || 0) === n), onclick: ev => { if (n) estado[id] = n; else delete estado[id]; ev.currentTarget.parentNode.querySelectorAll("button").forEach((b, i) => b.setAttribute("aria-pressed", String(i === n))); } }, n ? n + "x" : "Não"))));
-  const outro = h("input", { type: "text", maxlength: "30", placeholder: "Outro destino da Caravana (ex.: Peru)" });
-  const outros = h("div", { class: "viagoutros" }, Object.keys(estado).filter(k => k.startsWith("outro:")).map(k => linha(k, k.slice(6))));
-  return h("div", { class: "viagbox" }, h("span", { class: "small", text: "Você já viajou com a Caravana? Marque para onde e quantas vezes. Cada destino vira uma medalha no seu passaporte." }),
-    DESTINOS.map(d => linha(d.id, d.nome)), outros,
-    h("div", { class: "unlock" }, outro, h("button", { class: "btn", type: "button", onclick: () => { const t = outro.value.trim(); if (!t) return; const k = "outro:" + t; if (!estado[k]) estado[k] = 1; outros.append(linha(k, t)); outro.value = ""; } }, "Adicionar")));
+// no cadastro: quantas vezes já viajou com a Caravana (antes desta), mostrando as medalhinhas de cada opção
+function campoViagens(estado, genero) {
+  const ops = [[0, "Não"], [1, "1x"], [2, "2x"], [3, "3x"], [4, "4x"], [5, "5x ou mais"]];
+  const previa = h("div", { class: "viagprevia" });
+  const mostra = n => { const v = { viagensAntes: n, genero: genero ? genero() : "" };
+    previa.replaceChildren(medalhasDe(v, 30), h("span", null, h("b", { text: tituloViajante(v) }), h("small", { text: totalViagens(v) === 1 ? "esta é a primeira viagem" : totalViagens(v) + " viagens com a Caravana" }))); };
+  mostra(estado.n || 0);
+  return h("div", { class: "viagbox" }, h("span", { class: "viagperg", text: "Você já viajou com a Caravana antes? Quantas vezes?" }),
+    h("div", { class: "viagops" }, ops.map(([n, t]) => h("button", { type: "button", class: "viagop", "aria-pressed": String((estado.n || 0) === n), onclick: ev => { estado.n = n; ev.currentTarget.parentNode.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === ev.currentTarget))); mostra(n); } },
+      h("b", { text: t }), h("span", { class: "viagmini" }, Array.from({ length: Math.min(n, 5) }, () => medalha("caravana", 1, 14)))))),
+    h("span", { class: "small", text: "No seu passaporte:" }), previa);
 }
 function vCadastro() {
   const nome = h("input", { type: "text", id: "cad-nome", maxlength: "40", autocomplete: "given-name", placeholder: "Como a caravana vai te chamar" });
@@ -1131,7 +1142,7 @@ function vCadastro() {
       e.preventDefault();
       if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
       if (!S.cadGenero) { erro.textContent = "Escolha Caravaneira ou Caravaneiro."; return; }
-      const doc = { nome: nome.value.trim(), cidade: cid.value.trim(), genero: S.cadGenero, viagens: { ...S.cadViagens }, ts: Date.now(), insignias: { ...S.local } };
+      const doc = { nome: nome.value.trim(), cidade: cid.value.trim(), genero: S.cadGenero, viagensAntes: (S.cadViagens || {}).n || 0, ts: Date.now(), insignias: { ...S.local } };
       if (S.cadFoto) doc.foto = S.cadFoto;
       if (S.isOwner) doc.lider = true;
       try { await S.db.doc("viajantes/" + S.uid).set(doc); S.tab = "passaporte"; }
@@ -1140,7 +1151,7 @@ function vCadastro() {
       h("label", { for: "cad-nome" }, "Seu nome", nome),
       h("label", { for: "cad-cidade" }, "De onde você vem", cid),
       escolhaGenero(() => S.cadGenero, g => { S.cadGenero = g; }),
-      campoViagens(S.cadViagens || (S.cadViagens = {})),
+      campoViagens(S.cadViagens || (S.cadViagens = {}), () => S.cadGenero),
       S.assets ? (() => {
         const st = h("span", { class: "small", role: "status" }), prev = h("img", { alt: "", hidden: true, class: "cadfoto" });
         const fi = campoFoto(async id => { S.cadFoto = id; prev.src = blob(id); prev.hidden = false; }, st);
@@ -1813,11 +1824,11 @@ function editarPerfil() {
   const nome = h("input", { type: "text", id: "pf-nome", maxlength: "40", value: v.nome || "" });
   const cid = h("input", { type: "text", id: "pf-cidade", maxlength: "40", value: v.cidade || "" });
   const erro = h("p", { class: "msg err", role: "alert" });
-  let genero = v.genero || ""; const viagens = { ...(v.viagens || {}) };
+  let genero = v.genero || ""; const viagens = { n: viagensAntes(v) };
   const form = h("form", { onsubmit: async e => { e.preventDefault(); if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
-    try { await S.db.doc("viajantes/" + S.uid).update({ nome: nome.value.trim(), cidade: cid.value.trim(), genero, viagens }); closeSheets(); } catch (err) { erro.textContent = "Não consegui salvar. Tente de novo."; } } },
+    try { await S.db.doc("viajantes/" + S.uid).update({ nome: nome.value.trim(), cidade: cid.value.trim(), genero, viagensAntes: viagens.n || 0 }); closeSheets(); } catch (err) { erro.textContent = "Não consegui salvar. Tente de novo."; } } },
     h("h2", { text: "Meus dados" }), h("label", { for: "pf-nome" }, "Seu nome", nome), h("label", { for: "pf-cidade" }, "De onde você vem", cid),
-    escolhaGenero(() => genero, g => { genero = g; }), campoViagens(viagens), erro,
+    escolhaGenero(() => genero, g => { genero = g; }), campoViagens(viagens, () => genero), erro,
     h("div", { class: "foot2" }, h("span"), h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: closeSheets }, "Cancelar"), h("button", { class: "btn gold", type: "submit" }, "Salvar"))));
   closeSheets();
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, form);
