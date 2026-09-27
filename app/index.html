@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 12:57";</script>
+<script>window.__VERSAO = "27/09 · 13:15";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -467,6 +467,9 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .sheet .bigwrap .stamp b{font-size:14px}
 .sheet .bigwrap .stamp i{font-size:11px}
 .sheet h2{text-align:center;font-size:27px}
+.sheet>.convite{align-items:center;text-align:center;gap:12px;padding:28px 22px}
+.convite .convsimb{width:56px;height:auto}
+.convite .btn{width:100%;justify-content:center}
 .saber{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
 .saber h3{font-size:22px;font-style:italic}
 .saber p{font-family:var(--display);font-size:17.5px;line-height:1.7;color:#3C3A33}
@@ -1122,7 +1125,7 @@ function marcaChat() {
 }
 function render() {
   if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
-  marcaChat();
+  marcaChat(); convidaAvisos();
   for (const b of document.querySelectorAll("#tabs button")) {
     if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
   }
@@ -3404,6 +3407,23 @@ async function ativarAvisos() {
     lsSet("cdi-avisos", "1"); S.celMsg = "Pronto! Você vai receber um aviso no celular quando alguém escrever no chat."; render();
   } catch (e) { S.celMsg = "Não consegui ativar agora. Tente de novo daqui a pouco."; render(); }
 }
+// Ao abrir o app instalado pela primeira vez: janela de boas-vindas pedindo para ligar os avisos (o celular exige um toque)
+function convidaAvisos() {
+  if (S.convidou || !noSite() || !instalado() || !pushPossivel() || !S.uid || !eu()) return;
+  if (Notification.permission !== "default" || avisosLigados() || Date.now() - (+lsGet("cdi-cel-push") || 0) < 24 * 3600 * 1000) return;
+  S.convidou = true;
+  setTimeout(() => {
+    if (document.querySelector(".sheet")) return;
+    const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) { lsSet("cdi-cel-push", String(Date.now())); closeSheets(); } } },
+      h("div", { class: "convite", role: "dialog", "aria-label": "Ativar avisos" },
+        h("img", { src: "img/simbolo-marrom.png", alt: "", class: "convsimb" }),
+        h("h2", { text: (eu().genero === "o" ? "Bem-vindo" : eu().genero === "a" ? "Bem-vinda" : "Boas-vindas") + " ao app da Caravana" }),
+        h("p", { text: "Ative os avisos para receber no celular as mensagens da caravana, mesmo com o app fechado." }),
+        h("button", { class: "btn gold", type: "button", onclick: () => { closeSheets(); S.tab = "conversa"; ativarAvisos(); } }, "🔔 Ativar avisos"),
+        h("button", { class: "btn ghost", type: "button", onclick: () => { lsSet("cdi-cel-push", String(Date.now())); closeSheets(); } }, "Agora não")));
+    document.body.append(sheet);
+  }, 1200);
+}
 // sininho do chat: sempre à mão para ligar os avisos, e explica o que falta quando não dá
 function botaoAvisos() {
   const on = noSite() && avisosLigados();
@@ -3447,7 +3467,7 @@ function cartaoCelular() {
     return h("div", { class: "celcard" }, fechar("cdi-cel-push"),
       h("p", { class: "eyebrow", text: "Receba as mensagens no celular" }),
       h("p", { text: "Quando alguém escrever no chat, o aviso chega no seu celular, mesmo com o app fechado." }),
-      h("button", { class: "btn gold", type: "button", onclick: ativarAvisos }, "Ativar notificações"), msg);
+      h("button", { class: "btn gold", type: "button", onclick: ativarAvisos }, "🔔 Ativar avisos"), msg);
   }
   return null;
 }
