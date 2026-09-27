@@ -364,7 +364,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .brand span{color:#C9A56A;letter-spacing:.24em}
 .me{background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.35);box-shadow:none}
 .me b{color:#E2BE78}
-nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(9,minmax(52px,1fr));overflow-x:auto;scrollbar-width:none}
+nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(10,minmax(52px,1fr));overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
 nav.tabs button{color:#BFA67A;font-size:10px}
 nav.tabs .ic{width:44px!important}
@@ -440,6 +440,19 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .fotoframe{background:#2B1F14;border-radius:var(--r);padding:12px;display:grid;place-items:center;box-shadow:var(--shadow)}
 .fotofixa{position:sticky;top:0;z-index:3;background:var(--bg,#F5EFE3);padding-top:6px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .tirafotos{display:flex;gap:8px;flex-wrap:wrap}.tiramini{display:flex;align-items:center;gap:6px;border:1px solid var(--line2);background:var(--panel);border-radius:999px;padding:5px 12px;font-size:13px;color:var(--ink)}.tiramini b{color:#A3231A}.tiramini.mais{border-style:dashed;color:var(--soft)}
+.tradmodo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tradmodo button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 14px;border-radius:14px;border:1px solid var(--line2);background:var(--panel);text-align:left;color:var(--ink)}
+.tradmodo button span{font-size:12.5px;color:var(--soft)}
+.tradmodo button[aria-selected="true"]{background:#3B2A1C;border-color:#3B2A1C;color:#F4E6C4}.tradmodo button[aria-selected="true"] span{color:#E2BE78}
+.tradbox textarea{width:100%;font-size:17px;border-radius:12px;padding:12px;border:1px solid var(--line2);background:#FFFCF7;font-family:inherit;resize:vertical}
+.tradtxt{font-size:28px;line-height:1.35;margin:0;color:#3B2A1C;font-family:"Poppins","Noto Sans Devanagari",sans-serif;font-weight:500}
+.tradrom{margin:0;font-style:italic;color:#8A3F32}
+.tradhist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.tradhist button{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);color:var(--ink)}
+.tradhist button span{font-size:13px;color:var(--soft)}.tradhist button b{font-weight:500;font-family:"Poppins","Noto Sans Devanagari",sans-serif}
+.sheet>.tradgrande{max-width:none;min-height:70%;justify-content:center;align-items:center;text-align:center;background:#FFFCF7}
+.tgtxt{font-size:clamp(34px,10vw,64px);line-height:1.3;margin:0;color:#3B2A1C;font-family:"Poppins","Noto Sans Devanagari",sans-serif;font-weight:600}
+.tgrom{font-size:20px;color:#8A3F32;font-style:italic;margin:0}
 .filmstrip{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .filmstrip::-webkit-scrollbar{display:none}
 .fthumb{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:0;padding:0;scroll-snap-align:start;font-size:12px;color:var(--soft);cursor:pointer}
@@ -790,6 +803,7 @@ nav.tabs button{position:relative}
     <button data-tab="conversa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span>Chat</button>
     <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Mural</button>
     <button data-tab="cambio"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 8h6M9 10.8h6M10.5 8c2.2 0 3.2 1.2 3.2 2.8S12.7 13.6 10.5 13.6H9.5l4.2 3.4"/></svg></span>Câmbio</button>
+    <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
   </nav>
 </div>
 
@@ -931,7 +945,7 @@ function render() {
   pintaMe();
   const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
   main.replaceChildren(precisaCadastro ? vCadastro() :
-    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "cambio" ? vCambio() : vTravessia());
+    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
   main.scrollTop = scroll;
   if (S.tab === "conversa") {
     const inp = $("#chat-input"); if (inp && chatDraft) inp.value = chatDraft;
@@ -2944,6 +2958,87 @@ function falar(txt) {
   try { const u = new SpeechSynthesisUtterance(txt); u.lang = "hi-IN"; u.rate = .85; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {}
 }
 const podeFalar = "speechSynthesis" in window;
+
+// ---------- Tradutor: português ↔ hindi / inglês, para conversar na rua ----------
+const LINGUAS = { pt: ["Português", "pt-BR"], hi: ["Hindi", "hi-IN"], en: ["Inglês", "en-IN"] };
+S.trad = { modo: "eu", outra: "hi", texto: "", res: null, busy: false, erro: "" };
+try { S.tradHist = JSON.parse(localStorage.getItem("cdi-trad") || "[]"); } catch (e) { S.tradHist = []; }
+async function traduzir(txt, de, para) {
+  // 1º Google (melhor para hindi, e já dá a pronúncia em letras latinas); 2º MyMemory
+  try {
+    const r = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${de}&tl=${para}&dt=t&dt=rm&q=${encodeURIComponent(txt)}`);
+    if (r.ok) { const j = await r.json(), partes = (j[0] || []).filter(x => x && x[0] != null && x[1] != null);
+      const trad = partes.map(x => x[0]).join(""), rm = (j[0] || []).find(x => x && x[0] == null && x[2]);
+      if (trad) return { trad, rom: para === "hi" && rm ? rm[2] : "", origRom: de === "hi" && rm ? rm[3] || "" : "" }; }
+  } catch (e) {}
+  const r = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(txt)}&langpair=${de}|${para}`);
+  if (!r.ok) throw new Error("sem tradução");
+  const j = await r.json(), trad = j && j.responseData && j.responseData.translatedText;
+  if (!trad) throw new Error("sem tradução");
+  return { trad, rom: "", origRom: "" };
+}
+function falarEm(txt, lang) { try { const u = new SpeechSynthesisUtterance(txt); u.lang = lang; u.rate = .9; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {} }
+const Reconhece = window.SpeechRecognition || window.webkitSpeechRecognition;
+function mostrarGrande(txt, rom) {
+  closeSheets();
+  const box = h("div", { role: "dialog", "aria-label": "Mostrar tradução", class: "tradgrande" },
+    h("p", { class: "tgtxt", text: txt }), rom ? h("p", { class: "tgrom", text: rom }) : null,
+    h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar"));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  document.body.append(sheet);
+}
+function vTradutor() {
+  const T = S.trad, de = T.modo === "eu" ? "pt" : T.outra, para = T.modo === "eu" ? T.outra : "pt";
+  const ta = h("textarea", { id: "trad-texto", rows: 3, maxlength: "500", placeholder: T.modo === "eu" ? "Escreva ou fale em português…" : (T.outra === "hi" ? "Peça para a pessoa falar em hindi, ou digite…" : "Peça para a pessoa falar em inglês, ou digite…") });
+  ta.value = T.texto; ta.addEventListener("input", () => { T.texto = ta.value; });
+  const vai = async () => {
+    const txt = (T.texto || "").trim(); if (!txt || T.busy) return;
+    T.busy = true; T.erro = ""; render();
+    try { const r = await traduzir(txt, de, para); T.res = { ...r, orig: txt, de, para };
+      S.tradHist = [T.res, ...S.tradHist.filter(x => !(x.orig === txt && x.para === para))].slice(0, 12);
+      try { localStorage.setItem("cdi-trad", JSON.stringify(S.tradHist)); } catch (e) {} }
+    catch (e) { T.erro = navigator.onLine ? "Não consegui traduzir agora. Tente de novo em instantes." : "Sem internet. Use as frases prontas aqui embaixo, que funcionam sem sinal."; }
+    T.busy = false; render();
+  };
+  const ouvir = () => {
+    if (!Reconhece) return;
+    const rec = new Reconhece(); rec.lang = LINGUAS[de][1]; rec.interimResults = false; rec.maxAlternatives = 1;
+    T.ouvindo = true; render();
+    rec.onresult = ev => { T.texto = ev.results[0][0].transcript; T.ouvindo = false; render(); vai(); };
+    rec.onerror = rec.onend = () => { if (T.ouvindo) { T.ouvindo = false; render(); } };
+    try { rec.start(); } catch (e) { T.ouvindo = false; render(); }
+  };
+  const troca = m => { T.modo = m; T.texto = ""; T.res = null; T.erro = ""; render(); };
+  const R = T.res;
+  return h("section", { class: "view" },
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Fale com a Índia" }), h("h1", { text: "Tradutor" }))),
+    h("div", { class: "tradmodo", role: "tablist" },
+      h("button", { type: "button", role: "tab", "aria-selected": String(T.modo === "eu"), onclick: () => troca("eu") }, h("b", { text: "Eu falo" }), h("span", { text: "português → " + LINGUAS[T.outra][0].toLowerCase() })),
+      h("button", { type: "button", role: "tab", "aria-selected": String(T.modo === "ele"), onclick: () => troca("ele") }, h("b", { text: "A pessoa responde" }), h("span", { text: LINGUAS[T.outra][0].toLowerCase() + " → português" }))),
+    h("div", { class: "opts" }, ["hi", "en"].map(l => h("button", { type: "button", class: "opt", "aria-pressed": String(T.outra === l), onclick: () => { T.outra = l; T.res = null; render(); } }, LINGUAS[l][0]))),
+    h("div", { class: "panel tradbox" }, ta,
+      h("div", { class: "actions" },
+        Reconhece ? h("button", { class: "btn" + (T.ouvindo ? " gold" : ""), type: "button", onclick: ouvir }, T.ouvindo ? "Ouvindo…" : "🎤 Falar") : null,
+        h("button", { class: "btn gold", type: "button", disabled: T.busy, onclick: vai }, T.busy ? "Traduzindo…" : "Traduzir"),
+        T.texto ? h("button", { class: "btn ghost", type: "button", onclick: () => { T.texto = ""; T.res = null; render(); } }, "Limpar") : null),
+      T.erro ? h("p", { class: "msg err", role: "status", text: T.erro }) : null),
+    R ? h("div", { class: "panel tradres" },
+      h("p", { class: "eyebrow", text: LINGUAS[R.para][0] }),
+      h("p", { class: "tradtxt", lang: R.para, text: R.trad }),
+      R.rom ? h("p", { class: "tradrom", text: "fala-se: " + R.rom }) : null,
+      h("p", { class: "small", text: "“" + R.orig + "”" + (R.origRom ? " (" + R.origRom + ")" : "") }),
+      h("div", { class: "actions" },
+        podeFalar ? h("button", { class: "btn", type: "button", onclick: () => falarEm(R.trad, LINGUAS[R.para][1]) }, "🔊 Ouvir") : null,
+        h("button", { class: "btn", type: "button", onclick: () => mostrarGrande(R.trad, R.rom) }, "Mostrar para a pessoa"),
+        navigator.clipboard ? h("button", { class: "btn ghost", type: "button", onclick: () => navigator.clipboard.writeText(R.trad).catch(() => {}) }, "Copiar") : null)) : null,
+    S.tradHist.length ? h("div", { style: "display:flex;flex-direction:column;gap:8px" },
+      h("p", { class: "eyebrow rule", text: "Traduções recentes" }),
+      h("ul", { class: "tradhist" }, S.tradHist.map(x => h("li", null, h("button", { type: "button", onclick: () => { S.trad.res = x; render(); $("#main").scrollTop = 0; } },
+        h("span", { text: x.orig }), h("b", { lang: x.para, text: x.trad })))))) : null,
+    h("p", { class: "eyebrow rule", text: "Frases prontas · funcionam sem internet" }),
+    vHindi(),
+    h("p", { class: "small", text: "A tradução automática ajuda na conversa do dia a dia. Para assuntos importantes, como saúde e dinheiro, confirme com o guia." }));
+}
 
 function vHoje(d, abrir) {
   const agora = IST(), real = d.iso === hojeIso();
