@@ -1965,7 +1965,7 @@ const BONECO = {
   chapeu: [["fedora", "Fedora"], ["safari", "Safári"], ["lenco", "Lenço"], ["turbante", "Turbante"], ["flores", "Coroa de flores"], ["sem", "Sem chapéu"]],
   roupa: [["basico", "Sem roupa"], ["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["sari2", "Sari de bolinhas"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
   roupaCor: ["#8B6B43", "#C2A878", "#5F6B45", "#8A3F32", "#D9822B", "#B83A6B", "#2F5D7C", "#E8E0CF", "#2B2622"],
-  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["violao", "Violão"], ["tambor", "Djembê"], ["tabla", "Tabla"], ["maraca", "Maracá"], ["flautim", "Flauta"], ["sitar", "Sitar"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["chicote", "Chicote"], ["nenhum", "Nada"]],
+  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["violao", "Violão"], ["tambor", "Djembê"], ["maraca", "Maracá"], ["flautim", "Flauta"], ["sitar", "Sitar"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["chicote", "Chicote"], ["nenhum", "Nada"]],
   colar: [["nenhum", "Nenhum"], ["guirlanda", "Guirlanda de flores"], ["flores", "Guirlanda de rosas"], ["rudraksha", "Rudraksha"], ["tulsi", "Contas de tulsi"], ["contas", "Contas coloridas"], ["ouro", "Colar de ouro"], ["moedas", "Colar de moedas"], ["om", "Pingente Om"]],
   testa: [["nada", "Nada"], ["bindi", "Bindi"], ["tilak", "Tilak"], ["cinzas", "Shivaísta · tripundra"], ["vaishnava", "Vaishnava · urdhva pundra"]],
   nariz: [["nenhum", "Sem piercing"], ["argola", "Argola no nariz"], ["ponto", "Brilhante no nariz"]],
@@ -2165,10 +2165,6 @@ function desenhaBoneco(b) {
       P("M44.5 53.5 L46.5 60 L48.5 53.5 L50 60 L51.5 53.5 L53.5 60 L55.5 53.5", "none", { stroke: "#F1E2BC", "stroke-width": .6 }),
       h("rect", { x: 43.2, y: 52.2, width: 13.6, height: 1.4, rx: .6, fill: "#5E3514" }), h("rect", { x: 46.3, y: 70.6, width: 7.4, height: 1.4, rx: .6, fill: "#5E3514" }),
       h("ellipse", { cx: 50, cy: 51, rx: 6.5, ry: 1.7, fill: "#E9D7B0", stroke: "#8A6B43", "stroke-width": .5 }));
-    // tabla: o bayan de metal e o dayan de madeira, cada um com a mancha preta (syahi) no couro
-    if (A === "tabla") T.append(h("g", { transform: "translate(-3.5 0)" }, P("M40.5 62 Q40 71 45.5 71.5 Q51 71 50.5 62 Z", "#B87333", { stroke: "#6E4420", "stroke-width": .6 }), h("ellipse", { cx: 45.5, cy: 62, rx: 5, ry: 1.5, fill: "#E9D7B0", stroke: "#6E4420", "stroke-width": .5 }), h("ellipse", { cx: 46.3, cy: 62, rx: 1.6, ry: .6, fill: "#1E150D" }),
-      P("M51.5 58 L58.5 58 L58 71 Q55 72 52 71 Z", "#7A4A2B", { stroke: "#4A2A14", "stroke-width": .6 }), ...[53, 55, 57].map(x => h("line", { x1: x, y1: 58.8, x2: x - .2, y2: 70.4, stroke: "#E9D7B0", "stroke-width": .35 })),
-      h("ellipse", { cx: 55, cy: 58, rx: 3.5, ry: 1.2, fill: "#E9D7B0", stroke: "#4A2A14", "stroke-width": .5 }), h("ellipse", { cx: 55, cy: 58, rx: 1.2, ry: .45, fill: "#1E150D" })));
     if (A === "maraca") T.append(h("line", { x1: 48, y1: 63, x2: 50.5, y2: 53, stroke: "#7A4A2B", "stroke-width": 1.6, "stroke-linecap": "round" }),
       h("ellipse", { cx: 51.3, cy: 49, rx: 4, ry: 4.8, fill: "#C0472B", stroke: "#7A2A18", "stroke-width": .6 }), P("M47.6 49 Q51.3 51 55 49", "none", { stroke: "#F2C94C", "stroke-width": 1 }),
       ...[[50, 46.5], [52.6, 46.8], [49.8, 51.4], [52.8, 51.5]].map(([x, y]) => h("circle", { cx: x, cy: y, r: .55, fill: "#F4EFE3" })),
@@ -2207,7 +2203,7 @@ function desenhaBoneco(b) {
   }
   return g;
 }
-const INSTRUMENTOS = ["violao", "tambor", "tabla", "maraca", "flautim", "sitar", "sino"];
+const INSTRUMENTOS = ["violao", "tambor", "maraca", "flautim", "sitar", "sino"];
 // bonecos antigos guardavam o objeto no mesmo campo do instrumento: o objeto passa para a mão direita
 function maosSeparadas(b) {
   if (!b || !b.acessorio || b.acessorio === "nenhum" || INSTRUMENTOS.includes(b.acessorio) || (b.acessorio2 && b.acessorio2 !== "nenhum")) return b;
