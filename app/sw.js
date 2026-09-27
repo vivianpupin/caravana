@@ -12,13 +12,14 @@ self.addEventListener("fetch", e => {
 // notificações de mensagem nova no chat
 self.addEventListener("push", e => {
   let d = {}; try { d = e.data ? e.data.json() : {}; } catch (x) { d = { body: e.data && e.data.text() }; }
-  e.waitUntil(self.registration.showNotification(d.title || "Caravana do Céu", { body: d.body || "Mensagem nova no chat", icon: "img/icone-192.png", badge: "img/icone-192.png", tag: d.tag || "chat", renotify: true, data: { url: d.url || "./?aba=conversa" } }));
+  e.waitUntil(self.registration.showNotification(d.title || "Caravana do Céu", { body: d.body || "Mensagem nova no chat", icon: "img/icone-192.png", badge: "img/icone-192.png", tag: d.tag || "chat", renotify: true, requireInteraction: !!d.requireInteraction, data: { url: d.url || "./?aba=conversa" } }));
 });
 self.addEventListener("notificationclick", e => {
   e.notification.close();
   const url = new URL((e.notification.data && e.notification.data.url) || "./", self.registration.scope).href;
   e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(ws => {
-    for (const w of ws) { w.postMessage({ aba: "conversa" }); if ("focus" in w) return w.focus(); }
+    const aba = (url.match(/aba=([a-z]+)/) || [])[1] || "conversa";
+    for (const w of ws) { w.postMessage({ aba }); if ("focus" in w) return w.focus(); }
     return self.clients.openWindow(url);
   }));
 });

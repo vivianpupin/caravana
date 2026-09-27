@@ -48,4 +48,12 @@ if ("serviceWorker" in navigator) {
 versao = (datetime.datetime.utcnow() - datetime.timedelta(hours=3)).strftime("%d/%m · %H:%M")
 (raiz / "app" / "index.html").write_text(head.replace("%s", versao) + app + tail, encoding="utf-8")
 (raiz / "app" / "versao.json").write_text('{"v": "%s"}\n' % versao, encoding="utf-8")
+# lista dos selos (id, nome, dia) para o aviso diário de selo novo, feito pelo Netlify
+import json, re
+seed = json.loads((raiz / "tools" / "site" / "seed.json").read_text(encoding="utf-8"))
+rem = json.loads(re.search(r"const REMOVIDOS = (\[[^\]]*\])", app).group(1))
+selos = {k: {"id": k, "nome": v.get("nome", k), "dia": v.get("dia")} for k, v in seed["locais"].items() if v.get("insignia") and k not in rem}
+for m in re.finditer(r'\{ id: "([^"]+)", nome: "([^"]+)", insignia: "[^"]+", cidadeId: "[^"]+", dia: (\d+)', app):
+    selos[m.group(1)] = {"id": m.group(1), "nome": m.group(2), "dia": int(m.group(3))}
+(raiz / "app" / "dados" / "selos.json").write_text(json.dumps({"removidos": rem, "selos": sorted(selos.values(), key=lambda x: (x["dia"] or 99, x["id"]))}, ensure_ascii=False, indent=1), encoding="utf-8")
 print("app/index.html gerado")

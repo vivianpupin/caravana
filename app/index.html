@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 13:21";</script>
+<script>window.__VERSAO = "27/09 · 13:33";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -47,10 +47,10 @@ p{margin:0}
 .brand img{width:36px;height:36px;flex:none}
 .brand b{display:block;font-family:var(--display);font-weight:600;font-size:17px;letter-spacing:.04em;line-height:1.1}
 .brand span{display:block;font-size:11px;color:var(--soft);letter-spacing:.14em;text-transform:uppercase}
-.me{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 3px;font-size:12px;color:var(--soft);min-width:0;box-shadow:var(--shadow)}
-.me img{width:28px;height:28px;border-radius:50%;flex:none;background:var(--panel3)}
-.me b{font-weight:600;color:var(--moss);font-size:12px;white-space:nowrap}
-.me span{display:none}
+.me:not(.bubble){display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 3px;font-size:12px;color:var(--soft);min-width:0;box-shadow:var(--shadow)}
+.me:not(.bubble) img{width:28px;height:28px;border-radius:50%;flex:none;background:var(--panel3)}
+.me:not(.bubble) b{font-weight:600;color:var(--moss);font-size:12px;white-space:nowrap}
+.me:not(.bubble) span{display:none}
 main{grid-area:main;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;position:relative}
 .view{padding:22px 16px 48px;max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
 
@@ -398,9 +398,9 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .bubble{display:grid;grid-template-columns:32px 1fr;gap:10px;max-width:640px}
 .bubble>img{width:32px;height:32px;border-radius:50%;background:var(--panel3)}
 .bubble .b{background:var(--panel);box-shadow:var(--shadow);border-radius:4px 18px 18px 18px;padding:9px 14px;min-width:0}
+.bubble{grid-template-columns:40px 1fr}
 .bubble.me{margin-left:auto;grid-template-columns:1fr 40px}
 .bubble.me>.rosto{order:2}
-.bubble{grid-template-columns:40px 1fr}
 .rosto{width:40px;height:40px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 35%,#F6E7C8,#E6CFA2);border:1.5px solid var(--line2);align-self:end;display:block}
 .rosto svg{width:100%;height:100%;display:block}
 .bubble.me .b{background:var(--moss);color:var(--on-dark);border-radius:18px 4px 18px 18px}
@@ -488,8 +488,8 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .brand{flex-direction:row;gap:10px;text-align:left}
 .brand b{color:#F1E2BC;font-family:var(--display);letter-spacing:.14em;text-transform:uppercase;font-size:15.5px;font-weight:600}
 .brand span{color:#C9A56A;letter-spacing:.24em}
-.me{background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.35);box-shadow:none}
-.me b{color:#E2BE78}
+.me:not(.bubble){background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.35);box-shadow:none}
+.me:not(.bubble) b{color:#E2BE78}
 nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(10,minmax(52px,1fr));overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
 .navmais{display:none;position:fixed;right:0;bottom:0;width:44px;height:calc(76px + env(safe-area-inset-bottom,0px));background:linear-gradient(90deg,rgba(43,31,20,0),#2B1F14 65%);color:#E2BE78;font-size:26px;align-items:center;justify-content:flex-end;padding:0 8px calc(env(safe-area-inset-bottom,0px) + 6px) 0;pointer-events:none;z-index:30}
@@ -553,6 +553,25 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .celcard p{margin:0}
 .celpassos{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
 .icshare{vertical-align:-3px}
+.fixado{position:relative;margin:10px 0 0;background:#FFF6D8;border:1px solid #E9C45A;border-left:4px solid #F2C230;border-radius:14px;padding:10px 38px 10px 14px}
+.view>.fixado{margin:0 0 16px}
+.fixado .t{margin:2px 0 0;font-size:15px;white-space:pre-wrap;color:#3B2A1C}
+.avisolab{color:#9A6A00!important;margin:0}
+.bubble.aviso .b{background:#FFF6D8;border:1px solid #E9C45A;color:#3B2A1C}
+.bubble.me.aviso .b{background:#FFF6D8;color:#3B2A1C}
+.bubble.me.aviso .h,.bubble.me.aviso .h b{color:#8A6420}
+.iconbtn.avisoon{background:#F2C230;color:#3B2A1C;border-color:#F2C230}
+.composer{flex-wrap:wrap}
+.avisotag{flex-basis:100%;order:-1;margin:0 0 2px 4px;font-size:12px;font-weight:600;color:#9A6A00}
+.prhead{display:flex;justify-content:flex-end;gap:6px;font-size:11px;color:var(--soft);font-weight:600}
+.roster .rosto{align-self:center}
+.prhead span{width:30px;text-align:center;font-size:16px}
+.roster.prontos li{grid-template-columns:40px 1fr auto}
+.prs{display:flex;gap:6px}
+.pr{width:30px;text-align:center;font-weight:700;font-size:16px;color:var(--faint)}
+.pr.on{color:var(--ok)}
+.album{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:4px 0 12px}
+.album .small{margin:0}
 .celx{position:absolute;top:6px;right:8px;background:none;border:0;font-size:22px;line-height:1;color:var(--soft);padding:4px 8px}
 .meuexp{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 14px 4px 6px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
 .bonecosvg{display:block}
@@ -952,11 +971,11 @@ nav.tabs button{position:relative}
     <button data-tab="ensinamentos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-4.5 0-8-2.5-8-6 3 0 6 1.5 8 6zM12 20c4.5 0 8-2.5 8-6-3 0-6 1.5-8 6zM12 20c-2-2.5-3-5.5-2-9 1-2.5 1.5-4 2-6 .5 2 1 3.5 2 6 1 3.5 0 6.5-2 9z"/></svg></span>Saberes</button>
     <button data-tab="mapa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span>Mapa</button>
     <button data-tab="explorador"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9.5h14"/><path d="M8.5 9.5c0-3 1.5-5 3.5-5s3.5 2 3.5 5"/><circle cx="12" cy="12.5" r="2.6"/><path d="M7.5 21c0-3.5 2-5.5 4.5-5.5s4.5 2 4.5 5.5"/></svg></span>Explorador</button>
-    <button data-tab="fotos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h3l1.6-2.2h6.8L17 7.5h3a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.8"/><path d="M17.5 10.3h.01"/></svg></span>Fotos</button>
     <button data-tab="conversa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span>Chat</button>
-    <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Mural</button>
     <button data-tab="cambio"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 8h6M9 10.8h6M10.5 8c2.2 0 3.2 1.2 3.2 2.8S12.7 13.6 10.5 13.6H9.5l4.2 3.4"/></svg></span>Câmbio</button>
     <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
+    <button data-tab="fotos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h3l1.6-2.2h6.8L17 7.5h3a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.8"/><path d="M17.5 10.3h.01"/></svg></span>Fotos</button>
+    <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Mural</button>
   </nav>
 </div>
 
@@ -1125,7 +1144,7 @@ function marcaChat() {
 }
 function render() {
   if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
-  marcaChat(); convidaAvisos();
+  marcaChat(); convidaAvisos(); registraApp();
   for (const b of document.querySelectorAll("#tabs button")) {
     if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
   }
@@ -1331,7 +1350,7 @@ function vTravessia() {
   if (S.diaAberto == null) S.diaAberto = (dias.find(d => d.iso === hoje) || dias.find(d => d.iso > hoje) || dias[0]).n;
   const ins = insigniaLocais();
   const abrir = n => { S.diaAberto = S.diaAberto === n ? 0 : n; render(); if (S.diaAberto) requestAnimationFrame(() => document.getElementById("dia-" + n)?.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })); };
-  return h("section", { class: "view" }, cartaoCelular(),
+  return h("section", { class: "view" }, cartaoCelular(), avisoFixado(),
     h("div", { class: "hero" },
       h("img", { class: "logo", src: "img/simbolo-marrom.png", alt: "" }),
       h("h1", null, "Travessia da", h("br"), "Índia Sagrada"),
@@ -1920,10 +1939,42 @@ function vPassaporte() {
         h("img", { src: avatar(g.id), alt: "" }),
         h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : tituloViajante(g), totalViagens(g) > 1 ? totalViagens(g) + " viagens" : "", g.cidade].filter(Boolean).join(" · ") }), medalhasDe(g, 24)),
         h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null,
-    vEntradasLider(),
+    vEntradasLider(), vProntos(),
     S.isOwner || aberto(localDe("travessia")) ? h("button", { class: "folhear video", type: "button", onclick: abrirVideoPassaporte },
       h("span", { class: "vidico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("path", { d: "M8 5.5v13l11-6.5z", fill: "#3B2A1C" }))),
       h("span", null, h("b", { text: "Vídeo do meu passaporte" }), h("span", { text: "O passaporte gira, abre e folheia seus selos. Pronto para Reels e Stories." }))) : null);
+}
+// Só a líder: quem já instalou o app, ligou os avisos e a localização (cada celular conta ao abrir o app)
+function vProntos() {
+  if (!S.isOwner) return null;
+  const gente = S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || "")));
+  if (!gente.length) return null;
+  const ok = v => v.app || {};
+  const prontos = gente.filter(v => ok(v).instalado && ok(v).avisos && ok(v).local).length;
+  const marca = (on, rot) => h("span", { class: "pr" + (on ? " on" : ""), title: rot, "aria-label": rot + (on ? ": sim" : ": não") }, on ? "✓" : "·");
+  return h("div", { class: "panel" },
+    h("p", { class: "eyebrow", text: "Só você vê · celulares prontos" }),
+    h("h2", { text: `${prontos} de ${gente.length} prontos` }),
+    h("p", { class: "small", text: "Pronto = app instalado na tela inicial, avisos ligados e localização ligada. Atualiza quando a pessoa abre o app." }),
+    h("div", { class: "prhead" }, h("span", { title: "App instalado", text: "📲" }), h("span", { title: "Avisos", text: "🔔" }), h("span", { title: "Localização", text: "📍" })),
+    h("p", { class: "small", style: "text-align:right;margin:-6px 0 0", text: "📲 app instalado · 🔔 avisos · 📍 localização" }),
+    h("ul", { class: "roster prontos" }, gente.map(v => {
+      const a = ok(v);
+      return h("li", null, bonecoRosto(v.id),
+        h("div", null, h("b", { text: v.nome || "Viajante" }), h("small", { text: a.ts ? "abriu o app em " + new Date(a.ts).toLocaleDateString("pt-BR", { day: "numeric", month: "short" }) + " às " + new Date(a.ts).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "ainda não abriu o app instalado" })),
+        h("div", { class: "prs" }, marca(a.instalado, "App instalado"), marca(a.avisos, "Avisos"), marca(a.local, "Localização")));
+    })));
+}
+// cada celular registra no próprio passaporte se instalou, ligou avisos e localização (para o painel da líder)
+async function registraApp() {
+  if (!noSite() || !S.db || !eu() || S.registrando) return;
+  let local = !!S.gpsOn;
+  try { if (!local && navigator.permissions) local = (await navigator.permissions.query({ name: "geolocation" })).state === "granted"; } catch (e) {}
+  const st = { instalado: instalado(), avisos: avisosLigados(), local }, ant = eu().app || {};
+  if (ant.instalado === st.instalado && ant.avisos === st.avisos && ant.local === st.local && Date.now() - (ant.ts || 0) < 6 * 3600 * 1000) return;
+  S.registrando = true;
+  try { await S.db.doc("viajantes/" + S.uid).update({ app: { ...st, ts: Date.now() } }); } catch (e) {}
+  S.registrando = false;
 }
 // Só a líder, no site próprio: quem já entrou no app com a palavra da caravana
 function vEntradasLider() {
@@ -1969,7 +2020,7 @@ function conteudoInsignia(l) {
       h("p", null, "Só você vê isto. Palavra do lugar: ", h("code", { text: l.codigo || "(sem palavra)" }), l.aberto ? " · liberado para todos" : ""),
       h("div", { class: "actions", style: "margin-top:8px" },
         h("button", { class: "btn", type: "button", onclick: () => { closeSheets(); editar("local", l); } }, "Editar"),
-        h("button", { class: "btn", type: "button", onclick: () => S.db.doc("locais/" + l.id).update({ aberto: !l.aberto }).catch(() => {}) }, l.aberto ? "Fechar para todos" : "Liberar para todos"))) : null
+        h("button", { class: "btn", type: "button", onclick: () => liberarSelo(l) }, l.aberto ? "Fechar para todos" : "Liberar para todos"))) : null
   ];
 }
 function abrirSelo(l) {
@@ -2464,8 +2515,12 @@ function vExplorador() {
         null)),
     v ? h("div", { class: "actions", style: "justify-content:center" },
       h("button", { class: "btn gold", type: "button", onclick: async () => {
-        try { await S.db.doc("viajantes/" + S.uid).update({ boneco: S.bonecoRasc }); S.bonecoRasc = null; S.expMsg = "Explorador salvo. Ele já aparece no mapa."; msg.textContent = S.expMsg; msg.className = "msg ok"; setTimeout(() => { S.expMsg = null; }, 6000); }
+        // guarda o que está na tela e continua mostrando o mesmo boneco (clicar de novo não pode apagar as escolhas)
+        if (S.salvandoExp || !S.bonecoRasc) return;
+        const bon = { ...S.bonecoRasc }; S.salvandoExp = true;
+        try { await S.db.doc("viajantes/" + S.uid).update({ boneco: bon }); S.bonecoRasc = bon; S.expMsg = "Explorador salvo. Ele já aparece no mapa."; msg.textContent = S.expMsg; msg.className = "msg ok"; setTimeout(() => { S.expMsg = null; }, 6000); }
         catch (e) { msg.textContent = "Não consegui salvar. Tente de novo."; msg.className = "msg err"; }
+        S.salvandoExp = false;
       } }, "Salvar meu explorador"), msg)
       : h("p", { class: "small", style: "text-align:center", text: "Emita seu passaporte para salvar o seu explorador." }));
 }
@@ -2486,6 +2541,15 @@ function erroGps(e) {
     : c === 3 ? "O GPS demorou para responder. Vá para um lugar aberto ou perto da janela e toque de novo em Ligar."
     : "Não consegui achar a sua localização agora. Confira se a localização do celular está ligada e tente de novo.";
 }
+// economia de bateria: a localização ao vivo pausa das 22h às 6h (hora do celular) e volta sozinha de manhã
+const noite = () => { const hr = new Date().getHours(); return hr >= 22 || hr < 6; };
+function pausaNoite() {
+  if (noite()) {
+    if (S.gpsWatch != null) { navigator.geolocation.clearWatch(S.gpsWatch); S.gpsWatch = null; S.gpsOn = false; S.gpsNoite = true; S.gpsMsg = "Localização pausada à noite para poupar bateria. Volta sozinha às 6h."; if (S.tab === "mapa") render(); }
+  } else if (S.gpsNoite) { S.gpsNoite = false; ligarGps(true); }
+}
+setInterval(pausaNoite, 5 * 60 * 1000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) pausaNoite(); });
 function ligarGps(silencioso) {
   if (S.gpsWatch != null && silencioso !== true) { navigator.geolocation.clearWatch(S.gpsWatch); S.gpsWatch = null; S.gpsOn = false; S.gpsMsg = "Localização ao vivo desligada."; S.room?.presence({ lat: null, lng: null, cidadeId: null, ts: null }).catch(() => {}); render(); return; }
   if (S.gpsWatch != null) return;
@@ -2753,7 +2817,7 @@ function mapaPerto() {
   const temEu = !!eu0;
   svg.setAttribute("aria-label", "Mapa perto de mim");
   const km = S.pertoKm || (eu0 ? 0.12 : 3), dLat = km / 111, dLng = km / (111 * Math.cos(centro.lat * Math.PI / 180));
-  const P = projetor([{ lat: centro.lat - dLat, lng: centro.lng - dLng }, { lat: centro.lat + dLat, lng: centro.lng + dLng }], W, H, 40, .0004); S.proj = P;
+  const P = projetor([{ lat: centro.lat - dLat, lng: centro.lng - dLng }, { lat: centro.lat + dLat, lng: centro.lng + dLng }], W, H, 40, .0002); S.proj = P;
   P.modo = S.camadaMapa === "satelite" ? "satelite" : "ruas";
   const mov = h("g", { class: "movel" });
   camadasGeo(mov, P, false);
@@ -2793,7 +2857,7 @@ function gestosMapa(svg, mov, P, km) {
     if (!mexeu) { est = { dx: 0, dy: 0, e: 1, ox: P.W / 2, oy: P.H / 2 }; mov.removeAttribute("transform"); if (S.pendente) { S.pendente = false; render(); } return; }
     const cx0 = (P.W / 2 - est.dx - est.ox) / est.e + est.ox, cy0 = (P.H / 2 - est.dy - est.oy) / est.e + est.oy;
     const c = P.inv(cx0, cy0);
-    S.pertoCentro = { lat: c.lat, lng: c.lng }; S.pertoKm = Math.max(0.06, Math.min(3000, km / est.e));
+    S.pertoCentro = { lat: c.lat, lng: c.lng }; S.pertoKm = Math.max(0.02, Math.min(3000, km / est.e));
     render();
   };
   svg.addEventListener("pointerdown", e => { if (!pts.size) mexeu = false; S.arrastando = true; pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); comeca(); });
@@ -2827,14 +2891,14 @@ function gestosMapa(svg, mov, P, km) {
 }
 function autoGps() {
   if (S.gpsWatch != null || S._autoGps) return; S._autoGps = true;
-  try { navigator.permissions?.query({ name: "geolocation" }).then(r => { if (r.state === "granted") ligarGps(true); }).catch(() => {}); } catch (e) {}
+  try { navigator.permissions?.query({ name: "geolocation" }).then(r => { if (r.state === "granted") { if (noite()) S.gpsNoite = true; else ligarGps(true); } }).catch(() => {}); } catch (e) {}
 }
 function vPerto() {
   autoGps();
   const eu0 = minhaPos(), km = S.pertoKm || (eu0 ? 0.12 : 3);
   if (eu0) ruaAqui(eu0);
   const perto = eu0 ? posicoesAtuais().filter(p => p.id !== S.uid && isFinite(+p.lat)).map(p => ({ p, km: distKm(eu0, p) })).sort((a, b) => a.km - b.km) : [];
-  const zoom = f => { S.pertoKm = Math.max(0.06, Math.min(3000, km * f)); render(); };
+  const zoom = f => { S.pertoKm = Math.max(0.02, Math.min(3000, km * f)); render(); };
   const verTodos = () => { const k = perto.length ? perto[perto.length - 1].km * 1.25 : 1.5; S.pertoCentro = null; S.pertoKm = Math.max(0.15, k); render(); };
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   return h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
@@ -3392,7 +3456,15 @@ const avisosLigados = () => pushPossivel() && Notification.permission === "grant
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); S.instalar = e; render(); });
 window.addEventListener("appinstalled", () => { S.instalar = null; render(); });
 if (navigator.serviceWorker) navigator.serviceWorker.addEventListener("message", e => { if (e.data && e.data.aba) go(e.data.aba); });
-{ const aba = new URLSearchParams(location.search).get("aba"); if (aba === "conversa") S.tab = "conversa"; }
+{ const aba = new URLSearchParams(location.search).get("aba"); if (["conversa", "passaporte", "travessia"].includes(aba)) S.tab = aba; }
+// a líder abre ou fecha um selo para todos; ao abrir, a caravana recebe o aviso no celular
+async function liberarSelo(l) {
+  const abre = !l.aberto, ref = S.db.doc("locais/" + l.id);
+  const { id, ...resto } = l;
+  try { await ref.update({ aberto: abre, avisadoAberto: false }); }
+  catch (e) { try { await ref.set({ ...resto, aberto: abre, avisadoAberto: false }); } catch (x) { return; } }
+  if (abre && noSite()) fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ selo: l.id }), keepalive: true }).catch(() => {});
+}
 const b64u8 = b => { const p = (b + "=".repeat((4 - b.length % 4) % 4)).replace(/-/g, "+").replace(/_/g, "/"), r = atob(p); return Uint8Array.from(r, c => c.charCodeAt(0)); };
 async function ativarAvisos() {
   S.celMsg = "Ativando…"; render();
@@ -3462,6 +3534,17 @@ function cartaoCelular() {
   }
   return null;
 }
+// avisos da líder: só contam como aviso se quem mandou é a líder; o mais recente (até 2 dias) fica fixado
+const ehLider = uid => !!(S.viajantes.find(v => v.id === uid) || {}).lider;
+function avisoFixado() {
+  const a = S.chat.filter(m => m.tipo === "aviso" && ehLider(m.autor) && Date.now() - (m.ts || 0) < 48 * 3600 * 1000).sort((x, y) => y.ts - x.ts)[0];
+  if (!a || lsGet("cdi-aviso-lido") === a.id) return null;
+  const d = new Date(a.ts);
+  return h("div", { class: "fixado", role: "note" },
+    h("button", { class: "celx", type: "button", "aria-label": "Esconder aviso", onclick: () => { lsSet("cdi-aviso-lido", a.id); render(); } }, "×"),
+    h("p", { class: "eyebrow avisolab", text: "📢 Aviso da líder · " + d.toLocaleDateString("pt-BR", { weekday: "short", day: "numeric" }) + " · " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) }),
+    h("p", { class: "t", text: a.texto }));
+}
 function vConversa() {
   const msgs = S.chat.slice().sort((a, b) => a.ts - b.ts);
   perfis(msgs.map(m => m.autor));
@@ -3471,7 +3554,8 @@ function vConversa() {
     const d = new Date(m.ts), day = d.toLocaleDateString("pt-BR", { day: "numeric", month: "long" });
     if (day !== last) { log.append(h("p", { class: "dayline", text: day })); last = day; }
     const mine = m.autor === S.uid;
-    log.append(h("div", { class: "bubble" + (mine ? " me" : "") },
+    const ehAviso = m.tipo === "aviso" && ehLider(m.autor);
+    log.append(h("div", { class: "bubble" + (mine ? " me" : "") + (ehAviso ? " aviso" : "") },
       bonecoRosto(m.autor),
       h("div", { class: "b" },
         h("div", { class: "h" }, h("b", { text: nomeDe(m.autor) }), h("span", { text: d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) }),
@@ -3487,6 +3571,7 @@ function vConversa() {
           m.texto ? h("p", { class: "t", text: m.texto }) : null,
           h("div", { class: "actions" }, h("a", { class: "btn", href: m.link, target: "_blank", rel: "noopener" }, "Ver ao vivo no Google Maps"))) :
         m.tipo === "foto" ? h("div", null, h("img", { class: "chatfoto", src: blob(m.fotoId), alt: m.texto || "Foto", loading: "lazy" }), m.texto ? h("p", { class: "t", text: m.texto }) : null) :
+        ehAviso ? h("div", null, h("p", { class: "eyebrow avisolab", text: "📢 Aviso da líder" }), h("p", { class: "t", text: m.texto })) :
         h("p", { class: "t", text: m.texto }))));
   }
   const cel = cartaoCelular(); if (cel) log.prepend(cel);
@@ -3497,7 +3582,8 @@ function vConversa() {
   const ta = h("textarea", { id: "chat-input", rows: "1", maxlength: "1000", placeholder: "Escreva aqui…", "aria-label": "Mensagem" });
   const enviar = async () => {
     const texto = ta.value.trim(); if (!texto) return; ta.value = "";
-    try { await addChat({ autor: S.uid, texto, ts: Date.now() }); } catch (e) { ta.value = texto; falha(e); }
+    const aviso = S.isOwner && S.modoAviso;
+    try { await addChat({ autor: S.uid, texto, ...(aviso ? { tipo: "aviso" } : {}), ts: Date.now() }); if (aviso) { S.modoAviso = false; render(); } } catch (e) { ta.value = texto; falha(e); }
   };
   ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); enviar(); } });
   const minha = S.posicoes.find(p => p.id === S.uid && Date.now() - p.ts < FRESCO);
@@ -3547,7 +3633,8 @@ function vConversa() {
   return h("section", { class: "view chatview" },
     h("div", { class: "chathead" },
       h("div", { class: "chatlinha" }, h("p", { class: "eyebrow", role: "heading", "aria-level": "1", style: "margin:0", text: "Conversa entre um chai e outro" }), botaoAvisos()),
-      S.celMsg ? h("p", { class: "small", role: "status", style: "margin:8px 0 0", text: S.celMsg }) : null),
+      S.celMsg ? h("p", { class: "small", role: "status", style: "margin:8px 0 0", text: S.celMsg }) : null,
+      avisoFixado()),
     log,
     pode && S.pontoAberto ? h("div", { class: "picker loc" },
       h("div", { class: "locopt" },
@@ -3566,6 +3653,9 @@ function vConversa() {
           ico(["M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z", "M12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"])),
         S.assets ? h("button", { class: "iconbtn", type: "button", title: "Enviar foto", "aria-label": "Enviar foto", onclick: () => fileIn.click() },
           ico(["M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z", "M12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"])) : null,
+        S.isOwner ? h("button", { class: "iconbtn" + (S.modoAviso ? " avisoon" : ""), type: "button", title: "Mandar como aviso da líder", "aria-label": "Mandar como aviso da líder", "aria-pressed": String(!!S.modoAviso), onclick: () => { S.modoAviso = !S.modoAviso; render(); } },
+          ico(["M3 10v4h3l6 4V6L6 10H3z", "M16 9a4 4 0 0 1 0 6", "M18.5 6.5a7.5 7.5 0 0 1 0 11"])) : null,
+        S.modoAviso ? h("p", { class: "avisotag", text: "📢 Aviso para toda a tribo · chega como notificação e fica fixado no topo" }) : null,
         fileIn, h("div", { style: "flex:1;display:flex;flex-direction:column;min-width:0" }, ta, fotoMsg),
         h("button", { class: "btn gold", type: "button", onclick: enviar }, "Enviar"))
       : h("div", { class: "composer" }, h("p", { class: "note", text: !S.db ? "A conversa aparece quando o aplicativo se conecta à internet." :
@@ -4005,6 +4095,33 @@ function abasFotos() {
   return h("div", { class: "fcats", role: "tablist", style: "margin-top:-4px" },
     [["estudio", "Estúdio"], ["tira", "Tira de fotos"], ["mural", "Galeria da caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
 }
+// Álbum da tribo: todas as fotos da galeria (e do chat) num arquivo .zip só
+function carregaScript(src) { return new Promise((ok, erro) => { if (document.querySelector(`script[src="${src}"]`)) return ok(); const sc = document.createElement("script"); sc.src = src; sc.onload = ok; sc.onerror = erro; document.head.append(sc); }); }
+async function baixarAlbum(st, cid) {
+  const itens = [...S.mural.filter(f => f.fotoId && (!cid || f.cidade === cid)).map(f => ({ id: f.fotoId, autor: f.autor, cidade: f.cidade, ts: f.ts })),
+    ...(cid ? [] : S.chat.filter(m => m.tipo === "foto" && m.fotoId).map(m => ({ id: m.fotoId, autor: m.autor, cidade: "chat", ts: m.ts })))].sort((a, b) => (a.ts || 0) - (b.ts || 0));
+  if (!itens.length) { st.textContent = "Ainda não tem fotos no álbum."; return; }
+  try {
+    st.textContent = "Preparando o álbum…";
+    await carregaScript("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js");
+    const zip = new window.JSZip(), limpa = t => String(t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    let feitas = 0;
+    for (const [i, f] of itens.entries()) {
+      let dados = null;
+      try {
+        if (noSite()) { const d = await S.db.doc("fotos/" + f.id).get(); const u = d.exists && d.data().data; if (u) dados = u.split(",")[1]; }
+        else { const r = await fetch(blob(f.id)); if (r.ok) dados = await r.blob(); }
+      } catch (e) {}
+      if (dados) { zip.file(`${String(i + 1).padStart(3, "0")}-${limpa(f.cidade) || "caravana"}-${limpa(nomeDe(f.autor).split(" ")[0]) || "viajante"}.jpg`, dados, typeof dados === "string" ? { base64: true } : {}); feitas++; }
+      st.textContent = `Juntando as fotos… ${i + 1} de ${itens.length}`;
+    }
+    const arq = await zip.generateAsync({ type: "blob" }), nome = "album-caravana-do-ceu" + (cid ? "-" + limpa(cid) : "") + ".zip";
+    const dl = await (window.claude?.use?.("downloads") ?? null);
+    if (dl) { try { await dl.save({ filename: nome, data: arq }); } catch (e) {} }
+    else { const a = h("a", { href: URL.createObjectURL(arq), download: nome }); document.body.append(a); a.click(); a.remove(); }
+    st.textContent = `Álbum pronto: ${feitas} fotos.` + (/iPhone|iPad/.test(navigator.userAgent) ? " No iPhone ele fica no app Arquivos, em Downloads." : "");
+  } catch (e) { st.textContent = "Não consegui montar o álbum agora. Tente de novo com internet boa."; }
+}
 function vMural() {
   const cid = S.muralCidade || "", fotos = S.mural.filter(f => !cid || f.cidade === cid);
   perfis(fotos.map(f => f.autor));
@@ -4014,6 +4131,9 @@ function vMural() {
     h("p", { class: "lede", text: "As fotos que a caravana envia do estúdio, separadas por cidade." }),
     h("div", { class: "opts" }, [["", "Todas"], ...CIDADES_MURAL.map(c => [c, c])].map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(cid === id), onclick: () => { S.muralCidade = id; render(); } },
       n + (id ? ` · ${S.mural.filter(f => f.cidade === id).length}` : "")))),
+    fotos.length ? (() => { const st = h("p", { class: "small", role: "status" }); return h("div", { class: "album" },
+      h("button", { class: "btn", type: "button", onclick: () => baixarAlbum(st, cid) }, cid ? `Baixar álbum de ${cid}` : "Baixar álbum da tribo"),
+      h("span", { class: "small", text: cid ? "As fotos desta cidade num arquivo só." : "Todas as fotos da galeria e do chat num arquivo só." }), st); })() : null,
     fotos.length ? h("div", { class: "mural" }, fotos.map(f => h("button", { type: "button", class: "mfoto", onclick: () => abrirFotoMural(f), "aria-label": (f.legenda || "Foto") + " de " + nomeDe(f.autor) },
       h("img", { src: blob(f.fotoId), alt: "", loading: "lazy" }), h("span", { text: nomeDe(f.autor).split(" ")[0] + (f.cidade && !cid ? " · " + f.cidade : "") }))))
       : h("div", { class: "fotovazia" }, h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: cid ? "Nenhuma foto de " + cid + " ainda" : "A galeria está esperando" }),
