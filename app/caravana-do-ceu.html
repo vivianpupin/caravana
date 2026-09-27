@@ -3130,33 +3130,104 @@ async function compartilharImagem(blob, nome, texto) {
   return "Imagem salva. Poste no Instagram e marque " + INSTA + ".";
 }
 async function cartaoConvite() {
+  // cartaz de aventura: pôr do sol, templo, selva e o explorador em cima da rocha
   const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H;
-  const x = c.getContext("2d");
+  const x = c.getContext("2d"), PI = Math.PI;
   try { await document.fonts.ready; } catch (e) {}
-  const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#F4E8CC"); g.addColorStop(1, "#E4CFA2");
+  const SX = 540, SY = 900;
+  // céu
+  let g = x.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, "#2A1510"); g.addColorStop(.28, "#7A2E17"); g.addColorStop(.45, "#D8742E"); g.addColorStop(.55, "#F2B45A"); g.addColorStop(.7, "#A9512A"); g.addColorStop(1, "#2A1510");
   x.fillStyle = g; x.fillRect(0, 0, W, H);
-  x.strokeStyle = "#8A6B43"; x.lineWidth = 4; x.strokeRect(48, 48, W - 96, H - 96); x.lineWidth = 1.5; x.strokeRect(64, 64, W - 128, H - 128);
-  x.textAlign = "center"; x.fillStyle = "#3B2A1C";
-  try { const sim = await carregaImg("img/simbolo-marrom.png"); const t = 150; x.drawImage(sim, W / 2 - t / 2, 150, t, t * sim.height / sim.width); } catch (e) {}
-  x.font = '600 74px "Cinzel", Georgia, serif'; x.fillText("CARAVANA DO CÉU", W / 2, 420);
-  x.font = '500 34px "Poppins", sans-serif'; x.fillStyle = "#8A6B43";
-  const esp = t => t.split("").join(String.fromCharCode(8202)); x.fillText(esp("ÍNDIA SAGRADA · 2026"), W / 2, 480);
-  x.font = '600 40px "Poppins", "Noto Sans Devanagari", sans-serif'; x.fillStyle = "#C9A56A"; x.fillText("लोकाः समस्ताः सुखिनो भवन्तु", W / 2, 560);
-  // o explorador da pessoa
+  // raios de sol
+  x.save(); x.translate(SX, SY);
+  for (let i = 0; i < 28; i++) { const a0 = i / 28 * PI * 2; x.beginPath(); x.moveTo(0, 0); x.arc(0, 0, 1700, a0, a0 + PI / 56); x.closePath(); x.fillStyle = "rgba(255,214,140,.10)"; x.fill(); }
+  x.restore();
+  g = x.createRadialGradient(SX, SY, 0, SX, SY, 360); g.addColorStop(0, "rgba(255,240,190,1)"); g.addColorStop(.35, "rgba(255,205,120,.9)"); g.addColorStop(1, "rgba(255,170,80,0)");
+  x.fillStyle = g; x.beginPath(); x.arc(SX, SY, 360, 0, PI * 2); x.fill();
+  // montanhas ao longe
+  const serra = (y0, amp, cor, seed) => { x.beginPath(); x.moveTo(0, H); x.lineTo(0, y0);
+    for (let X = 0; X <= W; X += 40) x.lineTo(X, y0 - amp * (.5 + .5 * Math.sin(X / 170 + seed) * Math.cos(X / 90 + seed * 2)));
+    x.lineTo(W, H); x.closePath(); x.fillStyle = cor; x.fill(); };
+  serra(1060, 90, "rgba(110,48,30,.55)", 1); serra(1130, 70, "rgba(80,34,22,.7)", 3);
+  // templo (shikhara) e torres menores
+  const templo = (cx, base, larg, alt, cor) => {
+    x.fillStyle = cor; x.beginPath();
+    x.moveTo(cx - larg / 2, base); x.lineTo(cx - larg / 2, base - alt * .28);
+    x.bezierCurveTo(cx - larg / 2, base - alt * .7, cx - larg * .22, base - alt * .9, cx - larg * .12, base - alt * .93);
+    x.lineTo(cx + larg * .12, base - alt * .93);
+    x.bezierCurveTo(cx + larg * .22, base - alt * .9, cx + larg / 2, base - alt * .7, cx + larg / 2, base - alt * .28);
+    x.lineTo(cx + larg / 2, base); x.closePath(); x.fill();
+    x.beginPath(); x.ellipse(cx, base - alt * .95, larg * .17, alt * .03, 0, 0, PI * 2); x.fill();
+    x.fillRect(cx - 3, base - alt * 1.06, 6, alt * .1);
+    x.beginPath(); x.moveTo(cx + 3, base - alt * 1.06); x.lineTo(cx + larg * .22, base - alt * 1.03); x.lineTo(cx + 3, base - alt * 1.0); x.fill();
+    x.strokeStyle = "rgba(255,190,120,.18)"; x.lineWidth = 3;
+    for (let k = 1; k < 7; k++) { const yy = base - alt * .28 - k * alt * .09, w = larg / 2 * (1 - k * .1); x.beginPath(); x.moveTo(cx - w, yy); x.lineTo(cx + w, yy); x.stroke(); }
+  };
+  templo(250, 1260, 150, 330, "#4A2217"); templo(830, 1260, 170, 380, "#4A2217");
+  templo(540, 1300, 300, 640, "#3A1A11");
+  x.fillStyle = "#3A1A11"; x.fillRect(330, 1210, 420, 90);
+  for (let k = 0; k < 5; k++) { x.fillStyle = "rgba(255,200,110,.5)"; x.fillRect(365 + k * 78, 1235, 26, 44); }
+  // chão de rocha
+  x.beginPath(); x.moveTo(0, H); x.lineTo(0, 1500);
+  const pedra = [[0, 1500], [140, 1470], [260, 1488], [380, 1452], [520, 1466], [650, 1446], [780, 1472], [900, 1458], [1080, 1490]];
+  pedra.forEach(([a, b]) => x.lineTo(a, b)); x.lineTo(W, H); x.closePath();
+  g = x.createLinearGradient(0, 1440, 0, H); g.addColorStop(0, "#5A3320"); g.addColorStop(.15, "#3A2015"); g.addColorStop(1, "#1A0E09"); x.fillStyle = g; x.fill();
+  x.strokeStyle = "rgba(255,190,120,.45)"; x.lineWidth = 4; x.beginPath(); pedra.forEach(([a, b], i) => i ? x.lineTo(a, b) : x.moveTo(a, b)); x.stroke();
+  x.strokeStyle = "rgba(0,0,0,.35)"; x.lineWidth = 3;
+  for (const [a, b, c2, d] of [[180, 1530, 240, 1600], [620, 1520, 560, 1590], [860, 1540, 930, 1610], [360, 1560, 420, 1650]]) { x.beginPath(); x.moveTo(a, b); x.lineTo(c2, d); x.stroke(); }
+  // selva: folhas nas bordas
+  const folha = (fx, fy, comp, ang, cor) => {
+    x.save(); x.translate(fx, fy); x.rotate(ang); x.fillStyle = cor; x.beginPath(); x.moveTo(0, 0);
+    x.quadraticCurveTo(comp * .5, -comp * .22, comp, 0); x.quadraticCurveTo(comp * .5, comp * .22, 0, 0); x.fill();
+    x.strokeStyle = "rgba(0,0,0,.35)"; x.lineWidth = 3; x.beginPath(); x.moveTo(0, 0); x.lineTo(comp * .95, 0); x.stroke(); x.restore(); };
+  const tufo = (fx, fy, base, n, abre, cor) => { for (let i = 0; i < n; i++) folha(fx, fy, 260 + (i % 3) * 70, base + (i / (n - 1) - .5) * abre, cor); };
+  tufo(-20, 120, .55, 7, 1.5, "#1E2A18"); tufo(W + 20, 120, PI - .55, 7, 1.5, "#1E2A18");
+  tufo(-30, 1700, -.35, 6, 1.3, "#15200F"); tufo(W + 30, 1700, PI + .35, 6, 1.3, "#15200F");
+  // cipó pendurado
+  x.strokeStyle = "#1E2A18"; x.lineWidth = 7; x.beginPath(); x.moveTo(90, 0); x.bezierCurveTo(140, 300, 60, 520, 120, 760); x.stroke();
+  for (let t = 1; t < 8; t++) folha(90 + Math.sin(t) * 30, t * 95, 55, t % 2 ? .6 : 2.5, "#2A3A20");
+  x.beginPath(); x.moveTo(W - 70, 0); x.bezierCurveTo(W - 130, 240, W - 50, 420, W - 110, 620); x.stroke();
+  for (let t = 1; t < 6; t++) folha(W - 80 - Math.sin(t) * 30, t * 105, 55, t % 2 ? 2.5 : .6, "#2A3A20");
+  // o explorador
   try {
     const sv = bonecoSvg(bonecoDe(S.uid)); sv.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    const vb = sv.getAttribute("viewBox").split(" ").map(Number), alt = 820, larg = alt * vb[2] / vb[3];
+    const vb = sv.getAttribute("viewBox").split(" ").map(Number), alt = 780, larg = alt * vb[2] / vb[3];
     sv.setAttribute("width", larg); sv.setAttribute("height", alt);
     const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(sv)], { type: "image/svg+xml" }));
     const im = await new Promise((ok, erro) => { const i = new Image(); i.onload = () => ok(i); i.onerror = erro; i.src = url; }); URL.revokeObjectURL(url);
-    x.drawImage(im, W / 2 - larg / 2, 1480 - alt + 20, larg, alt);
+    x.save(); x.shadowColor = "rgba(255,190,110,.55)"; x.shadowBlur = 40;
+    x.drawImage(im, W / 2 - larg / 2, 1480 - alt, larg, alt); x.restore();
   } catch (e) {}
+  // vinheta e poeira
+  g = x.createRadialGradient(W / 2, H / 2, 500, W / 2, H / 2, 1150); g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(1, "rgba(20,8,4,.6)");
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  for (let i = 0; i < 2600; i++) { x.fillStyle = `rgba(255,${200 + (i % 40)},150,${.03 + (i % 7) * .012})`; x.fillRect((i * 7919) % W, (i * 104729) % H, 2, 2); }
+  // título em arco, estilo cartaz de aventura
+  const arco = (txt, cy, R, fonte) => {
+    x.font = fonte; const tot = x.measureText(txt).width; let ang = -tot / R / 2;
+    for (const ch of txt) { const w = x.measureText(ch).width; x.save(); x.translate(W / 2, cy + R); x.rotate(ang + w / R / 2); x.translate(0, -R);
+      x.lineWidth = 14; x.strokeStyle = "#2A1208"; x.strokeText(ch, 0, 0);
+      const gg = x.createLinearGradient(0, -90, 0, 10); gg.addColorStop(0, "#FFF1C2"); gg.addColorStop(.5, "#F2B94A"); gg.addColorStop(1, "#B8641C");
+      x.fillStyle = gg; x.fillText(ch, 0, 0); x.restore(); ang += w / R; }
+  };
+  x.textAlign = "center"; x.lineJoin = "round";
+  try { const sim = await carregaImg("img/simbolo-dourado.png"); const t = 110; x.drawImage(sim, W / 2 - t / 2, 120, t, t * sim.height / sim.width); } catch (e) {}
+  arco("CARAVANA", 380, 900, '900 128px "Cinzel", Georgia, serif');
+  arco("DO CÉU", 510, 900, '900 128px "Cinzel", Georgia, serif');
+  x.font = 'italic 500 50px "Lora", Georgia, serif'; x.fillStyle = "#FFE9C0"; x.lineWidth = 8; x.strokeStyle = "rgba(42,18,8,.8)";
+  x.strokeText("e a Travessia da Índia Sagrada", W / 2, 600); x.fillText("e a Travessia da Índia Sagrada", W / 2, 600);
+  x.font = '600 38px "Poppins", "Noto Sans Devanagari", sans-serif'; x.fillStyle = "#F2C872"; x.strokeText("लोकाः समस्ताः सुखिनो भवन्तु", W / 2, 668); x.fillText("लोकाः समस्ताः सुखिनो भवन्तु", W / 2, 668);
+  // frase e assinatura embaixo
   const frase = textoConvite().split("\n")[0];
-  x.fillStyle = "#3B2A1C"; x.font = 'italic 500 46px "Lora", Georgia, serif';
+  x.fillStyle = "#FBE7C2"; x.font = 'italic 500 44px "Lora", Georgia, serif';
   const linhas = [], pal = frase.split(" "); let l = "";
-  for (const w of pal) { const t = l ? l + " " + w : w; if (x.measureText(t).width > W - 220 && l) { linhas.push(l); l = w; } else l = t; } if (l) linhas.push(l);
-  linhas.forEach((t, i) => x.fillText(t, W / 2, 1600 + i * 62));
-  x.font = '600 44px "Poppins", sans-serif'; x.fillStyle = "#8A3F32"; x.fillText(INSTA, W / 2, 1790);
+  for (const w of pal) { const t = l ? l + " " + w : w; if (x.measureText(t).width > W - 240 && l) { linhas.push(l); l = w; } else l = t; } if (l) linhas.push(l);
+  linhas.forEach((t, i) => x.fillText(t, W / 2, 1610 + i * 58));
+  x.font = '700 40px "Cinzel", Georgia, serif'; x.fillStyle = "#F2B94A";
+  const esp = t => t.split("").join(String.fromCharCode(8202)); x.fillText(esp("ÍNDIA SAGRADA · NOV 2026"), W / 2, 1760);
+  x.font = '600 42px "Poppins", sans-serif'; x.fillStyle = "#FFF1C2"; x.fillText(INSTA, W / 2, 1830);
+  x.strokeStyle = "rgba(242,185,74,.8)"; x.lineWidth = 4; x.strokeRect(36, 36, W - 72, H - 72); x.lineWidth = 1.5; x.strokeRect(52, 52, W - 104, H - 104);
   return new Promise(res => c.toBlob(res, "image/png"));
 }
 async function abrirConvite() {
