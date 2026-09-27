@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 19:23";</script>
+<script>window.__VERSAO = "27/09 · 19:24";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3467,9 +3467,7 @@ const ADESIVOS = {
   "Caravana": [["img:img/simbolo-dourado.png", "Símbolo dourado"], ["img:img/simbolo-marrom.png", "Símbolo"], ["patch", "Patch bordado"], ["carimbo", "Carimbo"],
     ["postmark", "Carimbo do correio"], ["seloPostal", "Selo postal"], ["data", "Data da câmera"], ["linha", "Caravana do Céu · Índia 2026"], ["fita", "Fita adesiva"],
     ["estrela", "Estrela"], ["flor", "Flor de cravo"], ["guirlanda", "Guirlanda"]],
-  "Bichos": [["pet:elefante", "Elefante"], ["pet:macaco", "Macaco"], ["pet:vaca", "Vaca sagrada"], ["pet:pavao", "Pavão"], ["pet:camelo", "Camelo"], ["pet:cabra", "Cabra"], ["pet:gato", "Gato"], ["pet:cachorro", "Cachorro"], ["ave:periquito", "Periquito"], ["ave:maina", "Mainá"], ["eu", "Meu bonequinho"]],
-  "Índia": [["e:🪷", "Lótus"], ["e:🪔", "Diya"], ["e:🕉️", "Om"], ["e:🧿", "Olho grego"], ["e:🛺", "Tuk-tuk"], ["e:☕", "Chai"], ["e:🌶️", "Pimenta"], ["e:🌺", "Flor"], ["e:🥭", "Manga"], ["e:🙏", "Namastê"], ["e:📿", "Japamala"], ["e:🏔️", "Himalaia"], ["e:🐅", "Tigre"], ["e:🐍", "Naja"], ["e:🦚", "Pavão"], ["e:🐘", "Elefante"]],
-  "Brilhos": [["e:✨", "Brilho"], ["e:💫", "Estrela"], ["e:🌟", "Estrela"], ["e:🌙", "Lua"], ["e:☀️", "Sol"], ["e:💛", "Coração"], ["e:🧡", "Coração"], ["e:🔥", "Fogo"], ["e:🌈", "Arco-íris"], ["e:🎉", "Festa"]]
+  "Bichos": [["pet:elefante", "Elefante"], ["pet:macaco", "Macaco"], ["pet:vaca", "Vaca sagrada"], ["pet:pavao", "Pavão"], ["pet:camelo", "Camelo"], ["pet:cabra", "Cabra"], ["pet:gato", "Gato"], ["pet:cachorro", "Cachorro"], ["ave:periquito", "Periquito"], ["ave:maina", "Mainá"], ["eu", "Meu bonequinho"]]
 };
 const adesivoCache = {};
 async function svgParaImg(g, lado) {
@@ -3523,15 +3521,15 @@ function imgAdesivo(k) {
     throw new Error("adesivo");
   })().catch(e => { delete adesivoCache[k]; throw e; });
 }
-async function colaAdesivos(c, F, ox, oy, w, hh) {
-  const lista = F.adesivos || [], M = Math.min(w, hh); S.fotoAdesRect = [];
+async function colaAdesivos(c, F, ox, oy, w, hh, chave = "foto") {
+  const lista = F.adesivos || [], M = Math.min(w, hh), R = S[chave + "AdesRect"] = [];
   for (let i = 0; i < lista.length; i++) {
-    const a = lista[i]; let im; try { im = await imgAdesivo(a.k); } catch (e) { S.fotoAdesRect.push(null); continue; }
+    const a = lista[i]; let im; try { im = await imgAdesivo(a.k); } catch (e) { R.push(null); continue; }
     const alt = a.s * M * (im.height / Math.max(im.width, im.height)), lar = a.s * M * (im.width / Math.max(im.width, im.height)), cx = ox + a.x * w, cy = oy + a.y * hh;
     c.save(); c.translate(cx, cy); c.rotate(a.r || 0); if (a.esp) c.scale(-1, 1);
     c.shadowColor = "rgba(0,0,0,.35)"; c.shadowBlur = M * .012; c.shadowOffsetY = M * .006; c.drawImage(im, -lar / 2, -alt / 2, lar, alt); c.restore();
-    if (S.fotoSel === i) { c.save(); c.translate(cx, cy); c.rotate(a.r || 0); c.setLineDash([M * .012, M * .01]); c.lineWidth = Math.max(2, M * .004); c.strokeStyle = "rgba(255,255,255,.95)"; c.strokeRect(-lar / 2 - M * .01, -alt / 2 - M * .01, lar + M * .02, alt + M * .02); c.restore(); }
-    S.fotoAdesRect.push({ cx, cy, r: Math.max(lar, alt) / 2 });
+    if (S[chave + "Sel"] === i) { c.save(); c.translate(cx, cy); c.rotate(a.r || 0); c.setLineDash([M * .012, M * .01]); c.lineWidth = Math.max(2, M * .004); c.strokeStyle = "rgba(255,255,255,.95)"; c.strokeRect(-lar / 2 - M * .01, -alt / 2 - M * .01, lar + M * .02, alt + M * .02); c.restore(); }
+    R.push({ cx, cy, r: Math.max(lar, alt) / 2 });
   }
 }
 // ---------- Tira de fotos: várias fotos numa peça só ----------
@@ -3694,6 +3692,9 @@ async function montaTira(canvas) {
     c.save(); c.shadowColor = "rgba(0,0,0,.45)"; c.shadowBlur = 20; c.shadowOffsetY = 6; c.drawImage(pc, W / 2 - pc.width / 2, cy - pc.height / 2); c.restore();
   }
   emReels(canvas, e);
+  // adesivos da cabine, por cima da peça inteira
+  S.tiraGeo = { ox: 0, oy: 0, w: canvas.width, hh: canvas.height, fx: 0, fy: 0, fs: 1 };
+  await colaAdesivos(canvas.getContext("2d"), T, 0, 0, canvas.width, canvas.height, "tira");
 }
 // toda peça da cabine sai em pé, no formato de Reels/Stories (1080 × 1920)
 function emReels(canvas, e) {
@@ -3719,7 +3720,9 @@ function vTira() {
     fi.value = ""; render();
   } });
   const set = (k, v) => { T[k] = v; render(); };
-  const blob = () => new Promise(res => canvas.toBlob(res, "image/jpeg", .92));
+  const blob = async () => { if (S.tiraSel != null) { S.tiraSel = null; await montaTira(canvas).catch(() => {}); } return new Promise(res => canvas.toBlob(res, "image/jpeg", .92)); };
+  const redesenhaTira = () => { if (redesenhaTira.pend) return; redesenhaTira.pend = true; requestAnimationFrame(() => { redesenhaTira.pend = false; montaTira(canvas).catch(() => {}); }); };
+  const { painelAdesivos, barraSel } = editorAdesivos(canvas, "tira", () => S.tira, redesenhaTira);
   const salvar = async () => {
     if (noSite()) return salvarNoRolo(blob(), "caravana-cabine.jpg", msg);
     const dl = await (window.claude?.use?.("downloads") ?? null);
@@ -3744,12 +3747,13 @@ function vTira() {
       h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas),
         h("div", { class: "tirafotos" }, T.imgs.map((im, i) => h("button", { type: "button", class: "tiramini", "aria-label": "Tirar esta foto", onclick: () => { T.imgs.splice(i, 1); T.ids.splice(i, 1); render(); } },
           h("span", { text: String(i + 1) }), h("b", { text: "×" }))),
-          T.imgs.length < 4 ? h("button", { type: "button", class: "tiramini mais", onclick: () => fi.click() }, "+ foto") : null)),
+          T.imgs.length < 4 ? h("button", { type: "button", class: "tiramini mais", onclick: () => fi.click() }, "+ foto") : null), barraSel),
       h("div", { class: "fcontrols" },
         h("p", { class: "lab", text: "Estilo" }),
         h("div", { class: "opts" }, TIRAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(T.estilo === id), onclick: () => set("estilo", id) }, n))),
         h("p", { class: "lab", text: "Filtro para todas" }),
         h("div", { class: "opts" }, TIRA_FILTROS.map(id => FILTROS.find(f => f.id === id)).filter(Boolean).map(f => h("button", { type: "button", class: "opt", "aria-pressed": String(T.filtro === f.id), onclick: () => set("filtro", f.id) }, f.nome))),
+        painelAdesivos,
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no celular"),
           h("button", { class: "btn", type: "button", onclick: () => envia("mural") }, "Enviar para a galeria da caravana")),
@@ -3792,6 +3796,64 @@ async function colaPatches(c, F, ox, oy, w, hh) {
     c.save(); c.translate(cx, cy); c.rotate(rot); c.shadowColor = "rgba(0,0,0,.45)"; c.shadowBlur = alt * .08; c.shadowOffsetY = alt * .03;
     c.drawImage(im, -iw / 2, -ih / 2, iw, ih); c.restore();
   }
+}
+// adesivos (Estúdio e Cabine): tocar num adesivo da lista coloca na foto; na foto, arrastar muda de lugar e dois dedos aumentam e giram
+function editorAdesivos(canvas, chave, estado, redesenha) {
+  // adesivos: tocar num adesivo da lista coloca na foto; na foto, arrastar muda de lugar e dois dedos aumentam e giram
+  const E = estado(), ades = E.adesivos || (E.adesivos = []), SEL = chave + "Sel";
+  const pontoFoto = ev => { const G = S[chave + "Geo"], r = canvas.getBoundingClientRect(); if (!G || !r.width) return null;
+    const px = (ev.clientX - r.left) * canvas.width / r.width, py = (ev.clientY - r.top) * canvas.height / r.height;
+    const x = (px - G.fx) / G.fs, y = (py - G.fy) / G.fs; return { x, y, rx: (x - G.ox) / G.w, ry: (y - G.oy) / G.hh }; };
+  if (!canvas._ades) { canvas._ades = true;
+    const toques = new Map(); let arr = null;
+    canvas.addEventListener("pointerdown", ev => {
+      const Fa = estado(); if (!Fa || !(Fa.adesivos || []).length) return;
+      const p = pontoFoto(ev); if (!p) return; toques.set(ev.pointerId, p);
+      if (toques.size === 1) {
+        const rs = S[chave + "AdesRect"] || []; let achou = -1;
+        for (let i = rs.length - 1; i >= 0; i--) { const q = rs[i]; if (q && Math.hypot(p.x - q.cx, p.y - q.cy) <= q.r * 1.15) { achou = i; break; } }
+        if (achou < 0) { if (S[SEL] != null) { S[SEL] = null; render(); } return; }
+        ev.preventDefault(); canvas.setPointerCapture(ev.pointerId);
+        const a = Fa.adesivos[achou]; arr = { i: achou, dx: a.x - p.rx, dy: a.y - p.ry };
+        if (S[SEL] !== achou) { S[SEL] = achou; render(); }
+      } else if (toques.size === 2 && arr) { const [p1, p2] = [...toques.values()], a = Fa.adesivos[arr.i];
+        arr.d0 = Math.hypot(p1.x - p2.x, p1.y - p2.y); arr.a0 = Math.atan2(p2.y - p1.y, p2.x - p1.x); arr.s0 = a.s; arr.r0 = a.r || 0; }
+    });
+    canvas.addEventListener("pointermove", ev => {
+      if (!arr || !toques.has(ev.pointerId)) return; const p = pontoFoto(ev); if (!p) return; toques.set(ev.pointerId, p); ev.preventDefault();
+      const a = estado().adesivos[arr.i]; if (!a) return;
+      if (toques.size >= 2 && arr.d0) { const [p1, p2] = [...toques.values()];
+        a.s = Math.min(1.6, Math.max(.06, arr.s0 * Math.hypot(p1.x - p2.x, p1.y - p2.y) / arr.d0)); a.r = arr.r0 + Math.atan2(p2.y - p1.y, p2.x - p1.x) - arr.a0; }
+      else { a.x = Math.min(1.1, Math.max(-.1, p.rx + arr.dx)); a.y = Math.min(1.1, Math.max(-.1, p.ry + arr.dy)); }
+      redesenha();
+    });
+    const solta = ev => { toques.delete(ev.pointerId); if (!toques.size) arr = null; else if (arr) arr.d0 = 0; };
+    canvas.addEventListener("pointerup", solta); canvas.addEventListener("pointercancel", solta);
+  }
+  canvas.style.touchAction = ades.length ? "none" : "";
+  const catA = ADESIVOS[S.fotoCatA] ? S.fotoCatA : "Selos";
+  const LUGARES = [[.5, .5], [.26, .3], [.74, .3], [.26, .72], [.74, .72], [.5, .22], [.5, .8], [.16, .5], [.84, .5]];
+  const poeAdesivo = k => { const [lx, ly] = LUGARES[ades.length % LUGARES.length]; ades.push({ k, x: lx, y: ly, s: k.startsWith("img:insignias/") ? .26 : k === "linha" || k === "guirlanda" ? .8 : k === "data" ? .35 : .3, r: 0 }); S[SEL] = ades.length - 1; render(); };
+  const sel = S[SEL] != null ? ades[S[SEL]] : null;
+  const mexe = fn => { if (!sel) return; fn(sel); render(); };
+  if (S.fotoAdesThumbs == null) S.fotoAdesThumbs = {};
+  const thumbAdesivo = k => { const im = h("img", { alt: "", src: S.fotoAdesThumbs[k] || "img/simbolo-marrom.png", class: S.fotoAdesThumbs[k] ? "" : "carregando" });
+    if (!S.fotoAdesThumbs[k]) imgAdesivo(k).then(i => { const cv = document.createElement("canvas"), L = 96, e = L / Math.max(i.width, i.height); cv.width = Math.max(1, i.width * e); cv.height = Math.max(1, i.height * e); cv.getContext("2d").drawImage(i, 0, 0, cv.width, cv.height); S.fotoAdesThumbs[k] = cv.toDataURL(); im.src = S.fotoAdesThumbs[k]; im.className = ""; }).catch(() => {});
+    return im; };
+  const painelAdesivos = h("div", { class: "adesbox" },
+    h("p", { class: "lab", text: "Adesivos" }),
+    h("div", { class: "opts" }, Object.keys(ADESIVOS).map(cn => h("button", { type: "button", class: "opt", "aria-pressed": String(catA === cn), onclick: () => { S.fotoCatA = cn; render(); } }, cn))),
+    h("div", { class: "adesgrade" }, ADESIVOS[catA].map(([k, n]) => h("button", { type: "button", class: "adesbt", title: n, "aria-label": "Colocar " + n, onclick: () => poeAdesivo(k) }, thumbAdesivo(k)))),
+    ades.length ? h("p", { class: "small", style: "margin:6px 0 0", text: "Toque no adesivo na foto para escolher. Arraste para mudar de lugar; com dois dedos, aumenta e gira." }) : null);
+  const barraSel = sel ? h("div", { class: "adessel" },
+    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.s = Math.max(.06, a.s / 1.2); }) }, "Menor"),
+    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.s = Math.min(1.6, a.s * 1.2); }) }, "Maior"),
+    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.r = (a.r || 0) - .26; }) }, "↺"),
+    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.r = (a.r || 0) + .26; }) }, "↻"),
+    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.esp = !a.esp; }) }, "Espelhar"),
+    h("button", { type: "button", class: "opt", onclick: () => { ades.splice(S[SEL], 1); S[SEL] = null; render(); } }, "Tirar"),
+    h("button", { type: "button", class: "opt", "aria-pressed": "true", onclick: () => { S[SEL] = null; render(); } }, "Pronto")) : null;
+  return { painelAdesivos, barraSel };
 }
 function vFotos() {
   if (S.fotoAba === "mural") return vMural();
@@ -3836,66 +3898,13 @@ function vFotos() {
     catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
   };
   if (F.img) requestAnimationFrame(() => montaFoto(canvas).catch(() => {}));
-  // adesivos: tocar num adesivo da lista coloca na foto; na foto, arrastar muda de lugar e dois dedos aumentam e giram
-  const ades = F.adesivos || (F.adesivos = []);
   const redesenha = () => { if (redesenha.pend) return; redesenha.pend = true; requestAnimationFrame(() => { redesenha.pend = false; montaFoto(canvas).catch(() => {}); }); };
-  const pontoFoto = ev => { const G = S.fotoGeo, r = canvas.getBoundingClientRect(); if (!G || !r.width) return null;
-    const px = (ev.clientX - r.left) * canvas.width / r.width, py = (ev.clientY - r.top) * canvas.height / r.height;
-    const x = (px - G.fx) / G.fs, y = (py - G.fy) / G.fs; return { x, y, rx: (x - G.ox) / G.w, ry: (y - G.oy) / G.hh }; };
-  if (!canvas._ades) { canvas._ades = true;
-    const toques = new Map(); let arr = null;
-    canvas.addEventListener("pointerdown", ev => {
-      const Fa = S.foto; if (!Fa || !(Fa.adesivos || []).length) return;
-      const p = pontoFoto(ev); if (!p) return; toques.set(ev.pointerId, p);
-      if (toques.size === 1) {
-        const rs = S.fotoAdesRect || []; let achou = -1;
-        for (let i = rs.length - 1; i >= 0; i--) { const q = rs[i]; if (q && Math.hypot(p.x - q.cx, p.y - q.cy) <= q.r * 1.15) { achou = i; break; } }
-        if (achou < 0) { if (S.fotoSel != null) { S.fotoSel = null; render(); } return; }
-        ev.preventDefault(); canvas.setPointerCapture(ev.pointerId);
-        const a = Fa.adesivos[achou]; arr = { i: achou, dx: a.x - p.rx, dy: a.y - p.ry };
-        if (S.fotoSel !== achou) { S.fotoSel = achou; render(); }
-      } else if (toques.size === 2 && arr) { const [p1, p2] = [...toques.values()], a = Fa.adesivos[arr.i];
-        arr.d0 = Math.hypot(p1.x - p2.x, p1.y - p2.y); arr.a0 = Math.atan2(p2.y - p1.y, p2.x - p1.x); arr.s0 = a.s; arr.r0 = a.r || 0; }
-    });
-    canvas.addEventListener("pointermove", ev => {
-      if (!arr || !toques.has(ev.pointerId)) return; const p = pontoFoto(ev); if (!p) return; toques.set(ev.pointerId, p); ev.preventDefault();
-      const a = S.foto.adesivos[arr.i]; if (!a) return;
-      if (toques.size >= 2 && arr.d0) { const [p1, p2] = [...toques.values()];
-        a.s = Math.min(1.6, Math.max(.06, arr.s0 * Math.hypot(p1.x - p2.x, p1.y - p2.y) / arr.d0)); a.r = arr.r0 + Math.atan2(p2.y - p1.y, p2.x - p1.x) - arr.a0; }
-      else { a.x = Math.min(1.1, Math.max(-.1, p.rx + arr.dx)); a.y = Math.min(1.1, Math.max(-.1, p.ry + arr.dy)); }
-      redesenha();
-    });
-    const solta = ev => { toques.delete(ev.pointerId); if (!toques.size) arr = null; else if (arr) arr.d0 = 0; };
-    canvas.addEventListener("pointerup", solta); canvas.addEventListener("pointercancel", solta);
-  }
-  canvas.style.touchAction = ades.length ? "none" : "";
-  const catA = ADESIVOS[S.fotoCatA] ? S.fotoCatA : "Selos";
-  const LUGARES = [[.5, .5], [.26, .3], [.74, .3], [.26, .72], [.74, .72], [.5, .22], [.5, .8], [.16, .5], [.84, .5]];
-  const poeAdesivo = k => { const [lx, ly] = LUGARES[ades.length % LUGARES.length]; ades.push({ k, x: lx, y: ly, s: k.startsWith("img:insignias/") ? .26 : k === "linha" || k === "guirlanda" ? .8 : k === "data" ? .35 : .3, r: 0 }); S.fotoSel = ades.length - 1; render(); };
-  const sel = S.fotoSel != null ? ades[S.fotoSel] : null;
+  const { painelAdesivos, barraSel } = editorAdesivos(canvas, "foto", () => S.foto, redesenha);
   // intensidade: desliza e a foto muda na hora, sem redesenhar a tela toda
   const pct = Math.round((F.intens == null ? 1 : F.intens) * 100), rotPct = h("b", { text: pct + "%" });
   const faixa = h("input", { type: "range", min: "0", max: "100", step: "1", value: String(pct), "aria-label": "Intensidade do filtro" });
   faixa.addEventListener("input", () => { S.foto.intens = +faixa.value / 100; rotPct.textContent = faixa.value + "%"; redesenha(); });
   const barraIntensidade = F.filtro && F.filtro !== "original" ? h("label", { class: "intens" }, h("span", { text: "Intensidade" }), faixa, rotPct) : null;
-  const mexe = fn => { if (!sel) return; fn(sel); render(); };
-  if (S.fotoAdesThumbs == null) S.fotoAdesThumbs = {};
-  const thumbAdesivo = k => { const im = h("img", { alt: "", src: S.fotoAdesThumbs[k] || "img/simbolo-marrom.png", class: S.fotoAdesThumbs[k] ? "" : "carregando" });
-    if (!S.fotoAdesThumbs[k]) imgAdesivo(k).then(i => { const cv = document.createElement("canvas"), L = 96, e = L / Math.max(i.width, i.height); cv.width = Math.max(1, i.width * e); cv.height = Math.max(1, i.height * e); cv.getContext("2d").drawImage(i, 0, 0, cv.width, cv.height); S.fotoAdesThumbs[k] = cv.toDataURL(); im.src = S.fotoAdesThumbs[k]; im.className = ""; }).catch(() => {});
-    return im; };
-  const painelAdesivos = h("div", { class: "adesbox" },
-    h("p", { class: "lab", text: "Adesivos" }),
-    h("div", { class: "opts" }, Object.keys(ADESIVOS).map(cn => h("button", { type: "button", class: "opt", "aria-pressed": String(catA === cn), onclick: () => { S.fotoCatA = cn; render(); } }, cn))),
-    h("div", { class: "adesgrade" }, ADESIVOS[catA].map(([k, n]) => h("button", { type: "button", class: "adesbt", title: n, "aria-label": "Colocar " + n, onclick: () => poeAdesivo(k) }, thumbAdesivo(k)))),
-    ades.length ? h("p", { class: "small", style: "margin:6px 0 0", text: "Toque no adesivo na foto para escolher. Arraste para mudar de lugar; com dois dedos, aumenta e gira." }) : null);
-  const barraSel = sel ? h("div", { class: "adessel" },
-    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.s = Math.max(.06, a.s / 1.2); }) }, "Menor"),
-    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.s = Math.min(1.6, a.s * 1.2); }) }, "Maior"),
-    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.r = (a.r || 0) - .26; }) }, "↺"),
-    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.r = (a.r || 0) + .26; }) }, "↻"),
-    h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.esp = !a.esp; }) }, "Espelhar"),
-    h("button", { type: "button", class: "opt", onclick: () => { ades.splice(S.fotoSel, 1); S.fotoSel = null; render(); } }, "Tirar"),
-    h("button", { type: "button", class: "opt", "aria-pressed": "true", onclick: () => { S.fotoSel = null; render(); } }, "Pronto")) : null;
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Fotos da travessia" }))),
     abasFotos(),
