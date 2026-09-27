@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 13:33";</script>
+<script>window.__VERSAO = "27/09 · 13:34";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -2588,7 +2588,7 @@ function abrirPessoa(id) {
         h("p", { class: "small" }, h("span", { class: "dot" + (online ? " on" : "") }), online ? "Com o aplicativo aberto agora" : "Fora do aplicativo agora"))),
     !eu2 ? h("div", { class: "reacoes" }, REACOES.map(([r, e, t]) => h("button", { type: "button", class: "reac", onclick: () => envia(r, "") }, h("span", { class: "e", text: e }), h("span", { text: t })))) : null,
     !eu2 ? h("div", { class: "unlock" }, txt, h("button", { class: "btn gold", type: "button", onclick: () => { if (txt.value.trim()) envia("fala", txt.value.trim()); } }, "Falar")) : null,
-    !eu2 ? h("p", { class: "small", text: online ? "Com o app aberto: a reação aparece na hora, na tela de " + nome.split(" ")[0] + "." : "A reação só aparece para quem está com o app aberto. Para um recado que fica guardado, use a Roda." }) : null,
+    !eu2 ? h("p", { class: "small", text: online ? "Com o app aberto: a reação aparece na hora, na tela de " + nome.split(" ")[0] + "." : "A reação só aparece para quem está com o app aberto. Para um recado que fica guardado, use o Chat." }) : null,
     msg,
     h("div", { class: "actions" },
       p ? h("a", { class: "btn", href: `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`, target: "_blank", rel: "noopener" }, "Como chegar") : null,
@@ -3291,8 +3291,7 @@ function vTira() {
         h("div", { class: "opts" }, TIRA_FILTROS.map(id => FILTROS.find(f => f.id === id)).filter(Boolean).map(f => h("button", { type: "button", class: "opt", "aria-pressed": String(T.filtro === f.id), onclick: () => set("filtro", f.id) }, f.nome))),
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no celular"),
-          h("button", { class: "btn", type: "button", onclick: () => envia("mural") }, "Enviar para a galeria"),
-          h("button", { class: "btn", type: "button", onclick: () => envia("chat") }, "Enviar para a Roda")),
+          h("button", { class: "btn", type: "button", onclick: () => envia("mural") }, "Enviar para a galeria da caravana")),
         msg)) :
       h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
         h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "Escolha de 2 a 4 fotos" }),
@@ -3391,13 +3390,12 @@ function vFotos() {
         h("p", { class: "lab", text: "Legenda" }), leg, cid,
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no celular"),
-          h("button", { class: "btn", type: "button", onclick: mural }, "Enviar para a galeria"),
-          h("button", { class: "btn", type: "button", onclick: enviar }, "Enviar para a Roda"),
+          h("button", { class: "btn", type: "button", onclick: mural }, "Enviar para a galeria da caravana"),
           h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "Trocar foto")),
         msg)) :
       h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
         h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "Escolha uma foto" }),
-        h("span", { text: "Aplique os filtros da Caravana, escolha a moldura e os patches, e salve ou mande para a Roda." })),
+        h("span", { text: "Aplique os filtros da Caravana, escolha a moldura e os patches, e salve ou envie para a galeria da caravana." })),
     fi);
 }
 
@@ -4137,7 +4135,7 @@ function vMural() {
     fotos.length ? h("div", { class: "mural" }, fotos.map(f => h("button", { type: "button", class: "mfoto", onclick: () => abrirFotoMural(f), "aria-label": (f.legenda || "Foto") + " de " + nomeDe(f.autor) },
       h("img", { src: blob(f.fotoId), alt: "", loading: "lazy" }), h("span", { text: nomeDe(f.autor).split(" ")[0] + (f.cidade && !cid ? " · " + f.cidade : "") }))))
       : h("div", { class: "fotovazia" }, h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: cid ? "Nenhuma foto de " + cid + " ainda" : "A galeria está esperando" }),
-        h("span", { text: "Monte sua foto no Estúdio e toque em Enviar para a galeria." }),
+        h("span", { text: "Monte sua foto no Estúdio e toque em Enviar para a galeria da caravana." }),
         h("button", { class: "btn gold", type: "button", onclick: () => { S.fotoAba = "estudio"; render(); } }, "Ir para o Estúdio")));
 }
 function abrirFotoMural(f) {
