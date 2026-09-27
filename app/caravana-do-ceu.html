@@ -619,6 +619,12 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .pertolist li{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
 .pertolist li div{display:flex;flex-direction:column}
 .pertolist small{color:var(--soft)}
+.mapaperto{position:relative}
+.mapaperto svg{display:block;user-select:none;-webkit-user-select:none}
+.mapctl{position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px}
+.mapctl button{width:44px;height:44px;border-radius:50%;border:1px solid rgba(91,63,34,.35);background:rgba(251,244,228,.92);color:#3B2A1C;display:grid;place-items:center;box-shadow:0 4px 14px rgba(40,28,15,.25);backdrop-filter:blur(6px)}
+.mapctl button.on{background:#3F4938;color:#F6EDDA;border-color:#3F4938}
+.mapdica{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);margin:0;font-size:11.5px;color:#5B3F22;background:rgba(251,244,228,.85);padding:3px 10px;border-radius:999px;pointer-events:none;white-space:nowrap}
 .mapazoom{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .mapazoom button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);font-size:22px;line-height:1;color:var(--ink)}
 .mapazoom button.todos{width:auto;border-radius:999px;padding:0 14px;font-size:14px}
@@ -626,6 +632,17 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .map .eu-pulso{fill:rgba(63,73,56,.18);stroke:#3F4938;stroke-width:1.2}
 .map .eu-ponto{fill:#3F4938;stroke:#F4EFE3;stroke-width:2}
 @media (prefers-reduced-motion:no-preference){.map .eu-pulso{animation:pulsaeu 2s ease-out infinite;transform-box:fill-box;transform-origin:center}@keyframes pulsaeu{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(1.4)}}}
+.onlinecard{display:flex;align-items:center;gap:12px;background:#2F3A2A;color:#F1E2BC;border-radius:var(--r);padding:12px 16px;box-shadow:var(--shadow)}
+.onlinecard b{display:block;font-size:15px;font-weight:600}.onlinecard div span{font-size:12.5px;color:#C9D0B8}
+.pontovivo{width:12px;height:12px;border-radius:50%;background:#7ED07A;box-shadow:0 0 0 4px rgba(126,208,122,.25);flex:none}
+@media (prefers-reduced-motion:no-preference){.pontovivo{animation:pulsaeu2 1.6s ease-in-out infinite}@keyframes pulsaeu2{50%{box-shadow:0 0 0 8px rgba(126,208,122,.08)}}}
+.onlinecard .rostos{margin-left:auto;display:flex}.onlinecard .rostos img{width:28px;height:28px;border-radius:50%;border:2px solid #2F3A2A;margin-left:-8px;object-fit:cover;background:#E5DAC5}
+.tempo{background:var(--panel);border-radius:var(--r);box-shadow:var(--shadow);padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.tagora{display:flex;align-items:center;gap:14px}.tic{font-size:40px;line-height:1}
+.tagora p{margin:0}.tlug{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra);font-weight:600}
+.tgrau{font-family:var(--display);font-size:34px;line-height:1.1;color:var(--ink)}.tdesc{font-size:13px;color:var(--soft)}
+.tprev{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-top:1px solid var(--line);padding-top:10px}
+.tprev div{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12.5px;color:var(--soft)}.tprev b{font-size:20px}
 /* Mensagem do diário */
 .leitlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .leitlist li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
@@ -1032,6 +1049,8 @@ function vTravessia() {
             : h("div", null, h("b", { text: "13" }), h("span", { text: "dias de travessia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "Asia/Kolkata", text: horaEm("Asia/Kolkata") }), h("span", { text: "Agora na Índia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +8h30" }))),
+    vOnlineLider(),
+    vTempo(),
     vCorrespondencia(),
     ins.length ? h("div", null,
       h("p", { class: "eyebrow rule", text: `Os ${ins.length} selos do passaporte` }),
@@ -1724,7 +1743,7 @@ function ligarGps() {
     S.aoVivo[S.uid] = { lat, lng, cidadeId, ts };
     S.room?.presence({ uid: S.uid, lat, lng, cidadeId, ts }).catch(() => {});
     if (ts - ultimoDb > 60000 && S.db && eu()) { ultimoDb = ts; S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: "", nota: "", link: "", ts }).catch(() => {}); }
-    if (S.tab === "mapa") render();
+    if (S.tab === "mapa" && !S.arrastando) render();
   }, () => { S.gpsWatch = null; S.gpsOn = false; S.gpsMsg = "O celular não liberou o GPS. Use o link ao vivo do Google Maps no Chat ou marque no mapa."; render(); },
   { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 });
 }
@@ -1839,7 +1858,7 @@ function satelite(svg, P, modo) {
   svg.append(h("text", { x: P.W - 22, y: P.H - 20, class: "satcred", "text-anchor": "end", text: modo === "ruas" ? "Mapa: Esri, HERE, Garmin, OpenStreetMap" : "Satélite: Esri, Maxar, Earthstar Geographics" }));
 }
 function escala(svg, P) {
-  const H = P.H, per = P.s / 111.32, nice = [0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
+  const H = P.H, per = P.s / 111.32, nice = [0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
   const k = nice.find(n => n * per >= 60) || 500, len = k * per;
   if (len < 260) svg.append(h("g", { class: "escala" },
     h("rect", { x: 30, y: H - 42, width: len / 2, height: 5, fill: "#5B3F22" }), h("rect", { x: 30 + len / 2, y: H - 42, width: len / 2, height: 5, fill: "#F1E2BC", stroke: "#5B3F22" }),
@@ -1959,38 +1978,98 @@ function minhaPos() {
   const p = S.posicoes.find(x => x.id === S.uid); return p && isFinite(+p.lat) ? { lat: +p.lat, lng: +p.lng } : null;
 }
 function mapaPerto() {
-  const W = 600, H = 600, svg = pergaminho(W, H, "perto"), eu0 = minhaPos();
+  const W = 600, H = 600, svg = pergaminho(W, H, "perto"), eu0 = minhaPos(), centro = S.pertoCentro || eu0;
   svg.setAttribute("aria-label", "Mapa perto de mim");
-  const km = RAIOS[S.pertoZoom ?? 1], dLat = km / 111, dLng = km / (111 * Math.cos(eu0.lat * Math.PI / 180));
-  const P = projetor([{ lat: eu0.lat - dLat, lng: eu0.lng - dLng }, { lat: eu0.lat + dLat, lng: eu0.lng + dLng }], W, H, 40); S.proj = P;
+  const km = S.pertoKm || 0.25, dLat = km / 111, dLng = km / (111 * Math.cos(centro.lat * Math.PI / 180));
+  const P = projetor([{ lat: centro.lat - dLat, lng: centro.lng - dLng }, { lat: centro.lat + dLat, lng: centro.lng + dLng }], W, H, 40); S.proj = P;
   P.modo = S.camadaMapa || "ruas";
-  camadasGeo(svg, P, false);
+  const mov = h("g", { class: "movel" });
+  camadasGeo(mov, P, false);
+  for (const l of S.locais.filter(l => isFinite(+l.lat))) { const [x, y] = P.xy(l); if (x > -40 && x < W + 40 && y > -40 && y < H + 40) mov.append(h("g", { class: "hotel pin" }, h("rect", { x: x - 6, y: y - 6, width: 12, height: 12, rx: 2 }), h("text", { x: x + 11, y: y + 5, text: l.nome }))); }
   const [cx, cy] = P.xy(eu0);
-  svg.append(h("circle", { cx, cy, r: 26, class: "eu-pulso" }), h("circle", { cx, cy, r: 5, class: "eu-ponto" }));
-  for (const l of S.locais.filter(l => isFinite(+l.lat))) { const [x, y] = P.xy(l); if (x > 20 && x < W - 20 && y > 20 && y < H - 20) svg.append(h("g", { class: "hotel pin" }, h("rect", { x: x - 6, y: y - 6, width: 12, height: 12, rx: 2 }), h("text", { x: x + 11, y: y + 5, text: l.nome }))); }
-  exploradoresNoMapa(svg, P, () => true);
+  mov.append(h("circle", { cx, cy, r: 26, class: "eu-pulso" }), h("circle", { cx, cy, r: 5, class: "eu-ponto" }));
+  exploradoresNoMapa(mov, P, () => true);
+  svg.append(mov);
   escala(svg, P); molduraECompasso(svg, W, H, "perto", "AO VIVO", "Quem está perto de você");
+  gestosMapa(svg, mov, P, km);
   return svg;
 }
+// Arrastar com o dedo, pinça para zoom e roda do mouse
+function gestosMapa(svg, mov, P, km) {
+  svg.style.touchAction = "none"; svg.style.cursor = "grab";
+  const pts = new Map();
+  let base = null, est = { dx: 0, dy: 0, e: 1, ox: P.W / 2, oy: P.H / 2 }, mexeu = false;
+  const fator = () => P.W / svg.getBoundingClientRect().width;
+  const aplica = () => mov.setAttribute("transform", `translate(${est.dx + est.ox} ${est.dy + est.oy}) scale(${est.e}) translate(${-est.ox} ${-est.oy})`);
+  const noSvg = (x, y) => { const r = svg.getBoundingClientRect(); return [(x - r.left) * fator(), (y - r.top) * fator()]; };
+  const comeca = () => {
+    const a = [...pts.values()];
+    if (a.length === 1) base = { x: a[0].x, y: a[0].y, dx: est.dx, dy: est.dy, e: est.e };
+    else if (a.length >= 2) { const [p1, p2] = a, mid = noSvg((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
+      base = { dist: Math.hypot(p1.x - p2.x, p1.y - p2.y), mx: (p1.x + p2.x) / 2, my: (p1.y + p2.y) / 2, dx: est.dx, dy: est.dy, e: est.e };
+      // reancora a pinça no ponto do meio dos dedos, mantendo o que está na tela
+      const ox = (mid[0] - est.dx - est.ox) / est.e + est.ox, oy = (mid[1] - est.dy - est.oy) / est.e + est.oy;
+      est = { dx: mid[0] - ox, dy: mid[1] - oy, e: est.e, ox, oy };
+      base.dx = est.dx; base.dy = est.dy; }
+  };
+  const confirma = () => {
+    S.arrastando = false; svg.style.cursor = "grab";
+    if (!mexeu) { est = { dx: 0, dy: 0, e: 1, ox: P.W / 2, oy: P.H / 2 }; mov.removeAttribute("transform"); return; }
+    const cx0 = (P.W / 2 - est.dx - est.ox) / est.e + est.ox, cy0 = (P.H / 2 - est.dy - est.oy) / est.e + est.oy;
+    const c = P.inv(cx0, cy0);
+    S.pertoCentro = { lat: c.lat, lng: c.lng }; S.pertoKm = Math.max(0.06, Math.min(3000, km / est.e));
+    render();
+  };
+  svg.addEventListener("pointerdown", e => { pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); mexeu = false; comeca(); });
+  svg.addEventListener("pointermove", e => {
+    if (!pts.has(e.pointerId) || !base) return;
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const a = [...pts.values()], f = fator();
+    if (a.length === 1) {
+      const ddx = (a[0].x - base.x) * f, ddy = (a[0].y - base.y) * f;
+      if (!mexeu && Math.hypot(ddx, ddy) < 6) return;
+      if (!mexeu) { mexeu = true; S.arrastando = true; svg.style.cursor = "grabbing"; try { svg.setPointerCapture(e.pointerId); } catch (x) {} }
+      est.dx = base.dx + ddx; est.dy = base.dy + ddy;
+    } else {
+      const [p1, p2] = a, d = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+      mexeu = true; S.arrastando = true;
+      est.e = Math.max(.15, Math.min(12, base.e * d / base.dist));
+      est.dx = base.dx + ((p1.x + p2.x) / 2 - base.mx) * f; est.dy = base.dy + ((p1.y + p2.y) / 2 - base.my) * f;
+    }
+    aplica();
+  });
+  const solta = e => { if (!pts.has(e.pointerId)) return; pts.delete(e.pointerId); if (pts.size) comeca(); else confirma(); };
+  svg.addEventListener("pointerup", solta); svg.addEventListener("pointercancel", solta);
+  let rodaT = null;
+  svg.addEventListener("wheel", e => {
+    e.preventDefault();
+    const [ox, oy] = noSvg(e.clientX, e.clientY);
+    if (est.e === 1 && !mexeu) est = { dx: 0, dy: 0, e: 1, ox, oy };
+    est.e = Math.max(.15, Math.min(12, est.e * Math.exp(-e.deltaY * .0015))); mexeu = true; aplica();
+    clearTimeout(rodaT); rodaT = setTimeout(confirma, 280);
+  }, { passive: false });
+}
 function vPerto() {
-  const eu0 = minhaPos(), z = S.pertoZoom ?? 1;
+  const eu0 = minhaPos(), km = S.pertoKm || 0.25;
   const perto = eu0 ? posicoesAtuais().filter(p => p.id !== S.uid && isFinite(+p.lat)).map(p => ({ p, km: distKm(eu0, p) })).sort((a, b) => a.km - b.km) : [];
-  const zoom = d => { S.pertoZoom = Math.max(0, Math.min(RAIOS.length - 1, z + d)); render(); };
-  const verTodos = () => { const k = perto.length ? perto[perto.length - 1].km * 1.25 : 1.5; S.pertoZoom = RAIOS.findIndex(r => r >= k); if (S.pertoZoom < 0) S.pertoZoom = RAIOS.length - 1; render(); };
+  const zoom = f => { S.pertoKm = Math.max(0.06, Math.min(3000, km * f)); render(); };
+  const verTodos = () => { const k = perto.length ? perto[perto.length - 1].km * 1.25 : 1.5; S.pertoCentro = null; S.pertoKm = Math.max(0.15, k); render(); };
   if (!eu0) return h("div", { class: "panel", style: "align-items:center;text-align:center" },
     h("p", { class: "eyebrow", text: "Perto de mim" }), h("h2", { text: "Ligue a sua localização" }),
     h("p", { class: "small", text: "O mapa se centraliza onde você estiver e mostra, ao vivo, quem da caravana está por perto." }),
     h("button", { class: "btn gold", type: "button", onclick: ligarGps }, "Ligar minha localização ao vivo"),
     S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null);
+  const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   return h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
-    h("div", { class: "mapazoom" },
-      h("button", { type: "button", "aria-label": "Afastar", onclick: () => zoom(1) }, "−"),
-      h("span", { text: RAIOS[z] < 1 ? Math.round(RAIOS[z] * 1000) + " m ao redor" : RAIOS[z] + " km ao redor" }),
-      h("button", { type: "button", "aria-label": "Aproximar", onclick: () => zoom(-1) }, "+"),
-      perto.length ? h("button", { type: "button", class: "todos", onclick: verTodos }, "Ver todos") : null),
     window.__SITE ? h("div", { class: "fcats", role: "tablist", style: "margin:0" }, [["ruas", "Ruas"], ["hibrido", "Satélite com ruas"], ["satelite", "Satélite"]].map(([id, n]) =>
       h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String((S.camadaMapa || "ruas") === id), onclick: () => { S.camadaMapa = id; render(); } }, n))) : null,
-    h("div", { class: "map" }, mapaPerto()),
+    h("div", { class: "map mapaperto" }, mapaPerto(),
+      h("div", { class: "mapctl" },
+        h("button", { type: "button", "aria-label": "Aproximar", onclick: () => zoom(.5) }, ic("M12 5v14M5 12h14")),
+        h("button", { type: "button", "aria-label": "Afastar", onclick: () => zoom(2) }, ic("M5 12h14")),
+        h("button", { type: "button", "aria-label": "Centralizar em mim", class: S.pertoCentro ? "" : "on", onclick: () => { S.pertoCentro = null; render(); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")),
+        perto.length ? h("button", { type: "button", "aria-label": "Ver todos", onclick: verTodos }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")) : null),
+      h("p", { class: "mapdica", text: "Arraste com o dedo · pinça para aproximar" })),
     h("p", { class: "coord", style: "text-align:left", text: "Você: " + coordTxt(eu0.lat, eu0.lng) }),
     !S.gpsOn ? h("button", { class: "btn", type: "button", onclick: ligarGps }, "Ligar minha localização ao vivo") : h("p", { class: "msg ok", text: S.gpsMsg || "Você está ao vivo." }),
     perto.length ? h("ul", { class: "pertolist" }, perto.slice(0, 20).map(({ p, km }) => h("li", { onclick: () => abrirPessoa(p.id), style: "cursor:pointer" },
@@ -2976,6 +3055,50 @@ async function abrirResumo() {
     h("div", { class: "foot2" }, enviar, h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")));
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
+}
+
+
+// Só a líder: quem está com o app aberto agora
+function vOnlineLider() {
+  if (!S.isOwner) return null;
+  const ids = [...S.online].filter(id => id !== S.uid);
+  perfis(ids);
+  return h("div", { class: "onlinecard" },
+    h("span", { class: "pontovivo", "aria-hidden": "true" }),
+    h("div", null, h("b", { text: !ids.length ? "Ninguém além de você no app agora" : ids.length === 1 ? "1 pessoa usando o app agora" : ids.length + " pessoas usando o app agora" }),
+      h("span", { text: ids.length ? ids.slice(0, 8).map(id => nomeDe(id).split(" ")[0]).join(", ") + (ids.length > 8 ? " e mais " + (ids.length - 8) : "") : "Só você está com o app aberto neste momento." })),
+    ids.length ? h("div", { class: "rostos" }, ids.slice(0, 5).map(id => h("img", { src: avatar(id), alt: "" }))) : null);
+}
+// Tempo agora e previsão, no lugar onde a pessoa está (ou na cidade do dia da travessia)
+const TEMPO = { 0: ["☀️", "Céu limpo"], 1: ["🌤️", "Quase limpo"], 2: ["⛅", "Parcialmente nublado"], 3: ["☁️", "Nublado"], 45: ["🌫️", "Neblina"], 48: ["🌫️", "Neblina"], 51: ["🌦️", "Garoa"], 53: ["🌦️", "Garoa"], 55: ["🌦️", "Garoa"], 61: ["🌧️", "Chuva fraca"], 63: ["🌧️", "Chuva"], 65: ["🌧️", "Chuva forte"], 71: ["🌨️", "Neve"], 73: ["🌨️", "Neve"], 75: ["🌨️", "Neve"], 80: ["🌦️", "Pancadas"], 81: ["🌧️", "Pancadas"], 82: ["⛈️", "Pancadas fortes"], 95: ["⛈️", "Trovoadas"], 96: ["⛈️", "Trovoadas"], 99: ["⛈️", "Trovoadas"] };
+const COORD_CIDADE = { delhi: [28.6139, 77.209, "Delhi"], agra: [27.1767, 78.0081, "Agra"], jaipur: [26.9124, 75.7873, "Jaipur"], varanasi: [25.3176, 82.9739, "Varanasi"], rishikesh: [30.0869, 78.2676, "Rishikesh"] };
+function lugarDoTempo() {
+  const eu0 = S.aoVivo[S.uid] && Date.now() - S.aoVivo[S.uid].ts < 3600000 ? S.aoVivo[S.uid] : null;
+  if (eu0) return { lat: eu0.lat, lng: eu0.lng, nome: eu0.cidadeId && COORD_CIDADE[eu0.cidadeId] ? COORD_CIDADE[eu0.cidadeId][2] : "Onde você está", aqui: true };
+  const hoje = hojeIso(), d = (S.roteiro?.dias || []).find(x => x.iso === hoje);
+  const id = d ? norm(d.cidade.split(" ")[0]) : "delhi", c = COORD_CIDADE[id] || COORD_CIDADE.delhi;
+  return { lat: c[0], lng: c[1], nome: c[2], aqui: false, primeiro: !d };
+}
+function buscaTempo() {
+  const L = lugarDoTempo(), chave = L.lat.toFixed(2) + "," + L.lng.toFixed(2);
+  if (S.tempo && S.tempo.chave === chave && Date.now() - S.tempo.ts < 30 * 60000) return;
+  if (S.tempoBuscando === chave) return; S.tempoBuscando = chave;
+  fetch(`https://api.open-meteo.com/v1/forecast?latitude=${L.lat}&longitude=${L.lng}&current=temperature_2m,apparent_temperature,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=4`)
+    .then(r => r.ok ? r.json() : Promise.reject()).then(j => { S.tempo = { chave, ts: Date.now(), j, L }; S.tempoBuscando = null; if (S.tab === "travessia") render(); })
+    .catch(() => { S.tempoBuscando = null; S.tempoFalhou = true; });
+}
+function vTempo() {
+  if (S.tempoFalhou && !S.tempo) return null;
+  buscaTempo();
+  const T = S.tempo; if (!T) return null;
+  const c = T.j.current, d = T.j.daily, [ic, desc] = TEMPO[c.weather_code] || ["🌡️", ""];
+  const dia = iso => new Date(iso + "T12:00").toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", "");
+  return h("div", { class: "tempo" },
+    h("div", { class: "tagora" }, h("span", { class: "tic", text: ic }),
+      h("div", null, h("p", { class: "tlug", text: (T.L.aqui ? "📍 " : "") + T.L.nome + (T.L.primeiro ? " · primeiro destino" : "") }),
+        h("p", { class: "tgrau", text: Math.round(c.temperature_2m) + "°" }),
+        h("p", { class: "tdesc", text: desc + " · sensação de " + Math.round(c.apparent_temperature) + "°" }))),
+    h("div", { class: "tprev" }, d.time.slice(0, 4).map((t, i) => h("div", null, h("span", { text: i ? dia(t) : "hoje" }), h("b", { text: (TEMPO[d.weather_code[i]] || ["🌡️"])[0] }), h("span", { text: Math.round(d.temperature_2m_max[i]) + "° " + Math.round(d.temperature_2m_min[i]) + "°" })))));
 }
 
 // ---------- dados ----------
