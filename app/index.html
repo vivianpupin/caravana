@@ -1814,7 +1814,7 @@ function ligarGps(silencioso) {
     S.gpsOn = true; S.gpsMsg = "Você está ao vivo no mapa. A caravana vê você andando enquanto o aplicativo estiver aberto.";
     S.aoVivo[S.uid] = { lat, lng, cidadeId, ts, prec: Math.round(pos.coords.accuracy || 0) };
     S.room?.presence({ uid: S.uid, lat, lng, cidadeId, ts }).catch(() => {});
-    if (ts - ultimoDb > 60000 && S.db && eu()) { ultimoDb = ts; S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: "", nota: "", link: "", ts }).catch(() => {}); }
+    if (ts - ultimoDb > 60000 && S.db && eu()) { ultimoDb = ts; S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: S.rua && distKm(S.rua, { lat, lng }) < 1 ? S.rua.lugar || "" : "", nota: "", link: "", ts }).catch(() => {}); }
     if (S.arrastando) { S.pendente = true; return; }
     if ((S.tab === "mapa" || S.tab === "travessia") && !document.querySelector(".sheet")) render();
   };
@@ -2046,10 +2046,11 @@ function marcarClick(svg, cidadeId) {
     salvarPos({ cidadeId: cidadeId === "india" ? pertoCidade(g) : cidadeId, lat: +g.lat.toFixed(5), lng: +g.lng.toFixed(5), lugar: "" });
   });
 }
-function pertoCidade(p) { let b = null; for (const c of S.cidades) { const d = km(p, { lat: +c.lat, lng: +c.lng }); if (!b || d < b.d) b = { id: c.id, d }; } return b ? b.id : ""; }
+function pertoCidade(p) { let b = null; for (const c of S.cidades) { const d = km(p, { lat: +c.lat, lng: +c.lng }); if (!b || d < b.d) b = { id: c.id, d }; } return b && b.d < 60 ? b.id : ""; }
 function pertoDe(p) {
   let b = null; for (const l of S.locais.filter(l => isFinite(+l.lat))) { const d = km(p, { lat: +l.lat, lng: +l.lng }); if (!b || d < b.d) b = { l, d }; }
-  if (!b) return ""; if (b.d > 30) return cidadeDe(p.cidadeId)?.nome || "";
+  // longe dos lugares da travessia: mostra o bairro/cidade de verdade (do GPS), nunca a cidade da caravana mais próxima
+  if (!b || b.d > 30) { const c = p.cidadeId && cidadeDe(p.cidadeId), cc = c && km(p, { lat: +c.lat, lng: +c.lng }) < 60 ? c.nome : ""; return p.lugar ? "em " + p.lugar : cc ? "em " + cc : ""; }
   return b.d < 0.15 ? "em " + b.l.nome : `a ${b.d < 10 ? b.d.toFixed(1).replace(".", ",") : Math.round(b.d)} km de ${b.l.nome}`;
 }
 function haQuanto(ts) { const m = Math.round((Date.now() - ts) / 60000); return m < 1 ? "agora" : m < 60 ? `há ${m} min` : `há ${Math.floor(m / 60)} h`; }
@@ -2149,11 +2150,11 @@ function vPerto() {
   const perto = eu0 ? posicoesAtuais().filter(p => p.id !== S.uid && isFinite(+p.lat)).map(p => ({ p, km: distKm(eu0, p) })).sort((a, b) => a.km - b.km) : [];
   const zoom = f => { S.pertoKm = Math.max(0.06, Math.min(3000, km * f)); render(); };
   const verTodos = () => { const k = perto.length ? perto[perto.length - 1].km * 1.25 : 1.5; S.pertoCentro = null; S.pertoKm = Math.max(0.15, k); render(); };
-  if (!eu0 && !S.pertoCentro) return h("div", { class: "panel", style: "align-items:center;text-align:center" },
+  if (!eu0 && !S.pertoCentro) return h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, h("div", { class: "panel", style: "align-items:center;text-align:center" },
     h("p", { class: "eyebrow", text: "Perto de mim" }), h("h2", { text: "Ligue a sua localização" }),
     h("p", { class: "small", text: "O mapa se centraliza onde você estiver e mostra, ao vivo, quem da caravana está por perto." }),
     h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"),
-    S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null);
+    S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null), vHotelHoje());
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   return h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
     window.__SITE ? h("div", { class: "fcats", role: "tablist", style: "margin:0" }, [["ruas", "Ruas"], ["satelite", "Satélite"]].map(([id, n]) =>
@@ -2165,6 +2166,7 @@ function vPerto() {
         h("button", { type: "button", "aria-label": "Centralizar em mim", class: S.pertoCentro ? "" : "on", onclick: () => { S.pertoCentro = null; render(); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")),
         perto.length ? h("button", { type: "button", "aria-label": "Ver todos", onclick: verTodos }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")) : null),
       h("p", { class: "mapdica", text: "Arraste com o dedo · pinça para aproximar" })),
+    vHotelHoje(),
     eu0 && S.rua && S.rua.txt ? h("div", { class: "ruaaqui", role: "status" }, h("span", { class: "eyebrow", text: "Você está em" }), h("b", { text: S.rua.txt }), S.rua.sub ? h("small", { text: S.rua.sub }) : null) : null,
     eu0 ? h("p", { class: "coord", style: "text-align:left", text: "Você: " + coordTxt(eu0.lat, eu0.lng) }) : null,
     !S.gpsOn ? h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null)
@@ -2189,7 +2191,7 @@ function ruaAqui(p) {
       const cidade = a.city || a.town || a.village || a.county || "";
       const txt = via || lugar || bairro || cidade;
       const sub = [via && lugar ? "perto de " + lugar : "", txt !== bairro ? bairro : "", txt !== cidade ? cidade : ""].filter(Boolean).join(" · ");
-      S.rua = { lat: p.lat, lng: p.lng, txt: via ? txt : (txt ? "Beco sem nome, perto de " + txt : ""), sub };
+      S.rua = { lat: p.lat, lng: p.lng, txt: via ? txt : (txt ? "Beco sem nome, perto de " + txt : ""), sub, lugar: [bairro, cidade].filter((v, i, a) => v && a.indexOf(v) === i).join(", ") };
       if (S.tab === "mapa") render();
     }).catch(() => {}).finally(() => { S.ruaBusca = false; });
 }
@@ -2202,7 +2204,6 @@ function vMapa() {
       h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: "Perto de mim" })),
       h("button", { class: "meuexp", type: "button", onclick: () => { S.bonecoRasc = null; go("explorador"); } },
         bonecoSvg(bonecoDe(S.uid), "bonecosvg mini"), h("span", { text: "Meu explorador" }))),
-    vHotelHoje(),
     h("div", { class: "mapwrap" }, vPerto(),
       h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null))));
 }
@@ -2231,8 +2232,9 @@ const FILTROS = [
   { id: "musgo", cat: "Criativos", nome: "Duotone musgo", duo: [[34, 44, 30], [229, 218, 197]] }
 ];
 const GRAOS = [["auto", "Do filtro"], ["nenhum", "Sem grão"], ["leve", "Leve"], ["medio", "Médio"], ["forte", "Forte"], ["super8", "Super 8"]];
-const MARCAS = [["suave", "Suave"], ["marcado", "Marcado"], ["mandala", "Mandala"], ["nenhum", "Sem símbolo"]];
-const MOLDURAS = [["polaroid", "Polaroid"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["cera", "Selo de cera"], ["assinatura", "Assinatura"], ["nenhuma", "Sem moldura"]];
+const PATCHES = [["caravana", "Caravana"], ["india", "Índia + Caravana"], ["lugar", "Do lugar"], ["colecao", "Coleção"], ["nenhum", "Sem patch"]];
+const PATCH_CIDADE = { Delhi: "india", Agra: "taj-mahal", Jaipur: "jaipur", Varanasi: "varanasi", Rishikesh: "rishikesh" };
+const MOLDURAS = [["polaroid", "Polaroid"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["assinatura", "Assinatura"], ["nenhuma", "Sem moldura"]];
 const imgCache = {};
 function carregaImg(src) { return imgCache[src] ||= new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; }); }
 function aplicaFiltro(ctx, w, hh, f, graoEsc) {
@@ -2324,19 +2326,6 @@ function carimbo(c, cx, cy, R, dourado, rot) {
   for (let k = 0; k < 900; k++) { x.globalAlpha = Math.random() * .8; x.beginPath(); x.arc(Math.random() * tc.width, Math.random() * tc.height, Math.random() * 2.4 * u, 0, 7); x.fill(); }
   c.save(); c.translate(cx, cy); c.rotate(rot || 0); c.globalAlpha = .9; c.globalCompositeOperation = "multiply"; c.drawImage(tc, -m, -m); c.restore();
 }
-// selo de lacre vermelho com o símbolo em relevo
-function seloCera(c, cx, cy, R, dourado) {
-  const u = R / 118;
-  c.save(); c.shadowColor = "rgba(0,0,0,.45)"; c.shadowBlur = 22 * u; c.shadowOffsetY = 8 * u;
-  c.beginPath(); for (let i = 0; i <= 40; i++) { const a = i / 40 * Math.PI * 2, r = R * (1 + (Math.sin(i * 2.7) * .05 + Math.sin(i * 1.3) * .04)); i ? c.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r) : c.moveTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r); }
-  const gr = c.createRadialGradient(cx - R * .3, cy - R * .35, R * .1, cx, cy, R * 1.1); gr.addColorStop(0, "#C8322A"); gr.addColorStop(.6, "#8E1A14"); gr.addColorStop(1, "#5A0C08");
-  c.fillStyle = gr; c.fill(); c.restore();
-  c.save(); c.lineWidth = 5 * u; c.strokeStyle = "rgba(60,6,4,.55)"; c.beginPath(); c.arc(cx, cy, R * .74, 0, 7); c.stroke();
-  c.strokeStyle = "rgba(255,160,140,.35)"; c.lineWidth = 2.5 * u; c.beginPath(); c.arc(cx - 1.5 * u, cy - 2 * u, R * .78, Math.PI * .9, Math.PI * 1.6); c.stroke();
-  const al = R * .95, luz = simboloEm(dourado, "rgba(255,170,150,.55)", al), sombra = simboloEm(dourado, "#4A0806", al);
-  c.drawImage(luz, cx - luz.width / 2 - 2 * u, cy - al / 2 - 2 * u); c.drawImage(sombra, cx - sombra.width / 2 + 1.5 * u, cy - al / 2 + 1.5 * u);
-  c.drawImage(simboloEm(dourado, "#7A1410", al), cx - luz.width / 2, cy - al / 2); c.restore();
-}
 async function montaFoto(canvas) {
   const F = S.foto; if (!F || !F.img) return;
   const img = F.img, max = 1600, k = Math.min(1, max / Math.max(img.width, img.height));
@@ -2367,23 +2356,6 @@ async function montaFoto(canvas) {
     const sb = simboloEm(dourado, "#D9A24A", 62 * u); c.save(); c.globalAlpha = .9; c.drawImage(sb, ox + (w - sb.width) / 2, oy + hh + (H - oy - hh - sb.height) / 2); c.restore();
   } else
   c.drawImage(tmp, ox, oy);
-  // o símbolo da caravana impresso no fundo da foto, como marca d'água
-  const marca = F.marca || "suave";
-  if (marca === "mandala") {
-    const t = Math.min(w, hh) * .42, md = mandala(dourado, t);
-    c.save(); c.beginPath(); c.rect(ox, oy, w, hh); c.clip();
-    c.globalCompositeOperation = "soft-light"; c.globalAlpha = .8; c.drawImage(md, ox + (w - md.width) / 2, oy + (hh - md.height) / 2);
-    c.globalCompositeOperation = "source-over"; c.globalAlpha = .12; c.drawImage(md, ox + (w - md.width) / 2, oy + (hh - md.height) / 2);
-    c.restore();
-  } else if (marca !== "nenhum") {
-    const t = Math.min(w, hh) * .62, sw = t * dourado.width / dourado.height;
-    c.save(); c.beginPath(); c.rect(ox, oy, w, hh); c.clip();
-    c.globalCompositeOperation = "soft-light"; c.globalAlpha = marca === "marcado" ? 1 : .55;
-    c.drawImage(dourado, ox + (w - sw) / 2, oy + (hh - t) / 2, sw, t);
-    c.globalCompositeOperation = "source-over"; c.globalAlpha = marca === "marcado" ? .42 : .09;
-    c.drawImage(dourado, ox + (w - sw) / 2, oy + (hh - t) / 2, sw, t);
-    c.restore();
-  }
   const serif = "Lora, Georgia, serif", sans = "Poppins, system-ui, sans-serif";
   if (F.moldura === "polaroid") {
     // só o símbolo; a legenda aparece à mão, se a pessoa escrever
@@ -2395,14 +2367,13 @@ async function montaFoto(canvas) {
     } else c.drawImage(marrom, ox + (w - sw) / 2, by + 46 * u, sw, s);
   } else if (F.moldura === "carimbo") {
     carimbo(c, w - 200 * u, hh - 200 * u, 140 * u, dourado, -0.22);
-  } else if (F.moldura === "cera") {
-    seloCera(c, w - 188 * u, hh - 188 * u, 118 * u, dourado);
   } else if (F.moldura === "assinatura") {
     const grd = c.createLinearGradient(0, hh * .7, 0, hh); grd.addColorStop(0, "rgba(20,14,8,0)"); grd.addColorStop(1, "rgba(20,14,8,.55)");
     c.fillStyle = grd; c.fillRect(0, hh * .7, w, hh * .3);
     const s = 110 * u, sw = s * dourado.width / dourado.height;
     c.drawImage(dourado, (w - sw) / 2, hh - s - 56 * u, sw, s);
   }
+  await colaPatches(c, F, ox, oy, w, hh);
 }
 // fita de filtros: cada um com a miniatura da própria foto; desliza para o lado
 function tiraFiltros(F, escolhe) {
@@ -2425,7 +2396,7 @@ function tiraFiltros(F, escolhe) {
   return tira;
 }
 // ---------- Tira de fotos: várias fotos numa peça só ----------
-const TIRAS = [["cabine", "Cabine"], ["pelicula", "Película Super 8"], ["negativo", "Negativo"], ["polaroids", "Polaroids no mural"], ["carimbada", "Carimbada"], ["mosaico", "Mosaico com selo"]];
+const TIRAS = [["cabine", "Cabine"], ["pelicula", "Película Super 8"], ["negativo", "Negativo"], ["polaroids", "Polaroids no mural"], ["carimbada", "Carimbada"], ["mosaico", "Mosaico com patch"]];
 const TIRA_FILTROS = ["super8", "original", "expedicao", "oldschool", "vintage", "kashi", "filme", "ganges", "cinema", "terracota"];
 // desenha a foto cobrindo o espaço (corta o que sobra), com cantos arredondados se r
 function cobre(c, img, x, y, w, h, r) {
@@ -2502,7 +2473,8 @@ async function montaTira(canvas) {
     const q = n === 1 ? [[0, 0, 1, 1]] : n === 2 ? [[0, 0, .5, 1], [.5, 0, .5, 1]] : n === 3 ? [[0, 0, 1, .55], [0, .55, .5, .45], [.5, .55, .5, .45]] : [[0, 0, .5, .5], [.5, 0, .5, .5], [0, .5, .5, .5], [.5, .5, .5, .5]];
     fotos.forEach((ft, i) => { const [a, b, w, hh] = q[i], l = a > 0 ? g2 / 2 : 0, r = a + w < .999 ? g2 / 2 : 0, t = b > 0 ? g2 / 2 : 0, bt = b + hh < .999 ? g2 / 2 : 0;
       cobre(c, ft, M + a * A + l, M + b * A + t, w * A - l - r, hh * A - t - bt); });
-    seloCera(c, W / 2, n === 3 ? M + .55 * A : H / 2, 110, dourado);
+    const pc = patchCaravana(dourado, 250), cy = n === 3 ? M + .55 * A : H / 2;
+    c.save(); c.shadowColor = "rgba(0,0,0,.45)"; c.shadowBlur = 20; c.shadowOffsetY = 6; c.drawImage(pc, W / 2 - pc.width / 2, cy - pc.height / 2); c.restore();
   }
 }
 function vTira() {
@@ -2553,8 +2525,42 @@ function vTira() {
         msg)) :
       h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
         h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "Escolha de 2 a 4 fotos" }),
-        h("span", { text: "Monte uma tira de cabine, uma película Super 8, um negativo, polaroids no mural ou um mosaico com selo." })),
+        h("span", { text: "Monte uma tira de cabine, uma película Super 8, um negativo, polaroids no mural ou um mosaico com patch." })),
     fi);
+}
+// patch bordado da caravana: tecido escuro, borda costurada e o símbolo em linha dourada
+function patchCaravana(img, alt) {
+  const W = Math.round(alt * .78), H = Math.round(alt), c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
+  const forma = (m) => { x.beginPath(); x.moveTo(W * .5, m); x.bezierCurveTo(W - m * 1.2, m, W - m, H * .18, W - m, H * .3); x.lineTo(W - m, H * .78); x.quadraticCurveTo(W - m, H * .86, W * .5, H - m); x.quadraticCurveTo(m, H * .86, m, H * .78); x.lineTo(m, H * .3); x.bezierCurveTo(m, H * .18, m * 1.2, m, W * .5, m); x.closePath(); };
+  forma(2); x.fillStyle = "#C9A063"; x.fill();
+  forma(alt * .045); const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#3B2A1C"); g.addColorStop(1, "#1F150D"); x.fillStyle = g; x.fill();
+  x.save(); forma(alt * .045); x.clip(); x.globalAlpha = .18; x.strokeStyle = "#000";
+  for (let i = -H; i < W + H; i += 3) { x.beginPath(); x.moveTo(i, 0); x.lineTo(i + H * .5, H); x.stroke(); } x.restore();
+  x.setLineDash([alt * .018, alt * .012]); x.lineWidth = alt * .012; x.strokeStyle = "#E8C07A"; forma(alt * .075); x.stroke(); x.setLineDash([]);
+  const sb = simboloEm(img, "#E8B45A", alt * .5); x.drawImage(sb, (W - sb.width) / 2, H * .22);
+  x.globalCompositeOperation = "source-atop"; x.globalAlpha = .25; x.strokeStyle = "#7A5020"; x.lineWidth = 1;
+  for (let i = 0; i < W; i += 2.2) { x.beginPath(); x.moveTo(i, H * .2); x.lineTo(i + 3, H * .75); x.stroke(); }
+  x.globalCompositeOperation = "source-over"; x.globalAlpha = 1;
+  for (let i = 0; i < 3; i++) { x.fillStyle = "#E8C07A"; x.beginPath(); x.arc(W * (.38 + i * .12), H * .84, alt * .012, 0, 7); x.fill(); }
+  return c;
+}
+// cola os patches (como os do passaporte) nos cantos da foto
+async function colaPatches(c, F, ox, oy, w, hh) {
+  const tipo = F.patch || "caravana"; if (tipo === "nenhum") return;
+  const dourado = await carregaImg("img/simbolo-dourado.png"), base = Math.min(w, hh) * .3, pad = Math.min(w, hh) * .04;
+  const lugar = PATCH_CIDADE[F.cidade] || "india";
+  const lista = tipo === "caravana" ? ["caravana"] : tipo === "india" ? ["india", "caravana"] : tipo === "lugar" ? [lugar, "caravana"] : [...new Set(["india", lugar === "india" ? "taj-mahal" : lugar, "caravana"])];
+  const pos = [[w - pad, hh - pad, .1, 1], [w - pad - base * .62, hh - pad - base * .28, -.14, .92], [pad, pad, -.08, .9]];
+  const ordem = lista.slice().reverse();
+  for (let i = ordem.length - 1; i >= 0; i--) {
+    const id = ordem[i], [px, py, rot, esc] = pos[i], alt = base * esc;
+    let im; try { im = id === "caravana" ? patchCaravana(dourado, alt * 2) : await carregaImg(`insignias/${id}.webp`); } catch (e) { continue; }
+    // com o carimbo no canto direito, os patches vão para a esquerda
+    const ih = alt, iw = ih * im.width / im.height, canto = i === 2, esq = F.moldura === "carimbo", xx = esq ? w - px : px;
+    const cx = ox + ((canto !== esq) ? xx + iw / 2 : xx - iw / 2), cy = oy + (canto ? py + ih / 2 : py - ih / 2);
+    c.save(); c.translate(cx, cy); c.rotate(rot); c.shadowColor = "rgba(0,0,0,.45)"; c.shadowBlur = alt * .08; c.shadowOffsetY = alt * .03;
+    c.drawImage(im, -iw / 2, -ih / 2, iw, ih); c.restore();
+  }
 }
 function vFotos() {
   if (S.fotoAba === "mural") return vMural();
@@ -2605,8 +2611,8 @@ function vFotos() {
       h("div", { class: "fcontrols" },
         h("p", { class: "lab", text: "Grão de filme" }),
         h("div", { class: "opts" }, GRAOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.grao || "auto") === id), onclick: () => set("grao", id) }, n))),
-        h("p", { class: "lab", text: "Símbolo no fundo" }),
-        h("div", { class: "opts" }, MARCAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.marca || "suave") === id), onclick: () => set("marca", id) }, n))),
+        h("p", { class: "lab", text: "Patches" }),
+        h("div", { class: "opts" }, PATCHES.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.patch || "caravana") === id), onclick: () => set("patch", id) }, n))),
         h("p", { class: "lab", text: "Moldura" }),
         h("div", { class: "opts" }, MOLDURAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: () => set("moldura", id) }, n))),
         h("p", { class: "lab", text: "Legenda" }), leg, cid,
@@ -3480,8 +3486,8 @@ function vHotelHoje() {
   if (!S.roteiro) return null;
   const nome = hotelAgora(), H = HOTEIS[nome]; if (!H) return null;
   return h("div", { class: "hotelhoje" },
-    h("div", { class: "hhtx" }, h("p", { class: "eyebrow", text: "Me leve ao hotel" }), h("b", { text: H.en }), h("span", { text: H.end })),
-    h("button", { class: "btn gold", type: "button", onclick: () => abrirMotorista(nome) }, "Mostrar ao motorista"),
+    h("div", { class: "hhtx" }, h("p", { class: "eyebrow", text: "Seu hotel" }), h("b", { text: H.en }), h("span", { text: H.end })),
+    h("button", { class: "btn gold", type: "button", onclick: () => abrirMotorista(nome) }, "Me leve ao hotel"),
     h("details", { class: "outros" }, h("summary", { text: "Outros hotéis da travessia" }),
       h("div", { class: "opts" }, Object.keys(HOTEIS).filter(k => k !== nome).map(k => h("button", { type: "button", class: "opt", onclick: () => abrirMotorista(k) }, HOTEIS[k].en)))));
 }
