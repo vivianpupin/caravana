@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 12:55";</script>
+<script>window.__VERSAO = "27/09 · 12:57";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -391,6 +391,9 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 /* Chat */
 .chatview{padding:0;max-width:none;height:100%;display:grid;grid-template-rows:auto 1fr auto auto;gap:0}
 .chathead{padding:14px 16px;border-bottom:1px solid var(--line);background:var(--bg)}
+.chatlinha{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sino{display:inline-flex;align-items:center;gap:6px;flex:none;background:#F2C230;color:#3B2A1C;border:0;border-radius:999px;padding:6px 12px;font:600 12px var(--ui)}
+.sino.on{background:transparent;color:var(--ok);border:1px solid var(--line2)}
 .chatlog{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
 .bubble{display:grid;grid-template-columns:32px 1fr;gap:10px;max-width:640px}
 .bubble>img{width:32px;height:32px;border-radius:50%;background:var(--panel3)}
@@ -3398,8 +3401,23 @@ async function ativarAvisos() {
     if (!publicKey) throw new Error("sem chave");
     const sub = (await reg.pushManager.getSubscription()) || (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u8(publicKey) }));
     await S.db.doc("push/" + S.uid).set({ sub: JSON.parse(JSON.stringify(sub)), ts: Date.now() });
-    lsSet("cdi-avisos", "1"); S.celMsg = null; render();
+    lsSet("cdi-avisos", "1"); S.celMsg = "Pronto! Você vai receber um aviso no celular quando alguém escrever no chat."; render();
   } catch (e) { S.celMsg = "Não consegui ativar agora. Tente de novo daqui a pouco."; render(); }
+}
+// sininho do chat: sempre à mão para ligar os avisos, e explica o que falta quando não dá
+function botaoAvisos() {
+  const on = noSite() && avisosLigados();
+  const clicar = () => {
+    if (!noSite()) S.celMsg = "As notificações funcionam no app pelo endereço caravanaindiaapp.netlify.app.";
+    else if (ehIphone() && !instalado()) S.celMsg = "No iPhone, primeiro instale o app: no Safari, toque em compartilhar, depois em Adicionar à Tela de Início. Abra pelo ícone da Caravana e toque aqui de novo.";
+    else if (!pushPossivel()) S.celMsg = "Este navegador não recebe notificações. No Android use o Chrome; no iPhone, instale o app na Tela de Início.";
+    else if (Notification.permission === "denied") S.celMsg = "As notificações estão bloqueadas. Libere nos Ajustes do celular, em Notificações, e toque aqui de novo.";
+    else { ativarAvisos(); return; }
+    render();
+  };
+  return h("button", { class: "sino" + (on ? " on" : ""), type: "button", onclick: clicar, "aria-label": on ? "Notificações ligadas" : "Ativar notificações" },
+    h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": "true" }, h("path", { d: "M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z M10 20a2 2 0 0 0 4 0", fill: "none", stroke: "currentColor", "stroke-width": 1.7, "stroke-linejoin": "round", "stroke-linecap": "round" })),
+    h("span", { text: on ? "Avisos ligados" : "Ativar avisos" }));
 }
 function cartaoCelular() {
   if (!noSite() || !S.uid || !eu()) return null;
@@ -3516,7 +3534,9 @@ function vConversa() {
   } });
   const ico = d => h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "1.7", "stroke-linecap": "round", "stroke-linejoin": "round" }, d.map(p => h("path", { d: p })));
   return h("section", { class: "view chatview" },
-    h("div", { class: "chathead" }, h("p", { class: "eyebrow", role: "heading", "aria-level": "1", style: "margin:0", text: "Conversa entre um chai e outro" })),
+    h("div", { class: "chathead" },
+      h("div", { class: "chatlinha" }, h("p", { class: "eyebrow", role: "heading", "aria-level": "1", style: "margin:0", text: "Conversa entre um chai e outro" }), botaoAvisos()),
+      S.celMsg ? h("p", { class: "small", role: "status", style: "margin:8px 0 0", text: S.celMsg }) : null),
     log,
     pode && S.pontoAberto ? h("div", { class: "picker loc" },
       h("div", { class: "locopt" },
@@ -4443,5 +4463,19 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.addEventListener("controllerchange", () => { if (tinha && !recarregou) { recarregou = true; location.reload(); } });
   navigator.serviceWorker.register("sw.js").then(r => { r.update(); document.addEventListener("visibilitychange", () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {});
 }
+// o iPhone às vezes volta para o app sem recarregar: confere a versão publicada e recarrega se mudou
+(function () {
+  let checando = false;
+  const confere = () => {
+    if (checando || document.hidden) return; checando = true;
+    fetch("versao.json?t=" + Date.now(), { cache: "no-store" }).then(r => r.ok ? r.json() : null)
+      .then(j => { if (j && j.v && j.v !== window.__VERSAO) location.reload(); })
+      .catch(() => {}).finally(() => { checando = false; });
+  };
+  document.addEventListener("visibilitychange", confere);
+  window.addEventListener("pageshow", confere);
+  window.addEventListener("focus", confere);
+  setInterval(confere, 5 * 60 * 1000);
+})();
 </script>
 </body></html>

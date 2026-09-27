@@ -28,9 +28,24 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.addEventListener("controllerchange", () => { if (tinha && !recarregou) { recarregou = true; location.reload(); } });
   navigator.serviceWorker.register("sw.js").then(r => { r.update(); document.addEventListener("visibilitychange", () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {});
 }
+// o iPhone às vezes volta para o app sem recarregar: confere a versão publicada e recarrega se mudou
+(function () {
+  let checando = false;
+  const confere = () => {
+    if (checando || document.hidden) return; checando = true;
+    fetch("versao.json?t=" + Date.now(), { cache: "no-store" }).then(r => r.ok ? r.json() : null)
+      .then(j => { if (j && j.v && j.v !== window.__VERSAO) location.reload(); })
+      .catch(() => {}).finally(() => { checando = false; });
+  };
+  document.addEventListener("visibilitychange", confere);
+  window.addEventListener("pageshow", confere);
+  window.addEventListener("focus", confere);
+  setInterval(confere, 5 * 60 * 1000);
+})();
 </script>
 </body></html>
 """
 versao = (datetime.datetime.utcnow() - datetime.timedelta(hours=3)).strftime("%d/%m · %H:%M")
 (raiz / "app" / "index.html").write_text(head.replace("%s", versao) + app + tail, encoding="utf-8")
+(raiz / "app" / "versao.json").write_text('{"v": "%s"}\n' % versao, encoding="utf-8")
 print("app/index.html gerado")

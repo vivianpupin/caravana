@@ -9,6 +9,10 @@
   node_bundler = "esbuild"
   external_node_modules = ["firebase-admin"]
 [[headers]]
+  for = "/versao.json"
+  [headers.values]
+    Cache-Control = "no-cache"
+[[headers]]
   for = "/sw.js"
   [headers.values]
     Cache-Control = "no-cache"
