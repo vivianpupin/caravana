@@ -1204,7 +1204,7 @@ function render() {
   const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
   main.replaceChildren(precisaCadastro ? vCadastro() :
     S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
-  // aviso novo da líder (primeiros 20 min): aparece no topo de qualquer aba
+  // aviso novo da líder (15 min): aparece no topo de qualquer aba
   if (!precisaCadastro && S.tab !== "travessia" && S.tab !== "conversa" && avisoEmDestaque(avisoAtual())) { const f = avisoFixado(), v = main.firstElementChild; if (f && v) v.prepend(f); }
   main.scrollTop = scroll;
   if (S.tab === "conversa") {
@@ -3924,17 +3924,17 @@ function cartaoCelular() {
 }
 // avisos da líder: só contam como aviso se quem mandou é a líder; o mais recente (até 2 dias) fica fixado
 const ehLider = uid => !!(S.viajantes.find(v => v.id === uid) || {}).lider;
-// aviso da líder: nos primeiros 20 minutos fica em destaque no topo de todas as abas (sem botão de fechar);
-// depois continua no Roteiro e no Chat por 48 horas, e aí a pessoa pode esconder
-const AVISO_DESTAQUE = 20 * 60 * 1000;
-const avisoAtual = () => S.chat.filter(m => m.tipo === "aviso" && ehLider(m.autor) && Date.now() - (m.ts || 0) < 48 * 3600 * 1000).sort((x, y) => y.ts - x.ts)[0];
+// aviso da líder: fica 15 minutos em destaque no topo de todas as abas e depois sai sozinho
+// (continua no Chat como mensagem normal)
+const AVISO_DESTAQUE = 15 * 60 * 1000;
+const avisoAtual = () => S.chat.filter(m => m.tipo === "aviso" && ehLider(m.autor) && Date.now() - (m.ts || 0) < AVISO_DESTAQUE).sort((x, y) => y.ts - x.ts)[0];
 const avisoEmDestaque = a => a && Date.now() - (a.ts || 0) < AVISO_DESTAQUE;
 function avisoFixado() {
   const a = avisoAtual();
   if (!a) return null;
   const destaque = avisoEmDestaque(a);
   if (!destaque && lsGet("cdi-aviso-lido") === a.id) return null;
-  // quando os 20 minutos acabarem, redesenha para liberar o botão de fechar
+  // quando os 15 minutos acabarem, redesenha para o aviso sair
   if (destaque && S.avisoTimer !== a.id) { S.avisoTimer = a.id; setTimeout(() => { S.avisoTimer = null; if (!document.querySelector(".sheet")) render(); }, AVISO_DESTAQUE - (Date.now() - a.ts) + 500); }
   const d = new Date(a.ts);
   return h("div", { class: "fixado" + (destaque ? " destaque" : ""), role: "note" },
