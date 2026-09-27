@@ -2177,7 +2177,6 @@ function vPerto() {
         h("button", { type: "button", "aria-label": "Centralizar em mim", class: S.pertoCentro ? "" : "on", onclick: () => { S.pertoCentro = null; render(); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")),
         perto.length ? h("button", { type: "button", "aria-label": "Ver todos", onclick: verTodos }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")) : null),
       h("p", { class: "mapdica", text: "Arraste com o dedo · pinça para aproximar" })),
-    vHotelHoje(),
     eu0 && S.rua && S.rua.txt ? h("div", { class: "ruaaqui", role: "status" }, h("span", { class: "eyebrow", text: "Você está em" }), h("b", { text: S.rua.txt }), S.rua.sub ? h("small", { text: S.rua.sub }) : null) : null,
     eu0 ? h("p", { class: "coord", style: "text-align:left", text: "Você: " + coordTxt(eu0.lat, eu0.lng) }) : null,
     !S.gpsOn ? h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null)
@@ -2207,6 +2206,7 @@ function ruaAqui(p) {
     }).catch(() => {}).finally(() => { S.ruaBusca = false; });
 }
 const distKm = (a, b) => { const R = 6371, r = x => x * Math.PI / 180, dLa = r(+b.lat - a.lat), dLo = r(+b.lng - a.lng); const q = Math.sin(dLa / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(+b.lat)) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(q)); };
+const eu0Mapa = () => !!(minhaPos() || S.pertoCentro);
 function vMapa() {
   if (S.montando) return vExplorador();
   perfis(S.posicoes.map(p => p.id));
@@ -2216,7 +2216,7 @@ function vMapa() {
       h("button", { class: "meuexp", type: "button", onclick: () => { S.bonecoRasc = null; go("explorador"); } },
         bonecoSvg(bonecoDe(S.uid), "bonecosvg mini"), h("span", { text: "Meu explorador" }))),
     h("div", { class: "mapwrap" }, vPerto(),
-      h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null))));
+      h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null), eu0Mapa() ? vHotelHoje() : null)));
 }
 
 // ---------- Estúdio de fotos ----------
