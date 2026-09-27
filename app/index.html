@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 13:57";</script>
+<script>window.__VERSAO = "27/09 · 14:12";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3786,15 +3786,23 @@ function sino() {
     return true;
   } catch (e) { return false; }
 }
-// frases da abertura, por cidade (uma por dia, alternando)
-const FRASES_CIDADE = {
-  Delhi: ["Toda travessia começa com um passo para fora de casa. O seu já foi dado.", "Delhi guarda sete cidades, uma sobre a outra. Hoje você caminha por todas elas.", "Respire fundo: o barulho de Delhi também é um jeito de dar boas-vindas."],
-  Agra: ["Um imperador ergueu um poema de mármore por amor. Que amor você carrega hoje?", "O mármore do Taj muda de cor com a luz do dia. Deixe o seu dia mudar também.", "Hoje a beleza chega devagar. Olhe com calma."],
-  Jaipur: ["Uma cidade inteira pintada com a cor da hospitalidade. Chegue de coração aberto.", "Pelas janelinhas do Palácio dos Ventos, o mundo era visto em silêncio. Observe antes de falar.", "Krishna toca a flauta para chamar quem o escuta. O que chama você hoje?"],
-  Varanasi: ["Em Kashi, a vida e a morte dividem a mesma escadaria. Esteja presente para as duas.", "A cidade da luz recebe você. Deixe o rio levar o que já pode ir.", "Aqui o fogo arde há milênios. Cuide do fogo que arde em você."],
-  Rishikesh: ["O Ganges desce verde e gelado do Himalaia. Beba desse silêncio.", "Na capital do yoga, o corpo também reza.", "Por séculos, os sábios desceram destas montanhas. Hoje é a sua vez de escutar."]
+// frases da abertura: uma história ou lenda do lugar para cada dia da travessia
+const FRASES_DIA = {
+  1: "Delhi foi erguida e destruída muitas vezes sobre o mesmo chão. Contam-se ao menos sete cidades, uma sobre a outra, antes da capital de hoje.",
+  2: "Um imperador transformou a dor da perda num monumento que atravessou quase quatro séculos. O Taj Mahal lembra o que só o amor sabe fazer: dar forma eterna ao que o tempo levaria.",
+  3: "Jaipur foi desenhada por um marajá astrônomo como uma mandala de nove quadras, seguindo a arquitetura sagrada da Índia. A cidade rosa nasceu olhando para o céu.",
+  4: "Na Índia, nada começa sem saudar Ganesha, o que remove os obstáculos. Hoje o dia começa aos pés dele, pedindo que se abram os caminhos que ainda estão fechados em você.",
+  5: "Kashi, a cidade de Shiva, é chamada de a mais antiga cidade habitada da Terra, apoiada no tridente do deus, fora do tempo comum. Hoje ela se acende inteira para o Diwali.",
+  6: "Famílias inteiras trazem seus mais velhos para viver os últimos dias à beira do Ganges. Para os hindus, deixar o corpo em Kashi é se libertar do ciclo de nascer e morrer: aqui a morte é vivida como chegada.",
+  7: "Conta-se que o fogo de Manikarnika arde há milênios sem se apagar. Ali, dizem, Shiva sussurra ao ouvido de quem parte o taraka mantra, o mantra que liberta do samsara, a roda de nascer e morrer.",
+  8: "Himalaia quer dizer morada da neve. Hoje o vento que desce dessas montanhas toca o seu cabelo, e você está ao pé da cordilheira mais alta da Terra. Chegar até aqui também é uma conquista.",
+  9: "Rishi quer dizer vidente, aquele que viu. Por milênios, os rishis subiram estas montanhas para meditar em cavernas e florestas. O nome da cidade vem de Hrishikesha, o senhor dos sentidos.",
+  10: "Em Kunjapuri, conta a tradição, caiu uma parte do corpo de Sati. Rio acima, o sábio Vasishtha meditou numa caverna à beira do Ganges. Hoje você visita os dois.",
+  11: "O rei Bhagiratha rezou por anos para que Ganga descesse do céu. A força da queda partiria a Terra, então Shiva a recebeu nos cabelos e a deixou escorrer devagar. É desse gesto que nasce o rio que você toca aqui.",
+  12: "No primeiro dia, esta roda se abriu em Delhi. Hoje ela se fecha no mesmo chão, com cada um de vocês dentro dela e a Índia guardada no corpo.",
+  13: "Lokah Samastah Sukhino Bhavantu: que todos os seres de todos os mundos sejam felizes. É com esse desejo que a travessia se despede."
 };
-const fraseDoDia = d => { const c = Object.keys(FRASES_CIDADE).find(k => String(d.cidade || "").includes(k)), l = FRASES_CIDADE[c] || []; return l.length ? l[d.n % l.length] : ""; };
+const fraseDoDia = d => FRASES_DIA[d.n] || "";
 function aberturaDoDia(forcar) {
   const R = S.roteiro; if (!R || document.querySelector(".abertura")) return;
   const hoje = hojeIso(), d = forcar ? (R.dias.find(x => x.n === forcar) || R.dias[0]) : R.dias.find(x => x.iso === hoje);
