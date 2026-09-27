@@ -1094,7 +1094,6 @@ function vTravessia() {
       h("b", { text: nn(d.n) }), d.cidade))),
     h("div", { class: "days" }, dias.map(d => vDia(d, d.n === S.diaAberto, d.iso === hoje, abrir))),
     h("button", { class: "btn", type: "button", style: "align-self:center", onclick: () => go("ensinamentos") }, "Guia da travessia e saberes"),
-    vEspalhe(),
     vOffline(),
     h("div", { class: "foot" },
       h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }),
@@ -2206,6 +2205,7 @@ const FILTROS = [
   { id: "musgo", cat: "Criativos", nome: "Duotone musgo", duo: [[34, 44, 30], [229, 218, 197]] }
 ];
 const GRAOS = [["auto", "Do filtro"], ["nenhum", "Sem grão"], ["leve", "Leve"], ["medio", "Médio"], ["forte", "Forte"]];
+const MARCAS = [["suave", "Suave"], ["marcado", "Marcado"], ["nenhum", "Sem símbolo"]];
 const MOLDURAS = [["polaroid", "Polaroid"], ["carimbo", "Carimbo"], ["assinatura", "Assinatura"], ["nenhuma", "Sem moldura"]];
 const imgCache = {};
 function carregaImg(src) { return imgCache[src] ||= new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; }); }
@@ -2257,6 +2257,17 @@ async function montaFoto(canvas) {
   const c = canvas.getContext("2d");
   if (F.moldura === "polaroid") { c.fillStyle = "#F6EFE1"; c.fillRect(0, 0, W, H); }
   c.drawImage(tmp, ox, oy);
+  // o símbolo da caravana impresso no fundo da foto, como marca d'água
+  const marca = F.marca || "suave";
+  if (marca !== "nenhum") {
+    const t = Math.min(w, hh) * .62, sw = t * dourado.width / dourado.height;
+    c.save(); c.beginPath(); c.rect(ox, oy, w, hh); c.clip();
+    c.globalCompositeOperation = "soft-light"; c.globalAlpha = marca === "marcado" ? 1 : .55;
+    c.drawImage(dourado, ox + (w - sw) / 2, oy + (hh - t) / 2, sw, t);
+    c.globalCompositeOperation = "source-over"; c.globalAlpha = marca === "marcado" ? .42 : .09;
+    c.drawImage(dourado, ox + (w - sw) / 2, oy + (hh - t) / 2, sw, t);
+    c.restore();
+  }
   const serif = "Lora, Georgia, serif", sans = "Poppins, system-ui, sans-serif";
   if (F.moldura === "polaroid") {
     const by = oy + hh, s = 96 * u, sw = s * marrom.width / marrom.height;
@@ -2332,12 +2343,13 @@ function vFotos() {
         h("div", { class: "opts" }, FILTROS.filter(f => f.cat === (F.cat || "Clássicos")).map(f => h("button", { type: "button", class: "opt", "aria-pressed": String(F.filtro === f.id), onclick: () => { msg.textContent = "Aplicando o filtro…"; set("filtro", f.id); } }, f.nome))),
         h("p", { class: "lab", text: "Grão de filme" }),
         h("div", { class: "opts" }, GRAOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.grao || "auto") === id), onclick: () => set("grao", id) }, n))),
+        h("p", { class: "lab", text: "Símbolo no fundo" }),
+        h("div", { class: "opts" }, MARCAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.marca || "suave") === id), onclick: () => set("marca", id) }, n))),
         h("p", { class: "lab", text: "Moldura" }),
         h("div", { class: "opts" }, MOLDURAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: () => set("moldura", id) }, n))),
         h("p", { class: "lab", text: "Legenda" }), leg, cid,
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no celular"),
-          h("button", { class: "btn", type: "button", onclick: async () => { const r = await compartilharImagem(await blobDoCanvas(), "caravana-" + (F.cidade || "india").toLowerCase() + ".jpg", textoConvite()); if (r) { msg.textContent = r; msg.className = "msg"; } } }, "Compartilhar"),
           h("button", { class: "btn", type: "button", onclick: mural }, "Enviar para a galeria"),
           h("button", { class: "btn", type: "button", onclick: enviar }, "Enviar para a Roda"),
           h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "Trocar foto")),
@@ -3120,151 +3132,6 @@ async function abrirResumo() {
   document.body.append(sheet);
 }
 
-
-// ---------- Espalhe a Caravana: cartão no formato story para postar ----------
-const INSTA = "@___caravana", INSTA_URL = "https://instagram.com/___caravana";
-function textoConvite() {
-  const hoje = hojeTrip(), R = S.roteiro, d = R && R.dias.find(x => x.iso === hoje);
-  const ini = R && R.dias[0] && R.dias[0].iso, fim = R && R.dias[R.dias.length - 1] && R.dias[R.dias.length - 1].iso;
-  const frase = d ? `Dia ${d.n} da Travessia da Índia Sagrada com a Caravana do Céu, em ${d.cidade}.`
-    : fim && hoje > fim ? "Atravessei a Índia Sagrada com a Caravana do Céu."
-    : "Vou atravessar a Índia Sagrada com a Caravana do Céu.";
-  return `${frase}\n${INSTA} · ${INSTA_URL}`;
-}
-async function compartilharImagem(blob, nome, texto) {
-  if (!blob) return "Não consegui montar a imagem.";
-  const file = new File([blob], nome, { type: blob.type || "image/png" });
-  try {
-    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text: texto }); return ""; }
-  } catch (e) { if (e && e.name === "AbortError") return ""; }
-  const dl = await (window.claude?.use?.("downloads") ?? null);
-  if (dl) { try { await dl.save({ filename: nome, data: blob }); return "Imagem salva. Poste no Instagram e marque " + INSTA + "."; } catch (e) { return ""; } }
-  const a = h("a", { href: URL.createObjectURL(blob), download: nome }); document.body.append(a); a.click(); a.remove();
-  return "Imagem salva. Poste no Instagram e marque " + INSTA + ".";
-}
-async function cartaoConvite() {
-  // cartaz de aventura: pôr do sol, templo, selva e o explorador em cima da rocha
-  const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H;
-  const x = c.getContext("2d"), PI = Math.PI;
-  try { await document.fonts.ready; } catch (e) {}
-  const SX = 540, SY = 900;
-  // céu
-  let g = x.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, "#2A1510"); g.addColorStop(.28, "#7A2E17"); g.addColorStop(.45, "#D8742E"); g.addColorStop(.55, "#F2B45A"); g.addColorStop(.7, "#A9512A"); g.addColorStop(1, "#2A1510");
-  x.fillStyle = g; x.fillRect(0, 0, W, H);
-  // raios de sol
-  x.save(); x.translate(SX, SY);
-  for (let i = 0; i < 28; i++) { const a0 = i / 28 * PI * 2; x.beginPath(); x.moveTo(0, 0); x.arc(0, 0, 1700, a0, a0 + PI / 56); x.closePath(); x.fillStyle = "rgba(255,214,140,.10)"; x.fill(); }
-  x.restore();
-  g = x.createRadialGradient(SX, SY, 0, SX, SY, 360); g.addColorStop(0, "rgba(255,240,190,1)"); g.addColorStop(.35, "rgba(255,205,120,.9)"); g.addColorStop(1, "rgba(255,170,80,0)");
-  x.fillStyle = g; x.beginPath(); x.arc(SX, SY, 360, 0, PI * 2); x.fill();
-  // montanhas ao longe
-  const serra = (y0, amp, cor, seed) => { x.beginPath(); x.moveTo(0, H); x.lineTo(0, y0);
-    for (let X = 0; X <= W; X += 40) x.lineTo(X, y0 - amp * (.5 + .5 * Math.sin(X / 170 + seed) * Math.cos(X / 90 + seed * 2)));
-    x.lineTo(W, H); x.closePath(); x.fillStyle = cor; x.fill(); };
-  serra(1060, 90, "rgba(110,48,30,.55)", 1); serra(1130, 70, "rgba(80,34,22,.7)", 3);
-  // templo (shikhara) e torres menores
-  const templo = (cx, base, larg, alt, cor) => {
-    x.fillStyle = cor; x.beginPath();
-    x.moveTo(cx - larg / 2, base); x.lineTo(cx - larg / 2, base - alt * .28);
-    x.bezierCurveTo(cx - larg / 2, base - alt * .7, cx - larg * .22, base - alt * .9, cx - larg * .12, base - alt * .93);
-    x.lineTo(cx + larg * .12, base - alt * .93);
-    x.bezierCurveTo(cx + larg * .22, base - alt * .9, cx + larg / 2, base - alt * .7, cx + larg / 2, base - alt * .28);
-    x.lineTo(cx + larg / 2, base); x.closePath(); x.fill();
-    x.beginPath(); x.ellipse(cx, base - alt * .95, larg * .17, alt * .03, 0, 0, PI * 2); x.fill();
-    x.fillRect(cx - 3, base - alt * 1.06, 6, alt * .1);
-    x.beginPath(); x.moveTo(cx + 3, base - alt * 1.06); x.lineTo(cx + larg * .22, base - alt * 1.03); x.lineTo(cx + 3, base - alt * 1.0); x.fill();
-    x.strokeStyle = "rgba(255,190,120,.18)"; x.lineWidth = 3;
-    for (let k = 1; k < 7; k++) { const yy = base - alt * .28 - k * alt * .09, w = larg / 2 * (1 - k * .1); x.beginPath(); x.moveTo(cx - w, yy); x.lineTo(cx + w, yy); x.stroke(); }
-  };
-  templo(250, 1260, 150, 330, "#4A2217"); templo(830, 1260, 170, 380, "#4A2217");
-  templo(540, 1300, 300, 640, "#3A1A11");
-  x.fillStyle = "#3A1A11"; x.fillRect(330, 1210, 420, 90);
-  for (let k = 0; k < 5; k++) { x.fillStyle = "rgba(255,200,110,.5)"; x.fillRect(365 + k * 78, 1235, 26, 44); }
-  // chão de rocha
-  x.beginPath(); x.moveTo(0, H); x.lineTo(0, 1500);
-  const pedra = [[0, 1500], [140, 1470], [260, 1488], [380, 1452], [520, 1466], [650, 1446], [780, 1472], [900, 1458], [1080, 1490]];
-  pedra.forEach(([a, b]) => x.lineTo(a, b)); x.lineTo(W, H); x.closePath();
-  g = x.createLinearGradient(0, 1440, 0, H); g.addColorStop(0, "#5A3320"); g.addColorStop(.15, "#3A2015"); g.addColorStop(1, "#1A0E09"); x.fillStyle = g; x.fill();
-  x.strokeStyle = "rgba(255,190,120,.45)"; x.lineWidth = 4; x.beginPath(); pedra.forEach(([a, b], i) => i ? x.lineTo(a, b) : x.moveTo(a, b)); x.stroke();
-  x.strokeStyle = "rgba(0,0,0,.35)"; x.lineWidth = 3;
-  for (const [a, b, c2, d] of [[180, 1530, 240, 1600], [620, 1520, 560, 1590], [860, 1540, 930, 1610], [360, 1560, 420, 1650]]) { x.beginPath(); x.moveTo(a, b); x.lineTo(c2, d); x.stroke(); }
-  // selva: folhas nas bordas
-  const folha = (fx, fy, comp, ang, cor) => {
-    x.save(); x.translate(fx, fy); x.rotate(ang); x.fillStyle = cor; x.beginPath(); x.moveTo(0, 0);
-    x.quadraticCurveTo(comp * .5, -comp * .22, comp, 0); x.quadraticCurveTo(comp * .5, comp * .22, 0, 0); x.fill();
-    x.strokeStyle = "rgba(0,0,0,.35)"; x.lineWidth = 3; x.beginPath(); x.moveTo(0, 0); x.lineTo(comp * .95, 0); x.stroke(); x.restore(); };
-  const tufo = (fx, fy, base, n, abre, cor) => { for (let i = 0; i < n; i++) folha(fx, fy, 260 + (i % 3) * 70, base + (i / (n - 1) - .5) * abre, cor); };
-  tufo(-20, 120, .55, 7, 1.5, "#1E2A18"); tufo(W + 20, 120, PI - .55, 7, 1.5, "#1E2A18");
-  tufo(-30, 1700, -.35, 6, 1.3, "#15200F"); tufo(W + 30, 1700, PI + .35, 6, 1.3, "#15200F");
-  // cipó pendurado
-  x.strokeStyle = "#1E2A18"; x.lineWidth = 7; x.beginPath(); x.moveTo(90, 0); x.bezierCurveTo(140, 300, 60, 520, 120, 760); x.stroke();
-  for (let t = 1; t < 8; t++) folha(90 + Math.sin(t) * 30, t * 95, 55, t % 2 ? .6 : 2.5, "#2A3A20");
-  x.beginPath(); x.moveTo(W - 70, 0); x.bezierCurveTo(W - 130, 240, W - 50, 420, W - 110, 620); x.stroke();
-  for (let t = 1; t < 6; t++) folha(W - 80 - Math.sin(t) * 30, t * 105, 55, t % 2 ? 2.5 : .6, "#2A3A20");
-  // o explorador
-  try {
-    const sv = bonecoSvg(bonecoDe(S.uid)); sv.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    const vb = sv.getAttribute("viewBox").split(" ").map(Number), alt = 780, larg = alt * vb[2] / vb[3];
-    sv.setAttribute("width", larg); sv.setAttribute("height", alt);
-    const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(sv)], { type: "image/svg+xml" }));
-    const im = await new Promise((ok, erro) => { const i = new Image(); i.onload = () => ok(i); i.onerror = erro; i.src = url; }); URL.revokeObjectURL(url);
-    x.save(); x.shadowColor = "rgba(255,190,110,.55)"; x.shadowBlur = 40;
-    x.drawImage(im, W / 2 - larg / 2, 1480 - alt, larg, alt); x.restore();
-  } catch (e) {}
-  // vinheta e poeira
-  g = x.createRadialGradient(W / 2, H / 2, 500, W / 2, H / 2, 1150); g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(1, "rgba(20,8,4,.6)");
-  x.fillStyle = g; x.fillRect(0, 0, W, H);
-  for (let i = 0; i < 2600; i++) { x.fillStyle = `rgba(255,${200 + (i % 40)},150,${.03 + (i % 7) * .012})`; x.fillRect((i * 7919) % W, (i * 104729) % H, 2, 2); }
-  // título em arco, estilo cartaz de aventura
-  const arco = (txt, cy, R, fonte) => {
-    x.font = fonte; const tot = x.measureText(txt).width; let ang = -tot / R / 2;
-    for (const ch of txt) { const w = x.measureText(ch).width; x.save(); x.translate(W / 2, cy + R); x.rotate(ang + w / R / 2); x.translate(0, -R);
-      x.lineWidth = 14; x.strokeStyle = "#2A1208"; x.strokeText(ch, 0, 0);
-      const gg = x.createLinearGradient(0, -90, 0, 10); gg.addColorStop(0, "#FFF1C2"); gg.addColorStop(.5, "#F2B94A"); gg.addColorStop(1, "#B8641C");
-      x.fillStyle = gg; x.fillText(ch, 0, 0); x.restore(); ang += w / R; }
-  };
-  x.textAlign = "center"; x.lineJoin = "round";
-  try { const sim = await carregaImg("img/simbolo-dourado.png"); const t = 110; x.drawImage(sim, W / 2 - t / 2, 120, t, t * sim.height / sim.width); } catch (e) {}
-  arco("CARAVANA", 380, 900, '900 128px "Cinzel", Georgia, serif');
-  arco("DO CÉU", 510, 900, '900 128px "Cinzel", Georgia, serif');
-  x.font = 'italic 500 50px "Lora", Georgia, serif'; x.fillStyle = "#FFE9C0"; x.lineWidth = 8; x.strokeStyle = "rgba(42,18,8,.8)";
-  x.strokeText("e a Travessia da Índia Sagrada", W / 2, 600); x.fillText("e a Travessia da Índia Sagrada", W / 2, 600);
-  x.font = '600 38px "Poppins", "Noto Sans Devanagari", sans-serif'; x.fillStyle = "#F2C872"; x.strokeText("लोकाः समस्ताः सुखिनो भवन्तु", W / 2, 668); x.fillText("लोकाः समस्ताः सुखिनो भवन्तु", W / 2, 668);
-  // frase e assinatura embaixo
-  const frase = textoConvite().split("\n")[0];
-  x.fillStyle = "#FBE7C2"; x.font = 'italic 500 44px "Lora", Georgia, serif';
-  const linhas = [], pal = frase.split(" "); let l = "";
-  for (const w of pal) { const t = l ? l + " " + w : w; if (x.measureText(t).width > W - 240 && l) { linhas.push(l); l = w; } else l = t; } if (l) linhas.push(l);
-  linhas.forEach((t, i) => x.fillText(t, W / 2, 1610 + i * 58));
-  x.font = '700 40px "Cinzel", Georgia, serif'; x.fillStyle = "#F2B94A";
-  const esp = t => t.split("").join(String.fromCharCode(8202)); x.fillText(esp("ÍNDIA SAGRADA · NOV 2026"), W / 2, 1760);
-  x.font = '600 42px "Poppins", sans-serif'; x.fillStyle = "#FFF1C2"; x.fillText(INSTA, W / 2, 1830);
-  x.strokeStyle = "rgba(242,185,74,.8)"; x.lineWidth = 4; x.strokeRect(36, 36, W - 72, H - 72); x.lineWidth = 1.5; x.strokeRect(52, 52, W - 104, H - 104);
-  return new Promise(res => c.toBlob(res, "image/png"));
-}
-async function abrirConvite() {
-  closeSheets();
-  const st = h("p", { class: "msg", role: "status", text: "Montando o seu cartão…" });
-  const prev = h("img", { alt: "Cartão da Caravana do Céu com o seu explorador", style: "width:100%;max-width:280px;align-self:center;border-radius:12px;box-shadow:0 6px 20px rgba(60,40,20,.25)" });
-  let blob = null;
-  const btn = h("button", { class: "btn gold", type: "button", disabled: true, onclick: async () => { const r = await compartilharImagem(blob, "caravana-do-ceu.png", textoConvite()); st.textContent = r; } }, "Compartilhar");
-  const box = h("div", { class: "box", role: "dialog", "aria-modal": "true", "aria-label": "Espalhe a Caravana", style: "display:flex;flex-direction:column;gap:12px" },
-    h("p", { class: "eyebrow", text: "Espalhe a Caravana" }), h("h2", { text: "Seu cartão para o story" }),
-    prev, st,
-    h("div", { class: "actions" }, btn, h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")));
-  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
-  document.body.append(sheet);
-  blob = await cartaoConvite();
-  if (blob) { prev.src = URL.createObjectURL(blob); btn.disabled = false; st.textContent = "Poste no story e marque " + INSTA + "."; }
-  else st.textContent = "Não consegui montar o cartão.";
-}
-function vEspalhe() {
-  return h("div", { class: "panel", style: "align-items:center;text-align:center" },
-    h("p", { class: "eyebrow", text: "Espalhe a Caravana" }),
-    h("p", { class: "small", text: "Um cartão com o seu explorador, pronto para o story. Marque " + INSTA + "." }),
-    h("button", { class: "btn gold", type: "button", onclick: abrirConvite }, "Compartilhar a Caravana"));
-}
 
 // Só a líder: quem está com o app aberto agora
 function vOnlineLider() {
