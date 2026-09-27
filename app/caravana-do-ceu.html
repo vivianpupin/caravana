@@ -1404,7 +1404,6 @@ function camposPassaporte(v) {
     campo("Nome", "Name", (v.nome || "").toUpperCase(), "big"),
     h("div", { class: "fdrow" }, campo(v.lider ? "Função" : "Viajante", v.lider ? "Role" : "Traveller", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0))),
     campo("Origem", "Place of origin", (v.cidade || "—").toUpperCase()),
-    h("div", { class: "fdrow" }, campo("Emissão", "Date of issue", dataDoc(v.ts)), campo("Validade", "Date of expiry", "16 NOV 2026")),
     campo("Rota", "Route", "DEL · AGR · JAI · VNS · RSK · DEL"),
     h("div", { class: "fd" }, h("span", { class: "fl", text: "Medalhas da Caravana / Caravan medals" }), medalhasDe(v, 40))
   ];
@@ -1437,8 +1436,8 @@ function paginaDados(v, foto, W, H) {
   campo(v.lider ? "FUNÇÃO" : "VIAJANTE", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0), 162);
   campo("CATEGORIA", tituloViajante(v).toUpperCase(), 224);
   campo("ORIGEM", (v.cidade || "—").toUpperCase(), 286);
-  x.fillStyle = "#8A6B43"; x.font = '500 12px "Poppins",sans-serif'; x.fillText("ROTA", 30, 340); x.fillText("VALIDADE", 30, 404);
-  x.fillStyle = "#282722"; x.font = '600 21px "Courier Prime",monospace'; x.fillText("DEL · AGR · JAI · VNS · RSK · DEL", 30, 366, W - 60); x.fillText("4 – 16 NOV 2026", 30, 430);
+  x.fillStyle = "#8A6B43"; x.font = '500 12px "Poppins",sans-serif'; x.fillText("ROTA", 30, 340);
+  x.fillStyle = "#282722"; x.font = '600 21px "Courier Prime",monospace'; x.fillText("DEL · AGR · JAI · VNS · RSK · DEL", 30, 366, W - 60);
   x.fillStyle = "rgba(40,39,34,.75)"; x.font = '500 15px "Courier Prime",monospace'; mrzDe(v, 0).split("\n").forEach((l, i) => x.fillText(l, 30, H - 58 + i * 22, W - 60));
   return c;
 }
@@ -1660,8 +1659,7 @@ function dadosLivro(v) {
         c("Categoria / Rank", tituloViajante(v).toUpperCase()))),
     h("div", { class: "livgrade" },
       c("Nº passaporte", numPassaporte(S.uid)), c("Viagens", String(totalViagens(v))),
-      c("Origem", (v.cidade || "—").toUpperCase()), c("Emissão", dataDoc(v.ts)),
-      c("Validade", "16 NOV 2026"),
+      c("Origem", (v.cidade || "—").toUpperCase()),
       c("Rota / Route", "DEL · AGR · JAI · VNS · RSK · DEL", "todo")),
     h("div", { class: "livmed" }, h("span", { class: "ldr", text: "Medalhas" }), medalhasDe(v, 22)));
 }
