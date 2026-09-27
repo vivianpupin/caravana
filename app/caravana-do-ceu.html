@@ -4445,14 +4445,16 @@ function falarEm(txt, lang, rate) {
   const t = String(txt || "").trim(); if (!t) return;
   try { if (audioFala) audioFala.pause(); speechSynthesis.cancel(); } catch (e) {}
   const semVoz = !vozDe(lang);
-  if (!navigator.onLine || t.length > 190) { if (falarCelular(t, lang, rate) || !navigator.onLine) return; }
+  if (!navigator.onLine) { falarCelular(t, lang, rate); return; }
   const a = new Audio(); a.referrerPolicy = "no-referrer"; audioFala = a;
   let caiu = false, tocando = false; const cai = () => { if (caiu || tocando) return; caiu = true; falarCelular(t, lang, rate); };
   a.onerror = cai; a.onplaying = () => { tocando = true; };
-  a.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang.slice(0, 2)}&ttsspeed=${(rate || .9) < .9 ? .8 : 1}&q=${encodeURIComponent(t)}`;
+  // no app instalado a voz vem pelo nosso servidor (o Google recusa o pedido direto do celular); toca mesmo com o iPhone no silencioso
+  a.src = noSite() ? `/.netlify/functions/falar?l=${lang.slice(0, 2)}${(rate || .9) < .9 ? "&v=lento" : ""}&t=${encodeURIComponent(t)}`
+    : `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang.slice(0, 2)}&ttsspeed=${(rate || .9) < .9 ? .8 : 1}&q=${encodeURIComponent(t)}`;
   a.play().catch(cai);
   // se em 4 segundos não começou a tocar, fala com a voz do celular
-  setTimeout(() => { if (!caiu && !tocando) { a.pause(); cai(); } }, semVoz ? 6000 : 4000);
+  setTimeout(() => { if (!caiu && !tocando) { a.pause(); cai(); } }, noSite() ? 9000 : semVoz ? 6000 : 4000);
 }
 const Reconhece = window.SpeechRecognition || window.webkitSpeechRecognition;
 const VOZ = { rec: null, parar: () => {} };
