@@ -3433,7 +3433,7 @@ function vConversa() {
   } });
   const ico = d => h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "1.7", "stroke-linecap": "round", "stroke-linejoin": "round" }, d.map(p => h("path", { d: p })));
   return h("section", { class: "view chatview" },
-    h("div", { class: "chathead" }, h("p", { class: "eyebrow", text: "Conversa" }), h("h1", { style: "font-size:22px", text: "Roda de Chai" })),
+    h("div", { class: "chathead" }, h("p", { class: "eyebrow", role: "heading", "aria-level": "1", style: "margin:0", text: "Conversa entre um chai e outro" })),
     log,
     pode && S.pontoAberto ? h("div", { class: "picker loc" },
       h("div", { class: "locopt" },
