@@ -54,12 +54,5 @@ service cloud.firestore {
     match /diarios/{uid} { allow read, write: if eu(uid) || lider(); }
     // inscrição de cada celular para receber notificações (só o dono grava; ninguém lê pelo app)
     match /push/{uid} { allow write: if eu(uid) && membro(); }
-    // selo de amizade: o código de 4 números dura poucos minutos; a amizade só pode ser criada por um dos dois
-    match /amizadeCodigos/{codigo} { allow read: if membro(); allow write: if membro() && request.resource.data.uid == request.auth.uid; }
-    match /amizades/{id} {
-      allow read: if membro();
-      allow create, update: if membro() && (request.resource.data.a == request.auth.uid || request.resource.data.b == request.auth.uid);
-      allow delete: if lider();
-    }
   }
 }

@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/09 · 14:19";</script>
+<script>window.__VERSAO = "27/09 · 14:23";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -587,19 +587,6 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 @keyframes abzoom{from{transform:scale(1.18)}}@keyframes absimb{from{opacity:0;transform:scale(.7)}}
 @keyframes absobe{from{opacity:0;transform:translateY(10px)}}
 @media (prefers-reduced-motion:reduce){.abertura,.abertura *{animation:none!important}}
-.amlista{display:flex;flex-direction:column;gap:8px}
-.amitem{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:12px;align-items:center;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:8px 12px}
-.amitem .amdupla{grid-row:span 2;display:flex}
-.amitem .amdupla .rosto+.rosto{margin-left:-12px}
-.amitem small{color:var(--soft)}
-.sheet>.amsheet{align-items:center;text-align:center;gap:10px}
-.qrbox{width:min(62vw,240px);background:#fff;border-radius:14px;padding:10px}
-.qrbox svg{display:block;width:100%;height:auto}
-.amcodigo{font:700 34px var(--ui);letter-spacing:.3em;color:var(--terra);margin:0}
-.amvideo{width:min(70vw,280px);aspect-ratio:1;object-fit:cover;border-radius:16px;background:#111}
-.amdigitos{text-align:center;font:700 22px var(--ui);letter-spacing:.3em;max-width:140px}
-.amcardbox{width:min(78vw,340px);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
-.amcardbox svg{display:block;width:100%;height:auto}
 .celx{position:absolute;top:6px;right:8px;background:none;border:0;font-size:22px;line-height:1;color:var(--soft);padding:4px 8px}
 .meuexp{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 14px 4px 6px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
 .bonecosvg{display:block}
@@ -1018,7 +1005,7 @@ nav.tabs button{position:relative}
 const S = {
   tab: "travessia",
   roteiro: null, roteiroErro: false,
-  dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [], cartas: [], diarios: [], pedra: [], membros: [], mural: [], amizades: [], fotoAba: "estudio", muralCidade: "",
+  dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [], cartas: [], diarios: [], pedra: [], membros: [], mural: [], fotoAba: "estudio", muralCidade: "",
   vReady: false, dbReady: false, pularCadastro: false,
   uid: null, me: null, isOwner: false, canChat: null,
   db: null, user: null, assets: null, perfis: {},
@@ -1975,7 +1962,7 @@ function vPassaporte() {
         h("img", { src: avatar(g.id), alt: "" }),
         h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : tituloViajante(g), totalViagens(g) > 1 ? totalViagens(g) + " viagens" : "", g.cidade].filter(Boolean).join(" · ") }), medalhasDe(g, 24)),
         h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null,
-    vAmizades(), vEntradasLider(), vProntos(),
+    vEntradasLider(), vProntos(),
     S.isOwner || aberto(localDe("travessia")) ? h("button", { class: "folhear video", type: "button", onclick: abrirVideoPassaporte },
       h("span", { class: "vidico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("path", { d: "M8 5.5v13l11-6.5z", fill: "#3B2A1C" }))),
       h("span", null, h("b", { text: "Vídeo do meu passaporte" }), h("span", { text: "O passaporte gira, abre e folheia seus selos. Pronto para Reels e Stories." }))) : null);
@@ -3801,18 +3788,18 @@ function sino() {
 }
 // frases da abertura: uma história ou lenda do lugar para cada dia da travessia
 const FRASES_DIA = {
-  1: "Delhi foi erguida e destruída muitas vezes sobre o mesmo chão. Contam-se ao menos sete cidades, uma sobre a outra, antes da capital de hoje.",
+  1: "As portas da Índia se abrem, e Delhi recebe você com o peso de sete cidades que já existiram neste mesmo chão, erguidas e destruídas uma sobre a outra.",
   2: "Um imperador transformou a dor da perda num monumento que atravessou quase quatro séculos. O Taj Mahal lembra o que só o amor sabe fazer: dar forma eterna ao que o tempo levaria.",
-  3: "Jaipur foi desenhada por um marajá astrônomo como uma mandala de nove quadras, seguindo a arquitetura sagrada da Índia. A cidade rosa nasceu olhando para o céu.",
-  4: "Na Índia, nada começa sem saudar Ganesha, o que remove os obstáculos. Hoje o dia começa aos pés dele, pedindo que se abram os caminhos que ainda estão fechados em você.",
-  5: "Kashi, a cidade de Shiva, é chamada de a mais antiga cidade habitada da Terra, apoiada no tridente do deus, fora do tempo comum. Hoje ela se acende inteira para o Diwali.",
-  6: "Famílias inteiras trazem seus mais velhos para viver os últimos dias à beira do Ganges. Para os hindus, deixar o corpo em Kashi é se libertar do ciclo de nascer e morrer: aqui a morte é vivida como chegada.",
+  3: "Vastu Shastra, a arquitetura sagrada da Índia, ensina que uma cidade deve repetir a ordem do cosmos. Por isso um marajá astrônomo desenhou Jaipur como uma mandala de nove quadras, em honra aos nove planetas da astrologia indiana.",
+  4: "Conta-se que Ganesha escreveu o Mahabharata inteiro enquanto o sábio Vyasa ditava sem parar. Quando a pena quebrou, ele arrancou a própria presa para não interromper a obra. Hoje você pede a ele essa mesma entrega para o seu caminho.",
+  5: "Para os hindus, Kashi é a cidade mais sagrada da Terra. Conta a lenda que ela não está apoiada no chão, e sim no tridente de Shiva, e que, quando o mundo se desfizer no fim dos tempos, só ela vai permanecer. Hoje ela se acende inteira para o Diwali.",
+  6: "Famílias inteiras trazem seus mais velhos para viver os últimos dias à beira do Ganges. Para os hindus, deixar o corpo em Kashi é se libertar do ciclo de nascer e morrer: aqui a morte é vivida como passagem para o outro lado, o lado real.",
   7: "Conta-se que o fogo de Manikarnika arde há milênios sem se apagar. Ali, dizem, Shiva sussurra ao ouvido de quem parte o taraka mantra, o mantra que liberta do samsara, a roda de nascer e morrer.",
-  8: "Himalaia quer dizer morada da neve. Hoje o vento que desce dessas montanhas toca o seu cabelo, e você está ao pé da cordilheira mais alta da Terra. Chegar até aqui também é uma conquista.",
-  9: "Rishi quer dizer vidente, aquele que viu. Por milênios, os rishis subiram estas montanhas para meditar em cavernas e florestas. O nome da cidade vem de Hrishikesha, o senhor dos sentidos.",
-  10: "Em Kunjapuri, conta a tradição, caiu uma parte do corpo de Sati. Rio acima, o sábio Vasishtha meditou numa caverna à beira do Ganges. Hoje você visita os dois.",
-  11: "O rei Bhagiratha rezou por anos para que Ganga descesse do céu. A força da queda partiria a Terra, então Shiva a recebeu nos cabelos e a deixou escorrer devagar. É desse gesto que nasce o rio que você toca aqui.",
-  12: "No primeiro dia, esta roda se abriu em Delhi. Hoje ela se fecha no mesmo chão, com cada um de vocês dentro dela e a Índia guardada no corpo.",
+  8: "Hoje o vento que toca seus cabelos desce do Himalaia, a mais alta cordilheira da Terra. Para os hindus, estas montanhas são a morada dos deuses: é no Kailash, no alto delas, que Shiva medita desde sempre.",
+  9: "Rishi quer dizer vidente, aquele que viu. Por milênios, os rishis subiram estas montanhas para meditar em cavernas e florestas.",
+  10: "Por estas margens passaram sábios que a Índia ainda reverencia. Vasishtha, mestre de Rama, meditou numa caverna à beira deste rio. Hoje você caminha onde eles caminharam e se senta onde eles silenciaram.",
+  11: "Yoga vem da raiz sânscrita yuj, unir. Depois de tantos dias de estrada, hoje é dia de juntar o que a travessia espalhou: corpo, respiração e silêncio, à beira do Ganges.",
+  12: "Mantra quer dizer instrumento da mente: man, mente; tra, aquilo que conduz. Hoje, em roda, cada voz leva para casa o som que a Índia deixou dentro dela.",
   13: "Lokah Samastah Sukhino Bhavantu: que todos os seres de todos os mundos sejam felizes. É com esse desejo que a travessia se despede."
 };
 const fraseDoDia = d => FRASES_DIA[d.n] || "";
@@ -3844,121 +3831,6 @@ function aberturaDoDia(forcar) {
 function abreDia() { const t = +new URLSearchParams(location.search).get("abertura"); aberturaDoDia(t || 0); }
 document.addEventListener("visibilitychange", () => { if (!document.hidden) abreDia(); });
 
-// ---------- Selar amizade: QR code (ou código de 4 números) entre dois celulares ----------
-const nomeCurto = id => String((S.viajantes.find(v => v.id === id) || {}).nome || nomeDe(id) || "Viajante").trim().split(/\s+/)[0];
-const diaHoje = () => (S.roteiro?.dias || []).find(d => d.iso === hojeIso());
-const minhasAmizades = () => S.amizades.filter(a => a.a === S.uid || a.b === S.uid).sort((x, y) => (y.ts || 0) - (x.ts || 0));
-const outroDa = a => a.a === S.uid ? a.b : a.a;
-function vAmizades() {
-  if (!S.db || !eu()) return null;
-  const ms = minhasAmizades();
-  return h("div", { class: "panel amizades" },
-    h("p", { class: "eyebrow", text: "Selos de amizade" }),
-    h("h2", { text: ms.length ? (ms.length === 1 ? "1 amizade selada" : ms.length + " amizades seladas") : "Sele uma amizade" }),
-    h("p", { class: "small", text: "Encontrou alguém especial no caminho? Aproximem os celulares: um mostra o código, o outro lê. O selo entra no passaporte dos dois." }),
-    ms.length ? h("div", { class: "amlista" }, ms.map(a => h("button", { type: "button", class: "amitem", onclick: () => abrirSeloAmizade(a) },
-      h("span", { class: "amdupla" }, bonecoRosto(S.uid), bonecoRosto(outroDa(a))),
-      h("b", { text: nomeCurto(outroDa(a)) }), h("small", { text: [a.cidade, a.ts ? new Date(a.ts).toLocaleDateString("pt-BR", { day: "numeric", month: "short" }) : ""].filter(Boolean).join(" · ") })))) : null,
-    h("div", { class: "actions" },
-      h("button", { class: "btn gold", type: "button", onclick: mostrarCodigoAmizade }, "🤝 Mostrar meu código"),
-      h("button", { class: "btn", type: "button", onclick: lerCodigoAmizade }, "📷 Ler o código de alguém")));
-}
-async function mostrarCodigoAmizade() {
-  closeSheets();
-  const codigo = String(Math.floor(1000 + Math.random() * 9000));
-  const st = h("p", { class: "small", role: "status", text: "Peça para a outra pessoa tocar em Ler o código de alguém." });
-  const qrBox = h("div", { class: "qrbox" });
-  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } },
-    h("div", { class: "amsheet", role: "dialog", "aria-label": "Meu código de amizade" },
-      h("p", { class: "eyebrow", text: "Selar amizade" }), h("h2", { text: "Mostre para a outra pessoa" }), qrBox,
-      h("p", { class: "amcodigo", text: codigo.split("").join(" ") }), st,
-      h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")));
-  document.body.append(sheet);
-  S.amEsperando = Date.now();
-  try {
-    await carregaScript("vendor/qrcode.js");
-    const q = window.qrcode(0, "M"); q.addData("caravana-amizade:" + codigo); q.make();
-    qrBox.innerHTML = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
-  } catch (e) {}
-  try { await S.db.doc("amizadeCodigos/" + codigo).set({ uid: S.uid, ts: Date.now() }); }
-  catch (e) { st.textContent = "Não consegui criar o código agora. Confira a internet e tente de novo."; }
-}
-function lerCodigoAmizade() {
-  closeSheets();
-  const st = h("p", { class: "small", role: "status" });
-  const inp = h("input", { type: "text", inputmode: "numeric", maxlength: "4", placeholder: "0000", "aria-label": "Código de 4 números", class: "amdigitos" });
-  const video = h("video", { playsinline: true, muted: true, class: "amvideo" });
-  let parar = false, stream = null;
-  const fecha = () => { parar = true; try { stream && stream.getTracks().forEach(t => t.stop()); } catch (e) {} closeSheets(); };
-  const confirma = async codigo => {
-    codigo = String(codigo || "").replace(/\D/g, "").slice(0, 4); if (codigo.length !== 4) { st.textContent = "O código tem 4 números."; return; }
-    st.textContent = "Selando…";
-    try {
-      const d = await S.db.doc("amizadeCodigos/" + codigo).get();
-      const c = d.exists ? d.data() : null;
-      if (!c || Date.now() - (c.ts || 0) > 10 * 60 * 1000) { st.textContent = "Esse código não vale mais. Peça para a pessoa mostrar de novo."; return; }
-      if (c.uid === S.uid) { st.textContent = "Esse é o seu próprio código."; return; }
-      const [a, b] = [S.uid, c.uid].sort(), dia = diaHoje();
-      const am = { a, b, ts: Date.now(), cidade: dia ? dia.cidade : "", dia: dia ? dia.n : 0 };
-      await S.db.doc("amizades/" + a + "_" + b).set(am);
-      fecha(); abrirSeloAmizade({ id: a + "_" + b, ...am }, true);
-    } catch (e) { st.textContent = "Não consegui selar agora. Tente de novo."; }
-  };
-  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) fecha(); } },
-    h("div", { class: "amsheet", role: "dialog", "aria-label": "Ler código de amizade" },
-      h("p", { class: "eyebrow", text: "Selar amizade" }), h("h2", { text: "Aponte para o código da outra pessoa" }), video,
-      h("p", { class: "small", text: "Ou digite os 4 números que aparecem embaixo do código:" }),
-      h("div", { class: "unlock" }, inp, h("button", { class: "btn gold", type: "button", onclick: () => confirma(inp.value) }, "Selar")), st,
-      h("button", { class: "btn ghost", type: "button", onclick: fecha }, "Fechar")));
-  document.body.append(sheet);
-  (async () => {
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
-      video.srcObject = stream; await video.play();
-      await carregaScript("vendor/jsqr.js");
-      const cv = document.createElement("canvas"), cx = cv.getContext("2d", { willReadFrequently: true });
-      const olha = () => {
-        if (parar) return;
-        if (video.videoWidth) {
-          cv.width = video.videoWidth; cv.height = video.videoHeight; cx.drawImage(video, 0, 0);
-          const r = window.jsQR(cx.getImageData(0, 0, cv.width, cv.height).data, cv.width, cv.height);
-          const m = r && /caravana-amizade:(\d{4})/.exec(r.data);
-          if (m) { parar = true; confirma(m[1]); return; }
-        }
-        requestAnimationFrame(olha);
-      };
-      olha();
-    } catch (e) { video.remove(); st.textContent = "A câmera não abriu. Digite os 4 números do código."; }
-  })();
-}
-// quem mostrou o código vê o selo aparecer assim que a outra pessoa lê
-function novaAmizade() {
-  if (!S.amEsperando) return;
-  const a = minhasAmizades().find(x => (x.ts || 0) > S.amEsperando);
-  if (!a) return;
-  S.amEsperando = null; closeSheets(); abrirSeloAmizade(a, true);
-}
-// a imagem especial do selo de amizade (1080x1350): os dois bonequinhos, os nomes, a cidade e o dia
-function cartaoAmizade(a) {
-  const W = 1080, H = 1350, serif = "Georgia,'Times New Roman',serif", outro = outroDa(a);
-  const cid = ["Delhi", "Agra", "Jaipur", "Varanasi", "Rishikesh"].find(k => String(a.cidade || "").includes(k));
-  const svg = h("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: `0 0 ${W} ${H}`, width: W, height: H, class: "amcard" });
-  svg.append(h("defs", null, h("radialGradient", { id: "amg", cx: "50%", cy: "46%", r: "70%" }, h("stop", { offset: "0%", "stop-color": "#F2C230", "stop-opacity": ".22" }), h("stop", { offset: "70%", "stop-color": "#140C06", "stop-opacity": ".82" }))),
-    h("image", { href: cid ? `img/abertura-${cid.toLowerCase()}.webp` : "img/tenda.webp", x: 0, y: 0, width: W, height: H, preserveAspectRatio: "xMidYMid slice", style: "filter:blur(6px) brightness(.6)" }),
-    h("rect", { width: W, height: H, fill: "url(#amg)" }),
-    h("rect", { x: 40, y: 40, width: W - 80, height: H - 80, fill: "none", stroke: "#E2BE78", "stroke-width": 2, opacity: .7 }),
-    h("image", { href: "img/simbolo-dourado.png", x: W / 2 - 50, y: 110, width: 100, height: 100 }),
-    h("text", { x: W / 2, y: 280, "text-anchor": "middle", "font-family": serif, "font-size": 30, "letter-spacing": 12, fill: "#E2BE78", text: "SELO DE AMIZADE" }),
-    h("text", { x: W / 2, y: 330, "text-anchor": "middle", "font-family": serif, "font-style": "italic", "font-size": 26, fill: "rgba(244,230,196,.8)", text: "Travessia da Índia Sagrada" }));
-  // os dois bonequinhos lado a lado, com um brilho dourado entre eles
-  svg.append(h("circle", { cx: W / 2, cy: 700, r: 260, fill: "rgba(242,194,48,.10)", stroke: "rgba(226,190,120,.5)", "stroke-width": 2 }),
-    h("g", { transform: `translate(${W / 2 - 330} 420) scale(5)` }, desenhaBoneco({ ...bonecoDe(S.uid), pet: "nenhum" })),
-    h("g", { transform: `translate(${W / 2 + 30} 420) scale(5)` }, desenhaBoneco({ ...bonecoDe(outro), pet: "nenhum" })),
-    h("text", { x: W / 2, y: 1060, "text-anchor": "middle", "font-family": serif, "font-size": 64, fill: "#FFF3D6", text: nomeCurto(S.uid) + " & " + nomeCurto(outro) }),
-    h("text", { x: W / 2, y: 1120, "text-anchor": "middle", "font-family": serif, "font-size": 28, "letter-spacing": 4, fill: "#E2BE78", text: [a.cidade, a.ts ? new Date(a.ts).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" }) : ""].filter(Boolean).join(" · ") }),
-    h("text", { x: W / 2, y: H - 90, "text-anchor": "middle", "font-family": serif, "font-size": 22, "letter-spacing": 4, fill: "rgba(244,230,196,.7)", text: "caravanadoceu.com" }));
-  return svg;
-}
 // transforma o desenho em foto (as imagens entram embutidas para o celular conseguir salvar)
 async function svgParaJpg(svg) {
   const cp = svg.cloneNode(true);
@@ -3972,22 +3844,6 @@ async function svgParaJpg(svg) {
   const c = document.createElement("canvas"); c.width = W; c.height = H; c.getContext("2d").drawImage(img, 0, 0, W, H); URL.revokeObjectURL(url);
   return new Promise(ok => c.toBlob(ok, "image/jpeg", .92));
 }
-function abrirSeloAmizade(a, novo) {
-  closeSheets();
-  const st = h("p", { class: "small", role: "status" });
-  const card = cartaoAmizade(a);
-  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } },
-    h("div", { class: "amsheet", role: "dialog", "aria-label": "Selo de amizade" },
-      novo ? h("p", { class: "eyebrow", text: "Amizade selada! O selo já está no passaporte de vocês." }) : null,
-      h("div", { class: "amcardbox" }, card),
-      h("div", { class: "actions", style: "justify-content:center" },
-        h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(svgParaJpg(card), "selo-de-amizade.jpg", st) }, "Salvar e compartilhar"),
-        h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")), st));
-  document.body.append(sheet);
-  if (novo) { try { navigator.vibrate && navigator.vibrate([30, 60, 30]); } catch (e) {} sino(); }
-}
-
-window.__amizadeTeste = (b, cidade) => abrirSeloAmizade({ a: S.uid, b, ts: Date.now(), cidade: cidade || "Varanasi" }, true);
 // ---------- Mapa desenhado da travessia (para salvar e postar, 1080x1350) ----------
 function mapaTravessia(v, todos) {
   const W = 1080, H = 1350, NS = "http://www.w3.org/2000/svg", serif = "Georgia,'Times New Roman',serif", tinta = "#3A220E";
@@ -4872,7 +4728,7 @@ function vRupias() {
 
 // ---------- dados ----------
 // cada coleção só redesenha as abas que mostram aqueles dados (evita a tela pular à toa)
-const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos"], cartas: ["travessia"], amizades: ["passaporte"] };
+const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos"], cartas: ["travessia"] };
 function listen(col, key, q, after) {
   let primeira = true;
   (q || S.db.collection(col)).onSnapshot(snap => {
@@ -4911,7 +4767,6 @@ render();
   listen("cidades", "cidades"); listen("locais", "locais"); listen("ensinamentos", "ens");
   listen("viajantes", "viajantes", null, () => { S.vReady = true; });
   listen("chat", "chat", db.collection("chat").orderBy("ts", "desc").limit(400));
-  listen("amizades", "amizades", db.collection("amizades"), () => novaAmizade());
   listen("posicoes", "posicoes");
   listen("cartas", "cartas", null, () => {
     setTimeout(checaCorreio, 1200);
