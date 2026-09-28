@@ -65,25 +65,59 @@ if (!pronto) {
     }
     const m = await fs.doc("membros/" + u.uid).get().catch(() => null);
     if (m && m.exists) return entrar();
+    // entrou com e-mail + palavra: a mesma palavra já vira a chave de membro, sem pedir de novo
+    if (palavraDigitada) {
+      const palavra = palavraDigitada; palavraDigitada = "";
+      try { await fs.doc("membros/" + u.uid).set({ palavra, nome: me.name, email: me.email, ts: Date.now() }); return entrar(); }
+      catch (e) { erroLogin = "Palavra incorreta. Confira com a líder da caravana."; await auth.signOut(); return; }
+    }
     telaPalavra();
   });
 }
 let erroLogin = "";
 // no celular o login abre na mesma aba e volta para o app (a janelinha separada se perde entre as abas do Safari)
 const celular = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent)) || matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+// Entrar com qualquer e-mail + a palavra da caravana (a palavra é a senha de todos).
+// O Firebase pede senha de 6 letras ou mais, então a senha guardada é a palavra com um prefixo fixo.
+let palavraDigitada = "";
+const senhaDe = palavra => "caravana-" + palavra;
+async function entrarComEmail(email, palavra, erro, bt) {
+  email = email.trim().toLowerCase(); palavra = palavra.trim().toLowerCase();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { erro.textContent = "Confira o e-mail."; return; }
+  if (!palavra) { erro.textContent = "Digite a palavra da caravana."; return; }
+  erro.textContent = ""; erroLogin = ""; bt.disabled = true; bt.textContent = "Entrando…"; palavraDigitada = palavra;
+  try { await auth.signInWithEmailAndPassword(email, senhaDe(palavra)); return; }
+  catch (e) {
+    if (/network/.test(e.code || "")) { erro.textContent = "Sem internet. Tente de novo quando tiver sinal."; }
+    else {
+      // primeira vez deste e-mail: cria a entrada na hora
+      try { await auth.createUserWithEmailAndPassword(email, senhaDe(palavra)); return; }
+      catch (x) {
+        erro.textContent = /email-already-in-use/.test(x.code || "") ? "Palavra incorreta para este e-mail. Confira com a líder da caravana."
+          : /operation-not-allowed/.test(x.code || "") ? "A entrada por e-mail ainda não foi ligada. Avise a líder."
+          : "Não consegui entrar. Tente de novo.";
+      }
+    }
+  }
+  palavraDigitada = ""; bt.disabled = false; bt.textContent = "Entrar";
+}
 function telaLogin() {
   const erro = el("p", { className: "err", textContent: erroLogin });
-  const b = el("button", { type: "button", onclick: async () => {
+  const em = el("input", { type: "email", placeholder: "Seu e-mail", autocomplete: "email", inputMode: "email", autocapitalize: "none" });
+  const pal = el("input", { type: "text", placeholder: "Palavra da caravana", autocomplete: "off", autocapitalize: "none" });
+  const entra = el("button", { type: "button", onclick: () => entrarComEmail(em.value, pal.value, erro, entra) }, "Entrar");
+  pal.addEventListener("keydown", e => { if (e.key === "Enter") entra.click(); });
+  const b = el("button", { type: "button", className: "claro", onclick: async () => {
     erro.textContent = ""; erroLogin = "";
     const prov = new firebase.auth.GoogleAuthProvider(); prov.setCustomParameters({ prompt: "select_account" });
-    if (celular) { b.disabled = true; b.textContent = "Abrindo o Google…"; try { await auth.signInWithRedirect(prov); return; } catch (x) { b.disabled = false; b.textContent = "Entrar com Google"; } }
+    if (celular) { b.disabled = true; b.textContent = "Abrindo o Google…"; try { await auth.signInWithRedirect(prov); return; } catch (x) { b.disabled = false; b.textContent = "Ou entrar com Google"; } }
     try { await auth.signInWithPopup(prov); }
     catch (e) {
       if (/popup|operation-not-supported|web-storage/.test(e.code || "")) { try { await auth.signInWithRedirect(prov); return; } catch (x) {} }
       erro.textContent = "Não consegui entrar. Tente de novo.";
     }
-  } }, "Entrar com Google");
-  portao(el("p", { textContent: "O aplicativo da Caravana Índia 2026. Entre com a sua conta Google para começar." }), b, erro);
+  } }, "Ou entrar com Google");
+  portao(el("p", { textContent: "O aplicativo da Caravana Índia 2026. Digite o seu e-mail e a palavra da caravana, que a líder passou no grupo." }), em, pal, entra, erro, b);
 }
 function telaPalavra() {
   const inp = el("input", { type: "text", placeholder: "Palavra da caravana", autocomplete: "off" });
@@ -97,7 +131,7 @@ function telaPalavra() {
   inp.addEventListener("keydown", e => { if (e.key === "Enter") ok(); });
   portao(el("p", { textContent: `Olá, ${me.name.split(" ")[0]}! Digite a palavra da caravana, que a líder passou no grupo.` }), inp,
     el("button", { type: "button", onclick: ok }, "Entrar na caravana"), erro,
-    el("button", { type: "button", className: "claro", onclick: () => auth.signOut() }, "Usar outra conta Google"));
+    el("button", { type: "button", className: "claro", onclick: () => auth.signOut() }, "Usar outro e-mail ou conta"));
 }
 function telaCriarPalavra() {
   const inp = el("input", { type: "text", placeholder: "Ex.: namaste2026", autocomplete: "off" });
