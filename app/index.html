@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "29/09 · 14:49";</script>
+<script>window.__VERSAO = "29/09 · 14:52";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1479,7 +1479,7 @@ function vDia(d, open, isToday, abrir) {
       h("div", null, h("p", { class: "eyebrow rule", text: "Agenda do dia" }),
         // agenda corrida, sem separar em manhã, tarde e noite
         [d.agenda.flatMap(p => p.itens)].map(itens => [
-          h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "depois" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
+          h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
         l.dados && l.dados.length ? h("div", { class: "stats" }, l.dados.map(x => h("div", null, h("b", { text: x.v }), h("span", { text: x.l })))) : null)),
