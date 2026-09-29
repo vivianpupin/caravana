@@ -1463,8 +1463,9 @@ function vDia(d, open, isToday, abrir) {
     h("div", { class: "daybody" },
       h("div", { class: "logi" }, h("span", null, "Hospedagem ", h("b", { text: d.hotel })), d.guia ? h("span", null, h("b", { text: d.guia })) : null),
       h("div", null, h("p", { class: "eyebrow rule", text: "Agenda do dia" }),
-        d.agenda.map(p => [h("p", { class: "per", text: p.periodo }),
-          h("ul", { class: "items" }, p.itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "depois" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
+        // agenda corrida, sem separar em manhã, tarde e noite
+        [d.agenda.flatMap(p => p.itens)].map(itens => [
+          h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "depois" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
         l.dados && l.dados.length ? h("div", { class: "stats" }, l.dados.map(x => h("div", null, h("b", { text: x.v }), h("span", { text: x.l })))) : null)),
@@ -4789,7 +4790,7 @@ function htmlOffline() {
 <p class="e">Caravana do Céu · Índia Sagrada · 4 a 16 nov 2026</p><h1>Travessia da Índia Sagrada</h1><p class="s">Cópia para ler sem internet. Salva em ${esc(new Date().toLocaleDateString("pt-BR"))}.</p>
 <nav>${dias.map(d => `<a href="#d${d.n}">Dia ${d.n}</a>`).join("")}<a href="#hindi">Hindi</a><a href="#saberes">Saberes</a><a href="#guia">Guia</a></nav>
 ${dias.map(d => { return `<h2 id="d${d.n}">Dia ${d.n} · ${esc(d.data)} · ${esc(d.titulo)}</h2><p class="s">${esc(d.rota)}<br>Hospedagem: ${esc(d.hotel)}${d.guia ? " · " + esc(d.guia) : ""}</p>
-${d.agenda.map(p => `<p class="e">${esc(p.periodo)}</p><ul>${p.itens.map(i => `<li><b>${esc(i.hora || "·")}</b> ${esc(i.texto)}</li>`).join("")}</ul>`).join("")}
+<ul>${d.agenda.flatMap(p => p.itens).map(i => `<li><b>${esc(i.hora || "·")}</b> ${esc(i.texto)}</li>`).join("")}</ul>
 ${d.cerimonia ? `<h3>${esc(d.cerimonia.titulo)}</h3><p class="s">${esc(d.cerimonia.quando || "")}</p>${par(d.cerimonia.texto)}` : ""}${d.aviso ? `<h3>${esc(d.aviso.titulo)}</h3>${par(d.aviso.texto)}` : ""}
 ${(d.lugares || []).map(l => `<h3>${esc(l.nome)}</h3>${par(l.texto)}`).join("")}
 `; }).join("")}
