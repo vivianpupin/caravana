@@ -59,7 +59,7 @@ const css = `
 @keyframes alvoadd{0%,59%{background:transparent}61%,74%{background:#dfe9fb}100%{background:transparent}}
 @keyframes home{0%,74%{opacity:0}77%,97%{opacity:1}100%{opacity:0}}
 @keyframes pop{0%,77%{transform:scale(0)}81%{transform:scale(1.15)}84%,100%{transform:scale(1)}}
-#portao .leg{position:relative;width:100%;min-height:78px}
+#portao .leg{position:relative;width:100%;min-height:104px}
 #portao .leg p{position:absolute;inset:0;opacity:0;animation:leg 10s infinite both;font-size:17px;line-height:1.45;color:#3B2A1C}
 #portao .leg p small{display:block;font-size:13px;color:#7A6650;margin-top:4px}
 #portao .leg p b.n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#3F4938;color:#F6EDDA;font-size:13px;margin-right:6px;vertical-align:2px}
@@ -181,13 +181,13 @@ function telaInstalar() {
   leg.innerHTML = '<p><b class="n">1</b>Toque em ' + COMP + (noTopo ? "" : "<small>Não achou? Toque em ••• e depois em Compartilhar</small>") + "</p>" +
     '<p><b class="n">2</b>Toque em <b>Adicionar à Tela de Início</b></p>' +
     '<p><b class="n">3</b>Toque em <b>Adicionar</b>, no alto</p>' +
-    '<p><b class="n">4</b>Abra o app pelo ícone da <b>Caravana</b></p>';
+    '<p><b class="n">4</b>Abra o aplicativo pelo ícone da <b>Caravana</b> na Tela de Início do seu celular</p>';
   portao(el("div", { id: "instalar" }), celAnimado(), leg);
   document.getElementById("portao").append(el("div", { className: "seta" + (noTopo ? " topo" : ""), textContent: noTopo ? "↑" : "↓" }));
 }
 function telaInstalado() {
   tituloPortao = "Prepare-se para<br>a travessia";
-  portao(el("p", { className: "inst", innerHTML: "Pronto! Abra o app pelo ícone da <b>Caravana</b> na tela do seu celular." }));
+  portao(el("p", { className: "inst", innerHTML: "Pronto! Abra o aplicativo pelo ícone da <b>Caravana</b> na Tela de Início do seu celular." }));
 }
 function telaLogin() {
   if (precisaInstalar()) return telaInstalar();
