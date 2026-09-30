@@ -22,12 +22,41 @@ const css = `
 #portao button.claro{background:transparent;color:#6B5A43;font-weight:500;font-size:13px;padding:6px}
 #portao input{width:100%;border:1px solid #CDB184;border-radius:12px;padding:12px 14px;font:16px Poppins,system-ui,sans-serif;background:#fff;text-align:center}
 #portao .err{color:#9B2E22;font-size:13.5px;min-height:1em}
+#portao .inst{font-size:17px;line-height:1.5;color:#3B2A1C;margin:2px 0 0}
+#portao .ic{display:inline-grid;place-items:center;vertical-align:-8px;width:32px;height:32px;border-radius:9px;background:#fff;border:1px solid #D9BE8C;margin:0 3px}
+#portao .ic svg{width:20px;height:20px}
+#portao .seta{position:fixed;left:50%;bottom:6px;z-index:2;margin-left:-20px;width:40px;text-align:center;font-size:44px;line-height:1;color:#8A3F32;animation:setapulo 1.1s ease-in-out infinite}
+@keyframes setapulo{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+#portao .cel{position:relative;width:170px;height:250px;border-radius:28px;background:#1d1b18;padding:8px;box-shadow:0 10px 30px rgba(40,28,15,.3)}
+#portao .tela{position:relative;width:100%;height:100%;border-radius:21px;overflow:hidden;background:#F5EFE4}
+#portao .pag{position:absolute;inset:0 0 34px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+#portao .pag img{width:40px}
+#portao .pag i{display:block;width:90px;height:6px;border-radius:3px;background:#E0D3BA}
+#portao .barra{position:absolute;left:0;right:0;bottom:0;height:34px;background:#fff;border-top:1px solid #e6dccb;display:flex;justify-content:space-around;align-items:center}
+#portao .barra span{width:18px;height:18px;display:grid;place-items:center}
+#portao .barra svg{width:18px;height:18px}
+#portao .folha{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:14px 14px 0 0;box-shadow:0 -4px 14px rgba(0,0,0,.15);padding:10px 8px 12px;display:flex;flex-direction:column;gap:5px;transform:translateY(105%);animation:folha 7s infinite}
+#portao .folha div{font-size:9.5px;white-space:nowrap;text-align:left;padding:7px 8px;border-radius:8px;background:#f3f1ee;color:#333;display:flex;justify-content:space-between;align-items:center}
+#portao .folha .alvo{animation:alvo 7s infinite}
+#portao .home{position:absolute;inset:0;background:linear-gradient(160deg,#6b7a5e,#3F4938);opacity:0;animation:home 7s infinite;display:grid;grid-template-columns:repeat(3,36px);justify-content:center;align-content:start;gap:12px;padding:26px 8px}
+#portao .home b{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.25);justify-self:center}
+#portao .home .app{background:#F5EFE4 url(img/simbolo-marrom.png) center/70% no-repeat;animation:pop 7s infinite}
+#portao .dedo{position:absolute;width:26px;height:26px;border-radius:50%;background:rgba(138,63,50,.55);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);animation:dedo 7s infinite;left:50%;top:60%}
+@keyframes dedo{0%{left:60%;top:55%;opacity:0}8%{opacity:1}18%{left:calc(50% - 13px);top:calc(100% - 30px);transform:scale(1)}22%{transform:scale(.7)}26%{transform:scale(1)}
+ 40%{left:calc(50% - 13px);top:calc(100% - 30px)}52%{left:calc(50% - 13px);top:calc(100% - 78px);transform:scale(1)}56%{transform:scale(.7)}60%{transform:scale(1);opacity:1}66%,100%{opacity:0;left:calc(50% - 13px);top:calc(100% - 78px)}}
+@keyframes folha{0%,26%{transform:translateY(105%)}33%,62%{transform:translateY(0)}68%,100%{transform:translateY(105%)}}
+@keyframes alvo{0%,50%{background:#f3f1ee}54%,62%{background:#dfe9fb}100%{background:#f3f1ee}}
+@keyframes home{0%,64%{opacity:0}70%,96%{opacity:1}100%{opacity:0}}
+@keyframes pop{0%,70%{transform:scale(0)}78%{transform:scale(1.15)}82%,100%{transform:scale(1)}}
+#portao .seta.topo{bottom:auto;top:6px;left:auto;right:22px;margin:0;animation-name:setasobe}
+@keyframes setasobe{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 `;
+let tituloPortao = "Travessia da<br>Índia Sagrada";
 function portao(...kids) {
   let el = document.getElementById("portao");
   if (!el) { const st = document.createElement("style"); st.textContent = css; document.head.append(st); el = document.createElement("div"); el.id = "portao"; document.body.append(el); }
   const cx = document.createElement("div"); cx.className = "cx";
-  const topo = document.createElement("div"); topo.innerHTML = `<img src="img/simbolo-marrom.png" alt=""><p class="sub">Caravana do Céu</p><h1>Travessia da<br>Índia Sagrada</h1>`;
+  const topo = document.createElement("div"); topo.innerHTML = `<img src="img/simbolo-marrom.png" alt=""><p class="sub">Caravana do Céu</p><h1>${tituloPortao}</h1>`;
   topo.style.cssText = "display:flex;flex-direction:column;align-items:center;gap:8px";
   cx.append(topo, ...kids); el.replaceChildren(cx);
 }
@@ -101,7 +130,45 @@ async function entrarComEmail(email, palavra, erro, bt) {
   }
   palavraDigitada = ""; bt.disabled = false; bt.textContent = "Entrar";
 }
+// ---------- instalar no celular: antes de entrar (no iPhone o app instalado tem a sua própria entrada) ----------
+const emApp = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const celularDeVerdade = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
+const precisaInstalar = () => celularDeVerdade && !emApp() && !window.CARAVANA_NAVEGADOR_INTERNO && location.protocol === "https:";
+let pedidoInstalar = null;
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); pedidoInstalar = e; });
+window.addEventListener("appinstalled", () => { pedidoInstalar = null; if (document.getElementById("instalar")) telaInstalado(); });
+const COMP = '<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1"/></svg></span>';
+function celAnimado() {
+  const d = el("div", { className: "cel" });
+  d.innerHTML = '<div class="tela"><div class="pag"><img src="img/simbolo-marrom.png" alt=""><i></i><i style="width:70px"></i></div>' +
+    '<div class="barra"><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></span></div>' +
+    '<div class="folha"><div>Copiar</div><div class="alvo">Adicionar à Tela de Início <span>⊞</span></div><div>Adicionar aos Favoritos</div></div>' +
+    '<div class="home"><b></b><b></b><b></b><b></b><b class="app"></b><b></b></div><div class="dedo"></div></div>';
+  return d;
+}
+function telaInstalar() {
+  const ua = navigator.userAgent, android = /Android/i.test(ua), ipad = /iPad/i.test(ua) || /Macintosh/.test(ua), noTopo = ipad || /CriOS|FxiOS|EdgiOS/i.test(ua);
+  tituloPortao = "Sua travessia<br>começa agora";
+  if (android) {
+    const dica = el("p", { className: "inst" });
+    const bt = el("button", { id: "instalar", type: "button", onclick: async () => {
+      const e = pedidoInstalar;
+      if (!e) { dica.innerHTML = "Toque em <b>⋮</b> no alto e depois em <b>Instalar app</b>"; return; }
+      pedidoInstalar = null;
+      try { await e.prompt(); const r = await e.userChoice; if (r && r.outcome === "accepted") telaInstalado(); } catch (x) {}
+    } }, "Instalar o app");
+    return portao(bt, dica);
+  }
+  portao(el("div", { id: "instalar" }), celAnimado(), el("p", { className: "inst", innerHTML: "Toque em " + COMP + " e depois em <b>Adicionar à Tela de Início</b>" }));
+  document.getElementById("portao").append(el("div", { className: "seta" + (noTopo ? " topo" : ""), textContent: noTopo ? "↑" : "↓" }));
+}
+function telaInstalado() {
+  tituloPortao = "Sua travessia<br>começa agora";
+  portao(el("p", { className: "inst", innerHTML: "Pronto! Abra o app pelo ícone da <b>Caravana</b> na tela do seu celular." }));
+}
 function telaLogin() {
+  if (precisaInstalar()) return telaInstalar();
+  tituloPortao = "Travessia da<br>Índia Sagrada";
   const erro = el("p", { className: "err", textContent: erroLogin });
   const em = el("input", { type: "email", placeholder: "Seu e-mail", autocomplete: "email", inputMode: "email", autocapitalize: "none" });
   const pal = el("input", { type: "text", placeholder: "Palavra da caravana", autocomplete: "off", autocapitalize: "none" });
