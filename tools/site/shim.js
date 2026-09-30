@@ -223,7 +223,7 @@ function telaLogin() {
   const pal = el("input", { type: "text", placeholder: "Palavra da caravana", autocomplete: "off", autocapitalize: "none" });
   const entra = el("button", { type: "button", onclick: () => entrarComEmail(em.value, pal.value, erro, entra) }, "Entrar");
   pal.addEventListener("keydown", e => { if (e.key === "Enter") entra.click(); });
-  portao(el("p", { textContent: "Digite seu e-mail e a palavra secreta" }), em, pal, entra, erro);
+  portao(el("p", { textContent: "Digite seu e-mail e a palavra chave" }), em, pal, entra, erro);
 }
 function telaPalavra() {
   const inp = el("input", { type: "text", placeholder: "Palavra da caravana", autocomplete: "off" });
