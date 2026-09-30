@@ -509,8 +509,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
   .map .rota.desenha{stroke-dasharray:1;stroke-dashoffset:1;animation:traca 3.2s ease-in-out forwards}
   @keyframes traca{to{stroke-dashoffset:0}}
   .explorador .bob{animation:bob 2.6s ease-in-out infinite}
-  @keyframes bob{0%,100%{transform:scale(.74) translateY(0)}50%{transform:scale(.74) translateY(-3px)}}
-  .explorador .vivo{animation:pulso 1.8s ease-out infinite;transform-origin:22px 62px;transform-box:fill-box}
+  @keyframes bob{0%,100%{transform:scale(1.1) translateY(0)}50%{transform:scale(1.1) translateY(-3px)}}
+  .explorador .vivo{animation:pulso 1.8s ease-out infinite;transform-origin:center;transform-box:fill-box}
   @keyframes pulso{0%{opacity:.8;transform:scale(.6)}100%{opacity:0;transform:scale(1.8)}}
 }
 .map .vivo{fill:rgba(200,65,47,.45)}
@@ -2808,21 +2808,21 @@ function exploradoresNoMapa(svg, P, filtro) {
   const usados = {};
   for (const p of gente) {
     let [x, y] = P.xy(p); if (x < 0 || x > P.W || y < 0 || y > P.H) continue;
-    const k = Math.round(x / 28) + ":" + Math.round(y / 28), n = usados[k] = (usados[k] || 0) + 1;
-    x += (n - 1) * 26 * (n % 2 ? 1 : -1);
+    const k = Math.round(x / 40) + ":" + Math.round(y / 40), n = usados[k] = (usados[k] || 0) + 1;
+    x += (n - 1) * 38 * (n % 2 ? 1 : -1);
     const nome = nomeDe(p.id), vivo = !!p.link;
     const bal = S.baloes[p.id] && Date.now() - S.baloes[p.id].ts < 8000 ? S.baloes[p.id] : null;
-    const g = h("g", { class: "explorador", tabindex: "0", role: "button", "aria-label": nome, transform: `translate(${(x - 22).toFixed(1)} ${(y - 64).toFixed(1)})`,
+    const g = h("g", { class: "explorador", tabindex: "0", role: "button", "aria-label": nome, transform: `translate(${(x - 33).toFixed(1)} ${(y - 96).toFixed(1)})`,
       onclick: ev => { if (S.marcando) return; ev.stopPropagation(); abrirPessoa(p.id); }, onkeydown: e => { if (e.key === "Enter") abrirPessoa(p.id); } },
       h("title", { text: nome + (p.nota ? ": " + p.nota : "") }),
-      vivo ? h("circle", { class: "vivo", cx: 22, cy: 62, r: 12 }) : null,
-      h("g", { class: "bob", transform: "scale(.74)" }, desenhaBoneco(bonecoDe(p.id))),
-      h("rect", { x: 22 - Math.min(nome.length, 12) * 3.6 - 6, y: 68, width: Math.min(nome.length, 12) * 7.2 + 12, height: 15, rx: 3, class: "etq" }),
-      h("text", { x: 22, y: 79, class: "etqt", text: nome.length > 12 ? nome.slice(0, 11) + "…" : nome }),
-      S.online.has(p.id) ? h("circle", { cx: 22 + Math.min(nome.length, 12) * 3.6 + 3, cy: 70, r: 3.4, class: "onl" }) : null,
+      vivo ? h("circle", { class: "vivo", cx: 33, cy: 94, r: 17 }) : null,
+      h("g", { class: "bob", transform: "scale(1.1)" }, desenhaBoneco(bonecoDe(p.id))),
+      h("rect", { x: 33 - Math.min(nome.length, 12) * 3.6 - 6, y: 100, width: Math.min(nome.length, 12) * 7.2 + 12, height: 15, rx: 3, class: "etq" }),
+      h("text", { x: 33, y: 111, class: "etqt", text: nome.length > 12 ? nome.slice(0, 11) + "…" : nome }),
+      S.online.has(p.id) ? h("circle", { cx: 33 + Math.min(nome.length, 12) * 3.6 + 3, cy: 102, r: 3.4, class: "onl" }) : null,
       bal ? (() => { const t = bal.texto || (REACOES.find(r => r[0] === bal.r) || [, "👋"])[1], w = Math.min(160, 18 + t.length * 7.2);
-        return h("g", { class: "balao" }, h("rect", { x: 22 - w / 2, y: -30, width: w, height: 24, rx: 12 }), h("path", { d: "M18 -6.5 L22 0 L26 -6.5 Z" }),
-          h("text", { x: 22, y: -13, text: t.length > 22 ? t.slice(0, 21) + "…" : t })); })() : null);
+        return h("g", { class: "balao" }, h("rect", { x: 33 - w / 2, y: -30, width: w, height: 24, rx: 12 }), h("path", { d: "M29 -6.5 L33 0 L37 -6.5 Z" }),
+          h("text", { x: 33, y: -13, text: t.length > 22 ? t.slice(0, 21) + "…" : t })); })() : null);
     svg.append(g);
   }
 }
