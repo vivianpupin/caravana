@@ -1317,6 +1317,7 @@ function vCadastro() {
       e.preventDefault();
       if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
       if (!S.cadGenero) { erro.textContent = "Escolha Caravaneira ou Caravaneiro."; return; }
+      if (S.assets && !S.cadFoto) { erro.textContent = "Coloque uma foto para o passaporte."; return; }
       const doc = { nome: nome.value.trim(), cidade: cid.value.trim(), genero: S.cadGenero, viagensAntes: (S.cadViagens || {}).n || 0, ts: Date.now(), insignias: { ...S.local } };
       if (S.cadFoto) doc.foto = S.cadFoto;
       if (S.isOwner) doc.lider = true;
@@ -1330,7 +1331,7 @@ function vCadastro() {
       S.assets ? (() => {
         const st = h("span", { class: "small", role: "status" }), prev = h("img", { alt: "", hidden: true, class: "cadfoto" });
         const fi = campoFoto(async id => { S.cadFoto = id; prev.src = blob(id); prev.hidden = false; }, st);
-        return h("div", { class: "cadfotobox" }, prev, h("button", { class: "btn", type: "button", onclick: () => fi.click() }, "Foto para o passaporte (opcional)"), fi, st);
+        return h("div", { class: "cadfotobox" }, prev, h("button", { class: "btn", type: "button", onclick: () => fi.click() }, "Foto para o passaporte"), fi, st);
       })() : null,
       erro, h("button", { class: "btn gold", type: "submit" }, "Emitir meu passaporte")));
 }
