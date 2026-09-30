@@ -61,6 +61,7 @@ const css = `
 @keyframes alvoadd{0%,59%{background:transparent}61%,74%{background:#dfe9fb}100%{background:transparent}}
 @keyframes home{0%,74%{opacity:0}77%,97%{opacity:1}100%{opacity:0}}
 @keyframes pop{0%,77%{transform:scale(0)}81%{transform:scale(1.15)}84%,100%{transform:scale(1)}}
+#portao .como{font:300 17px Poppins,system-ui,sans-serif;letter-spacing:.03em;color:#5A4A38;margin:2px 0 -2px}
 #portao .leg{position:relative;width:100%;min-height:104px}
 #portao .leg p{position:absolute;inset:0;opacity:0;animation:leg 20s infinite both;font-size:17px;line-height:1.45;color:#3B2A1C}
 #portao .leg p small{display:block;font-size:13px;color:#7A6650;margin-top:4px}
@@ -177,14 +178,14 @@ function telaInstalar() {
       pedidoInstalar = null;
       try { await e.prompt(); const r = await e.userChoice; if (r && r.outcome === "accepted") telaInstalado(); } catch (x) {}
     } }, "Instalar o app");
-    return portao(bt, dica);
+    return portao(el("p", { className: "como", textContent: "Como instalar o aplicativo" }), bt, dica);
   }
   const leg = el("div", { className: "leg" });
   leg.innerHTML = '<p><b class="n">1</b>Toque em ' + COMP + (noTopo ? "" : "<small>Não achou? Toque em ••• e depois em Compartilhar</small>") + "</p>" +
     '<p><b class="n">2</b>Toque em <b>Adicionar à Tela de Início</b></p>' +
     '<p><b class="n">3</b>Toque em <b>Adicionar</b>, no alto</p>' +
     '<p><b class="n">4</b>Abra o aplicativo pelo ícone da <b>Caravana</b> na Tela de Início do seu celular</p>';
-  portao(el("div", { id: "instalar" }), celAnimado(), leg);
+  portao(el("p", { id: "instalar", className: "como", textContent: "Como instalar o aplicativo" }), celAnimado(), leg);
   document.getElementById("portao").append(el("div", { className: "seta" + (noTopo ? " topo" : ""), textContent: noTopo ? "↑" : "↓" }));
 }
 function telaInstalado() {
