@@ -23,7 +23,7 @@ if (LOGIN_PELO_APP && location.hostname === "caravanaindiaapp.netlify.app") wind
   window.CARAVANA_NAVEGADOR_INTERNO = true;
   const ios = /iPhone|iPad|iPod/i.test(ua);
   document.addEventListener("DOMContentLoaded", () => {
-    const d = document.createElement("div");
+    const d = document.createElement("div"); d.id = "fora";
     d.style.cssText = "position:fixed;inset:0;z-index:200;background:#F5EFE4;display:grid;place-items:center;padding:24px;font-family:Poppins,system-ui,sans-serif;color:#3B2A1C;text-align:center";
     d.innerHTML = '<div style="max-width:360px;display:flex;flex-direction:column;gap:14px;align-items:center">' +
       '<img src="img/simbolo-marrom.png" alt="" style="width:60px">' +

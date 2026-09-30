@@ -87,7 +87,13 @@ function portao(...kids) {
   topo.style.cssText = "display:flex;flex-direction:column;align-items:center;gap:8px";
   cx.append(topo, ...kids); el.replaceChildren(cx); el.classList.remove("inst");
 }
-const fecharPortao = () => document.getElementById("portao")?.remove();
+// até saber se a pessoa já entrou, o app fica escondido (antes ele aparecia inteiro por um instante e depois vinha a tela de entrar)
+if (pronto) {
+  const st = document.createElement("style");
+  st.textContent = "html.espera,html.espera body{background:#1d1a16 url(img/textura.jpg) center/cover}html.espera body>*:not(#portao):not(#fora){visibility:hidden}";
+  document.head.append(st); document.documentElement.classList.add("espera");
+}
+const fecharPortao = () => { document.getElementById("portao")?.remove(); document.documentElement.classList.remove("espera"); };
 const el = (tag, props = {}, ...kids) => { const e = document.createElement(tag); Object.assign(e, props); e.append(...kids); return e; };
 
 // ---------- estado ----------
