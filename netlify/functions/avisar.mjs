@@ -51,6 +51,10 @@ async function avisarSelo(d, k, selo) {
     return x;
   });
   if (!l) return Response.json({ ok: false });
-  const enviados = await enviarTodos(d, k, { title: "🏅 Selo novo no seu passaporte!", body: (l.nome || "Selo novo") + ". Abra o passaporte para ver.", tag: "selo-" + selo, url: "./?aba=passaporte" }, null, 24 * 3600);
+  // o último selo completa o passaporte e libera o vídeo
+  const msg = selo === "travessia"
+    ? { title: "🎬 Seu passaporte está completo!", body: "O vídeo do seu passaporte da travessia está pronto. Abra para assistir e salvar no celular.", tag: "selo-" + selo, url: "./?aba=passaporte" }
+    : { title: "🏅 Selo novo no seu passaporte!", body: (l.nome || "Selo novo") + ". Abra o passaporte para ver.", tag: "selo-" + selo, url: "./?aba=passaporte" };
+  const enviados = await enviarTodos(d, k, msg, null, 24 * 3600);
   return Response.json({ ok: true, enviados });
 }

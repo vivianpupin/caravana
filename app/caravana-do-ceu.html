@@ -902,6 +902,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .leitlist li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
 .leitlist b{font-weight:600;flex:1;min-width:0}.leitlist span{font-size:12.5px;color:var(--soft)}
 .avisoleitura{display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,#F3E6C8,#EAD6A8);border:1px solid #CDB184;border-radius:var(--r);box-shadow:var(--shadow);padding:14px 16px;text-align:left}
+.avisoleitura .vidico{width:34px;height:46px;flex:none;object-fit:cover;border-radius:3px;box-shadow:0 2px 5px rgba(0,0,0,.25)}
 .avisoleitura.nova{box-shadow:0 0 0 3px rgba(179,71,58,.35),var(--shadow)}
 .avisoleitura b{display:block;font-family:"Special Elite","Courier Prime",monospace;font-weight:400;font-size:16px;color:#3B2A1C}
 .avisoleitura .ctx span{font-size:13px;color:#6B5A43}
@@ -1232,6 +1233,8 @@ function render() {
   main.replaceChildren(precisaCadastro ? vCadastro() :
     S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
   // aviso novo da líder (15 min): aparece no topo de qualquer aba
+  // último dia: o passaporte completo avisa que o vídeo está pronto (no Roteiro e no Passaporte)
+  if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte")) { const c = avisoVideo(), v = main.firstElementChild; if (c && v) v.prepend(c); }
   if (!precisaCadastro && S.tab !== "travessia" && S.tab !== "conversa" && avisoEmDestaque(avisoAtual())) { const f = avisoFixado(), v = main.firstElementChild; if (f && v) v.prepend(f); }
   main.scrollTop = scroll;
   if (S.tab === "conversa") {
@@ -1758,7 +1761,16 @@ async function montaVideoPassaporte(cv, aoFim) {
 // endereço do site da Caravana, que aparece no rodapé do vídeo (publicidade)
 const SITE_CARAVANA = "caravanadoceu.com";
 window.__videoPassaporte = (cv) => montaVideoPassaporte(cv);
+function avisoVideo() {
+  if (!eu() || !aberto(localDe("travessia"))) return null;
+  const visto = !!lsGet("cdi-video-visto");
+  return h("button", { class: "avisoleitura" + (visto ? "" : " nova"), type: "button", onclick: abrirVideoPassaporte },
+    h("img", { class: "vidico", src: "img/passaporte-capa.webp", alt: "" }),
+    h("span", { class: "ctx" }, h("b", { text: visto ? "O vídeo do seu passaporte" : "Seu passaporte está completo!" }),
+      h("span", { text: visto ? "Toque para assistir de novo e salvar no celular." : "O vídeo do seu passaporte da travessia está pronto. Toque para assistir e salvar." })));
+}
 async function abrirVideoPassaporte() {
+  lsSet("cdi-video-visto", "1");
   closeSheets();
   const cv = h("canvas", { class: "vidcanvas", width: 1080, height: 1920 });
   const st = h("p", { class: "msg", role: "status", text: "Preparando o seu passaporte…" });
