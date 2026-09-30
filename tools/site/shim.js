@@ -25,7 +25,7 @@ const css = `
 #portao .inst{font-size:17px;line-height:1.5;color:#3B2A1C;margin:2px 0 0}
 #portao .ic{display:inline-grid;place-items:center;vertical-align:-8px;width:32px;height:32px;border-radius:9px;background:#fff;border:1px solid #D9BE8C;margin:0 3px}
 #portao .ic svg{width:20px;height:20px}
-#portao .seta{position:fixed;left:50%;bottom:6px;z-index:2;margin-left:-20px;width:40px;text-align:center;font-size:44px;line-height:1;color:#8A3F32;animation:setapulo 1.1s ease-in-out infinite,setavis 10s infinite}
+#portao .seta{position:fixed;left:50%;bottom:6px;z-index:2;margin-left:-20px;width:40px;text-align:center;font-size:44px;line-height:1;color:#8A3F32;animation:setapulo 1.1s ease-in-out infinite,setavis 20s infinite}
 @keyframes setavis{0%,22%{opacity:1}25%,100%{opacity:0}}
 @keyframes setapulo{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
 #portao .cel{position:relative;width:170px;height:250px;border-radius:28px;background:#1d1b18;padding:8px;box-shadow:0 10px 30px rgba(40,28,15,.3)}
@@ -36,19 +36,21 @@ const css = `
 #portao .barra{position:absolute;left:0;right:0;bottom:0;height:34px;background:#fff;border-top:1px solid #e6dccb;display:flex;justify-content:space-around;align-items:center}
 #portao .barra span{width:18px;height:18px;display:grid;place-items:center}
 #portao .barra svg{width:18px;height:18px}
-#portao .folha{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:14px 14px 0 0;box-shadow:0 -4px 14px rgba(0,0,0,.15);padding:10px 8px 12px;display:flex;flex-direction:column;gap:5px;transform:translateY(105%);animation:folha 10s infinite}
+#portao .barra .comp{border-radius:50%;animation:brilho 20s infinite}
+@keyframes brilho{0%,3%{box-shadow:0 0 0 0 rgba(47,111,214,0)}6%,9%{box-shadow:0 0 0 7px rgba(47,111,214,.3)}12%,100%{box-shadow:0 0 0 0 rgba(47,111,214,0)}}
+#portao .folha{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:14px 14px 0 0;box-shadow:0 -4px 14px rgba(0,0,0,.15);padding:10px 8px 12px;display:flex;flex-direction:column;gap:5px;transform:translateY(105%);animation:folha 20s infinite}
 #portao .folha div{font-size:9.5px;white-space:nowrap;text-align:left;padding:7px 8px;border-radius:8px;background:#f3f1ee;color:#333;display:flex;justify-content:space-between;align-items:center}
-#portao .folha .alvo{animation:alvo 10s infinite}
-#portao .dlg{position:absolute;inset:0;background:#f2f2f4;opacity:0;animation:dlg 10s infinite;font-size:9.5px;color:#222}
+#portao .folha .alvo{animation:alvo 20s infinite}
+#portao .dlg{position:absolute;inset:0;background:#f2f2f4;opacity:0;animation:dlg 20s infinite;font-size:9.5px;color:#222}
 #portao .dlg .top{display:flex;justify-content:space-between;align-items:center;padding:12px 10px 10px;background:#fff;border-bottom:1px solid #e3e3e6}
 #portao .dlg .top span{color:#2F6FD6}
-#portao .dlg .top b{color:#2F6FD6;padding:3px 5px;border-radius:6px;animation:alvoadd 10s infinite}
+#portao .dlg .top b{color:#2F6FD6;padding:3px 5px;border-radius:6px;animation:alvoadd 20s infinite}
 #portao .dlg .row{display:flex;align-items:center;gap:8px;margin:12px 10px;padding:8px;background:#fff;border-radius:10px}
 #portao .dlg .row i{width:30px;height:30px;border-radius:8px;background:#F5EFE4 url(img/simbolo-marrom.png) center/70% no-repeat;border:1px solid #e3d7c0}
-#portao .home{position:absolute;inset:0;background:linear-gradient(160deg,#6b7a5e,#3F4938);opacity:0;animation:home 10s infinite;display:grid;grid-template-columns:repeat(3,36px);justify-content:center;align-content:start;gap:12px;padding:26px 8px}
+#portao .home{position:absolute;inset:0;background:linear-gradient(160deg,#6b7a5e,#3F4938);opacity:0;animation:home 20s infinite;display:grid;grid-template-columns:repeat(3,36px);justify-content:center;align-content:start;gap:12px;padding:26px 8px}
 #portao .home b{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.25);justify-self:center}
-#portao .home .app{background:#F5EFE4 url(img/simbolo-marrom.png) center/70% no-repeat;animation:pop 10s infinite}
-#portao .dedo{position:absolute;width:26px;height:26px;border-radius:50%;background:rgba(138,63,50,.55);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);animation:dedo 10s infinite;left:50%;top:60%;z-index:3}
+#portao .home .app{background:#F5EFE4 url(img/simbolo-marrom.png) center/70% no-repeat;animation:pop 20s infinite}
+#portao .dedo{position:absolute;width:26px;height:26px;border-radius:50%;background:rgba(138,63,50,.55);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);animation:dedo 20s infinite;left:50%;top:60%;z-index:3}
 @keyframes dedo{0%{left:60%;top:50%;opacity:0}4%{opacity:1;left:60%;top:50%}12%{left:calc(50% - 13px);top:calc(100% - 30px);transform:scale(1)}14%{transform:scale(.7)}17%{transform:scale(1)}
  24%{left:calc(50% - 13px);top:calc(100% - 30px)}32%{left:calc(50% - 13px);top:calc(100% - 78px);transform:scale(1)}34%{transform:scale(.7)}37%{transform:scale(1)}
  50%{left:calc(50% - 13px);top:calc(100% - 78px)}58%{left:calc(100% - 36px);top:4px;transform:scale(1)}60%{transform:scale(.7)}63%{transform:scale(1)}
@@ -60,10 +62,10 @@ const css = `
 @keyframes home{0%,74%{opacity:0}77%,97%{opacity:1}100%{opacity:0}}
 @keyframes pop{0%,77%{transform:scale(0)}81%{transform:scale(1.15)}84%,100%{transform:scale(1)}}
 #portao .leg{position:relative;width:100%;min-height:104px}
-#portao .leg p{position:absolute;inset:0;opacity:0;animation:leg 10s infinite both;font-size:17px;line-height:1.45;color:#3B2A1C}
+#portao .leg p{position:absolute;inset:0;opacity:0;animation:leg 20s infinite both;font-size:17px;line-height:1.45;color:#3B2A1C}
 #portao .leg p small{display:block;font-size:13px;color:#7A6650;margin-top:4px}
 #portao .leg p b.n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#3F4938;color:#F6EDDA;font-size:13px;margin-right:6px;vertical-align:2px}
-#portao .leg p:nth-child(2){animation-delay:2.5s}#portao .leg p:nth-child(3){animation-delay:5s}#portao .leg p:nth-child(4){animation-delay:7.5s}
+#portao .leg p:nth-child(2){animation-delay:5s}#portao .leg p:nth-child(3){animation-delay:10s}#portao .leg p:nth-child(4){animation-delay:15s}
 @keyframes leg{0%{opacity:0}2%,23%{opacity:1}25%,100%{opacity:0}}
 #portao .seta.topo{bottom:auto;top:6px;left:auto;right:22px;margin:0;animation-name:setasobe,setavis}
 @keyframes setasobe{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
@@ -158,7 +160,7 @@ const COMP = '<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#2F6
 function celAnimado() {
   const d = el("div", { className: "cel" });
   d.innerHTML = '<div class="tela"><div class="pag"><img src="img/simbolo-marrom.png" alt=""><i></i><i style="width:70px"></i></div>' +
-    '<div class="barra"><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></span></div>' +
+    '<div class="barra"><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></span><span class="comp"><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></span></div>' +
     '<div class="folha"><div>Copiar</div><div class="alvo">Adicionar à Tela de Início <span>⊞</span></div><div>Adicionar aos Favoritos</div></div>' +
     '<div class="dlg"><div class="top"><span>Cancelar</span><b>Adicionar</b></div><div class="row"><i></i>Caravana</div></div>' +
     '<div class="home"><b></b><b></b><b></b><b></b><b class="app"></b><b></b></div><div class="dedo"></div></div>';
