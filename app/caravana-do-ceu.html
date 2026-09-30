@@ -622,6 +622,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .intens b{text-align:right;color:var(--ink);font-weight:600}
 .trocafoto{display:flex;justify-content:center}
 .trocafoto .btn{padding:8px 18px;font-size:13.5px}
+.adesx{position:absolute;z-index:5;width:28px;height:28px;border-radius:50%;border:2px solid #fff;background:#8A3F32;color:#fff;font:700 18px/1 var(--ui);display:grid;place-items:center;padding:0;box-shadow:0 2px 6px rgba(0,0,0,.35);cursor:pointer}
+.adesx[hidden]{display:none}
 .adesbox{display:flex;flex-direction:column;gap:8px}
 .adesgrade{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:8px}
 .adesbt{aspect-ratio:1;border:1px solid var(--line);border-radius:14px;background:var(--panel);display:grid;place-items:center;padding:6px}
@@ -3880,6 +3882,24 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
     h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.esp = !a.esp; }) }, "Espelhar"),
     h("button", { type: "button", class: "opt", onclick: () => { ades.splice(S[SEL], 1); S[SEL] = null; render(); } }, "Tirar"),
     h("button", { type: "button", class: "opt", "aria-pressed": "true", onclick: () => { S[SEL] = null; render(); } }, "Pronto")) : null;
+  // xizinho em cima do adesivo escolhido, para tirar da foto com um toque (não sai na foto salva)
+  if (!canvas._xis) {
+    const x = canvas._xis = h("button", { type: "button", class: "adesx", "aria-label": "Tirar este adesivo", hidden: true,
+      onpointerdown: e => e.stopPropagation(),
+      onclick: e => { e.stopPropagation(); const i = S[SEL], lst = estado().adesivos || []; if (i == null || !lst[i]) return; lst.splice(i, 1); S[SEL] = null; x.hidden = true; render(); } }, "×");
+    const segue = () => {
+      if (!canvas.isConnected) { x.remove(); canvas._xis = null; return; }
+      const pai = canvas.parentElement; if (pai && x.parentElement !== pai) { if (getComputedStyle(pai).position === "static") pai.style.position = "relative"; pai.append(x); }
+      const i = S[SEL], q = i != null ? (S[chave + "AdesRect"] || [])[i] : null, G = S[chave + "Geo"];
+      if (q && G && canvas.width) {
+        const r = canvas.getBoundingClientRect(), pr = pai.getBoundingClientRect(), k = r.width / canvas.width;
+        const cx = (q.cx * G.fs + G.fx) * k, cy = (q.cy * G.fs + G.fy) * k, raio = q.r * G.fs * k * .75;
+        x.style.left = (r.left - pr.left + cx + raio - 14) + "px"; x.style.top = (r.top - pr.top + cy - raio - 14) + "px"; x.hidden = false;
+      } else x.hidden = true;
+      requestAnimationFrame(segue);
+    };
+    requestAnimationFrame(segue);
+  }
   return { painelAdesivos, barraSel };
 }
 function vFotos() {
