@@ -90,10 +90,11 @@ function portao(...kids) {
 // até saber se a pessoa já entrou, o app fica escondido (antes ele aparecia inteiro por um instante e depois vinha a tela de entrar)
 if (pronto) {
   const st = document.createElement("style");
-  st.textContent = "html.espera,html.espera body{background:#1d1a16 url(img/textura.jpg) center/cover}html.espera body>*:not(#portao):not(#fora){visibility:hidden}";
+  st.textContent = "html.espera,html.espera body{background:#1d1a16 url(img/textura.jpg) center/cover}html.espera body>*:not(#portao):not(#fora):not(#boasvindas){visibility:hidden}";
   document.head.append(st); document.documentElement.classList.add("espera");
 }
-const fecharPortao = () => { document.getElementById("portao")?.remove(); document.documentElement.classList.remove("espera"); };
+// o próprio app tira o "espera" quando já sabe o que mostrar (boas-vindas ou a página certa); 8 s é só segurança
+const fecharPortao = () => { document.getElementById("portao")?.remove(); setTimeout(() => document.documentElement.classList.remove("espera"), 8000); };
 const el = (tag, props = {}, ...kids) => { const e = document.createElement(tag); Object.assign(e, props); e.append(...kids); return e; };
 
 // ---------- estado ----------

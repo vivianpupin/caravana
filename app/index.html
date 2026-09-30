@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "30/09 · 15:23";</script>
+<script>window.__VERSAO = "30/09 · 15:27";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -601,6 +601,13 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 @keyframes abzoom{from{transform:scale(1.18)}}@keyframes absimb{from{opacity:0;transform:scale(.7)}}
 @keyframes absobe{from{opacity:0;transform:translateY(10px)}}
 @media (prefers-reduced-motion:reduce){.abertura,.abertura *{animation:none!important}}
+#boasvindas{animation:none}
+#boasvindas.sai{animation:absai .7s ease both}
+#boasvindas .abfundo{filter:blur(6px) brightness(.8) saturate(1.1);inset:-40px}
+#boasvindas .abfundo::after{background:radial-gradient(ellipse at 50% 45%,rgba(20,12,6,.25),rgba(20,12,6,.6) 80%)}
+#boasvindas .abcidade{font-size:30px;line-height:1.2}
+#boasvindas .abfrase{margin-top:18px}
+#boasvindas .abfrase+.abfrase{margin-top:2px;animation-delay:2.8s}
 .pgmso{margin:0 0 4px;font:600 11px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:#8A3F32;text-align:center}
 .celx{position:absolute;top:6px;right:8px;background:none;border:0;font-size:22px;line-height:1;color:var(--soft);padding:4px 8px}
 .meuexp{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 14px 4px 6px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
@@ -4371,6 +4378,23 @@ function aberturaDoDia(forcar) {
 }
 
 // abre sozinha no primeiro acesso do dia (e ao voltar para o app num dia novo); ?abertura=6 mostra o dia 6 para conferir
+// primeira vez que a pessoa abre o app: boas-vindas e depois direto para a emissão do passaporte
+function boasVindas(pronto) {
+  const ov = h("div", { class: "abertura", id: "boasvindas", role: "dialog", "aria-label": "Boas-vindas", style: "--abimg:url(img/abertura-jaipur.webp)" },
+    h("div", { class: "abfundo" }),
+    h("div", { class: "abconteudo" },
+      h("img", { class: "absimb", src: "img/simbolo-dourado.png", alt: "" }),
+      h("p", { class: "abdia", text: "Caravana do Céu" }),
+      h("h1", { class: "abcidade", text: "Travessia da Índia Sagrada" }),
+      h("p", { class: "abfrase", text: "Bem-vindo à Caravana" }),
+      h("p", { class: "abfrase", text: "Prepare-se para a travessia!" })));
+  document.body.append(ov);
+  const t0 = Date.now();
+  const fecha = () => { if (!ov.isConnected) return; lsSet("cdi-bv", "1"); ov.classList.add("sai"); render(); setTimeout(() => ov.remove(), 700); };
+  // fica pelo menos 7,5 s e espera o app saber se a pessoa já tem passaporte
+  pronto.then(() => setTimeout(fecha, Math.max(0, 7500 - (Date.now() - t0))));
+  ov.addEventListener("click", () => { if (Date.now() - t0 > 2500) pronto.then(fecha); });
+}
 function abreDia() { const t = +new URLSearchParams(location.search).get("abertura"); aberturaDoDia(t || 0); }
 document.addEventListener("visibilitychange", () => { if (!document.hidden) abreDia(); });
 
@@ -5344,10 +5368,18 @@ render();
     }, () => {});
   }
   if (user) { const me = await user.me(); S.me = me; S.uid = me.id; S.isOwner = me.isOwner; perfis([me.id]); }
+  // no site o app fica escondido até aqui; na primeira vez entra a tela de boas-vindas, nas outras espera os viajantes
+  let viajantesProntos; const vProntos = new Promise(r => { viajantesProntos = r; });
+  const libera = () => document.documentElement.classList.remove("espera");
+  if (window.__SITE && S.uid) {
+    if (!lsGet("cdi-bv")) { boasVindas(vProntos); libera(); }
+    else { vProntos.then(libera); setTimeout(libera, 5000); }
+  }
   if (!db) { S.dbReady = true; render(); return; }
   listen("cidades", "cidades"); listen("locais", "locais"); listen("ensinamentos", "ens");
   listen("viajantes", "viajantes", null, () => {
     S.vReady = true;
+    viajantesProntos();
     // quem virou líder depois de já ter passaporte (ex.: Vanessa) passa a aparecer como Líder
     const v = eu(); if (S.isOwner && v && !v.lider && !S.virandoLider) { S.virandoLider = true; S.db.doc("viajantes/" + S.uid).update({ lider: true }).catch(() => { S.virandoLider = false; }); }
   });
