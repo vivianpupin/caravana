@@ -4373,7 +4373,7 @@ function boasVindas(pronto) {
   document.body.append(ov);
   // igual às aberturas dos dias: fica até a pessoa tocar no botão (e o app já sabe se ela tem passaporte)
   let fechou = false;
-  const fecha = () => { if (fechou) return; fechou = true; pronto.then(() => { lsSet("cdi-bv", "1"); ov.classList.add("sai"); render(); setTimeout(() => ov.remove(), 700); }); };
+  const fecha = () => { if (fechou) return; fechou = true; pronto.then(() => { ov.classList.add("sai"); render(); setTimeout(() => ov.remove(), 700); }); };
 }
 function abreDia() { const t = +new URLSearchParams(location.search).get("abertura"); aberturaDoDia(t || 0); }
 document.addEventListener("visibilitychange", () => { if (!document.hidden) abreDia(); });
@@ -5355,8 +5355,12 @@ render();
   let viajantesProntos; const vProntos = new Promise(r => { viajantesProntos = r; });
   const libera = () => document.documentElement.classList.remove("espera");
   if (window.__SITE && S.uid) {
-    if (!lsGet("cdi-bv")) { boasVindas(vProntos); libera(); }
-    else { vProntos.then(libera); setTimeout(libera, 5000); }
+    // boas-vindas só para quem ainda não tem passaporte, e uma vez só (marca na hora em que aparece)
+    if (!lsGet("cdi-bv")) {
+      let decidiu = false;
+      const decide = () => { if (decidiu) return; decidiu = true; lsSet("cdi-bv", "1"); if (!eu()) boasVindas(vProntos); libera(); };
+      vProntos.then(decide); setTimeout(decide, 6000);
+    } else { vProntos.then(libera); setTimeout(libera, 5000); }
   }
   if (!db) { S.dbReady = true; render(); return; }
   listen("cidades", "cidades"); listen("locais", "locais"); listen("ensinamentos", "ens");
