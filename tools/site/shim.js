@@ -126,14 +126,15 @@ if (!pronto) {
       if (!ac || !ac.exists) return telaCriarPalavra();
       return entrar();
     }
-    if (trocarSenha) { const nova = trocarSenha; trocarSenha = ""; u.updatePassword(senhaDe(nova)).catch(() => {}); }
+    // entrou com a palavra antiga: a senha vira a palavra nova só depois de confirmar que é membro
+    const novaSenha = () => { if (trocarSenha) { const nova = trocarSenha; trocarSenha = ""; u.updatePassword(senhaDe(nova)).catch(() => {}); } };
     const m = await fs.doc("membros/" + u.uid).get().catch(() => null);
-    if (m && m.exists) return entrar();
+    if (m && m.exists) { novaSenha(); return entrar(); }
     // entrou com e-mail + palavra: a mesma palavra já vira a chave de membro, sem pedir de novo
     if (palavraDigitada) {
       const palavra = palavraDigitada; palavraDigitada = "";
-      try { await fs.doc("membros/" + u.uid).set({ palavra, nome: me.name, email: me.email, ts: Date.now() }); return entrar(); }
-      catch (e) { erroLogin = "Palavra incorreta. Confira com a líder da caravana."; await auth.signOut(); return; }
+      try { await fs.doc("membros/" + u.uid).set({ palavra, nome: me.name, email: me.email, ts: Date.now() }); novaSenha(); return entrar(); }
+      catch (e) { trocarSenha = ""; erroLogin = "Palavra incorreta. Confira com a líder da caravana."; await auth.signOut(); return; }
     }
     telaPalavra();
   });
