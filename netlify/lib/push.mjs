@@ -40,3 +40,13 @@ export async function enviarPara(d, k, uid, carga, ttl) {
   try { await webpush.sendNotification(s.data().sub, JSON.stringify(carga), { TTL: ttl || 24 * 3600 }); return 1; }
   catch (e) { if (e.statusCode === 404 || e.statusCode === 410) await s.ref.delete().catch(() => {}); return 0; }
 }
+
+// último dia (translado): o passaporte fica completo e o vídeo é liberado. Avisa todo mundo uma vez só,
+// seja pelo horário marcado, seja quando a líder abre o último selo antes disso.
+export const DIA_COMPLETO = Date.parse("2026-11-16T08:00:00+05:30");
+export async function avisarPassaporteCompleto(d, k) {
+  const ref = d.doc("segredos/passaporteCompleto");
+  const vai = await d.runTransaction(async t => { const s = await t.get(ref); if (s.exists) return false; t.set(ref, { ts: Date.now() }); return true; });
+  if (!vai) return 0;
+  return enviarTodos(d, k, { title: "🎬 Seu passaporte está completo!", body: "A travessia se completou. O vídeo do seu passaporte está pronto: abra para assistir e salvar no celular.", tag: "passaporte-completo", url: "./?aba=passaporte" }, null, 24 * 3600);
+}

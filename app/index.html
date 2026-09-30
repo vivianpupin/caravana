@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "30/09 · 16:45";</script>
+<script>window.__VERSAO = "30/09 · 16:53";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1149,7 +1149,8 @@ function campoFoto(onId, status) {
 
 // ---------- selos ----------
 const minhas = () => ({ ...S.local, ...((eu() && eu().insignias) || {}) });
-const aberto = l => !!(l && (l.aberto || minhas()[l.id]));
+// o último selo (Travessia) se completa sozinho no dia do translado, 16/11
+const aberto = l => !!(l && (l.aberto || minhas()[l.id] || (l.id === "travessia" && hojeIso() >= "2026-11-16")));
 const conquistasDe = v => S.locais.filter(l => l.insignia && (l.aberto || (v.insignias || {})[l.id])).length;
 const insigniaLocais = () => S.locais.filter(l => l.insignia).sort(byOrdem);
 const localDe = id => S.locais.find(l => l.id === id);

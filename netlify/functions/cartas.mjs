@@ -1,5 +1,6 @@
 // A cada 15 minutos: se chegou a hora de uma carta da líder, avisa a caravana no celular (uma vez por carta).
-import { db, chaves, enviarTodos, enviarPara } from "../lib/push.mjs";
+// No dia do translado, avisa também que o passaporte está completo.
+import { db, chaves, enviarTodos, enviarPara, DIA_COMPLETO, avisarPassaporteCompleto } from "../lib/push.mjs";
 
 export const config = { schedule: "*/15 * * * *" };
 
@@ -7,9 +8,11 @@ export default async () => {
   if (!process.env.FIREBASE_SA) return new Response("sem FIREBASE_SA", { status: 503 });
   const d = db(), agora = Date.now();
   const pronta = s => { const c = s.data(); return !c.rascunho && c.envio && c.envio <= agora && !c.avisada; };
-  const cs = [...(await d.collection("cartas").get()).docs.filter(pronta), ...(await d.collection("cartasPessoais").get()).docs.filter(pronta)];
-  if (!cs.length) return new Response("nada");
   let k = null, enviados = 0;
+  // dia do translado: passaporte completo (uma vez só, até dois dias depois do horário)
+  if (agora >= DIA_COMPLETO && agora - DIA_COMPLETO < 2 * 24 * 3600 * 1000) { k = await chaves(d); enviados += await avisarPassaporteCompleto(d, k); }
+  const cs = [...(await d.collection("cartas").get()).docs.filter(pronta), ...(await d.collection("cartasPessoais").get()).docs.filter(pronta)];
+  if (!cs.length) return new Response(enviados ? "enviados: " + enviados : "nada");
   for (const s of cs) {
     const c = s.data();
     await s.ref.update({ avisada: true });
