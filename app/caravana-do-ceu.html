@@ -593,9 +593,10 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 #boasvindas .abfundo::after{background:radial-gradient(ellipse at 50% 45%,rgba(20,12,6,.25),rgba(20,12,6,.6) 80%)}
 #boasvindas .abcidade{font-size:30px;line-height:1.2}
 #boasvindas .absimb{width:36px;margin:0 0 42px;filter:drop-shadow(0 0 10px rgba(242,194,48,.3))}
-#boasvindas .bvtit{font-size:22px;line-height:1.3;letter-spacing:.06em;font-weight:400;animation-delay:.9s}
-#boasvindas .abfrase{margin-top:0;font-size:22px;line-height:1.3;letter-spacing:.06em;font-style:normal;max-width:none;animation-delay:3.2s}
-#boasvindas .bvvento{margin:14px 0 16px;font-size:14.5px;letter-spacing:.02em;font-style:italic;line-height:1.5;max-width:28ch;color:#E2BE78;animation-delay:1.9s}
+#boasvindas .bvtit,#boasvindas .abfrase{margin:0;font-family:var(--display);font-size:14.5px;font-weight:400;font-style:italic;letter-spacing:.02em;line-height:1.6;max-width:28ch;color:#E2BE78}
+#boasvindas .bvtit{animation-delay:.9s}
+#boasvindas .abfrase{animation-delay:3.2s}
+#boasvindas .bvvento{animation-delay:1.9s}
 .pgmso{margin:0 0 4px;font:600 11px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:#8A3F32;text-align:center}
 .celx{position:absolute;top:6px;right:8px;background:none;border:0;font-size:22px;line-height:1;color:var(--soft);padding:4px 8px}
 .meuexp{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 14px 4px 6px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
@@ -4373,7 +4374,7 @@ function boasVindas(pronto) {
     h("div", { class: "abconteudo" },
       h("img", { class: "absimb", src: "img/simbolo-dourado.png", alt: "" }),
       h("h1", { class: "abcidade bvtit", text: "Bem-vindo à Caravana" }),
-      h("p", { class: "abfrase bvvento", text: "Os ventos já sopram no horizonte dourado!" }),
+      h("p", { class: "abfrase bvvento", text: "Os ventos já sopram no horizonte dourado" }),
       h("p", { class: "abfrase", text: "Prepare-se para a travessia" })));
   document.body.append(ov);
   const t0 = Date.now();
