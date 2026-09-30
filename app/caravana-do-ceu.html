@@ -4519,7 +4519,9 @@ function vTradutor() {
   // se o microfone do app falhar neste celular, passa a usar o microfone do teclado, que nunca trava
   const ouvir = ev => {
     const bt = ev && ev.currentTarget;
-    if (VOZ.rec) { VOZ.parar(true); return; }
+    // toques repetidos travavam o microfone: enquanto ele abre, ignora; logo depois de fechar, espera um instante
+    if (Date.now() < (VOZ.livreEm || 0)) return;
+    if (VOZ.rec) { if (VOZ.abrindo) return; VOZ.parar(true); return; }
     novaFrase();
     if (!Reconhece || vozPeloTeclado()) return ditarPeloTeclado();
     pararFala();
@@ -4528,17 +4530,18 @@ function vTradutor() {
     try { rec = new Reconhece(); } catch (e) { return ditarPeloTeclado(true); }
     rec.lang = LINGUAS[de][1]; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
     const acaba = (msg, falhou) => {
-      if (fim) return; fim = true; clearTimeout(VOZ.t1); clearTimeout(VOZ.t2); clearTimeout(pausa); VOZ.rec = null; VOZ.parar = () => {};
+      if (fim) return; fim = true; clearTimeout(VOZ.t1); clearTimeout(VOZ.t2); clearTimeout(pausa); VOZ.rec = null; VOZ.abrindo = false; VOZ.parar = () => {}; VOZ.livreEm = Date.now() + 900;
       try { rec.onresult = rec.onerror = rec.onend = rec.onstart = rec.onaudiostart = null; rec.abort(); } catch (e) {}
       setBt("🎤 Falar");
       if (ouvido.trim()) { lsSet("cdi-voz-falhas", "0"); T.texto = ouvido.trim(); T.erro = ""; vai(); return; }
       if (falhou) { const n = +(lsGet("cdi-voz-falhas") || 0) + 1; lsSet("cdi-voz-falhas", String(n)); if (n >= 2) lsSet("cdi-voz-teclado", "1"); return ditarPeloTeclado(true); }
       T.erro = msg || ""; render();
     };
-    const terminou = () => { try { rec.stop(); } catch (e) {} setTimeout(() => acaba(""), 600); };
-    rec.onstart = rec.onaudiostart = () => { if (!comecou) { comecou = true; setBt("Pode falar… (toque para parar)"); } };
+    let parando = false;
+    const terminou = () => { if (parando) return; parando = true; clearTimeout(pausa); setBt("Traduzindo…"); try { rec.stop(); } catch (e) {} setTimeout(() => acaba(""), 600); };
+    rec.onstart = rec.onaudiostart = () => { VOZ.abrindo = false; if (!comecou) { comecou = true; setBt("Pode falar… (toque para parar)"); } };
     rec.onresult = e => {
-      comecou = true; ouvido = [...e.results].map(r => r[0].transcript).join(" ");
+      comecou = true; VOZ.abrindo = false; ouvido = [...e.results].map(r => r[0].transcript).join(" ");
       T.texto = ouvido; const c = document.getElementById("trad-texto"); if (c) c.value = ouvido;
       setBt("Ouvindo… (toque para parar)");
       clearTimeout(pausa);
@@ -4551,7 +4554,7 @@ function vTradutor() {
       acaba("", true);
     };
     rec.onend = () => acaba(ouvido.trim() ? "" : "Não ouvi nada. Toque em Falar e fale perto do celular.");
-    VOZ.rec = rec; VOZ.parar = manual => manual && ouvido.trim() ? terminou() : acaba("");
+    VOZ.rec = rec; VOZ.abrindo = true; VOZ.parar = manual => manual && ouvido.trim() ? terminou() : acaba("");
     T.erro = ""; const er = document.querySelector(".tradbox .err"); if (er) er.remove();
     setBt("Abrindo o microfone…");
     // o microfone não abriu em 3 s: este celular não deixa (acontece no app instalado do iPhone) → teclado
