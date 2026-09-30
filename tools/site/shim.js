@@ -25,8 +25,8 @@ const css = `
 #portao .inst{font-size:17px;line-height:1.5;color:#3B2A1C;margin:2px 0 0}
 #portao .ic{display:inline-grid;place-items:center;vertical-align:-8px;width:32px;height:32px;border-radius:9px;background:#fff;border:1px solid #D9BE8C;margin:0 3px}
 #portao .ic svg{width:20px;height:20px}
-#portao .seta{position:fixed;left:50%;bottom:6px;z-index:2;margin-left:-20px;width:40px;text-align:center;font-size:44px;line-height:1;color:#8A3F32;animation:setapulo 1.1s ease-in-out infinite,setavis 24s infinite}
-@keyframes setavis{0%,22%{opacity:1}25%,100%{opacity:0}}
+#portao .seta{position:fixed;left:50%;bottom:6px;z-index:2;margin-left:-20px;width:40px;text-align:center;font-size:44px;line-height:1;color:#8A3F32;animation:setapulo 1.1s ease-in-out infinite,setavis 18s infinite}
+@keyframes setavis{0.0%,20.0%{opacity:1}22.2%,100.0%{opacity:0}}
 @keyframes setapulo{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
 #portao .cel{position:relative;width:160px;height:230px;border-radius:28px;background:#1d1b18;padding:8px;box-shadow:0 10px 30px rgba(40,28,15,.3)}
 #portao .tela{position:relative;width:100%;height:100%;border-radius:21px;overflow:hidden;background:#F5EFE4}
@@ -36,48 +36,45 @@ const css = `
 #portao .barra{position:absolute;left:0;right:0;bottom:0;height:34px;background:#fff;border-top:1px solid #e6dccb;display:flex;justify-content:space-around;align-items:center}
 #portao .barra span{width:18px;height:18px;display:grid;place-items:center}
 #portao .barra svg{width:18px;height:18px}
-#portao .barra .comp{border-radius:50%;animation:brilho 24s infinite}
-@keyframes brilho{0%,3%{box-shadow:0 0 0 0 rgba(47,111,214,0)}6%,9%{box-shadow:0 0 0 7px rgba(47,111,214,.3)}12%,100%{box-shadow:0 0 0 0 rgba(47,111,214,0)}}
-#portao .folha{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:14px 14px 0 0;box-shadow:0 -4px 14px rgba(0,0,0,.15);padding:10px 8px 12px;display:flex;flex-direction:column;gap:5px;transform:translateY(105%);animation:folha 24s infinite}
+#portao .barra .comp{border-radius:50%;animation:brilho 18s infinite}
+@keyframes brilho{0.0%,3.3%{box-shadow:0 0 0 0 rgba(47,111,214,0)}6.7%,14.4%{box-shadow:0 0 0 7px rgba(47,111,214,.3)}17.8%,100.0%{box-shadow:0 0 0 0 rgba(47,111,214,0)}}
+#portao .folha{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:14px 14px 0 0;box-shadow:0 -4px 14px rgba(0,0,0,.15);padding:10px 8px 12px;display:flex;flex-direction:column;gap:5px;transform:translateY(105%);animation:folha 18s infinite}
 #portao .folha div{font-size:9.5px;white-space:nowrap;text-align:left;padding:7px 8px;border-radius:8px;background:#f3f1ee;color:#333;display:flex;justify-content:space-between;align-items:center}
-#portao .folha .alvo{animation:alvo 24s infinite}
-#portao .dlg{position:absolute;inset:0;background:#f2f2f4;opacity:0;animation:dlg 24s infinite;font-size:9.5px;color:#222}
+#portao .folha .alvo{animation:alvo 18s infinite}
+#portao .dlg{position:absolute;inset:0;background:#f2f2f4;opacity:0;animation:dlg 18s infinite;font-size:9.5px;color:#222}
 #portao .dlg .top{display:flex;justify-content:space-between;align-items:center;padding:12px 10px 10px;background:#fff;border-bottom:1px solid #e3e3e6}
 #portao .dlg .top span{color:#2F6FD6}
-#portao .dlg .top b{color:#2F6FD6;padding:3px 5px;border-radius:6px;animation:alvoadd 24s infinite}
+#portao .dlg .top b{color:#2F6FD6;padding:3px 5px;border-radius:6px;animation:alvoadd 18s infinite}
 #portao .dlg .row{display:flex;align-items:center;gap:8px;margin:12px 10px;padding:8px;background:#fff;border-radius:10px}
 #portao .dlg .row i{width:30px;height:30px;border-radius:8px;background:#F5EFE4 url(img/simbolo-marrom.png) center/70% no-repeat;border:1px solid #e3d7c0}
-#portao .home{position:absolute;inset:0;background:linear-gradient(160deg,#6b7a5e,#3F4938);opacity:0;animation:home 24s infinite;display:grid;grid-template-columns:repeat(3,36px);justify-content:center;align-content:start;gap:12px;padding:26px 8px}
+#portao .home{position:absolute;inset:0;background:linear-gradient(160deg,#6b7a5e,#3F4938);opacity:0;animation:home 18s infinite;display:grid;grid-template-columns:repeat(3,36px);justify-content:center;align-content:start;gap:12px;padding:26px 8px}
 #portao .home b{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.25);justify-self:center}
-#portao .home .app{background:#F5EFE4 url(img/simbolo-marrom.png) center/70% no-repeat;animation:pop 24s infinite}
-#portao .dedo{position:absolute;width:26px;height:26px;border-radius:50%;background:rgba(138,63,50,.55);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);animation:dedo 24s infinite;left:50%;top:60%;z-index:3}
-@keyframes dedo{0%{left:60%;top:50%;opacity:0}4%{opacity:1;left:60%;top:50%}12%{left:calc(50% - 13px);top:calc(100% - 30px);transform:scale(1)}14%{transform:scale(.7)}17%{transform:scale(1)}
- 24%{left:calc(50% - 13px);top:calc(100% - 30px)}32%{left:calc(50% - 13px);top:calc(100% - 78px);transform:scale(1)}34%{transform:scale(.7)}37%{transform:scale(1)}
- 50%{left:calc(50% - 13px);top:calc(100% - 78px)}58%{left:calc(100% - 36px);top:4px;transform:scale(1)}60%{transform:scale(.7)}63%{transform:scale(1)}
- 76%{left:calc(100% - 36px);top:4px}84%{left:calc(50% - 13px);top:61px;transform:scale(1)}86%{transform:scale(.7)}89%{transform:scale(1);opacity:1}95%,100%{opacity:0;left:calc(50% - 13px);top:61px}}
-@keyframes folha{0%,15%{transform:translateY(105%)}20%,48%{transform:translateY(0)}50%,100%{transform:translateY(105%)}}
-@keyframes alvo{0%,33%{background:#f3f1ee}35%,48%{background:#dfe9fb}100%{background:#f3f1ee}}
-@keyframes dlg{0%,48%{opacity:0}51%,74%{opacity:1}77%,100%{opacity:0}}
-@keyframes alvoadd{0%,59%{background:transparent}61%,74%{background:#dfe9fb}100%{background:transparent}}
-@keyframes home{0%,74%{opacity:0}77%,97%{opacity:1}100%{opacity:0}}
-@keyframes pop{0%,77%{transform:scale(0)}81%{transform:scale(1.15)}84%,100%{transform:scale(1)}}
+#portao .home .app{background:#F5EFE4 url(img/simbolo-marrom.png) center/70% no-repeat;animation:pop 18s infinite}
+#portao .dedo{position:absolute;width:26px;height:26px;border-radius:50%;background:rgba(138,63,50,.55);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);animation:dedo 18s infinite;left:50%;top:60%;z-index:3}
+@keyframes dedo{0.0%{left:60%;top:45%;opacity:0}2.2%,8.3%{left:60%;top:45%;opacity:1;transform:scale(1)}14.4%{left:calc(50% - 13px);top:calc(100% - 30px);transform:scale(1)}16.1%{transform:scale(.7)}17.8%,25.6%{left:calc(50% - 13px);top:calc(100% - 30px);transform:scale(1)}32.2%{left:calc(50% - 13px);top:calc(100% - 78px);transform:scale(1)}33.9%{transform:scale(.7)}35.6%,48.9%{left:calc(50% - 13px);top:calc(100% - 78px);transform:scale(1)}55.6%{left:calc(100% - 36px);top:4px;transform:scale(1)}57.2%{transform:scale(.7)}58.9%,72.2%{left:calc(100% - 36px);top:4px;transform:scale(1)}78.9%{left:calc(50% - 13px);top:61px;transform:scale(1)}80.6%{transform:scale(.7)}82.2%{left:calc(50% - 13px);top:61px;transform:scale(1);opacity:1}87.8%,100.0%{left:calc(50% - 13px);top:61px;opacity:0}}
+@keyframes folha{0.0%,18.3%{transform:translateY(105%)}21.7%,46.1%{transform:translateY(0)}47.8%,100.0%{transform:translateY(105%)}}
+@keyframes alvo{0.0%,33.3%{background:#f3f1ee}33.9%,46.1%{background:#dfe9fb}47.8%,100.0%{background:#f3f1ee}}
+@keyframes dlg{0.0%,46.7%{opacity:0}48.9%,68.3%{opacity:1}70.6%,100.0%{opacity:0}}
+@keyframes alvoadd{0.0%,56.7%{background:transparent}57.2%,68.3%{background:#dfe9fb}70.6%,100.0%{background:transparent}}
+@keyframes home{0.0%,68.3%{opacity:0}70.6%,96.7%{opacity:1}100.0%{opacity:0}}
+@keyframes pop{0.0%,71.1%{transform:scale(0)}73.9%{transform:scale(1.15)}75.6%,100.0%{transform:scale(1)}}
 #portao.inst .cx{padding:20px 20px 22px;gap:10px}
 #portao.inst .cx>div>img{width:44px}
-#portao.inst h1{font-size:21px}
+#portao.inst h1{font-size:min(21px,5.4vw);white-space:nowrap}
 #portao.inst .cel{zoom:.8}
 @media (max-height:760px){#portao.inst .cel{zoom:.66}#portao.inst .cx{gap:8px}}
-@media (max-height:600px){#portao{padding:12px 14px 40px}#portao.inst .cel{zoom:.5}#portao.inst .cx{padding:14px 16px 16px;gap:6px}#portao.inst .cx>div>img{width:34px}#portao.inst h1{font-size:18px}#portao.inst .como{font-size:15px}#portao .leg{gap:5px}#portao .leg p{font-size:13.5px}#portao .leg p small{font-size:11.5px}}
-#portao .como{font:300 17px Poppins,system-ui,sans-serif;letter-spacing:.03em;color:#5A4A38;margin:2px 0 -2px}
+@media (max-height:600px){#portao{padding:12px 14px 40px}#portao.inst .cel{zoom:.5}#portao.inst .cx{padding:14px 16px 16px;gap:6px}#portao.inst .cx>div>img{width:34px}#portao.inst h1{font-size:min(18px,5.2vw)}#portao.inst .como{font-size:9.5px}#portao .leg{gap:5px}#portao .leg p{font-size:13.5px}#portao .leg p small{font-size:11.5px}}
+#portao .como{font:300 10px Poppins,system-ui,sans-serif;letter-spacing:.03em;color:#5A4A38;margin:2px 0 -2px}
 #portao .leg{width:100%;display:flex;flex-direction:column;gap:8px;text-align:left}
 #portao .leg p{opacity:0;font-size:15px;line-height:1.4;color:#3B2A1C;display:flex;gap:8px;align-items:flex-start}
 #portao .leg p small{display:block;font-size:12.5px;color:#7A6650;margin-top:2px}
 #portao .leg p b.n{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#3F4938;color:#F6EDDA;font-size:12px;margin-top:1px}
 #portao .leg .ic{width:26px;height:26px;vertical-align:-7px}#portao .leg .ic svg{width:16px;height:16px}
-#portao .leg p:nth-child(1){animation:leg1 24s infinite}#portao .leg p:nth-child(2){animation:leg2 24s infinite}#portao .leg p:nth-child(3){animation:leg3 24s infinite}#portao .leg p:nth-child(4){animation:leg4 24s infinite}
-@keyframes leg1{0%{opacity:0}2%,96%{opacity:1}99%,100%{opacity:0}}
-@keyframes leg2{0%,25%{opacity:0}27%,96%{opacity:1}99%,100%{opacity:0}}
-@keyframes leg3{0%,50%{opacity:0}52%,96%{opacity:1}99%,100%{opacity:0}}
-@keyframes leg4{0%,75%{opacity:0}77%,96%{opacity:1}99%,100%{opacity:0}}
+#portao .leg p:nth-child(1){animation:leg1 18s infinite}#portao .leg p:nth-child(2){animation:leg2 18s infinite}#portao .leg p:nth-child(3){animation:leg3 18s infinite}#portao .leg p:nth-child(4){animation:leg4 18s infinite}
+@keyframes leg1{0.0%,0.1%{opacity:0}2.3%,96.1%{opacity:1}98.9%,100.0%{opacity:0}}
+@keyframes leg2{0.0%,24.4%{opacity:0}26.7%,96.1%{opacity:1}98.9%,100.0%{opacity:0}}
+@keyframes leg3{0.0%,47.8%{opacity:0}50.0%,96.1%{opacity:1}98.9%,100.0%{opacity:0}}
+@keyframes leg4{0.0%,70.0%{opacity:0}72.2%,96.1%{opacity:1}98.9%,100.0%{opacity:0}}
 #portao .seta.topo{bottom:auto;top:6px;left:auto;right:22px;margin:0;animation-name:setasobe,setavis}
 @keyframes setasobe{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 `;
@@ -179,7 +176,7 @@ function celAnimado() {
 }
 function telaInstalar() {
   const ua = navigator.userAgent, android = /Android/i.test(ua), ipad = /iPad/i.test(ua) || /Macintosh/.test(ua), noTopo = ipad || /CriOS|FxiOS|EdgiOS/i.test(ua);
-  tituloPortao = "Prepare-se para<br>a travessia";
+  tituloPortao = "Prepare-se para a travessia";
   if (android) {
     const dica = el("p", { className: "inst" });
     const bt = el("button", { id: "instalar", type: "button", onclick: async () => {
@@ -200,7 +197,7 @@ function telaInstalar() {
   document.getElementById("portao").append(el("div", { className: "seta" + (noTopo ? " topo" : ""), textContent: noTopo ? "↑" : "↓" }));
 }
 function telaInstalado() {
-  tituloPortao = "Prepare-se para<br>a travessia";
+  tituloPortao = "Prepare-se para a travessia";
   portao(el("p", { className: "inst", innerHTML: "Pronto! Abra o aplicativo pelo ícone da <b>Caravana</b> na Tela de Início do seu celular." }));
 }
 function telaLogin() {
