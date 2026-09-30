@@ -593,7 +593,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 #boasvindas .abfundo::after{background:radial-gradient(ellipse at 50% 45%,rgba(20,12,6,.25),rgba(20,12,6,.6) 80%)}
 #boasvindas .abcidade{font-size:30px;line-height:1.2}
 #boasvindas .bvtit{font-size:32px;line-height:1.25;animation-delay:.9s}
-#boasvindas .abfrase{margin-top:10px;font-size:30px;line-height:1.25;font-style:normal;max-width:none;animation-delay:2s}
+#boasvindas .abfrase{margin-top:10px;font-size:30px;line-height:1.25;font-style:normal;max-width:none;animation-delay:3.2s}
+#boasvindas .bvvento{margin:12px 0 14px;font-size:19px;font-style:italic;line-height:1.45;max-width:26ch;color:#E2BE78;animation-delay:1.9s}
 .pgmso{margin:0 0 4px;font:600 11px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:#8A3F32;text-align:center}
 .celx{position:absolute;top:6px;right:8px;background:none;border:0;font-size:22px;line-height:1;color:var(--soft);padding:4px 8px}
 .meuexp{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 14px 4px 6px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
@@ -4371,12 +4372,13 @@ function boasVindas(pronto) {
     h("div", { class: "abconteudo" },
       h("img", { class: "absimb", src: "img/simbolo-dourado.png", alt: "" }),
       h("h1", { class: "abcidade bvtit", text: "Bem-vindo à Caravana" }),
-      h("p", { class: "abfrase", text: "Prepare-se para a travessia." })));
+      h("p", { class: "abfrase bvvento", text: "Os ventos já sopram no horizonte dourado!" }),
+      h("p", { class: "abfrase", text: "Prepare-se para a travessia" })));
   document.body.append(ov);
   const t0 = Date.now();
   const fecha = () => { if (!ov.isConnected) return; lsSet("cdi-bv", "1"); ov.classList.add("sai"); render(); setTimeout(() => ov.remove(), 700); };
-  // fica pelo menos 7,5 s e espera o app saber se a pessoa já tem passaporte
-  pronto.then(() => setTimeout(fecha, Math.max(0, 7500 - (Date.now() - t0))));
+  // fica pelo menos 9 s e espera o app saber se a pessoa já tem passaporte
+  pronto.then(() => setTimeout(fecha, Math.max(0, 9000 - (Date.now() - t0))));
   ov.addEventListener("click", () => { if (Date.now() - t0 > 2500) pronto.then(fecha); });
 }
 function abreDia() { const t = +new URLSearchParams(location.search).get("abertura"); aberturaDoDia(t || 0); }
