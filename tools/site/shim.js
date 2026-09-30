@@ -8,6 +8,8 @@ import SEED from "./seed.json";
 
 const CFG = window.CARAVANA_CONFIG || {};
 window.__SITE = true;
+// líderes: um ou mais e-mails separados por vírgula no config.js
+const lideres = String(CFG.lider || "").toLowerCase().split(/[\s,;]+/).filter(Boolean);
 const pronto = !!(CFG.firebase && CFG.firebase.apiKey && !/COLE/.test(CFG.firebase.apiKey));
 
 // ---------- tela de entrada ----------
@@ -109,8 +111,6 @@ if (!pronto) {
   fs = firebase.firestore();
   fs.settings({ ignoreUndefinedProperties: true, merge: true });
   fs.enablePersistence({ synchronizeTabs: true }).catch(() => {});
-  // líderes: um ou mais e-mails separados por vírgula no config.js
-  const lideres = String(CFG.lider || "").toLowerCase().split(/[\s,;]+/).filter(Boolean);
 
   // volta do login do Google (celular): se deu erro, mostra na tela de entrar
   auth.getRedirectResult().catch(e => { erroLogin = e && e.code ? "Não consegui entrar (" + e.code.replace("auth/", "") + "). Tente de novo." : "Não consegui entrar. Tente de novo."; if (!auth.currentUser) telaLogin(); });
@@ -148,6 +148,13 @@ async function entrarComEmail(email, palavra, erro, bt) {
   email = email.trim().toLowerCase(); palavra = palavra.trim().toLowerCase();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { erro.textContent = "Confira o e-mail."; return; }
   if (!palavra) { erro.textContent = "Digite a palavra da caravana."; return; }
+  // a líder entra pela conta Google (é o que confirma que o e-mail é dela)
+  if (lideres.includes(email)) {
+    bt.disabled = true; bt.textContent = "Abrindo o Google…";
+    const prov = new firebase.auth.GoogleAuthProvider(); prov.setCustomParameters({ prompt: "select_account", login_hint: email });
+    try { if (celular) await auth.signInWithRedirect(prov); else await auth.signInWithPopup(prov); return; }
+    catch (e) { try { await auth.signInWithRedirect(prov); return; } catch (x) {} erro.textContent = "Não consegui entrar. Tente de novo."; bt.disabled = false; bt.textContent = "Entrar"; return; }
+  }
   erro.textContent = ""; erroLogin = ""; bt.disabled = true; bt.textContent = "Entrando…"; palavraDigitada = palavra;
   try { await auth.signInWithEmailAndPassword(email, senhaDe(palavra)); return; }
   catch (e) {
@@ -216,17 +223,7 @@ function telaLogin() {
   const pal = el("input", { type: "text", placeholder: "Palavra da caravana", autocomplete: "off", autocapitalize: "none" });
   const entra = el("button", { type: "button", onclick: () => entrarComEmail(em.value, pal.value, erro, entra) }, "Entrar");
   pal.addEventListener("keydown", e => { if (e.key === "Enter") entra.click(); });
-  const b = el("button", { type: "button", className: "claro", onclick: async () => {
-    erro.textContent = ""; erroLogin = "";
-    const prov = new firebase.auth.GoogleAuthProvider(); prov.setCustomParameters({ prompt: "select_account" });
-    if (celular) { b.disabled = true; b.textContent = "Abrindo o Google…"; try { await auth.signInWithRedirect(prov); return; } catch (x) { b.disabled = false; b.textContent = "Ou entrar com Google"; } }
-    try { await auth.signInWithPopup(prov); }
-    catch (e) {
-      if (/popup|operation-not-supported|web-storage/.test(e.code || "")) { try { await auth.signInWithRedirect(prov); return; } catch (x) {} }
-      erro.textContent = "Não consegui entrar. Tente de novo.";
-    }
-  } }, "Ou entrar com Google");
-  portao(el("p", { textContent: "O aplicativo da Caravana Índia 2026. Digite o seu e-mail e a palavra da caravana, que a líder passou no grupo." }), em, pal, entra, erro, b);
+  portao(el("p", { textContent: "Digite seu e-mail e a palavra secreta" }), em, pal, entra, erro);
 }
 function telaPalavra() {
   const inp = el("input", { type: "text", placeholder: "Palavra da caravana", autocomplete: "off" });
