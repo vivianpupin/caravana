@@ -166,7 +166,7 @@ function celAnimado() {
 }
 function telaInstalar() {
   const ua = navigator.userAgent, android = /Android/i.test(ua), ipad = /iPad/i.test(ua) || /Macintosh/.test(ua), noTopo = ipad || /CriOS|FxiOS|EdgiOS/i.test(ua);
-  tituloPortao = "Sua travessia<br>começa agora";
+  tituloPortao = "Prepare-se para<br>a travessia";
   if (android) {
     const dica = el("p", { className: "inst" });
     const bt = el("button", { id: "instalar", type: "button", onclick: async () => {
@@ -186,7 +186,7 @@ function telaInstalar() {
   document.getElementById("portao").append(el("div", { className: "seta" + (noTopo ? " topo" : ""), textContent: noTopo ? "↑" : "↓" }));
 }
 function telaInstalado() {
-  tituloPortao = "Sua travessia<br>começa agora";
+  tituloPortao = "Prepare-se para<br>a travessia";
   portao(el("p", { className: "inst", innerHTML: "Pronto! Abra o app pelo ícone da <b>Caravana</b> na tela do seu celular." }));
 }
 function telaLogin() {
