@@ -196,7 +196,7 @@ function telaInstalar() {
   }
   const leg = el("div", { className: "leg" });
   leg.innerHTML = '<p><b class="n">1</b><span>Toque em ' + COMP + (noTopo ? "" : "<small>Não achou? Toque em ••• e depois em Compartilhar</small>") + "</span></p>" +
-    '<p><b class="n">2</b><span>Toque em <b>Adicionar à Tela de Início</b></span></p>' +
+    '<p><b class="n">2</b><span>Toque em <b>Adicionar à Tela de Início</b><small>Não apareceu? Toque em <b>Ver mais</b> e procure na lista</small></span></p>' +
     '<p><b class="n">3</b><span>Toque em <b>Adicionar</b>, no alto</span></p>' +
     '<p><b class="n">4</b><span>Abra o aplicativo pelo ícone da <b>Caravana</b> na Tela de Início do seu celular</span></p>';
   portao(el("p", { id: "instalar", className: "como", textContent: "Como instalar o aplicativo" }), celAnimado(), leg);
