@@ -1,4 +1,4 @@
-// marca: 845b2749f3
+// marca: 7e3997c213
 // Guarda o app inteiro no celular para abrir mesmo sem sinal (templo, estrada, wi-fi fraco do hotel).
 const CACHE = "caravana-v6", EXTRA = "caravana-ext", MAPA = "caravana-mapa";
 // lista de arquivos gerada pelo tools/gerar-site.py

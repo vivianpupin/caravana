@@ -36,3 +36,18 @@ if (LOGIN_PELO_APP && location.hostname === "caravanaindiaapp.netlify.app") wind
     document.body.append(d);
   });
 })();
+
+// Selo "Powered by Netlify" que a Netlify coloca por cima do site: tira da tela assim que aparece.
+(function () {
+  const ehSelo = e => {
+    if (!e || e.nodeType !== 1 || e.id === "portao" || e.id === "fora" || /^(HEAD|BODY|SCRIPT|STYLE|LINK|META)$/.test(e.tagName)) return false;
+    if (/NETLIFY/.test(e.tagName) || /netlify\.com/i.test(e.getAttribute("href") || "") || /netlify\.com/i.test(e.getAttribute("src") || "")) return true;
+    const sr = e.shadowRoot ? e.shadowRoot.textContent || "" : "";
+    return /Powered by\s*Netlify/i.test(sr) || (e.textContent || "").length < 200 && /Powered by\s*Netlify/i.test(e.textContent || "");
+  };
+  const limpa = raiz => { if (!raiz) return; [...raiz.children].forEach(e => { if (ehSelo(e)) e.remove(); }); };
+  const olha = raiz => new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(e => { if (ehSelo(e)) e.remove(); }))).observe(raiz, { childList: true });
+  olha(document.documentElement);
+  document.addEventListener("DOMContentLoaded", () => { limpa(document.documentElement); limpa(document.body); olha(document.body); });
+  window.addEventListener("load", () => { limpa(document.documentElement); limpa(document.body); });
+})();
