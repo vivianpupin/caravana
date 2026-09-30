@@ -93,10 +93,15 @@ function portao(...kids) {
 if (pronto) {
   const st = document.createElement("style");
   st.textContent = "html.espera,html.espera body{background:#1d1a16 url(img/textura.jpg) center/cover}html.espera body>*:not(#portao):not(#fora):not(#boasvindas){visibility:hidden}";
-  document.head.append(st); document.documentElement.classList.add("espera");
+  document.head.append(st);
+  // quem já entrou neste celular vê o app na hora (como antes); só quem ainda não entrou espera a tela certa
+  let jaEntrou = false; try { jaEntrou = localStorage.getItem("cdi-entrou") === "1"; } catch (e) {}
+  if (!jaEntrou) document.documentElement.classList.add("espera");
+  // segurança: nunca deixa a tela escura presa (sem internet a conferência pode demorar)
+  setTimeout(() => { if (!document.getElementById("portao")) document.documentElement.classList.remove("espera"); }, 5000);
 }
 // o próprio app tira o "espera" quando já sabe o que mostrar (boas-vindas ou a página certa); 8 s é só segurança
-const fecharPortao = () => { document.getElementById("portao")?.remove(); setTimeout(() => document.documentElement.classList.remove("espera"), 8000); };
+const fecharPortao = () => { document.getElementById("portao")?.remove(); setTimeout(() => document.documentElement.classList.remove("espera"), 4000); };
 const el = (tag, props = {}, ...kids) => { const e = document.createElement(tag); Object.assign(e, props); e.append(...kids); return e; };
 
 // ---------- estado ----------
@@ -113,7 +118,14 @@ if (!pronto) {
   fs.enablePersistence({ synchronizeTabs: true }).catch(() => {});
 
   // volta do login do Google (celular): se deu erro, mostra na tela de entrar
-  auth.getRedirectResult().catch(e => { erroLogin = e && e.code ? "Não consegui entrar (" + e.code.replace("auth/", "") + "). Tente de novo." : "Não consegui entrar. Tente de novo."; if (!auth.currentUser) telaLogin(); });
+  let voltouDoGoogle = false; try { voltouDoGoogle = sessionStorage.getItem("cdi-google") === "1"; sessionStorage.removeItem("cdi-google"); } catch (e) {}
+  if (voltouDoGoogle) auth.getRedirectResult().catch(e => { erroLogin = e && e.code ? "Não consegui entrar (" + e.code.replace("auth/", "") + "). Tente de novo." : "Não consegui entrar. Tente de novo."; if (!auth.currentUser) telaLogin(); });
+  // lê primeiro o que já está guardado no celular; se não tiver, pergunta à internet (no máximo 6 s)
+  const leDoc = async caminho => {
+    const ref = fs.doc(caminho);
+    try { const c = await ref.get({ source: "cache" }); if (c.exists) return c; } catch (e) {}
+    return Promise.race([ref.get(), new Promise(r => setTimeout(() => r("demorou"), 6000))]).catch(() => null);
+  };
   auth.onAuthStateChanged(async u => {
     if (!u) return telaLogin();
     const email = String(u.email || "").toLowerCase();
@@ -122,14 +134,17 @@ if (!pronto) {
     fs.doc("perfis/" + u.uid).set({ name: me.name, avatarUrl: me.avatarUrl, ts: Date.now() }).catch(() => {});
     if (me.isOwner) {
       semear();
-      const ac = await fs.doc("privado/acesso").get().catch(() => null);
+      const ac = await leDoc("privado/acesso");
+      if (ac === "demorou") return entrar();
       if (!ac || !ac.exists) return telaCriarPalavra();
       return entrar();
     }
     // entrou com a palavra antiga: a senha vira a palavra nova só depois de confirmar que é membro
     const novaSenha = () => { if (trocarSenha) { const nova = trocarSenha; trocarSenha = ""; u.updatePassword(senhaDe(nova)).catch(() => {}); } };
-    const m = await fs.doc("membros/" + u.uid).get().catch(() => null);
-    if (m && m.exists) { novaSenha(); return entrar(); }
+    const m = await leDoc("membros/" + u.uid);
+    let entrouAntes = false; try { entrouAntes = localStorage.getItem("cdi-entrou") === "1"; } catch (e) {}
+    if (m === "demorou" && entrouAntes) return entrar();
+    if (m && m !== "demorou" && m.exists) { novaSenha(); return entrar(); }
     // entrou com e-mail + palavra: a mesma palavra já vira a chave de membro, sem pedir de novo
     if (palavraDigitada) {
       const palavra = palavraDigitada; palavraDigitada = "";
@@ -157,8 +172,9 @@ async function entrarComEmail(email, palavra, erro, bt) {
   if (lideres.includes(email)) {
     bt.disabled = true; bt.textContent = "Abrindo o Google…";
     const prov = new firebase.auth.GoogleAuthProvider(); prov.setCustomParameters({ prompt: "select_account", login_hint: email });
-    try { if (celular) await auth.signInWithRedirect(prov); else await auth.signInWithPopup(prov); return; }
-    catch (e) { try { await auth.signInWithRedirect(prov); return; } catch (x) {} erro.textContent = "Não consegui entrar. Tente de novo."; bt.disabled = false; bt.textContent = "Entrar"; return; }
+    const vai = () => { try { sessionStorage.setItem("cdi-google", "1"); } catch (x) {} return auth.signInWithRedirect(prov); };
+    try { if (celular) await vai(); else await auth.signInWithPopup(prov); return; }
+    catch (e) { try { await vai(); return; } catch (x) {} erro.textContent = "Não consegui entrar. Tente de novo."; bt.disabled = false; bt.textContent = "Entrar"; return; }
   }
   erro.textContent = ""; erroLogin = ""; bt.disabled = true; bt.textContent = "Entrando…"; palavraDigitada = palavra;
   try { await auth.signInWithEmailAndPassword(email, senhaDe(palavra)); return; }
@@ -260,7 +276,7 @@ function telaCriarPalavra() {
   portao(el("p", { textContent: "Bem-vinda, líder! Crie a palavra da caravana. Só quem souber essa palavra consegue entrar no app." }), inp,
     el("button", { type: "button", onclick: ok }, "Criar a palavra"), erro);
 }
-function entrar() { fecharPortao(); resolvePronto(true); iniciarPresenca(); }
+function entrar() { try { localStorage.setItem("cdi-entrou", "1"); } catch (e) {} fecharPortao(); resolvePronto(true); iniciarPresenca(); }
 
 // Na primeira entrada da líder, copia o conteúdo do app (cidades, lugares, saberes, carta final).
 async function semear() {
@@ -419,4 +435,4 @@ window.claude = {
     return tabela[nome] || null;
   },
 };
-window.caravanaSair = () => auth && auth.signOut().then(() => location.reload());
+window.caravanaSair = () => { try { localStorage.removeItem("cdi-entrou"); } catch (e) {} return auth && auth.signOut().then(() => location.reload()); };
