@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "30/09 · 19:17";</script>
+<script>window.__VERSAO = "30/09 · 19:20";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3798,7 +3798,7 @@ function vTira() {
         h("div", { class: "opts" }, TIRA_FILTROS.map(id => FILTROS.find(f => f.id === id)).filter(Boolean).map(f => h("button", { type: "button", class: "opt", "aria-pressed": String(T.filtro === f.id), onclick: () => set("filtro", f.id) }, f.nome))),
         painelAdesivos,
         h("div", { class: "actions" },
-          h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no celular"),
+          h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no rolo da câmera"),
           h("button", { class: "btn", type: "button", onclick: () => envia("mural") }, "Enviar para a galeria da caravana")),
         msg)) :
       h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
@@ -3995,7 +3995,7 @@ function vFotos() {
         h("div", { class: "opts" }, MOLDURAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: () => set("moldura", id) }, n))),
         painelAdesivos,
         h("div", { class: "actions" },
-          h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no celular"),
+          h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no rolo da câmera"),
           h("button", { class: "btn", type: "button", onclick: mural }, "Enviar para a galeria da caravana"),
           h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "Trocar foto")),
         msg)) :
@@ -4909,9 +4909,11 @@ async function salvarNoRolo(blobP, nome, msg) {
   const b = await blobP;
   if (dl) { try { await dl.save({ filename: nome, data: b }); msg.textContent = "Foto salva."; msg.className = "msg ok"; } catch (e) { msg.textContent = e && e.code === "declined" ? "" : "Não consegui salvar. Toque e segure na foto e escolha Salvar imagem."; msg.className = "msg"; } return; }
   const f = new File([b], nome, { type: "image/jpeg" });
-  if (podeRolo()) { try { await navigator.share({ files: [f] }); msg.textContent = "Pronto! Se escolheu Salvar imagem, a foto está no rolo da câmera."; msg.className = "msg ok"; } catch (e) { if (e && e.name !== "AbortError") { msg.textContent = "Toque e segure na foto e escolha Salvar imagem."; msg.className = "msg"; } } return; }
+  // iPhone: abre a lista de compartilhar, onde fica "Salvar imagem" (vai direto para o rolo da câmera).
+  // Android: baixa a foto, que aparece na galeria.
+  if (ehIphone() && podeRolo()) { msg.textContent = "Na lista que abrir, toque em Salvar imagem."; msg.className = "msg"; try { await navigator.share({ files: [f] }); msg.textContent = "Pronto! Se escolheu Salvar imagem, a foto está no rolo da câmera."; msg.className = "msg ok"; } catch (e) { if (e && e.name !== "AbortError") { msg.textContent = "Toque e segure na foto e escolha Salvar imagem."; msg.className = "msg"; } } return; }
   const a = h("a", { href: URL.createObjectURL(b), download: nome }); document.body.append(a); a.click(); a.remove();
-  msg.textContent = "Foto salva."; msg.className = "msg ok";
+  msg.textContent = ehIphone() ? "Foto salva." : "Foto salva na galeria do celular."; msg.className = "msg ok";
 }
 // apagar foto da galeria (a foto em si também sai do banco, para não ocupar espaço)
 async function apagaFotoMural(f) {
@@ -4989,7 +4991,7 @@ function abrirFotoMural(f) {
     f.legenda ? h("h3", { text: f.legenda }) : null,
     h("p", { class: "small", text: "Enviada por " + nomeDe(f.autor) }), st,
     h("div", { class: "actions", style: "justify-content:center" },
-      h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(fetch(blob(f.fotoId)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + ".jpg", st) }, "Salvar no celular")),
+      h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(fetch(blob(f.fotoId)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + ".jpg", st) }, "Salvar no rolo da câmera")),
     h("div", { class: "foot2" },
       meu ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (!confirm("Apagar esta foto da galeria?")) return; apagaFotoMural(f).then(closeSheets, () => { st.textContent = "Não consegui apagar a foto."; st.className = "msg err"; }); } }, "Apagar foto") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
