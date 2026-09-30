@@ -60,10 +60,10 @@ const css = `
 @keyframes pop{0.0%,71.1%{transform:scale(0)}73.9%{transform:scale(1.15)}75.6%,100.0%{transform:scale(1)}}
 #portao.inst .cx{padding:20px 20px 22px;gap:10px}
 #portao.inst .cx>div>img{width:44px}
-#portao.inst h1{font-size:min(21px,5.4vw);white-space:nowrap}
+#portao.inst h1{font-size:min(19px,4.7vw);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
 #portao.inst .cel{zoom:.8}
 @media (max-height:760px){#portao.inst .cel{zoom:.66}#portao.inst .cx{gap:8px}}
-@media (max-height:600px){#portao{padding:12px 14px 40px}#portao.inst .cel{zoom:.5}#portao.inst .cx{padding:14px 16px 16px;gap:6px}#portao.inst .cx>div>img{width:34px}#portao.inst h1{font-size:min(18px,5.2vw)}#portao.inst .como{font-size:9.5px}#portao .leg{gap:5px}#portao .leg p{font-size:13.5px}#portao .leg p small{font-size:11.5px}}
+@media (max-height:600px){#portao{padding:12px 14px 40px}#portao.inst .cel{zoom:.5}#portao.inst .cx{padding:14px 16px 16px;gap:6px}#portao.inst .cx>div>img{width:34px}#portao.inst h1{font-size:min(17px,4.6vw)}#portao.inst .como{font-size:9.5px}#portao .leg{gap:5px}#portao .leg p{font-size:13.5px}#portao .leg p small{font-size:11.5px}}
 #portao .como{font:300 10px Poppins,system-ui,sans-serif;letter-spacing:.03em;color:#5A4A38;margin:2px 0 -2px}
 #portao .leg{width:100%;display:flex;flex-direction:column;gap:8px;text-align:left}
 #portao .leg p{opacity:0;font-size:15px;line-height:1.4;color:#3B2A1C;display:flex;gap:8px;align-items:flex-start}
@@ -185,7 +185,8 @@ function telaInstalar() {
       pedidoInstalar = null;
       try { await e.prompt(); const r = await e.userChoice; if (r && r.outcome === "accepted") telaInstalado(); } catch (x) {}
     } }, "Instalar o app");
-    return portao(el("p", { className: "como", textContent: "Como instalar o aplicativo" }), bt, dica);
+    portao(el("p", { className: "como", textContent: "Como instalar o aplicativo" }), bt, dica);
+    return document.getElementById("portao").classList.add("inst");
   }
   const leg = el("div", { className: "leg" });
   leg.innerHTML = '<p><b class="n">1</b><span>Toque em ' + COMP + (noTopo ? "" : "<small>Não achou? Toque em ••• e depois em Compartilhar</small>") + "</span></p>" +
