@@ -126,6 +126,7 @@ if (!pronto) {
       if (!ac || !ac.exists) return telaCriarPalavra();
       return entrar();
     }
+    if (trocarSenha) { const nova = trocarSenha; trocarSenha = ""; u.updatePassword(senhaDe(nova)).catch(() => {}); }
     const m = await fs.doc("membros/" + u.uid).get().catch(() => null);
     if (m && m.exists) return entrar();
     // entrou com e-mail + palavra: a mesma palavra já vira a chave de membro, sem pedir de novo
@@ -143,6 +144,9 @@ const celular = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (naviga
 // Entrar com qualquer e-mail + a palavra da caravana (a palavra é a senha de todos).
 // O Firebase pede senha de 6 letras ou mais, então a senha guardada é a palavra com um prefixo fixo.
 let palavraDigitada = "";
+// palavras que já valeram antes (a conta de quem entrou naquela época tem a senha com a palavra antiga)
+const PALAVRAS_ANTIGAS = ["caravana", "ganga"];
+let trocarSenha = "";
 const senhaDe = palavra => "caravana-" + palavra;
 async function entrarComEmail(email, palavra, erro, bt) {
   email = email.trim().toLowerCase(); palavra = palavra.trim().toLowerCase();
@@ -160,6 +164,11 @@ async function entrarComEmail(email, palavra, erro, bt) {
   catch (e) {
     if (/network/.test(e.code || "")) { erro.textContent = "Sem internet. Tente de novo quando tiver sinal."; }
     else {
+      // quem criou a conta quando a palavra era outra: entra com a palavra antiga e a senha passa a ser a nova
+      for (const antiga of PALAVRAS_ANTIGAS) {
+        if (antiga === palavra) continue;
+        try { await auth.signInWithEmailAndPassword(email, senhaDe(antiga)); trocarSenha = palavra; return; } catch (x) {}
+      }
       // primeira vez deste e-mail: cria a entrada na hora
       try { await auth.createUserWithEmailAndPassword(email, senhaDe(palavra)); return; }
       catch (x) {
