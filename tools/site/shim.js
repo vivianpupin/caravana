@@ -83,7 +83,7 @@ function portao(...kids) {
   let el = document.getElementById("portao");
   if (!el) { const st = document.createElement("style"); st.textContent = css; document.head.append(st); el = document.createElement("div"); el.id = "portao"; document.body.append(el); }
   const cx = document.createElement("div"); cx.className = "cx";
-  const topo = document.createElement("div"); topo.innerHTML = `<img src="img/simbolo-marrom.png" alt=""><p class="sub">Caravana do Céu</p><h1>${tituloPortao}</h1>`;
+  const topo = document.createElement("div"); topo.innerHTML = `<img src="img/simbolo-marrom.png" alt=""><p class="sub">Caravana do Céu</p>${tituloPortao ? "<h1>" + tituloPortao + "</h1>" : ""}`;
   topo.style.cssText = "display:flex;flex-direction:column;align-items:center;gap:8px";
   cx.append(topo, ...kids); el.replaceChildren(cx); el.classList.remove("inst");
 }
@@ -182,7 +182,7 @@ function celAnimado() {
 }
 function telaInstalar() {
   const ua = navigator.userAgent, android = /Android/i.test(ua), ipad = /iPad/i.test(ua) || /Macintosh/.test(ua), noTopo = ipad || /CriOS|FxiOS|EdgiOS/i.test(ua);
-  tituloPortao = "Prepare-se para a travessia";
+  tituloPortao = "";
   if (android) {
     const dica = el("p", { className: "inst" });
     const bt = el("button", { id: "instalar", type: "button", onclick: async () => {
@@ -204,7 +204,7 @@ function telaInstalar() {
   document.getElementById("portao").append(el("div", { className: "seta" + (noTopo ? " topo" : ""), textContent: noTopo ? "↑" : "↓" }));
 }
 function telaInstalado() {
-  tituloPortao = "Prepare-se para a travessia";
+  tituloPortao = "";
   portao(el("p", { className: "inst", innerHTML: "Pronto! Abra o aplicativo pelo ícone da <b>Caravana</b> na Tela de Início do seu celular." }));
 }
 function telaLogin() {
