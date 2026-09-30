@@ -1332,8 +1332,7 @@ function vCadastro() {
         const fi = campoFoto(async id => { S.cadFoto = id; prev.src = blob(id); prev.hidden = false; }, st);
         return h("div", { class: "cadfotobox" }, prev, h("button", { class: "btn", type: "button", onclick: () => fi.click() }, "Foto para o passaporte (opcional)"), fi, st);
       })() : null,
-      erro, h("button", { class: "btn gold", type: "submit" }, "Emitir meu passaporte")),
-    h("button", { class: "btn ghost", type: "button", onclick: () => { S.pularCadastro = true; render(); } }, "Agora não, só quero olhar"));
+      erro, h("button", { class: "btn gold", type: "submit" }, "Emitir meu passaporte")));
 }
 
 // ---------- Instrumentos antigos (relógios e contador) ----------
