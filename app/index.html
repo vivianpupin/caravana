@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "30/09 · 19:20";</script>
+<script>window.__VERSAO = "30/09 · 19:24";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3815,10 +3815,11 @@ function patchCaravana(img, alt) {
   x.save(); forma(alt * .045); x.clip(); x.globalAlpha = .18; x.strokeStyle = "#000";
   for (let i = -H; i < W + H; i += 3) { x.beginPath(); x.moveTo(i, 0); x.lineTo(i + H * .5, H); x.stroke(); } x.restore();
   x.setLineDash([alt * .018, alt * .012]); x.lineWidth = alt * .012; x.strokeStyle = "#E8C07A"; forma(alt * .075); x.stroke(); x.setLineDash([]);
-  const sb = simboloEm(img, "#E8B45A", alt * .5); x.drawImage(sb, (W - sb.width) / 2, H * .22);
-  x.globalCompositeOperation = "source-atop"; x.globalAlpha = .25; x.strokeStyle = "#7A5020"; x.lineWidth = 1;
-  for (let i = 0; i < W; i += 2.2) { x.beginPath(); x.moveTo(i, H * .2); x.lineTo(i + 3, H * .75); x.stroke(); }
-  x.globalCompositeOperation = "source-over"; x.globalAlpha = 1;
+  // textura de bordado só no desenho do símbolo (antes pegava um retângulo inteiro do patch e aparecia um quadrado)
+  const sb = simboloEm(img, "#E8B45A", alt * .5), sx = sb.getContext("2d");
+  sx.globalCompositeOperation = "source-atop"; sx.globalAlpha = .25; sx.strokeStyle = "#7A5020"; sx.lineWidth = 1;
+  for (let i = -6; i < sb.width + 6; i += 2.2) { sx.beginPath(); sx.moveTo(i, 0); sx.lineTo(i + 3, sb.height); sx.stroke(); }
+  x.drawImage(sb, (W - sb.width) / 2, H * .22);
   for (let i = 0; i < 3; i++) { x.fillStyle = "#E8C07A"; x.beginPath(); x.arc(W * (.38 + i * .12), H * .84, alt * .012, 0, 7); x.fill(); }
   return c;
 }
