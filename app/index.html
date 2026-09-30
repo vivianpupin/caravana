@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "30/09 · 15:27";</script>
+<script>window.__VERSAO = "30/09 · 15:28";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -606,8 +606,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 #boasvindas .abfundo{filter:blur(6px) brightness(.8) saturate(1.1);inset:-40px}
 #boasvindas .abfundo::after{background:radial-gradient(ellipse at 50% 45%,rgba(20,12,6,.25),rgba(20,12,6,.6) 80%)}
 #boasvindas .abcidade{font-size:30px;line-height:1.2}
-#boasvindas .abfrase{margin-top:18px}
-#boasvindas .abfrase+.abfrase{margin-top:2px;animation-delay:2.8s}
+#boasvindas .bvtit{font-size:32px;animation-delay:.9s}
+#boasvindas .abfrase{margin-top:6px;animation-delay:2s}
 .pgmso{margin:0 0 4px;font:600 11px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:#8A3F32;text-align:center}
 .celx{position:absolute;top:6px;right:8px;background:none;border:0;font-size:22px;line-height:1;color:var(--soft);padding:4px 8px}
 .meuexp{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 14px 4px 6px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
@@ -4384,10 +4384,8 @@ function boasVindas(pronto) {
     h("div", { class: "abfundo" }),
     h("div", { class: "abconteudo" },
       h("img", { class: "absimb", src: "img/simbolo-dourado.png", alt: "" }),
-      h("p", { class: "abdia", text: "Caravana do Céu" }),
-      h("h1", { class: "abcidade", text: "Travessia da Índia Sagrada" }),
-      h("p", { class: "abfrase", text: "Bem-vindo à Caravana" }),
-      h("p", { class: "abfrase", text: "Prepare-se para a travessia!" })));
+      h("h1", { class: "abcidade bvtit", text: "Bem-vindo à Caravana" }),
+      h("p", { class: "abfrase", text: "Prepare-se para a travessia." })));
   document.body.append(ov);
   const t0 = Date.now();
   const fecha = () => { if (!ov.isConnected) return; lsSet("cdi-bv", "1"); ov.classList.add("sai"); render(); setTimeout(() => ov.remove(), 700); };
