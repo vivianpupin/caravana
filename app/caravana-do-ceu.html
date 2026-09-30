@@ -1067,7 +1067,7 @@ window.addEventListener("caravana-foto", () => { if (!document.querySelector(".s
 const badgeSrc = l => l && l.insignia ? `insignias/${l.insignia}.webp` : null;
 const deusSrc = n => "deuses/" + norm(n) + ".webp";
 const FRESCO = 3 * 60 * 60 * 1000;
-const BLANK = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
+const BLANK = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
 const nn = n => String(n).padStart(2, "0");
 const MES = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
 const dataSelo = ts => { const d = new Date(ts); return nn(d.getDate()) + " " + MES[d.getMonth()] + " " + String(d.getFullYear()).slice(2); };
@@ -1092,7 +1092,12 @@ async function perfis(ids) {
   falta.forEach(id => perfis.pend.add(id));
   try { Object.assign(S.perfis, await S.user.profiles(falta)); render(); } catch (e) { falta.forEach(id => perfis.pend.delete(id)); }
 }
-const avatar = id => { const v = S.viajantes.find(x => x.id === id); return v && v.foto ? blob(v.foto) : (S.perfis[id]?.avatarUrl || BLANK); };
+const avatar = id => { const v = S.viajantes.find(x => x.id === id); return v && v.foto ? blob(v.foto) : (S.perfis[id]?.avatarUrl || rostoUrl(id)); };
+// quem não tem foto (entrou com e-mail) aparece com o rosto do bonequinho
+function rostoUrl(id) {
+  try { const sv = bonecoRosto(id).firstChild; sv.setAttribute("xmlns", "http://www.w3.org/2000/svg"); sv.setAttribute("width", 68); sv.setAttribute("height", 68);
+    return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(new XMLSerializer().serializeToString(sv)); } catch (e) { return BLANK; }
+}
 // abre a foto do celular já na posição certa (em pé fica em pé): o <img> respeita a orientação gravada pela câmera
 async function abreFoto(file, max = 3000) {
   const url = URL.createObjectURL(file);
