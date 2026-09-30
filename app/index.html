@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "30/09 · 15:36";</script>
+<script>window.__VERSAO = "30/09 · 15:37";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -603,10 +603,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 @media (prefers-reduced-motion:reduce){.abertura,.abertura *{animation:none!important}}
 #boasvindas{animation:none}
 #boasvindas.sai{animation:absai .7s ease both}
-#boasvindas .abfundo{filter:blur(.3px) brightness(.8) saturate(1.05)}
-#boasvindas .abfundo::after{background:radial-gradient(ellipse at 50% 45%,rgba(20,12,6,.35),rgba(20,12,6,.7) 80%)}
 #boasvindas .abcidade{font-size:36px;line-height:1.15}
-#boasvindas .abfrase+.abfrase{margin-top:2px;animation-delay:3s}
 .pgmso{margin:0 0 4px;font:600 11px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:#8A3F32;text-align:center}
 .celx{position:absolute;top:6px;right:8px;background:none;border:0;font-size:22px;line-height:1;color:var(--soft);padding:4px 8px}
 .meuexp{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 14px 4px 6px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
@@ -4379,14 +4376,13 @@ function aberturaDoDia(forcar) {
 // abre sozinha no primeiro acesso do dia (e ao voltar para o app num dia novo); ?abertura=6 mostra o dia 6 para conferir
 // primeira vez que a pessoa abre o app: boas-vindas e depois direto para a emissão do passaporte
 function boasVindas(pronto) {
-  const ov = h("div", { class: "abertura ab-jaipur", id: "boasvindas", role: "dialog", "aria-label": "Boas-vindas", style: "--abimg:url(img/abertura-jaipur.webp)" },
+  const ov = h("div", { class: "abertura ab-varanasi", id: "boasvindas", role: "dialog", "aria-label": "Boas-vindas", style: "--abimg:url(img/abertura-varanasi.webp)" },
     h("div", { class: "abfundo", "aria-hidden": "true" }),
     h("div", { class: "abconteudo" },
       h("img", { class: "absimb", src: "img/simbolo-dourado.png", alt: "" }),
       h("h1", { class: "abcidade", text: "Bem-vindo à Caravana" }),
       h("p", { class: "abfrase", text: "Os ventos já sopram no horizonte dourado…" }),
-      h("p", { class: "abfrase", text: "Prepare-se para a travessia" }),
-      h("button", { class: "absegue", type: "button", onclick: () => fecha() }, "Voar com o vento")));
+      h("button", { class: "absegue", type: "button", onclick: () => fecha() }, "Começar a travessia")));
   document.body.append(ov);
   // igual às aberturas dos dias: fica até a pessoa tocar no botão (e o app já sabe se ela tem passaporte)
   let fechou = false;
