@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "30/09 · 19:15";</script>
+<script>window.__VERSAO = "30/09 · 19:17";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3824,7 +3824,8 @@ function patchCaravana(img, alt) {
 }
 // cola os patches (como os do passaporte) nos cantos da foto
 async function colaPatches(c, F, ox, oy, w, hh) {
-  const tipo = F.patch || "nenhum"; if (tipo === "nenhum") return;
+  const tipo = F.patch || "nenhum"; S.fotoPatchRect = null; if (tipo === "nenhum") return;
+  const caixa = S.fotoPatchRect = { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 };
   const dourado = await carregaImg("img/simbolo-dourado.png"), base = Math.min(w, hh) * .3, pad = Math.min(w, hh) * .04;
   const lugar = PATCH_CIDADE[F.cidade] || "india";
   const lista = tipo === "caravana" ? ["caravana"] : tipo === "india" ? ["india", "caravana"] : tipo === "lugar" ? [lugar, "caravana"] : [...new Set(["india", lugar === "india" ? "taj-mahal" : lugar, "caravana"])];
@@ -3838,6 +3839,7 @@ async function colaPatches(c, F, ox, oy, w, hh) {
     const cx = ox + ((canto !== esq) ? xx + iw / 2 : xx - iw / 2), cy = oy + (canto ? py + ih / 2 : py - ih / 2);
     c.save(); c.translate(cx, cy); c.rotate(rot); c.shadowColor = "rgba(0,0,0,.45)"; c.shadowBlur = alt * .08; c.shadowOffsetY = alt * .03;
     c.drawImage(im, -iw / 2, -ih / 2, iw, ih); c.restore();
+    caixa.x0 = Math.min(caixa.x0, cx - iw / 2); caixa.y0 = Math.min(caixa.y0, cy - ih / 2); caixa.x1 = Math.max(caixa.x1, cx + iw / 2); caixa.y1 = Math.max(caixa.y1, cy + ih / 2);
   }
 }
 // adesivos (Estúdio e Cabine): tocar num adesivo da lista coloca na foto; na foto, arrastar muda de lugar e dois dedos aumentam e giram
@@ -3902,7 +3904,7 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
       onpointerdown: e => e.stopPropagation(),
       onclick: e => { e.stopPropagation(); const i = S[SEL], lst = estado().adesivos || []; if (i == null || !lst[i]) return; lst.splice(i, 1); S[SEL] = null; x.hidden = true; render(); } }, "×");
     const segue = () => {
-      if (!canvas.isConnected) { x.remove(); canvas._xis = null; return; }
+      if (!canvas.isConnected) { x.remove(); canvas._xis = null; if (canvas._xisP) canvas._xisP.remove(); return; }
       const pai = canvas.parentElement; if (pai && x.parentElement !== pai) { if (getComputedStyle(pai).position === "static") pai.style.position = "relative"; pai.append(x); }
       const i = S[SEL], q = i != null ? (S[chave + "AdesRect"] || [])[i] : null, G = S[chave + "Geo"];
       if (q && G && canvas.width) {
@@ -3910,6 +3912,15 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
         const cx = (q.cx * G.fs + G.fx) * k, cy = (q.cy * G.fs + G.fy) * k, raio = q.r * G.fs * k * .75;
         x.style.left = (r.left - pr.left + cx + raio - 14) + "px"; x.style.top = (r.top - pr.top + cy - raio - 14) + "px"; x.hidden = false;
       } else x.hidden = true;
+      // patches (só no Estúdio): um xizinho no canto do grupo de patches volta para "Sem patch"
+      const P = chave === "foto" && S.foto && S.foto.patch && S.foto.patch !== "nenhum" ? S.fotoPatchRect : null;
+      if (P && G && canvas.width && pai) {
+        if (!canvas._xisP) { canvas._xisP = h("button", { type: "button", class: "adesx", "aria-label": "Tirar o patch", onpointerdown: e => e.stopPropagation(), onclick: e => { e.stopPropagation(); S.foto.patch = "nenhum"; S.fotoPatchRect = null; canvas._xisP.hidden = true; render(); } }, "×"); }
+        const xp = canvas._xisP; if (xp.parentElement !== pai) pai.append(xp);
+        const r = canvas.getBoundingClientRect(), pr = pai.getBoundingClientRect(), k = r.width / canvas.width;
+        const dir = (P.x1 * G.fs + G.fx) * k, topo = (P.y0 * G.fs + G.fy) * k;
+        xp.style.left = (r.left - pr.left + Math.min(r.width - 30, dir - 16)) + "px"; xp.style.top = (r.top - pr.top + topo - 12) + "px"; xp.hidden = false;
+      } else if (canvas._xisP) canvas._xisP.hidden = true;
       requestAnimationFrame(segue);
     };
     requestAnimationFrame(segue);
