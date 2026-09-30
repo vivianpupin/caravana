@@ -4059,11 +4059,7 @@ function cartaoCelular() {
   const fechadoHa = k => Date.now() - (+lsGet(k) || 0) < 24 * 3600 * 1000;
   const msg = S.celMsg ? h("p", { class: "small", role: "status", text: S.celMsg }) : null;
   if (!instalado() && !fechadoHa("cdi-cel-inst")) {
-    if (ehIphone()) return h("div", { class: "celcard" }, fechar("cdi-cel-inst"),
-      h("p", { class: "eyebrow", text: "Instale o app no seu celular" }),
-      h("ol", { class: "celpassos" }, h("li", { text: "No Safari, toque em Compartilhar (o quadradinho com a seta para cima). Se não achar, toque antes nos três pontinhos." }),
-        h("li", { text: "Toque em Adicionar à Tela de Início e depois em Adicionar." }),
-        h("li", { text: "Abra pelo ícone da Caravana e entre de novo com o seu e-mail e a palavra." })));
+    // no iPhone a instalação é feita pela líder com cada viajante, sem cartão
     if (S.instalar) return h("div", { class: "celcard" }, fechar("cdi-cel-inst"),
       h("p", { class: "eyebrow", text: "Instale o app no seu celular" }),
       h("p", { text: "Fica na tela inicial como um aplicativo e abre mesmo sem sinal." }),

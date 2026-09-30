@@ -12,7 +12,7 @@ const pronto = !!(CFG.firebase && CFG.firebase.apiKey && !/COLE/.test(CFG.fireba
 
 // ---------- tela de entrada ----------
 const css = `
-#portao{position:fixed;inset:0;z-index:99;background:#F5EFE4 url(img/textura.jpg) center/cover;display:grid;place-items:center;padding:24px 24px 56px;overflow-y:auto;font-family:Poppins,system-ui,sans-serif;color:#3B2A1C}
+#portao{position:fixed;inset:0;z-index:99;background:#F5EFE4 url(img/textura.jpg) center/cover;display:grid;place-items:center;padding:24px;font-family:Poppins,system-ui,sans-serif;color:#3B2A1C}
 #portao .cx{background:rgba(251,244,228,.94);border:1px solid #D9BE8C;border-radius:22px;box-shadow:0 20px 60px rgba(40,28,15,.25);max-width:380px;width:100%;padding:30px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
 #portao img{width:64px}
 #portao h1{font-family:Cinzel,Georgia,serif;font-weight:500;font-size:24px;letter-spacing:.05em;margin:0;line-height:1.2}
@@ -22,15 +22,6 @@ const css = `
 #portao button.claro{background:transparent;color:#6B5A43;font-weight:500;font-size:13px;padding:6px}
 #portao input{width:100%;border:1px solid #CDB184;border-radius:12px;padding:12px 14px;font:16px Poppins,system-ui,sans-serif;background:#fff;text-align:center}
 #portao .err{color:#9B2E22;font-size:13.5px;min-height:1em}
-#portao ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;text-align:left;width:100%}
-#portao ol li{display:flex;gap:12px;align-items:center;font-size:14.5px;line-height:1.45;color:#3B2A1C}
-#portao ol li>b.n{flex:none;width:28px;height:28px;border-radius:50%;background:#3F4938;color:#F6EDDA;display:grid;place-items:center;font-size:13.5px}
-#portao .ic{display:inline-grid;place-items:center;vertical-align:-6px;width:26px;height:26px;border-radius:7px;background:#fff;border:1px solid #D9BE8C;margin:0 2px}
-#portao .ic svg{width:17px;height:17px}
-#portao .seta{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);font-size:34px;color:#8A3F32;animation:setapulo 1.2s ease-in-out infinite}
-#portao .seta.topo{bottom:auto;top:10px;left:auto;right:18px;transform:none;animation-name:setasobe}
-@keyframes setapulo{0%,100%{translate:0 0}50%{translate:0 8px}}
-@keyframes setasobe{0%,100%{translate:0 0}50%{translate:0 -8px}}
 `;
 function portao(...kids) {
   let el = document.getElementById("portao");
@@ -110,50 +101,7 @@ async function entrarComEmail(email, palavra, erro, bt) {
   }
   palavraDigitada = ""; bt.disabled = false; bt.textContent = "Entrar";
 }
-// ---------- instalar no celular (antes de entrar: no iPhone o app instalado tem a sua própria entrada) ----------
-const emApp = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
-const ls = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} } };
-let pedidoInstalar = null;
-window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); pedidoInstalar = e; window.__instalar = e; if (document.getElementById("instalar-ja")) telaInstalar(); });
-window.addEventListener("appinstalled", () => { pedidoInstalar = null; if (document.getElementById("instalar-ja") || document.getElementById("instalar-passos")) telaInstalado(); });
-const precisaInstalar = () => celularDeVerdade && !emApp() && !window.CARAVANA_NAVEGADOR_INTERNO && location.protocol === "https:" && ls.get("cdi-pular-inst") !== "1";
-const celularDeVerdade = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
-const ICONE = {
-  compartilhar: '<svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1"/></svg>',
-  mais: '<svg viewBox="0 0 24 24" fill="none" stroke="#3B2A1C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>',
-  pontos: '<svg viewBox="0 0 24 24" fill="#3B2A1C"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',
-  pontosV: '<svg viewBox="0 0 24 24" fill="#3B2A1C"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>',
-};
-const ic = k => '<span class="ic">' + ICONE[k] + "</span>";
-const passos = itens => { const ol = el("ol", { id: "instalar-passos" }); itens.forEach((t, i) => { const li = el("li"); li.innerHTML = '<b class="n">' + (i + 1) + "</b><span>" + t + "</span>"; ol.append(li); }); return ol; };
-function telaInstalar() {
-  const ua = navigator.userAgent, ios = /iPhone|iPad|iPod/i.test(ua) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(ua)), ipad = /iPad/i.test(ua) || /Macintosh/.test(ua);
-  const pular = el("button", { type: "button", className: "claro", onclick: () => { ls.set("cdi-pular-inst", "1"); telaLogin(); } }, "Continuar pelo navegador");
-  const intro = el("p", { textContent: "Instale o app da Caravana no seu celular. Ele fica na tela inicial como qualquer aplicativo e funciona mesmo sem internet." });
-  let corpo, seta = null;
-  if (ios && /CriOS|FxiOS|EdgiOS/i.test(ua)) {
-    corpo = [passos(["Toque em " + ic("compartilhar") + " no alto, à direita, ao lado do endereço.", "Toque em <b>Adicionar à Tela de Início</b> " + ic("mais") + ". Se não aparecer, role a lista para baixo.", "Toque em <b>Adicionar</b>.", "Abra o app pelo ícone da <b>Caravana</b> na tela do celular e entre com o seu e-mail."])];
-    seta = el("div", { className: "seta topo", textContent: "↑" });
-  } else if (ios) {
-    corpo = [passos(["Toque em " + ic("compartilhar") + (ipad ? " no alto da tela." : " na barra do Safari, lá embaixo. Se não achar, toque primeiro em " + ic("pontos") + " e depois em <b>Compartilhar</b>."), "Role a lista e toque em <b>Adicionar à Tela de Início</b> " + ic("mais") + ".", "Toque em <b>Adicionar</b>.", "Abra o app pelo ícone da <b>Caravana</b> na tela do celular e entre com o seu e-mail."])];
-    if (!ipad) seta = el("div", { className: "seta", textContent: "↓" });
-  } else if (pedidoInstalar) {
-    corpo = [el("button", { id: "instalar-ja", type: "button", onclick: async () => { const e = pedidoInstalar; pedidoInstalar = null; try { await e.prompt(); const r = await e.userChoice; if (r && r.outcome === "accepted") return telaInstalado(); } catch (x) {} telaInstalar(); } }, "Instalar o app")];
-  } else {
-    corpo = [passos(["Toque em " + ic("pontosV") + " no canto de cima, à direita.", "Toque em <b>Instalar app</b> ou <b>Adicionar à tela inicial</b>.", "Confirme em <b>Instalar</b>.", "Abra o app pelo ícone da <b>Caravana</b> na tela do celular e entre com o seu e-mail."])];
-    seta = el("div", { className: "seta topo", textContent: "↑" });
-    // o Chrome às vezes demora uns segundos para liberar o botão de instalar
-    const espera = el("span", { id: "instalar-ja" }); corpo.push(espera);
-  }
-  portao(intro, ...corpo, pular);
-  if (seta) document.getElementById("portao").append(seta);
-}
-function telaInstalado() {
-  portao(el("p", { innerHTML: "<b>Pronto, o app está instalado!</b>" }), el("p", { textContent: "Agora feche esta tela e abra o app pelo ícone da Caravana na tela do seu celular. Lá você entra com o seu e-mail e a palavra da caravana." }),
-    el("button", { type: "button", className: "claro", onclick: () => { ls.set("cdi-pular-inst", "1"); telaLogin(); } }, "Continuar pelo navegador"));
-}
 function telaLogin() {
-  if (precisaInstalar()) return telaInstalar();
   const erro = el("p", { className: "err", textContent: erroLogin });
   const em = el("input", { type: "email", placeholder: "Seu e-mail", autocomplete: "email", inputMode: "email", autocapitalize: "none" });
   const pal = el("input", { type: "text", placeholder: "Palavra da caravana", autocomplete: "off", autocapitalize: "none" });
