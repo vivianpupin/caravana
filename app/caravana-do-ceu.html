@@ -622,6 +622,25 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .intens b{text-align:right;color:var(--ink);font-weight:600}
 .trocafoto{display:flex;justify-content:center}
 .trocafoto .btn{padding:8px 18px;font-size:13.5px}
+.habbox{display:flex;flex-direction:column;gap:12px}
+.habcaixa{width:100%;height:auto;display:block;min-height:120px}
+.habacoes{display:flex;flex-direction:column;gap:8px}
+.habacoes .btn{width:100%}
+.hablista{display:flex;flex-direction:column;gap:8px}
+.habitem{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:#EFE4CF url(img/papiro.webp) center/cover;border:2px dashed rgba(138,63,50,.6);border-radius:12px;padding:12px 14px;cursor:pointer;color:#282722}
+.habitem b{font:400 18px "Special Elite","Courier Prime",monospace;text-transform:uppercase}
+.habitem span{font:italic 14.5px Lora,Georgia,serif;color:#4A4236}
+.habitem small{font:600 12px var(--ui);color:#8A3F32;margin-top:4px}
+.hablider{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:12px}
+.hablider li{display:flex;flex-direction:column;gap:3px;padding-bottom:10px;border-bottom:1px dashed rgba(40,28,15,.2)}
+.hablider .actions{gap:6px;flex-wrap:wrap;margin-top:4px}
+.hablider select{flex:1;min-width:140px}
+.habcam{display:flex;flex-direction:column;gap:10px}
+.habtela{position:relative;width:100%;aspect-ratio:3/4;background:#000;border-radius:14px;overflow:hidden}
+.habvideo{width:100%;height:100%;object-fit:cover;display:block}
+.habvideo.espelho{transform:scaleX(-1)}
+.habsobre{position:absolute;left:5%;top:4%;width:90%;pointer-events:none}
+.habclique{font-size:26px;min-width:76px}
 .adesx{position:absolute;z-index:5;width:28px;height:28px;border-radius:50%;border:2px solid #fff;background:#8A3F32;color:#fff;font:700 18px/1 var(--ui);display:grid;place-items:center;padding:0;box-shadow:0 2px 6px rgba(0,0,0,.35);cursor:pointer}
 .adesx[hidden]{display:none}
 .adesbox{display:flex;flex-direction:column;gap:8px}
@@ -1223,7 +1242,7 @@ function marcaChat() {
 }
 function render() {
   if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
-  marcaChat(); convidaAvisos(); registraApp();
+  marcaChat(); convidaAvisos(); registraApp(); checaHabilidades();
   for (const b of document.querySelectorAll("#tabs button")) {
     if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
   }
@@ -2040,12 +2059,173 @@ function vPassaporte() {
         h("img", { src: avatar(g.id), alt: "" }),
         h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : tituloViajante(g), totalViagens(g) > 1 ? totalViagens(g) + " viagens" : "", g.cidade].filter(Boolean).join(" · ") }), medalhasDe(g, 24)),
         h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null,
+    vMinhasHabilidades(), vHabilidadesLider(),
     vEntradasLider(), vProntos(),
     S.isOwner || aberto(localDe("travessia")) ? h("button", { class: "folhear video", type: "button", onclick: abrirVideoPassaporte },
       h("span", { class: "vidico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("path", { d: "M8 5.5v13l11-6.5z", fill: "#3B2A1C" }))),
       h("span", null, h("b", { text: "Vídeo do meu passaporte" }), h("span", { text: "O passaporte gira, abre e folheia seus selos. Pronto para Reels e Stories." }))) : null);
 }
 // Só a líder: quem já instalou o app, ligou os avisos e a localização (cada celular conta ao abrir o app)
+// ---------- Habilidades: a líder libera (para todos ou para uma pessoa) e a pessoa faz a foto com a caixinha ----------
+// [id, nome no feminino, nome no masculino, frase no feminino, frase no masculino]
+const HABILIDADES = [
+  ["transito", "Sobrevivente do Trânsito Indiano", "Sobrevivente do Trânsito Indiano", "Atravesso a rua entre vacas, tuk-tuks e buzinas."],
+  ["taj", "Contempladora do Taj", "Contemplador do Taj", "Vi o mármore mudar de cor e fiquei sem palavras."],
+  ["pechincha", "Mestra da Pechincha", "Mestre da Pechincha", "Pago metade e ainda saio amiga do vendedor.", "Pago metade e ainda saio amigo do vendedor."],
+  ["bollywood", "Estrela de Bollywood", "Estrela de Bollywood", "Tirei mais selfies com indianos do que com a caravana."],
+  ["chai", "Sommelier de Chai", "Sommelier de Chai", "Já sei qual masala chai merece a segunda xícara."],
+  ["pimenta", "Domadora de Pimenta", "Domador de Pimenta", "Pedi \"no spicy\" e encarei mesmo assim."],
+  ["cabeca", "Fluente no Balançar de Cabeça", "Fluente no Balançar de Cabeça", "Sim, não e talvez num movimento só."],
+  ["descalcos", "Pés Descalços Certificados", "Pés Descalços Certificados", "Templo, ghat e mármore gelado: tiro o sapato sem pensar."],
+  ["kashi", "Aprendiz de Kashi", "Aprendiz de Kashi", "Entendi que em Varanasi a vida e a morte dividem a mesma escada."],
+  ["chama", "Guardiã da Chama", "Guardião da Chama", "Ofereci luz ao rio no Ganga Aarti."],
+  ["caverna", "Silêncio de Caverna", "Silêncio de Caverna", "Meditei onde meditou um sábio."],
+  ["amanhecer", "Guardiã do Amanhecer", "Guardião do Amanhecer", "Subi as escadas no escuro para ver o sol nascer no Himalaia."],
+  ["agua", "Coragem de Água Gelada", "Coragem de Água Gelada", "Mergulhei três vezes no Ganges e voltei outra pessoa."],
+  ["tuktuk", "Negociadora de Tuk-tuk", "Negociador de Tuk-tuk", "Combinei o preço da corrida e cheguei inteira.", "Combinei o preço da corrida e cheguei inteiro."],
+  ["coracao", "Coração de Caravana", "Coração de Caravana", "Atravessei a Índia e voltei com uma família."]
+];
+const habDe = id => HABILIDADES.find(x => x[0] === id);
+const habTexto = (id, gen) => { const x = habDe(id); if (!x) return null; const o = gen === "o"; return { nome: o ? x[2] : x[1], frase: o ? (x[4] || x[3]) : x[3] }; };
+const minhasHab = () => Object.entries((eu() || {}).habilidades || {}).filter(([id]) => habDe(id)).sort((a, b) => a[1] - b[1]).map(([id]) => id);
+const habFeitas = () => { try { return JSON.parse(lsGet("cdi-hab-feitas") || "[]"); } catch (e) { return []; } };
+const marcaHabFeita = id => { const f = habFeitas(); if (!f.includes(id)) { f.push(id); lsSet("cdi-hab-feitas", JSON.stringify(f)); } };
+// a caixinha (papel envelhecido, borda tracejada, carimbo da Caravana), desenhada para virar adesivo da foto
+async function caixaHabilidade(id, gen) {
+  const t = habTexto(id, gen); if (!t) throw new Error("habilidade");
+  try { await Promise.all([document.fonts.load('66px "Special Elite"'), document.fonts.load('italic 32px Lora')]); } catch (e) {}
+  const [papiro, simb] = await Promise.all([carregaImg("img/papiro.webp"), carregaImg("img/simbolo-marrom.png")]);
+  const W = 1000, P = 50, med = document.createElement("canvas").getContext("2d");
+  const quebra = (txt, font, larg) => { med.font = font; const ls = []; let l = ""; for (const w of txt.split(" ")) { const tt = l ? l + " " + w : w; if (med.measureText(tt).width > larg && l) { ls.push(l); l = w; } else l = tt; } if (l) ls.push(l); return ls; };
+  const fT = '66px "Special Elite", "Courier Prime", monospace', fF = 'italic 32px Lora, Georgia, serif';
+  const tit = quebra(t.nome.toUpperCase(), fT, W - 2 * P - 190), fr = quebra(t.frase, fF, W - 2 * P - 20);
+  const Hc = 30 + 60 + tit.length * 72 + 18 + fr.length * 44 + 46;
+  const cv = document.createElement("canvas"); cv.width = W + 80; cv.height = Hc + 120; const x = cv.getContext("2d");
+  x.translate(cv.width / 2, cv.height / 2); x.rotate(-.026); x.translate(-W / 2, -Hc / 2);
+  const caixa = (m, r) => { x.beginPath(); x.roundRect(m, m, W - 2 * m, Hc - 2 * m, r); };
+  x.save(); x.shadowColor = "rgba(40,28,15,.4)"; x.shadowBlur = 26; x.shadowOffsetY = 8; caixa(0, 18); x.fillStyle = "#EFE4CF"; x.fill(); x.restore();
+  x.save(); caixa(0, 18); x.clip(); x.drawImage(papiro, 0, 0, W, Hc); x.fillStyle = "rgba(239,228,207,.25)"; x.fillRect(0, 0, W, Hc); x.restore();
+  x.save(); x.setLineDash([12, 8]); x.lineWidth = 3; x.strokeStyle = "rgba(138,63,50,.75)"; caixa(14, 10); x.stroke(); x.restore();
+  x.drawImage(simb, P, 34, 50, 50);
+  x.fillStyle = "#8A3F32"; x.font = '24px "Special Elite", "Courier Prime", monospace'; x.textBaseline = "middle"; try { x.letterSpacing = "3px"; } catch (e) {}
+  x.fillText("NOVA HABILIDADE DESBLOQUEADA", P + 64, 60); try { x.letterSpacing = "0px"; } catch (e) {}
+  x.textBaseline = "alphabetic"; x.fillStyle = "#282722"; x.font = fT; tit.forEach((l, i) => x.fillText(l, P, 30 + 60 + 62 + i * 72));
+  x.fillStyle = "#4A4236"; x.font = fF; fr.forEach((l, i) => x.fillText(l, P, 30 + 60 + tit.length * 72 + 18 + 32 + i * 44));
+  // carimbo redondo da Caravana
+  x.save(); x.translate(W - 110, 98); x.rotate(.24); x.strokeStyle = x.fillStyle = "rgba(138,63,50,.72)"; x.lineWidth = 4;
+  x.beginPath(); x.arc(0, 0, 62, 0, 7); x.stroke(); x.lineWidth = 2; x.beginPath(); x.arc(0, 0, 53, 0, 7); x.stroke();
+  x.textAlign = "center"; x.font = '19px "Special Elite", "Courier Prime", monospace'; x.fillText("CARAVANA", 0, -12); x.fillText("DO CÉU", 0, 10); x.fillText("2026", 0, 32); x.restore();
+  return cv;
+}
+// foto com a habilidade: a foto vai para o Estúdio já com a caixinha por cima (dá para arrastar, aumentar e girar)
+function fotoComHabilidade(id, img) {
+  marcaHabFeita(id); closeSheets();
+  S.foto = { filtro: "original", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "original", legenda: "", cidade: "", data: "", img, adesivos: [{ k: "hab:" + id, x: .5, y: .2, s: .9, r: 0 }] };
+  S.fotoSel = 0; S.fotoAba = "estudio"; go("fotos");
+}
+function entradaFoto(id, camera) {
+  const fi = h("input", { type: "file", accept: "image/*", hidden: true, onchange: async () => {
+    const f = fi.files[0]; fi.remove(); if (!f) return;
+    try { fotoComHabilidade(id, await abreFoto(f)); } catch (e) { avisoReacao("Não consegui abrir essa foto. Tente outra."); }
+  } });
+  if (camera) fi.setAttribute("capture", "environment");
+  document.body.append(fi); fi.click();
+}
+// câmera ao vivo com a caixinha por cima enquanto a pessoa enquadra
+async function cameraHabilidade(id) {
+  closeSheets();
+  let frente = false, fluxo = null;
+  const video = h("video", { playsinline: true, autoplay: true, muted: true, class: "habvideo" });
+  video.setAttribute("playsinline", ""); video.muted = true;
+  const cxImg = h("img", { class: "habsobre", alt: "" });
+  caixaHabilidade(id, (eu() || {}).genero).then(c => { cxImg.src = c.toDataURL("image/png"); });
+  const st = h("p", { class: "msg", role: "status", text: "Abrindo a câmera…" });
+  const para = () => { if (fluxo) fluxo.getTracks().forEach(t => t.stop()); fluxo = null; };
+  const abre = async () => {
+    para();
+    try { fluxo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: frente ? "user" : "environment" }, audio: false });
+      video.srcObject = fluxo; video.classList.toggle("espelho", frente); await video.play(); st.textContent = ""; }
+    catch (e) { st.textContent = "Não consegui abrir a câmera aqui. Use Tirar foto ou Escolher da galeria."; st.className = "msg err"; }
+  };
+  const clica = () => {
+    if (!video.videoWidth) return;
+    // guarda exatamente o que aparecia na tela (recorte 3x4 do meio)
+    const vw = video.videoWidth, vh = video.videoHeight, alvo = 3 / 4;
+    let sw = vw, sh = vh; if (vw / vh > alvo) sw = vh * alvo; else sh = vw / alvo;
+    const c = document.createElement("canvas"); c.width = Math.round(sw); c.height = Math.round(sh); const x = c.getContext("2d");
+    if (frente) { x.translate(c.width, 0); x.scale(-1, 1); }
+    x.drawImage(video, (vw - sw) / 2, (vh - sh) / 2, sw, sh, 0, 0, c.width, c.height); para(); fotoComHabilidade(id, c);
+  };
+  const fecha = () => { para(); closeSheets(); };
+  const box = h("div", { role: "dialog", "aria-label": "Câmera da habilidade", class: "habcam" },
+    h("div", { class: "habtela" }, video, cxImg), st,
+    h("div", { class: "actions", style: "justify-content:center" },
+      h("button", { class: "btn ghost", type: "button", onclick: () => { frente = !frente; abre(); } }, "↺ Virar"),
+      h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: clica }, "📸"),
+      h("button", { class: "btn ghost", type: "button", onclick: fecha }, "Fechar")));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) fecha(); } }, box);
+  document.body.append(sheet); abre();
+}
+// a caixinha da habilidade com as opções de foto
+async function abrirHabilidade(id, nova) {
+  closeSheets();
+  const gen = (eu() || {}).genero, img = h("img", { class: "habcaixa", alt: (habTexto(id, gen) || {}).nome || "" });
+  caixaHabilidade(id, gen).then(c => { img.src = c.toDataURL("image/png"); }).catch(() => {});
+  const podeAoVivo = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  const box = h("div", { role: "dialog", "aria-label": "Nova habilidade", class: "habbox" },
+    nova ? h("p", { class: "eyebrow", style: "text-align:center", text: "✨ Você desbloqueou uma habilidade" }) : null,
+    img,
+    h("p", { class: "small", style: "text-align:center", text: "Faça uma foto agora: a caixinha já vai por cima, e você pode mudar de lugar, aumentar ou girar." }),
+    h("div", { class: "habacoes" },
+      podeAoVivo ? h("button", { class: "btn gold", type: "button", onclick: () => cameraHabilidade(id) }, "📸 Câmera com a caixinha") : null,
+      h("button", { class: "btn" + (podeAoVivo ? "" : " gold"), type: "button", onclick: () => entradaFoto(id, true) }, "Tirar foto"),
+      h("button", { class: "btn", type: "button", onclick: () => entradaFoto(id, false) }, "Escolher da galeria"),
+      h("button", { class: "btn ghost", type: "button", onclick: () => { S.habAdiada = true; closeSheets(); } }, "Guardar para depois")),
+    h("p", { class: "small", style: "text-align:center", text: "Ela fica guardada no seu passaporte, em Minhas habilidades." }));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) { S.habAdiada = true; closeSheets(); } } }, box);
+  document.body.append(sheet);
+}
+// ao abrir o app, a habilidade que ainda não virou foto aparece (uma vez por abertura; "Guardar para depois" deixa para a próxima)
+function checaHabilidades() {
+  if (S.habAdiada || S.habMostrou || !eu() || document.querySelector(".sheet,.abertura")) return;
+  const pend = minhasHab().filter(id => !habFeitas().includes(id));
+  if (!pend.length) return;
+  S.habMostrou = true; setTimeout(() => { if (!document.querySelector(".sheet,.abertura")) abrirHabilidade(pend[pend.length - 1], true); else S.habMostrou = false; }, 900);
+}
+function vMinhasHabilidades() {
+  const ids = minhasHab(); if (!ids.length) return null;
+  const gen = (eu() || {}).genero;
+  return h("div", { class: "panel" },
+    h("p", { class: "eyebrow", text: "Minhas habilidades" }),
+    h("div", { class: "hablista" }, ids.map(id => { const t = habTexto(id, gen); return h("button", { type: "button", class: "habitem", onclick: () => abrirHabilidade(id) },
+      h("b", { text: t.nome }), h("span", { text: t.frase }), h("small", { text: habFeitas().includes(id) ? "📸 Fazer outra foto" : "📸 Fazer a foto" })); })),
+    h("p", { class: "small", text: "Mais habilidades secretas podem aparecer pelo caminho…" }));
+}
+// só a líder: liberar uma habilidade para todos ou para uma pessoa
+async function darHabilidade(id, uids) {
+  const ts = Date.now();
+  await Promise.all(uids.map(u => S.db.doc("viajantes/" + u).update({ habilidades: { [id]: ts } }).catch(() => {})));
+  if (noSite()) fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ habilidade: id, para: uids }), keepalive: true })
+    .then(x => x.json()).then(j => avisoReacao(j && j.ok ? `✨ Liberada! Aviso enviado para ${j.enviados || 0} ${j.enviados === 1 ? "celular" : "celulares"}.` : "✨ Liberada!")).catch(() => avisoReacao("✨ Liberada!"));
+  else avisoReacao("✨ Liberada!");
+}
+function vHabilidadesLider() {
+  if (!S.isOwner) return null;
+  const gente = S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome).localeCompare(String(b.nome)));
+  return h("div", { class: "secret" },
+    h("p", { class: "eyebrow", text: "Habilidades · só você vê" }),
+    h("p", { class: "small", text: "Libere para todos ou para uma pessoa. Quem ganha recebe um aviso no celular e a caixinha para fazer a foto. Ninguém vê esta lista." }),
+    h("ul", { class: "hablider" }, HABILIDADES.map(([id, nA, nO, fA]) => {
+      const tem = gente.filter(v => (v.habilidades || {})[id]);
+      const sel = h("select", { "aria-label": "Escolher pessoa" }, h("option", { value: "", text: "Para uma pessoa…" }), gente.map(v => h("option", { value: v.id, text: v.nome + ((v.habilidades || {})[id] ? " ✓" : "") })));
+      return h("li", null,
+        h("b", { text: nA === nO ? nA : nA + " / " + nO.split(" ")[0] }), h("span", { class: "small", text: fA }),
+        h("span", { class: "small", text: tem.length ? `Já ganharam: ${tem.length === gente.length ? "todos" : tem.map(v => String(v.nome).split(" ")[0]).join(", ")}` : "Ninguém ganhou ainda" }),
+        h("div", { class: "actions" }, sel,
+          h("button", { class: "btn", type: "button", onclick: () => { if (!sel.value) { avisoReacao("Escolha a pessoa na lista."); return; } darHabilidade(id, [sel.value]); } }, "Dar"),
+          h("button", { class: "btn gold", type: "button", onclick: () => { if (confirm("Liberar \"" + nA + "\" para todos?")) darHabilidade(id, gente.map(v => v.id)); } }, "Para todos")));
+    })));
+}
 function vProntos() {
   if (!S.isOwner) return null;
   const gente = S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || "")));
@@ -3553,6 +3733,7 @@ function imgAdesivo(k) {
       x.translate(150, 180); x.fillStyle = "#FBF6EA"; x.beginPath(); const d = 18; for (let X = -sw / 2; X <= sw / 2; X += d) { x.moveTo(X + 7, -sh / 2); x.arc(X, -sh / 2, 7, 0, 7); } x.fill(); x.fillRect(-sw / 2, -sh / 2, sw, sh);
       x.fillStyle = "#8A3F32"; x.fillRect(-sw / 2 + 18, -sh / 2 + 18, sw - 36, sh - 36); const sb = simboloEm(dourado, "#E8C07A", 130); x.drawImage(sb, -sb.width / 2, -sh / 2 + 44);
       x.fillStyle = "#F4E6C4"; x.textAlign = "center"; x.font = '600 34px Cinzel, Georgia, serif'; x.fillText("ÍNDIA", 0, sh / 2 - 70); x.font = '500 26px Poppins, sans-serif'; x.fillText("2026 · ₹ 26", 0, sh / 2 - 36); return cv; }
+    if (k.startsWith("hab:")) return caixaHabilidade(k.slice(4), (eu() || {}).genero);
     if (k.startsWith("txt:")) return letreiro(k.slice(4), false);
     if (k.startsWith("mao:")) return letreiro(k.slice(4), true);
     if (k.startsWith("pet:")) { const g = desenhaPet(k.slice(4)); g.firstChild && g.firstChild.remove(); return svgParaImg(g, 420); }

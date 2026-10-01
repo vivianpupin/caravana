@@ -1,6 +1,6 @@
 // Notificações no celular: quando alguém manda mensagem no chat, avisa todo mundo que ativou as notificações.
 // Precisa da variável FIREBASE_SA no Netlify (a chave da conta de serviço do Firebase, colada lá, nunca no código).
-import { avisarPassaporteCompleto, db, chaves, enviarTodos } from "../lib/push.mjs";
+import { avisarPassaporteCompleto, db, chaves, enviarTodos, enviarPara } from "../lib/push.mjs";
 
 const resumo = m => m.tipo === "foto" ? "📷 Mandou uma foto" + (m.texto ? ": " + m.texto : "")
   : m.tipo === "local" ? "📍 Ponto de encontro: " + (m.nome || "local marcado")
@@ -13,6 +13,7 @@ export default async req => {
   if (req.method === "GET") return Response.json({ publicKey: k.publicKey });
   const corpo = await req.json().catch(() => ({}));
   if (corpo.selo) return avisarSelo(d, k, corpo.selo);
+  if (corpo.habilidade) return avisarHabilidade(d, k, corpo.habilidade, corpo.para);
   const { id } = corpo;
   if (!id || typeof id !== "string" || id.includes("/")) return Response.json({ ok: false }, { status: 400 });
   // só avisa uma vez por mensagem, e só se ela acabou de ser enviada
@@ -54,5 +55,23 @@ async function avisarSelo(d, k, selo) {
   // o último selo completa o passaporte e libera o vídeo (mesmo aviso do dia do translado, uma vez só)
   const enviados = selo === "travessia" ? await avisarPassaporteCompleto(d, k)
     : await enviarTodos(d, k, { title: "🏅 Selo novo no seu passaporte!", body: (l.nome || "Selo novo") + ". Abra o passaporte para ver.", tag: "selo-" + selo, url: "./?aba=passaporte" }, null, 24 * 3600);
+  return Response.json({ ok: true, enviados });
+}
+
+// a líder deu uma habilidade: avisa cada pessoa que acabou de ganhar (uma vez só por habilidade; o nome fica em segredo até ela abrir)
+async function avisarHabilidade(d, k, id, para) {
+  if (typeof id !== "string" || id.includes("/") || !Array.isArray(para)) return Response.json({ ok: false }, { status: 400 });
+  let enviados = 0;
+  for (const uid of para.slice(0, 200)) {
+    if (typeof uid !== "string" || uid.includes("/")) continue;
+    const ref = d.doc("viajantes/" + uid);
+    const vai = await d.runTransaction(async t => {
+      const s = await t.get(ref); if (!s.exists) return false;
+      const v = s.data(), ts = (v.habilidades || {})[id];
+      if (!ts || Date.now() - ts > 10 * 60 * 1000 || (v.habAvisadas || {})[id]) return false;
+      t.update(ref, { ["habAvisadas." + id]: true }); return true;
+    });
+    if (vai) enviados += await enviarPara(d, k, uid, { title: "✨ Nova habilidade desbloqueada!", body: "Abra o app da Caravana para ver qual é e fazer a sua foto.", tag: "hab-" + id, url: "./?aba=passaporte" }, 24 * 3600);
+  }
   return Response.json({ ok: true, enviados });
 }
