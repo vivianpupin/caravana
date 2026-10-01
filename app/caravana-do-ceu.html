@@ -2102,11 +2102,9 @@ async function caixaHabilidade(id, gen) {
   const [papiro, simb] = await Promise.all([carregaImg("img/papiro.webp"), carregaImg("img/simbolo-marrom.png")]);
   const W = 1000, P = 50, med = document.createElement("canvas").getContext("2d");
   const quebra = (txt, font, larg) => { med.font = font; const ls = []; let l = ""; for (const w of txt.split(" ")) { const tt = l ? l + " " + w : w; if (med.measureText(tt).width > larg && l) { ls.push(l); l = w; } else l = tt; } if (l) ls.push(l); return ls; };
-  // título numa linha só: embaixo do carimbo, com a letra diminuindo só o necessário para caber
-  const fonteT = n => n + 'px "Special Elite", "Courier Prime", monospace', fF = 'italic 32px Lora, Georgia, serif';
-  med.font = fonteT(66); const fs = Math.max(44, Math.min(66, Math.floor(66 * (W - 2 * P) / med.measureText(t.nome.toUpperCase()).width))), fT = fonteT(fs), DT = 70;
-  const tit = quebra(t.nome.toUpperCase(), fT, W - 2 * P), fr = quebra(t.frase, fF, W - 2 * P - 20);
-  const Hc = 30 + 60 + DT + tit.length * (fs + 6) + 18 + fr.length * 44 + 46;
+  const fT = '66px "Special Elite", "Courier Prime", monospace', fF = 'italic 32px Lora, Georgia, serif';
+  const tit = quebra(t.nome.toUpperCase(), fT, W - 2 * P - 190), fr = quebra(t.frase, fF, W - 2 * P - 20);
+  const Hc = 30 + 60 + tit.length * 72 + 18 + fr.length * 44 + 46;
   const cv = document.createElement("canvas"); cv.width = W + 80; cv.height = Hc + 120; const x = cv.getContext("2d");
   x.translate(cv.width / 2, cv.height / 2); x.rotate(-.026); x.translate(-W / 2, -Hc / 2);
   const caixa = (m, r) => { x.beginPath(); x.roundRect(m, m, W - 2 * m, Hc - 2 * m, r); };
@@ -2146,8 +2144,8 @@ async function caixaHabilidade(id, gen) {
   x.drawImage(simb, P, 34, 50, 50);
   x.fillStyle = "#8A3F32"; x.font = '24px "Special Elite", "Courier Prime", monospace'; x.textBaseline = "middle"; try { x.letterSpacing = "3px"; } catch (e) {}
   x.fillText("NOVA HABILIDADE DESBLOQUEADA", P + 64, 60); try { x.letterSpacing = "0px"; } catch (e) {}
-  x.textBaseline = "alphabetic"; x.fillStyle = "#2E2A22"; x.font = fT; tit.forEach((l, i) => x.fillText(l, P, 30 + 60 + DT + Math.round(fs * .94) + i * (fs + 6)));
-  x.fillStyle = "#4A4236"; x.font = fF; fr.forEach((l, i) => x.fillText(l, P, 30 + 60 + DT + tit.length * (fs + 6) + 18 + 32 + i * 44));
+  x.textBaseline = "alphabetic"; x.fillStyle = "#2E2A22"; x.font = fT; tit.forEach((l, i) => x.fillText(l, P, 30 + 60 + 62 + i * 72));
+  x.fillStyle = "#4A4236"; x.font = fF; fr.forEach((l, i) => x.fillText(l, P, 30 + 60 + tit.length * 72 + 18 + 32 + i * 44));
   // carimbo redondo da Caravana (desenhado à parte, com a tinta falhando)
   const cb = document.createElement("canvas"); cb.width = cb.height = 150; const y = cb.getContext("2d");
   y.translate(75, 75); y.strokeStyle = y.fillStyle = "rgba(138,63,50,.78)"; y.lineWidth = 4;
