@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "01/10 · 19:31";</script>
+<script>window.__VERSAO = "01/10 · 19:32";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -2232,7 +2232,7 @@ async function abrirHabilidade(id, nova) {
     h("div", { class: "habacoes" },
       h("button", { class: "btn gold", type: "button", onclick: () => podeAoVivo ? cameraHabilidade(id) : entradaFoto(id, true) }, "📸 Câmera"),
       h("button", { class: "btn", type: "button", onclick: () => entradaFoto(id, false) }, "Escolher da galeria"),
-      h("button", { class: "btn ghost", type: "button", onclick: () => { S.habAdiada = true; closeSheets(); } }, "Guardar para depois")));
+      h("button", { class: "btn ghost", type: "button", onclick: () => { S.habAdiada = true; closeSheets(); } }, "Guardar no meu passaporte")));
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) { S.habAdiada = true; closeSheets(); } } }, box);
   document.body.append(sheet);
 }
