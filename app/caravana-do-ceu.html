@@ -627,7 +627,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .habacoes{display:flex;flex-direction:column;gap:8px}
 .habacoes .btn{width:100%}
 .hablista{display:flex;flex-direction:column;gap:8px}
-.habitem{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:#EFE4CF url(img/papiro.webp) center/cover;border:2px dashed rgba(138,63,50,.6);border-radius:12px;padding:12px 14px;cursor:pointer;color:#282722}
+.habitem{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:#E6D6B4 url(img/papiro.webp) center/cover;box-shadow:inset 0 0 22px rgba(90,58,26,.5),0 3px 8px rgba(40,28,15,.25);border:2px dashed rgba(138,63,50,.55);border-radius:6px 14px 8px 12px;padding:12px 14px;cursor:pointer;color:#282722}
 .habitem b{font:400 18px "Special Elite","Courier Prime",monospace;text-transform:uppercase}
 .habitem span{font:italic 14.5px Lora,Georgia,serif;color:#4A4236}
 .habitem em{font:500 12px var(--ui);font-style:normal;color:#6B5A43}
@@ -2107,18 +2107,52 @@ async function caixaHabilidade(id, gen) {
   const cv = document.createElement("canvas"); cv.width = W + 80; cv.height = Hc + 120; const x = cv.getContext("2d");
   x.translate(cv.width / 2, cv.height / 2); x.rotate(-.026); x.translate(-W / 2, -Hc / 2);
   const caixa = (m, r) => { x.beginPath(); x.roundRect(m, m, W - 2 * m, Hc - 2 * m, r); };
-  x.save(); x.shadowColor = "rgba(40,28,15,.4)"; x.shadowBlur = 26; x.shadowOffsetY = 8; caixa(0, 18); x.fillStyle = "#EFE4CF"; x.fill(); x.restore();
-  x.save(); caixa(0, 18); x.clip(); x.drawImage(papiro, 0, 0, W, Hc); x.fillStyle = "rgba(239,228,207,.25)"; x.fillRect(0, 0, W, Hc); x.restore();
-  x.save(); x.setLineDash([12, 8]); x.lineWidth = 3; x.strokeStyle = "rgba(138,63,50,.75)"; caixa(14, 10); x.stroke(); x.restore();
+  // papel de verdade: borda rasgada irregular, cantos gastos, manchas de tempo, fibras, dobra e bordas queimadas
+  const sorte = (() => { let q = 0; for (const ch of id) q = (q * 31 + ch.charCodeAt(0)) >>> 0; return () => ((q = (q * 1664525 + 1013904223) >>> 0) / 4294967296); })();
+  const borda = []; const passo = 14;
+  for (let X = 6; X <= W - 6; X += passo) borda.push([X, 6 + sorte() * 7]);
+  for (let Y = 6; Y <= Hc - 6; Y += passo) borda.push([W - 6 - sorte() * 7, Y]);
+  for (let X = W - 6; X >= 6; X -= passo) borda.push([X, Hc - 6 - sorte() * 7]);
+  for (let Y = Hc - 6; Y >= 6; Y -= passo) borda.push([6 + sorte() * 7, Y]);
+  // cantos comidos
+  const corta = (cx, cy) => borda.forEach(pt => { const d = Math.hypot(pt[0] - cx, pt[1] - cy); if (d < 34) { const k = (34 - d) / 34 * (10 + sorte() * 8); pt[0] += Math.sign(W / 2 - cx) * k; pt[1] += Math.sign(Hc / 2 - cy) * k; } });
+  corta(0, 0); corta(W, Hc); corta(W, 0);
+  const papel = () => { x.beginPath(); borda.forEach(([X, Y], i) => i ? x.lineTo(X, Y) : x.moveTo(X, Y)); x.closePath(); };
+  x.save(); x.shadowColor = "rgba(40,28,15,.45)"; x.shadowBlur = 24; x.shadowOffsetY = 8; papel(); x.fillStyle = "#E6D6B4"; x.fill(); x.restore();
+  x.save(); papel(); x.clip();
+  x.drawImage(papiro, 0, 0, W, Hc); x.fillStyle = "rgba(226,206,166,.35)"; x.fillRect(0, 0, W, Hc);
+  // grão e fibras do papel
+  const gr = x.getImageData(0, 0, W, Hc), gd = gr.data;
+  for (let i = 0; i < gd.length; i += 4) { const n = (sorte() - .5) * 22; gd[i] += n; gd[i + 1] += n; gd[i + 2] += n * .8; }
+  x.putImageData(gr, 0, 0);
+  x.globalAlpha = .08; x.strokeStyle = "#5A4128"; x.lineWidth = 1;
+  for (let i = 0; i < 160; i++) { const X = sorte() * W, Y = sorte() * Hc, a = sorte() * Math.PI, L = 6 + sorte() * 18; x.beginPath(); x.moveTo(X, Y); x.lineTo(X + Math.cos(a) * L, Y + Math.sin(a) * L); x.stroke(); }
+  x.globalAlpha = 1;
+  // manchas do tempo (pontinhos marrons e uma marca de xícara)
+  for (let i = 0; i < 26; i++) { const X = sorte() * W, Y = sorte() * Hc, r = 3 + sorte() * 16, g = x.createRadialGradient(X, Y, 0, X, Y, r);
+    g.addColorStop(0, "rgba(120,78,36," + (.10 + sorte() * .18) + ")"); g.addColorStop(1, "rgba(120,78,36,0)"); x.fillStyle = g; x.fillRect(X - r, Y - r, 2 * r, 2 * r); }
+  { const X = W * (.55 + sorte() * .3), Y = Hc * (.55 + sorte() * .3), r = 70 + sorte() * 30; x.lineWidth = 5; x.strokeStyle = "rgba(130,84,40,.10)"; x.beginPath(); x.arc(X, Y, r, .3, 5.6); x.stroke(); x.lineWidth = 2; x.strokeStyle = "rgba(130,84,40,.08)"; x.beginPath(); x.arc(X + 3, Y + 2, r - 6, 0, 6.28); x.stroke(); }
+  // dobra no papel
+  { const X = W * (.36 + sorte() * .2); const g = x.createLinearGradient(X - 10, 0, X + 10, 0); g.addColorStop(0, "rgba(255,248,230,0)"); g.addColorStop(.45, "rgba(255,248,230,.35)"); g.addColorStop(.55, "rgba(90,60,30,.18)"); g.addColorStop(1, "rgba(90,60,30,0)"); x.fillStyle = g; x.fillRect(X - 10, 0, 20, Hc); }
+  // bordas escurecidas, como papel antigo
+  const vi = x.createRadialGradient(W / 2, Hc / 2, Math.min(W, Hc) * .3, W / 2, Hc / 2, W * .62); vi.addColorStop(0, "rgba(90,58,26,0)"); vi.addColorStop(1, "rgba(90,58,26,.42)"); x.fillStyle = vi; x.fillRect(0, 0, W, Hc);
+  x.lineWidth = 10; x.strokeStyle = "rgba(96,62,28,.35)"; x.filter = "blur(6px)"; papel(); x.stroke(); x.filter = "none";
+  x.restore();
+  x.save(); papel(); x.lineWidth = 1.5; x.strokeStyle = "rgba(110,72,34,.55)"; x.stroke(); x.restore();
+  x.save(); x.setLineDash([12, 8]); x.lineWidth = 3; x.strokeStyle = "rgba(138,63,50,.62)"; caixa(22, 8); x.stroke(); x.restore();
   x.drawImage(simb, P, 34, 50, 50);
   x.fillStyle = "#8A3F32"; x.font = '24px "Special Elite", "Courier Prime", monospace'; x.textBaseline = "middle"; try { x.letterSpacing = "3px"; } catch (e) {}
   x.fillText("NOVA HABILIDADE DESBLOQUEADA", P + 64, 60); try { x.letterSpacing = "0px"; } catch (e) {}
-  x.textBaseline = "alphabetic"; x.fillStyle = "#282722"; x.font = fT; tit.forEach((l, i) => x.fillText(l, P, 30 + 60 + 62 + i * 72));
+  x.textBaseline = "alphabetic"; x.fillStyle = "#2E2A22"; x.font = fT; tit.forEach((l, i) => x.fillText(l, P, 30 + 60 + 62 + i * 72));
   x.fillStyle = "#4A4236"; x.font = fF; fr.forEach((l, i) => x.fillText(l, P, 30 + 60 + tit.length * 72 + 18 + 32 + i * 44));
-  // carimbo redondo da Caravana
-  x.save(); x.translate(W - 110, 98); x.rotate(.24); x.strokeStyle = x.fillStyle = "rgba(138,63,50,.72)"; x.lineWidth = 4;
-  x.beginPath(); x.arc(0, 0, 62, 0, 7); x.stroke(); x.lineWidth = 2; x.beginPath(); x.arc(0, 0, 53, 0, 7); x.stroke();
-  x.textAlign = "center"; x.font = '19px "Special Elite", "Courier Prime", monospace'; x.fillText("CARAVANA", 0, -12); x.fillText("DO CÉU", 0, 10); x.fillText("2026", 0, 32); x.restore();
+  // carimbo redondo da Caravana (desenhado à parte, com a tinta falhando)
+  const cb = document.createElement("canvas"); cb.width = cb.height = 150; const y = cb.getContext("2d");
+  y.translate(75, 75); y.strokeStyle = y.fillStyle = "rgba(138,63,50,.78)"; y.lineWidth = 4;
+  y.beginPath(); y.arc(0, 0, 62, 0, 7); y.stroke(); y.lineWidth = 2; y.beginPath(); y.arc(0, 0, 53, 0, 7); y.stroke();
+  y.textAlign = "center"; y.font = '19px "Special Elite", "Courier Prime", monospace'; y.fillText("CARAVANA", 0, -12); y.fillText("DO CÉU", 0, 10); y.fillText("2026", 0, 32);
+  y.globalCompositeOperation = "destination-out";
+  for (let i = 0; i < 110; i++) { y.fillStyle = "rgba(0,0,0," + (.25 + sorte() * .55) + ")"; y.beginPath(); y.arc((sorte() - .5) * 140, (sorte() - .5) * 140, .8 + sorte() * 2.8, 0, 7); y.fill(); }
+  x.save(); x.translate(W - 110, 98); x.rotate(.24); x.drawImage(cb, -75, -75); x.restore();
   return cv;
 }
 // foto com a habilidade: a foto vai para o Estúdio já com a caixinha por cima (dá para arrastar, aumentar e girar)
