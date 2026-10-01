@@ -2239,7 +2239,7 @@ function vMinhasHabilidades() {
       h("small", { text: [localDe(t.local) ? "📍 " + localDe(t.local).nome : "", habFeitas().includes(id) ? "📸 Fazer outra foto" : "📸 Fazer a foto"].filter(Boolean).join("  ·  ") })); })),
     h("p", { class: "small", text: "Mais habilidades secretas podem aparecer pelo caminho…" }));
 }
-// só a líder: liberar uma habilidade para todos ou para uma pessoa
+// só a líder: liberar uma habilidade para todos
 async function darHabilidade(id, uids) {
   const ts = Date.now();
   await Promise.all(uids.map(u => S.db.doc("viajantes/" + u).update({ habilidades: { [id]: ts } }).catch(() => {})));
@@ -2252,17 +2252,15 @@ function vHabilidadesLider() {
   const gente = S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome).localeCompare(String(b.nome)));
   return h("div", { class: "secret" },
     h("p", { class: "eyebrow", text: "Habilidades · só você vê" }),
-    h("p", { class: "small", text: "Libere para todos ou para uma pessoa. Quem ganha recebe um aviso no celular e a caixinha para fazer a foto. Ninguém vê esta lista." }),
+    h("p", { class: "small", text: "Quando liberar, todos recebem um aviso no celular e a caixinha para fazer a foto. Ninguém vê esta lista." }),
     h("ul", { class: "hablider" }, HABILIDADES.map(([id, nA, nO, fA, fO, lid]) => {
       const tem = gente.filter(v => (v.habilidades || {})[id]);
-      const sel = h("select", { "aria-label": "Escolher pessoa" }, h("option", { value: "", text: "Para uma pessoa…" }), gente.map(v => h("option", { value: v.id, text: v.nome + ((v.habilidades || {})[id] ? " ✓" : "") })));
       return h("li", null,
         h("b", { text: nA === nO ? nA : nA + " / " + nO.split(" ")[0] }), h("span", { class: "small", text: fA }),
         localDe(lid) ? h("span", { class: "small", text: "📍 " + localDe(lid).nome }) : null,
         h("span", { class: "small", text: tem.length ? `Já ganharam: ${tem.length === gente.length ? "todos" : tem.map(v => String(v.nome).split(" ")[0]).join(", ")}` : "Ninguém ganhou ainda" }),
-        h("div", { class: "actions" }, sel,
-          h("button", { class: "btn", type: "button", onclick: () => { if (!sel.value) { avisoReacao("Escolha a pessoa na lista."); return; } darHabilidade(id, [sel.value]); } }, "Dar"),
-          h("button", { class: "btn gold", type: "button", onclick: () => { if (confirm("Liberar \"" + nA + "\" para todos?")) darHabilidade(id, gente.map(v => v.id)); } }, "Para todos")));
+        h("div", { class: "actions" },
+          h("button", { class: "btn gold", type: "button", onclick: () => { if (confirm("Liberar \"" + nA + "\" para todos?")) darHabilidade(id, gente.map(v => v.id)); } }, "Liberar para todos")));
     })));
 }
 function vProntos() {
