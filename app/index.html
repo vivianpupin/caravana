@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "01/10 · 19:39";</script>
+<script>window.__VERSAO = "01/10 · 19:40";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -2228,7 +2228,7 @@ async function abrirHabilidade(id, nova) {
   const box = h("div", { role: "dialog", "aria-label": "Nova habilidade", class: "habbox" },
     nova ? h("p", { class: "eyebrow", style: "text-align:center", text: "✨ Você desbloqueou uma habilidade" }) : null,
     img,
-    h("p", { class: "habconvite", text: nova ? "Faça uma foto com sua nova habilidade." : "Faça uma foto com sua habilidade." }),
+    h("p", { class: "habconvite", text: nova ? "Faça uma foto com sua nova habilidade ou guarde no passaporte para fazer depois." : "Faça uma foto com sua habilidade." }),
     h("div", { class: "habacoes" },
       h("button", { class: "btn gold", type: "button", onclick: () => podeAoVivo ? cameraHabilidade(id) : entradaFoto(id, true) }, "📸 Câmera"),
       h("button", { class: "btn", type: "button", onclick: () => entradaFoto(id, false) }, "Escolher da galeria"),
