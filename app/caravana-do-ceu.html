@@ -629,7 +629,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .habacoes .btn{width:100%}
 .hablista{display:flex;flex-direction:column;gap:8px}
 .habitem{display:flex;flex-direction:column;align-items:flex-start;gap:0;text-align:left;background:#E6D6B4 url(img/papiro.webp) center/cover;box-shadow:inset 0 0 22px rgba(90,58,26,.5),0 3px 8px rgba(40,28,15,.25);border:2px dashed rgba(138,63,50,.55);border-radius:6px 14px 8px 12px;padding:12px 14px;cursor:pointer;color:#282722}
-.habitem b{font:400 18px "Special Elite","Courier Prime",monospace;text-transform:uppercase}
+.hablista{container-type:inline-size}
+.habitem b{font:400 18px "Special Elite","Courier Prime",monospace;text-transform:uppercase;white-space:nowrap;font-size:min(18px,calc((100cqw - 34px) / (var(--n,20) * .61)))}
 .habitem span{font:italic 14.5px Lora,Georgia,serif;color:#4A4236}
 .habitem em{font:500 12px var(--ui);font-style:normal;color:#6B5A43}
 .pghab{margin:3px auto 0;font:11px/1.3 "Special Elite","Courier Prime",monospace;color:#8A3F32;border:1px dashed rgba(138,63,50,.55);border-radius:6px;padding:2px 7px;display:block;width:max-content;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transform:rotate(-1.5deg)}
@@ -2101,9 +2102,11 @@ async function caixaHabilidade(id, gen) {
   const [papiro, simb] = await Promise.all([carregaImg("img/papiro.webp"), carregaImg("img/simbolo-marrom.png")]);
   const W = 1000, P = 50, med = document.createElement("canvas").getContext("2d");
   const quebra = (txt, font, larg) => { med.font = font; const ls = []; let l = ""; for (const w of txt.split(" ")) { const tt = l ? l + " " + w : w; if (med.measureText(tt).width > larg && l) { ls.push(l); l = w; } else l = tt; } if (l) ls.push(l); return ls; };
-  const fT = '66px "Special Elite", "Courier Prime", monospace', fF = 'italic 32px Lora, Georgia, serif';
-  const tit = quebra(t.nome.toUpperCase(), fT, W - 2 * P - 190), fr = quebra(t.frase, fF, W - 2 * P - 20);
-  const Hc = 30 + 60 + tit.length * 72 + 18 + fr.length * 44 + 46;
+  // título numa linha só: embaixo do carimbo, com a letra diminuindo só o necessário para caber
+  const fonteT = n => n + 'px "Special Elite", "Courier Prime", monospace', fF = 'italic 32px Lora, Georgia, serif';
+  med.font = fonteT(66); const fs = Math.max(44, Math.min(66, Math.floor(66 * (W - 2 * P) / med.measureText(t.nome.toUpperCase()).width))), fT = fonteT(fs), DT = 70;
+  const tit = quebra(t.nome.toUpperCase(), fT, W - 2 * P), fr = quebra(t.frase, fF, W - 2 * P - 20);
+  const Hc = 30 + 60 + DT + tit.length * (fs + 6) + 18 + fr.length * 44 + 46;
   const cv = document.createElement("canvas"); cv.width = W + 80; cv.height = Hc + 120; const x = cv.getContext("2d");
   x.translate(cv.width / 2, cv.height / 2); x.rotate(-.026); x.translate(-W / 2, -Hc / 2);
   const caixa = (m, r) => { x.beginPath(); x.roundRect(m, m, W - 2 * m, Hc - 2 * m, r); };
@@ -2143,8 +2146,8 @@ async function caixaHabilidade(id, gen) {
   x.drawImage(simb, P, 34, 50, 50);
   x.fillStyle = "#8A3F32"; x.font = '24px "Special Elite", "Courier Prime", monospace'; x.textBaseline = "middle"; try { x.letterSpacing = "3px"; } catch (e) {}
   x.fillText("NOVA HABILIDADE DESBLOQUEADA", P + 64, 60); try { x.letterSpacing = "0px"; } catch (e) {}
-  x.textBaseline = "alphabetic"; x.fillStyle = "#2E2A22"; x.font = fT; tit.forEach((l, i) => x.fillText(l, P, 30 + 60 + 62 + i * 72));
-  x.fillStyle = "#4A4236"; x.font = fF; fr.forEach((l, i) => x.fillText(l, P, 30 + 60 + tit.length * 72 + 18 + 32 + i * 44));
+  x.textBaseline = "alphabetic"; x.fillStyle = "#2E2A22"; x.font = fT; tit.forEach((l, i) => x.fillText(l, P, 30 + 60 + DT + Math.round(fs * .94) + i * (fs + 6)));
+  x.fillStyle = "#4A4236"; x.font = fF; fr.forEach((l, i) => x.fillText(l, P, 30 + 60 + DT + tit.length * (fs + 6) + 18 + 32 + i * 44));
   // carimbo redondo da Caravana (desenhado à parte, com a tinta falhando)
   const cb = document.createElement("canvas"); cb.width = cb.height = 150; const y = cb.getContext("2d");
   y.translate(75, 75); y.strokeStyle = y.fillStyle = "rgba(138,63,50,.78)"; y.lineWidth = 4;
@@ -2235,7 +2238,7 @@ function vMinhasHabilidades() {
   return h("div", { class: "panel" },
     h("p", { class: "eyebrow", text: "Minhas habilidades" }),
     h("div", { class: "hablista" }, ids.map(id => { const t = habTexto(id, gen); return h("button", { type: "button", class: "habitem", onclick: () => abrirHabilidade(id) },
-      h("b", { text: t.nome }), h("span", { text: t.frase }),
+      h("b", { text: t.nome, style: "--n:" + t.nome.length }), h("span", { text: t.frase }),
       h("small", { text: [localDe(t.local) ? "📍 " + localDe(t.local).nome : "", habFeitas().includes(id) ? "📸 Fazer outra foto" : "📸 Fazer a foto"].filter(Boolean).join("  ·  ") })); })),
     h("p", { class: "small", text: "Mais habilidades secretas podem aparecer pelo caminho…" }));
 }
