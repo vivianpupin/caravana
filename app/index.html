@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "01/10 · 19:28";</script>
+<script>window.__VERSAO = "01/10 · 19:31";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -638,6 +638,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .trocafoto .btn{padding:8px 18px;font-size:13.5px}
 .habbox{display:flex;flex-direction:column;gap:12px}
 .habcaixa{width:100%;height:auto;display:block;min-height:120px}
+.habconvite{margin:0;text-align:center;font:italic 17px/1.4 Lora,Georgia,serif;color:#3B2A1C}
 .habacoes{display:flex;flex-direction:column;gap:8px}
 .habacoes .btn{width:100%}
 .hablista{display:flex;flex-direction:column;gap:8px}
@@ -2197,7 +2198,7 @@ async function cameraHabilidade(id) {
     para();
     try { fluxo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: frente ? "user" : "environment" }, audio: false });
       video.srcObject = fluxo; video.classList.toggle("espelho", frente); await video.play(); st.textContent = ""; }
-    catch (e) { st.textContent = "Não consegui abrir a câmera aqui. Use Tirar foto ou Escolher da galeria."; st.className = "msg err"; }
+    catch (e) { st.textContent = ""; st.append(h("button", { class: "btn gold", type: "button", style: "width:100%", onclick: () => { fecha(); entradaFoto(id, true); } }, "📸 Abrir a câmera do celular")); }
   };
   const clica = () => {
     if (!video.videoWidth) return;
@@ -2227,13 +2228,11 @@ async function abrirHabilidade(id, nova) {
   const box = h("div", { role: "dialog", "aria-label": "Nova habilidade", class: "habbox" },
     nova ? h("p", { class: "eyebrow", style: "text-align:center", text: "✨ Você desbloqueou uma habilidade" }) : null,
     img,
-    h("p", { class: "small", style: "text-align:center", text: "Faça uma foto agora: a caixinha já vai por cima, e você pode mudar de lugar, aumentar ou girar." }),
+    h("p", { class: "habconvite", text: "Faça uma foto com sua nova habilidade." }),
     h("div", { class: "habacoes" },
-      podeAoVivo ? h("button", { class: "btn gold", type: "button", onclick: () => cameraHabilidade(id) }, "📸 Câmera com a caixinha") : null,
-      h("button", { class: "btn" + (podeAoVivo ? "" : " gold"), type: "button", onclick: () => entradaFoto(id, true) }, "Tirar foto"),
+      h("button", { class: "btn gold", type: "button", onclick: () => podeAoVivo ? cameraHabilidade(id) : entradaFoto(id, true) }, "📸 Câmera"),
       h("button", { class: "btn", type: "button", onclick: () => entradaFoto(id, false) }, "Escolher da galeria"),
-      h("button", { class: "btn ghost", type: "button", onclick: () => { S.habAdiada = true; closeSheets(); } }, "Guardar para depois")),
-    h("p", { class: "small", style: "text-align:center", text: "Ela fica guardada no seu passaporte, em Minhas habilidades." }));
+      h("button", { class: "btn ghost", type: "button", onclick: () => { S.habAdiada = true; closeSheets(); } }, "Guardar para depois")));
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) { S.habAdiada = true; closeSheets(); } } }, box);
   document.body.append(sheet);
 }
