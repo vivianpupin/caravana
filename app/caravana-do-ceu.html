@@ -4035,7 +4035,17 @@ const AVISAR = "/.netlify/functions/avisar";
 const noSite = () => !!window.__VERSAO && (location.protocol === "https:" || location.hostname === "localhost");
 async function addChat(d) {
   const r = await S.db.collection("chat").add(d);
-  if (noSite() && r && r.id) fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: r.id }), keepalive: true }).catch(() => {});
+  if (noSite() && r && r.id) {
+    const p = fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: r.id }), keepalive: true });
+    // a líder vê na hora para quantos celulares o aviso saiu (ajuda a descobrir quem ainda não ligou os avisos)
+    p.then(async x => {
+      if (!S.isOwner) return;
+      const j = await x.json().catch(() => ({}));
+      if (x.status === 503) avisoReacao("⚠️ Os avisos estão desligados no servidor: falta a chave do Firebase na Netlify.");
+      else if (j && j.ok) avisoReacao(j.enviados ? `🔔 Aviso enviado para ${j.enviados} ${j.enviados === 1 ? "celular" : "celulares"}` : "🔕 Ninguém recebeu: ainda não há celulares com os avisos ligados.");
+      else avisoReacao("⚠️ O aviso não saiu (" + x.status + ").");
+    }).catch(() => { if (S.isOwner) avisoReacao("⚠️ Não consegui falar com o servidor de avisos."); });
+  }
   return r;
 }
 const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
