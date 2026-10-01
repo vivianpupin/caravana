@@ -630,6 +630,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .habitem{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:#EFE4CF url(img/papiro.webp) center/cover;border:2px dashed rgba(138,63,50,.6);border-radius:12px;padding:12px 14px;cursor:pointer;color:#282722}
 .habitem b{font:400 18px "Special Elite","Courier Prime",monospace;text-transform:uppercase}
 .habitem span{font:italic 14.5px Lora,Georgia,serif;color:#4A4236}
+.habitem em{font:500 12px var(--ui);font-style:normal;color:#6B5A43}
+.pghab{margin:4px 0 0;font:12px "Special Elite","Courier Prime",monospace;color:#8A3F32;border:1px dashed rgba(138,63,50,.55);border-radius:6px;padding:3px 7px;display:inline-block;transform:rotate(-1.5deg)}
 .habitem small{font:600 12px var(--ui);color:#8A3F32;margin-top:4px}
 .hablider{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:12px}
 .hablider li{display:flex;flex-direction:column;gap:3px;padding-bottom:10px;border-bottom:1px dashed rgba(40,28,15,.2)}
@@ -1860,7 +1862,8 @@ function paginasLivro() {
     return h("div", { class: "pgselo" + (on ? " on" : "") },
       h("div", { class: "pgart" }, h("img", { src: badgeSrc(l), alt: "" }), on ? checkSelo("") : null),
       h("p", { class: "pgnome", text: l.nome.toUpperCase() }),
-      h("p", { class: "pgdia", text: on ? "ENTRADA · " + (SIGLA[l.cidadeId] || "IND") + " · " + (ts ? dataDoc(ts) : "LIBERADO") : d ? "AGUARDANDO · DIA " + nn(d.n) : "AGUARDANDO" }));
+      h("p", { class: "pgdia", text: on ? "ENTRADA · " + (SIGLA[l.cidadeId] || "IND") + " · " + (ts ? dataDoc(ts) : "LIBERADO") : d ? "AGUARDANDO · DIA " + nn(d.n) : "AGUARDANDO" }),
+      habDoLocal(l.id).map(id => h("p", { class: "pghab", text: "✦ Habilidade: " + habTexto(id, (v || {}).genero).nome })));
   };
   const pages = [
     h("div", { class: "pg capa" }, h("img", { class: "capaimg", src: "img/passaporte-capa.webp", alt: "Passaporte da Travessia" })),
@@ -2069,24 +2072,25 @@ function vPassaporte() {
 // ---------- Habilidades: a líder libera (para todos ou para uma pessoa) e a pessoa faz a foto com a caixinha ----------
 // [id, nome no feminino, nome no masculino, frase no feminino, frase no masculino]
 const HABILIDADES = [
-  ["transito", "Sobrevivente do Trânsito Indiano", "Sobrevivente do Trânsito Indiano", "Atravesso a rua entre vacas, tuk-tuks e buzinas."],
-  ["taj", "Contempladora do Taj", "Contemplador do Taj", "Vi o mármore mudar de cor e fiquei sem palavras."],
-  ["pechincha", "Mestra da Pechincha", "Mestre da Pechincha", "Pago metade e ainda saio amiga do vendedor.", "Pago metade e ainda saio amigo do vendedor."],
-  ["bollywood", "Estrela de Bollywood", "Estrela de Bollywood", "Tirei mais selfies com indianos do que com a caravana."],
-  ["chai", "Sommelier de Chai", "Sommelier de Chai", "Já sei qual masala chai merece a segunda xícara."],
-  ["pimenta", "Domadora de Pimenta", "Domador de Pimenta", "Pedi \"no spicy\" e encarei mesmo assim."],
-  ["cabeca", "Fluente no Balançar de Cabeça", "Fluente no Balançar de Cabeça", "Sim, não e talvez num movimento só."],
-  ["descalcos", "Pés Descalços Certificados", "Pés Descalços Certificados", "Templo, ghat e mármore gelado: tiro o sapato sem pensar."],
-  ["kashi", "Aprendiz de Kashi", "Aprendiz de Kashi", "Entendi que em Varanasi a vida e a morte dividem a mesma escada."],
-  ["chama", "Guardiã da Chama", "Guardião da Chama", "Ofereci luz ao rio no Ganga Aarti."],
-  ["caverna", "Silêncio de Caverna", "Silêncio de Caverna", "Meditei onde meditou um sábio."],
-  ["amanhecer", "Guardiã do Amanhecer", "Guardião do Amanhecer", "Subi as escadas no escuro para ver o sol nascer no Himalaia."],
-  ["agua", "Coragem de Água Gelada", "Coragem de Água Gelada", "Mergulhei três vezes no Ganges e voltei outra pessoa."],
-  ["tuktuk", "Negociadora de Tuk-tuk", "Negociador de Tuk-tuk", "Combinei o preço da corrida e cheguei inteira.", "Combinei o preço da corrida e cheguei inteiro."],
-  ["coracao", "Coração de Caravana", "Coração de Caravana", "Atravessei a Índia e voltei com uma família."]
+  ["transito", "Sobrevivente do Trânsito Indiano", "Sobrevivente do Trânsito Indiano", "Atravesso a rua entre vacas, tuk-tuks e buzinas.", "Atravesso a rua entre vacas, tuk-tuks e buzinas.", "india"],
+  ["taj", "Contempladora do Taj", "Contemplador do Taj", "Vi o mármore mudar de cor e fiquei sem palavras.", "Vi o mármore mudar de cor e fiquei sem palavras.", "taj-mahal"],
+  ["pechincha", "Mestra da Pechincha", "Mestre da Pechincha", "Pago metade e ainda saio amiga do vendedor.", "Pago metade e ainda saio amigo do vendedor.", "jaipur"],
+  ["bollywood", "Estrela de Bollywood", "Estrela de Bollywood", "Tirei mais selfies com indianos do que com a caravana.", "Tirei mais selfies com indianos do que com a caravana.", "ganesha"],
+  ["chai", "Sommelier de Chai", "Sommelier de Chai", "Já sei qual masala chai merece a segunda xícara.", "Já sei qual masala chai merece a segunda xícara.", "india"],
+  ["pimenta", "Domadora de Pimenta", "Domador de Pimenta", "Pedi \"no spicy\" e encarei mesmo assim.", "Pedi \"no spicy\" e encarei mesmo assim.", "diwali"],
+  ["cabeca", "Fluente no Balançar de Cabeça", "Fluente no Balançar de Cabeça", "Sim, não e talvez num movimento só.", "Sim, não e talvez num movimento só.", "india"],
+  ["descalcos", "Pés Descalços Certificados", "Pés Descalços Certificados", "Templo, ghat e mármore gelado: tiro o sapato sem pensar.", "Templo, ghat e mármore gelado: tiro o sapato sem pensar.", "govind-dev-ji"],
+  ["kashi", "Aprendiz de Kashi", "Aprendiz de Kashi", "Entendi que em Varanasi a vida e a morte dividem a mesma escada.", "Entendi que em Varanasi a vida e a morte dividem a mesma escada.", "varanasi"],
+  ["chama", "Guardiã da Chama", "Guardião da Chama", "Ofereci luz ao rio no Ganga Aarti.", "Ofereci luz ao rio no Ganga Aarti.", "ganga-aarti"],
+  ["caverna", "Silêncio de Caverna", "Silêncio de Caverna", "Meditei onde meditou um sábio.", "Meditei onde meditou um sábio.", "caverna"],
+  ["amanhecer", "Guardiã do Amanhecer", "Guardião do Amanhecer", "Subi as escadas no escuro para ver o sol nascer no Himalaia.", "Subi as escadas no escuro para ver o sol nascer no Himalaia.", "kunjapuri"],
+  ["agua", "Coragem de Água Gelada", "Coragem de Água Gelada", "Mergulhei três vezes no Ganges e voltei outra pessoa.", "Mergulhei três vezes no Ganges e voltei outra pessoa.", "batismo"],
+  ["tuktuk", "Negociadora de Tuk-tuk", "Negociador de Tuk-tuk", "Combinei o preço da corrida e cheguei inteira.", "Combinei o preço da corrida e cheguei inteiro.", "durga-kund"],
+  ["coracao", "Coração de Caravana", "Coração de Caravana", "Atravessei a Índia e voltei com uma família.", "Atravessei a Índia e voltei com uma família.", "travessia"]
 ];
 const habDe = id => HABILIDADES.find(x => x[0] === id);
-const habTexto = (id, gen) => { const x = habDe(id); if (!x) return null; const o = gen === "o"; return { nome: o ? x[2] : x[1], frase: o ? (x[4] || x[3]) : x[3] }; };
+const habTexto = (id, gen) => { const x = habDe(id); if (!x) return null; const o = gen === "o"; return { nome: o ? x[2] : x[1], frase: o ? (x[4] || x[3]) : x[3], local: x[5] }; };
+const habDoLocal = lid => minhasHab().filter(id => (habDe(id) || [])[5] === lid);
 const minhasHab = () => Object.entries((eu() || {}).habilidades || {}).filter(([id]) => habDe(id)).sort((a, b) => a[1] - b[1]).map(([id]) => id);
 const habFeitas = () => { try { return JSON.parse(lsGet("cdi-hab-feitas") || "[]"); } catch (e) { return []; } };
 const marcaHabFeita = id => { const f = habFeitas(); if (!f.includes(id)) { f.push(id); lsSet("cdi-hab-feitas", JSON.stringify(f)); } };
@@ -2198,7 +2202,8 @@ function vMinhasHabilidades() {
   return h("div", { class: "panel" },
     h("p", { class: "eyebrow", text: "Minhas habilidades" }),
     h("div", { class: "hablista" }, ids.map(id => { const t = habTexto(id, gen); return h("button", { type: "button", class: "habitem", onclick: () => abrirHabilidade(id) },
-      h("b", { text: t.nome }), h("span", { text: t.frase }), h("small", { text: habFeitas().includes(id) ? "📸 Fazer outra foto" : "📸 Fazer a foto" })); })),
+      h("b", { text: t.nome }), h("span", { text: t.frase }), localDe(t.local) ? h("em", { text: "Ganha em " + localDe(t.local).nome }) : null,
+      h("small", { text: habFeitas().includes(id) ? "📸 Fazer outra foto" : "📸 Fazer a foto" })); })),
     h("p", { class: "small", text: "Mais habilidades secretas podem aparecer pelo caminho…" }));
 }
 // só a líder: liberar uma habilidade para todos ou para uma pessoa
@@ -2215,11 +2220,12 @@ function vHabilidadesLider() {
   return h("div", { class: "secret" },
     h("p", { class: "eyebrow", text: "Habilidades · só você vê" }),
     h("p", { class: "small", text: "Libere para todos ou para uma pessoa. Quem ganha recebe um aviso no celular e a caixinha para fazer a foto. Ninguém vê esta lista." }),
-    h("ul", { class: "hablider" }, HABILIDADES.map(([id, nA, nO, fA]) => {
+    h("ul", { class: "hablider" }, HABILIDADES.map(([id, nA, nO, fA, fO, lid]) => {
       const tem = gente.filter(v => (v.habilidades || {})[id]);
       const sel = h("select", { "aria-label": "Escolher pessoa" }, h("option", { value: "", text: "Para uma pessoa…" }), gente.map(v => h("option", { value: v.id, text: v.nome + ((v.habilidades || {})[id] ? " ✓" : "") })));
       return h("li", null,
         h("b", { text: nA === nO ? nA : nA + " / " + nO.split(" ")[0] }), h("span", { class: "small", text: fA }),
+        localDe(lid) ? h("span", { class: "small", text: "📍 " + localDe(lid).nome }) : null,
         h("span", { class: "small", text: tem.length ? `Já ganharam: ${tem.length === gente.length ? "todos" : tem.map(v => String(v.nome).split(" ")[0]).join(", ")}` : "Ninguém ganhou ainda" }),
         h("div", { class: "actions" }, sel,
           h("button", { class: "btn", type: "button", onclick: () => { if (!sel.value) { avisoReacao("Escolha a pessoa na lista."); return; } darHabilidade(id, [sel.value]); } }, "Dar"),
