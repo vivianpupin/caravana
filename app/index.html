@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "01/10 · 19:40";</script>
+<script>window.__VERSAO = "01/10 · 19:51";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -2088,19 +2088,19 @@ function vPassaporte() {
 // [id, nome no feminino, nome no masculino, frase no feminino, frase no masculino]
 const HABILIDADES = [
   ["transito", "Sobrevivente do Trânsito Indiano", "Sobrevivente do Trânsito Indiano", "Atravesso a rua entre vacas, tuk-tuks e buzinas.", "Atravesso a rua entre vacas, tuk-tuks e buzinas.", "india"],
-  ["taj", "Contempladora do Taj", "Contemplador do Taj", "Vi o mármore mudar de cor e fiquei sem palavras.", "Vi o mármore mudar de cor e fiquei sem palavras.", "taj-mahal"],
-  ["pechincha", "Mestra da Pechincha", "Mestre da Pechincha", "Pago metade e ainda saio amiga do vendedor.", "Pago metade e ainda saio amigo do vendedor.", "jaipur"],
-  ["bollywood", "Estrela de Bollywood", "Estrela de Bollywood", "Tirei mais selfies com indianos do que com a caravana.", "Tirei mais selfies com indianos do que com a caravana.", "ganesha"],
-  ["chai", "Sommelier de Chai", "Sommelier de Chai", "Já sei qual masala chai merece a segunda xícara.", "Já sei qual masala chai merece a segunda xícara.", "india"],
-  ["pimenta", "Domadora de Pimenta", "Domador de Pimenta", "Pedi \"no spicy\" e encarei mesmo assim.", "Pedi \"no spicy\" e encarei mesmo assim.", "diwali"],
+  ["rupias", "Milionária em Rúpias", "Milionário em Rúpias", "Troquei poucos reais e saí do câmbio com um maço de notas.", "Troquei poucos reais e saí do câmbio com um maço de notas.", "india"],
   ["cabeca", "Fluente no Balançar de Cabeça", "Fluente no Balançar de Cabeça", "Sim, não e talvez num movimento só.", "Sim, não e talvez num movimento só.", "india"],
-  ["descalcos", "Pés Descalços Certificados", "Pés Descalços Certificados", "Templo, ghat e mármore gelado: tiro o sapato sem pensar.", "Templo, ghat e mármore gelado: tiro o sapato sem pensar.", "govind-dev-ji"],
-  ["kashi", "Aprendiz de Kashi", "Aprendiz de Kashi", "Entendi que em Varanasi a vida e a morte dividem a mesma escada.", "Entendi que em Varanasi a vida e a morte dividem a mesma escada.", "varanasi"],
-  ["chama", "Guardiã da Chama", "Guardião da Chama", "Ofereci luz ao rio no Ganga Aarti.", "Ofereci luz ao rio no Ganga Aarti.", "ganga-aarti"],
-  ["caverna", "Silêncio de Caverna", "Silêncio de Caverna", "Meditei onde meditou um sábio.", "Meditei onde meditou um sábio.", "caverna"],
-  ["amanhecer", "Guardiã do Amanhecer", "Guardião do Amanhecer", "Subi as escadas no escuro para ver o sol nascer no Himalaia.", "Subi as escadas no escuro para ver o sol nascer no Himalaia.", "kunjapuri"],
-  ["agua", "Coragem de Água Gelada", "Coragem de Água Gelada", "Mergulhei três vezes no Ganges e voltei outra pessoa.", "Mergulhei três vezes no Ganges e voltei outra pessoa.", "batismo"],
-  ["tuktuk", "Negociadora de Tuk-tuk", "Negociador de Tuk-tuk", "Combinei o preço da corrida e cheguei inteira.", "Combinei o preço da corrida e cheguei inteiro.", "durga-kund"],
+  ["bollywood", "Estrela de Bollywood", "Estrela de Bollywood", "Tirei mais selfies com indianos do que com a caravana.", "Tirei mais selfies com indianos do que com a caravana.", "taj-mahal"],
+  ["namaste", "Namastê de Verdade", "Namastê de Verdade", "Meu namastê já sai sozinho, de mãos juntas e cabeça baixa.", "Meu namastê já sai sozinho, de mãos juntas e cabeça baixa.", "govind-dev-ji"],
+  ["pechincha", "Mestra da Pechincha", "Mestre da Pechincha", "Pago metade e ainda saio amiga do vendedor.", "Pago metade e ainda saio amigo do vendedor.", "jaipur"],
+  ["sari", "Seis Metros de Sári", "Seis Metros de Sári", "Comprei meu primeiro sári e descobri que são seis metros de pano.", "Comprei meu primeiro sári e descobri que são seis metros de pano.", "jaipur"],
+  ["madrugada", "Madrugadora Oficial", "Madrugador Oficial", "Saí às 5h30 de mala e piquenique, e ainda sorrindo.", "Saí às 5h30 de mala e piquenique, e ainda sorrindo.", "varanasi"],
+  ["chai", "Sommelier de Chai", "Sommelier de Chai", "Já sei qual masala chai merece a segunda xícara.", "Já sei qual masala chai merece a segunda xícara.", "varanasi"],
+  ["ganges", "Filha do Ganges", "Filho do Ganges", "Toquei a água do rio que a Índia chama de mãe.", "Toquei a água do rio que a Índia chama de mãe.", "ganga-aarti"],
+  ["vaca", "Gentileza Sagrada", "Gentileza Sagrada", "Dei passagem para uma vaca sagrada e ela nem me agradeceu.", "Dei passagem para uma vaca sagrada e ela nem me agradeceu.", "durga-kund"],
+  ["macacos", "Vizinha dos Macacos", "Vizinho dos Macacos", "Dividi templos, telhados e escadas com os macacos da Índia.", "Dividi templos, telhados e escadas com os macacos da Índia.", "sankat-mochan"],
+  ["thali", "Prato Sem Fim", "Prato Sem Fim", "Comi um thali inteiro e o garçom ainda quis encher meu prato.", "Comi um thali inteiro e o garçom ainda quis encher meu prato.", "rishikesh"],
+  ["tuktuk", "Passageira de Tuk-tuk", "Passageiro de Tuk-tuk", "Já sei a hora certa de segurar firme no tuk-tuk.", "Já sei a hora certa de segurar firme no tuk-tuk.", "rishikesh"],
   ["coracao", "Coração de Caravana", "Coração de Caravana", "Atravessei a Índia e voltei com uma família.", "Atravessei a Índia e voltei com uma família.", "travessia"]
 ];
 const habDe = id => HABILIDADES.find(x => x[0] === id);
