@@ -2679,13 +2679,14 @@ function pausaNoite() {
 setInterval(pausaNoite, 5 * 60 * 1000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) pausaNoite(); });
 function ligarGps(silencioso) {
-  if (S.gpsWatch != null && silencioso !== true) { navigator.geolocation.clearWatch(S.gpsWatch); S.gpsWatch = null; S.gpsOn = false; S.gpsMsg = "Localização ao vivo desligada."; S.room?.presence({ lat: null, lng: null, cidadeId: null, ts: null }).catch(() => {}); render(); return; }
+  if (S.gpsWatch != null && silencioso !== true) { lsSet("cdi-gps", "0"); navigator.geolocation.clearWatch(S.gpsWatch); S.gpsWatch = null; S.gpsOn = false; S.gpsMsg = "Localização ao vivo desligada."; S.room?.presence({ lat: null, lng: null, cidadeId: null, ts: null }).catch(() => {}); render(); return; }
   if (S.gpsWatch != null) return;
   if (!navigator.geolocation) { S.gpsMsg = "Este navegador não tem GPS. Abra o app pelo Safari (iPhone) ou Chrome (Android)."; render(); return; }
   S.gpsMsg = "Procurando você…"; render();
   let ultimoDb = 0;
   const recebe = pos => {
     const lat = +pos.coords.latitude.toFixed(5), lng = +pos.coords.longitude.toFixed(5), cidadeId = pertoCidade({ lat, lng }), ts = Date.now();
+    if (!S.gpsOn) lsSet("cdi-gps", "1");
     S.gpsOn = true; S.gpsMsg = "Você está ao vivo no mapa. A caravana vê você andando enquanto o aplicativo estiver aberto.";
     S.aoVivo[S.uid] = { lat, lng, cidadeId, ts, prec: Math.round(pos.coords.accuracy || 0) };
     S.room?.presence({ uid: S.uid, lat, lng, cidadeId, ts }).catch(() => {});
@@ -3019,15 +3020,27 @@ function gestosMapa(svg, mov, P, km) {
 }
 function autoGps() {
   if (S.gpsWatch != null || S._autoGps) return; S._autoGps = true;
-  try { navigator.permissions?.query({ name: "geolocation" }).then(r => { if (r.state === "granted") { if (noite()) S.gpsNoite = true; else ligarGps(true); } }).catch(() => {}); } catch (e) {}
+  const liga = () => { if (noite()) S.gpsNoite = true; else ligarGps(true); };
+  // quem já ligou a localização antes neste celular volta a aparecer no mapa assim que abre o app
+  if (lsGet("cdi-gps") === "1") return liga();
+  try { navigator.permissions?.query({ name: "geolocation" }).then(r => { if (r.state === "granted") liga(); }).catch(() => {}); } catch (e) {}
 }
 function vPerto() {
   autoGps();
   const eu0 = minhaPos(), km = S.pertoKm || (eu0 ? 0.12 : 3);
   if (eu0) ruaAqui(eu0);
-  const perto = eu0 ? posicoesAtuais().filter(p => p.id !== S.uid && isFinite(+p.lat)).map(p => ({ p, km: distKm(eu0, p) })).sort((a, b) => a.km - b.km) : [];
+  // sem a minha localização, mostra todo mundo mesmo assim (antes a lista ficava vazia e parecia que ninguém estava no mapa)
+  const todos = posicoesAtuais().filter(p => p.id !== S.uid && isFinite(+p.lat));
+  const perto = eu0 ? todos.map(p => ({ p, km: distKm(eu0, p) })).sort((a, b) => a.km - b.km) : todos.map(p => ({ p, km: null })).sort((a, b) => (b.p.ts || 0) - (a.p.ts || 0));
   const zoom = f => { S.pertoKm = Math.max(0.02, Math.min(3000, km * f)); render(); };
-  const verTodos = () => { const k = perto.length ? perto[perto.length - 1].km * 1.25 : 1.5; S.pertoCentro = null; S.pertoKm = Math.max(0.15, k); render(); };
+  const verTodos = () => {
+    if (eu0) { const k = perto.length ? perto[perto.length - 1].km * 1.25 : 1.5; S.pertoCentro = null; S.pertoKm = Math.max(0.15, k); render(); return; }
+    const ps = perto.map(x => x.p); if (!ps.length) return;
+    const c = { lat: ps.reduce((a, p) => a + +p.lat, 0) / ps.length, lng: ps.reduce((a, p) => a + +p.lng, 0) / ps.length };
+    S.pertoCentro = c; S.pertoKm = Math.max(0.15, Math.max(...ps.map(p => distKm(c, p))) * 1.3); render();
+  };
+  // sem a minha localização, abre já mostrando onde a turma está
+  if (!eu0 && !S.pertoCentro && perto.length && !S._pertoAuto) { S._pertoAuto = true; setTimeout(verTodos, 0); }
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   return h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
     window.__SITE ? h("div", { class: "fcats", role: "tablist", style: "margin:0" }, [["ruas", "Ruas"], ["satelite", "Satélite"]].map(([id, n]) =>
@@ -3045,7 +3058,7 @@ function vPerto() {
       : h("div", { style: "display:flex;flex-direction:column;gap:6px;align-items:flex-start" }, h("p", { class: "msg ok", text: (S.gpsMsg || "Você está ao vivo.") + (S.aoVivo[S.uid]?.prec ? ` Precisão de ${S.aoVivo[S.uid].prec} m.` : "") }),
         h("button", { class: "btn ghost", type: "button", onclick: () => ligarGps() }, "Desligar localização ao vivo")),
     perto.length ? h("ul", { class: "pertolist" }, perto.slice(0, 20).map(({ p, km }) => h("li", { onclick: () => abrirPessoa(p.id), style: "cursor:pointer" },
-      bonecoSvg(bonecoDe(p.id), "bonecosvg mini"), h("div", null, h("b", { text: nomeDe(p.id) }), h("small", { text: km < 1 ? Math.round(km * 1000) + " m de você" : km.toFixed(km < 10 ? 1 : 0) + " km de você" }))))) :
+      bonecoSvg(bonecoDe(p.id), "bonecosvg mini"), h("div", null, h("b", { text: nomeDe(p.id) }), h("small", { text: km == null ? (p.vivoGps ? "ao vivo" : haQuanto(p.ts)) : km < 1 ? Math.round(km * 1000) + " m de você" : km.toFixed(km < 10 ? 1 : 0) + " km de você" }))))) :
       h("p", { class: "small", text: "Ninguém da caravana apareceu por perto ainda. Quando alguém ligar a localização, o bonequinho aparece aqui." }));
 }
 // nome da rua (ou beco) onde a pessoa está, pelo OpenStreetMap; pergunta no máximo a cada 15 s e só se andou uns 20 m
@@ -5424,6 +5437,8 @@ render();
   listen("viajantes", "viajantes", null, () => {
     S.vReady = true;
     viajantesProntos();
+    // a localização volta sozinha ao abrir o app (antes só voltava quando a pessoa entrava na aba Mapa)
+    if (window.__SITE && eu()) autoGps();
     // quem virou líder depois de já ter passaporte (ex.: Vanessa) passa a aparecer como Líder
     const v = eu(); if (S.isOwner && v && !v.lider && !S.virandoLider) { S.virandoLider = true; S.db.doc("viajantes/" + S.uid).update({ lider: true }).catch(() => { S.virandoLider = false; }); }
   });
