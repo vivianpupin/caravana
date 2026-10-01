@@ -2073,20 +2073,13 @@ function vPassaporte() {
 // ---------- Habilidades: a líder libera (para todos ou para uma pessoa) e a pessoa faz a foto com a caixinha ----------
 // [id, nome no feminino, nome no masculino, frase no feminino, frase no masculino]
 const HABILIDADES = [
-  ["transito", "Sobrevivente do Trânsito Indiano", "Sobrevivente do Trânsito Indiano", "Atravesso a rua entre vacas, tuk-tuks e buzinas.", "Atravesso a rua entre vacas, tuk-tuks e buzinas.", "india"],
-  ["rupias", "Milionária em Rúpias", "Milionário em Rúpias", "Troquei poucos reais e saí do câmbio com um maço de notas.", "Troquei poucos reais e saí do câmbio com um maço de notas.", "india"],
+  ["transito", "Sobrevivente do Trânsito Indiano", "Sobrevivente do Trânsito Indiano", "Atravesso a rua entre vacas, tuk-tuks e buzinas.", "Atravesso a rua entre vacas, tuk-tuks e buzinas.", "varanasi"],
+  ["rupias", "Milionária em Rúpias", "Milionário em Rúpias", "Troquei alguns dólares e saí do câmbio com um maço de rúpias.", "Troquei alguns dólares e saí do câmbio com um maço de rúpias.", "india"],
   ["cabeca", "Fluente no Balançar de Cabeça", "Fluente no Balançar de Cabeça", "Sim, não e talvez num movimento só.", "Sim, não e talvez num movimento só.", "india"],
   ["bollywood", "Estrela de Bollywood", "Estrela de Bollywood", "Tirei mais selfies com indianos do que com a caravana.", "Tirei mais selfies com indianos do que com a caravana.", "taj-mahal"],
-  ["namaste", "Namastê de Verdade", "Namastê de Verdade", "Meu namastê já sai sozinho, de mãos juntas e cabeça baixa.", "Meu namastê já sai sozinho, de mãos juntas e cabeça baixa.", "govind-dev-ji"],
   ["pechincha", "Mestra da Pechincha", "Mestre da Pechincha", "Pago metade e ainda saio amiga do vendedor.", "Pago metade e ainda saio amigo do vendedor.", "jaipur"],
-  ["sari", "Seis Metros de Sári", "Seis Metros de Sári", "Comprei meu primeiro sári e descobri que são seis metros de pano.", "Comprei meu primeiro sári e descobri que são seis metros de pano.", "jaipur"],
-  ["madrugada", "Madrugadora Oficial", "Madrugador Oficial", "Saí às 5h30 de mala e piquenique, e ainda sorrindo.", "Saí às 5h30 de mala e piquenique, e ainda sorrindo.", "varanasi"],
   ["chai", "Sommelier de Chai", "Sommelier de Chai", "Especialista em copinho de barro, tempero e buzina!", "Especialista em copinho de barro, tempero e buzina!", "varanasi"],
-  ["ganges", "Filha do Ganges", "Filho do Ganges", "Toquei a água do rio que a Índia chama de mãe.", "Toquei a água do rio que a Índia chama de mãe.", "ganga-aarti"],
   ["vaca", "Gentileza Sagrada", "Gentileza Sagrada", "Dei passagem para uma vaca sagrada e ela nem me agradeceu.", "Dei passagem para uma vaca sagrada e ela nem me agradeceu.", "durga-kund"],
-  ["macacos", "Vizinha dos Macacos", "Vizinho dos Macacos", "Dividi templos, telhados e escadas com os macacos da Índia.", "Dividi templos, telhados e escadas com os macacos da Índia.", "sankat-mochan"],
-  ["thali", "Prato Sem Fim", "Prato Sem Fim", "Comi um thali inteiro e o garçom ainda quis encher meu prato.", "Comi um thali inteiro e o garçom ainda quis encher meu prato.", "rishikesh"],
-  ["tuktuk", "Passageira de Tuk-tuk", "Passageiro de Tuk-tuk", "Já sei a hora certa de segurar firme no tuk-tuk.", "Já sei a hora certa de segurar firme no tuk-tuk.", "rishikesh"],
   ["coracao", "Coração de Caravana", "Coração de Caravana", "Atravessei a Índia e voltei com uma família.", "Atravessei a Índia e voltei com uma família.", "travessia"]
 ];
 const habDe = id => HABILIDADES.find(x => x[0] === id);
