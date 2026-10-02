@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roteiro Índia · Caravana Nov/2026</title>
+<style>
+  :root{
+    --acento:#9c6b3f;        /* terracota/caramelo */
+    --bege:#ece2cf;          /* bege pastel */
+    --verde:#2f4a36;         /* verde escuro */
+    --oliva:#5a6b4a;         /* verde-oliva */
+    --dourado:#a9893f;       /* mostarda terrosa */
+    --verde2:#4a6b50;
+    --tinta:#33352b;
+    --cinza:#7d7a6c;
+    --bg:#f4eee0;
+    --card:#fbf7ed;
+    --linha:#e2d8c4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--tinta);line-height:1.5;
+    -webkit-text-size-adjust:100%;
+  }
+  header.topo{
+    background:linear-gradient(135deg,#2f4a36,#5a6b4a 60%,#9c6b3f);
+    color:#fff;padding:22px 18px 18px;text-align:center;
+  }
+  header.topo h1{font-size:1.45rem;letter-spacing:.5px;font-weight:700}
+  header.topo .sub{font-size:.85rem;opacity:.95;margin-top:4px}
+  .turmas{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+  .turma{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.45);
+    border-radius:20px;padding:5px 13px;font-size:.78rem;font-weight:600}
+
+  nav.menu{
+    position:sticky;top:0;z-index:20;background:var(--card);
+    border-bottom:1px solid var(--linha);display:flex;overflow-x:auto;gap:6px;
+    padding:9px 10px;-webkit-overflow-scrolling:touch;box-shadow:0 2px 8px rgba(0,0,0,.05);
+  }
+  nav.menu::-webkit-scrollbar{height:0}
+  nav.menu a{
+    flex:0 0 auto;text-decoration:none;background:var(--bege);color:var(--verde);
+    font-weight:600;font-size:.8rem;padding:8px 13px;border-radius:18px;white-space:nowrap;
+    text-align:center;line-height:1.2;
+  }
+  nav.menu a span{display:block;font-size:.64rem;font-weight:500;opacity:.8}
+  nav.menu a.info{background:var(--verde);color:#fff}
+
+  main{max-width:760px;margin:0 auto;padding:16px 14px 60px}
+  section{scroll-margin-top:64px}
+
+  .dia-cab{background:var(--card);border-radius:14px;padding:14px 16px;margin-bottom:14px;
+    border-left:5px solid var(--acento);box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .dia-cab .rotulo{font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--cinza);font-weight:600}
+  .dia-cab h2{font-size:1.25rem;color:var(--verde);margin:2px 0 4px}
+  .dia-cab .meta{font-size:.82rem;color:var(--cinza)}
+  .badge{display:inline-block;background:var(--oliva);color:#fff;font-size:.68rem;font-weight:600;
+    padding:2px 9px;border-radius:12px;margin-left:6px;vertical-align:middle}
+  .badge.transp{background:var(--acento)}
+  .hoteis{margin-top:8px;font-size:.8rem}
+  .hoteis span{display:inline-block;background:var(--bege);color:var(--tinta);
+    padding:3px 9px;border-radius:10px;margin:2px 4px 2px 0}
+
+  ul.linha{list-style:none;margin-bottom:6px}
+  ul.linha li{position:relative;padding:10px 0 10px 70px;border-bottom:1px solid var(--linha)}
+  ul.linha li:last-child{border-bottom:none}
+  ul.linha li .hora{position:absolute;left:0;top:10px;width:58px;text-align:right;
+    font-weight:700;font-size:.82rem;color:var(--acento)}
+  ul.linha li .tit{font-weight:600;font-size:.95rem}
+  ul.linha li .obs{font-size:.82rem;color:var(--cinza);margin-top:2px}
+  a{color:var(--oliva);word-break:break-word}
+
+  .nota{background:#f3edda;border:1px solid #ddd0b0;border-radius:10px;
+    padding:10px 12px;margin:0 0 22px;font-size:.83rem}
+  .nota b{color:var(--dourado)}
+  .resolver{background:#eef3ea;border:1px solid #cdddc0;border-left:4px solid var(--oliva);
+    border-radius:10px;padding:12px 14px;margin:0 0 22px}
+  .resolver .rtit{display:block;color:var(--verde);font-weight:700;font-size:.9rem;
+    margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+  .resolver ul{list-style:none;margin:0;padding:0}
+  .resolver li{position:relative;padding:8px 0 8px 28px;font-size:.86rem;line-height:1.35;
+    border-bottom:1px solid rgba(157,179,140,.45)}
+  .resolver li:last-child{border-bottom:none}
+  .resolver li::before{content:"☐";position:absolute;left:3px;top:6px;
+    color:var(--oliva);font-size:1.05rem;font-weight:700}
+  .mapa{margin:0 0 12px}
+  .mapa a{display:inline-block;background:var(--verde);color:#fff;text-decoration:none;
+    font-weight:600;font-size:.85rem;padding:9px 14px;border-radius:20px}
+  details.planob{background:#f3edda;border:1px solid #ddd0b0;border-left:4px solid var(--dourado);
+    border-radius:10px;margin:0 0 14px;overflow:hidden}
+  details.planob summary{cursor:pointer;padding:11px 14px;font-weight:700;font-size:.88rem;
+    color:var(--dourado);list-style:none}
+  details.planob summary::-webkit-details-marker{display:none}
+  details.planob summary::before{content:"▸ ";font-size:.8rem}
+  details.planob[open] summary::before{content:"▾ "}
+  details.planob .corpo{padding:0 14px 12px}
+  details.planob .corpo ul.linha li{border-color:rgba(201,151,63,.3)}
+  .foodrow{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--linha)}
+  .foodrow:last-child{border-bottom:none}
+  .foodrow img{width:120px;height:88px;object-fit:cover;border-radius:8px;flex:0 0 auto;background:var(--bege)}
+  .foodrow .fd .fn{font-weight:600;font-size:.92rem;color:var(--verde)}
+  .foodrow .fd .fi{font-size:.82rem;color:var(--cinza);margin-top:3px;line-height:1.35}
+
+  .grupo-tit{margin:26px 0 12px;color:var(--verde);font-size:1.15rem;
+    border-bottom:2px solid var(--bege);padding-bottom:6px}
+  .bloco{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px;
+    box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .bloco h3{color:var(--verde);font-size:1.05rem;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+  .bloco p,.bloco li{font-size:.88rem;margin-bottom:5px}
+  .bloco ul{padding-left:18px}
+  .pill-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .pill-list span{background:var(--bege);color:var(--tinta);padding:4px 10px;border-radius:12px;font-size:.8rem}
+  .contato{display:flex;justify-content:space-between;gap:10px;padding:8px 0;
+    border-bottom:1px solid var(--linha);font-size:.86rem;flex-wrap:wrap}
+  .contato:last-child{border-bottom:none}
+  .contato .num{color:var(--oliva);font-weight:600}
+  .alerta{background:#f0e3d3;border:1px solid #d9b98f;border-radius:10px;
+    padding:10px 12px;font-size:.84rem;color:#7a4a22}
+  .alerta b{color:#5e3818}
+  .secao-rot{font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--cinza);font-weight:600;margin:10px 0 6px}
+  .topo-link{display:block;text-align:center;font-size:.78rem;color:var(--oliva);
+    text-decoration:none;margin:18px 0 8px}
+  footer{text-align:center;font-size:.72rem;color:var(--cinza);padding:18px}
+</style>
+</head>
+<body>
+
+<header class="topo" id="topo">
+  <h1>🪔 CARAVANA ÍNDIA</h1>
+  <div class="sub">Agenda da Líder · 4 a 16 de novembro de 2026</div>
+  <div class="turmas">
+    <div class="turma">Turma 1 · 04 a 16 nov</div>
+  </div>
+</header>
+
+<nav class="menu">
+  <a href="#d1">Dia 1<span>Delhi</span></a>
+  <a href="#d2">Dia 2<span>Agra</span></a>
+  <a href="#d3">Dia 3<span>Jaipur</span></a>
+  <a href="#d4">Dia 4<span>Jaipur</span></a>
+  <a href="#d5">Dia 5<span>Varanasi</span></a>
+  <a href="#d6">Dia 6<span>Varanasi</span></a>
+  <a href="#d7">Dia 7<span>Varanasi</span></a>
+  <a href="#d8">Dia 8<span>Rishikesh</span></a>
+  <a href="#d9">Dia 9<span>Rishikesh</span></a>
+  <a href="#d10">Dia 10<span>Rishikesh</span></a>
+  <a href="#d11">Dia 11<span>Rishikesh</span></a>
+  <a href="#d12">Dia 12<span>Delhi</span></a>
+  <a href="#d13">Dia 13<span>Delhi</span></a>
+  <a class="info" href="#antes">🧳 Antes</a>
+  <a class="info" href="#dicas">💡 Dicas</a>
+  <a class="info" href="#taj">🕌 Taj</a>
+  <a class="info" href="#templos">🛕 Templos</a>
+  <a class="info" href="#contatos">📞 Contatos</a>
+</nav>
+
+<main>
+
+  <h2 class="grupo-tit">📅 Agenda dia a dia</h2>
+
+  <!-- DIA 1 -->
+  <section id="d1">
+    <div class="dia-cab">
+      <div class="rotulo">Dia 1</div>
+      <h2>DELHI<span class="badge">Chegada</span></h2>
+      <div class="meta">Quarta · 4 nov</div>
+      <div class="hoteis">🏨 <span>The Lalit New Delhi · check-in 14:00</span></div>
+    </div>
+    <ul class="linha">
+      <li><span class="hora">9:00</span><div class="tit">Chegada ao The Lalit — deixar as malas</div></li>
+      <li><span class="hora">11:30</span><div class="tit">Almoço — United Coffee House</div><div class="obs">7 min a pé do hotel</div></li>
+      <li><span class="hora">13:00</span><div class="tit">Janpath Bazaar — compras</div><div class="obs">8 min a pé do United Coffee House</div></li>
+      <li><span class="hora">14:00</span><div class="tit">Volta / check-in no The Lalit</div><div class="obs">13 min a pé do Janpath Bazaar</div></li>
+      <li><span class="hora">16:00</span><div class="tit">Abertura da Caravana — definir local</div><div class="obs"><b>Opção 1 — Lodhi Garden:</b> Lodhi Rd, Lodhi Estate, New Delhi 110003 · ~15–20 min de carro do hotel · tentar sair do parque até 18:30 · Lodhi Garden → Lakshmi ~25 min de carro.<br><b>Opção 2 — sala/salão no The Lalit:</b> no próprio hotel — prático, reservado, sem deslocamento e sem restrição de instrumentos (reservar a sala com antecedência).<br><b>Opção 3 — Haveli Dharampura (restaurante Lakhori):</b> haveli histórico de 200 anos em Chandni Chowk, pátio mogol e música ao vivo · ~30 min de carro + alguns minutos a pé pela viela (Gali Guliyan, carro não chega à porta) · abertura + jantar do grupo (~R$120/pessoa) · aberto 7h–22h30 · reservar antes, não aceita walk-in · Tel +91 11 4909 1777.</div></li>
+      <li><span class="hora">18:30</span><div class="tit">Lakshmi Narayan Temple (Birla Mandir)</div><div class="obs">aarti às 19h</div></li>
+      <li><span class="hora">20:30</span><div class="tit">Jantar — Connaught Place: SOCIAL ou Imperial Spice</div><div class="obs">~15 min a pé do hotel · retorno ao hotel após o jantar</div></li>
+    </ul>
+    <div class="nota"><b>📌 Nota:</b> Saree perto do hotel: Nalli Silk Sarees — Connaught Place.</div>
+    <div class="resolver">
+      <span class="rtit">⚠️ Resolver — Dia 1</span>
+      <ul>
+        <li>Decidir o local da abertura: Lodhi Garden, sala no The Lalit ou Haveli Dharampura/Lakhori — reservar o escolhido</li>
+        <li>Adija / Dítia — falar e agendar</li>
+        <li>Organizar o tuk-tuk do hotel até o Lakshmi</li>
+        <li>Agendar o tuk-tuk — Sonu Tuk Tuk (Sanju) · +91 98738 51779</li>
+        <li>Definir o jantar (SOCIAL ou Imperial Spice) e reservar</li>
+        <li>Resolver as flores</li>
+        <li>Alinhar com o staff</li>
+        <li>Organizar dinheiro / câmbio (World Trade Centre)</li>
+        <li>Providenciar os brindes</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DIA 2 -->
+  <section id="d2">
+    <div class="dia-cab">
+      <div class="rotulo">Dia 2</div>
+      <h2>DELHI → AGRA<span class="badge">Taj Mahal</span></h2>
+      <div class="meta">Quinta · 5 nov<span class="badge">Guia espanhol</span></div>
+      <div class="hoteis">🏨 <span>The Lalit (saída)</span><span>Radisson Agra</span></div>
+    </div>
+    <ul class="linha">
+      <li><span class="hora">6:00</span><div class="tit">Saída do The Lalit para Agra</div><div class="obs">café da manhã em piquenique · deslocamento de até 4h</div></li>
+      <li><span class="hora">10:00</span><div class="tit">Taj Mahal</div><div class="obs">10h–12h · visitação aprox. 2h</div></li>
+      <li><span class="hora">13:00</span><div class="tit">Almoço — Sheroes Hangout</div><div class="obs">13h–14h · 15 min do Taj · ao lado do hotel</div></li>
+      <li><span class="hora">15:00</span><div class="tit">Agra Fort</div><div class="obs">15h–17h · visitação aprox. 2h · 15 min do restaurante</div></li>
+      <li><span class="hora">18:00</span><div class="tit">Chegada ao teatro (quem for ao show)</div><div class="obs">Kalakriti Cultural & Convention Centre · Agra Fort → show: ~10 min. Quem não for: retorno ao Radisson (~15 min)</div></li>
+      <li><span class="hora">18:30</span><div class="tit">Mohabbat the Taj Show — OPCIONAL</div><div class="obs">no <b>Kalakriti Cultural & Convention Centre</b> — Fatehabad Road, Tajganj, Agra (<a href="https://www.google.com/maps/search/?api=1&query=Kalakriti+Cultural+and+Convention+Centre+Fatehabad+Road+Agra" target="_blank" rel="noopener">🗺️ mapa</a>) · 18h30–20h · ingresso ~₹1.500 a ₹2.500 (~R$80 a R$135/pessoa) · econômica a partir de ~₹600 (~R$32) · saída 20h (show → hotel ~15 min)</div></li>
+      <li><span class="hora">20:30</span><div class="tit">Jantar</div><div class="obs">1ª opção: The Salt Cafe (rooftop, DJ + música ao vivo, ~5 min a pé) · 2ª opção: Molecule (rooftop, DJ + música ao vivo, ~13 min a pé)</div></li>
+    </ul>
+    <div class="nota"><b>📌 Regras Taj Mahal:</b> sai do hotel 5:15, entra 6:00 (visita 1h30–2h). Celular e câmera <b>são permitidos</b> (todos fotografam!) — só é proibido fotografar <b>dentro do mausoléu</b>. NÃO pode: tripé, drone, fone de ouvido, comida/doces, cigarro e bolsas grandes. Não precisa passaporte (ingressos entregues antes). Levar pochete e lenço de corpo.</div>
+    <div class="resolver">
+      <span class="rtit">⚠️ Resolver — Dia 2</span>
+      <ul>
+        <li>Confirmar os participantes do Mohabbat the Taj Show</li>
+        <li>Organizar com o Adijta a compra antecipada dos ingressos e a reserva nos restaurantes</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DIA 3 -->
+  <section id="d3">
+    <div class="dia-cab">
+      <div class="rotulo">Dia 3</div>
+      <h2>AGRA → JAIPUR<span class="badge">Cidade Rosa</span></h2>
+      <div class="meta">Sexta · 6 nov</div>
+      <div class="hoteis">🏨 <span>Radisson (saída)</span><span>Umaid Bhawan</span></div>
+    </div>
+    <ul class="linha">
+      <li><span class="hora">7:30</span><div class="tit">Café da manhã</div><div class="obs">buffet do Radisson (restaurante Oasis) abre às 7h30 — saída logo em seguida, então café rápido (ou pedir para abrirem um pouco antes)</div></li>
+      <li><span class="hora">8:00</span><div class="tit">Saída do Radisson (Agra) para Jaipur</div><div class="obs">aprox. 3h30 até o Umaid Palace (Dausa) · ~160 km (via Fatehpur Sikri / Bharatpur) · total Agra → Jaipur ~6h</div></li>
+      <li><span class="hora">11:30</span><div class="tit">Chegada ao Umaid Palace — Dausa, Rajasthan</div><div class="obs">parada no meio do caminho (Agra → Jaipur)</div></li>
+      <li><span class="hora">11:30</span><div class="tit">Almoço + experiência cultural — Umaid Palace (Dausa)</div><div class="obs">11h30–14h · reserva de 2h30 · almoço + experiência cultural curta · grupo de 14 pessoas</div></li>
+      <li><span class="hora">14:30</span><div class="tit">Saída do Umaid Palace (Dausa) → Jaipur (Cidade Rosa)</div><div class="obs">aprox. 1h30–2h de viagem · ~55 km · as malas seguem na van</div></li>
+      <li><span class="hora">16:30</span><div class="tit">Hawa Mahal + Pink City</div><div class="obs">chegada · foto no Hawa Mahal e primeira caminhada pela Cidade Rosa · Tattoo Café Rooftop (consumação ~₹300) · City Palace OPCIONAL (ingresso ~₹1.000). Hawa Mahal → Govind Dev Ji ~15 min a pé · City Palace → Govind Dev Ji ~5 min a pé</div></li>
+      <li><span class="hora">16:45</span><div class="tit">Govind Dev Ji</div><div class="obs">chegar 16h45 (sessão da noite abre 17h) · Sandhya aarti ~17h45 (a principal — fica bem cheio) · sessão até 20h45 (última aarti/Shayan às 20h) · <b>darshan diário, inclusive sexta</b> · (<a href="https://www.google.com/maps/search/?api=1&query=Govind+Dev+Ji+Temple+Jaipur" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">✨</span><div class="tit">Hoje é Dhanteras — 1º dia de Diwali</div><div class="obs"><b>6/11 é Dhanteras</b>, a abertura dos 5 dias de Diwali (Lakshmi Puja principal em 8/11). Nesta semana o Govind Dev Ji fica <b>especialmente decorado e iluminado</b>, com o deus em <b>vestes e joias especiais</b> e <b>darshan estendido</b> — a Sandhya aarti fica ainda mais festiva e cheia. Ótima energia para a chegada em Jaipur. (Dhanteras é dia de prosperidade — costume de comprar algo dourado/prata na caminhada pela Cidade Rosa.)</div></li>
+      <li><span class="hora">18:30</span><div class="tit">Ponto de encontro com a van — Jalebi Chowk</div><div class="obs">~1–2 min a pé do Govind Dev Ji (~100 m)</div></li>
+      <li><span class="hora">19:00</span><div class="tit">Umaid Bhawan</div><div class="obs">Jalebi Chowk → hotel ~5 km · ~20–25 min de carro (com trânsito de Diwali, pode dar ~30 min) · chegando ~19h dá pra pegar a dança e música folclórica do Rajastão (rooftop, 19h–21h)</div></li>
+      <li><span class="hora">20:30</span><div class="tit">Jantar — rooftop Fort View (restaurante do próprio Umaid Bhawan)</div><div class="obs">após a dança e música folclórica do Rajastão (ao vivo até 21h) — dá pra assistir a partir do check-in (~19h) e jantar em seguida</div></li>
+    </ul>
+    <div class="resolver">
+      <span class="rtit">⚠️ Resolver — Dia 3</span>
+      <ul>
+        <li>Reservar 2h30 no Umaid Palace (Dausa) — almoço + experiência cultural para 14 pessoas (06/11/2026)</li>
+        <li>Reservar mesa no rooftop Fort View do Umaid Bhawan para a noite (e confirmar o horário da música folclórica)</li>
+        <li>Alinhar o check-in no Umaid Bhawan para a noite (chegada ~19h, após a Cidade Rosa)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DIA 4 -->
+  <section id="d4">
+    <div class="dia-cab">
+      <div class="rotulo">Dia 4</div>
+      <h2>JAIPUR<span class="badge">Amber Fort</span></h2>
+      <div class="meta">Sábado · 7 nov<span class="badge">Guia espanhol</span></div>
+      <div class="hoteis">🏨 <span>Umaid Bhawan</span></div>
+    </div>
+    <ul class="linha">
+      <li><span class="hora">7:30</span><div class="tit">Café da manhã</div><div class="obs">buffet do Umaid Bhawan: 7h30–10h30 (abre 7h30) — café rápido antes da saída</div></li>
+      <li><span class="hora">8:30</span><div class="tit">Saída do hotel com o guia</div><div class="obs">deslocamento de aprox. 20 min</div></li>
+      <li><span class="hora">9:00</span><div class="tit">Moti Dungri Ganesh Ji</div><div class="obs">9h–9h30 · darshan tranquilo (templo aberto desde 5h30) · deslocamento até o Amber Fort aprox. 20 min</div></li>
+      <li><span class="hora">10:00</span><div class="tit">Amber Fort</div><div class="obs">10h–12h · ingresso incluso · visita incluindo o Shila Mata Mandir (Shila Devi — manifestação de Durga/Kali)</div></li>
+      <li><span class="hora">12:30</span><div class="tit">Lojas / tecidos</div><div class="obs">Prints of Pink (Mount Road, Opp. Ramgarh Road) · Embroidery Fabric (Santy) · Ridhi Sidhi Textiles</div></li>
+      <li><span class="hora">13:00</span><div class="tit">Amer — caminhada pela região</div><div class="obs">Shri Jagat Shiromani Ji Temple / Meera Mandir (<a href="https://www.google.com/maps/search/?api=1&query=Jagat+Shiromani+Temple+Amer+Jaipur" target="_blank" rel="noopener">🗺️ mapa</a>) · Panna Meena ka Kund (<a href="https://www.google.com/maps/search/?api=1&query=Panna+Meena+ka+Kund+Amer+Jaipur" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">14:00</span><div class="tit">Almoço — Kokum Bistro</div><div class="obs">14h–15h · <b>Kokum Bistro</b> (vegetariano, ao lado do Panna Meena ka Kund · ~5 min a pé do forte) — <b>escolhido</b> (<a href="https://www.google.com/maps/search/?api=1&query=Kokum+Bistro+Amer+Jaipur" target="_blank" rel="noopener">🗺️ mapa</a>) · alternativa a pé: The Stag Rooftop (~10 min, vista para o Amber Fort). Depois do almoço, seguir para a Pink City para as compras.</div></li>
+      <li><span class="hora">15:00</span><div class="tit">Saída para a Pink City (compras)</div><div class="obs">Amer → Cidade Rosa ~30–40 min (~11 km) · opcional a caminho: Jal Mahal (parada para fotos, ~15 min)</div></li>
+      <li><span class="hora">16:00</span><div class="tit">Compras na Pink City</div><div class="obs">bazares da cidade murada: Johari, Bapu, Nehru e Tripolia Bazaar · Hawa Mahal (foto) e, em frente, o Tattoo Café Rooftop (vista do Hawa Mahal, consumação ~₹300) · City Palace OPCIONAL (ingresso ~₹1.000) · lojas abrem ~10h30 e fecham ~20h (na semana de Diwali ficam abertas até ~22h)</div></li>
+      <li><span class="hora">18:30</span><div class="tit">Saída do centro (Pink City) → Bar Palladio</div><div class="obs">Hawa Mahal → Bar Palladio ~16 min (~4 km)</div></li>
+      <li><span class="hora">19:30</span><div class="tit">Jantar — Bar Palladio (Narain Niwas Palace)</div><div class="obs">italiano à luz de velas · sáb 16h–23h · reservar antes (+91 88906 30553, a partir das 15h) (<a href="https://www.google.com/maps/search/?api=1&query=Bar+Palladio+Narain+Niwas+Palace+Jaipur" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">—</span><div class="tit">Retorno ao hotel (Umaid Bhawan) após o jantar</div><div class="obs">Bar Palladio → hotel ~19 min (~6 km)</div></li>
+    </ul>
+    <div class="nota"><b>💡 Dica de restaurante (Jaipur):</b> The Curry Spoon — bem avaliado, ~15 min de carro do Amber Fort, já a caminho da Pink City (<a href="https://www.google.com/maps/search/?api=1&query=The+Curry+Spoon+Jaipur" target="_blank" rel="noopener">🗺️ mapa</a>).</div>
+    <div class="resolver">
+      <span class="rtit">⚠️ Resolver — Dia 4</span>
+      <ul>
+        <li>Reservar o almoço no Kokum Bistro (Amer)</li>
+        <li>Reservar o Bar Palladio para o jantar (+91 88906 30553, a partir das 15h) — alta temporada de Diwali, garantir antes</li>
+        <li>Avaliar encaixar o Jal Mahal na ida Amer → Pink City (parada para fotos)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DIA 5 -->
+  <section id="d5">
+    <div class="dia-cab">
+      <div class="rotulo">Dia 5</div>
+      <h2>JAIPUR → VARANASI<span class="badge">Voo</span></h2>
+      <div class="meta">Domingo · 8 nov</div>
+      <div class="hoteis">🏨 <span>Umaid Bhawan (saída)</span><span>Ganges View</span></div>
+    </div>
+    <ul class="linha">
+      <li><span class="hora">5:30</span><div class="tit">Saída do Umaid Bhawan</div><div class="obs">café da manhã em formato piquenique</div></li>
+      <li><span class="hora">6:30</span><div class="tit">Chegada prevista ao Aeroporto de Jaipur</div><div class="obs">margem de 1h para o deslocamento</div></li>
+      <li><span class="hora">8:35</span><div class="tit">Voo Jaipur → Varanasi</div><div class="obs">08h35–09h35 ou 10h40–12h00 · deslocamento até o Ganges View: ~45 min + ~10 min a pé</div></li>
+      <li><span class="hora">13:00</span><div class="tit">Almoço — a definir</div><div class="obs">definir o local em Varanasi (perto do Assi Ghat / hotel)</div></li>
+      <li><span class="hora">14:00</span><div class="tit">Check-in — Hotel Ganges View</div><div class="obs">pedir ao Deepak para comprar as oferendas (30 rúpias) — são muito família</div></li>
+      <li><span class="hora">—</span><div class="tit">Preparação + rezo + ritual de Diwali</div><div class="obs">após o check-in</div></li>
+      <li><span class="hora">16:00</span><div class="tit">✨ Harmony The Book Shop — Assi Ghat</div><div class="obs">livraria charmosa <b>de frente para o Ganges</b> (pertinho da Vaatika e do hotel), com ótima coleção sobre cultura, religião e história da Índia — um cantinho especial pra abrir a viagem (<a href="https://www.google.com/maps/search/?api=1&query=Harmony+The+Book+Shop+Assi+Ghat+Varanasi" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">18:00</span><div class="tit">Ganga Aarti — Assi Ghat 🪔</div><div class="obs">assistir à Ganga Aarti no ghat e soltar diyas (lamparinas) no rio — ainda mais especial na noite do Diwali (8/11)</div></li>
+      <li><span class="hora">20:00</span><div class="tit">Jantar no hotel</div><div class="obs">reservar antes</div></li>
+    </ul>
+    <div class="resolver">
+      <span class="rtit">⚠️ Resolver — Dia 5</span>
+      <ul>
+        <li>Organizar os diyas (lamparinas) para soltar no Assi Ghat</li>
+        <li>Reservar o jantar no hotel</li>
+        <li>Confirmar o valor do jantar com o grupo</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DIA 6 -->
+  <section id="d6">
+    <div class="dia-cab">
+      <div class="rotulo">Dia 6</div>
+      <h2>VARANASI<span class="badge">Shiva</span></h2>
+      <div class="meta">Segunda · 9 nov<span class="badge">Guia espanhol</span></div>
+      <div class="hoteis">🏨 <span>Ganges View</span></div>
+    </div>
+    <div class="mapa"><a href="https://www.google.com/maps/d/u/0/edit?mid=121AEvMlk9lYYtqVDoV0Ou3zSjxXiJKE&usp=sharing" target="_blank" rel="noopener">🗺️ Abrir mapa dos templos (Google Maps)</a></div>
+    <ul class="linha">
+      <li><span class="hora">5:30</span><div class="tit">Subah-e-Banaras — Assi Ghat (aarti + havan + yoga)</div><div class="obs">sequência: mantras védicos + Aarti (Sapta Aarti) → havan/yagya → sessão de yoga ao ar livre no fim (~7h) · dura ~2h · chegar 30–45 min antes e confirmar no dia</div></li>
+      <li><span class="hora">7:00</span><div class="tit">Chai do Vijay</div><div class="obs">ao lado do Yoga</div></li>
+      <li><span class="hora">8:00</span><div class="tit">Café da manhã</div></li>
+      <li><span class="hora">8:45</span><div class="tit">Saída caminhando para Lolark Kund</div><div class="obs">passar pela lojinha dos brinquedos pintados à mão (Agarwal)</div></li>
+      <li><span class="hora">10:30</span><div class="tit">Shri Kashi Kaamkoteeshwar Mandir</div></li>
+      <li><span class="hora">11:30</span><div class="tit">Shree Gauri Kedar Eshwar Mandir</div><div class="obs">passeio, chai, barracas de frutas, rituais, perfumes · <a href="https://maps.app.goo.gl/skUg9JbLZZGSB4RCA" target="_blank" rel="noopener">🗺️ loja do Krishna (perfumes)</a></div></li>
+      <li><span class="hora">✨</span><div class="tit">Templo Annapurna</div><div class="obs">na Vishwanath Gali. <b>HOJE (9/11, pós-Diwali) é especial:</b> darshan da <b>Annapurna dourada</b> (só uma vez por ano, aberto até hoje) + <b>Annakut</b> (montanha de comida / Chhappan Bhog) + distribuição de <b>moedas + kheel</b> (prasad de prosperidade — guardar na carteira)</div></li>
+      <li><span class="hora">12:00</span><div class="tit">Banaras Saree Factory</div><div class="obs">sáris de seda · (<a href="https://www.google.com/maps/place/Banaras+Saree+Factory/@25.3070238,83.0101013,17z/data=!3m1!4b1!4m6!3m5!1s0x398e31e1ef73ebeb:0xaa138644d69723fc!8m2!3d25.3070238!4d83.0101013!16s%2Fg%2F11b6dgb8sw" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">—</span><div class="tit">Checar a rua do Ramdulareswar / Sree Guru Sangha</div><div class="obs">na região de Sonarpura, pertinho daqui (<a href="https://www.google.com/maps/place/Ramdulareswar+Mandir/@25.3023082,83.0069251,17z/data=!3m1!4b1!4m6!3m5!1s0x398e31e384badae3:0x74ef33a4352401f7!8m2!3d25.3023082!4d83.0069251!16s%2Fg%2F11b6f1s_44" target="_blank" rel="noopener">🗺️ Ramdulareswar</a> · <a href="https://www.google.com/maps/place/Sree+Guru+Sangha/@25.3024117,83.007339,17z/data=!3m1!4b1!4m6!3m5!1s0x398e31e39a92ad1f:0x9f0655905517989c!8m2!3d25.3024117!4d83.007339!16s%2Fg%2F11b6dggr5d" target="_blank" rel="noopener">🗺️ Sree Guru Sangha</a>)</div></li>
+      <li><span class="hora">12:30</span><div class="tit">Almoço — Dolphin Restaurant ou Niyati Café</div><div class="obs">+ Blue Lassi Shop</div></li>
+      <li><span class="hora">15:00</span><div class="tit">Ratneshwar Mahadev + Nepali Temple + Sani Temple</div></li>
+      <li><span class="hora">15:00</span><div class="tit">Manikarnika Ghat</div><div class="obs">crematório</div></li>
+      <li><span class="hora">18:00</span><div class="tit">Ganga Aarti — Dashashwamedh Ghat</div><div class="obs">até 20:00 · chegar cedo ou VIP 150 rúpias</div></li>
+      <li><span class="hora">20:00</span><div class="tit">Jantar — Pizzaria Vaatika (ao lado) ou no hotel (600 rúpias)</div></li>
+    </ul>
+    <div class="nota"><b>🍮 Malaiyo (Makhan Malai):</b> sobremesa típica de Varanasi feita de <b>espuma de leite aerada e aromatizada</b> (açafrão/cardamomo/pistache) — servida <b>só nas manhãs de inverno</b> (nov–fev). Novembro é a época! Procurar nas ruas da cidade velha bem cedo, de manhã.</div>
+    <details class="planob">
+      <summary>🍽️ Food Walk pelos becos (comida de rua típica — com fotos)</summary>
+      <div class="corpo">
+        <p style="font-size:.82rem;margin:6px 0 10px;color:var(--cinza)">Melhor de manhã (~7h–10h), na região Godowlia / Kachori Gali / Vishwanath Gali. ~₹200–400/pessoa. (As fotos precisam de internet para carregar.)</p>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Rajasthani_Raj_Kachori.jpg/330px-Rajasthani_Raj_Kachori.jpg" alt="Kachori"><div class="fd"><div class="fn">1. Kachori com sabzi</div><div class="fi">Bolinha de massa de trigo <b>frita</b>, recheada de lentilha (dal) e especiarias, servida com um <b>curry de batata</b> (sabzi). Café da manhã clássico. Onde: Kachori Gali / Ram Bhandar.</div></div></div>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Samosas%2C_snack_food_at_Wikipedia%27s_16th_Birthday_celebration_in_Chittagong_%2801%29.jpg/330px-Samosas%2C_snack_food_at_Wikipedia%27s_16th_Birthday_celebration_in_Chittagong_%2801%29.jpg" alt="Samosa"><div class="fd"><div class="fn">2. Samosa</div><div class="fi">Pastel triangular <b>frito</b>, recheado de <b>batata temperada</b>, ervilha e especiarias. Salgadinho onipresente.</div></div></div>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Aloo_Tikki_served_with_chutneys.jpg/330px-Aloo_Tikki_served_with_chutneys.jpg" alt="Aloo Tikki"><div class="fd"><div class="fn">3. Aloo Tikki</div><div class="fi">Hambúrguer de <b>batata</b> frito na chapa, servido com iogurte e chutneys agridoces (um tipo de chaat).</div></div></div>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Pani_Puri1.JPG/330px-Pani_Puri1.JPG" alt="Pani Puri"><div class="fd"><div class="fn">4. Pani Puri (gol gappa)</div><div class="fi">Casquinhas ocas crocantes recheadas na hora com <b>água apimentada de tamarindo/hortelã</b>, batata e grão-de-bico. Come de uma vez! Servido em <b>tigelinhas de folha (dona)</b>.</div></div></div>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Dahi_puri%2C_Doi_phuchka.jpg/330px-Dahi_puri%2C_Doi_phuchka.jpg" alt="Chaat"><div class="fd"><div class="fn">5. Chaat (tamatar / dahi)</div><div class="fi">Petisco salgado em camadas: crocantes (papdi/puri), <b>iogurte</b>, chutneys agridoces, tomate e especiarias. Também vem em tigelinha de folha. Onde: Kashi Chaat Bhandar / Deena Chaat.</div></div></div>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Dahi_bhalla_or_dahi_wada_or_dahi_bada.PNG/330px-Dahi_bhalla_or_dahi_wada_or_dahi_bada.PNG" alt="Dahi Vada"><div class="fd"><div class="fn">6. Dahi Vada</div><div class="fi">Bolinhos de <b>lentilha</b> macios mergulhados em <b>iogurte</b> gelado, com chutneys e especiarias. Refrescante.</div></div></div>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Litti_Chokha_2.jpg/330px-Litti_Chokha_2.jpg" alt="Litti Chokha"><div class="fd"><div class="fn">7. Litti Chokha</div><div class="fi">Bolinhas de trigo <b>assadas</b>, recheadas de <b>sattu</b> (grão-de-bico torrado), servidas com "chokha" (purê de berinjela/batata/tomate). Típico da região.</div></div></div>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Salt_lassi.jpg/330px-Salt_lassi.jpg" alt="Lassi"><div class="fd"><div class="fn">8. Lassi</div><div class="fi">Bebida de <b>iogurte batido</b> (doce ou salgada), servida em pote de barro, às vezes com creme e frutas. Onde: Blue Lassi (Kachori Gali).</div></div></div>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Thandai_%28Spiced_Indian_Milk_Drink%29.JPG/330px-Thandai_%28Spiced_Indian_Milk_Drink%29.JPG" alt="Thandai"><div class="fd"><div class="fn">9. Thandai</div><div class="fi"><b>Leite gelado</b> batido com amêndoas, sementes e especiarias (erva-doce, cardamomo, pimenta, açafrão). Bebida típica de Varanasi.</div></div></div>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/JalebiIndia.jpg/330px-JalebiIndia.jpg" alt="Jalebi"><div class="fd"><div class="fn">10. Jalebi</div><div class="fi">Espiral de massa <b>frita</b> mergulhada em <b>calda de açúcar</b> — doce, crocante por fora e molhadinha. Vai junto com a kachori. Onde: Kachori Gali.</div></div></div>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Homemade_Rabri.jpg/330px-Homemade_Rabri.jpg" alt="Rabri"><div class="fd"><div class="fn">11. Rabri</div><div class="fi"><b>Leite cozido lentamente</b> até engrossar, adocicado, com camadas de nata e pistache. Sobremesa cremosa.</div></div></div>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Gulab-jamun-wallpaper-1.jpg/330px-Gulab-jamun-wallpaper-1.jpg" alt="Gulab Jamun"><div class="fd"><div class="fn">12. Gulab Jamun</div><div class="fi"><b>Bolinhas redondas</b> de leite em pó/khoya <b>fritas</b>, mergulhadas em <b>calda de açúcar</b> com cardamomo e água de rosas — quentinhas e docíssimas. O doce mais clássico da Índia.</div></div></div>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Malaiyo_Pehalwaan_lassi_in_front_of_ravidas_gate_LANKA._Varanasi_Uttar_Pradesh.jpg/330px-Malaiyo_Pehalwaan_lassi_in_front_of_ravidas_gate_LANKA._Varanasi_Uttar_Pradesh.jpg" alt="Malaiyo"><div class="fd"><div class="fn">13. Malaiyo (Makhan Malai)</div><div class="fi"><b>Espuma de leite aerada</b>, leve como nuvem, com açafrão, cardamomo e pistache. <b>Só de manhã, no inverno</b> (novembro!). Onde: becos da cidade velha.</div></div></div>
+        <div class="foodrow"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Meetha_paan.jpg/330px-Meetha_paan.jpg" alt="Paan"><div class="fd"><div class="fn">14. Paan banarasi</div><div class="fi"><b>Folha de bétel</b> dobrada com recheios dentro (gulkand/rosa, coco, sementes, doces) — mastigada no <b>fim</b> da refeição, refrescante e digestiva. Onde: Keshav Taambul / barracas de Godowlia.</div></div></div>
+      </div>
+    </details>
+    <div class="resolver">
+      <span class="rtit">⚠️ Resolver — Dia 6</span>
+      <ul>
+        <li>Fazer a reserva com o guia para a cerimônia VIP</li>
+        <li>Reservar o barco do Dia 7</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DIA 7 -->
+  <section id="d7">
+    <div class="dia-cab">
+      <div class="rotulo">Dia 7</div>
+      <h2>VARANASI<span class="badge">Hanuman</span></h2>
+      <div class="meta">Terça · 10 nov</div>
+      <div class="hoteis">🏨 <span>Ganges View</span></div>
+    </div>
+    <div class="mapa"><a href="https://www.google.com/maps/d/u/0/edit?mid=121AEvMlk9lYYtqVDoV0Ou3zSjxXiJKE&usp=sharing" target="_blank" rel="noopener">🗺️ Abrir mapa dos templos (Google Maps)</a></div>
+    <div class="mapa"><a href="https://www.google.com/maps/d/viewer?mid=1Mhzu2ACx3rFT86jFdMs0OU3FGouZO3w" target="_blank" rel="noopener">🗺️ Percurso Varanasi — lojas de Assi (My Maps)</a></div>
+    <ul class="linha">
+      <li><span class="hora">5:00</span><div class="tit">Barco no Ganges</div><div class="obs">falar com o hotel para deixar organizado · valor: 4.500 rúpias</div></li>
+      <li><span class="hora">8:00</span><div class="tit">Café da manhã</div></li>
+      <li><span class="hora">9:00</span><div class="tit">Saída</div></li>
+      <li><span class="hora">9:30</span><div class="tit">Durga Kund Temple</div><div class="obs">terça é dia auspicioso para a Devi (<a href="https://www.google.com/maps/search/?api=1&query=Durga+Kund+Temple+Varanasi" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">↳</span><div class="tit">Pilgrims Book House</div><div class="obs">na Durga Kund Road, coladinho ao Durga Kund · livraria + café (<a href="https://www.google.com/maps/search/?api=1&query=Pilgrims+Book+House+Durga+Kund+Varanasi" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">11:00</span><div class="tit">Templo de Hanuman — Sankat Mochan</div><div class="obs">~1,5 km ao sul do Durga Kund (tuk-tuk ou 15 min a pé) · <b>terça = dia de Hanuman</b>: bem mais cheio · aartis: 4h30, <b>12h</b>, 15h e 20h — chegando ~11h30 dá pra pegar a aarti do meio-dia (<a href="https://www.google.com/maps/search/?api=1&query=Sankat+Mochan+Hanuman+Temple+Varanasi" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">12:30</span><div class="tit">Almoço — Roma Café</div><div class="obs">voltando para a região de Assi · ~10 min até a massagem (Sparsa), a pé ou de tuk-tuk (<a href="https://www.google.com/maps/search/?api=1&query=Roma+Cafe+Assi+Ghat+Varanasi" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">13:30</span><div class="tit">Compras e perfumes (perto do hotel)</div><div class="obs">ao lado do Sparsa, nesta ordem: <b>1) N M Emporium</b> — trajes (<a href="https://www.google.com/maps/search/?api=1&query=N+M+Emporium+Assi+Ghat+Varanasi" target="_blank" rel="noopener">🗺️ mapa</a>) · <b>2) Natura India</b> — perfumes/attar (<a href="https://www.google.com/maps/search/?api=1&query=Natura+India+Assi+Lanka+Varanasi" target="_blank" rel="noopener">🗺️ mapa</a>) · <b>3) Bala Ji Handicraft</b> — artesanato, Assi Rd (<a href="https://www.google.com/maps/search/?api=1&query=Bala+Ji+Handicraft+Assi+Road+Bhadaini+Varanasi+72R3%2B5R" target="_blank" rel="noopener">🗺️ mapa</a>) · <b>4) Fab India</b> (<a href="https://www.google.com/maps/search/?api=1&query=Fabindia+Near+Anandmayi+Hospital+Bhadaini+Varanasi" target="_blank" rel="noopener">🗺️ mapa</a>) · outros: Krishna Perfume · Kashi Café · Ganpati Hotel (músico ao lado)</div></li>
+      <li><span class="hora">14:00</span><div class="tit">Massagem Sparsa (4 pessoas)</div><div class="obs"><a href="https://www.google.com/maps/place/%E2%9C%85Sparsa+Ayurvedic+Centre/@25.2873777,83.0040392,20z/data=!3m1!4b1!4m6!3m5!1s0x390cfd309eebed77:0x6aac75a01006fa54!8m2!3d25.2873777!4d83.0040392!16s%2Fg%2F1hbpwpzp6" target="_blank" rel="noopener">🗺️ Sparsa Ayurvedic Centre</a> · 5 min a pé do hotel</div></li>
+      <li><span class="hora">15:00</span><div class="tit">Massagem Sparsa (4 pessoas)</div></li>
+      <li><span class="hora">16:00</span><div class="tit">Massagem Sparsa (4 pessoas)</div></li>
+      <li><span class="hora">17:00</span><div class="tit">Massagem Sparsa (2 pessoas)</div></li>
+      <li><span class="hora">—</span><div class="tit">Retorno ao hotel</div></li>
+      <li><span class="hora">18:30</span><div class="tit">OPCIONAL — passeio de barco à noite</div><div class="obs">barco pelo Ganges ao anoitecer — ghats iluminados e clima da Ganga Aarti a partir da água · combinar com o hotel / Deepak</div></li>
+      <li><span class="hora">20:00</span><div class="tit">Jantar — Sparrow Restaurant</div><div class="obs">~270 m / ~4 min a pé do hotel (pela Assi Ghat Rd) (<a href="https://www.google.com/maps/search/?api=1&query=Sparrow+Restaurant+Assi+Ghat+Varanasi" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+    </ul>
+    <div class="resolver">
+      <span class="rtit">⚠️ Resolver — Dia 7</span>
+      <ul>
+        <li>Reservar o restaurante do almoço</li>
+        <li>Reservar o restaurante do jantar</li>
+        <li>Confirmar a massagem</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DIA 8 -->
+  <section id="d8">
+    <div class="dia-cab">
+      <div class="rotulo">Dia 8</div>
+      <h2>VARANASI → RISHIKESH<span class="badge transp">✈️ Voo via Dehradun</span></h2>
+      <div class="meta">Quarta · 11 nov<span class="badge">Deslocamento</span></div>
+      <div class="hoteis">🏨 <span>Ganges View (saída)</span><span>Yog Niketan <a href="https://www.google.com/maps/search/?api=1&query=Yog+Niketan+Rishikesh" target="_blank" rel="noopener">🗺️</a></span></div>
+    </div>
+    <ul class="linha">
+      <li><span class="hora">5:00</span><div class="tit">Saída do hotel</div><div class="obs">20 min caminhando até o ponto de encontro com a van</div></li>
+      <li><span class="hora">5:20</span><div class="tit">Encontro com a van</div><div class="obs">deslocamento para o aeroporto</div></li>
+      <li><span class="hora">6:30</span><div class="tit">Chegada ao aeroporto</div></li>
+      <li><span class="hora">—</span><div class="tit">Voo Varanasi → Dehradun (DED)</div><div class="obs">considerar ~45 min de deslocamento até o hotel · <b>na chegada em Dehradun: comprar vinho na loja do aeroporto</b> (em Rishikesh a venda de álcool é bem restrita/difícil de achar)</div></li>
+      <li><span class="hora">16:00</span><div class="tit">Chegada e check-in no Yog Niketan</div><div class="obs">deixar as malas · <a href="https://www.google.com/maps/search/?api=1&query=Yog+Niketan+Rishikesh" target="_blank" rel="noopener">🗺️ Yog Niketan</a></div></li>
+      <li><span class="hora">17:00</span><div class="tit">Ganga Aarti — Parmarth Niketan ⭐</div><div class="obs">~25 min a pé do hotel, atravessando a <b>Janki Setu</b> · chegar ~16h40 para pegar lugar · <a href="https://www.google.com/maps/search/?api=1&query=Parmarth+Niketan+Rishikesh" target="_blank" rel="noopener">🗺️ Parmarth Niketan</a></div></li>
+      <li><span class="hora">19:30</span><div class="tit">Jantar no hotel</div><div class="obs">não tem ovo</div></li>
+    </ul>
+    <div class="nota"><b>🍷 Pinkcafe Bar & Restaurant</b> (Tapovan) — <b>um dos poucos lugares de Rishikesh que serve álcool</b> (coquetéis, cerveja, DJ à noite) · também indiana/continental/chinesa · Tel/WhatsApp +91 80066 53825 (<a href="https://www.google.com/maps/search/?api=1&query=Pinkcafe+Bar+Restaurant+Tapovan+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)</div>
+    <div class="resolver">
+      <span class="rtit">⚠️ Resolver — Dia 8</span>
+      <ul>
+        <li>Jantar no Yog Niketan: falar com o Adijta para confirmar se precisa reservar com um dia de antecedência ou no mesmo dia — e pedir para ele fazer a reserva</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DIA 9 -->
+  <section id="d9">
+    <div class="dia-cab">
+      <div class="rotulo">Dia 9</div>
+      <h2>RISHIKESH</h2>
+      <div class="meta">Quinta · 12 nov</div>
+      <div class="hoteis">🏨 <span>Yog Niketan <a href="https://www.google.com/maps/search/?api=1&query=Yog+Niketan+Rishikesh" target="_blank" rel="noopener">🗺️</a></span></div>
+    </div>
+    <ul class="linha">
+      <li><span class="hora">7:00</span><div class="tit">Sadhana</div></li>
+      <li><span class="hora">🚣</span><div class="tit">Rafting no Ganges (a decidir)</div><div class="obs">no mesmo horário (10h–14h30) · saída do hotel ~9h · embarque em <b>Shivpuri</b> (~16 km / ~30–45 min de Muni Ki Reti) · descida de ~16 km, corredeiras grau III–IV · slot das 10h · ~1,5–2h na água · <b>₹1.500 + GST/pessoa (compartilhado)</b> · com a <b>Paddy Adventures</b> (parceira do hotel) (<a href="https://www.google.com/maps/search/?api=1&query=Shivpuri+Rafting+Point+Rishikesh" target="_blank" rel="noopener">🗺️ Shivpuri</a>)</div></li>
+      <li><span class="hora">8:00</span><div class="tit">Yoga</div></li>
+      <li><span class="hora">9:00</span><div class="tit">Café da manhã</div></li>
+      <li><span class="hora">10:00</span><div class="tit">Beatles Ashram</div><div class="obs">30 min de deslocamento · ⚠️ fechado? confirmar com a agência. Opção caso esteja fechado: Tera Manzil Temple + região de Laxman Jhula / Bajrang Setu + Janki Jhula + Ram Jhula</div></li>
+      <li><span class="hora">13:00</span><div class="tit">Almoço — opções</div><div class="obs">1. Chotiwala (comida indiana tradicional / thali vegetariano) (<a href="https://www.google.com/maps/search/?api=1&query=Chotiwala+Restaurant+Ram+Jhula+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>) · 2. RamJhula Restaurant (indiana, vegetariana e continental) (<a href="https://www.google.com/maps/search/?api=1&query=RamJhula+Restaurant+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>) · 3. Kaafe (indiana, café, massas, pizzas, sanduíches e hambúrgueres) (<a href="https://www.google.com/maps/search/?api=1&query=Kaafe+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">🛍️</span><div class="tit">Compras típicas (na ordem do caminho: Ram Jhula → Laxman Jhula)</div><div class="obs"><b>1) Ram Jhula / Swarg Ashram</b> (primeiro, saindo do hotel):<br>
+      • Ram Jhula / Swarg Ashram Market — livros espirituais, rudraksha, gemas, incensos (<a href="https://www.google.com/maps/search/?api=1&query=Ram+Jhula+Swarg+Ashram+market+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)<br>
+      • Gita Bhawan — cooperativa de preço fixo: roupas, ayurveda, livros (<a href="https://www.google.com/maps/search/?api=1&query=Gita+Bhawan+Swarg+Ashram+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)<br>
+      <b>2) Laxman Jhula / Tapovan</b> (seguindo mais ao norte):<br>
+      • Laxman Jhula / Tapovan Market — rudraksha, tigelas tibetanas, roupas de yoga, cristais, incensos, estátuas de madeira (<a href="https://www.google.com/maps/search/?api=1&query=Laxman+Jhula+market+Tapovan+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)<br>
+      • Namaste Rishikesh Pashmina Store — pashminas/xales da Caxemira · 4,7 ⭐ (<a href="https://www.google.com/maps/search/?api=1&query=Namaste+Rishikesh+Pashmina+Store+Laxman+Jhula+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)<br>
+      • Tibetan Handicraft (perto do Rani Mandir) — cerimoniais, bandeiras de oração, estátuas e joias (himalaia) · 4,7 (<a href="https://www.google.com/maps/search/?api=1&query=Tibetan+Handicraft+Rani+Mandir+Laxman+Jhula+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)<br>
+      • Antic Himalaya (Laxman Jhula Rd, perto do correio) — singing bowls e artesanato do Himalaia · 5,0 ⭐ (<a href="https://www.google.com/maps/search/?api=1&query=Antic+Himalaya+Laxman+Jhula+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)<br>
+      ☕ <b>Tattv Cafe</b> (Tapovan) — parada de café / almoço leve: comida natural e vegana, vista para as montanhas · 4,4 ⭐ · fecha 22h (<a href="https://www.google.com/maps/search/?api=1&query=Tattv+Cafe+Tapovan+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">17:00</span><div class="tit">Aarti no Parmarth Niketan ⭐</div><div class="obs">~25 min a pé do hotel (atravessando a ponte) · chegar ~16h40 para pegar lugar · <a href="https://www.google.com/maps/search/?api=1&query=Parmarth+Niketan+Rishikesh" target="_blank" rel="noopener">🗺️ Parmarth Niketan</a></div></li>
+      <li><span class="hora">19:30</span><div class="tit">Jantar — opções</div><div class="obs">1. Kaafe (~5 min · indiana, café, massas, pizzas, sanduíches e hambúrgueres) · 2. RamJhula Restaurant (~15 min · indiana, vegetariana, continental/europeia e café) · 3. Aroma By Taste (~10 min · indiana, vegetariana, pizzas e opções variadas)</div></li>
+    </ul>
+    <div class="nota"><b>📌 Nota (tuk-tuk):</b> Tuk-tuk é difícil de reservar aqui. <b>Diária:</b> ~₹800 meio período · ~₹1.600 dia inteiro (9h–17h) · ₹100 por hora extra. <b>Trajeto avulso:</b> hotel → Tapovan ~₹200.</div>
+    <details class="planob" open>
+      <summary>Plano B — manhã, caso o Beatles Ashram esteja fechado</summary>
+      <div class="corpo">
+        <ul class="linha">
+          <li><span class="hora">9:45</span><div class="tit">Saída a pé do Yog Niketan</div><div class="obs">seguir caminhando em direção à região de Laxman Jhula · ~40–45 min a pé</div></li>
+          <li><span class="hora">10:30</span><div class="tit">Tera Manzil Temple</div><div class="obs">~45 min no local · templo de 13 andares — subir com calma, visitar os andares e chegar ao topo para a vista do Ganges · (<a href="https://www.google.com/maps/search/?api=1&query=Tera+Manzil+Temple+Trayambakeshwar+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+          <li><span class="hora">11:15</span><div class="tit">Saída do Tera Manzil → Lakshman Temple</div><div class="obs">na mesma região de Laxman Jhula</div></li>
+          <li><span class="hora">11:20</span><div class="tit">Lakshman Temple</div><div class="obs">20–30 min no local · (<a href="https://www.google.com/maps/search/?api=1&query=Lakshman+Temple+Laxman+Jhula+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+          <li><span class="hora">11:45</span><div class="tit">Saída → Bajrang Setu / Laxman Jhula</div><div class="obs">a pé até Bajrang Setu – Glass Bridge, junto ao antigo Laxman Jhula</div></li>
+          <li><span class="hora">11:50</span><div class="tit">Bajrang Setu + região de Laxman Jhula</div><div class="obs">~30 min · atravessar a ponte, fazer fotos e conhecer a região</div></li>
+          <li><span class="hora">12:20</span><div class="tit">Seguir a pé pela região de Swarg Ashram em direção a Ram Jhula</div><div class="obs">caminhada pela margem do Ganges, com templos e lojinhas · como o almoço é às 13h, fazer o trecho sem muitas paradas.<br><b>Compras em Ram Jhula / Swarg Ashram:</b><br>
+      • Ram Jhula / Swarg Ashram Market — livros espirituais, rudraksha, gemas, incensos (<a href="https://www.google.com/maps/search/?api=1&query=Ram+Jhula+Swarg+Ashram+market+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)<br>
+      • Gita Bhawan — cooperativa de preço fixo: roupas, ayurveda, livros (<a href="https://www.google.com/maps/search/?api=1&query=Gita+Bhawan+Swarg+Ashram+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+          <li><span class="hora">12:50</span><div class="tit">Chegada à região de Ram Jhula / Swarg Ashram</div></li>
+          <li><span class="hora">13:00</span><div class="tit">Almoço</div><div class="obs">1. Chotiwala · 2. RamJhula Restaurant · 3. Kaafe</div></li>
+        </ul>
+      </div>
+    </details>
+    <div class="resolver">
+      <span class="rtit">⚠️ Resolver — Dia 9</span>
+      <ul>
+        <li>Confirmar com a agência se o Beatles Ashram estará aberto (ter o plano B pronto)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DIA 10 -->
+  <section id="d10">
+    <div class="dia-cab">
+      <div class="rotulo">Dia 10</div>
+      <h2>RISHIKESH<span class="badge">Nascer do sol</span></h2>
+      <div class="meta">Sexta · 13 nov</div>
+      <div class="hoteis">🏨 <span>Yog Niketan <a href="https://www.google.com/maps/search/?api=1&query=Yog+Niketan+Rishikesh" target="_blank" rel="noopener">🗺️</a></span></div>
+    </div>
+    <ul class="linha">
+      <li><span class="hora">4:30</span><div class="tit">Saída para Kunjapuri Temple — nascer do sol</div><div class="obs">1h30 de deslocamento + escadas</div></li>
+      <li><span class="hora">8:00</span><div class="tit">Café da manhã no hotel</div></li>
+      <li><span class="hora">9:00</span><div class="tit">Saída</div></li>
+      <li><span class="hora">10:00</span><div class="tit">Vashishta Caves</div><div class="obs">meditação</div></li>
+      <li><span class="hora">12:00</span><div class="tit">Vivência de batismo no Rio Ganges</div></li>
+      <li><span class="hora">13:30</span><div class="tit">Almoço</div><div class="obs">hotel faz sanduíches para levar para a Vashishta</div></li>
+      <li><span class="hora">17:00</span><div class="tit">Puja — Ganga Beach</div><div class="obs">cerimônia à beira do Ganges (violão + shruti box, cantar juntos) · ~2,8 km / ~12 min do hotel · (<a href="https://www.google.com/maps/search/?api=1&query=Ganga+Beach+Laxman+Jhula+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">20:00</span><div class="tit">Jantar — A Tavola Con Te</div><div class="obs">25 min caminhando ou 10 min de tuk-tuk · fecha 21h30 · costuma ser cheio · RESERVAR (<a href="https://www.google.com/maps/search/?api=1&query=A+Tavola+Con+Te+Tapovan+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+    </ul>
+    <div class="nota"><b>📌 Nota:</b> Opção para a Puja: Resort Ganga Beach.</div>
+    <div class="resolver">
+      <span class="rtit">⚠️ Resolver — Dia 10</span>
+      <ul>
+        <li>Falar com o hotel sobre os sanduíches para o almoço na Vashishta</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DIA 11 -->
+  <section id="d11">
+    <div class="dia-cab">
+      <div class="rotulo">Dia 11</div>
+      <h2>RISHIKESH</h2>
+      <div class="meta">Sábado · 14 nov</div>
+      <div class="hoteis">🏨 <span>Yog Niketan <a href="https://www.google.com/maps/search/?api=1&query=Yog+Niketan+Rishikesh" target="_blank" rel="noopener">🗺️</a></span></div>
+    </div>
+    <ul class="linha">
+      <li><span class="hora">7:00</span><div class="tit">Sadhana</div></li>
+      <li><span class="hora">7:30</span><div class="tit">Yoga</div></li>
+      <li><span class="hora">8:00</span><div class="tit">Café da manhã</div></li>
+      <li><span class="hora">10:00</span><div class="tit">Aula de culinária — Cooking Masala</div><div class="obs">10h–14h30 · inclui preparar e almoçar os pratos · Flat No. 8 &amp; 10, Geetanjali Kunj, perto do Anand Prakash Ashram (Tapovan/Laxman Jhula) · 5,0 ⭐ · +91 70555 65071 (<a href="https://www.google.com/maps/search/?api=1&query=Cooking+Masala+Geetanjali+Kunj+Anand+Prakash+Ashram+Tapovan+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">14:30</span><div class="tit">Tuk-tuk da Cooking Masala → centro (Triveni Ghat)</div><div class="obs">~5 km / ~18–25 min de tuk-tuk (Tapovan → centro de Rishikesh)</div></li>
+      <li><span class="hora">15:00</span><div class="tit">Tarde livre de compras</div><div class="obs">na ordem, descendo em direção ao Triveni: <b>Gole Market</b> → <b>Main Market</b> (Ghat Road, coladinho no Triveni Ghat)</div></li>
+      <li><span class="hora">17:30</span><div class="tit">Cerimônia Aarti no Triveni Ghat</div><div class="obs">no inverno ~17h30–18h30 (chegar 30–45 min antes p/ bom lugar) · os mercados ficam a poucos minutos a pé do ghat (<a href="https://www.google.com/maps/search/?api=1&query=Triveni+Ghat+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">19:30</span><div class="tit">Jantar — opções</div><div class="obs">1. A Tavola Con Te (~16 min / ~4 km do Triveni de tuk-tuk · volta ao hotel ~5 min / ~1,6 km · fecha 21h30 · costuma ser cheio · RESERVAR) (<a href="https://www.google.com/maps/search/?api=1&query=A+Tavola+Con+Te+Tapovan+Rishikesh" target="_blank" rel="noopener">🗺️ mapa</a>) · 2. Café Hamsa (região de Upper Tapovan · fecha 22h)</div></li>
+    </ul>
+    <div class="resolver">
+      <span class="rtit">⚠️ Resolver — Dia 11</span>
+      <ul>
+        <li>Reservar o jantar (A Tavola Con Te)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DIA 12 -->
+  <section id="d12">
+    <div class="dia-cab">
+      <div class="rotulo">Dia 12</div>
+      <h2>RISHIKESH → DELHI<span class="badge">Encerramento</span></h2>
+      <div class="meta">Domingo · 15 nov</div>
+      <div class="hoteis">🏨 <span>Yog Niketan (saída)</span><span>The Lalit</span></div>
+    </div>
+    <ul class="linha">
+      <li><span class="hora">7:00</span><div class="tit">Café da manhã</div></li>
+      <li><span class="hora">8:00</span><div class="tit">Check-out e saída para Delhi</div><div class="obs">viagem de van — aprox. 5h30</div></li>
+      <li><span class="hora">13:00</span><div class="tit">Chegada a Old Delhi — desembarque perto da Jama Masjid</div><div class="obs">a van não entra nas ruelas; do desembarque, seguir a pé pela Jama Masjid até o Haveli (ver "🚶 Como chegar ao Haveli" abaixo)</div></li>
+      <li><span class="hora">13:30</span><div class="tit">Almoço — Lakhori, Haveli Dharampura</div><div class="obs">2293, Gali Guliyan, perto da Jama Masjid Gate 3 · restaurante dentro de uma haveli histórica restaurada (200 anos), com pátio mogol · reservar antes (não aceita walk-in) · Tel +91 11 4909 1777 (<a href="https://www.google.com/maps/search/?api=1&query=Lakhori+Haveli+Dharampura+Gali+Guliyan+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">15:00</span><div class="tit">Saída de Old Delhi → Green Park (Modern Bazaar)</div><div class="obs">~45–60 min de deslocamento (Old Delhi → Green Park) · uma volta rápida pela Chandni Chowk antes de embarcar, se der tempo</div></li>
+      <li><span class="hora">16:00</span><div class="tit">Modern Bazaar — Green Park</div><div class="obs">mercado gourmet com produtos importados, queijos, chás e lembranças · A-4, Aurobindo Marg (perto do showroom da Mercedes) · aberto até 22h30 (<a href="https://www.google.com/maps/search/?api=1&query=Modern+Bazaar+Green+Park+Aurobindo+Marg+New+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">16:30</span><div class="tit">Hauz Khas Village</div><div class="obs">de Green Park: ~1,7 km (~24 min a pé ou ~5–10 min de tuk-tuk) · vila boêmia com cafés, lojas de design e arte, lago e forte históricos · <b>domingo tudo aberto</b> (<a href="https://www.google.com/maps/search/?api=1&query=Hauz+Khas+Village+New+Delhi" target="_blank" rel="noopener">🗺️ Village</a> · <a href="https://www.google.com/maps/search/?api=1&query=Hauz+Khas+Fort+New+Delhi" target="_blank" rel="noopener">🗺️ Forte + lago</a>)</div></li>
+      <li><span class="hora">17:25</span><div class="tit">Encerramento da Caravana</div><div class="obs">à beira do lago de Hauz Khas, no <b>pôr do sol (~17h25)</b> · fechamento do grupo antes do jantar</div></li>
+      <li><span class="hora">19:30</span><div class="tit">Jantar — SOCIAL (rooftop, Hauz Khas Village)</div><div class="obs">rooftop com vista para o lago e o forte de Hauz Khas · cozinha variada + drinks · costuma encher — reservar antes · depois, <b>The Lalit a ~23 min / ~11 km de carro</b> (<a href="https://www.google.com/maps/search/?api=1&query=SOCIAL+Hauz+Khas+New+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</div></li>
+      <li><span class="hora">22:00</span><div class="tit">Chegada / check-in no The Lalit</div><div class="obs">banho e descanso · <i>alternativa de jantar no hotel, se preferir: OKO (28º andar, pan-asian, vista panorâmica) ou Baluchi (indiana/Mughlai) — fecham 23h30</i></div></li>
+    </ul>
+    <div class="nota"><b>🚶 Como chegar ao Haveli:</b> a van não entra nas ruelas — para no estacionamento perto da Jama Masjid (Meena Bazaar, lado da Gate 1, ou do Red Fort · <a href="https://www.google.com/maps/search/?api=1&query=Jama+Masjid+Meena+Bazar+Parking+Delhi" target="_blank" rel="noopener">🗺️</a>). Sobe na mesquita pela <b>Gate 1</b>, sai pela <b>Gate 3</b> (norte, do lado do Haveli) e caminha ~10–12 min pela Gali Guliyan até o Haveli (<a href="https://www.google.com/maps/dir/?api=1&origin=Jama+Masjid+Gate+3+Delhi&destination=Haveli+Dharampura+Gali+Guliyan+Chandni+Chowk+Delhi&travelmode=walking" target="_blank" rel="noopener">🗺️ rota a pé</a>). Na Jama Masjid: descalço, ombros e pernas cobertos, câmera ~₹300.</div>
+    <div class="nota"><b>💉 Estúdios de tatuagem na Hauz Khas Village</b> (a poucos minutos a pé do SOCIAL) — pra quem quiser uma lembrança da viagem:<br>
+      • <b>Inkspace Tattoo Studio</b> — coladinho no SOCIAL (13A, 1º andar, Space Gully) · 4,7/5 · ~1–2 min a pé (<a href="https://www.google.com/maps/search/?api=1&query=Inkspace+Tattoo+Studio+Hauz+Khas+Village+Delhi" target="_blank" rel="noopener">🗺️</a>)<br>
+      • <b>Sea of Ink Tattoo Studio</b> — na Village · realismo P&amp;B e colorido · ~3–5 min a pé (<a href="https://www.google.com/maps/search/?api=1&query=Sea+of+Ink+Tattoo+Hauz+Khas+Village+Delhi" target="_blank" rel="noopener">🗺️</a>)<br>
+      • <b>Apex Tattooz</b> — na Hauz Khas · custom, fine line, piercing · a partir de ~₹299/pol² (<a href="https://www.google.com/maps/search/?api=1&query=Apex+Tattooz+Hauz+Khas+Delhi" target="_blank" rel="noopener">🗺️</a>)</div>
+    <div class="nota"><b>➕ Opcionais (a caminho, no sul de Delhi):</b> se quiserem incluir templos antes do Green Park/Hauz Khas —<br>
+      • <b>Lotus Temple</b> (Bahá'í, Kalkaji) — aberto domingo (fecha só segunda) · inverno 9h–17h30, última entrada ~16h45 · grátis (<a href="https://www.google.com/maps/search/?api=1&query=Lotus+Temple+Bahai+House+of+Worship+New+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)<br>
+      • <b>ISKCON</b> (East of Kailash, ~3 km do Lotus) — aberto até 21h · Sandhya aarti 19h (com kirtan) · grátis (<a href="https://www.google.com/maps/search/?api=1&query=ISKCON+Temple+East+of+Kailash+New+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)<br>
+      Para encaixar, sair de Old Delhi mais cedo (o Lotus fecha 17h30) — isso adianta o resto do dia e pode tirar o pôr do sol no lago de Hauz Khas.</div>
+    <div class="resolver">
+      <span class="rtit">⚠️ Resolver — Dia 12</span>
+      <ul>
+        <li>Combinar com o motorista o ponto fixo de desembarque e de reembarque em Old Delhi (a van não entra nas ruelas)</li>
+        <li>Reservar o almoço no Lakhori (Haveli Dharampura) — +91 11 4909 1777</li>
+        <li>Reservar o jantar no SOCIAL (rooftop, Hauz Khas Village)</li>
+        <li>Se quiserem os opcionais (Lotus/ISKCON), sair de Old Delhi mais cedo — o Lotus fecha 17h30</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DIA 13 -->
+  <section id="d13">
+    <div class="dia-cab">
+      <div class="rotulo">Dia 13</div>
+      <h2>DELHI<span class="badge">Partida</span></h2>
+      <div class="meta">Segunda · 16 nov</div>
+      <div class="hoteis">🏨 <span>The Lalit</span></div>
+    </div>
+    <ul class="linha">
+      <li><span class="hora">7:00</span><div class="tit">Café da manhã</div></li>
+      <li><span class="hora">—</span><div class="tit">Translado previsto para todos</div><div class="obs">independente do horário do voo</div></li>
+    </ul>
+  </section>
+
+  <a class="topo-link" href="#topo">↑ voltar ao topo</a>
+
+  <!-- ===== INFORMAÇÕES ===== -->
+  <h2 class="grupo-tit" id="antes">🧳 Antes de ir</h2>
+  <div class="bloco">
+    <h3>⭐ Fazer antes da turma chegar</h3>
+    <p>Comprar os <b>brindes</b>: Janpath · Chandni Chowk · Paharganj.</p>
+  </div>
+  <div class="bloco">
+    <h3>💰 Dinheiro</h3>
+    <p>Trocar ou sacar <b>na chegada</b>. Câmbio no complexo do hotel — prédio do <b>World Trade Centre</b>.</p>
+  </div>
+  <div class="bloco">
+    <h3>📱 Internet</h3>
+    <p>e-SIM: <b>Airalo</b> / Vivo / Claro / outras operadoras. <b>Avisar o grupo 1 semana antes.</b></p>
+    <p><a href="https://www.airalo.com/pt-BR">airalo.com/pt-BR</a></p>
+  </div>
+  <div class="bloco">
+    <h3>💐 Coroa de flores</h3>
+    <p>Ver onde comprar.</p>
+  </div>
+  <div class="bloco">
+    <h3>🛍️ Mercados — Delhi (mapa + distância do hotel)</h3>
+    <p style="font-size:.8rem;color:var(--cinza);margin-bottom:10px">Distâncias aproximadas <b>de carro, a partir do The Lalit</b> (Connaught Place). O trânsito de Delhi varia muito — dar folga no horário.</p>
+
+    <p class="secao-rot">🟢 Pertinho do hotel (dá a pé)</p>
+    <p><b>Shankar Market</b> — tecidos, retalhos e enxoval · ~1,5 km · ~8 min (a pé ~15 min) (<a href="https://www.google.com/maps/search/?api=1&query=Shankar+Market+Connaught+Place+New+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</p>
+    <p><b>Janpath Market</b> + Central Cottage Industries Emporium — artesanato, prata, pashminas e souvenirs (preço fixo no emporium) · ~1,5 km · ~8 min (a pé ~18 min) (<a href="https://www.google.com/maps/search/?api=1&query=Janpath+Market+Central+Cottage+Industries+Emporium+New+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</p>
+
+    <p class="secao-rot">🔵 Old Delhi (norte · ~4–5 km)</p>
+    <p><b>Chandni Chowk</b> — o grande bazar: Kinari Bazaar (galões e bordados), Dariba Kalan (prata) · ~4,5 km · ~25 min (<a href="https://www.google.com/maps/search/?api=1&query=Chandni+Chowk+Market+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</p>
+    <p><b>Khari Baoli</b> — o maior mercado de especiarias da Ásia (temperos, chás, castanhas) · ~5 km · ~28 min (<a href="https://www.google.com/maps/search/?api=1&query=Khari+Baoli+Spice+Market+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</p>
+    <p><b>Nai Sarak</b> — livros/papelaria e a <b>Binaswar Music</b> (instrumentos) · ~4,6 km · ~30 min (<a href="https://www.google.com/maps/search/?api=1&query=Nai+Sarak+Chandni+Chowk+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</p>
+    <p><b>Chor Bazaar</b> (Daryaganj) — feira de pechinchas · <b>só aos domingos</b>, de manhã · ~4 km · ~20 min (<a href="https://www.google.com/maps/search/?api=1&query=Chor+Bazaar+Daryaganj+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</p>
+    <p><b>Paharganj</b> (Main Bazaar) — brindes baratos, incensos, bijuteria (bom no caminho de volta) · ~3 km · ~15 min (<a href="https://www.google.com/maps/search/?api=1&query=Paharganj+Main+Bazaar+New+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</p>
+
+    <p class="secao-rot">🟣 Sul (~4–8 km)</p>
+    <p><b>Dilli Haat (INA)</b> — artesanato de todos os estados num lugar só, com etiqueta de preço (ótimo p/ brindes) · ~7 km · ~25 min · entrada ~₹30 (<a href="https://www.google.com/maps/search/?api=1&query=Dilli+Haat+INA+New+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</p>
+    <p><b>Khan Market</b> — lojas de grife, livrarias e cafés (mais caro, classe alta) · ~4 km · ~15 min (<a href="https://www.google.com/maps/search/?api=1&query=Khan+Market+New+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</p>
+    <p><b>Sarojini Nagar</b> — roupas baratíssimas (pechinchar bastante) · ~8 km · ~30 min (<a href="https://www.google.com/maps/search/?api=1&query=Sarojini+Nagar+Market+New+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</p>
+
+    <p class="secao-rot">🟠 Especiais / mais distantes</p>
+    <p><b>Ghazipur Phool Mandi</b> — mercado de flores (para coroa / oferendas) · <b>ir de madrugada</b> (~4h–7h) · leste, ~13 km · ~40 min (<a href="https://www.google.com/maps/search/?api=1&query=Ghazipur+Phool+Mandi+Flower+Market+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</p>
+    <p><b>Dastkar Nature Bazaar</b> (Chhatarpur) — artesanato justo e curado · sul, ~17 km · ~45 min (<a href="https://www.google.com/maps/search/?api=1&query=Dastkar+Nature+Bazaar+Chhatarpur+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</p>
+
+    <p class="secao-rot" style="margin-top:14px">🧭 Roteiro sugerido (dia de compras / preparação)</p>
+    <p style="font-size:.85rem"><b>Manhã — Old Delhi:</b> hotel → Chandni Chowk → Khari Baoli (temperos) → Nai Sarak / Binaswar (instrumentos); na volta, passar pela Paharganj (brindes). Tudo coladinho, dá pra fazer a pé entre os pontos depois que a van/carro deixa em Chandni Chowk.</p>
+    <p style="font-size:.85rem"><b>Início da tarde — perto do hotel (a pé):</b> Janpath + Central Cottage Emporium e Shankar Market.</p>
+    <p style="font-size:.85rem"><b>Tarde — sul:</b> Dilli Haat (brindes/artesanato num lugar só) e, se sobrar tempo, Khan Market ou Sarojini Nagar.</p>
+    <p style="font-size:.85rem"><b>Casos especiais:</b> flores para coroa/oferendas → Ghazipur de madrugada, em ida separada · se for domingo, encaixar o Chor Bazaar logo cedo, antes do resto.</p>
+  </div>
+  <div class="bloco">
+    <h3>🕌 Sugestões — Delhi</h3>
+    <p><b>Jama Masjid</b> — mesquita histórica de Old Delhi. Interessante para começar um passeio por Delhi.</p>
+    <p><b>Lodhi Garden</b> — opção para a abertura da Caravana (conferir no local).</p>
+    <p><b>🎵 Binaswar Music</b> — loja de instrumentos (harmônio, shruti box, tabla, etc.) · 789, Nai Sarak, Delhi 110006 (Old Delhi, perto da Chandni Chowk — dá pra encaixar no passeio do Dia 12) · ~4,6 km / ~30 min do The Lalit · Tel +91 11 2326 3595 · +91 11 2326 5889 · +91 11 4357 0407 · <a href="mailto:binaswar@binaswar.com">binaswar@binaswar.com</a> (<a href="https://www.google.com/maps/search/?api=1&query=Binaswar+Nai+Sarak+Chandni+Chowk+Delhi" target="_blank" rel="noopener">🗺️ mapa</a>)</p>
+  </div>
+
+  <h2 class="grupo-tit" id="dicas">💡 Dicas & Gorjetas</h2>
+  <div class="bloco">
+    <h3>💰 Gorjetas (referência)</h3>
+    <ul>
+      <li>Mala: 50 rúpias</li>
+      <li>Deixar no hotel: 200 rúpias (líder 500 rúpias)</li>
+      <li>Guia: 200 · Motorista: 100 a 200</li>
+      <li>Beatles Ashram — comprar na porta: 1200 rúpias</li>
+    </ul>
+  </div>
+  <div class="bloco">
+    <h3>🎟️ Ingressos inclusos</h3>
+    <div class="pill-list"><span>Taj Mahal</span><span>Forte Amber</span><span>Forte de Agra</span><span>Beatles Ashram</span><span>Kunjapuri</span></div>
+  </div>
+  <div class="bloco">
+    <h3>➕ Extras</h3>
+    <p class="secao-rot">Nosso</p>
+    <ul><li>Massagens · Beatles · Tuk-tuk / Uber</li><li>Barco Varanasi: US$36, privado (cabe 8 pessoas)</li></ul>
+    <p class="secao-rot">Grupo</p>
+    <ul><li>Show de Agra (Mohabbat the Taj): ~R$80 a R$135 (categorias Silver–Platinum); econômica a partir de ~R$32</li><li>Comidas · Barco Varanasi</li></ul>
+  </div>
+  <div class="bloco">
+    <h3>🎵 Música em Varanasi</h3>
+    <p>Sessão com demonstração de instrumentos: 1000 rúpias por pessoa. <b>Ravi · +91 96161 63271</b> — faz no espaço dele, ao lado do hotel Ganpati.</p>
+  </div>
+  <div class="bloco">
+    <h3>💆 Massagem em Rishikesh</h3>
+    <p>O hotel tem massagem muito boa (um pouco salgada) — dá para tentar desconto com a supervisora se várias forem, já que há 1 massagem gratuita incluída. Alternativa: <b>Tatvat Spa & Ayurveda — Vicky · +91 98973 53074</b>.</p>
+  </div>
+  <div class="bloco">
+    <h3>🛒 Compras por cidade</h3>
+    <p><b>Rishikesh / Khan Market:</b> Anokhi Índia, Fab India, Latitude (restaurante e loja de esquina, cara, pequena).</p>
+    <p><b>Agra:</b> Salt Café ou Molecule para jantar.</p>
+    <p><b>Jaipur:</b> Palácio, Forte, Baori, Pink City, Hawa Mahal (leva na frente e explora sozinhas). Massagem ayurvédica, guru, Birla.</p>
+    <p><b>Delhi:</b> Templo Akshardham · Saree perto do hotel: Narlli.</p>
+  </div>
+  <div class="bloco">
+    <h3>⚠️ Lembretes da líder</h3>
+    <p>Guia todos os dias: logística, comunicação com motorista, reservas, parceiros locais.</p>
+    <p>Em Varanasi: guia para barco, cerimônia, reserva das cadeiras no alto.</p>
+    <p>Comissão da líder nas lojas.</p>
+  </div>
+
+  <h2 class="grupo-tit" id="taj">🕌 Regras do Taj Mahal</h2>
+  <div class="bloco">
+    <div class="alerta"><p><b>NÃO pode:</b> tripé, drone, fone de ouvido, comida/doces, cigarro, faca e bolsas grandes.</p></div>
+    <ul style="margin-top:10px">
+      <li><b>Celular e câmera são permitidos</b> (todos fotografam!) — só é proibido fotografar <b>dentro do mausoléu</b> (câmara do túmulo). Câmera profissional/tripé só com autorização.</li>
+      <li>Não precisa de passaporte — ingressos comprados e entregues antes.</li>
+      <li>Sai do hotel <b>5:15</b>, entra na visita <b>6:00</b>.</li>
+      <li>Duração: 1h30 a 2h.</li>
+      <li>Levar pochete e lenço de corpo.</li>
+    </ul>
+  </div>
+
+  <h2 class="grupo-tit" id="templos">🛕 Templos por cidade</h2>
+  <div class="bloco">
+    <p class="secao-rot">Delhi</p>
+    <ul><li>Lakshmi Narayan (Birla Mandir)</li><li>Templo Sikh — Gurudwara Bangla Sahib (10 min de carro)</li><li>Akshardham</li></ul>
+    <p class="secao-rot">Jaipur</p>
+    <ul><li>Moti Dungri Ganesh Ji · Govind Dev Ji</li><li>Galta Ji (meditação) · Birla Mandir</li><li>Shri Jagat Shiromani Ji (Meera Mandir)</li></ul>
+    <p class="secao-rot">Varanasi</p>
+    <ul><li>Kashi Vishwanath Temple</li><li>Shri Kashi Kaamkoteeshwar · Shree Gauri Kedar Eshwar</li><li>Durga Kund · Hanuman Sankat Mochan</li><li>Ratneshwar Mahadev · Nepali Temple · Sani Temple</li></ul>
+    <p class="secao-rot">Rishikesh</p>
+    <ul><li>Kunjapuri (nascer do sol) · Parmarth Niketan (Aarti)</li><li>Lakshman Temple · Tera Manzil Temple · Swarg Ashram</li></ul>
+  </div>
+
+  <h2 class="grupo-tit" id="contatos">📞 Contatos úteis</h2>
+  <div class="bloco">
+    <div class="contato"><b>Harish Joshi — Guia Índia</b><span class="num">+91 98990 10565</span></div>
+    <div class="contato"><b>Sonu Tuk Tuk (Sanju) — Tuk-tuk Delhi</b><span class="num">+91 98738 51779</span></div>
+    <div class="contato"><b>Jai — Guia Varanasi</b><span class="num">+91 94159 91634</span></div>
+    <div class="contato"><b>Renata Daya — Guia Varanasi</b><span class="num">+91 97926 25000</span></div>
+    <div class="contato"><b>Ravi — Música Varanasi</b><span class="num">+91 96161 63271</span></div>
+    <div class="contato"><b>Vicky — Tatvat Spa (Rishikesh)</b><span class="num">+91 98973 53074</span></div>
+    <div class="contato"><b>Palladium (italiano · Jaipur)</b><span class="num">+91 9887 849873</span></div>
+    <div class="contato"><b>Shikaar Bagh (asiático · Jaipur)</b><span class="num">+91 78777 64071</span></div>
+    <div class="contato"><b>Tapri Central Tea House (Jaipur)</b><span class="num">+91 99509 66667</span></div>
+    <div class="contato"><b>Deepak (oferendas · Varanasi)</b><span class="num">pedir no check-in</span></div>
+    <div class="contato"><b>Santy (Embroidery fabric · Jaipur)</b><span class="num">contato Lari</span></div>
+  </div>
+
+  <a class="topo-link" href="#topo">↑ voltar ao topo</a>
+</main>
+
+<footer>Roteiro Caravana Índia · Turma 1 · 4 a 16 de novembro de 2026 — documento de apoio da líder</footer>
+
+</body>
+</html>
