@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 06:56";</script>
+<script>window.__VERSAO = "03/10 · 06:57";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -2578,21 +2578,22 @@ const EXPR_ROSTO = (() => {
   const lagrima = (x, y) => h("path", { d: `M${x} ${y} q-1.1 1.8 0 2.4 q1.1 -.6 0 -2.4 z`, fill: "#7CC0E8", stroke: "#4E97C4", "stroke-width": .3 });
   const coracao = (x, y, k) => h("path", { d: `M${x} ${y + 1.2 * k} l${-1.7 * k} ${-1.7 * k} a${.95 * k} ${.95 * k} 0 0 1 ${1.7 * k} ${-1.2 * k} a${.95 * k} ${.95 * k} 0 0 1 ${1.7 * k} ${1.2 * k} z`, fill: "#E0303F" });
   const sobr = (e, d) => [L(e, .9), L(d, .9)];
+  const fora = (el, onde) => { el.setAttribute("data-fora", onde || "frente"); return el; };
   return {
-    amor: () => [...fechadosFeliz(), sorriso(), ...bochechas(), coracao(40.5, 13, 1), coracao(19.5, 15, .8), coracao(41.5, 24, .7)],
+    amor: () => [...fechadosFeliz(), sorriso(), ...bochechas(), fora(coracao(41.5, 12, 1.3)), fora(coracao(18.5, 14, 1)), fora(coracao(43, 23, .9))],
     preocupada: () => [...olhos(.3), ...sobr("M24.8 19.9 L28.2 18.9", "M31.8 18.9 L35.2 19.9"), triste()],
     emocionada: () => [26.6, 33.4].flatMap(x => [h("circle", { cx: x, cy: 22.6, r: 1.8, fill: esc }), h("circle", { cx: x + .6, cy: 21.9, r: .6, fill: "#fff" }), L(`M${x - 1.8} 24.6 Q${x} 25.6 ${x + 1.8} 24.6`, .7, "#4E97C4")]).concat(sobr("M24.8 19.7 L28.2 18.9", "M31.8 18.9 L35.2 19.7"), [L("M27.6 27 Q30 26.2 32.4 27", 1, boca)]),
-    susto: () => [h("path", { d: "M20 22 A10 10 0 0 1 40 22 Z", fill: "rgba(110,160,215,.45)" }), ...arregalados(), h("ellipse", { cx: 30, cy: 27.6, rx: 1.6, ry: 2.3, fill: "#4A2418" })],
+    susto: () => [fora(h("path", { d: "M20 22 A10 10 0 0 1 40 22 Z", fill: "rgba(110,160,215,.45)" }), "atras"), ...arregalados(), h("ellipse", { cx: 30, cy: 27.6, rx: 1.6, ry: 2.3, fill: "#4A2418" })],
     revira: () => [...arregalados(0, -1), L("M27.4 27.2 L32.6 26.6", 1.1, boca)],
-    beijo: () => [...fechadosFeliz(), L("M29.6 25.6 q1.6 .7 0 1.3 q1.6 .7 0 1.3", 1, boca), coracao(36.4, 24.6, .75)],
+    beijo: () => [...fechadosFeliz(), L("M29.6 25.6 q1.6 .7 0 1.3 q1.6 .7 0 1.3", 1, boca), fora(coracao(39.5, 24, 1.1))],
     triste: () => [...olhos(), triste()],
     desdem: () => [h("circle", { cx: 27.3, cy: 23, r: 1, fill: esc }), h("circle", { cx: 34.1, cy: 23, r: 1, fill: esc }), L("M25.2 22.2 L28.4 22.2", 1), L("M32 22.2 L35.2 22.2", 1), L("M27.4 27.4 Q30 26.4 32.6 27.6", 1.1, boca)],
     sorrisolagrima: () => [...olhos(), sorriso(), lagrima(25.2, 24)],
     rindo: () => [L("M25 21.4 L27.8 22.6 L25 23.8"), L("M35 21.4 L32.2 22.6 L35 23.8"), h("path", { d: "M26.4 25.6 L33.6 25.6 Q33.2 30.4 30 30.4 Q26.8 30.4 26.4 25.6 Z", fill: "#4A2418" }), h("path", { d: "M27.8 29 Q30 27.8 32.2 29 Q30 30.4 27.8 29 Z", fill: "#D9616A" }), lagrima(23.4, 23.2), lagrima(36.6, 23.2)],
     decepcionada: () => [...fechadosTriste(), triste()],
     oculos: () => [h("rect", { x: 22.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), h("rect", { x: 30.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), L("M29.2 21.5 L30.8 21.5", 1, "#1E1A16"), L("M27.4 26.6 Q30.5 28.6 33.2 25.8", 1.2, boca)],
-    brava: () => [h("circle", { cx: 30, cy: 22, r: 10, fill: "rgba(205,45,35,.5)" }), ...olhos(.4), ...sobr("M24.6 19.2 L28.4 20.8", "M31.6 20.8 L35.4 19.2"), L("M27 28 Q30 26 33 28", 1.3, boca)],
-    explodiu: () => [h("path", { d: "M30 -1 L32.2 4.4 L37.6 1.6 L35.6 7.2 L41.2 7.4 L36.4 10.6 L23.6 10.6 L18.8 7.4 L24.4 7.2 L22.4 1.6 L27.8 4.4 Z", fill: "#F2A33A", stroke: "#D9622B", "stroke-width": .6 }), h("circle", { cx: 30, cy: 6.4, r: 2.4, fill: "#FCE07A" }), ...arregalados(), h("ellipse", { cx: 30, cy: 27.4, rx: 1.3, ry: 1.7, fill: "#4A2418" })],
+    brava: () => [fora(h("circle", { cx: 30, cy: 22, r: 10, fill: "rgba(205,45,35,.5)" }), "atras"), ...olhos(.4), ...sobr("M24.6 19.2 L28.4 20.8", "M31.6 20.8 L35.4 19.2"), L("M27 28 Q30 26 33 28", 1.3, boca)],
+    explodiu: () => [fora(h("path", { d: "M30 -1 L32.2 4.4 L37.6 1.6 L35.6 7.2 L41.2 7.4 L36.4 10.6 L23.6 10.6 L18.8 7.4 L24.4 7.2 L22.4 1.6 L27.8 4.4 Z", fill: "#F2A33A", stroke: "#D9622B", "stroke-width": .6 })), fora(h("circle", { cx: 30, cy: 6.4, r: 2.4, fill: "#FCE07A" })), ...arregalados(), h("ellipse", { cx: 30, cy: 27.4, rx: 1.3, ry: 1.7, fill: "#4A2418" })],
     vergonha: () => [...arregalados(), ...bochechas(.75), L("M28 27.2 L32 27.2", 1.1, boca)],
   };
 })();
@@ -2648,7 +2649,11 @@ function desenhaBoneco(b) {
   if ((b.cabelo === "longo" || b.cabelo === "tranca") && !cobre) g.append(P(b.cabelo === "longo" ? "M19 20 Q19 10 30 10 Q41 10 41 20 L42 36 L18 36 Z" : "M19 20 Q19 10 30 10 Q41 10 41 20 L40 26 L20 26 Z", cab));
   if (b.cabelo === "tranca" && !cobre) g.append(...[28, 33, 38, 43].map(y => h("ellipse", { cx: 40.5, cy: y, rx: 2.4, ry: 3, fill: cab })));
   g.append(h("circle", { cx: 30, cy: 22, r: 10, fill: pele }));
-  if (b.expr && EXPR_ROSTO[b.expr]) g.append(...EXPR_ROSTO[b.expr]());
+  if (b.expr && EXPR_ROSTO[b.expr]) {
+    // traços do rosto bem grandes, de caricatura; o que fica fora do rosto (corações, explosão, cor da cara) não aumenta
+    const els = EXPR_ROSTO[b.expr](), fora = els.filter(e => e.dataset && e.dataset.fora), dentro = els.filter(e => !fora.includes(e));
+    g.append(...fora.filter(e => e.dataset.fora === "atras"), h("g", { transform: "translate(30 24.2) scale(1.5) translate(-30 -24.4)" }, dentro), ...fora.filter(e => e.dataset.fora !== "atras"));
+  }
   else g.append(h("circle", { cx: 26.6, cy: 22.5, r: 1.15, fill: "#2B1D14" }), h("circle", { cx: 33.4, cy: 22.5, r: 1.15, fill: "#2B1D14" }),
     h("path", { d: "M27 26.4 Q30 28.6 33 26.4", fill: "none", stroke: "#6B3A26", "stroke-width": 1.1, "stroke-linecap": "round" }));
   // colares novos
@@ -4458,9 +4463,9 @@ const FIGURINHAS = [["surya", "Surya", "Bom dia!"], ["ganesha", "Ganesha", "Cami
 const EXPRESSOES = [["amor", "🥰"], ["preocupada", "😟"], ["emocionada", "🥹"], ["susto", "😱"], ["revira", "🙄"], ["beijo", "😙"], ["triste", "🙁"], ["desdem", "😒"],
   ["sorrisolagrima", "🥲"], ["rindo", "😂"], ["decepcionada", "😞"], ["oculos", "😎"], ["brava", "😡"], ["explodiu", "🤯"], ["vergonha", "😳"]];
 const figMini = (autor, id, cls) => {
-  const ex = EXPRESSOES.find(e => e[0] === id), b = ex ? { ...bonecoDe(autor), deus: "nenhum", expr: id, pet: "nenhum", ombro: "nenhum", oculos: "nenhum", acessorio: "nenhum", acessorio2: "nenhum" }
+  const ex = EXPRESSOES.find(e => e[0] === id), b = ex ? { ...bonecoDe(autor), deus: "nenhum", expr: id, pet: "nenhum", ombro: "nenhum", oculos: "nenhum", acessorio: "nenhum", acessorio2: "nenhum", chapeu: "sem" }
     : { ...bonecoDe(autor), deus: id, pet: "nenhum", ombro: "nenhum", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum" };
-  return h("span", { class: "figmini" + (cls ? " " + cls : ""), role: "img", "aria-label": ex ? ex[1] : (FIGURINHAS.find(f => f[0] === id) || [, id])[1] }, h("svg", { viewBox: ex ? "9 -1 42 42" : "9 -2 42 42" }, desenhaBoneco(b)));
+  return h("span", { class: "figmini" + (cls ? " " + cls : ""), role: "img", "aria-label": ex ? ex[1] : (FIGURINHAS.find(f => f[0] === id) || [, id])[1] }, h("svg", { viewBox: !ex ? "9 -2 42 42" : id === "explodiu" ? "12 -2 36 36" : "14 6 32 32" }, desenhaBoneco(b)));
 };
 const FIG_RE = new RegExp(":(" + [...EXPRESSOES, ...FIGURINHAS].map(f => f[0]).join("|") + "):", "g");
 function textoChat(autor, t) {
