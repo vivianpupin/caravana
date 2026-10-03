@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 15:16";</script>
+<script>window.__VERSAO = "03/10 · 15:30";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -517,7 +517,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .brand span{color:#C9A56A;letter-spacing:.24em}
 .me:not(.bubble){background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.35);box-shadow:none}
 .me:not(.bubble) b{color:#E2BE78}
-nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(12,minmax(52px,1fr));overflow-x:auto;scrollbar-width:none}
+nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(11,minmax(52px,1fr));overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
 
 /* ---------- Jogo: Moksha Patam ---------- */
@@ -1235,7 +1235,6 @@ nav.tabs button{position:relative}
     <button data-tab="fotos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h3l1.6-2.2h6.8L17 7.5h3a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.8"/><path d="M17.5 10.3h.01"/></svg></span>Fotos</button>
     <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Pedra</button>
     <button data-tab="pombo"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.6c-.3-1.2-.2-2.3.5-2.9l3.1.2-2.4 1.2c-.4.4-.8 1-1.2 1.5z"/><path d="M12 6.6l.1 9.4"/><path d="M12 9.4C9.4 7.2 6.4 6.9 2.8 8.4M12 9.4c2.6-2.2 5.6-2.5 9.2-1M5 8l-.6 2.4M7.4 7.5l-.4 2.6M9.8 8.1l-.3 2.3M19 8l.6 2.4M16.6 7.5l.4 2.6M14.2 8.1l.3 2.3"/><path d="M12.1 16l-3 4.2M12.1 16l.1 4.8M12.1 16l3 4.2"/></svg></span>Pombo</button>
-    <button data-tab="jogo"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3.5"/><circle cx="8.5" cy="8.5" r=".9" fill="currentColor"/><circle cx="15.5" cy="8.5" r=".9" fill="currentColor"/><circle cx="12" cy="12" r=".9" fill="currentColor"/><circle cx="8.5" cy="15.5" r=".9" fill="currentColor"/><circle cx="15.5" cy="15.5" r=".9" fill="currentColor"/></svg></span>Jogo</button>
   </nav>
 </div>
 
@@ -1443,7 +1442,7 @@ function render() {
   pintaMe();
   const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
   main.replaceChildren(precisaCadastro ? vCadastro() :
-    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "pombo" ? vPombo() : S.tab === "jogo" ? vJogo() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
+    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "pombo" ? vPombo() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
   // aviso novo da líder (15 min): aparece no topo de qualquer aba
   // último dia: o passaporte completo avisa que o vídeo está pronto (no Roteiro e no Passaporte)
   if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte")) { const c = avisoVideo(), v = main.firstElementChild; if (c && v) v.prepend(c); }
