@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 07:18";</script>
+<script>window.__VERSAO = "03/10 · 07:22";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -426,6 +426,9 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .bubble.me.fig .h,.bubble.me.fig .h b{color:var(--soft)}
 .figmini{display:inline-block;width:1.7em;height:1.7em;vertical-align:-.45em;margin:0 1px;border-radius:50%;background:radial-gradient(circle at 50% 40%,#F6E7C8,#E6CFA2)}
 .figmini svg{width:100%;height:100%;display:block}
+.figmini.figsimb{display:inline-grid;place-items:center}
+.figmini.figsimb img{width:72%;height:72%;object-fit:contain}
+.ceinput img.figmini[src$="simbolo-marrom.png"]{padding:.25em;box-sizing:border-box;background:radial-gradient(circle at 50% 40%,#F6E7C8,#E6CFA2)}
 .bubble .t.sofig{font-size:30px;line-height:1.15}
 .figpicker{display:flex;flex-wrap:wrap;gap:4px;padding:8px 12px;border-top:1px solid var(--line);background:var(--panel)}
 .figpicker button{border:0;background:none;padding:2px;font-size:30px;line-height:1;-webkit-tap-highlight-color:transparent}
@@ -4482,14 +4485,43 @@ const FIGURINHAS = [["surya", "Surya", "Bom dia!"], ["ganesha", "Ganesha", "Cami
 // expressões: o rostinho de quem manda, com a cara de cada emoji (na notificação vira o emoji de verdade)
 const EXPRESSOES = [["amor", "🥰"], ["preocupada", "😟"], ["emocionada", "🥹"], ["susto", "😱"], ["revira", "🙄"], ["beijo", "😙"], ["desdem", "😒"],
   ["rindo", "😂"], ["decepcionada", "😞"], ["oculos", "😎"], ["brava", "😡"], ["explodiu", "🤯"], ["vergonha", "😳"]];
+// figurinhas de coisas da Índia (desenhadas no mesmo estilo) e o símbolo da Caravana
+const ITENS_FIG = [["diya", "Lamparina"], ["chai", "Chai"], ["vaca", "Vaquinha"], ["macaco", "Macaco"], ["simbolo", "Caravana do Céu"]];
+const desenhaItem = id => {
+  const P = (d, fill, x) => h("path", { d, fill, ...(x || {}) });
+  if (id === "diya") return [h("circle", { cx: 20, cy: 15, r: 10, fill: "rgba(252,214,110,.35)" }),
+    P("M20 4.5 Q26.5 13 20 21 Q13.5 13 20 4.5 Z", "#F2A33A"), P("M20 10 Q23.2 15 20 20 Q16.8 15 20 10 Z", "#FCE07A"),
+    P("M6 23 Q20 37 34 23 Q27 21 20 21 Q13 21 6 23 Z", "#B85A30"), P("M6 23 Q20 27 34 23 Q27 21 20 21 Q13 21 6 23 Z", "#D9824F"), P("M30 22.4 Q36 20 37 22.6 Q33 24.6 30 24 Z", "#B85A30"),
+    ...[11, 16, 20, 24, 29].map(x => h("circle", { cx: x, cy: 29.2 - Math.abs(x - 20) * .25, r: .9, fill: "#F2C14A" }))];
+  if (id === "chai") return [...[15, 20, 25].map((x, i) => P(`M${x} 13 q-2 -2.5 0 -5 q2 -2.5 0 -5`, "none", { stroke: "#C9BFAF", "stroke-width": 1.3, "stroke-linecap": "round", opacity: .9 })),
+    P("M10.5 16 L29.5 16 L27 33 Q20 35.5 13 33 Z", "#B5603A"), P("M12.6 22 L27.4 22 L27 25 L13 25 Z", "#9C4E2E", { opacity: .55 }),
+    h("ellipse", { cx: 20, cy: 16, rx: 9.5, ry: 2.6, fill: "#9C4E2E" }), h("ellipse", { cx: 20, cy: 16.3, rx: 8, ry: 1.9, fill: "#C98B4F" }), h("ellipse", { cx: 18, cy: 15.9, rx: 3, ry: .6, fill: "#E2B07A", opacity: .8 })];
+  if (id === "vaca") return [P("M9 12 Q5 7 7.5 4.5 Q9 9 12.5 10.5 Z", "#E8DCC4"), P("M31 12 Q35 7 32.5 4.5 Q31 9 27.5 10.5 Z", "#E8DCC4"),
+    h("ellipse", { cx: 7.5, cy: 16, rx: 4.6, ry: 2.4, fill: "#E9E2D2", transform: "rotate(-20 7.5 16)" }), h("ellipse", { cx: 32.5, cy: 16, rx: 4.6, ry: 2.4, fill: "#E9E2D2", transform: "rotate(20 32.5 16)" }),
+    h("ellipse", { cx: 7.8, cy: 16.1, rx: 2.6, ry: 1.1, fill: "#E9A3A3", transform: "rotate(-20 7.8 16.1)" }), h("ellipse", { cx: 32.2, cy: 16.1, rx: 2.6, ry: 1.1, fill: "#E9A3A3", transform: "rotate(20 32.2 16.1)" }),
+    P("M11 13 Q20 7 29 13 L28 27 Q20 31 12 27 Z", "#F6F1E6"), P("M22.5 9.6 Q28 10.4 29 13 L28.6 18.4 Q24 17 22.5 9.6 Z", "#8A5A3A"),
+    h("circle", { cx: 16, cy: 18.2, r: 1.5, fill: "#2B1D14" }), h("circle", { cx: 24, cy: 18.2, r: 1.5, fill: "#2B1D14" }), h("circle", { cx: 16.5, cy: 17.6, r: .45, fill: "#fff" }), h("circle", { cx: 24.5, cy: 17.6, r: .45, fill: "#fff" }),
+    h("ellipse", { cx: 20, cy: 13.4, rx: 1, ry: 1.6, fill: "#C0392B" }),
+    h("ellipse", { cx: 20, cy: 27, rx: 7.2, ry: 4.6, fill: "#F0B8AE" }), h("ellipse", { cx: 17.4, cy: 27, rx: 1, ry: 1.4, fill: "#B0605A" }), h("ellipse", { cx: 22.6, cy: 27, rx: 1, ry: 1.4, fill: "#B0605A" }),
+    ...[11, 15, 20, 25, 29].map((x, i) => h("circle", { cx: x, cy: 33 + (i % 2 ? .6 : 0) - Math.abs(x - 20) * .15, r: 2, fill: i % 2 ? "#E0761C" : "#F2C14A" }))];
+  if (id === "macaco") return [h("circle", { cx: 7.5, cy: 19, r: 4.6, fill: "#8B5A35" }), h("circle", { cx: 32.5, cy: 19, r: 4.6, fill: "#8B5A35" }), h("circle", { cx: 7.8, cy: 19, r: 2.6, fill: "#E9C29A" }), h("circle", { cx: 32.2, cy: 19, r: 2.6, fill: "#E9C29A" }),
+    h("circle", { cx: 20, cy: 19, r: 12.5, fill: "#8B5A35" }), P("M20 9.5 Q26.5 9.5 27.6 15.5 Q31 19.5 28.5 25 Q25 31.5 20 31.5 Q15 31.5 11.5 25 Q9 19.5 12.4 15.5 Q13.5 9.5 20 9.5 Z", "#E9C29A"),
+    P("M13 15.5 Q16.5 12.5 20 15.8 Q23.5 12.5 27 15.5", "none", { stroke: "#8B5A35", "stroke-width": 1.4, "stroke-linecap": "round" }),
+    h("circle", { cx: 16.4, cy: 18.6, r: 1.7, fill: "#2B1D14" }), h("circle", { cx: 23.6, cy: 18.6, r: 1.7, fill: "#2B1D14" }), h("circle", { cx: 17, cy: 18, r: .55, fill: "#fff" }), h("circle", { cx: 24.2, cy: 18, r: .55, fill: "#fff" }),
+    h("ellipse", { cx: 18.8, cy: 23, rx: .55, ry: .8, fill: "#6B3A26" }), h("ellipse", { cx: 21.2, cy: 23, rx: .55, ry: .8, fill: "#6B3A26" }),
+    P("M15.5 25.6 Q20 30 24.5 25.6", "none", { stroke: "#6B3A26", "stroke-width": 1.2, "stroke-linecap": "round" }), h("circle", { cx: 20, cy: 6.8, r: 1.2, fill: "#C0392B" })];
+  return [];
+};
 const figMini = (autor, id, cls) => {
+  if (id === "simbolo") return h("span", { class: "figmini figsimb" + (cls ? " " + cls : ""), role: "img", "aria-label": "Caravana do Céu" }, h("img", { src: "img/simbolo-marrom.png", alt: "" }));
+  if (ITENS_FIG.some(f => f[0] === id)) return h("span", { class: "figmini" + (cls ? " " + cls : ""), role: "img", "aria-label": ITENS_FIG.find(f => f[0] === id)[1] }, h("svg", { viewBox: "0 0 40 40" }, desenhaItem(id)));
   const ex = EXPRESSOES.find(e => e[0] === id), b = ex ? { ...bonecoDe(autor), expr: id, pet: "nenhum", nariz: "nenhum", ...(id === "oculos" ? { oculos: "nenhum" } : {}) }
     : { ...bonecoDe(autor), deus: id, pet: "nenhum", ombro: "nenhum", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum" };
   // a expressão fica por cima de tudo, até da fantasia de deus que a pessoa estiver usando
   const g = desenhaBoneco(b); if (ex) g.querySelectorAll("[data-expr]").forEach(e => g.append(e));
   return h("span", { class: "figmini" + (cls ? " " + cls : ""), role: "img", "aria-label": ex ? ex[1] : (FIGURINHAS.find(f => f[0] === id) || [, id])[1] }, h("svg", { viewBox: !ex ? "9 -2 42 42" : id === "explodiu" ? "11 -2 38 38" : "12 2 36 36" }, g));
 };
-const FIG_RE = new RegExp(":(" + [...EXPRESSOES, ...FIGURINHAS].map(f => f[0]).join("|") + "):", "g");
+const FIG_RE = new RegExp(":(" + [...EXPRESSOES, ...FIGURINHAS, ...ITENS_FIG].map(f => f[0]).join("|") + "):", "g");
 function textoChat(autor, t) {
   t = String(t || ""); const partes = t.split(FIG_RE);
   if (partes.length === 1) return h("p", { class: "t", text: t });
@@ -4500,7 +4532,7 @@ function textoChat(autor, t) {
 const figImgs = {};
 function figImg(id) {
   const k = S.uid + id;
-  if (!figImgs[k]) figImgs[k] = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(new XMLSerializer().serializeToString(figMini(S.uid, id).querySelector("svg")));
+  if (!figImgs[k]) figImgs[k] = id === "simbolo" ? "img/simbolo-marrom.png" : "data:image/svg+xml;charset=utf-8," + encodeURIComponent(new XMLSerializer().serializeToString(figMini(S.uid, id).querySelector("svg")));
   return h("img", { class: "figmini", src: figImgs[k], alt: ":" + id + ":", "data-fig": id, draggable: "false" });
 }
 function cursorNoFim(el) { try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
@@ -4657,7 +4689,7 @@ function vConversa() {
         h("p", { class: "eyebrow", text: "Ponto de encontro" }),
         h("div", { class: "unlock" }, pSel, h("button", { class: "btn", type: "button", onclick: enviarPonto }, "Enviar ponto"))),
       pNota, locMsg) : h("span"),
-    pode && S.figAberto ? h("div", { class: "figpicker", role: "group", "aria-label": "Figurinhas" }, [...EXPRESSOES.map(e => [e[0], e[1]]), ...FIGURINHAS].map(f => h("button", { type: "button", title: f[1], "aria-label": f[1],
+    pode && S.figAberto ? h("div", { class: "figpicker", role: "group", "aria-label": "Figurinhas" }, [...EXPRESSOES.map(e => [e[0], e[1]]), ...FIGURINHAS, ...ITENS_FIG].map(f => h("button", { type: "button", title: f[1], "aria-label": f[1],
       onpointerdown: e => e.preventDefault(), onclick: () => ta.poeFig(f[0]) }, figMini(S.uid, f[0])))) : null,
     pode ? h("div", { class: "composer" },
         S.assets ? h("button", { class: "iconbtn", type: "button", title: "Enviar foto", "aria-label": "Enviar foto", onclick: () => fileIn.click() },

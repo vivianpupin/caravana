@@ -6,7 +6,8 @@ const resumo = m => m.tipo === "foto" ? "📷 Mandou uma foto" + (m.texto ? ": "
   : m.tipo === "local" ? "📍 Ponto de encontro: " + (m.nome || "local marcado")
   : m.tipo === "aovivo" ? "📍 Está compartilhando a localização ao vivo"
   : String(m.texto || "").replace(/:(surya|ganesha|shiva|krishna|hanuman|lakshmi|durga|kali|parvati|saraswati|vishnu|ganga):/g, (_, d) => "[" + d[0].toUpperCase() + d.slice(1) + "]")
-    .replace(/:(amor|preocupada|emocionada|susto|revira|beijo|triste|desdem|sorrisolagrima|rindo|decepcionada|oculos|brava|explodiu|vergonha):/g, (_, e) => EMOJI[e]);
+    .replace(/:(amor|preocupada|emocionada|susto|revira|beijo|triste|desdem|sorrisolagrima|rindo|decepcionada|oculos|brava|explodiu|vergonha):/g, (_, e) => EMOJI[e])
+    .replace(/:(diya|chai|vaca|macaco|simbolo):/g, (_, e) => ({ diya: "🪔", chai: "☕", vaca: "🐄", macaco: "🐒", simbolo: "✦" })[e]);
 const EMOJI = { amor: "🥰", preocupada: "😟", emocionada: "🥹", susto: "😱", revira: "🙄", beijo: "😙", triste: "🙁", desdem: "😒", sorrisolagrima: "🥲", rindo: "😂", decepcionada: "😞", oculos: "😎", brava: "😡", explodiu: "🤯", vergonha: "😳" };
 
 export default async req => {
