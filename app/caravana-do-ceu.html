@@ -694,6 +694,11 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .tradtxt{font-size:28px;line-height:1.35;margin:0;color:#3B2A1C;font-family:"Poppins","Noto Sans Devanagari",sans-serif;font-weight:500}
 .tradrom{margin:0;font-style:italic;color:#8A3F32}
 .tradhist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.tradhist li{display:flex;gap:6px;align-items:stretch}
+.tradhist li>button:first-child{flex:1;min-width:0}
+.tradhist .tradx{width:40px;flex:none;align-items:center;justify-content:center;padding:0;font-size:22px;line-height:1;color:var(--soft)}
+.tradtopo{display:flex;align-items:center;gap:10px}
+.tradlimpa{background:none;border:0;color:var(--terra);font-size:12.5px;text-decoration:underline;padding:0;white-space:nowrap}
 .tradhist button{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);color:var(--ink)}
 .tradhist button span{font-size:13px;color:var(--soft)}.tradhist button b{font-weight:500;font-family:"Poppins","Noto Sans Devanagari",sans-serif}
 .sheet>.tradgrande{max-width:none;min-height:70%;justify-content:center;align-items:center;text-align:center;background:#FFFCF7}
@@ -5112,9 +5117,11 @@ function vTradutor() {
         h("button", { class: "btn", type: "button", onclick: () => mostrarGrande(R.trad, R.rom) }, "Mostrar para a pessoa"),
         navigator.clipboard ? h("button", { class: "btn ghost", type: "button", onclick: () => navigator.clipboard.writeText(R.trad).catch(() => {}) }, "Copiar") : null)) : null,
     S.tradHist.length ? h("div", { style: "display:flex;flex-direction:column;gap:8px" },
-      h("p", { class: "eyebrow rule", text: "Traduções recentes" }),
+      h("div", { class: "tradtopo" }, h("p", { class: "eyebrow rule", style: "flex:1", text: "Traduções recentes" }),
+        h("button", { class: "tradlimpa", type: "button", onclick: () => { if (!confirm("Apagar todas as traduções recentes?")) return; S.tradHist = []; try { localStorage.setItem("cdi-trad", "[]"); } catch (e) {} render(); } }, "Apagar todas")),
       h("ul", { class: "tradhist" }, S.tradHist.map(x => h("li", null, h("button", { type: "button", onclick: () => { S.trad.res = x; render(); $("#main").scrollTop = 0; } },
-        h("span", { text: x.orig }), h("b", { lang: x.para, text: x.trad })))))) : null,
+        h("span", { text: x.orig }), h("b", { lang: x.para, text: x.trad })),
+        h("button", { class: "tradx", type: "button", "aria-label": "Apagar esta tradução", onclick: () => { S.tradHist = S.tradHist.filter(y => y !== x); try { localStorage.setItem("cdi-trad", JSON.stringify(S.tradHist)); } catch (e) {} render(); } }, "×"))))) : null,
     h("p", { class: "eyebrow rule", text: "Frases prontas · funcionam sem internet" }),
     vHindi());
 }
