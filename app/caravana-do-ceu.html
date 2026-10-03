@@ -2635,10 +2635,13 @@ function desenhaBoneco(b) {
   if ((b.cabelo === "longo" || b.cabelo === "tranca") && !cobre) g.append(P(b.cabelo === "longo" ? "M19 20 Q19 10 30 10 Q41 10 41 20 L42 36 L18 36 Z" : "M19 20 Q19 10 30 10 Q41 10 41 20 L40 26 L20 26 Z", cab));
   if (b.cabelo === "tranca" && !cobre) g.append(...[28, 33, 38, 43].map(y => h("ellipse", { cx: 40.5, cy: y, rx: 2.4, ry: 3, fill: cab })));
   g.append(h("circle", { cx: 30, cy: 22, r: 10, fill: pele }));
+  let exprG = null;
   if (b.expr && EXPR_ROSTO[b.expr]) {
-    // traços do rosto bem grandes, de caricatura; o que fica fora do rosto (corações, explosão, cor da cara) não aumenta
+    // traços do rosto bem grandes, de caricatura, desenhados por cima de tudo (chapéu e óculos não escondem a expressão);
+    // o que fica fora do rosto (corações, explosão) não aumenta, e a cor da cara fica atrás
     const els = EXPR_ROSTO[b.expr](), fora = els.filter(e => e.dataset && e.dataset.fora), dentro = els.filter(e => !fora.includes(e));
-    g.append(...fora.filter(e => e.dataset.fora === "atras"), h("g", { transform: "translate(30 24.2) scale(1.5) translate(-30 -24.4)" }, dentro), ...fora.filter(e => e.dataset.fora !== "atras"));
+    g.append(...fora.filter(e => e.dataset.fora === "atras"));
+    exprG = [h("g", { transform: "translate(30 24.2) scale(1.5) translate(-30 -24.4)" }, dentro), ...fora.filter(e => e.dataset.fora !== "atras")];
   }
   else g.append(h("circle", { cx: 26.6, cy: 22.5, r: 1.15, fill: "#2B1D14" }), h("circle", { cx: 33.4, cy: 22.5, r: 1.15, fill: "#2B1D14" }),
     h("path", { d: "M27 26.4 Q30 28.6 33 26.4", fill: "none", stroke: "#6B3A26", "stroke-width": 1.1, "stroke-linecap": "round" }));
@@ -2718,6 +2721,7 @@ function desenhaBoneco(b) {
       h("path", { d: "M42.5 55.5 L43.5 57 M44 55.5 L43 57", stroke: "#6B4A2A", "stroke-width": .5 })));
     if (A === "camera") T.append(h("line", { x1: 25, y1: 35, x2: 30, y2: 42, stroke: couro, "stroke-width": 1 }), h("line", { x1: 35, y1: 35, x2: 30, y2: 42, stroke: couro, "stroke-width": 1 }), h("rect", { x: 25.5, y: 41, width: 9, height: 6.5, rx: 1.2, fill: "#2A2622" }), h("circle", { cx: 30, cy: 44.2, r: 2, fill: "#6E7F86" }));
   }
+  if (exprG) g.append(...exprG);
   return g;
 }
 const INSTRUMENTOS = ["violao", "tambor", "maraca", "flautim", "sitar", "sino"];
@@ -4449,9 +4453,9 @@ const FIGURINHAS = [["surya", "Surya", "Bom dia!"], ["ganesha", "Ganesha", "Cami
 const EXPRESSOES = [["amor", "🥰"], ["preocupada", "😟"], ["emocionada", "🥹"], ["susto", "😱"], ["revira", "🙄"], ["beijo", "😙"], ["triste", "🙁"], ["desdem", "😒"],
   ["sorrisolagrima", "🥲"], ["rindo", "😂"], ["decepcionada", "😞"], ["oculos", "😎"], ["brava", "😡"], ["explodiu", "🤯"], ["vergonha", "😳"]];
 const figMini = (autor, id, cls) => {
-  const ex = EXPRESSOES.find(e => e[0] === id), b = ex ? { ...bonecoDe(autor), deus: "nenhum", expr: id, pet: "nenhum", ombro: "nenhum", oculos: "nenhum", acessorio: "nenhum", acessorio2: "nenhum", chapeu: "sem" }
+  const ex = EXPRESSOES.find(e => e[0] === id), b = ex ? { ...bonecoDe(autor), deus: "nenhum", expr: id, pet: "nenhum", ...(id === "oculos" ? { oculos: "nenhum" } : {}) }
     : { ...bonecoDe(autor), deus: id, pet: "nenhum", ombro: "nenhum", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum" };
-  return h("span", { class: "figmini" + (cls ? " " + cls : ""), role: "img", "aria-label": ex ? ex[1] : (FIGURINHAS.find(f => f[0] === id) || [, id])[1] }, h("svg", { viewBox: !ex ? "9 -2 42 42" : id === "explodiu" ? "12 -2 36 36" : "14 6 32 32" }, desenhaBoneco(b)));
+  return h("span", { class: "figmini" + (cls ? " " + cls : ""), role: "img", "aria-label": ex ? ex[1] : (FIGURINHAS.find(f => f[0] === id) || [, id])[1] }, h("svg", { viewBox: !ex ? "9 -2 42 42" : id === "explodiu" ? "11 -2 38 38" : "12 2 36 36" }, desenhaBoneco(b)));
 };
 const FIG_RE = new RegExp(":(" + [...EXPRESSOES, ...FIGURINHAS].map(f => f[0]).join("|") + "):", "g");
 function textoChat(autor, t) {
