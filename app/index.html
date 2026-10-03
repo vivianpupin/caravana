@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 07:44";</script>
+<script>window.__VERSAO = "03/10 · 07:45";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -5586,6 +5586,65 @@ function vAvisoLeitura() {
 // ---------- Mural de pensamentos (pintura rupestre) ----------
 // Figuras de pintura rupestre: [caminho, preenchido?]
 const GLIFOS = [
+  // sinais da arte rupestre (os sinais geométricos das cavernas antigas)
+  // asterisco
+  [["M32 6v28M20 12l24 16M44 12L20 28", 0]],
+  // pássaro (aviforme)
+  [["M18 30V16q0-4 4-4h20q4 0 4 4v14M32 12v-3M26 18h12", 0]],
+  // círculo
+  [["M32 8a12 12 0 1 0 .1 0", 0]],
+  // clava
+  [["M32 6c-4 0-4 6-2 9l2 19M32 6c3 0 3 5 1 9", 0]],
+  // coração
+  [["M32 32C22 25 18 20 18 14c0-4 3-7 7-7 3 0 6 2 7 5 1-3 4-5 7-5 4 0 7 3 7 7 0 6-4 11-14 18z", 0]],
+  // cerquilha
+  [["M24 6l-3 28M38 6l-3 28M14 15h36M13 26h36", 0]],
+  // cruz
+  [["M20 8l24 24M44 8L20 32", 0]],
+  // pontos
+  [["M18.4 20a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0 -3.2 0M26.4 15a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0 -3.2 0M34.4 20a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0 -3.2 0M42.4 15a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0 -3.2 0M22.4 27a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0 -3.2 0M38.4 27a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0 -3.2 0", 0]],
+  // cúpulas
+  [["M20 12a3 3 0 1 0 .1 0M34 10a3.5 3 0 1 0 .1 0M28 22a3 3.5 0 1 0 .1 0M42 24a3 3 0 1 0 .1 0", 0]],
+  // sulcos de dedos
+  [["M18 8q2 12 0 24M24 6q2 13 0 26M30 8q2 12 0 24M36 6q2 13 0 26M42 8q2 12 0 24", 0]],
+  // leque
+  [["M32 32L16 12M32 32L22 8M32 32L32 6M32 32L42 8M32 32L48 12", 0]],
+  // meia-lua
+  [["M16 12q16 26 32 0", 0]],
+  // ângulos abertos
+  [["M14 10l7 20 7-20M38 30l7-20 7 20", 0]],
+  // oval
+  [["M14 20c0-6 8-10 18-10s18 4 18 10-8 10-18 10-18-4-18-10z", 0]],
+  // pente
+  [["M14 28L46 12M18 26l-4-8M24 23l-4-8M30 20l-4-8M36 17l-4-8M42 14l-4-8", 0]],
+  // pena
+  [["M32 34V6M32 12l-7-5M32 12l7-5M32 19l-8-5M32 19l8-5M32 26l-8-5M32 26l8-5", 0]],
+  // quadrado
+  [["M16 9l32 2-2 20-30-1z", 0]],
+  // rim
+  [["M16 20c0-7 6-11 12-9 4 1 6 4 10 3 6-2 10 2 10 6s-4 9-12 9c-5 0-7-3-10-3-6 0-10 0-10-6z", 0]],
+  // escada
+  [["M12 12h40M12 28h40M18 12v16M26 12v16M34 12v16M42 12v16", 0]],
+  // cruz segmentada
+  [["M16 8l9 9M39 23l9 9M48 8l-9 9M25 23l-9 9", 0]],
+  // serpente
+  [["M36 4c-8 0-8 6-2 8s6 8-2 8-8 6-2 8 6 8-2 9", 0]],
+  // telhado espanhol
+  [["M14 14q18-6 36 0v14q-18-6-36 0zM26 12v14M38 12v14", 0]],
+  // espiral
+  [["M32 20m0-2a2 2 0 1 1-2 2a4 4 0 0 1 4-4a6 6 0 0 1 6 6a8 8 0 0 1-8 8a10 10 0 0 1-10-10a12 12 0 0 1 12-12", 0]],
+  // telhado (tectiforme)
+  [["M14 24l18-14 18 14M32 10v22M22 32h20", 0]],
+  // triângulo
+  [["M14 10h36L32 32z", 0]],
+  // gancho
+  [["M18 12q8-4 8 4t-6 16M42 10v14q0 8-6 8", 0]],
+  // sinal W
+  [["M12 10q4 22 10 18t10-12q4 16 10 12t10-18", 0]],
+  // sinal Y
+  [["M22 6l10 14 10-14M32 20v14", 0]],
+  // zigue-zague
+  [["M22 6l20 4-20 6 20 6-20 6 20 6", 0]],
   // cervo com galhada
   [["M18 22c0-4 6-7 14-7 6 0 11 2 12 5 0 3-5 5-12 5-8 0-14-1-14-3z", 1], ["M21 24l-3 10M26 25l1 10M38 25l-2 10M42 24l3 10M43 19l6-8M49 11l3-2M48 12l-1-6M47 8l-4-3M49 7l3-4M52 9l5-2", 0], ["M47 9c3 0 5 1 5 3s-2 2-4 2z", 1]],
   // caçador com lança
