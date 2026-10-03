@@ -5786,7 +5786,6 @@ function vCorrespondencia() {
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: "Cartas da travessia" }))),
     abertas.length ? h("div", { class: "envs" }, abertas.map(c => env(c, false))) : null,
     S.isOwner ? h("div", { class: "secret" },
-      h("p", { text: "Só você vê isto. Escreva cartas e escolha quando o pombo-correio entrega. Na hora marcada, a carta abre sozinha no celular de cada viajante." }),
       futuras.length ? h("div", { class: "envs" }, futuras.map(c => env(c, true))) : null,
       enviadasP.length ? h("p", { class: "small", text: "Cartas pessoais já entregues:" }) : null,
       enviadasP.length ? h("div", { class: "envs" }, enviadasP.map(c => env(c, true))) : null,
