@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 06:52";</script>
+<script>window.__VERSAO = "03/10 · 06:54";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -427,7 +427,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .figmini svg{width:100%;height:100%;display:block}
 .bubble .t.sofig{font-size:30px;line-height:1.15}
 .figpicker{display:flex;flex-wrap:wrap;gap:4px;padding:8px 12px;border-top:1px solid var(--line);background:var(--panel)}
-.figpicker button{border:0;background:none;padding:2px;font-size:30px;line-height:1}
+.figpicker button{border:0;background:none;padding:2px;font-size:30px;line-height:1;-webkit-tap-highlight-color:transparent}
 .bubble .ponto{display:flex;flex-direction:column;gap:6px}
 .bubble .ponto b{font-family:var(--display);font-size:18px;font-weight:500}
 .bubble.me .ponto .eyebrow{color:var(--sand)}
@@ -440,6 +440,10 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .eyebrow.vivo::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#C8412F;margin-right:8px;vertical-align:1px;box-shadow:0 0 0 3px rgba(200,65,47,.2)}
 .composer{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;align-items:flex-end;background:var(--panel)}
 .composer textarea{min-height:44px;max-height:140px;border-radius:22px;padding:10px 16px;background:var(--bg)}
+.composer .ceinput{min-height:44px;max-height:140px;overflow-y:auto;border-radius:22px;padding:10px 16px;background:var(--bg);border:1px solid var(--line2);color:var(--ink);line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;outline:none;-webkit-user-select:text;user-select:text}
+.composer .ceinput:focus{border-color:var(--terra)}
+.composer .ceinput:empty::before{content:attr(data-placeholder);color:var(--faint)}
+.ceinput img.figmini{width:1.6em;height:1.6em;vertical-align:-.4em}
 .composer .note{font-size:13px;color:var(--soft);padding:4px 2px;background:none;border:0}
 .composer .note:empty{display:none}
 .iconbtn{width:44px;height:44px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);display:grid;place-items:center;flex:none;color:var(--soft)}
@@ -1303,7 +1307,7 @@ function render() {
   tickRelogios();
   if (S.tab === "travessia") alturaFrases();
   const el = actId && document.getElementById(actId);
-  if (el && el !== act) { if (draft != null && "value" in el && el.type !== "file" && el.type !== "checkbox") el.value = draft; el.focus({ preventScroll: true }); if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
+  if (el && el !== act) { if (draft != null && "value" in el && el.type !== "file" && el.type !== "checkbox") el.value = draft; el.focus({ preventScroll: true }); if (el.isContentEditable) cursorNoFim(el); else if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
 }
 function pintaMe() {
   const b = $("#me"), v = eu();
@@ -4428,6 +4432,42 @@ function textoChat(autor, t) {
   const so = partes.every((x, i) => i % 2 || !x.trim()) && partes.length <= 13;
   return h("p", { class: "t" + (so ? " sofig" : "") }, partes.map((x, i) => i % 2 ? figMini(autor, x) : x));
 }
+// caixa de escrever do chat: as carinhas dos deuses já aparecem enquanto a pessoa escreve (por dentro, viram :ganesha:)
+const figImgs = {};
+function figImg(id) {
+  const k = S.uid + id;
+  if (!figImgs[k]) figImgs[k] = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(new XMLSerializer().serializeToString(figMini(S.uid, id).querySelector("svg")));
+  return h("img", { class: "figmini", src: figImgs[k], alt: ":" + id + ":", "data-fig": id, draggable: "false" });
+}
+function cursorNoFim(el) { try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+document.addEventListener("selectionchange", () => { const el = document.getElementById("chat-input"); if (el && el.guarda) el.guarda(); });
+function caixaChat() {
+  const el = h("div", { id: "chat-input", class: "ceinput", contenteditable: "true", role: "textbox", "aria-multiline": "true", "aria-label": "Mensagem", "data-placeholder": "Escreva aqui…", enterkeyhint: "send" });
+  const ler = (n, ini) => { let t = ""; n.childNodes.forEach((c, i) => {
+    if (c.nodeType === 3) t += c.nodeValue.replace(/\u00a0/g, " ");
+    else if (c.nodeName === "IMG" && c.dataset.fig) t += ":" + c.dataset.fig + ":";
+    else if (c.nodeName === "BR") t += "\n";
+    else { if ((c.nodeName === "DIV" || c.nodeName === "P") && (i || !ini)) t += "\n"; t += ler(c, false); }
+  }); return t; };
+  Object.defineProperty(el, "value", {
+    get: () => ler(el, true),
+    set: v => { el.replaceChildren(); String(v || "").split(FIG_RE).forEach((x, i) => { if (i % 2) el.append(figImg(x)); else x.split("\n").forEach((l, j) => { if (j) el.append(h("br")); if (l) el.append(document.createTextNode(l)); }); }); }
+  });
+  let faixa = null;
+  const guarda = () => { const s = getSelection(); if (s.rangeCount && el.contains(s.getRangeAt(0).startContainer)) faixa = s.getRangeAt(0).cloneRange(); };
+  ["keyup", "mouseup", "input", "focus", "touchend"].forEach(ev => el.addEventListener(ev, guarda));
+  el.guarda = guarda;
+  el.poeFig = id => {
+    const im = figImg(id), s = getSelection();
+    let r = faixa && el.contains(faixa.startContainer) ? faixa : null;
+    if (!r) { r = document.createRange(); r.selectNodeContents(el); r.collapse(false); }
+    r.deleteContents(); r.insertNode(im); r.setStartAfter(im); r.collapse(true);
+    s.removeAllRanges(); s.addRange(r); faixa = r.cloneRange();
+  };
+  el.addEventListener("paste", e => { e.preventDefault(); const t = (e.clipboardData || window.clipboardData).getData("text"); document.execCommand("insertText", false, t); });
+  el.addEventListener("input", () => { if (!el.textContent && !el.querySelector("img")) el.replaceChildren(); });
+  return el;
+}
 function vConversa() {
   // mapa e localização não aparecem no chat (ficam só na aba Mapa)
   const msgs = S.chat.filter(m => m.tipo !== "local" && m.tipo !== "aovivo" && m.tipo !== "reacao").sort((a, b) => a.ts - b.ts);
@@ -4483,9 +4523,9 @@ function vConversa() {
 
   const pode = S.db && S.uid && eu() && S.canChat !== false;
   const falha = e => { if (e && e.code === "invalid_argument") { S.canChat = false; render(); } };
-  const ta = h("textarea", { id: "chat-input", rows: "1", maxlength: "1000", placeholder: "Escreva aqui…", "aria-label": "Mensagem" });
+  const ta = caixaChat();
   const enviar = async () => {
-    const texto = ta.value.trim(); if (!texto) return; ta.value = "";
+    const texto = ta.value.trim().slice(0, 1000); if (!texto) return; ta.value = "";
     const aviso = S.isOwner && S.modoAviso;
     try { await addChat({ autor: S.uid, texto, ...(aviso ? { tipo: "aviso" } : {}), ts: Date.now() }); if (aviso) { S.modoAviso = false; render(); } } catch (e) { ta.value = texto; falha(e); }
   };
@@ -4552,10 +4592,8 @@ function vConversa() {
         h("p", { class: "eyebrow", text: "Ponto de encontro" }),
         h("div", { class: "unlock" }, pSel, h("button", { class: "btn", type: "button", onclick: enviarPonto }, "Enviar ponto"))),
       pNota, locMsg) : h("span"),
-    pode && S.figAberto ? h("div", { class: "figpicker", role: "group", "aria-label": "Figurinhas" }, FIGURINHAS.map(f => h("button", { type: "button", title: f[1], "aria-label": f[1], onclick: () => {
-      const c = ":" + f[0] + ":", a = ta.selectionStart ?? ta.value.length, b = ta.selectionEnd ?? a;
-      ta.value = ta.value.slice(0, a) + c + ta.value.slice(b); ta.selectionStart = ta.selectionEnd = a + c.length;
-    } }, figMini(S.uid, f[0])))) : null,
+    pode && S.figAberto ? h("div", { class: "figpicker", role: "group", "aria-label": "Figurinhas" }, FIGURINHAS.map(f => h("button", { type: "button", title: f[1], "aria-label": f[1],
+      onpointerdown: e => e.preventDefault(), onclick: () => ta.poeFig(f[0]) }, figMini(S.uid, f[0])))) : null,
     pode ? h("div", { class: "composer" },
         S.assets ? h("button", { class: "iconbtn", type: "button", title: "Enviar foto", "aria-label": "Enviar foto", onclick: () => fileIn.click() },
           ico(["M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z", "M12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"])) : null,
@@ -5742,7 +5780,7 @@ render();
   if (S.isOwner && window.__SITE) listen("membros", "membros");
   listen("mural", "mural", db.collection("mural").orderBy("ts", "desc").limit(300));
   setInterval(() => {
-    if (document.activeElement?.matches?.("input,textarea,select") || document.querySelector(".sheet")) return;
+    if (document.activeElement?.matches?.("input,textarea,select,[contenteditable]") || document.querySelector(".sheet")) return;
     if (S.tab === "mapa") return render();
     if (S.tab === "travessia") { const k = [hojeIso(), S.isOwner ? S.online.size : 0, (S.cartas || []).length, cartasAbertas().length].join("|"); if (k !== S.chaveHome) { S.chaveHome = k; render(); } }
   }, 60000);
