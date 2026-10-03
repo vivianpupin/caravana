@@ -4541,6 +4541,12 @@ function figImg(id) {
 function cursorNoFim(el) { try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
 // barra de reações aberta: tocar fora dela (e fora de outra mensagem) fecha sem reagir
 document.addEventListener("click", e => { if (!S.reagindo || e.target.closest(".reacbar,.bubble .b")) return; S.reagindo = null; render(); });
+// figurinhas abertas: tocar na conversa (fora delas e da caixa de escrever) fecha e volta para a conversa
+document.addEventListener("click", e => {
+  if (!S.figAberto || e.target.closest(".figpicker,.composer")) return;
+  S.figAberto = false; document.querySelector(".figpicker")?.remove();
+  const bt = document.querySelector('button[aria-label="Figurinhas do meu bonequinho"]'); if (bt) { bt.classList.remove("avisoon"); bt.setAttribute("aria-pressed", "false"); }
+});
 // teclado abre ou fecha: a conversa continua mostrando a última mensagem
 window.visualViewport?.addEventListener("resize", () => { const log = document.getElementById("chatlog"); if (log && S.chatGrudado !== false) setTimeout(() => { log.scrollTop = log.scrollHeight; }, 60); });
 // teclado aberto no celular: esconde a barra de abas (ela subia junto com o teclado e tapava a tela)
