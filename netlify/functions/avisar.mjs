@@ -5,7 +5,7 @@ import { avisarPassaporteCompleto, db, chaves, enviarTodos, enviarPara } from ".
 const resumo = m => m.tipo === "foto" ? "📷 Mandou uma foto" + (m.texto ? ": " + m.texto : "")
   : m.tipo === "local" ? "📍 Ponto de encontro: " + (m.nome || "local marcado")
   : m.tipo === "aovivo" ? "📍 Está compartilhando a localização ao vivo"
-  : String(m.texto || "");
+  : String(m.texto || "").replace(/:(surya|ganesha|shiva|krishna|hanuman|lakshmi|durga|kali|parvati|saraswati|vishnu|ganga):/g, (_, d) => "[" + d[0].toUpperCase() + d.slice(1) + "]");
 
 export default async req => {
   if (!process.env.FIREBASE_SA) return Response.json({ ok: false, erro: "sem FIREBASE_SA" }, { status: 503 });

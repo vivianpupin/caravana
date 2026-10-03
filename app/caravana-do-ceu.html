@@ -409,14 +409,11 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .bubble.fig .h{padding:0 4px}
 .bubble.me.fig .b{color:var(--ink)}
 .bubble.me.fig .h,.bubble.me.fig .h b{color:var(--soft)}
-.figura{display:inline-flex;flex-direction:column;align-items:center;gap:0;filter:drop-shadow(0 2px 3px rgba(40,28,15,.25))}
-.bubble .figura svg{width:110px;height:auto}
-.bubble.me .figura{margin-left:auto;display:flex;width:max-content}
-.figtxt{font:700 15px/1.1 var(--display,Georgia),serif;color:#3B2A1C;background:#FFF6D8;border:2px solid #fff;border-radius:999px;padding:3px 10px;margin-top:-10px;white-space:nowrap;box-shadow:0 1px 3px rgba(40,28,15,.25)}
-.figpicker{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 12px;border-top:1px solid var(--line);background:var(--panel);max-height:42vh;overflow-y:auto}
-.figpicker button{border:0;background:none;padding:4px 0;display:flex;justify-content:center}
-.figpicker .figura svg{width:62px;height:auto}
-.figpicker .figtxt{font-size:10.5px;padding:2px 6px;margin-top:-6px}
+.figmini{display:inline-block;width:1.7em;height:1.7em;vertical-align:-.45em;margin:0 1px;border-radius:50%;background:radial-gradient(circle at 50% 40%,#F6E7C8,#E6CFA2)}
+.figmini svg{width:100%;height:100%;display:block}
+.bubble .t.sofig{font-size:30px;line-height:1.15}
+.figpicker{display:flex;flex-wrap:wrap;gap:4px;padding:8px 12px;border-top:1px solid var(--line);background:var(--panel)}
+.figpicker button{border:0;background:none;padding:2px;font-size:30px;line-height:1}
 .bubble .ponto{display:flex;flex-direction:column;gap:6px}
 .bubble .ponto b{font-family:var(--display);font-size:18px;font-weight:500}
 .bubble.me .ponto .eyebrow{color:var(--sand)}
@@ -4407,7 +4404,16 @@ function avisoFixado() {
 const FIGURINHAS = [["surya", "Surya", "Bom dia!"], ["ganesha", "Ganesha", "Caminho aberto!"], ["shiva", "Shiva", "Om Namah Shivaya"], ["krishna", "Krishna", "Bora dançar!"],
   ["hanuman", "Hanuman", "Força!"], ["lakshmi", "Lakshmi", "Tô rica!"], ["durga", "Durga", "Poderosa!"], ["kali", "Kali", "Sai da frente!"],
   ["parvati", "Parvati", "Te amo!"], ["saraswati", "Saraswati", "Aprendi!"], ["vishnu", "Vishnu", "Tudo sob controle"], ["ganga", "Ganga", "Gratidão"]];
-const figurinha = (autor, f) => h("span", { class: "figura" }, bonecoSvg({ ...bonecoDe(autor), deus: f[0], pet: "nenhum", ombro: "nenhum", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum" }), h("span", { class: "figtxt", text: f[2] }));
+// pequenininhas, do tamanho de um emoji: só o rosto do bonequinho com a fantasia, no meio do texto (no texto vira :ganesha:)
+const figMini = (autor, id, cls) => h("span", { class: "figmini" + (cls ? " " + cls : ""), role: "img", "aria-label": (FIGURINHAS.find(f => f[0] === id) || [, id])[1] },
+  h("svg", { viewBox: "9 -2 42 42" }, desenhaBoneco({ ...bonecoDe(autor), deus: id, pet: "nenhum", ombro: "nenhum", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum" })));
+const FIG_RE = new RegExp(":(" + FIGURINHAS.map(f => f[0]).join("|") + "):", "g");
+function textoChat(autor, t) {
+  t = String(t || ""); const partes = t.split(FIG_RE);
+  if (partes.length === 1) return h("p", { class: "t", text: t });
+  const so = partes.every((x, i) => i % 2 || !x.trim()) && partes.length <= 13;
+  return h("p", { class: "t" + (so ? " sofig" : "") }, partes.map((x, i) => i % 2 ? figMini(autor, x) : x));
+}
 function vConversa() {
   // mapa e localização não aparecem no chat (ficam só na aba Mapa)
   const msgs = S.chat.filter(m => m.tipo !== "local" && m.tipo !== "aovivo" && m.tipo !== "reacao").sort((a, b) => a.ts - b.ts);
@@ -4441,7 +4447,7 @@ function vConversa() {
         h("div", { class: "h" }, h("b", { text: nomeDe(m.autor) }), h("span", { text: d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) }),
           S.db && eu() ? h("button", { class: "reagir", type: "button", title: "Reagir", "aria-label": "Reagir à mensagem", onclick: () => { S.reagindo = S.reagindo === m.id ? null : m.id; render(); } }, "☺") : null,
           (mine || S.isOwner) ? h("button", { class: "del", type: "button", onclick: () => S.db.doc("chat/" + m.id).delete().catch(() => {}) }, "apagar") : null),
-        fig ? figurinha(m.autor, fig) :
+        fig ? h("p", { class: "t sofig" }, figMini(m.autor, fig[0])) :
         m.tipo === "local" ? h("div", { class: "ponto" },
           h("span", { class: "eyebrow", text: "Ponto de encontro" }), h("b", { text: m.nome || "Local marcado" }),
           m.texto ? h("p", { class: "t", text: m.texto }) : null,
@@ -4454,7 +4460,7 @@ function vConversa() {
           h("div", { class: "actions" }, h("a", { class: "btn", href: m.link, target: "_blank", rel: "noopener" }, "Ver ao vivo no Google Maps"))) :
         m.tipo === "foto" ? h("div", null, h("img", { class: "chatfoto", src: blob(m.fotoId), alt: m.texto || "Foto", loading: "lazy" }), m.texto ? h("p", { class: "t", text: m.texto }) : null) :
         ehAviso ? h("div", null, h("p", { class: "eyebrow avisolab", text: "📢 Aviso da líder" }), h("p", { class: "t", text: m.texto })) :
-        h("p", { class: "t", text: m.texto }),
+        textoChat(m.autor, m.texto),
         linhaReacoes(m.id),
         S.reagindo === m.id ? h("div", { class: "reacbar", role: "group", "aria-label": "Escolha uma reação" }, ["❤️", "🙏", "😂", "😮", "👏", "🔥"].map(e => h("button", { type: "button", "aria-label": e, onclick: () => reagirMsg(m.id, e) }, e))) : null)));
   }
@@ -4532,10 +4538,10 @@ function vConversa() {
         h("p", { class: "eyebrow", text: "Ponto de encontro" }),
         h("div", { class: "unlock" }, pSel, h("button", { class: "btn", type: "button", onclick: enviarPonto }, "Enviar ponto"))),
       pNota, locMsg) : h("span"),
-    pode && S.figAberto ? h("div", { class: "figpicker", role: "group", "aria-label": "Figurinhas" }, FIGURINHAS.map(f => h("button", { type: "button", "aria-label": f[1] + ": " + f[2], onclick: async () => {
-      S.figAberto = false; render();
-      try { await addChat({ autor: S.uid, tipo: "fig", deus: f[0], texto: f[2], ts: Date.now() }); } catch (err) { falha(err); }
-    } }, figurinha(S.uid, f)))) : null,
+    pode && S.figAberto ? h("div", { class: "figpicker", role: "group", "aria-label": "Figurinhas" }, FIGURINHAS.map(f => h("button", { type: "button", title: f[1], "aria-label": f[1], onclick: () => {
+      const c = ":" + f[0] + ":", a = ta.selectionStart ?? ta.value.length, b = ta.selectionEnd ?? a;
+      ta.value = ta.value.slice(0, a) + c + ta.value.slice(b); ta.selectionStart = ta.selectionEnd = a + c.length;
+    } }, figMini(S.uid, f[0])))) : null,
     pode ? h("div", { class: "composer" },
         S.assets ? h("button", { class: "iconbtn", type: "button", title: "Enviar foto", "aria-label": "Enviar foto", onclick: () => fileIn.click() },
           ico(["M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z", "M12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"])) : null,
