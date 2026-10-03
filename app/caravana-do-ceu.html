@@ -5368,7 +5368,7 @@ const CIDADES_MURAL = ["Delhi", "Agra", "Jaipur", "Varanasi", "Rishikesh"];
 function abasFotos() {
   const a = S.fotoAba || "estudio";
   return h("div", { class: "fcats", role: "tablist", style: "margin-top:-4px" },
-    [["estudio", "Estúdio"], ["tira", "Cabine de fotos"], ["mural", "Galeria da Caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
+    [["estudio", "Estúdio"], ["tira", "Cabine de Fotos"], ["mural", "Galeria da Caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
 }
 // Salvar foto no rolo da câmera: no celular abre o menu de compartilhar, onde aparece "Salvar imagem"
 const podeRolo = () => { try { return !!(navigator.canShare && navigator.canShare({ files: [new File([new Blob(["x"], { type: "image/jpeg" })], "t.jpg", { type: "image/jpeg" })] })); } catch (e) { return false; } };
