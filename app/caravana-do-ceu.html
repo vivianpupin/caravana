@@ -2556,7 +2556,7 @@ function desenhaPet(tipo) {
 const EXPR_ROSTO = (() => {
   const esc = "#2B1D14", boca = "#6B3A26", L = (d, w, cor) => h("path", { d, fill: "none", stroke: cor || esc, "stroke-width": w || 1.1, "stroke-linecap": "round", "stroke-linejoin": "round" });
   const olhos = (dy, r) => [h("circle", { cx: 26.6, cy: 22.5 + (dy || 0), r: r || 1.15, fill: esc }), h("circle", { cx: 33.4, cy: 22.5 + (dy || 0), r: r || 1.15, fill: esc })];
-  const arregalados = (px, py) => [26.6, 33.4].flatMap(x => [h("circle", { cx: x, cy: 22.4, r: 2, fill: "#fff", stroke: esc, "stroke-width": .5 }), h("circle", { cx: x + (px || 0), cy: 22.4 + (py || 0), r: .9, fill: esc })]);
+  const arregalados = (px, py) => [26.6, 33.4].flatMap(x => [h("circle", { cx: x, cy: 22.4, r: 2, fill: "#fff", stroke: esc, "stroke-width": .5 }), h("circle", { cx: x + (px || 0), cy: 22.4 + (py || 0), r: .9, fill: esc, "data-pupila": "1" })]);
   const fechadosFeliz = () => [L("M25 23 Q26.6 21.2 28.2 23"), L("M31.8 23 Q33.4 21.2 35 23")];
   const fechadosTriste = () => [L("M25 22.4 Q26.6 23.8 28.2 22.4"), L("M31.8 22.4 Q33.4 23.8 35 22.4")];
   const bochechas = a => [24.4, 35.6].map(x => h("ellipse", { cx: x, cy: 25.4, rx: 1.8, ry: 1.1, fill: `rgba(226,80,100,${a || .45})` }));
@@ -2568,7 +2568,7 @@ const EXPR_ROSTO = (() => {
   return {
     amor: () => [...fechadosFeliz(), sorriso(), ...bochechas(), fora(coracao(41.5, 12, 1.3)), fora(coracao(18.5, 14, 1)), fora(coracao(43, 23, .9))],
     preocupada: () => [...olhos(.3), ...sobr("M24.8 19.9 L28.2 18.9", "M31.8 18.9 L35.2 19.9"), triste()],
-    emocionada: () => [26.6, 33.4].flatMap(x => [h("circle", { cx: x, cy: 22.6, r: 1.8, fill: esc }), h("circle", { cx: x + .6, cy: 21.9, r: .6, fill: "#fff" }), L(`M${x - 1.8} 24.6 Q${x} 25.6 ${x + 1.8} 24.6`, .7, "#4E97C4")]).concat(sobr("M24.8 19.7 L28.2 18.9", "M31.8 18.9 L35.2 19.7"), [L("M27.6 27 Q30 26.2 32.4 27", 1, boca)]),
+    emocionada: () => [26.6, 33.4].flatMap(x => [h("circle", { cx: x, cy: 22.6, r: 2.2, fill: "#fff", stroke: esc, "stroke-width": .4 }), h("circle", { cx: x, cy: 22.8, r: 1.6, fill: esc, "data-pupila": "1" }), h("circle", { cx: x + .6, cy: 22.1, r: .55, fill: "#fff" }), L(`M${x - 1.8} 24.6 Q${x} 25.6 ${x + 1.8} 24.6`, .7, "#4E97C4")]).concat(sobr("M24.8 19.7 L28.2 18.9", "M31.8 18.9 L35.2 19.7"), [L("M27.6 27 Q30 26.2 32.4 27", 1, boca)]),
     susto: () => [fora(h("path", { d: "M20 22 A10 10 0 0 1 40 22 Z", fill: "rgba(110,160,215,.45)" }), "atras"), ...arregalados(), h("ellipse", { cx: 30, cy: 27.6, rx: 1.6, ry: 2.3, fill: "#4A2418" })],
     revira: () => [...arregalados(0, -1), L("M27.4 27.2 L32.6 26.6", 1.1, boca)],
     beijo: () => [...fechadosFeliz(), L("M29.6 25.6 q1.6 .7 0 1.3 q1.6 .7 0 1.3", 1, boca), fora(coracao(39.5, 24, 1.1))],
@@ -2640,8 +2640,14 @@ function desenhaBoneco(b) {
     // traços do rosto bem grandes, de caricatura, desenhados por cima de tudo (chapéu e óculos não escondem a expressão);
     // o que fica fora do rosto (corações, explosão) não aumenta, e a cor da cara fica atrás
     const els = EXPR_ROSTO[b.expr](), fora = els.filter(e => e.dataset && e.dataset.fora), dentro = els.filter(e => !fora.includes(e));
+    // pele escura (Kali, Krishna, Vishnu…): os traços ficam claros para a expressão aparecer
+    const ph = /^#[0-9a-f]{6}$/i.test(pele) ? pele : "#C98E62", lum = [1, 3, 5].map(i => parseInt(ph.slice(i, i + 2), 16)).reduce((a, v, i) => a + v * [.299, .587, .114][i], 0);
+    if (lum < 95) { const troca = { "#2B1D14": "#F6EEDC", "#6B3A26": "#F3C2AE" }; dentro.forEach(e => [e, ...e.querySelectorAll("*")].forEach(x => {
+      if (!x.dataset.pupila) ["fill", "stroke"].forEach(a => { const v = x.getAttribute(a); if (troca[v]) x.setAttribute(a, troca[v]); });
+      if (x.getAttribute("fill") === "#4A2418") { x.setAttribute("stroke", "#F3C2AE"); x.setAttribute("stroke-width", ".5"); }
+    })); }
     g.append(...fora.filter(e => e.dataset.fora === "atras"));
-    exprG = [h("g", { transform: "translate(30 24.2) scale(1.5) translate(-30 -24.4)" }, dentro), ...fora.filter(e => e.dataset.fora !== "atras")];
+    exprG = [h("g", { transform: "translate(30 24.2) scale(1.5) translate(-30 -24.4)", "data-expr": "1" }, dentro), ...fora.filter(e => e.dataset.fora !== "atras").map(e => { e.setAttribute("data-expr", "1"); return e; })];
   }
   else g.append(h("circle", { cx: 26.6, cy: 22.5, r: 1.15, fill: "#2B1D14" }), h("circle", { cx: 33.4, cy: 22.5, r: 1.15, fill: "#2B1D14" }),
     h("path", { d: "M27 26.4 Q30 28.6 33 26.4", fill: "none", stroke: "#6B3A26", "stroke-width": 1.1, "stroke-linecap": "round" }));
@@ -2810,7 +2816,7 @@ desenhaBoneco = function (b0) {
   g.append(_desenhaBase(base));
   // traços de rosto: terceiro olho (Shiva e Kali), língua de Kali, focinho de Hanuman
   if (b0.deus === "shiva" || b0.deus === "kali") g.append(h("ellipse", { cx: 30, cy: 17.8, rx: .9, ry: 1.7, fill: "#A3231A" }), h("ellipse", { cx: 30, cy: 17.8, rx: .35, ry: .9, fill: "#F4EFE3" }));
-  if (b0.deus === "kali") g.append(P("M28.3 26 Q30 33.5 31.7 26 Z", "#C4302B"));
+  if (b0.deus === "kali" && !b0.expr) g.append(P("M28.3 26 Q30 33.5 31.7 26 Z", "#C4302B"));
   if (b0.deus === "hanuman") g.append(h("ellipse", { cx: 30, cy: 26, rx: 5.6, ry: 3.8, fill: "#F0C89A" }), h("circle", { cx: 28.6, cy: 25, r: .55, fill: "#3A2418" }), h("circle", { cx: 31.4, cy: 25, r: .55, fill: "#3A2418" }), P("M27.5 27.4 Q30 29.2 32.5 27.4", "none", { stroke: "#3A2418", "stroke-width": .6 }), h("ellipse", { cx: 20.3, cy: 22, rx: 2.2, ry: 3, fill: b.pele }), h("ellipse", { cx: 39.7, cy: 22, rx: 2.2, ry: 3, fill: b.pele }));
   if (b0.deus === "shiva") g.append(P("M34 5.5 Q38.5 8 35.5 12 Q37 8 34 5.5 Z", "#F4EFE3"));
   if (d) {
@@ -2822,7 +2828,7 @@ desenhaBoneco = function (b0) {
     g.append(h("rect", { x: 18, y: 49.5, width: 24, height: 2.4, rx: 1, fill: joia }), h("circle", { cx: 30, cy: 50.7, r: 1.5, fill: rubi }));
     g.append(h("rect", { x: 20.5, y: 77.5, width: 9.5, height: 1.4, fill: joia }), h("rect", { x: 30.5, y: 77.5, width: 9.5, height: 1.4, fill: joia }));
     if (deusa) g.append(P("M30 12.5 L30 16.2", "none", { stroke: joia, "stroke-width": .8 }), h("circle", { cx: 30, cy: 16.8, r: 1.1, fill: rubi, stroke: joia, "stroke-width": .5 }),
-      h("circle", { cx: 31.6, cy: 24.6, r: 1.3, fill: "none", stroke: joia, "stroke-width": .7 }), P("M22.5 34.5 Q30 45 37.5 34.5", "none", { stroke: joia, "stroke-width": 1.2 }));
+      ...(b0.expr ? [] : [h("circle", { cx: 31.6, cy: 24.6, r: 1.3, fill: "none", stroke: joia, "stroke-width": .7 })]), P("M22.5 34.5 Q30 45 37.5 34.5", "none", { stroke: joia, "stroke-width": 1.2 }));
     else if (b0.deus !== "shiva") g.append(P("M19 36 L41 51", "none", { stroke: "#F4EFE3", "stroke-width": .9, opacity: .9 }));
     if (b0.deus === "vishnu" || b0.deus === "krishna") {
       g.append(P("M28 19.5 Q28 15 28.4 13.5 M32 19.5 Q32 15 31.6 13.5 M28 19.5 Q30 21 32 19.5", "none", { stroke: "#F4EFE3", "stroke-width": .9 }), h("line", { x1: 30, y1: 14.5, x2: 30, y2: 19.5, stroke: rubi, "stroke-width": .8 }));
@@ -4453,9 +4459,11 @@ const FIGURINHAS = [["surya", "Surya", "Bom dia!"], ["ganesha", "Ganesha", "Cami
 const EXPRESSOES = [["amor", "🥰"], ["preocupada", "😟"], ["emocionada", "🥹"], ["susto", "😱"], ["revira", "🙄"], ["beijo", "😙"], ["triste", "🙁"], ["desdem", "😒"],
   ["sorrisolagrima", "🥲"], ["rindo", "😂"], ["decepcionada", "😞"], ["oculos", "😎"], ["brava", "😡"], ["explodiu", "🤯"], ["vergonha", "😳"]];
 const figMini = (autor, id, cls) => {
-  const ex = EXPRESSOES.find(e => e[0] === id), b = ex ? { ...bonecoDe(autor), deus: "nenhum", expr: id, pet: "nenhum", ...(id === "oculos" ? { oculos: "nenhum" } : {}) }
+  const ex = EXPRESSOES.find(e => e[0] === id), b = ex ? { ...bonecoDe(autor), expr: id, pet: "nenhum", nariz: "nenhum", ...(id === "oculos" ? { oculos: "nenhum" } : {}) }
     : { ...bonecoDe(autor), deus: id, pet: "nenhum", ombro: "nenhum", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum" };
-  return h("span", { class: "figmini" + (cls ? " " + cls : ""), role: "img", "aria-label": ex ? ex[1] : (FIGURINHAS.find(f => f[0] === id) || [, id])[1] }, h("svg", { viewBox: !ex ? "9 -2 42 42" : id === "explodiu" ? "11 -2 38 38" : "12 2 36 36" }, desenhaBoneco(b)));
+  // a expressão fica por cima de tudo, até da fantasia de deus que a pessoa estiver usando
+  const g = desenhaBoneco(b); if (ex) g.querySelectorAll("[data-expr]").forEach(e => g.append(e));
+  return h("span", { class: "figmini" + (cls ? " " + cls : ""), role: "img", "aria-label": ex ? ex[1] : (FIGURINHAS.find(f => f[0] === id) || [, id])[1] }, h("svg", { viewBox: !ex ? "9 -2 42 42" : id === "explodiu" ? "11 -2 38 38" : "12 2 36 36" }, g));
 };
 const FIG_RE = new RegExp(":(" + [...EXPRESSOES, ...FIGURINHAS].map(f => f[0]).join("|") + "):", "g");
 function textoChat(autor, t) {
