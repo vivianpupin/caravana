@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 07:47";</script>
+<script>window.__VERSAO = "03/10 · 07:48";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -4328,7 +4328,7 @@ function vFotos() {
         msg)) :
       h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
         h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "Escolha uma foto" }),
-        h("span", { text: "Filtros da Caravana, adesivos com os bichos da Índia, molduras de cartão-postal, ingresso, guirlanda e mais. Depois é só salvar ou enviar para a galeria." })),
+        h("span", { text: "Filtros da Caravana, adesivos com os bichos da Índia, molduras de cartão-postal, ingresso, guirlanda e mais. Depois é só salvar ou enviar para a Galeria da Caravana." })),
     fi);
 }
 
@@ -5382,7 +5382,7 @@ const CIDADES_MURAL = ["Delhi", "Agra", "Jaipur", "Varanasi", "Rishikesh"];
 function abasFotos() {
   const a = S.fotoAba || "estudio";
   return h("div", { class: "fcats", role: "tablist", style: "margin-top:-4px" },
-    [["estudio", "Estúdio"], ["tira", "Cabine de fotos"], ["mural", "Galeria da caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
+    [["estudio", "Estúdio"], ["tira", "Cabine de fotos"], ["mural", "Galeria da Caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
 }
 // Salvar foto no rolo da câmera: no celular abre o menu de compartilhar, onde aparece "Salvar imagem"
 const podeRolo = () => { try { return !!(navigator.canShare && navigator.canShare({ files: [new File([new Blob(["x"], { type: "image/jpeg" })], "t.jpg", { type: "image/jpeg" })] })); } catch (e) { return false; } };
@@ -5448,7 +5448,7 @@ function vMural() {
   const cid = S.muralCidade || "", fotos = S.mural.filter(f => !cid || f.cidade === cid);
   perfis(fotos.map(f => f.autor));
   return h("section", { class: "view" },
-    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Galeria da caravana" }))),
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Galeria da Caravana" }))),
     abasFotos(),
     h("p", { class: "lede", text: "As fotos que a caravana envia do estúdio, separadas por cidade." }),
     h("div", { class: "opts" }, [["", "Todas"], ...CIDADES_MURAL.map(c => [c, c])].map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(cid === id), onclick: () => { S.muralCidade = id; render(); } },
