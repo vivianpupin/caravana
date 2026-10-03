@@ -4096,7 +4096,7 @@ function vTira() {
   };
   if (T.imgs.length) requestAnimationFrame(() => montaTira(canvas).catch(() => {}));
   return h("section", { class: "view" },
-    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Fotos da travessia" }))),
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Registros da Travessia" }))),
     abasFotos(),
     T.imgs.length ? h("div", { class: "estudio" },
       h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas),
@@ -4291,7 +4291,7 @@ function vFotos() {
   faixa.addEventListener("input", () => { S.foto.intens = +faixa.value / 100; rotPct.textContent = faixa.value + "%"; redesenha(); });
   const barraIntensidade = F.filtro && F.filtro !== "original" ? h("label", { class: "intens" }, h("span", { text: "Intensidade" }), faixa, rotPct) : null;
   return h("section", { class: "view" },
-    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Fotos da travessia" }))),
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Registros da Travessia" }))),
     abasFotos(),
     F.img ? h("div", { class: "estudio" },
       h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas),
