@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 07:31";</script>
+<script>window.__VERSAO = "03/10 · 07:34";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1261,7 +1261,7 @@ function marcaMaisAbas() { const n = $("#tabs"), d = $(".navmais"); if (!n) retu
 setTimeout(() => { const n = $("#tabs"); if (!n) return; n.addEventListener("scroll", marcaMaisAbas, { passive: true }); window.addEventListener("resize", marcaMaisAbas); marcaMaisAbas(); }, 0);
 function go(tab) {
   try { VOZ.parar(); } catch (e) {}
-  S.tab = tab; try { localStorage.setItem("cdi-tab2", tab); } catch (e) {}
+  S.tab = tab; if (tab === "conversa") S.chatGrudado = true; try { localStorage.setItem("cdi-tab2", tab); } catch (e) {}
   render(); $("#main").scrollTop = 0;
   try { document.querySelector(`#tabs button[data-tab="${tab}"]`)?.scrollIntoView({ inline: "nearest", block: "nearest" }); } catch (e) {}
 }
@@ -1309,7 +1309,15 @@ function render() {
   main.scrollTop = scroll;
   if (S.tab === "conversa") {
     const inp = $("#chat-input"); if (inp && chatDraft) inp.value = chatDraft;
-    const log = $("#chatlog"); if (log) log.scrollTop = log.scrollHeight;
+    // a conversa fica sempre na última mensagem (a não ser que a pessoa tenha subido para ler as antigas);
+    // desce de novo quando fotos e figurinhas terminam de carregar, que aumentam a altura depois
+    const log = $("#chatlog");
+    if (log) {
+      const desce = () => { if (S.chatGrudado !== false) log.scrollTop = log.scrollHeight; };
+      desce(); requestAnimationFrame(desce); setTimeout(desce, 300); setTimeout(desce, 900);
+      log.querySelectorAll("img").forEach(im => { if (!im.complete) im.addEventListener("load", desce, { once: true }); });
+      log.addEventListener("scroll", () => { S.chatGrudado = log.scrollTop + log.clientHeight >= log.scrollHeight - 80; }, { passive: true });
+    }
   }
   tickRelogios();
   if (S.tab === "travessia") alturaFrases();
@@ -4545,6 +4553,8 @@ function figImg(id) {
   return h("img", { class: "figmini", src: figImgs[k], alt: ":" + id + ":", "data-fig": id, draggable: "false" });
 }
 function cursorNoFim(el) { try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+// teclado abre ou fecha: a conversa continua mostrando a última mensagem
+window.visualViewport?.addEventListener("resize", () => { const log = document.getElementById("chatlog"); if (log && S.chatGrudado !== false) setTimeout(() => { log.scrollTop = log.scrollHeight; }, 60); });
 // teclado aberto no celular: esconde a barra de abas (ela subia junto com o teclado e tapava a tela)
 if (matchMedia("(pointer:coarse)").matches) {
   const digita = el => el && el.matches && el.matches('textarea,[contenteditable="true"],input:not([type]),input[type=text],input[type=search],input[type=email],input[type=number],input[type=url],input[type=tel]');
@@ -4646,7 +4656,7 @@ function vConversa() {
   const falha = e => { if (e && e.code === "invalid_argument") { S.canChat = false; render(); } };
   const ta = caixaChat();
   const enviar = async () => {
-    const texto = ta.value.trim().slice(0, 1000); if (!texto) return; ta.value = "";
+    const texto = ta.value.trim().slice(0, 1000); if (!texto) return; ta.value = ""; S.chatGrudado = true;
     const aviso = S.isOwner && S.modoAviso;
     try { await addChat({ autor: S.uid, texto, ...(aviso ? { tipo: "aviso" } : {}), ts: Date.now() }); if (aviso) { S.modoAviso = false; render(); } } catch (e) { ta.value = texto; falha(e); }
   };
