@@ -4490,12 +4490,18 @@ const desenhaItem = id => {
     h("ellipse", { cx: 20, cy: 13.4, rx: 1, ry: 1.6, fill: "#C0392B" }),
     h("ellipse", { cx: 20, cy: 27, rx: 7.2, ry: 4.6, fill: "#F0B8AE" }), h("ellipse", { cx: 17.4, cy: 27, rx: 1, ry: 1.4, fill: "#B0605A" }), h("ellipse", { cx: 22.6, cy: 27, rx: 1, ry: 1.4, fill: "#B0605A" }),
     ...[11, 15, 20, 25, 29].map((x, i) => h("circle", { cx: x, cy: 33 + (i % 2 ? .6 : 0) - Math.abs(x - 20) * .15, r: 2, fill: i % 2 ? "#E0761C" : "#F2C14A" }))];
-  if (id === "macaco") return [h("circle", { cx: 7.5, cy: 19, r: 4.6, fill: "#8B5A35" }), h("circle", { cx: 32.5, cy: 19, r: 4.6, fill: "#8B5A35" }), h("circle", { cx: 7.8, cy: 19, r: 2.6, fill: "#E9C29A" }), h("circle", { cx: 32.2, cy: 19, r: 2.6, fill: "#E9C29A" }),
-    h("circle", { cx: 20, cy: 19, r: 12.5, fill: "#8B5A35" }), P("M20 9.5 Q26.5 9.5 27.6 15.5 Q31 19.5 28.5 25 Q25 31.5 20 31.5 Q15 31.5 11.5 25 Q9 19.5 12.4 15.5 Q13.5 9.5 20 9.5 Z", "#E9C29A"),
-    P("M13 15.5 Q16.5 12.5 20 15.8 Q23.5 12.5 27 15.5", "none", { stroke: "#8B5A35", "stroke-width": 1.4, "stroke-linecap": "round" }),
-    h("circle", { cx: 16.4, cy: 18.6, r: 1.7, fill: "#2B1D14" }), h("circle", { cx: 23.6, cy: 18.6, r: 1.7, fill: "#2B1D14" }), h("circle", { cx: 17, cy: 18, r: .55, fill: "#fff" }), h("circle", { cx: 24.2, cy: 18, r: .55, fill: "#fff" }),
-    h("ellipse", { cx: 18.8, cy: 23, rx: .55, ry: .8, fill: "#6B3A26" }), h("ellipse", { cx: 21.2, cy: 23, rx: .55, ry: .8, fill: "#6B3A26" }),
-    P("M15.5 25.6 Q20 30 24.5 25.6", "none", { stroke: "#6B3A26", "stroke-width": 1.2, "stroke-linecap": "round" }), h("circle", { cx: 20, cy: 6.8, r: 1.2, fill: "#C0392B" })];
+  if (id === "macaco") { const pelo = "#9C7656", pelo2 = "#7E5C40", rosto = "#E7A795";
+    // macaco-rhesus, como os que andam pelos templos: pelo cinza-marrom, cara rosada e focinho saliente
+    const franja = Array.from({ length: 13 }, (_, k) => { const a = Math.PI * (1.05 + k * .9 / 12), r = 13.2; return `${(20 + Math.cos(a) * r).toFixed(1)} ${(19 + Math.sin(a) * r).toFixed(1)} ${(20 + Math.cos(a + .06) * (r + 2.2)).toFixed(1)} ${(19 + Math.sin(a + .06) * (r + 2.2)).toFixed(1)}`; }).join(" L");
+    return [h("ellipse", { cx: 6.8, cy: 20, rx: 3.6, ry: 4.4, fill: pelo2 }), h("ellipse", { cx: 33.2, cy: 20, rx: 3.6, ry: 4.4, fill: pelo2 }), h("ellipse", { cx: 7.3, cy: 20, rx: 1.9, ry: 2.6, fill: rosto }), h("ellipse", { cx: 32.7, cy: 20, rx: 1.9, ry: 2.6, fill: rosto }),
+      P("M7.5 21 L" + franja + " L32.5 21 Q34 34 20 35 Q6 34 7.5 21 Z", pelo),
+      P("M11.5 20 Q11 13 20 12.4 Q29 13 28.5 20 Q29 26 25 27.5 L15 27.5 Q11 26 11.5 20 Z", rosto),
+      P("M12.6 17.6 Q16.2 14.6 19.4 17 M20.6 17 Q23.8 14.6 27.4 17.6", "none", { stroke: pelo2, "stroke-width": 1.6, "stroke-linecap": "round" }),
+      h("circle", { cx: 16.6, cy: 19.6, r: 1.6, fill: "#2B1D14" }), h("circle", { cx: 23.4, cy: 19.6, r: 1.6, fill: "#2B1D14" }), h("circle", { cx: 17.1, cy: 19.1, r: .5, fill: "#fff" }), h("circle", { cx: 23.9, cy: 19.1, r: .5, fill: "#fff" }),
+      h("ellipse", { cx: 20, cy: 27.2, rx: 7, ry: 5.2, fill: "#EFB9A8" }), h("ellipse", { cx: 20, cy: 25.4, rx: 4.2, ry: 1.6, fill: "#E39C89", opacity: .7 }),
+      P("M17.8 24.6 Q18.4 25.8 19 24.4 M21 24.4 Q21.6 25.8 22.2 24.6", "none", { stroke: "#7A3E30", "stroke-width": .9, "stroke-linecap": "round" }),
+      P("M16 29.2 Q20 31.6 24 29.2", "none", { stroke: "#7A3E30", "stroke-width": 1.1, "stroke-linecap": "round" }),
+      P("M17 9.5 Q18.5 6.5 20 8.8 Q21.5 6 23 9.4", "none", { stroke: pelo2, "stroke-width": 1.4, "stroke-linecap": "round" })]; }
   return [];
 };
 const figMini = (autor, id, cls) => {
