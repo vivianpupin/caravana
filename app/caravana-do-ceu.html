@@ -397,7 +397,8 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .bubble .h b{color:var(--terra);font-weight:600}
 .bubble .t{white-space:pre-wrap;overflow-wrap:anywhere}
 .bubble .del{margin-left:auto;background:none;border:0;color:inherit;opacity:.6;font-size:11px;padding:0}
-.bubble .reagir{background:none;border:0;color:inherit;opacity:.7;font-size:15px;padding:0 2px;line-height:1}
+.bubble .reagir{background:rgba(255,255,255,.75);border:1px solid var(--line2);border-radius:999px;color:var(--ink);font-size:13px;padding:2px 7px;line-height:1.2;white-space:nowrap}
+.bubble.me .reagir{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.35);color:#fff}
 .bubble .h .reagir:first-of-type{margin-left:auto}
 .bubble .h .del+.reagir,.bubble .h .reagir+.del{margin-left:6px}
 .reacs{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
@@ -2554,33 +2555,42 @@ function desenhaPet(tipo) {
 // Desenha o explorador numa caixa de 60 x 90 (o pet ocupa até x 92).
 // expressões do rostinho (figurinhas do chat, como os emojis do WhatsApp)
 const EXPR_ROSTO = (() => {
-  const esc = "#2B1D14", boca = "#6B3A26", L = (d, w, cor) => h("path", { d, fill: "none", stroke: cor || esc, "stroke-width": w || 1.1, "stroke-linecap": "round", "stroke-linejoin": "round" });
-  const olhos = (dy, r) => [h("circle", { cx: 26.6, cy: 22.5 + (dy || 0), r: r || 1.15, fill: esc }), h("circle", { cx: 33.4, cy: 22.5 + (dy || 0), r: r || 1.15, fill: esc })];
-  const arregalados = (px, py) => [26.6, 33.4].flatMap(x => [h("circle", { cx: x, cy: 22.4, r: 2, fill: "#fff", stroke: esc, "stroke-width": .5 }), h("circle", { cx: x + (px || 0), cy: 22.4 + (py || 0), r: .9, fill: esc, "data-pupila": "1" })]);
-  const fechadosFeliz = () => [L("M25 23 Q26.6 21.2 28.2 23"), L("M31.8 23 Q33.4 21.2 35 23")];
-  const fechadosTriste = () => [L("M25 22.4 Q26.6 23.8 28.2 22.4"), L("M31.8 22.4 Q33.4 23.8 35 22.4")];
-  const bochechas = a => [24.4, 35.6].map(x => h("ellipse", { cx: x, cy: 25.4, rx: 1.8, ry: 1.1, fill: `rgba(226,80,100,${a || .45})` }));
-  const sorriso = () => L("M26.6 25.9 Q30 29.6 33.4 25.9", 1.2, boca), triste = () => L("M27 27.8 Q30 25.6 33 27.8", 1.2, boca);
-  const lagrima = (x, y) => h("path", { d: `M${x} ${y} q-1.1 1.8 0 2.4 q1.1 -.6 0 -2.4 z`, fill: "#7CC0E8", stroke: "#4E97C4", "stroke-width": .3 });
-  const coracao = (x, y, k) => h("path", { d: `M${x} ${y + 1.2 * k} l${-1.7 * k} ${-1.7 * k} a${.95 * k} ${.95 * k} 0 0 1 ${1.7 * k} ${-1.2 * k} a${.95 * k} ${.95 * k} 0 0 1 ${1.7 * k} ${1.2 * k} z`, fill: "#E0303F" });
-  const sobr = (e, d) => [L(e, .9), L(d, .9)];
+  // estilo mangá: olhos grandes com brilho, traço preto grosso com contorno claro por baixo (aparece em qualquer cor de pele)
+  const tinta = "#1A120C", halo = "#FFF8EC", bocaIn = "#5A1A14", lingua = "#E0606A", azul = "#6EC3F0";
+  const L = (d, w) => h("g", null, h("path", { d, fill: "none", stroke: halo, "stroke-width": (w || 1.1) + 1, "stroke-linecap": "round", "stroke-linejoin": "round" }),
+    h("path", { d, fill: "none", stroke: tinta, "stroke-width": w || 1.1, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+  const F = (d, fill, w) => h("path", { d, fill, stroke: tinta, "stroke-width": w || .7, "stroke-linejoin": "round", "paint-order": "stroke" });
+  const olho = (x, o) => { o = o || {}; const rx = o.rx || 2.3, ry = o.ry || 2.7, cy = 22.4 + (o.dy || 0);
+    return h("g", null, h("ellipse", { cx: x, cy, rx: rx + .5, ry: ry + .5, fill: halo }), h("ellipse", { cx: x, cy, rx, ry, fill: "#fff", stroke: tinta, "stroke-width": .7 }),
+      h("circle", { cx: x + (o.px || 0), cy: cy + (o.py || 0), r: o.pr || 1.55, fill: tinta }),
+      o.semBrilho ? null : h("circle", { cx: x + (o.px || 0) + .55, cy: cy + (o.py || 0) - .6, r: .55, fill: "#fff" }),
+      o.semBrilho ? null : h("circle", { cx: x + (o.px || 0) - .5, cy: cy + (o.py || 0) + .55, r: .25, fill: "#fff" })); };
+  const olhos = o => [olho(26.4, o), olho(33.6, o)];
+  const feliz = () => [L("M24.4 23.2 Q26.4 20.4 28.4 23.2", 1.3), L("M31.6 23.2 Q33.6 20.4 35.6 23.2", 1.3)];
+  const fechadoTriste = () => [L("M24.4 22.2 Q26.4 24.4 28.4 22.2", 1.2), L("M31.6 22.2 Q33.6 24.4 35.6 22.2", 1.2)];
+  const sobr = (e, d, w) => [L(e, w || 1.1), L(d, w || 1.1)];
+  const rubor = () => [24, 36].flatMap(x => [h("ellipse", { cx: x, cy: 26, rx: 2, ry: 1.1, fill: "rgba(240,90,110,.65)" }), ...[-.9, 0, .9].map(k => h("line", { x1: x + k - .4, y1: 26.6, x2: x + k + .4, y2: 25.4, stroke: "#C8304A", "stroke-width": .35, "stroke-linecap": "round" }))]);
+  const bocaAberta = (d, comLingua) => [F(d, bocaIn, .8), comLingua ? h("path", { d: "M27.6 29.4 Q30 27.9 32.4 29.4 Q30 30.8 27.6 29.4 Z", fill: lingua }) : null];
+  const gota = (x, y, k) => h("path", { d: `M${x} ${y} q${-1.3 * k} ${2.2 * k} 0 ${2.9 * k} q${1.3 * k} ${-.7 * k} 0 ${-2.9 * k} z`, fill: azul, stroke: tinta, "stroke-width": .35 });
+  const coracao = (x, y, k) => h("path", { d: `M${x} ${y + 1.2 * k} l${-1.7 * k} ${-1.7 * k} a${.95 * k} ${.95 * k} 0 0 1 ${1.7 * k} ${-1.2 * k} a${.95 * k} ${.95 * k} 0 0 1 ${1.7 * k} ${1.2 * k} z`, fill: "#E8283C", stroke: "#fff", "stroke-width": .3 });
   const fora = (el, onde) => { el.setAttribute("data-fora", onde || "frente"); return el; };
   return {
-    amor: () => [...fechadosFeliz(), sorriso(), ...bochechas(), fora(coracao(41.5, 12, 1.3)), fora(coracao(18.5, 14, 1)), fora(coracao(43, 23, .9))],
-    preocupada: () => [...olhos(.3), ...sobr("M24.8 19.9 L28.2 18.9", "M31.8 18.9 L35.2 19.9"), triste()],
-    emocionada: () => [26.6, 33.4].flatMap(x => [h("circle", { cx: x, cy: 22.6, r: 2.2, fill: "#fff", stroke: esc, "stroke-width": .4 }), h("circle", { cx: x, cy: 22.8, r: 1.6, fill: esc, "data-pupila": "1" }), h("circle", { cx: x + .6, cy: 22.1, r: .55, fill: "#fff" }), L(`M${x - 1.8} 24.6 Q${x} 25.6 ${x + 1.8} 24.6`, .7, "#4E97C4")]).concat(sobr("M24.8 19.7 L28.2 18.9", "M31.8 18.9 L35.2 19.7"), [L("M27.6 27 Q30 26.2 32.4 27", 1, boca)]),
-    susto: () => [fora(h("path", { d: "M20 22 A10 10 0 0 1 40 22 Z", fill: "rgba(110,160,215,.45)" }), "atras"), ...arregalados(), h("ellipse", { cx: 30, cy: 27.6, rx: 1.6, ry: 2.3, fill: "#4A2418" })],
-    revira: () => [...arregalados(0, -1), L("M27.4 27.2 L32.6 26.6", 1.1, boca)],
-    beijo: () => [...fechadosFeliz(), L("M29.6 25.6 q1.6 .7 0 1.3 q1.6 .7 0 1.3", 1, boca), fora(coracao(39.5, 24, 1.1))],
-    triste: () => [...olhos(), triste()],
-    desdem: () => [h("circle", { cx: 27.3, cy: 23, r: 1, fill: esc }), h("circle", { cx: 34.1, cy: 23, r: 1, fill: esc }), L("M25.2 22.2 L28.4 22.2", 1), L("M32 22.2 L35.2 22.2", 1), L("M27.4 27.4 Q30 26.4 32.6 27.6", 1.1, boca)],
-    sorrisolagrima: () => [...olhos(), sorriso(), lagrima(25.2, 24)],
-    rindo: () => [L("M25 21.4 L27.8 22.6 L25 23.8"), L("M35 21.4 L32.2 22.6 L35 23.8"), h("path", { d: "M26.4 25.6 L33.6 25.6 Q33.2 30.4 30 30.4 Q26.8 30.4 26.4 25.6 Z", fill: "#4A2418" }), h("path", { d: "M27.8 29 Q30 27.8 32.2 29 Q30 30.4 27.8 29 Z", fill: "#D9616A" }), lagrima(23.4, 23.2), lagrima(36.6, 23.2)],
-    decepcionada: () => [...fechadosTriste(), triste()],
-    oculos: () => [h("rect", { x: 22.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), h("rect", { x: 30.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), L("M29.2 21.5 L30.8 21.5", 1, "#1E1A16"), L("M27.4 26.6 Q30.5 28.6 33.2 25.8", 1.2, boca)],
-    brava: () => [fora(h("circle", { cx: 30, cy: 22, r: 10, fill: "rgba(205,45,35,.5)" }), "atras"), ...olhos(.4), ...sobr("M24.6 19.2 L28.4 20.8", "M31.6 20.8 L35.4 19.2"), L("M27 28 Q30 26 33 28", 1.3, boca)],
-    explodiu: () => [fora(h("path", { d: "M30 -1 L32.2 4.4 L37.6 1.6 L35.6 7.2 L41.2 7.4 L36.4 10.6 L23.6 10.6 L18.8 7.4 L24.4 7.2 L22.4 1.6 L27.8 4.4 Z", fill: "#F2A33A", stroke: "#D9622B", "stroke-width": .6 })), fora(h("circle", { cx: 30, cy: 6.4, r: 2.4, fill: "#FCE07A" })), ...arregalados(), h("ellipse", { cx: 30, cy: 27.4, rx: 1.3, ry: 1.7, fill: "#4A2418" })],
-    vergonha: () => [...arregalados(), ...bochechas(.75), L("M28 27.2 L32 27.2", 1.1, boca)],
+    amor: () => [...feliz(), ...bocaAberta("M26.4 25.8 L33.6 25.8 Q33.2 30.6 30 30.6 Q26.8 30.6 26.4 25.8 Z", true), ...rubor(), fora(coracao(41.5, 12, 1.4)), fora(coracao(18.3, 14, 1.1)), fora(coracao(43, 23, 1))],
+    preocupada: () => [...olhos({ pr: 1.1 }), ...sobr("M23.8 19.6 L28.4 17.9", "M31.6 17.9 L36.2 19.6", 1.2), L("M26.8 28 Q28.4 26.8 30 28 Q31.6 29.2 33.2 28", 1.1), gota(37.5, 15.5, 1.1)],
+    emocionada: () => [...olhos({ rx: 2.6, ry: 3.1, pr: 2, dy: .2 }), ...[26.4, 33.6].map(x => h("path", { d: `M${x - 2.4} 24.4 Q${x} 26.6 ${x + 2.4} 24.4 L${x + 2.2} 25.2 Q${x} 27 ${x - 2.2} 25.2 Z`, fill: azul, opacity: .9 })), ...sobr("M23.8 19 L28.2 18", "M31.8 18 L36.2 19"), L("M27.6 28.4 Q28.8 27.6 30 28.4 Q31.2 29.2 32.4 28.4", 1)],
+    susto: () => [fora(h("path", { d: "M20 22 A10 10 0 0 1 40 22 Z", fill: "rgba(90,140,220,.55)" }), "atras"), ...[24, 27, 30, 33, 36].map(x => fora(h("line", { x1: x, y1: 13.5, x2: x, y2: 17.5, stroke: "#2D4E9A", "stroke-width": .6 }))), ...olhos({ rx: 2.6, ry: 3, pr: .7, semBrilho: true }), ...bocaAberta("M28 26.4 Q30 25.4 32 26.4 L31.7 31.2 Q30 32.2 28.3 31.2 Z")],
+    revira: () => [...olhos({ py: -1.4, pr: 1.3 }), L("M23.8 18.6 Q26.4 17 28.8 18.4", 1.1), L("M27.4 28 L32.8 27.2", 1.2)],
+    beijo: () => [...feliz(), L("M29.4 25.8 q2 .9 0 1.6 q2 .9 0 1.6", 1.2), ...rubor(), fora(coracao(39.8, 24.2, 1.3))],
+    triste: () => [...olhos({ py: .8, pr: 1.3 }), ...sobr("M23.8 19.4 L28.2 18.2", "M31.8 18.2 L36.2 19.4"), L("M26.8 29 Q30 26.2 33.2 29", 1.3)],
+    desdem: () => [26.4, 33.6].flatMap(x => [h("path", { d: `M${x - 2.3} 22.4 L${x + 2.3} 22.4 Q${x + 2.3} 25 ${x} 25 Q${x - 2.3} 25 ${x - 2.3} 22.4 Z`, fill: "#fff", stroke: tinta, "stroke-width": .7 }), h("circle", { cx: x + 1.1, cy: 23.6, r: 1.1, fill: tinta }), L(`M${x - 2.6} 22.3 L${x + 2.6} 22.3`, 1.3)]).concat([L("M27.2 28.2 Q30 27.2 33 28.4", 1.2)]),
+    sorrisolagrima: () => [...olhos(), L("M26.2 26.6 Q30 30.4 33.8 26.6", 1.3), gota(24.2, 24.6, 1.2)],
+    rindo: () => [L("M24.2 20.8 L28 22.4 L24.2 24", 1.3), L("M35.8 20.8 L32 22.4 L35.8 24", 1.3), ...bocaAberta("M25.6 25.6 L34.4 25.6 Q34 31.4 30 31.4 Q26 31.4 25.6 25.6 Z", true), gota(22.6, 22.6, 1.3), gota(37.4, 22.6, 1.3), gota(21, 25.6, .9), gota(39, 25.6, .9)],
+    decepcionada: () => [fora(h("path", { d: "M20 22 A10 10 0 0 1 40 22 Z", fill: "rgba(70,50,110,.4)" }), "atras"), ...[24.5, 27.5, 30.5, 33.5].map(x => fora(h("line", { x1: x, y1: 13, x2: x, y2: 18, stroke: "#4A3A7A", "stroke-width": .5 }))), ...fechadoTriste(), ...sobr("M23.8 19.6 L28.2 18.6", "M31.8 18.6 L36.2 19.6"), L("M26.8 29 Q30 26.6 33.2 29", 1.2)],
+    oculos: () => [F("M22.4 20.2 L29 20.2 L28.6 24 Q28.4 25.4 26.6 25.4 L24.4 25.4 Q22.8 25.4 22.6 24 Z", "#111"), F("M31 20.2 L37.6 20.2 L37.4 24 Q37.2 25.4 35.6 25.4 L33.4 25.4 Q31.6 25.4 31.4 24 Z", "#111"), L("M29 20.8 L31 20.8", .9), h("line", { x1: 23.6, y1: 23.8, x2: 25.4, y2: 21, stroke: "#fff", "stroke-width": .5, opacity: .8 }), h("line", { x1: 32.2, y1: 23.8, x2: 34, y2: 21, stroke: "#fff", "stroke-width": .5, opacity: .8 }), L("M26.8 27.6 Q30.4 29.8 33.6 26.6", 1.3)],
+    brava: () => [fora(h("circle", { cx: 30, cy: 22, r: 10, fill: "rgba(215,40,30,.55)" }), "atras"), ...olhos({ pr: 1.2, ry: 2.2, dy: .5 }), ...sobr("M23.6 18.6 L28.6 21", "M31.4 21 L36.4 18.6", 1.5), F("M26.4 27 L33.6 27 L33.2 30.2 L26.8 30.2 Z", "#fff", .8), L("M26.6 28.6 L28 27.4 L29.4 28.8 L30.8 27.4 L32.2 28.8 L33.4 27.6", .5), fora(h("path", { d: "M35.8 12.4 l1.2 1.2 m1.2 -1.2 l-1.2 1.2 m0 1.2 l1.2 1.2 m-2.4 0 l1.2 -1.2", stroke: "#C81E1E", "stroke-width": .9, fill: "none", "stroke-linecap": "round" }))],
+    explodiu: () => [fora(h("path", { d: "M30 -1 L32.2 4.4 L37.6 1.6 L35.6 7.2 L41.2 7.4 L36.4 10.6 L23.6 10.6 L18.8 7.4 L24.4 7.2 L22.4 1.6 L27.8 4.4 Z", fill: "#F2A33A", stroke: "#D9622B", "stroke-width": .6 })), fora(h("circle", { cx: 30, cy: 6.4, r: 2.4, fill: "#FCE07A" })),
+      ...[26.4, 33.6].flatMap(x => [h("circle", { cx: x, cy: 22.4, r: 2.9, fill: halo }), h("circle", { cx: x, cy: 22.4, r: 2.5, fill: "#fff", stroke: tinta, "stroke-width": .6 }), L(`M${x} 22.4 m0 -1.8 a1.8 1.8 0 1 1 -1.6 1 a1.1 1.1 0 1 1 1.2 -.6`, .55)]), ...bocaAberta("M28.2 27 Q30 26 31.8 27 L31.5 30.2 Q30 31 28.5 30.2 Z")],
+    vergonha: () => [...olhos({ rx: 2.5, ry: 2.9, pr: 1.7 }), ...rubor(), ...rubor(), L("M27 28.2 Q28.5 27.2 30 28.2 Q31.5 29.2 33 28.2", 1.1), gota(37.6, 16.2, 1.1)],
   };
 })();
 function desenhaBoneco(b) {
@@ -2639,13 +2649,7 @@ function desenhaBoneco(b) {
   if (b.expr && EXPR_ROSTO[b.expr]) {
     // traços do rosto bem grandes, de caricatura, desenhados por cima de tudo (chapéu e óculos não escondem a expressão);
     // o que fica fora do rosto (corações, explosão) não aumenta, e a cor da cara fica atrás
-    const els = EXPR_ROSTO[b.expr](), fora = els.filter(e => e.dataset && e.dataset.fora), dentro = els.filter(e => !fora.includes(e));
-    // pele escura (Kali, Krishna, Vishnu…): os traços ficam claros para a expressão aparecer
-    const ph = /^#[0-9a-f]{6}$/i.test(pele) ? pele : "#C98E62", lum = [1, 3, 5].map(i => parseInt(ph.slice(i, i + 2), 16)).reduce((a, v, i) => a + v * [.299, .587, .114][i], 0);
-    if (lum < 95) { const troca = { "#2B1D14": "#F6EEDC", "#6B3A26": "#F3C2AE" }; dentro.forEach(e => [e, ...e.querySelectorAll("*")].forEach(x => {
-      if (!x.dataset.pupila) ["fill", "stroke"].forEach(a => { const v = x.getAttribute(a); if (troca[v]) x.setAttribute(a, troca[v]); });
-      if (x.getAttribute("fill") === "#4A2418") { x.setAttribute("stroke", "#F3C2AE"); x.setAttribute("stroke-width", ".5"); }
-    })); }
+    const els = EXPR_ROSTO[b.expr]().filter(Boolean), fora = els.filter(e => e.dataset && e.dataset.fora), dentro = els.filter(e => !fora.includes(e));
     g.append(...fora.filter(e => e.dataset.fora === "atras"));
     exprG = [h("g", { transform: "translate(30 24.2) scale(1.5) translate(-30 -24.4)", "data-expr": "1" }, dentro), ...fora.filter(e => e.dataset.fora !== "atras").map(e => { e.setAttribute("data-expr", "1"); return e; })];
   }
@@ -4537,9 +4541,10 @@ function vConversa() {
     const fig = m.tipo === "fig" && FIGURINHAS.find(f => f[0] === m.deus);
     log.append(h("div", { class: "bubble" + (mine ? " me" : "") + (ehAviso ? " aviso" : "") + (fig ? " fig" : "") },
       bonecoRosto(m.autor),
-      h("div", { class: "b" },
+      // tocar na mensagem abre as reações (como no WhatsApp)
+      h("div", { class: "b", onclick: e => { if (!S.db || !eu() || e.target.closest("button,a,.reacs,.reacbar") || getSelection().toString()) return; S.reagindo = S.reagindo === m.id ? null : m.id; render(); } },
         h("div", { class: "h" }, h("b", { text: nomeDe(m.autor) }), h("span", { text: d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) }),
-          S.db && eu() ? h("button", { class: "reagir", type: "button", title: "Reagir", "aria-label": "Reagir à mensagem", onclick: () => { S.reagindo = S.reagindo === m.id ? null : m.id; render(); } }, "☺") : null,
+          S.db && eu() ? h("button", { class: "reagir", type: "button", title: "Reagir", "aria-label": "Reagir à mensagem", onclick: () => { S.reagindo = S.reagindo === m.id ? null : m.id; render(); } }, "☺ Reagir") : null,
           (mine || S.isOwner) ? h("button", { class: "del", type: "button", onclick: () => S.db.doc("chat/" + m.id).delete().catch(() => {}) }, "apagar") : null),
         fig ? h("p", { class: "t sofig" }, figMini(m.autor, fig[0])) :
         m.tipo === "local" ? h("div", { class: "ponto" },
