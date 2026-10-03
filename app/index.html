@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 07:22";</script>
+<script>window.__VERSAO = "03/10 · 07:26";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -4564,8 +4564,17 @@ function caixaChat() {
     let r = faixa && el.contains(faixa.startContainer) ? faixa : null;
     if (!r) { r = document.createRange(); r.selectNodeContents(el); r.collapse(false); }
     r.deleteContents(); r.insertNode(im); r.setStartAfter(im); r.collapse(true);
-    s.removeAllRanges(); s.addRange(r); faixa = r.cloneRange();
+    // com as figurinhas abertas o teclado fica fechado (como no WhatsApp): só mexe no cursor se a pessoa já estava digitando
+    if (document.activeElement === el) { s.removeAllRanges(); s.addRange(r); }
+    faixa = r.cloneRange(); el.scrollTop = el.scrollHeight;
   };
+  // tocar na caixa para escrever troca as figurinhas pelo teclado
+  // ao voltar a digitar, o cursor vai para onde a última figurinha entrou (ou para o fim)
+  const cursorDentro = () => { const sel = getSelection(); if (sel.rangeCount && el.contains(sel.getRangeAt(0).startContainer)) return;
+    let r = faixa && el.contains(faixa.startContainer) ? faixa.cloneRange() : null; if (!r) { r = document.createRange(); r.selectNodeContents(el); r.collapse(false); }
+    sel.removeAllRanges(); sel.addRange(r); };
+  el.addEventListener("focus", () => { setTimeout(cursorDentro, 0); if (!S.figAberto) return; S.figAberto = false; document.querySelector(".figpicker")?.remove();
+    const bt = document.querySelector('button[aria-label="Figurinhas do meu bonequinho"]'); if (bt) { bt.classList.remove("avisoon"); bt.setAttribute("aria-pressed", "false"); } });
   el.addEventListener("paste", e => { e.preventDefault(); const t = (e.clipboardData || window.clipboardData).getData("text"); document.execCommand("insertText", false, t); });
   el.addEventListener("input", () => { if (!el.textContent && !el.querySelector("img")) el.replaceChildren(); });
   return el;
@@ -4703,7 +4712,7 @@ function vConversa() {
         S.isOwner ? h("button", { class: "iconbtn" + (S.modoAviso ? " avisoon" : ""), type: "button", title: "Mandar como aviso da líder", "aria-label": "Mandar como aviso da líder", "aria-pressed": String(!!S.modoAviso), onclick: () => { S.modoAviso = !S.modoAviso; render(); } },
           ico(["M3 10v4h3l6 4V6L6 10H3z", "M16 9a4 4 0 0 1 0 6", "M18.5 6.5a7.5 7.5 0 0 1 0 11"])) : null,
         S.modoAviso ? h("p", { class: "avisotag", text: "📢 Aviso para toda a tribo · chega como notificação e fica fixado no topo" }) : null,
-        h("button", { class: "iconbtn" + (S.figAberto ? " avisoon" : ""), type: "button", title: "Figurinhas", "aria-label": "Figurinhas do meu bonequinho", "aria-pressed": String(!!S.figAberto), onclick: () => { S.figAberto = !S.figAberto; render(); } },
+        h("button", { class: "iconbtn" + (S.figAberto ? " avisoon" : ""), type: "button", title: "Figurinhas", "aria-label": "Figurinhas do meu bonequinho", "aria-pressed": String(!!S.figAberto), onclick: () => { S.figAberto = !S.figAberto; if (S.figAberto) document.activeElement?.blur?.(); render(); } },
           ico(["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z", "M8.5 14.5s1.3 2 3.5 2 3.5-2 3.5-2", "M9 9.5h.01", "M15 9.5h.01"])),
         fileIn, h("div", { style: "flex:1;display:flex;flex-direction:column;min-width:0" }, ta, fotoMsg),
         h("button", { class: "btn gold", type: "button", onclick: enviar }, "Enviar"))
