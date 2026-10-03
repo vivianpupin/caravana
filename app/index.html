@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 07:11";</script>
+<script>window.__VERSAO = "03/10 · 07:12";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1550,7 +1550,7 @@ function vDia(d, open, isToday, abrir) {
         h("p", { class: "eyebrow rule", text: "Mapa dos Deuses" }),
         d.deuses.intro ? h("p", { class: "intro", text: d.deuses.intro }) : null,
         h("div", { class: "godrow" }, d.deuses.cards.map(c => h("figure", { class: "god", style: "margin:0" }, h("img", { src: deusSrc(c.nome), alt: c.nome, loading: "lazy" }), h("span", { text: c.papel })))),
-        h("div", { class: "story" }, d.deuses.titulo ? h("h5", { text: d.deuses.titulo }) : null, h("p", { text: d.deuses.texto }))) : null,
+        h("div", { class: "story" }, d.deuses.titulo ? h("h5", { text: d.deuses.titulo }) : null, String(d.deuses.texto || "").split(/\n\s*\n/).map(t => h("p", { text: t.trim() })))) : null,
       ls.length ? h("div", null, h("p", { class: "eyebrow rule", text: ls.length > 1 ? "Selos deste dia" : "Selo deste dia" }),
         h("div", { class: "seals", style: "margin-top:12px" }, ls.map(l => h("button", { type: "button", onclick: () => abrirSelo(l) },
           h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" }), aberto(l) ? "Carimbado" : "Carimbar")))) : null,
