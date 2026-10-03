@@ -5411,11 +5411,23 @@ function vPombo() {
         return h("li", null, h("button", { type: "button", onclick: () => abrirPombo(p) }, bonecoRosto(p.para), h("span", null, h("b", { text: "Para " + nomeDe(p.para).split(" ")[0] }), h("small", { text: p.agradecido ? "🙏 agradeceu" : p.lida ? "✓ entregue e lida" : "🕊️ a caminho" })), pr ? presenteSvg(pr[0], "presente mini") : null)); }))) : null);
 }
 // som de asas batendo: rajadas curtas de ruído filtrado, no ritmo da animação do pombo
+// o iPhone só deixa tocar som depois de um toque na tela: no primeiro toque o áudio é destravado,
+// e daí em diante as asas tocam mesmo quando o pombo chega sozinho
+function destravaAudio() {
+  try {
+    const A = window.AudioContext || window.webkitAudioContext; if (!A) return;
+    const ctx = S.audio || (S.audio = new A());
+    if (ctx.state !== "running") ctx.resume().catch(() => {});
+    const b = ctx.createBuffer(1, 1, 22050), src = ctx.createBufferSource(); src.buffer = b; src.connect(ctx.destination); src.start(0);
+  } catch (e) {}
+}
+["touchend", "click", "keydown"].forEach(ev => document.addEventListener(ev, destravaAudio, { passive: true }));
 function asas() {
   try {
     const A = window.AudioContext || window.webkitAudioContext; if (!A) return;
-    const ctx = S.audio || (S.audio = new A()); if (ctx.state === "suspended") ctx.resume();
-    if (ctx.state !== "running") return;
+    const ctx = S.audio || (S.audio = new A());
+    // se o áudio ainda estiver acordando, toca assim que ele ficar pronto (antes saía mudo)
+    if (ctx.state !== "running") { ctx.resume().then(() => { if (ctx.state === "running") asas(); }).catch(() => {}); return; }
     const sr = ctx.sampleRate, buf = ctx.createBuffer(1, sr * .2, sr), d = buf.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2);
     const t0 = ctx.currentTime + .05;
