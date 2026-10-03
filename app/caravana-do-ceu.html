@@ -397,6 +397,27 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .bubble .h b{color:var(--terra);font-weight:600}
 .bubble .t{white-space:pre-wrap;overflow-wrap:anywhere}
 .bubble .del{margin-left:auto;background:none;border:0;color:inherit;opacity:.6;font-size:11px;padding:0}
+.bubble .reagir{background:none;border:0;color:inherit;opacity:.7;font-size:15px;padding:0 2px;line-height:1}
+.bubble .h .reagir:first-of-type{margin-left:auto}
+.bubble .h .del+.reagir,.bubble .h .reagir+.del{margin-left:6px}
+.reacs{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.reacs button{border:1px solid var(--line2);background:var(--panel2);border-radius:999px;padding:2px 8px;font-size:13px;color:var(--ink);display:flex;gap:4px;align-items:center}
+.reacs button.meu{border-color:var(--terra);background:#F6E3DA}
+.reacbar{display:flex;gap:4px;margin-top:6px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:4px 6px;width:max-content;box-shadow:var(--shadow)}
+.reacbar button{background:none;border:0;font-size:24px;padding:2px 4px;line-height:1}
+.bubble.fig .b{background:none;box-shadow:none;padding:0}
+.bubble.fig .h{padding:0 4px}
+.figura{display:flex;align-items:flex-end;gap:4px}
+.figura svg{width:96px;height:auto;flex:none}
+.figura .fala{background:var(--panel);box-shadow:var(--shadow);border-radius:16px 16px 16px 4px;padding:8px 12px;font-size:16px;margin-bottom:46px;max-width:170px}
+.figura .fala .e{font-size:26px;display:block;line-height:1.1}
+.bubble.me.fig .b{color:var(--ink)}
+.bubble.me.fig .h,.bubble.me.fig .h b{color:var(--soft)}
+.bubble.me .figura{flex-direction:row-reverse;justify-content:flex-start}
+.bubble.me .figura .fala{border-radius:16px 16px 4px 16px}
+.figpicker{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 16px;border-top:1px solid var(--line);background:var(--panel)}
+.figpicker button{border:1px solid var(--line2);background:var(--panel2);border-radius:14px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;color:var(--ink)}
+.figpicker button .e{font-size:24px}
 .bubble .ponto{display:flex;flex-direction:column;gap:6px}
 .bubble .ponto b{font-family:var(--display);font-size:18px;font-weight:500}
 .bubble.me .ponto .eyebrow{color:var(--sand)}
@@ -1236,7 +1257,7 @@ function marcaChat() {
   let visto = 0; try { visto = +localStorage.getItem("cdi-chat-visto") || 0; } catch (e) {}
   const ult = S.chat.reduce((a, m) => Math.max(a, m.ts || 0), 0);
   if (!visto || S.tab === "conversa") { if (ult > visto) { visto = ult; try { localStorage.setItem("cdi-chat-visto", String(ult)); } catch (e) {} } }
-  const n = S.chat.filter(m => m.autor !== S.uid && m.tipo !== "local" && m.tipo !== "aovivo" && (m.ts || 0) > visto).length;
+  const n = S.chat.filter(m => m.autor !== S.uid && m.tipo !== "local" && m.tipo !== "aovivo" && m.tipo !== "reacao" && (m.ts || 0) > visto).length;
   const bt = document.querySelector('#tabs button[data-tab="conversa"]'); if (!bt) return;
   let pin = bt.querySelector(".pinmsg");
   if (!pin) { pin = h("span", { class: "pinmsg", "aria-hidden": "true" }); bt.append(pin); }
@@ -4389,8 +4410,23 @@ function avisoFixado() {
 }
 function vConversa() {
   // mapa e localização não aparecem no chat (ficam só na aba Mapa)
-  const msgs = S.chat.filter(m => m.tipo !== "local" && m.tipo !== "aovivo").sort((a, b) => a.ts - b.ts);
+  const msgs = S.chat.filter(m => m.tipo !== "local" && m.tipo !== "aovivo" && m.tipo !== "reacao").sort((a, b) => a.ts - b.ts);
   perfis(msgs.map(m => m.autor));
+  // reações: cada pessoa fica com uma por mensagem (a mais recente)
+  const reacDocs = S.chat.filter(m => m.tipo === "reacao" && m.msg).sort((a, b) => a.ts - b.ts), reacDe = {};
+  for (const r of reacDocs) (reacDe[r.msg] = reacDe[r.msg] || {})[r.autor] = r;
+  const reagirMsg = async (mid, e) => {
+    S.reagindo = null;
+    const antigas = reacDocs.filter(r => r.msg === mid && r.autor === S.uid), igual = antigas.some(r => r.e === e && r === (reacDe[mid] || {})[S.uid]);
+    await Promise.all(antigas.map(r => S.db.doc("chat/" + r.id).delete().catch(() => {})));
+    if (!igual) await S.db.collection("chat").add({ autor: S.uid, tipo: "reacao", msg: mid, e, ts: Date.now() }).catch(() => {});
+    render();
+  };
+  const linhaReacoes = mid => {
+    const por = {}; Object.values(reacDe[mid] || {}).forEach(r => { (por[r.e] = por[r.e] || []).push(r.autor); });
+    const ks = Object.keys(por); if (!ks.length) return null;
+    return h("div", { class: "reacs" }, ks.map(e => h("button", { type: "button", class: por[e].includes(S.uid) ? "meu" : "", title: por[e].map(nomeDe).join(", "), onclick: () => reagirMsg(mid, e) }, h("span", { text: e }), h("span", { text: String(por[e].length) }))));
+  };
   const log = h("div", { class: "chatlog", id: "chatlog", "aria-live": "polite" });
   let last = "";
   for (const m of msgs) {
@@ -4398,11 +4434,14 @@ function vConversa() {
     if (day !== last) { log.append(h("p", { class: "dayline", text: day })); last = day; }
     const mine = m.autor === S.uid;
     const ehAviso = m.tipo === "aviso" && ehLider(m.autor);
-    log.append(h("div", { class: "bubble" + (mine ? " me" : "") + (ehAviso ? " aviso" : "") },
+    const fig = m.tipo === "fig" && REACOES.find(r => r[0] === m.r);
+    log.append(h("div", { class: "bubble" + (mine ? " me" : "") + (ehAviso ? " aviso" : "") + (fig ? " fig" : "") },
       bonecoRosto(m.autor),
       h("div", { class: "b" },
         h("div", { class: "h" }, h("b", { text: nomeDe(m.autor) }), h("span", { text: d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) }),
+          S.db && eu() ? h("button", { class: "reagir", type: "button", title: "Reagir", "aria-label": "Reagir à mensagem", onclick: () => { S.reagindo = S.reagindo === m.id ? null : m.id; render(); } }, "☺") : null,
           (mine || S.isOwner) ? h("button", { class: "del", type: "button", onclick: () => S.db.doc("chat/" + m.id).delete().catch(() => {}) }, "apagar") : null),
+        fig ? h("div", { class: "figura" }, bonecoSvg(bonecoDe(m.autor)), h("p", { class: "fala" }, h("span", { class: "e", text: fig[1] }), fig[2])) :
         m.tipo === "local" ? h("div", { class: "ponto" },
           h("span", { class: "eyebrow", text: "Ponto de encontro" }), h("b", { text: m.nome || "Local marcado" }),
           m.texto ? h("p", { class: "t", text: m.texto }) : null,
@@ -4415,7 +4454,9 @@ function vConversa() {
           h("div", { class: "actions" }, h("a", { class: "btn", href: m.link, target: "_blank", rel: "noopener" }, "Ver ao vivo no Google Maps"))) :
         m.tipo === "foto" ? h("div", null, h("img", { class: "chatfoto", src: blob(m.fotoId), alt: m.texto || "Foto", loading: "lazy" }), m.texto ? h("p", { class: "t", text: m.texto }) : null) :
         ehAviso ? h("div", null, h("p", { class: "eyebrow avisolab", text: "📢 Aviso da líder" }), h("p", { class: "t", text: m.texto })) :
-        h("p", { class: "t", text: m.texto }))));
+        h("p", { class: "t", text: m.texto }),
+        linhaReacoes(m.id),
+        S.reagindo === m.id ? h("div", { class: "reacbar", role: "group", "aria-label": "Escolha uma reação" }, ["❤️", "🙏", "😂", "😮", "👏", "🔥"].map(e => h("button", { type: "button", "aria-label": e, onclick: () => reagirMsg(m.id, e) }, e))) : null)));
   }
   const cel = cartaoCelular(); if (cel) log.prepend(cel);
   if (!msgs.length) log.append(h("div", { class: "empty", style: "margin:auto;max-width:420px" }, h("h3", { text: "A roda está aberta" }), h("p", { text: "Escreva a primeira mensagem para a caravana." })));
@@ -4491,12 +4532,18 @@ function vConversa() {
         h("p", { class: "eyebrow", text: "Ponto de encontro" }),
         h("div", { class: "unlock" }, pSel, h("button", { class: "btn", type: "button", onclick: enviarPonto }, "Enviar ponto"))),
       pNota, locMsg) : h("span"),
+    pode && S.figAberto ? h("div", { class: "figpicker", role: "group", "aria-label": "Figurinhas" }, REACOES.map(([r, e, t]) => h("button", { type: "button", onclick: async () => {
+      S.figAberto = false; render();
+      try { await addChat({ autor: S.uid, tipo: "fig", r, texto: e + " " + t, ts: Date.now() }); } catch (err) { falha(err); }
+    } }, h("span", { class: "e", text: e }), h("span", { text: t })))) : null,
     pode ? h("div", { class: "composer" },
         S.assets ? h("button", { class: "iconbtn", type: "button", title: "Enviar foto", "aria-label": "Enviar foto", onclick: () => fileIn.click() },
           ico(["M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z", "M12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"])) : null,
         S.isOwner ? h("button", { class: "iconbtn" + (S.modoAviso ? " avisoon" : ""), type: "button", title: "Mandar como aviso da líder", "aria-label": "Mandar como aviso da líder", "aria-pressed": String(!!S.modoAviso), onclick: () => { S.modoAviso = !S.modoAviso; render(); } },
           ico(["M3 10v4h3l6 4V6L6 10H3z", "M16 9a4 4 0 0 1 0 6", "M18.5 6.5a7.5 7.5 0 0 1 0 11"])) : null,
         S.modoAviso ? h("p", { class: "avisotag", text: "📢 Aviso para toda a tribo · chega como notificação e fica fixado no topo" }) : null,
+        h("button", { class: "iconbtn" + (S.figAberto ? " avisoon" : ""), type: "button", title: "Figurinhas", "aria-label": "Figurinhas do meu bonequinho", "aria-pressed": String(!!S.figAberto), onclick: () => { S.figAberto = !S.figAberto; render(); } },
+          ico(["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z", "M8.5 14.5s1.3 2 3.5 2 3.5-2 3.5-2", "M9 9.5h.01", "M15 9.5h.01"])),
         fileIn, h("div", { style: "flex:1;display:flex;flex-direction:column;min-width:0" }, ta, fotoMsg),
         h("button", { class: "btn gold", type: "button", onclick: enviar }, "Enviar"))
       : h("div", { class: "composer" }, h("p", { class: "note", text: !S.db ? "A conversa aparece quando o aplicativo se conecta à internet." :
@@ -5661,7 +5708,7 @@ render();
     // quem virou líder depois de já ter passaporte (ex.: Vanessa) passa a aparecer como Líder
     const v = eu(); if (S.isOwner && v && !v.lider && !S.virandoLider) { S.virandoLider = true; S.db.doc("viajantes/" + S.uid).update({ lider: true }).catch(() => { S.virandoLider = false; }); }
   });
-  listen("chat", "chat", db.collection("chat").orderBy("ts", "desc").limit(400));
+  listen("chat", "chat", db.collection("chat").orderBy("ts", "desc").limit(800));
   listen("posicoes", "posicoes");
   listen("cartas", "cartas", null, () => {
     setTimeout(checaCorreio, 1200);
