@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 07:51";</script>
+<script>window.__VERSAO = "03/10 · 07:59";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -517,8 +517,88 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .brand span{color:#C9A56A;letter-spacing:.24em}
 .me:not(.bubble){background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.35);box-shadow:none}
 .me:not(.bubble) b{color:#E2BE78}
-nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(10,minmax(52px,1fr));overflow-x:auto;scrollbar-width:none}
+nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(11,minmax(52px,1fr));overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
+/* ---------- Pombo-correio ---------- */
+.pomboview{gap:16px}
+.pombohead{position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;padding:26px 16px 22px;border-radius:24px;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 120%,#F6D9A0 0,#F3C98A 22%,rgba(243,201,138,0) 55%),linear-gradient(180deg,#8FB6CF 0,#BFD6DE 45%,#F2E3C6 100%);box-shadow:var(--shadow)}
+.pombohead h1{font-family:var(--display);font-size:30px;margin:0;color:#2E2A22}
+.pombohead .eyebrow{color:#5B3A2A}
+.pombohead .lede{max-width:40ch;margin:0;color:#3B342A}
+.ceupombo{height:70px;position:relative;width:100%}
+.ceupombo .pombo{width:96px;position:absolute;left:50%;top:6px;margin-left:-48px}
+@media (prefers-reduced-motion:no-preference){
+  .ceupombo .pombo{animation:flutua 3.6s ease-in-out infinite}
+  .ceupombo .pombo .asa{transform-origin:37px 27px;animation:bate .3s ease-in-out infinite alternate}
+  @keyframes flutua{0%,100%{transform:translate(-18px,4px) rotate(-3deg)}50%{transform:translate(18px,-6px) rotate(3deg)}}
+}
+.caixacorreio{background:linear-gradient(180deg,#FFF9EE,#F7ECD6)}
+.envlista{display:flex;flex-direction:column;gap:10px}
+.envcard{position:relative;display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 16px 14px 14px;border-radius:10px;border:1px solid #E2CFA8;color:var(--ink);
+  background:linear-gradient(135deg,transparent 49.5%,rgba(160,120,70,.18) 50%,transparent 50.5%),linear-gradient(225deg,transparent 49.5%,rgba(160,120,70,.18) 50%,transparent 50.5%),#FBF1DC;box-shadow:0 3px 8px rgba(40,28,15,.12)}
+.envcard.novo{border-color:#E2A64A;box-shadow:0 0 0 2px rgba(242,194,48,.45),0 6px 14px rgba(40,28,15,.18)}
+.envcard .rosto{align-self:center;flex:none}
+.envtxt{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.envtxt b{font-family:var(--display);font-size:17px}
+.envtxt small{color:var(--soft);font-size:12.5px}
+.envselo{position:absolute;right:-8px;top:-8px;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#C4473A,#8A2A1F);display:grid;place-items:center;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+.envselo img{width:16px;opacity:.8}
+.envnovo{position:absolute;left:10px;top:-9px;background:#F2C230;color:#3B2A1C;font:700 10.5px/1 "Poppins",sans-serif;padding:3px 7px;border-radius:9px;letter-spacing:.04em}
+.presente{width:56px;height:56px}
+.presente.mini{width:34px;height:34px;flex:none}
+.presente.grande{width:92px;height:92px}
+.enviadas{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.enviadas button{width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:8px 10px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);color:var(--ink)}
+.enviadas button>span{flex:1;display:flex;flex-direction:column}
+.enviadas small{color:var(--soft);font-size:12px}
+.pombosheet{align-items:center}
+.pombobox{position:relative;background:#FFF9EE;border-radius:24px;padding:18px 16px 16px;width:min(560px,100%);max-height:92vh;overflow-y:auto;display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.pombobox>*{flex-shrink:0}
+.pbpresente,.pbpessoa{-webkit-tap-highlight-color:transparent}
+.pombobox.chegou{background:linear-gradient(180deg,#9DBFD3 0,#D9E6E6 120px,#FFF9EE 240px)}
+.pombobox .voo{color:#2E2A22;text-shadow:none}
+.pbtopo{display:flex;gap:12px;align-items:center}
+.pbtopo h2{font-family:var(--display);font-size:20px;margin:0}
+.pbpasso{margin:6px 0 0;font:600 12px "Poppins",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--terra)}
+.pbpessoas{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:none}
+.pbpessoas::-webkit-scrollbar{display:none}
+.pbpessoa{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 6px 4px;border-radius:14px;border:2px solid transparent;background:none;color:var(--ink);font-size:12px;min-width:62px}
+.pbpessoa .rosto{width:48px;height:48px}
+.pbpessoa.on{border-color:#E2A64A;background:#FFF1D2}
+.pbpapel textarea{width:100%;border:1px solid #DCC9A6;border-radius:6px;padding:6px 14px;min-height:150px;resize:vertical;color:#27406B;font:22px/30px "Caveat","Segoe Script",cursive;
+  background:repeating-linear-gradient(180deg,#FFFBF1 0 29px,#D8E0E8 29px 30px);background-attachment:local;box-shadow:inset 0 1px 3px rgba(60,40,20,.12)}
+.pbpresentes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.pbpresente{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:14px;border:2px solid var(--line2);background:#fff;color:var(--ink);font-size:10.5px;line-height:1.15;text-align:center}
+.pbpresente .presente{width:40px;height:40px}
+.pbpresente.on{border-color:#E2A64A;background:#FFF1D2;box-shadow:0 0 0 3px rgba(242,194,48,.3)}
+.pbenv{position:relative;padding:4px}
+.cartinha{background:#FFFDF6;border-radius:6px;padding:18px 18px 16px;box-shadow:0 6px 18px rgba(40,28,15,.18);border:1px solid #EADFC8;color:#27406B;font:21px/1.45 "Caveat","Segoe Script",cursive;
+  background-image:repeating-linear-gradient(180deg,transparent 0 29px,rgba(120,150,180,.18) 29px 30px)}
+.cartinha p{margin:0 0 8px}
+.ctdata{text-align:right;font-size:17px;opacity:.7}
+.ctpara{font-weight:600}
+.ctass{display:flex;flex-direction:column;align-items:flex-end;margin-top:6px}
+.ctass b{font-size:24px}
+.ctpresente{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin-top:12px;padding:10px;border-radius:14px;background:#FFF1D2;border:1px dashed #E2A64A;font:15px "Poppins",sans-serif;color:var(--ink)}
+.ctpresente p{margin:0}
+.ctbrilho{position:relative;display:grid;place-items:center}
+.ctbrilho::before{content:"";position:absolute;inset:-10px;border-radius:50%;background:radial-gradient(circle,rgba(255,215,120,.7),rgba(255,215,120,0) 70%)}
+.ctbrilho .presente{position:relative;width:72px;height:72px}
+.ctboneco{width:60px;height:auto}
+.partida{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:rgba(255,249,238,.94);border-radius:24px;font:italic 19px var(--display);color:#2E2A22;text-align:center;padding:20px}
+.partida .pombo{width:120px}
+@media (prefers-reduced-motion:no-preference){
+  .chegou .cartinha{animation:abreCarta .9s cubic-bezier(.2,.8,.3,1) 1.2s both}
+  .chegou .ctbrilho .presente{animation:presentePula .8s cubic-bezier(.3,1.6,.5,1) 2s both}
+  .partida{animation:aparece .3s ease both}
+  .partida .pombo{animation:parte 2.2s cubic-bezier(.5,0,.8,.6) .3s both}
+  .partida .pombo .asa{transform-origin:37px 27px;animation:bate .18s ease-in-out infinite alternate}
+  @keyframes abreCarta{from{opacity:0;transform:translateY(30px) scale(.9) rotate(-2deg)}to{opacity:1;transform:none}}
+  @keyframes presentePula{from{transform:scale(0) rotate(-20deg)}to{transform:none}}
+  @keyframes parte{0%{transform:none}25%{transform:translate(-10px,6px)}100%{transform:translate(80vw,-70vh) scale(.5) rotate(-10deg)}}
+}
+
 /* celular com o teclado aberto: a barra de abas some, para sobrar espaço para a conversa */
 @media (max-width:900px){body.teclado nav.tabs{display:none}}
 .navmais{display:none;position:fixed;right:0;bottom:0;width:44px;height:calc(76px + env(safe-area-inset-bottom,0px));background:linear-gradient(90deg,rgba(43,31,20,0),#2B1F14 65%);color:#E2BE78;font-size:26px;align-items:center;justify-content:flex-end;padding:0 8px calc(env(safe-area-inset-bottom,0px) + 6px) 0;pointer-events:none;z-index:30}
@@ -1101,6 +1181,7 @@ nav.tabs button{position:relative}
     <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
     <button data-tab="fotos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h3l1.6-2.2h6.8L17 7.5h3a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.8"/><path d="M17.5 10.3h.01"/></svg></span>Fotos</button>
     <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Pedra</button>
+    <button data-tab="pombo"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 14.5c2.5-1.2 4.8-1.3 7-.5 1-4 3.8-6.8 7.6-6.8.9 0 1.7.2 2.4.6l2 .3-1.6 1.2c-.2 5-4 8.7-9.4 8.7H6.2L3 20l1-3.2-1.5-2.3z"/><path d="M9.6 14l3.6-6.4"/><circle cx="18.3" cy="9.2" r=".4" fill="currentColor"/></svg></span>Pombo</button>
   </nav>
 </div>
 
@@ -1112,7 +1193,7 @@ nav.tabs button{position:relative}
 const S = {
   tab: "travessia",
   roteiro: null, roteiroErro: false,
-  dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [], cartas: [], diarios: [], pedra: [], membros: [], mural: [], cartasP: [], fotoAba: "estudio", muralCidade: "",
+  dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [], cartas: [], diarios: [], pedra: [], membros: [], mural: [], cartasP: [], pombosIn: [], pombosOut: [], fotoAba: "estudio", muralCidade: "",
   vReady: false, dbReady: false, pularCadastro: false,
   uid: null, me: null, isOwner: false, canChat: null,
   db: null, user: null, assets: null, perfis: {},
@@ -1297,7 +1378,7 @@ function marcaChat() {
 }
 function render() {
   if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
-  marcaChat(); convidaAvisos(); registraApp(); checaHabilidades();
+  marcaChat(); marcaPombos(); convidaAvisos(); registraApp(); checaHabilidades();
   for (const b of document.querySelectorAll("#tabs button")) {
     if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
   }
@@ -1308,7 +1389,7 @@ function render() {
   pintaMe();
   const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
   main.replaceChildren(precisaCadastro ? vCadastro() :
-    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
+    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "pombo" ? vPombo() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
   // aviso novo da líder (15 min): aparece no topo de qualquer aba
   // último dia: o passaporte completo avisa que o vídeo está pronto (no Roteiro e no Passaporte)
   if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte")) { const c = avisoVideo(), v = main.firstElementChild; if (c && v) v.prepend(c); }
@@ -4397,7 +4478,7 @@ const avisosLigados = () => pushPossivel() && Notification.permission === "grant
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); S.instalar = e; render(); });
 window.addEventListener("appinstalled", () => { S.instalar = null; render(); });
 if (navigator.serviceWorker) navigator.serviceWorker.addEventListener("message", e => { if (e.data && e.data.aba) go(e.data.aba); });
-{ const aba = new URLSearchParams(location.search).get("aba"); if (["conversa", "passaporte", "travessia"].includes(aba)) S.tab = aba; }
+{ const aba = new URLSearchParams(location.search).get("aba"); if (["conversa", "passaporte", "travessia", "pombo"].includes(aba)) S.tab = aba; }
 // a líder abre ou fecha um selo para todos; ao abrir, a caravana recebe o aviso no celular
 async function liberarSelo(l) {
   const abre = !l.aberto, ref = S.db.doc("locais/" + l.id);
@@ -5224,6 +5305,123 @@ function pergaminhoCarta(c) {
       h("span", { class: "lacre", "aria-hidden": "true" }, h("img", { src: "img/simbolo-claro.png", alt: "" }))),
     h("span", { class: "rolo bot", "aria-hidden": "true" }));
 }
+// ---------- Pombo-correio entre os viajantes: cartinhas, presentes e oferendas ----------
+const PRESENTES = [["lotus", "Flor de lótus"], ["guirlanda", "Guirlanda de cravos"], ["diya", "Lamparina"], ["chai", "Um chai"], ["ladoo", "Doce ladoo"], ["incenso", "Incenso"],
+  ["pena", "Pena de pavão"], ["sino", "Sino do templo"], ["coco", "Coco de oferenda"], ["rakhi", "Fio de proteção"], ["abraco", "Um abraço"], ["coracao", "Meu coração"]];
+const presenteDe = id => PRESENTES.find(x => x[0] === id);
+function desenhaPresente(id) {
+  const P = (d, fill, x) => h("path", { d, fill, ...(x || {}) }), C = (cx, cy, r, fill, x) => h("circle", { cx, cy, r, fill, ...(x || {}) });
+  if (id === "diya" || id === "chai") return desenhaItem(id);
+  if (id === "lotus") return [P("M20 31 Q9 30 5 21 Q13 21 20 31Z", "#E98AA6"), P("M20 31 Q31 30 35 21 Q27 21 20 31Z", "#E98AA6"), P("M20 31 Q11 24 12 13 Q19 19 20 31Z", "#F2A7BC"), P("M20 31 Q29 24 28 13 Q21 19 20 31Z", "#F2A7BC"), P("M20 31 Q14 20 20 7 Q26 20 20 31Z", "#F7C3D1"), P("M8 33 Q20 37 32 33", "none", { stroke: "#5F8A4A", "stroke-width": 2.2, "stroke-linecap": "round" })];
+  if (id === "guirlanda") return [P("M7 9 Q20 44 33 9", "none", { stroke: "#3F7A3A", "stroke-width": 1, opacity: .6 }), ...Array.from({ length: 11 }, (_, k) => { const t = k / 10, x = 7 + 26 * t, y = 9 + 4 * 25 * t * (1 - t) * 1.08; return C(x, y, 3.1, k % 2 ? "#F2A51F" : "#E2711D", { stroke: "#B5541A", "stroke-width": .4 }); }), C(20, 36, 2.4, "#C0392B")];
+  if (id === "ladoo") return [h("ellipse", { cx: 20, cy: 30, rx: 16, ry: 5, fill: "#5F8A4A" }), h("ellipse", { cx: 20, cy: 29, rx: 13, ry: 3.6, fill: "#79A15F" }), C(14, 24, 5.4, "#F2A33A"), C(26, 24, 5.4, "#F2A33A"), C(20, 16.5, 5.4, "#F5B54E"), ...[[12, 22], [16, 25], [24, 22], [28, 25], [18, 15], [22, 17]].map(([x, y]) => C(x, y, .6, "#C9741A"))];
+  if (id === "incenso") return [P("M15 34 L25 34 L23 30 L17 30Z", "#8A5A35"), P("M20 30 L20 12", "none", { stroke: "#7A3E1E", "stroke-width": 1.6 }), C(20, 11.6, 1.2, "#F26B2A"), P("M20 10 q-3 -3 0 -5 q3 -2 0 -5", "none", { stroke: "#BDB4A6", "stroke-width": 1.1, "stroke-linecap": "round" }), P("M21 9 q4 -2 2 -5", "none", { stroke: "#CFC7BA", "stroke-width": .9, "stroke-linecap": "round" })];
+  if (id === "pena") return [P("M28 36 Q22 20 12 5", "none", { stroke: "#7A8A4A", "stroke-width": 1.2 }), h("ellipse", { cx: 16, cy: 13, rx: 7, ry: 10, fill: "#3E8A6E", transform: "rotate(-30 16 13)" }), h("ellipse", { cx: 15.5, cy: 12, rx: 4.6, ry: 6.4, fill: "#E6B93A", transform: "rotate(-30 15.5 12)" }), h("ellipse", { cx: 15, cy: 11.5, rx: 3, ry: 4.2, fill: "#2A6FAE", transform: "rotate(-30 15 11.5)" }), h("ellipse", { cx: 14.7, cy: 11, rx: 1.5, ry: 2.2, fill: "#14304F", transform: "rotate(-30 14.7 11)" })];
+  if (id === "sino") return [P("M20 4 v3", "none", { stroke: "#8A6420", "stroke-width": 1.6 }), C(20, 4, 1.6, "none", { stroke: "#8A6420", "stroke-width": 1.2 }), P("M11 28 Q11 10 20 8 Q29 10 29 28 Z", "#D9A53A"), P("M8 28 h24 v3 h-24z", "#B8862A"), C(20, 33.5, 2.3, "#8A6420"), P("M14 14 Q15 11 18 10", "none", { stroke: "#F6DE9A", "stroke-width": 1.4, "stroke-linecap": "round" })];
+  if (id === "coco") return [C(20, 21, 11, "#7A4E2A"), P("M11 17 Q20 11 29 17", "none", { stroke: "#5A3A1E", "stroke-width": 1.2 }), h("ellipse", { cx: 20, cy: 21, rx: 1.4, ry: 2.4, fill: "#C0392B" }), P("M15 9 Q20 2 25 9", "none", { stroke: "#5F8A4A", "stroke-width": 2, "stroke-linecap": "round" }), P("M8 32 Q20 38 32 32", "none", { stroke: "#E2711D", "stroke-width": 2.4, "stroke-linecap": "round" })];
+  if (id === "rakhi") return [P("M4 22 Q20 27 36 22", "none", { stroke: "#C0392B", "stroke-width": 1.8 }), P("M4 23.5 Q20 28.5 36 23.5", "none", { stroke: "#E2B33A", "stroke-width": .8 }), ...Array.from({ length: 8 }, (_, k) => { const a = k * Math.PI / 4; return h("ellipse", { cx: 20 + Math.cos(a) * 5.4, cy: 22 + Math.sin(a) * 5.4, rx: 2.6, ry: 1.6, fill: k % 2 ? "#F2A51F" : "#E2711D", transform: `rotate(${k * 45} ${20 + Math.cos(a) * 5.4} ${22 + Math.sin(a) * 5.4})` }); }), C(20, 22, 3.4, "#D9A53A"), C(20, 22, 1.6, "#C0392B")];
+  if (id === "abraco") return [P("M20 33 C9 26 6 20 6 15 c0-4 3-7 7-7 3 0 5.6 2 7 4.6 C21.4 10 24 8 27 8 c4 0 7 3 7 7 0 5-3 11-14 18z", "#E0303F"), P("M3 20 Q8 30 16 28 M37 20 Q32 30 24 28", "none", { stroke: "#E4B48C", "stroke-width": 3.4, "stroke-linecap": "round" }), C(16, 28, 2, "#E4B48C"), C(24, 28, 2, "#E4B48C")];
+  if (id === "coracao") return [P("M20 34 C8 26 5 20 5 14 c0-4.4 3.3-7.6 7.6-7.6 3.2 0 5.8 2 7.4 4.8 1.6-2.8 4.2-4.8 7.4-4.8 4.3 0 7.6 3.2 7.6 7.6 0 6-3 12-15 20z", "#E0303F"), P("M11 13 Q12 10 15 9.6", "none", { stroke: "#F6A3AC", "stroke-width": 1.8, "stroke-linecap": "round" })];
+  return [];
+}
+const presenteSvg = (id, cls) => h("svg", { class: cls || "presente", viewBox: "0 0 40 40", "aria-hidden": "true" }, desenhaPresente(id));
+const pombosVistos = () => { try { return JSON.parse(localStorage.getItem("cdi-pombos-vistos") || "{}"); } catch (e) { return {}; } };
+const naoLidos = () => S.pombosIn.filter(p => !p.lida);
+function marcaPombos() {
+  const n = naoLidos().length, bt = document.querySelector('#tabs button[data-tab="pombo"]'); if (!bt) return;
+  let pin = bt.querySelector(".pinmsg"); if (!pin) { pin = h("span", { class: "pinmsg", "aria-hidden": "true" }); bt.append(pin); }
+  pin.textContent = n > 9 ? "9+" : n ? String(n) : ""; pin.hidden = !n;
+  bt.setAttribute("aria-label", n ? `Pombo-correio, ${n} ${n > 1 ? "cartinhas novas" : "cartinha nova"}` : "Pombo-correio");
+}
+// chegou cartinha nova: o pombo pousa na tela (uma vez por cartinha)
+function checaPombos() {
+  if (!eu() || document.querySelector(".sheet,.abertura")) return;
+  const vistos = pombosVistos(), nova = naoLidos().sort((a, b) => a.ts - b.ts).find(p => !vistos[p.id]); if (!nova) return;
+  vistos[nova.id] = 1; try { localStorage.setItem("cdi-pombos-vistos", JSON.stringify(vistos)); } catch (e) {}
+  abrirPombo(nova, true);
+}
+setInterval(checaPombos, 45000);
+function abrirPombo(p, chegou) {
+  if (chegou) asas();
+  closeSheets();
+  if (!p.lida && p.para === S.uid) S.db.doc("pombos/" + p.id).update({ lida: true }).catch(() => {});
+  const de = nomeDe(p.autor).split(" ")[0], pr = p.presente && presenteDe(p.presente), meu = p.autor === S.uid;
+  const agradecer = async ev => { ev.currentTarget.disabled = true; ev.currentTarget.textContent = "🙏 Gratidão enviada"; try { await S.db.doc("pombos/" + p.id).update({ agradecido: true }); } catch (e) {} };
+  const box = h("div", { role: "dialog", "aria-label": "Cartinha de " + de, class: "pombobox" + (chegou ? " chegou" : "") },
+    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: meu ? "Sua cartinha" : `${de} te mandou um pombo-correio!` })) : null,
+    h("div", { class: "pbenv" },
+      h("article", { class: "cartinha" },
+        h("p", { class: "ctdata", text: new Date(p.ts).toLocaleDateString("pt-BR", { day: "numeric", month: "long" }) }),
+        h("p", { class: "ctpara", text: "Para " + (meu ? nomeDe(p.para).split(" ")[0] : primeiroNome()) + "," }),
+        String(p.texto || "").split(/\n\s*\n/).map(t => h("p", { class: "cttexto", text: t.trim() })),
+        h("div", { class: "ctass" }, h("span", { text: "Com carinho," }), h("b", { text: meu ? primeiroNome() : de })),
+        pr ? h("div", { class: "ctpresente" }, h("div", { class: "ctbrilho" }, presenteSvg(pr[0], "presente grande")), h("p", null, (meu ? "Você mandou: " : de + " te mandou: "), h("b", { text: pr[1] })), bonecoSvg(bonecoDe(p.autor), "ctboneco")) : null)),
+    h("div", { class: "foot2" },
+      !meu ? (p.agradecido ? h("span", { class: "small", text: "🙏 Você agradeceu" }) : h("button", { class: "btn", type: "button", onclick: agradecer }, "🙏 Agradecer")) : h("span", { class: "small", text: p.agradecido ? `🙏 ${nomeDe(p.para).split(" ")[0]} agradeceu` : p.lida ? "✓ Entregue e lida" : "🕊️ A caminho" }),
+      !meu ? h("button", { class: "btn gold", type: "button", onclick: () => escreverPombo(p.autor) }, "✉️ Responder") : h("button", { class: "btn gold", type: "button", onclick: closeSheets }, "Fechar")));
+  const sheet = h("div", { class: "sheet pombosheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  document.body.append(sheet);
+}
+function escreverPombo(para) {
+  closeSheets();
+  const gente = S.viajantes.filter(v => v.id !== S.uid).sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || "")));
+  let quem = para || null, presente = null;
+  const ta = h("textarea", { id: "pombo-txt", rows: "6", maxlength: "1200", placeholder: "Escreva sua cartinha…" });
+  const st = h("p", { class: "msg", role: "status" });
+  const pessoas = h("div", { class: "pbpessoas" }, gente.map(v => h("button", { type: "button", class: "pbpessoa" + (quem === v.id ? " on" : ""), "aria-pressed": String(quem === v.id),
+    onclick: ev => { quem = v.id; pessoas.querySelectorAll(".pbpessoa").forEach(b => { b.classList.remove("on"); b.setAttribute("aria-pressed", "false"); }); ev.currentTarget.classList.add("on"); ev.currentTarget.setAttribute("aria-pressed", "true"); } },
+    bonecoRosto(v.id), h("span", { text: String(v.nome || "Viajante").split(" ")[0] }))));
+  const presentes = h("div", { class: "pbpresentes" }, PRESENTES.map(([id, nome]) => h("button", { type: "button", class: "pbpresente", title: nome, "aria-label": nome, "aria-pressed": "false",
+    onclick: ev => { const b = ev.currentTarget, on = presente !== id; presente = on ? id : null; presentes.querySelectorAll(".pbpresente").forEach(x => { x.classList.remove("on"); x.setAttribute("aria-pressed", "false"); }); if (on) { b.classList.add("on"); b.setAttribute("aria-pressed", "true"); } } },
+    presenteSvg(id), h("span", { text: nome }))));
+  const soltar = async ev => {
+    if (!quem) { st.textContent = "Escolha para quem o pombo vai voar."; st.className = "msg err"; return; }
+    if (!ta.value.trim() && !presente) { st.textContent = "Escreva uma cartinha ou escolha um presente."; st.className = "msg err"; return; }
+    const bt = ev.currentTarget; bt.disabled = true;
+    try {
+      const r = await S.db.collection("pombos").add({ autor: S.uid, para: quem, texto: ta.value.trim().slice(0, 1200), presente: presente || "", ts: Date.now(), lida: false });
+      if (noSite() && r && r.id) fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ pombo: r.id }), keepalive: true }).catch(() => {});
+      // o envelope fecha e o pombo sai voando com ele
+      asas(); const caixa = bt.closest(".pombobox"); caixa.classList.add("partiu"); caixa.scrollTop = 0; caixa.style.overflow = "hidden";
+      caixa.append(h("div", { class: "partida" }, pomboSvg("pombo"), h("p", { text: `Seu pombo levantou voo até ${nomeDe(quem).split(" ")[0]}!` })));
+      setTimeout(() => { closeSheets(); render(); }, 2600);
+    } catch (e) { bt.disabled = false; st.textContent = "O pombo não conseguiu sair agora. Tente de novo em instantes."; st.className = "msg err"; }
+  };
+  const box = h("div", { role: "dialog", "aria-label": "Escrever uma cartinha", class: "pombobox" },
+    h("div", { class: "pbtopo" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Pombo-correio" }), h("h2", { text: "Uma cartinha para alguém da caravana" }))),
+    h("p", { class: "pbpasso", text: "1 · Para quem?" }), pessoas,
+    h("p", { class: "pbpasso", text: "2 · Sua cartinha" }), h("div", { class: "pbpapel" }, ta),
+    h("p", { class: "pbpasso", text: "3 · Um presente ou oferenda (se quiser)" }), presentes,
+    st,
+    h("div", { class: "foot2" }, h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Agora não"), h("button", { class: "btn gold", type: "button", onclick: soltar }, "🕊️ Soltar o pombo")));
+  const sheet = h("div", { class: "sheet pombosheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  document.body.append(sheet);
+}
+function vPombo() {
+  const chegaram = S.pombosIn.slice().sort((a, b) => b.ts - a.ts), foram = S.pombosOut.slice().sort((a, b) => b.ts - a.ts);
+  perfis([...chegaram.map(p => p.autor), ...foram.map(p => p.para)]);
+  const pode = S.db && S.uid && eu();
+  const envelope = p => { const pr = p.presente && presenteDe(p.presente);
+    return h("button", { type: "button", class: "envcard" + (p.lida ? "" : " novo"), onclick: () => abrirPombo(p, !p.lida) },
+      h("span", { class: "envselo", "aria-hidden": "true" }, h("img", { src: "img/simbolo-claro.png", alt: "" })),
+      bonecoRosto(p.autor),
+      h("span", { class: "envtxt" }, h("b", { text: "De " + nomeDe(p.autor).split(" ")[0] }), h("small", { text: new Date(p.ts).toLocaleDateString("pt-BR", { day: "numeric", month: "short" }) + (pr ? " · com " + pr[1].toLowerCase() : "") })),
+      pr ? presenteSvg(pr[0], "presente mini") : null,
+      !p.lida ? h("span", { class: "envnovo", text: "Novo!" }) : null); };
+  return h("section", { class: "view pomboview" },
+    h("div", { class: "pombohead" },
+      h("div", { class: "ceupombo", "aria-hidden": "true" }, pomboSvg("pombo voando")),
+      h("p", { class: "eyebrow", text: "Correio da caravana" }), h("h1", { text: "Pombo-correio" }),
+      h("p", { class: "lede", text: "Escreva uma cartinha, escolha um presente ou uma oferenda e solte o pombo. Ele voa até a pessoa da caravana e pousa no celular dela." }),
+      pode ? h("button", { class: "btn gold", type: "button", onclick: () => escreverPombo() }, "✉️ Escrever uma cartinha") : h("p", { class: "small", text: "Emita seu passaporte para mandar e receber cartinhas." })),
+    h("div", { class: "panel caixacorreio" },
+      h("p", { class: "eyebrow", text: "Sua caixa de correio" }),
+      chegaram.length ? h("div", { class: "envlista" }, chegaram.map(envelope)) : h("p", { class: "small", text: "Nenhum pombo pousou aqui ainda. Quando alguém te mandar uma cartinha, ela aparece nesta caixa." })),
+    foram.length ? h("div", { class: "panel" },
+      h("p", { class: "eyebrow", text: "Cartinhas que você mandou" }),
+      h("ul", { class: "enviadas" }, foram.map(p => { const pr = p.presente && presenteDe(p.presente);
+        return h("li", null, h("button", { type: "button", onclick: () => abrirPombo(p) }, bonecoRosto(p.para), h("span", null, h("b", { text: "Para " + nomeDe(p.para).split(" ")[0] }), h("small", { text: p.agradecido ? "🙏 agradeceu" : p.lida ? "✓ entregue e lida" : "🕊️ a caminho" })), pr ? presenteSvg(pr[0], "presente mini") : null)); }))) : null);
+}
 // som de asas batendo: rajadas curtas de ruído filtrado, no ritmo da animação do pombo
 function asas() {
   try {
@@ -5916,7 +6114,7 @@ function vRupias() {
 
 // ---------- dados ----------
 // cada coleção só redesenha as abas que mostram aqueles dados (evita a tela pular à toa)
-const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos"], cartas: ["travessia"], cartasP: ["travessia"] };
+const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos"], cartas: ["travessia"], cartasP: ["travessia"], pombosIn: ["pombo"], pombosOut: ["pombo"] };
 function listen(col, key, q, after) {
   let primeira = true;
   (q || S.db.collection(col)).onSnapshot(snap => {
@@ -5984,6 +6182,8 @@ render();
     if (f && /(Doze|Treze|Catorze|Quinze) selos/.test(f.texto || "")) S.db.doc("cartas/final").update({ texto: f.texto.replace(/(Doze|Treze|Catorze|Quinze) selos/, "Dezesseis selos") }).catch(() => {});
   });
   // cartas só para uma pessoa: cada viajante lê só as suas; a líder vê todas
+  // pombo-correio: só as cartinhas que chegaram para mim e as que eu mandei
+  { const pc = db.collection("pombos"); if (pc.where) { listen("pombos", "pombosIn", pc.where("para", "==", S.uid), () => setTimeout(checaPombos, 900)); listen("pombos", "pombosOut", db.collection("pombos").where("autor", "==", S.uid)); } }
   { const cp = db.collection("cartasPessoais"); listen("cartasPessoais", "cartasP", S.isOwner || !cp.where ? cp : cp.where("para", "==", S.uid), () => setTimeout(checaCorreio, 1200)); }
   listen("pensamentos", "pedra");
   if (S.isOwner && window.__SITE) listen("membros", "membros");

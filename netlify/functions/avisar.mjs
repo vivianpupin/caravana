@@ -17,6 +17,7 @@ export default async req => {
   const corpo = await req.json().catch(() => ({}));
   if (corpo.selo) return avisarSelo(d, k, corpo.selo);
   if (corpo.habilidade) return avisarHabilidade(d, k, corpo.habilidade, corpo.para);
+  if (corpo.pombo) return avisarPombo(d, k, corpo.pombo);
   const { id } = corpo;
   if (!id || typeof id !== "string" || id.includes("/")) return Response.json({ ok: false }, { status: 400 });
   // só avisa uma vez por mensagem, e só se ela acabou de ser enviada
@@ -76,5 +77,21 @@ async function avisarHabilidade(d, k, id, para) {
     });
     if (vai) enviados += await enviarPara(d, k, uid, { title: "✨ Nova habilidade desbloqueada!", body: "Abra o app da Caravana para ver qual é e fazer a sua foto.", tag: "hab-" + id, url: "./?aba=passaporte" }, 24 * 3600);
   }
+  return Response.json({ ok: true, enviados });
+}
+
+// pombo-correio: avisa só quem recebeu a cartinha (uma vez, e só se ela acabou de ser enviada)
+async function avisarPombo(d, k, id) {
+  if (typeof id !== "string" || id.includes("/")) return Response.json({ ok: false }, { status: 400 });
+  const ref = d.doc("pombos/" + id);
+  const m = await d.runTransaction(async t => {
+    const s = await t.get(ref); if (!s.exists) return null;
+    const x = s.data(); if (x.avisado || Date.now() - (x.ts || 0) > 5 * 60 * 1000) return null;
+    t.update(ref, { avisado: true }); return x;
+  });
+  if (!m || typeof m.para !== "string") return Response.json({ ok: false });
+  const v = await d.doc("viajantes/" + m.autor).get();
+  const nome = String((v.exists && v.data().nome) || "Alguém da caravana").trim().split(/\s+/)[0];
+  const enviados = await enviarPara(d, k, m.para, { title: "🕊️ Chegou um pombo-correio!", body: nome + (m.presente ? " te mandou uma cartinha e um presente." : " te mandou uma cartinha."), tag: "pombo-" + id, url: "./?aba=pombo" }, 24 * 3600);
   return Response.json({ ok: true, enviados });
 }
