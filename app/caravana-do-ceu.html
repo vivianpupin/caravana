@@ -1596,7 +1596,7 @@ function vTravessia() {
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +8h30" }))),
     vOnlineLider(),
     vTempo(),
-    vCorrespondencia(),
+    S.isOwner ? null : vCorrespondencia(),
     ins.length ? h("div", null,
       h("p", { class: "eyebrow rule", text: `Os ${ins.length} selos do passaporte` }),
       h("div", { class: "strip", style: "margin-top:10px" }, ins.map(l => h("button", { type: "button", "aria-label": l.nome, onclick: () => abrirSelo(l) },
@@ -5400,6 +5400,8 @@ function vPombo() {
       h("p", { class: "eyebrow", text: "Correio da caravana" }), h("h1", { text: "Pombo-correio" }),
       h("p", { class: "lede", text: "Escreva uma cartinha, escolha um presente ou uma oferenda e solte o pombo. Ele voa até a pessoa da caravana e pousa no celular dela." }),
       pode ? h("button", { class: "btn gold", type: "button", onclick: () => escreverPombo() }, "✉️ Escrever uma cartinha") : h("p", { class: "small", text: "Emita seu passaporte para mandar e receber cartinhas." })),
+    // a líder escreve as cartas da travessia aqui (antes ficava na página inicial)
+    S.isOwner ? vCorrespondencia() : null,
     h("div", { class: "panel caixacorreio" },
       h("p", { class: "eyebrow", text: "Sua caixa de correio" }),
       chegaram.length ? h("div", { class: "envlista" }, chegaram.map(envelope)) : h("p", { class: "small", text: "Nenhum pombo pousou aqui ainda. Quando alguém te mandar uma cartinha, ela aparece nesta caixa." })),
@@ -6100,7 +6102,7 @@ function vRupias() {
 
 // ---------- dados ----------
 // cada coleção só redesenha as abas que mostram aqueles dados (evita a tela pular à toa)
-const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos"], cartas: ["travessia"], cartasP: ["travessia"], pombosIn: ["pombo"], pombosOut: ["pombo"] };
+const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos"], cartas: ["travessia", "pombo"], cartasP: ["travessia", "pombo"], pombosIn: ["pombo"], pombosOut: ["pombo"] };
 function listen(col, key, q, after) {
   let primeira = true;
   (q || S.db.collection(col)).onSnapshot(snap => {
