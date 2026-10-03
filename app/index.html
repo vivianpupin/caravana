@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 14:28";</script>
+<script>window.__VERSAO = "03/10 · 15:16";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -554,6 +554,24 @@ nav.tabs::-webkit-scrollbar{display:none}
 .mpfim h2{font-family:var(--display);margin:0}
 .mplotus{font-size:64px}
 @media (prefers-reduced-motion:no-preference){.mpcarta{animation:mpentra .35s cubic-bezier(.3,1.4,.5,1) both}.mplotus{animation:presentePula .8s cubic-bezier(.3,1.6,.5,1) both}@keyframes mpentra{from{transform:translate(-50%,-50%) scale(.6);opacity:0}}}
+
+.chbox{display:flex;flex-direction:column;gap:12px}
+.chtab{position:relative;width:100%;max-width:520px;margin:0 auto;aspect-ratio:1;border-radius:18px;overflow:hidden;box-shadow:0 10px 26px rgba(40,28,15,.28);background:#F3E9D2}
+.chsvg{position:absolute;inset:0;width:100%;height:100%}
+.chpecas{position:absolute;inset:0}
+.chpeca{position:absolute;width:6.6%;aspect-ratio:1;padding:0;border:0;background:none;transform:translate(-50%,-50%);transition:left .35s ease,top .35s ease;filter:drop-shadow(0 2px 2px rgba(0,0,0,.45));-webkit-tap-highlight-color:transparent}
+.chpeca .rosto{width:100%;height:100%;border:2.5px solid var(--cor)}
+.chpeca i{position:absolute;right:-3px;bottom:-3px;width:44%;height:44%;border-radius:50%;background:var(--cor);color:#fff;font:700 9px/1 "Poppins",sans-serif;display:grid;place-items:center;font-style:normal}
+.chpeca:disabled{cursor:default}
+.chpeca.ativa{z-index:2}
+.chpeca.ativa .rosto{box-shadow:0 0 0 3px #F2C230,0 0 14px 4px rgba(242,194,48,.8)}
+@media (prefers-reduced-motion:no-preference){.chpeca.ativa{animation:chpula .7s ease-in-out infinite alternate}@keyframes chpula{to{transform:translate(-50%,-62%)}}}
+.chpeca.chegou{opacity:.85}
+.chconchas{display:grid;grid-template-columns:repeat(3,22px);gap:3px;border:0;background:#7A3E1E;border-radius:14px;padding:7px;flex:none;-webkit-tap-highlight-color:transparent;box-shadow:0 3px 8px rgba(40,28,15,.3)}
+.chconchas:disabled{opacity:.75}
+.concha{width:22px;height:28px}
+.chescolha{color:#8A3F32!important;font-weight:600}
+.chregras p{font-size:14px;margin:6px 0}
 /* ---------- Pombo-correio ---------- */
 .pomboview{gap:16px}
 .pombohead{position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;padding:26px 16px 22px;border-radius:24px;overflow:hidden;
@@ -5384,14 +5402,14 @@ const mpEstado = () => { try { return JSON.parse(localStorage.getItem("cdi-moksh
 const mpGuarda = st => { try { localStorage.setItem("cdi-moksha", JSON.stringify(st)); } catch (e) {} };
 const MP_FACES = { 1: [[50, 50]], 2: [[28, 28], [72, 72]], 3: [[26, 26], [50, 50], [74, 74]], 4: [[28, 28], [72, 28], [28, 72], [72, 72]], 5: [[26, 26], [74, 26], [50, 50], [26, 74], [74, 74]], 6: [[28, 24], [72, 24], [28, 50], [72, 50], [28, 76], [72, 76]] };
 const mpDado = v => h("svg", { class: "mpdado", viewBox: "0 0 100 100" }, h("rect", { x: 4, y: 4, width: 92, height: 92, rx: 20, fill: "#FFF9EE", stroke: "#8A5A22", "stroke-width": 5 }), (MP_FACES[v] || MP_FACES[1]).map(([x, y]) => h("circle", { cx: x, cy: y, r: 9, fill: v === 1 ? "#C0392B" : "#3B2A1C" })));
-function vJogo() {
+function vMoksha(cabecaExtra) {
   const st = S.mp || (S.mp = mpEstado());
   const cabeca = h("div", { class: "mphead" }, h("p", { class: "eyebrow", text: "Jogo da travessia" }), h("h1", { text: "Moksha Patam" }),
     h("p", { class: "lede", text: "O jogo de cobras e escadas nasceu na Índia para ensinar o caminho: as escadas são virtudes que elevam, as cobras são vícios que derrubam, e a casa 100 é Moksha, a libertação. Funciona sem internet: é só passar o celular." }));
   if (!st || !st.jog) {
     const gente = [eu(), ...S.viajantes.filter(v => v.id !== S.uid && !v.lider), ...S.viajantes.filter(v => v.id !== S.uid && v.lider)].filter(Boolean);
     const sel = S.mpSel || (S.mpSel = eu() ? [S.uid] : []);
-    return h("section", { class: "view jogoview" }, cabeca,
+    return h("div", { class: "mpwrap", style: "display:flex;flex-direction:column;gap:14px" },
       h("div", { class: "panel" }, h("p", { class: "eyebrow", text: "Quem vai jogar? (2 a 4)" }),
         h("div", { class: "mpgente" }, gente.map(v => h("button", { type: "button", class: "pbpessoa" + (sel.includes(v.id) ? " on" : ""), "aria-pressed": String(sel.includes(v.id)), onclick: () => {
           S.mpSel = sel.includes(v.id) ? sel.filter(x => x !== v.id) : sel.length < 4 ? [...sel, v.id] : sel; render(); } }, bonecoRosto(v.id), h("span", { text: v.id === S.uid ? "Você" : String(v.nome || "Viajante").split(" ")[0] })))),
@@ -5421,7 +5439,7 @@ function vJogo() {
     mpGuarda(st); await new Promise(r => setTimeout(r, 380)); S.mpAndando = false; render();
   };
   const carta = S.mpCarta;
-  return h("section", { class: "view jogoview" }, cabeca,
+  return h("div", { class: "mpwrap", style: "display:flex;flex-direction:column;gap:14px" },
     h("div", { class: "mpbox" }, h("div", { class: "mptab" }, mpTabuleiro(), pecas),
       st.fim ? h("div", { class: "mpfim" }, h("div", { class: "mplotus", "aria-hidden": "true" }, "🪷"), h("h2", { text: nomeJ(st.fim) + " alcançou Moksha!" }), h("p", { text: "A libertação: o fim da roda, a casa onde não se cai mais." }),
           h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => { st.jog.forEach(j => j.pos = 0); st.vez = 0; st.fim = null; st.msg = ""; mpGuarda(st); render(); } }, "Jogar de novo"),
@@ -5436,6 +5454,128 @@ function vJogo() {
       h("button", { class: "mpdadobox", type: "button", "aria-label": "Jogar o dado", onclick: jogar }, mpDado(st.dado || 1))) : null,
     h("div", { class: "mplista" }, st.jog.map((j, i) => h("span", { class: i === st.vez && !st.fim ? "vez" : "" }, bonecoRosto(j.id), h("b", { text: nomeJ(j.id) }), h("small", { text: j.pos ? "casa " + j.pos : "na largada" })))),
     h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn ghost", type: "button", onclick: () => { if (confirm("Encerrar esta partida?")) { S.mp = null; mpGuarda(null); render(); } } }, "Encerrar partida")));
+}
+// ---------- Chaupar, o jogo de dados do Mahabharata (Yudhishthira contra Shakuni) ----------
+// tabuleiro em cruz de pano; cada um sai do centro (Charkoni), dá a volta na cruz e volta ao centro.
+// Conchas (kauris) no lugar do dado: o número de bocas para cima é quanto anda; nenhuma para cima vale 10.
+const CH_CORES = [["#B5322A", "#F2C7B8"], ["#3F7A3A", "#CFE3B8"], ["#D9A53A", "#F6E3A8"], ["#2F3550", "#C9CCE0"]];
+const chCaminho = (() => {
+  const P = [];
+  for (let r = 11; r <= 18; r++) P.push([r, 9]);          // desce pelo meio do próprio braço
+  for (let r = 18; r >= 11; r--) P.push([r, 10]);         // sobe pela coluna da direita
+  for (let c = 11; c <= 18; c++) P.push([10, c]);         // braço da direita, por baixo
+  P.push([9, 18]);
+  for (let c = 18; c >= 11; c--) P.push([8, c]);
+  for (let r = 7; r >= 0; r--) P.push([r, 10]);           // braço de cima
+  P.push([0, 9]);
+  for (let r = 0; r <= 7; r++) P.push([r, 8]);
+  for (let c = 7; c >= 0; c--) P.push([8, c]);            // braço da esquerda
+  P.push([9, 0]);
+  for (let c = 0; c <= 7; c++) P.push([10, c]);
+  for (let r = 11; r <= 18; r++) P.push([r, 8]);          // volta ao próprio braço
+  for (let r = 18; r >= 11; r--) P.push([r, 9]);          // sobe pelo meio até o centro
+  P.push([9, 9]);
+  return P;
+})();
+const chGira = ([r, c], k) => { for (let i = 0; i < k; i++) [r, c] = [c, 18 - r]; return [r, c]; };   // braço de cada jogador
+const chCasa = (jog, pos) => pos <= 0 ? [9, 9] : chGira(chCaminho[pos - 1], jog);
+const CH_FIM = chCaminho.length;
+// casas seguras (castelos, marcadas com X no pano): ninguém é capturado nelas
+const chSegura = (r, c) => { const t = [[18, 9], [15, 8], [15, 10]]; for (let k = 0; k < 4; k++) if (t.some(q => { const [a, b] = chGira(q, k); return a === r && b === c; })) return true; return false; };
+function chTabuleiro() {
+  const g = [], C = 50;
+  const braco = (k, cor) => { for (let r = 11; r <= 18; r++) for (let c = 8; c <= 10; c++) { const [a, b] = chGira([r, c], k); g.push(h("rect", { x: b * C, y: a * C, width: C, height: C, fill: c === 9 ? cor[1] : cor[0], stroke: "#F3E2B8", "stroke-width": 2 }));
+    if (chSegura(a, b)) g.push(h("path", { d: `M${b * C + 12} ${a * C + 12}L${b * C + 38} ${a * C + 38}M${b * C + 38} ${a * C + 12}L${b * C + 12} ${a * C + 38}`, stroke: "#FFF6D8", "stroke-width": 4, "stroke-linecap": "round" })); } };
+  [0, 1, 2, 3].forEach(k => braco(k, CH_CORES[k]));
+  g.push(h("rect", { x: 8 * C, y: 8 * C, width: 3 * C, height: 3 * C, fill: "#7A3E1E", stroke: "#F3E2B8", "stroke-width": 2 }));
+  g.push(h("g", { transform: `translate(${9.5 * C - 45} ${9.5 * C - 45}) scale(2.25)` }, desenhaPresente("lotus")));
+  // pano bordado: nos quatro cantos, mandalas nas cores de cada braço, e uma barra dourada em volta
+  const canto = (cx, cy, cor) => h("g", { opacity: .55 }, h("circle", { cx, cy, r: 150, fill: "none", stroke: cor, "stroke-width": 3 }), h("circle", { cx, cy, r: 118, fill: "none", stroke: "#C9A063", "stroke-width": 2, "stroke-dasharray": "4 8" }),
+    ...Array.from({ length: 12 }, (_, k) => { const a = k * Math.PI / 6; return h("ellipse", { cx: cx + Math.cos(a) * 72, cy: cy + Math.sin(a) * 72, rx: 30, ry: 12, fill: cor, opacity: .55, transform: `rotate(${k * 30} ${cx + Math.cos(a) * 72} ${cy + Math.sin(a) * 72})` }); }),
+    h("circle", { cx, cy, r: 34, fill: "#C9A063", opacity: .6 }), h("circle", { cx, cy, r: 16, fill: cor }));
+  return h("svg", { class: "chsvg", viewBox: "0 0 950 950", "aria-hidden": "true" }, h("rect", { x: 0, y: 0, width: 950, height: 950, fill: "#F3E9D2" }),
+    canto(200, 750, CH_CORES[0][0]), canto(200, 200, CH_CORES[1][0]), canto(750, 200, CH_CORES[2][0]), canto(750, 750, CH_CORES[3][0]),
+    h("rect", { x: 8, y: 8, width: 934, height: 934, fill: "none", stroke: "#B8862A", "stroke-width": 6, rx: 16 }), h("rect", { x: 20, y: 20, width: 910, height: 910, fill: "none", stroke: "#B8862A", "stroke-width": 2, "stroke-dasharray": "10 6", rx: 10 }), g);
+}
+const chEstado = () => { try { return JSON.parse(localStorage.getItem("cdi-chaupar") || "null"); } catch (e) { return null; } };
+const chGuarda = st => { try { localStorage.setItem("cdi-chaupar", JSON.stringify(st)); } catch (e) {} };
+const chConcha = up => h("svg", { class: "concha" + (up ? " up" : ""), viewBox: "0 0 40 52" }, h("ellipse", { cx: 20, cy: 26, rx: 17, ry: 23, fill: up ? "#FFF8E8" : "#E6D3AE", stroke: "#A58A5A", "stroke-width": 2 }),
+  up ? h("path", { d: "M20 8 Q14 26 20 44 Q26 26 20 8Z", fill: "#7A5A3A" }) : h("ellipse", { cx: 20, cy: 26, rx: 9, ry: 15, fill: "#D9C29A" }),
+  up ? h("path", { d: "M16 16h-3M16 22h-3M16 28h-3M16 34h-3M24 16h3M24 22h3M24 28h3M24 34h3", stroke: "#A58A5A", "stroke-width": 1.4, "stroke-linecap": "round" }) : null);
+function vChaupar() {
+  const st = S.ch || (S.ch = chEstado());
+  if (!st || !st.jog) {
+    const gente = [eu(), ...S.viajantes.filter(v => v.id !== S.uid && !v.lider), ...S.viajantes.filter(v => v.id !== S.uid && v.lider)].filter(Boolean);
+    const sel = S.chSel || (S.chSel = eu() ? [S.uid] : []);
+    return h("div", { class: "panel" }, h("p", { class: "eyebrow", text: "Quem vai jogar? (2 a 4)" }),
+      h("div", { class: "mpgente" }, gente.map(v => h("button", { type: "button", class: "pbpessoa" + (sel.includes(v.id) ? " on" : ""), "aria-pressed": String(sel.includes(v.id)), onclick: () => {
+        S.chSel = sel.includes(v.id) ? sel.filter(x => x !== v.id) : sel.length < 4 ? [...sel, v.id] : sel; render(); } }, bonecoRosto(v.id), h("span", { text: v.id === S.uid ? "Você" : String(v.nome || "Viajante").split(" ")[0] })))),
+      h("div", { class: "actions" }, h("button", { class: "btn gold", type: "button", disabled: sel.length < 2, onclick: () => {
+        const bracos = sel.length === 2 ? [0, 2] : sel.length === 3 ? [0, 1, 2] : [0, 1, 2, 3];
+        S.ch = { jog: sel.map((id, i) => ({ id, braco: bracos[i], pecas: [0, 0] })), vez: 0, lance: null, msg: "", fim: null }; chGuarda(S.ch); S.chSel = null; render(); } }, sel.length < 2 ? "Escolha pelo menos 2 pessoas" : "Começar o jogo")));
+  }
+  const nomeJ = id => id === S.uid ? "Você" : nomeDe(id).split(" ")[0];
+  const j = st.jog[st.vez];
+  // peças que podem andar com o lance atual
+  const podeMover = (jj, i) => st.lance != null && jj.pecas[i] < CH_FIM && jj.pecas[i] + st.lance <= CH_FIM;
+  const pecas = [];
+  st.jog.forEach((jj, ji) => jj.pecas.forEach((pos, i) => { const [r, c] = chCasa(jj.braco, pos), casa = st.jog.flatMap((x, xi) => x.pecas.map((q, qi) => ({ xi, qi, q }))).filter(o => { const [a, b] = chCasa(st.jog[o.xi].braco, o.q); return a === r && b === c; });
+    const idx = casa.findIndex(o => o.xi === ji && o.qi === i), n = casa.length, ang = n > 1 ? (idx / n) * Math.PI * 2 : 0, raio = n > 1 ? (pos === 0 || pos === CH_FIM ? 1.1 : .28) : 0;
+    const x = (c + .5 + Math.cos(ang) * raio) / 19 * 100, y = (r + .5 + Math.sin(ang) * raio) / 19 * 100, ativa = ji === st.vez && !st.fim && podeMover(jj, i);
+    pecas.push(h("button", { type: "button", class: "chpeca" + (ativa ? " ativa" : "") + (pos === CH_FIM ? " chegou" : ""), style: `left:${x}%;top:${y}%;--cor:${CH_CORES[jj.braco][0]}`, disabled: !ativa, "aria-label": `${nomeJ(jj.id)}, peça ${i + 1}`,
+      onclick: () => mover(i) }, bonecoRosto(jj.id), h("i", { text: String(i + 1) }))); }));
+  const passa = () => { st.vez = (st.vez + 1) % st.jog.length; };
+  const jogar = async () => {
+    if (st.lance != null || st.fim || S.chJogando) return; S.chJogando = true;
+    const box = document.querySelector(".chconchas");
+    let ups = 0;
+    for (let k = 0; k < 7; k++) { const f = Array.from({ length: 6 }, () => Math.random() < .5); ups = f.filter(Boolean).length; if (box) box.replaceChildren(...f.map(chConcha)); await new Promise(r => setTimeout(r, 80)); }
+    st.conchas = Array.from({ length: 6 }, (_, k) => k < ups); st.lance = ups === 0 ? 10 : ups;
+    st.msg = ups === 0 ? "Nenhuma concha virada: anda 10!" : `${ups} ${ups > 1 ? "conchas viradas" : "concha virada"}: anda ${ups}.`;
+    if (!j.pecas.some((_, i) => podeMover(j, i))) { st.msg += " Nenhuma peça pode andar. Passa a vez."; st.lance = null; passa(); }
+    chGuarda(st); S.chJogando = false; render();
+  };
+  const mover = i => {
+    if (st.lance == null) return;
+    const v = st.lance; j.pecas[i] += v; st.lance = null;
+    const [r, c] = chCasa(j.braco, j.pecas[i]);
+    let extra = v === 6 || v === 10, msg = "";
+    if (j.pecas[i] === CH_FIM) { msg = `${nomeJ(j.id)} levou uma peça de volta ao Charkoni!`; extra = true; }
+    else if (!chSegura(r, c)) st.jog.forEach((o, oi) => { if (oi === st.vez) return; o.pecas.forEach((q, qi) => { if (q > 0 && q < CH_FIM) { const [a, b] = chCasa(o.braco, q); if (a === r && b === c) { o.pecas[qi] = 0; msg = `${nomeJ(j.id)} capturou a peça de ${nomeJ(o.id)}, como Shakuni! Ela volta para o centro.`; extra = true; } } }); });
+    else msg = "Casa segura: aqui ninguém captura.";
+    if (j.pecas.every(q => q === CH_FIM)) st.fim = j.id;
+    st.msg = msg + (extra && !st.fim ? " Joga de novo!" : "");
+    if (!extra && !st.fim) passa();
+    chGuarda(st); render();
+  };
+  return h("div", { class: "chbox" },
+    h("div", { class: "chtab" }, chTabuleiro(), h("div", { class: "chpecas" }, pecas),
+      st.fim ? h("div", { class: "mpfim" }, h("div", { class: "mplotus", "aria-hidden": "true" }, "🎲"), h("h2", { text: nomeJ(st.fim) + " venceu o Chaupar!" }), h("p", { text: "Todas as peças voltaram ao Charkoni. Diferente de Yudhishthira, saiu do jogo com o reino inteiro." }),
+        h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => { st.jog.forEach(x => x.pecas = [0, 0]); st.vez = 0; st.fim = null; st.lance = null; st.msg = ""; chGuarda(st); render(); } }, "Jogar de novo"),
+          h("button", { class: "btn ghost", type: "button", onclick: () => { S.ch = null; chGuarda(null); render(); } }, "Trocar jogadores"))) : null),
+    !st.fim ? h("div", { class: "mpvez", style: `--cor:${CH_CORES[j.braco][0]}` }, bonecoRosto(j.id), h("div", null, h("b", { text: "Vez de " + nomeJ(j.id) }),
+        h("small", { text: st.msg || "Jogue as conchas." }), st.lance != null ? h("small", { class: "chescolha", text: "👆 Toque na peça que quer andar " + st.lance + " casas." }) : null),
+      h("button", { class: "chconchas", type: "button", disabled: st.lance != null, "aria-label": "Jogar as conchas", onclick: jogar }, (st.conchas || [true, false, true, false, false, true]).map(chConcha))) : null,
+    h("div", { class: "mplista" }, st.jog.map((x, i) => h("span", { class: i === st.vez && !st.fim ? "vez" : "", style: `border-color:${CH_CORES[x.braco][0]}` }, bonecoRosto(x.id), h("b", { text: nomeJ(x.id) }),
+      h("small", { text: x.pecas.map(q => q === CH_FIM ? "🏠" : q === 0 ? "centro" : Math.round(q / CH_FIM * 100) + "%").join(" · ") })))),
+    h("details", { class: "guide chregras" }, h("summary", null, h("b", { text: "Como se joga" })),
+      h("p", { text: "Cada pessoa tem 2 peças, que saem do centro (Charkoni), descem pelo meio do seu braço da cruz, dão a volta inteira no tabuleiro e sobem de novo pelo meio até o centro." }),
+      h("p", { text: "Jogue as 6 conchas: o número de conchas viradas para cima é quanto você anda. Nenhuma virada vale 10. Com 6 ou 10, joga de novo." }),
+      h("p", { text: "Você escolhe qual peça mover. Se parar na casa de alguém, captura a peça dele, que volta para o centro, e joga de novo. Nas casas com X ninguém é capturado." }),
+      h("p", { text: "Ganha quem levar as 2 peças de volta ao centro primeiro. Foi num jogo assim, no Mahabharata, que Yudhishthira perdeu o reino para Shakuni." })),
+    h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn ghost", type: "button", onclick: () => { if (confirm("Encerrar esta partida?")) { S.ch = null; chGuarda(null); render(); } } }, "Encerrar partida")));
+}
+function vJogo() {
+  const qual = S.jogoSel || lsGet("cdi-jogo") || "chaupar";
+  const troca = id => { S.jogoSel = id; try { localStorage.setItem("cdi-jogo", id); } catch (e) {} render(); };
+  const cab = qual === "chaupar"
+    ? h("div", { class: "mphead" }, h("p", { class: "eyebrow", text: "Jogo da travessia" }), h("h1", { text: "Chaupar" }),
+        h("p", { class: "lede", text: "O jogo de dados do Mahabharata, em que Yudhishthira perdeu o reino para Shakuni. Aqui ninguém perde nada: é estratégia, sorte e provocação entre amigos. Funciona sem internet, passando o celular." }))
+    : h("div", { class: "mphead" }, h("p", { class: "eyebrow", text: "Jogo da travessia" }), h("h1", { text: "Moksha Patam" }),
+        h("p", { class: "lede", text: "O jogo de cobras e escadas nasceu na Índia para ensinar o caminho: as escadas são virtudes que elevam, as cobras são vícios que derrubam, e a casa 100 é Moksha, a libertação." }));
+  return h("section", { class: "view jogoview" },
+    h("div", { class: "fcats", role: "tablist", style: "justify-content:center" }, [["chaupar", "Chaupar"], ["moksha", "Moksha Patam"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(qual === id), onclick: () => troca(id) }, n))),
+    cab, qual === "chaupar" ? vChaupar() : vMoksha());
 }
 // ---------- Pombo-correio entre os viajantes: cartinhas, presentes e oferendas ----------
 const PRESENTES = [["lotus", "Flor de lótus"], ["guirlanda", "Guirlanda de cravos"], ["diya", "Lamparina"], ["chai", "Um chai"], ["ladoo", "Doce ladoo"], ["incenso", "Incenso"],
