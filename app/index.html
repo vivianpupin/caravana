@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 08:52";</script>
+<script>window.__VERSAO = "03/10 · 14:28";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -517,8 +517,43 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .brand span{color:#C9A56A;letter-spacing:.24em}
 .me:not(.bubble){background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.35);box-shadow:none}
 .me:not(.bubble) b{color:#E2BE78}
-nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(11,minmax(52px,1fr));overflow-x:auto;scrollbar-width:none}
+nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(12,minmax(52px,1fr));overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
+
+/* ---------- Jogo: Moksha Patam ---------- */
+.jogoview{gap:14px}
+.mphead{text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.mphead h1{font-family:var(--display);font-size:30px;margin:0}
+.mphead .lede{max-width:44ch;margin:0}
+.mpgente{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.mpbox{position:relative}
+.mptab{position:relative;width:100%;max-width:520px;margin:0 auto;aspect-ratio:1;border-radius:16px;overflow:hidden;box-shadow:0 10px 26px rgba(40,28,15,.28)}
+.mpsvg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.mppecas{position:absolute;inset:0;pointer-events:none}
+.mppeca{position:absolute;width:9%;transform:translate(-50%,-50%);transition:left .2s ease,top .2s ease;filter:drop-shadow(0 2px 2px rgba(0,0,0,.45))}
+.mppeca .rosto{width:100%;height:auto;aspect-ratio:1;border:2px solid #fff}
+.mppeca.vez .rosto{border-color:#F2C230;box-shadow:0 0 0 3px rgba(242,194,48,.6)}
+.mpvez{display:flex;align-items:center;gap:12px;background:var(--panel);border-radius:18px;padding:10px 14px;box-shadow:var(--shadow);max-width:520px;margin:0 auto;width:100%}
+.mpvez>div{flex:1;display:flex;flex-direction:column}
+.mpvez b{font-family:var(--display);font-size:18px}
+.mpvez small{color:var(--soft);font-size:13px}
+.mpdadobox{border:0;background:none;padding:0;width:70px;height:70px;flex:none;-webkit-tap-highlight-color:transparent}
+.mpdado{width:100%;height:100%;filter:drop-shadow(0 3px 4px rgba(40,28,15,.35))}
+.mplista{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.mplista span{display:flex;align-items:center;gap:6px;background:var(--panel);border-radius:999px;padding:4px 10px 4px 4px;border:1px solid var(--line2);font-size:13px}
+.mplista span.vez{border-color:#E2A64A;background:#FFF1D2}
+.mplista .rosto{width:28px;height:28px}
+.mplista small{color:var(--soft)}
+.mpcarta{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88%,380px);border-radius:18px;padding:18px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center;box-shadow:0 14px 36px rgba(0,0,0,.4)}
+.mpcarta.escada{background:linear-gradient(180deg,#FFF6D8,#F6E2A8);border:2px solid #D9A53A}
+.mpcarta.cobra{background:linear-gradient(180deg,#E9F0DA,#CFDDB2);border:2px solid #3F7A3A}
+.mpcarta h3{font-family:var(--display);font-size:24px;margin:0}
+.mpcarta h3 small{font-size:15px;font-style:italic;color:var(--soft)}
+.mpfrase{font-family:var(--display);font-style:italic;font-size:17px;margin:0}
+.mpfim{position:absolute;inset:0;max-width:520px;margin:0 auto;border-radius:16px;background:rgba(255,249,238,.93);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:20px}
+.mpfim h2{font-family:var(--display);margin:0}
+.mplotus{font-size:64px}
+@media (prefers-reduced-motion:no-preference){.mpcarta{animation:mpentra .35s cubic-bezier(.3,1.4,.5,1) both}.mplotus{animation:presentePula .8s cubic-bezier(.3,1.6,.5,1) both}@keyframes mpentra{from{transform:translate(-50%,-50%) scale(.6);opacity:0}}}
 /* ---------- Pombo-correio ---------- */
 .pomboview{gap:16px}
 .pombohead{position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;padding:26px 16px 22px;border-radius:24px;overflow:hidden;
@@ -1182,6 +1217,7 @@ nav.tabs button{position:relative}
     <button data-tab="fotos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h3l1.6-2.2h6.8L17 7.5h3a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.8"/><path d="M17.5 10.3h.01"/></svg></span>Fotos</button>
     <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Pedra</button>
     <button data-tab="pombo"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.6c-.3-1.2-.2-2.3.5-2.9l3.1.2-2.4 1.2c-.4.4-.8 1-1.2 1.5z"/><path d="M12 6.6l.1 9.4"/><path d="M12 9.4C9.4 7.2 6.4 6.9 2.8 8.4M12 9.4c2.6-2.2 5.6-2.5 9.2-1M5 8l-.6 2.4M7.4 7.5l-.4 2.6M9.8 8.1l-.3 2.3M19 8l.6 2.4M16.6 7.5l.4 2.6M14.2 8.1l.3 2.3"/><path d="M12.1 16l-3 4.2M12.1 16l.1 4.8M12.1 16l3 4.2"/></svg></span>Pombo</button>
+    <button data-tab="jogo"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3.5"/><circle cx="8.5" cy="8.5" r=".9" fill="currentColor"/><circle cx="15.5" cy="8.5" r=".9" fill="currentColor"/><circle cx="12" cy="12" r=".9" fill="currentColor"/><circle cx="8.5" cy="15.5" r=".9" fill="currentColor"/><circle cx="15.5" cy="15.5" r=".9" fill="currentColor"/></svg></span>Jogo</button>
   </nav>
 </div>
 
@@ -1389,7 +1425,7 @@ function render() {
   pintaMe();
   const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
   main.replaceChildren(precisaCadastro ? vCadastro() :
-    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "pombo" ? vPombo() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
+    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "pombo" ? vPombo() : S.tab === "jogo" ? vJogo() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
   // aviso novo da líder (15 min): aparece no topo de qualquer aba
   // último dia: o passaporte completo avisa que o vídeo está pronto (no Roteiro e no Passaporte)
   if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte")) { const c = avisoVideo(), v = main.firstElementChild; if (c && v) v.prepend(c); }
@@ -5304,6 +5340,102 @@ function pergaminhoCarta(c) {
       h("div", { class: "pgmass" }, h("span", { text: assinaturaDe(c) }), h("small", { text: "Caravana do Céu" })),
       h("span", { class: "lacre", "aria-hidden": "true" }, h("img", { src: "img/simbolo-claro.png", alt: "" }))),
     h("span", { class: "rolo bot", "aria-hidden": "true" }));
+}
+// ---------- Moksha Patam: a cobra e escada original da Índia (joga sem internet, passando o celular) ----------
+// escadas são virtudes que elevam; cobras são vícios que derrubam; a casa 100 é Moksha, a libertação
+const MP_ESCADAS = { 4: [14, "Fé", "Shraddha", "Quem confia no caminho dá o primeiro passo sem ver o fim da estrada."], 9: [31, "Generosidade", "Dana", "O que se dá sem esperar volta abre espaço para subir."],
+  21: [42, "Devoção", "Bhakti", "O coração entregue encurta qualquer distância."], 28: [84, "Conhecimento", "Jnana", "Quem enxerga a verdade pula muitas casas de uma vez."],
+  51: [67, "Compaixão", "Karuna", "Sentir a dor do outro como sua eleva os dois."], 72: [91, "Gratidão", "Kritajnata", "Agradecer pelo que já se tem leva mais longe."] };
+const MP_COBRAS = { 17: [7, "Raiva", "Krodha", "Um instante de raiva desfaz o que levou tempo para construir."], 54: [34, "Ganância", "Lobha", "Querer sempre mais faz perder o que já se tinha."],
+  62: [19, "Orgulho", "Ahamkara", "O ego se acha alto demais e cai de mais alto ainda."], 64: [60, "Inveja", "Irshya", "Olhar a casa do outro tira os olhos do próprio caminho."],
+  87: [24, "Ilusão", "Moha", "Confundir o passageiro com o eterno é a queda mais longa."], 93: [73, "Preguiça", "Tamas", "Quem adia o caminho volta para trás sem perceber."],
+  95: [75, "Vaidade", "Mada", "Admirar o próprio reflexo é parar de caminhar."], 98: [79, "Apego", "Raga", "Tão perto de Moksha, quem segura demais escorrega."] };
+const mpPct = v => Math.min(95, Math.max(5, v / 10));
+const mpXY = n => { const r = Math.floor((n - 1) / 10), c = r % 2 ? 9 - (n - 1) % 10 : (n - 1) % 10; return [c * 100 + 50, (9 - r) * 100 + 50]; };
+function mpTabuleiro() {
+  const cel = [];
+  for (let n = 1; n <= 100; n++) { const [x, y] = mpXY(n), r = Math.floor((n - 1) / 10), c = Math.round((x - 50) / 100);
+    cel.push(h("rect", { x: x - 50, y: y - 50, width: 100, height: 100, fill: (r + c) % 2 ? "#F1E2C2" : "#E6CFA2" }));
+    cel.push(h("text", { x: x - 42, y: y - 30, "font-size": 20, "font-family": "Poppins,sans-serif", fill: "#8A6A3F", "font-weight": 600 }, String(n))); }
+  const [mx, my] = mpXY(100);
+  cel.push(h("rect", { x: mx - 50, y: my - 50, width: 100, height: 100, fill: "#F6D98A" }), h("circle", { cx: mx, cy: my - 4, r: 34, fill: "rgba(255,240,190,.9)" }),
+    h("g", { transform: `translate(${mx - 30} ${my - 36}) scale(1.5)` }, desenhaPresente("lotus")),
+    h("text", { x: mx, y: my + 42, "font-size": 15, "text-anchor": "middle", "font-family": "Poppins,sans-serif", fill: "#8A3F32", "font-weight": 700, "letter-spacing": 1 }, "MOKSHA"));
+  // escadas douradas
+  const esc = Object.entries(MP_ESCADAS).map(([a, [b]]) => { const [x1, y1] = mpXY(+a), [x2, y2] = mpXY(b), dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), px = -dy / L * 17, py = dx / L * 17, g = h("g", null);
+    const deg = Math.max(2, Math.floor(L / 42));
+    g.append(...[[px, py], [-px, -py]].map(([ox, oy]) => h("line", { x1: x1 + ox, y1: y1 + oy, x2: x2 + ox, y2: y2 + oy, stroke: "#8A5A22", "stroke-width": 9, "stroke-linecap": "round" })),
+      ...Array.from({ length: deg }, (_, i) => { const t = (i + 1) / (deg + 1); return h("line", { x1: x1 + dx * t + px, y1: y1 + dy * t + py, x2: x1 + dx * t - px, y2: y1 + dy * t - py, stroke: "#D9A53A", "stroke-width": 7, "stroke-linecap": "round" }); }),
+      ...[[px, py], [-px, -py]].map(([ox, oy]) => h("line", { x1: x1 + ox, y1: y1 + oy, x2: x2 + ox, y2: y2 + oy, stroke: "#E9C46A", "stroke-width": 4, "stroke-linecap": "round" })));
+    return g; });
+  // cobras (nagas) verdes e sinuosas, cabeça na casa de cima
+  const cob = Object.entries(MP_COBRAS).map(([a, [b]], i) => { const [x1, y1] = mpXY(+a), [x2, y2] = mpXY(b), dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), nx = -dy / L, ny = dx / L, ondas = Math.max(1.5, L / 160), amp = Math.min(34, 10 + L / 14);
+    const pts = Array.from({ length: 41 }, (_, k) => { const t = k / 40, o = Math.sin(t * Math.PI * 2 * ondas) * amp * Math.sin(Math.PI * Math.min(1, t * 1.15)); return [x1 + dx * t + nx * o, y1 + dy * t + ny * o]; });
+    const d = "M" + pts.map(p => p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" L"), cor = ["#3F7A3A", "#5C8A3A", "#2F6B5A", "#6B7A2F"][i % 4];
+    const ang = Math.atan2(pts[1][1] - pts[0][1], pts[1][0] - pts[0][0]) * 180 / Math.PI + 180;
+    return h("g", null, h("path", { d, fill: "none", stroke: "#1E3A1A", "stroke-width": 21, "stroke-linecap": "round", "stroke-linejoin": "round", opacity: .5 }),
+      h("path", { d, fill: "none", stroke: cor, "stroke-width": 17, "stroke-linecap": "round", "stroke-linejoin": "round" }),
+      h("path", { d, fill: "none", stroke: "#C9D98A", "stroke-width": 4, "stroke-dasharray": "3 13", "stroke-linecap": "round" }),
+      h("g", { transform: `translate(${x1} ${y1}) rotate(${ang})` }, h("path", { d: "M-6 0 L-26 -4 M-26 -4 L-31 -8 M-26 -4 L-31 0", stroke: "#C0392B", "stroke-width": 2.4, fill: "none", "stroke-linecap": "round" }),
+        h("ellipse", { cx: 4, cy: 0, rx: 20, ry: 15, fill: cor, stroke: "#1E3A1A", "stroke-width": 2 }), h("circle", { cx: -2, cy: -7, r: 3.4, fill: "#FFF6D8" }), h("circle", { cx: -2, cy: 7, r: 3.4, fill: "#FFF6D8" }), h("circle", { cx: -3, cy: -7, r: 1.7, fill: "#141210" }), h("circle", { cx: -3, cy: 7, r: 1.7, fill: "#141210" }))); });
+  return h("svg", { class: "mpsvg", viewBox: "0 0 1000 1000", "aria-hidden": "true" }, cel, esc, cob, h("rect", { x: 2, y: 2, width: 996, height: 996, fill: "none", stroke: "#8A5A22", "stroke-width": 6, rx: 14 }));
+}
+const mpEstado = () => { try { return JSON.parse(localStorage.getItem("cdi-moksha") || "null"); } catch (e) { return null; } };
+const mpGuarda = st => { try { localStorage.setItem("cdi-moksha", JSON.stringify(st)); } catch (e) {} };
+const MP_FACES = { 1: [[50, 50]], 2: [[28, 28], [72, 72]], 3: [[26, 26], [50, 50], [74, 74]], 4: [[28, 28], [72, 28], [28, 72], [72, 72]], 5: [[26, 26], [74, 26], [50, 50], [26, 74], [74, 74]], 6: [[28, 24], [72, 24], [28, 50], [72, 50], [28, 76], [72, 76]] };
+const mpDado = v => h("svg", { class: "mpdado", viewBox: "0 0 100 100" }, h("rect", { x: 4, y: 4, width: 92, height: 92, rx: 20, fill: "#FFF9EE", stroke: "#8A5A22", "stroke-width": 5 }), (MP_FACES[v] || MP_FACES[1]).map(([x, y]) => h("circle", { cx: x, cy: y, r: 9, fill: v === 1 ? "#C0392B" : "#3B2A1C" })));
+function vJogo() {
+  const st = S.mp || (S.mp = mpEstado());
+  const cabeca = h("div", { class: "mphead" }, h("p", { class: "eyebrow", text: "Jogo da travessia" }), h("h1", { text: "Moksha Patam" }),
+    h("p", { class: "lede", text: "O jogo de cobras e escadas nasceu na Índia para ensinar o caminho: as escadas são virtudes que elevam, as cobras são vícios que derrubam, e a casa 100 é Moksha, a libertação. Funciona sem internet: é só passar o celular." }));
+  if (!st || !st.jog) {
+    const gente = [eu(), ...S.viajantes.filter(v => v.id !== S.uid && !v.lider), ...S.viajantes.filter(v => v.id !== S.uid && v.lider)].filter(Boolean);
+    const sel = S.mpSel || (S.mpSel = eu() ? [S.uid] : []);
+    return h("section", { class: "view jogoview" }, cabeca,
+      h("div", { class: "panel" }, h("p", { class: "eyebrow", text: "Quem vai jogar? (2 a 4)" }),
+        h("div", { class: "mpgente" }, gente.map(v => h("button", { type: "button", class: "pbpessoa" + (sel.includes(v.id) ? " on" : ""), "aria-pressed": String(sel.includes(v.id)), onclick: () => {
+          S.mpSel = sel.includes(v.id) ? sel.filter(x => x !== v.id) : sel.length < 4 ? [...sel, v.id] : sel; render(); } }, bonecoRosto(v.id), h("span", { text: v.id === S.uid ? "Você" : String(v.nome || "Viajante").split(" ")[0] })))),
+        h("div", { class: "actions" }, h("button", { class: "btn gold", type: "button", disabled: sel.length < 2, onclick: () => {
+          S.mp = { jog: sel.map(id => ({ id, pos: 0 })), vez: 0, dado: 1, msg: "", fim: null }; mpGuarda(S.mp); S.mpSel = null; render(); } }, sel.length < 2 ? "Escolha pelo menos 2 pessoas" : "Começar a travessia"))));
+  }
+  const pecas = h("div", { class: "mppecas" }, st.jog.map((j, i) => { const [x, y] = j.pos ? mpXY(j.pos) : [-40, 1040], off = [[-14, -12], [14, -12], [-14, 14], [14, 14]][i];
+    return h("span", { class: "mppeca" + (i === st.vez && !st.fim ? " vez" : ""), "data-i": i, style: `left:${mpPct(x + off[0])}%;top:${j.pos ? mpPct(y + off[1]) : 104}%` }, bonecoRosto(j.id)); }));
+  const atual = st.jog[st.vez], nomeJ = id => id === S.uid ? "Você" : nomeDe(id).split(" ")[0];
+  const jogar = async () => {
+    if (S.mpAndando || st.fim) return; S.mpAndando = true;
+    const dadoEl = document.querySelector(".mpdadobox");
+    for (let k = 0; k < 8; k++) { st.dado = 1 + Math.floor(Math.random() * 6); if (dadoEl) dadoEl.replaceChildren(mpDado(st.dado)); await new Promise(r => setTimeout(r, 70)); }
+    const v = 1 + Math.floor(Math.random() * 6); st.dado = v; if (dadoEl) dadoEl.replaceChildren(mpDado(v));
+    const j = st.jog[st.vez], peca = document.querySelector(`.mppeca[data-i="${st.vez}"]`), off = [[-14, -12], [14, -12], [-14, 14], [14, 14]][st.vez];
+    const poe = n => { if (!peca) return; const [x, y] = mpXY(n); peca.style.left = mpPct(x + off[0]) + "%"; peca.style.top = mpPct(y + off[1]) + "%"; };
+    let msg = "";
+    if (j.pos + v > 100) msg = `${nomeJ(j.id)} tirou ${v}, mas precisa do número exato para chegar a Moksha.`;
+    else {
+      for (let k = 1; k <= v; k++) { j.pos++; poe(j.pos); await new Promise(r => setTimeout(r, 230)); }
+      const e = MP_ESCADAS[j.pos], c = MP_COBRAS[j.pos];
+      if (e) { S.mpCarta = { tipo: "escada", d: e, quem: nomeJ(j.id), de: j.pos }; await new Promise(r => setTimeout(r, 250)); j.pos = e[0]; poe(j.pos); }
+      else if (c) { S.mpCarta = { tipo: "cobra", d: c, quem: nomeJ(j.id), de: j.pos }; await new Promise(r => setTimeout(r, 250)); j.pos = c[0]; poe(j.pos); }
+      if (j.pos === 100) st.fim = j.id;
+    }
+    st.msg = msg; if (!st.fim && v !== 6) st.vez = (st.vez + 1) % st.jog.length; else if (!st.fim && v === 6) st.msg = (msg ? msg + " " : "") + "Tirou 6: joga de novo!";
+    mpGuarda(st); await new Promise(r => setTimeout(r, 380)); S.mpAndando = false; render();
+  };
+  const carta = S.mpCarta;
+  return h("section", { class: "view jogoview" }, cabeca,
+    h("div", { class: "mpbox" }, h("div", { class: "mptab" }, mpTabuleiro(), pecas),
+      st.fim ? h("div", { class: "mpfim" }, h("div", { class: "mplotus", "aria-hidden": "true" }, "🪷"), h("h2", { text: nomeJ(st.fim) + " alcançou Moksha!" }), h("p", { text: "A libertação: o fim da roda, a casa onde não se cai mais." }),
+          h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => { st.jog.forEach(j => j.pos = 0); st.vez = 0; st.fim = null; st.msg = ""; mpGuarda(st); render(); } }, "Jogar de novo"),
+            h("button", { class: "btn ghost", type: "button", onclick: () => { S.mp = null; mpGuarda(null); render(); } }, "Trocar jogadores"))) : null,
+      carta ? h("div", { class: "mpcarta " + carta.tipo, role: "dialog", onclick: () => { S.mpCarta = null; render(); } },
+        h("p", { class: "eyebrow", text: carta.tipo === "escada" ? "Escada · virtude" : "Cobra · vício" }),
+        h("h3", null, carta.d[1], h("small", { text: " · " + carta.d[2] })),
+        h("p", { class: "mpfrase", text: carta.d[3] }),
+        h("p", { class: "small", text: `${carta.quem} ${carta.tipo === "escada" ? "subiu" : "desceu"} da casa ${carta.de} para a ${carta.d[0]}.` }),
+        h("button", { class: "btn", type: "button" }, "Continuar")) : null),
+    !st.fim ? h("div", { class: "mpvez" }, bonecoRosto(atual.id), h("div", null, h("b", { text: "Vez de " + nomeJ(atual.id) }), h("small", { text: st.msg || "Toque no dado para jogar." })),
+      h("button", { class: "mpdadobox", type: "button", "aria-label": "Jogar o dado", onclick: jogar }, mpDado(st.dado || 1))) : null,
+    h("div", { class: "mplista" }, st.jog.map((j, i) => h("span", { class: i === st.vez && !st.fim ? "vez" : "" }, bonecoRosto(j.id), h("b", { text: nomeJ(j.id) }), h("small", { text: j.pos ? "casa " + j.pos : "na largada" })))),
+    h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn ghost", type: "button", onclick: () => { if (confirm("Encerrar esta partida?")) { S.mp = null; mpGuarda(null); render(); } } }, "Encerrar partida")));
 }
 // ---------- Pombo-correio entre os viajantes: cartinhas, presentes e oferendas ----------
 const PRESENTES = [["lotus", "Flor de lótus"], ["guirlanda", "Guirlanda de cravos"], ["diya", "Lamparina"], ["chai", "Um chai"], ["ladoo", "Doce ladoo"], ["incenso", "Incenso"],
