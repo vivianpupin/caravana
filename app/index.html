@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 07:50";</script>
+<script>window.__VERSAO = "03/10 · 07:51";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -5427,14 +5427,16 @@ async function baixarAlbum(st, cid) {
       // no celular: entrega em grupos de 20 fotos, cada grupo com um toque, direto para o rolo da câmera
       const arqs = Object.values(zip.files).sort((a, b) => a.name.localeCompare(b.name));
       const files = await Promise.all(arqs.map(async z => new File([await z.async("blob")], z.name, { type: "image/jpeg" })));
-      const caixa = st.parentNode; caixa.querySelectorAll(".rolo").forEach(x => x.remove());
+      const caixa = st.parentNode; caixa.querySelectorAll(".rolobtn").forEach(x => x.remove());
       for (let i = 0; i < files.length; i += 20) {
         const grupo = files.slice(i, i + 20);
-        caixa.append(h("button", { class: "btn gold rolo", type: "button", onclick: async ev => {
-          try { await navigator.share({ files: grupo }); ev.target.textContent = "✓ Fotos " + (i + 1) + "–" + (i + grupo.length); ev.target.className = "btn rolo"; } catch (e) {}
-        } }, `Salvar fotos ${i + 1}–${i + grupo.length} no rolo da câmera`));
+        // (classe própria: "rolo" já é o rolinho de madeira do pergaminho e deixava o botão achatado)
+        const so1 = files.length === 1, rot = so1 ? "foto" : `fotos ${i + 1}–${i + grupo.length}`;
+        caixa.append(h("button", { class: "btn gold rolobtn", type: "button", onclick: async ev => {
+          try { await navigator.share({ files: grupo }); ev.target.textContent = "✓ " + (so1 ? "Foto salva" : "Fotos " + (i + 1) + "–" + (i + grupo.length)); ev.target.className = "btn rolobtn"; } catch (e) {}
+        } }, so1 ? "Salvar a foto no rolo da câmera" : `Salvar ${rot} no rolo da câmera`));
       }
-      st.textContent = `${feitas} fotos prontas. Toque em cada botão e escolha "Salvar ${files.length > 1 ? "imagens" : "imagem"}".`;
+      st.textContent = feitas === 1 ? `1 foto pronta. Toque no botão e escolha "Salvar imagem".` : `${feitas} fotos prontas. Toque em cada botão e escolha "Salvar imagens".`;
       return;
     }
     const arq = await zip.generateAsync({ type: "blob" }), nome = "album-caravana-do-ceu" + (cid ? "-" + limpa(cid) : "") + ".zip";
