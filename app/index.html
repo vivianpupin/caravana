@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 07:40";</script>
+<script>window.__VERSAO = "03/10 · 07:42";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -5625,10 +5625,11 @@ function vPedra() {
     pode ? h("div", { class: "pedracomp" }, ta, h("div", { class: "actions" }, h("button", { class: "btn gold", type: "button", onclick: gravar }, "Gravar na pedra"), st))
       : h("p", { class: "small", style: "text-align:center", text: "Emita seu passaporte para deixar a sua marca." }),
     h("div", { class: "rocha" },
-      ps.length ? ps.map(p => {
-        const n = hashN(p.id || p.ts), rot = ((n % 7) - 3) * .8, cor = CORES_TERRA[hashN(p.autor) % CORES_TERRA.length], meu = p.autor === S.uid;
-        const ml = [0, 26, 13, 20, 4][(n >>> 3) % 5], dy = ((n >>> 7) % 4) * 7;
-        return h("figure", { class: "marca", style: `margin-left:${ml}%;transform:translateY(${dy}px) rotate(${rot}deg);color:${cor}` },
+      ps.length ? ps.map((p, i) => {
+        // como uma fita de DNA: uma marca de cada lado, alternando, com recuos e inclinações sortidos
+        const n = hashN(p.id || p.ts), cor = CORES_TERRA[hashN(p.autor) % CORES_TERRA.length], meu = p.autor === S.uid;
+        const dir = i % 2 === 1, recuo = [0, 4, 8, 3, 6][(n >>> 3) % 5], rot = (dir ? 1 : -1) * (1 + (n % 3) * .8);
+        return h("figure", { class: "marca", style: `${dir ? `margin-left:auto;margin-right:${recuo}%` : `margin-left:${recuo}%`};margin-top:${i ? -18 : 0}px;transform:rotate(${rot}deg);color:${cor};text-align:${dir ? "right" : "left"};align-items:${dir ? "flex-end" : "flex-start"}` },
           h("svg", { class: "glifo", viewBox: "0 0 64 40", "aria-hidden": "true" }, GLIFOS[n % GLIFOS.length].map(([d, cheio]) => h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 2.2, "stroke-linecap": "round", "stroke-linejoin": "round" }))),
           h("blockquote", { text: p.texto }),
           h("figcaption", null, nomeDe(p.autor).split(" ")[0] + " · " + new Date(p.ts).toLocaleDateString("pt-BR", { day: "numeric", month: "short" }),
