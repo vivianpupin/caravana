@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/10 · 07:34";</script>
+<script>window.__VERSAO = "03/10 · 07:35";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -4553,6 +4553,8 @@ function figImg(id) {
   return h("img", { class: "figmini", src: figImgs[k], alt: ":" + id + ":", "data-fig": id, draggable: "false" });
 }
 function cursorNoFim(el) { try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+// barra de reações aberta: tocar fora dela (e fora de outra mensagem) fecha sem reagir
+document.addEventListener("click", e => { if (!S.reagindo || e.target.closest(".reacbar,.bubble .b")) return; S.reagindo = null; render(); });
 // teclado abre ou fecha: a conversa continua mostrando a última mensagem
 window.visualViewport?.addEventListener("resize", () => { const log = document.getElementById("chatlog"); if (log && S.chatGrudado !== false) setTimeout(() => { log.scrollTop = log.scrollHeight; }, 60); });
 // teclado aberto no celular: esconde a barra de abas (ela subia junto com o teclado e tapava a tela)

@@ -4539,6 +4539,8 @@ function figImg(id) {
   return h("img", { class: "figmini", src: figImgs[k], alt: ":" + id + ":", "data-fig": id, draggable: "false" });
 }
 function cursorNoFim(el) { try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+// barra de reações aberta: tocar fora dela (e fora de outra mensagem) fecha sem reagir
+document.addEventListener("click", e => { if (!S.reagindo || e.target.closest(".reacbar,.bubble .b")) return; S.reagindo = null; render(); });
 // teclado abre ou fecha: a conversa continua mostrando a última mensagem
 window.visualViewport?.addEventListener("resize", () => { const log = document.getElementById("chatlog"); if (log && S.chatGrudado !== false) setTimeout(() => { log.scrollTop = log.scrollHeight; }, 60); });
 // teclado aberto no celular: esconde a barra de abas (ela subia junto com o teclado e tapava a tela)
