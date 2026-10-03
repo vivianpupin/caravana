@@ -407,17 +407,16 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .reacbar button{background:none;border:0;font-size:24px;padding:2px 4px;line-height:1}
 .bubble.fig .b{background:none;box-shadow:none;padding:0}
 .bubble.fig .h{padding:0 4px}
-.figura{display:flex;align-items:flex-end;gap:4px}
-.figura svg{width:96px;height:auto;flex:none}
-.figura .fala{background:var(--panel);box-shadow:var(--shadow);border-radius:16px 16px 16px 4px;padding:8px 12px;font-size:16px;margin-bottom:46px;max-width:170px}
-.figura .fala .e{font-size:26px;display:block;line-height:1.1}
 .bubble.me.fig .b{color:var(--ink)}
 .bubble.me.fig .h,.bubble.me.fig .h b{color:var(--soft)}
-.bubble.me .figura{flex-direction:row-reverse;justify-content:flex-start}
-.bubble.me .figura .fala{border-radius:16px 16px 4px 16px}
-.figpicker{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 16px;border-top:1px solid var(--line);background:var(--panel)}
-.figpicker button{border:1px solid var(--line2);background:var(--panel2);border-radius:14px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;color:var(--ink)}
-.figpicker button .e{font-size:24px}
+.figura{display:inline-flex;flex-direction:column;align-items:center;gap:0;filter:drop-shadow(0 2px 3px rgba(40,28,15,.25))}
+.bubble .figura svg{width:110px;height:auto}
+.bubble.me .figura{margin-left:auto;display:flex;width:max-content}
+.figtxt{font:700 15px/1.1 var(--display,Georgia),serif;color:#3B2A1C;background:#FFF6D8;border:2px solid #fff;border-radius:999px;padding:3px 10px;margin-top:-10px;white-space:nowrap;box-shadow:0 1px 3px rgba(40,28,15,.25)}
+.figpicker{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 12px;border-top:1px solid var(--line);background:var(--panel);max-height:42vh;overflow-y:auto}
+.figpicker button{border:0;background:none;padding:4px 0;display:flex;justify-content:center}
+.figpicker .figura svg{width:62px;height:auto}
+.figpicker .figtxt{font-size:10.5px;padding:2px 6px;margin-top:-6px}
 .bubble .ponto{display:flex;flex-direction:column;gap:6px}
 .bubble .ponto b{font-family:var(--display);font-size:18px;font-weight:500}
 .bubble.me .ponto .eyebrow{color:var(--sand)}
@@ -577,9 +576,11 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .roster .rosto{align-self:center}
 .prhead span{width:30px;text-align:center;font-size:16px}
 .roster.prontos li{grid-template-columns:40px 1fr;align-items:start}
+.prtopo{display:flex;align-items:baseline;gap:8px}
+.prdel{margin-left:auto;background:none;border:0;color:var(--terra);font-size:12px;padding:0;opacity:.8;text-decoration:underline}
 .roster.prontos li > :first-child{margin-top:2px}
-.prchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.prchip{font:500 11.5px/1 var(--ui);padding:6px 9px;white-space:nowrap;border-radius:999px;border:1px dashed #CDBFA6;color:#9A8C76;background:transparent}
+.prchips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.prchip{font:500 10.5px/1 var(--ui);padding:5px 7px;white-space:nowrap;border-radius:999px;border:1px dashed #CDBFA6;color:#9A8C76;background:transparent}
 .prchip.on{border:1px solid #3F4938;background:#3F4938;color:#F4ECD9;font-weight:600}
 .prs{display:flex;gap:6px}
 .pr{width:30px;text-align:center;font-weight:700;font-size:16px;color:var(--faint)}
@@ -2086,7 +2087,7 @@ function vPassaporte() {
         h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : tituloViajante(g), totalViagens(g) > 1 ? totalViagens(g) + " viagens" : "", g.cidade].filter(Boolean).join(" · ") }), medalhasDe(g, 24)),
         h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null,
     vMinhasHabilidades(), vHabilidadesLider(),
-    vEntradasLider(), vProntos(),
+    vGenteLider(),
     S.isOwner || aberto(localDe("travessia")) ? h("button", { class: "folhear video", type: "button", onclick: abrirVideoPassaporte },
       h("span", { class: "vidico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("path", { d: "M8 5.5v13l11-6.5z", fill: "#3B2A1C" }))),
       h("span", null, h("b", { text: "Vídeo do meu passaporte" }), h("span", { text: "O passaporte gira, abre e folheia seus selos. Pronto para Reels e Stories." }))) : null);
@@ -2285,23 +2286,32 @@ function vHabilidadesLider() {
           h("button", { class: "btn gold", type: "button", onclick: () => { if (confirm("Liberar \"" + nA + "\" para todos?")) darHabilidade(id, gente.map(v => v.id)); } }, "Liberar para todos")));
     })));
 }
-function vProntos() {
+// Só a líder: todo mundo da caravana numa tabela só (entrou no app, passaporte, instalado, avisos, localização) e opção de remover
+function vGenteLider() {
   if (!S.isOwner) return null;
-  const gente = S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || "")));
-  if (!gente.length) return null;
-  const ok = v => v.app || {};
-  const prontos = gente.filter(v => ok(v).instalado && ok(v).avisos && ok(v).local).length;
-  // cada item escrito por extenso: verde com ✓ quando está ligado, apagado quando falta
+  const ids = [...new Set([...S.membros.map(m => m.id), ...S.viajantes.filter(v => !v.lider).map(v => v.id)])];
+  if (!ids.length) return null;
+  const linhas = ids.map(id => ({ id, m: S.membros.find(x => x.id === id), v: S.viajantes.find(x => x.id === id) }))
+    .filter(x => !(x.v && x.v.lider)).sort((a, b) => String((a.v && a.v.nome) || (a.m && a.m.nome) || "").localeCompare(String((b.v && b.v.nome) || (b.m && b.m.nome) || "")));
+  const prontos = linhas.filter(x => x.v && (x.v.app || {}).instalado && (x.v.app || {}).avisos && (x.v.app || {}).local).length;
   const marca = (on, rot) => h("span", { class: "prchip" + (on ? " on" : ""), "aria-label": rot + (on ? ": sim" : ": falta") }, (on ? "✓ " : "") + rot);
+  const remover = async x => {
+    const nome = (x.v && x.v.nome) || (x.m && x.m.nome) || (x.m && x.m.email) || "esta pessoa";
+    if (!confirm("Remover " + nome + " da caravana?\n\nA pessoa perde o acesso ao app e some do passaporte, do mapa e das listas.")) return;
+    await Promise.all([S.db.doc("viajantes/" + x.id).delete().catch(() => {}), S.db.doc("membros/" + x.id).delete().catch(() => {})]);
+    avisoReacao("Pronto, " + nome + " saiu da caravana.");
+  };
   return h("div", { class: "panel" },
-    h("p", { class: "eyebrow", text: "Só você vê · celulares prontos" }),
-    h("h2", { text: `${prontos} de ${gente.length} prontos` }),
-    h("p", { class: "small", text: "Pronto = app instalado na tela inicial, avisos ligados e localização ligada. Atualiza quando a pessoa abre o app." }),
-    h("ul", { class: "roster prontos" }, gente.map(v => {
-      const a = ok(v);
-      return h("li", null, bonecoRosto(v.id),
-        h("div", null, h("b", { text: v.nome || "Viajante" }), h("small", { text: a.ts ? "abriu o app em " + new Date(a.ts).toLocaleDateString("pt-BR", { day: "numeric", month: "short" }) + " às " + new Date(a.ts).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "ainda não abriu o app instalado" }),
-          h("div", { class: "prchips" }, marca(a.instalado, "Instalado"), marca(a.avisos, "Avisos"), marca(a.local, "Local"))));
+    h("p", { class: "eyebrow", text: "Só você vê · viajantes" }),
+    h("h2", { text: `${linhas.length} ${linhas.length === 1 ? "pessoa" : "pessoas"} · ${prontos} ${prontos === 1 ? "pronta" : "prontas"}` }),
+    h("p", { class: "small", text: "Pronta = passaporte emitido, app instalado na tela inicial, avisos e localização ligados. Atualiza quando a pessoa abre o app." }),
+    h("ul", { class: "roster prontos" }, linhas.map(x => {
+      const a = (x.v && x.v.app) || {}, nome = (x.v && x.v.nome) || (x.m && x.m.nome) || "Viajante";
+      const info = [x.m && x.m.email, a.ts ? "abriu o app em " + new Date(a.ts).toLocaleDateString("pt-BR", { day: "numeric", month: "short" }) + " às " + new Date(a.ts).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : x.m && x.m.ts ? "entrou em " + new Date(x.m.ts).toLocaleDateString("pt-BR") : ""].filter(Boolean).join(" · ");
+      return h("li", null, x.v ? bonecoRosto(x.id) : h("img", { src: avatar(x.id), alt: "" }),
+        h("div", null, h("div", { class: "prtopo" }, h("b", { text: nome }), h("button", { class: "prdel", type: "button", onclick: () => remover(x) }, "Remover")),
+          info ? h("small", { text: info }) : null,
+          h("div", { class: "prchips" }, marca(!!x.v, "Passaporte"), marca(a.instalado, "Instalado"), marca(a.avisos, "Avisos"), marca(a.local, "Local"))));
     })));
 }
 // cada celular registra no próprio passaporte se instalou, ligou avisos e localização (para o painel da líder)
@@ -2316,21 +2326,6 @@ async function registraApp() {
   S.registrando = false;
 }
 // Só a líder, no site próprio: quem já entrou no app com a palavra da caravana
-function vEntradasLider() {
-  if (!S.isOwner || !S.membros.length) return null;
-  const lista = S.membros.slice().sort((a, b) => (b.ts || 0) - (a.ts || 0));
-  const semPass = lista.filter(m => !S.viajantes.some(v => v.id === m.id)).length;
-  return h("div", { class: "panel" },
-    h("p", { class: "eyebrow", text: "Só você vê · entradas no app" }),
-    h("h2", { text: lista.length === 1 ? "1 pessoa entrou no app" : lista.length + " pessoas entraram no app" }),
-    semPass ? h("p", { class: "small", text: semPass === 1 ? "1 pessoa entrou mas ainda não emitiu o passaporte." : semPass + " pessoas entraram mas ainda não emitiram o passaporte." }) : null,
-    h("ul", { class: "roster" }, lista.map(m => {
-      const v = S.viajantes.find(x => x.id === m.id);
-      return h("li", null, h("img", { src: avatar(m.id), alt: "" }),
-        h("div", null, h("b", { text: (v && v.nome) || m.nome || "Viajante" }), h("small", { text: [m.email, m.ts ? "entrou em " + new Date(m.ts).toLocaleDateString("pt-BR") : ""].filter(Boolean).join(" · ") })),
-        h("span", { class: "c", text: v ? "passaporte ✓" : "sem passaporte" }));
-    })));
-}
 document.addEventListener("keydown", e => { if (e.key === "Escape" && document.querySelector(".sheet")) closeSheets(); });
 function closeSheets() { document.querySelectorAll(".sheet").forEach(s => s.remove()); }
 function conteudoInsignia(l) {
@@ -4408,6 +4403,11 @@ function avisoFixado() {
     h("p", { class: "eyebrow avisolab", text: "📢 Aviso da líder · " + d.toLocaleDateString("pt-BR", { weekday: "short", day: "numeric" }) + " · " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) }),
     h("p", { class: "t", text: a.texto }));
 }
+// figurinhas do chat: o bonequinho de quem manda, vestido de deus, com a frase do deus (como figurinha de WhatsApp)
+const FIGURINHAS = [["surya", "Surya", "Bom dia!"], ["ganesha", "Ganesha", "Caminho aberto!"], ["shiva", "Shiva", "Om Namah Shivaya"], ["krishna", "Krishna", "Bora dançar!"],
+  ["hanuman", "Hanuman", "Força!"], ["lakshmi", "Lakshmi", "Tô rica!"], ["durga", "Durga", "Poderosa!"], ["kali", "Kali", "Sai da frente!"],
+  ["parvati", "Parvati", "Te amo!"], ["saraswati", "Saraswati", "Aprendi!"], ["vishnu", "Vishnu", "Tudo sob controle"], ["ganga", "Ganga", "Gratidão"]];
+const figurinha = (autor, f) => h("span", { class: "figura" }, bonecoSvg({ ...bonecoDe(autor), deus: f[0], pet: "nenhum", ombro: "nenhum", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum" }), h("span", { class: "figtxt", text: f[2] }));
 function vConversa() {
   // mapa e localização não aparecem no chat (ficam só na aba Mapa)
   const msgs = S.chat.filter(m => m.tipo !== "local" && m.tipo !== "aovivo" && m.tipo !== "reacao").sort((a, b) => a.ts - b.ts);
@@ -4434,14 +4434,14 @@ function vConversa() {
     if (day !== last) { log.append(h("p", { class: "dayline", text: day })); last = day; }
     const mine = m.autor === S.uid;
     const ehAviso = m.tipo === "aviso" && ehLider(m.autor);
-    const fig = m.tipo === "fig" && REACOES.find(r => r[0] === m.r);
+    const fig = m.tipo === "fig" && FIGURINHAS.find(f => f[0] === m.deus);
     log.append(h("div", { class: "bubble" + (mine ? " me" : "") + (ehAviso ? " aviso" : "") + (fig ? " fig" : "") },
       bonecoRosto(m.autor),
       h("div", { class: "b" },
         h("div", { class: "h" }, h("b", { text: nomeDe(m.autor) }), h("span", { text: d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) }),
           S.db && eu() ? h("button", { class: "reagir", type: "button", title: "Reagir", "aria-label": "Reagir à mensagem", onclick: () => { S.reagindo = S.reagindo === m.id ? null : m.id; render(); } }, "☺") : null,
           (mine || S.isOwner) ? h("button", { class: "del", type: "button", onclick: () => S.db.doc("chat/" + m.id).delete().catch(() => {}) }, "apagar") : null),
-        fig ? h("div", { class: "figura" }, bonecoSvg(bonecoDe(m.autor)), h("p", { class: "fala" }, h("span", { class: "e", text: fig[1] }), fig[2])) :
+        fig ? figurinha(m.autor, fig) :
         m.tipo === "local" ? h("div", { class: "ponto" },
           h("span", { class: "eyebrow", text: "Ponto de encontro" }), h("b", { text: m.nome || "Local marcado" }),
           m.texto ? h("p", { class: "t", text: m.texto }) : null,
@@ -4532,10 +4532,10 @@ function vConversa() {
         h("p", { class: "eyebrow", text: "Ponto de encontro" }),
         h("div", { class: "unlock" }, pSel, h("button", { class: "btn", type: "button", onclick: enviarPonto }, "Enviar ponto"))),
       pNota, locMsg) : h("span"),
-    pode && S.figAberto ? h("div", { class: "figpicker", role: "group", "aria-label": "Figurinhas" }, REACOES.map(([r, e, t]) => h("button", { type: "button", onclick: async () => {
+    pode && S.figAberto ? h("div", { class: "figpicker", role: "group", "aria-label": "Figurinhas" }, FIGURINHAS.map(f => h("button", { type: "button", "aria-label": f[1] + ": " + f[2], onclick: async () => {
       S.figAberto = false; render();
-      try { await addChat({ autor: S.uid, tipo: "fig", r, texto: e + " " + t, ts: Date.now() }); } catch (err) { falha(err); }
-    } }, h("span", { class: "e", text: e }), h("span", { text: t })))) : null,
+      try { await addChat({ autor: S.uid, tipo: "fig", deus: f[0], texto: f[2], ts: Date.now() }); } catch (err) { falha(err); }
+    } }, figurinha(S.uid, f)))) : null,
     pode ? h("div", { class: "composer" },
         S.assets ? h("button", { class: "iconbtn", type: "button", title: "Enviar foto", "aria-label": "Enviar foto", onclick: () => fileIn.click() },
           ico(["M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z", "M12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"])) : null,
