@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Emergência">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="robots" content="noindex, nofollow">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icone-192.png">
+<link rel="apple-touch-icon" href="icone-180.png">
+<title>Emergência</title>
+<style>
+  :root { --fundo:#111; --texto:#fff; --sub:#bbb; --cartao:#1c1c1c; --linha:#2c2c2c; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--fundo); padding-top:max(20px, env(safe-area-inset-top)); color:var(--texto); font-family:-apple-system, system-ui, "Segoe UI", Roboto, sans-serif; padding:20px 16px 32px; }
+  h1 { font-size:22px; font-weight:700; text-align:center; margin-bottom:4px; }
+  .dica { text-align:center; color:var(--sub); font-size:15px; margin-bottom:18px; }
+  .botoes { display:flex; flex-direction:column; gap:12px; }
+  a.btn { display:flex; align-items:center; gap:16px; text-decoration:none; color:#fff; border-radius:18px; padding:16px 18px; min-height:88px; }
+  .icone { font-size:36px; width:46px; text-align:center; flex-shrink:0; }
+  .nome { font-size:23px; font-weight:800; line-height:1.1; }
+  .num { font-size:17px; opacity:.9; margin-top:4px; font-weight:600; }
+  .tel { white-space:nowrap; }
+  .seg { background:#1f6feb; }
+  .alarme { background:#c1121f; }
+  .pol { background:#2b3a67; }
+  .gcm { background:#3d5a80; }
+  .samu { background:#9d0208; }
+  .bomb { background:#e85d04; }
+  .fam { background:#1a7f37; }
+  h2 { font-size:18px; color:var(--sub); font-weight:700; margin:28px 4px 10px; }
+  .lista { background:var(--cartao); border-radius:16px; overflow:hidden; }
+  .grupo { font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:#888; padding:14px 16px 4px; }
+  .item { display:flex; align-items:center; gap:10px; padding:12px 16px; border-top:1px solid var(--linha); }
+  .grupo + .item { border-top:none; }
+  .item .txt { flex:1; min-width:0; }
+  .item .t { font-size:17px; font-weight:600; }
+  .item .n { font-size:15px; color:var(--sub); margin-top:2px; }
+  .acao { text-decoration:none; color:#fff; font-size:15px; font-weight:700; padding:10px 14px; border-radius:12px; background:#2f6f3e; flex-shrink:0; }
+  .acao.zap { background:#128c7e; }
+  .info { margin-top:24px; background:var(--cartao); border-radius:16px; padding:16px; }
+  .info h3 { font-size:17px; color:var(--sub); margin-bottom:10px; font-weight:600; }
+  .info p { font-size:18px; line-height:1.4; }
+  .end { font-size:22px; font-weight:700; line-height:1.35; }
+  .acoes-end { display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  button.acao { border:0; font-family:inherit; cursor:pointer; }
+  .instalar summary { font-size:17px; font-weight:700; color:var(--sub); cursor:pointer; }
+  .instalar p { font-size:16px; line-height:1.45; margin-top:12px; color:#ddd; }
+  .vazio { color:#777; font-style:italic; }
+</style>
+</head>
+<body>
+  <h1>🚨 Emergência</h1>
+  <p class="dica">Toque no botão para ligar</p>
+  <div class="botoes">
+    <a class="btn seg" href="tel:+551141698800">
+      <span class="icone">🛡️</span>
+      <span><div class="nome">Segurança da Fazendinha</div><div class="num">AMAFAZ · 24h · <span class="tel">(11) 4169-8800</span></div></span>
+    </a>
+    <a class="btn alarme" href="tel:03005050500">
+      <span class="icone">🔔</span>
+      <span><div class="nome">Alarme Verisure</div><div class="num">Central 24h · <span class="tel">0300 50 50 500</span></div></span>
+    </a>
+    <a class="btn pol" href="tel:190">
+      <span class="icone">🚓</span>
+      <span><div class="nome">Polícia Militar</div><div class="num">190</div></span>
+    </a>
+    <a class="btn gcm" href="tel:153">
+      <span class="icone">👮</span>
+      <span><div class="nome">Guarda Municipal de Cotia</div><div class="num">153</div></span>
+    </a>
+    <a class="btn samu" href="tel:192">
+      <span class="icone">🚑</span>
+      <span><div class="nome">SAMU · Ambulância</div><div class="num">192</div></span>
+    </a>
+    <a class="btn bomb" href="tel:193">
+      <span class="icone">🔥</span>
+      <span><div class="nome">Bombeiros</div><div class="num">193</div></span>
+    </a>
+    <a class="btn fam" href="https://wa.me/?text=%F0%9F%9A%A8%20Disparou%20o%20alarme%20em%20casa%20(Rua%20das%20Tulipas%2C%20111%20-%20Ch%C3%A1cara%20Vale%20do%20Rio%20Cotia).%20Me%20liga%20assim%20que%20puder.">
+      <span class="icone">💬</span>
+      <span><div class="nome">Avisar a família</div><div class="num">Mensagem pronta no WhatsApp</div></span>
+    </a>
+  </div>
+
+  <h2>Mais contatos da região</h2>
+  <div class="lista">
+    <div class="grupo">Guarda Civil</div>
+    <div class="item"><div class="txt"><div class="t">Base Granja Viana</div><div class="n">(11) 4702-7630</div></div><a class="acao" href="tel:+551147027630">Ligar</a></div>
+    <div class="item"><div class="txt"><div class="t">GCM Cotia</div><div class="n">(11) 97545-7456</div></div><a class="acao" href="tel:+5511975457456">Ligar</a><a class="acao zap" href="https://wa.me/5511975457456">Zap</a></div>
+    <div class="item"><div class="txt"><div class="t">CECOM · Central da Guarda</div><div class="n">(11) 4616-2835</div></div><a class="acao" href="tel:+551146162835">Ligar</a></div>
+    <div class="item"><div class="txt"><div class="t">Guarda de Carapicuíba</div><div class="n">(11) 4183-5229</div></div><a class="acao" href="tel:+551141835229">Ligar</a></div>
+
+    <div class="grupo">Defesa Civil e Bombeiros</div>
+    <div class="item"><div class="txt"><div class="t">Bombeiros Cotia</div><div class="n">(11) 4616-2933</div></div><a class="acao" href="tel:+551146162933">Ligar</a></div>
+    <div class="item"><div class="txt"><div class="t">Defesa Civil Cotia</div><div class="n">(11) 4614-4091</div></div><a class="acao" href="tel:+551146144091">Ligar</a></div>
+    <div class="item"><div class="txt"><div class="t">Defesa Civil Carapicuíba</div><div class="n">(11) 4146-5810</div></div><a class="acao" href="tel:+551141465810">Ligar</a></div>
+
+    <div class="grupo">Outros</div>
+    <div class="item"><div class="txt"><div class="t">Delegacia da Mulher</div><div class="n">(11) 4616-9098</div></div><a class="acao" href="tel:+551146169098">Ligar</a></div>
+    <div class="item"><div class="txt"><div class="t">CVV · Apoio emocional</div><div class="n">188</div></div><a class="acao" href="tel:188">Ligar</a></div>
+    <div class="item"><div class="txt"><div class="t">Subprefeitura Granja Viana</div><div class="n">(11) 4702-3964 · zeladoria</div></div><a class="acao" href="tel:+551147023964">Ligar</a></div>
+  </div>
+
+  <div class="info">
+    <h3>📍 Endereço de casa (para falar no telefone)</h3>
+    <p class="end">Rua das Tulipas, 111<br>Chácara Vale do Rio Cotia<br>Carapicuíba – SP</p>
+    <div class="acoes-end">
+      <button class="acao" onclick="copiar()">Copiar endereço</button>
+      <a class="acao zap" href="https://wa.me/?text=Meu%20endere%C3%A7o%3A%20Rua%20das%20Tulipas%2C%20111%20-%20Ch%C3%A1cara%20Vale%20do%20Rio%20Cotia%20-%20Carapicu%C3%ADba%20-%20SP">Mandar no WhatsApp</a>
+    </div>
+  </div>
+  <details class="info instalar">
+    <summary>📲 Como instalar no celular</summary>
+    <p><b>iPhone:</b> abra este link no Safari, toque no botão de compartilhar (quadrado com seta para cima) e escolha <b>“Adicionar à Tela de Início”</b>.</p>
+    <p><b>Android:</b> abra no Chrome, toque nos três pontinhos no canto de cima e escolha <b>“Instalar app”</b> ou <b>“Adicionar à tela inicial”</b>.</p>
+    <p>Depois de instalado, o app abre mesmo sem internet.</p>
+  </details>
+
+<script>
+function copiar(){
+  var t='Rua das Tulipas, 111 - Chácara Vale do Rio Cotia - Carapicuíba - SP';
+  try { navigator.clipboard.writeText(t).then(function(){ alert('Endereço copiado'); }); } catch(e) {}
+}
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(function(){}); }
+</script>
+</body>
+</html>

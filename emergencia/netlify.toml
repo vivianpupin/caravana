@@ -1,0 +1,14 @@
+# App de Emergência da família (site separado do da Caravana).
+# Na Netlify: novo site com este mesmo repositório e "Base directory" = emergencia.
+[build]
+  publish = "."
+  # Mesma regra da Caravana: só publica quando a mensagem do commit tiver [publicar].
+  ignore = "git log -1 --pretty=%B | grep -qF '[publicar]' && exit 1 || exit 0"
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
