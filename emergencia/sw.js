@@ -1,6 +1,6 @@
 // Guarda o app no celular para abrir mesmo sem internet.
 // Ao mudar algum número, troque a versão abaixo para todo mundo receber a atualização.
-const CACHE = "emergencia-v1";
+const CACHE = "emergencia-v2";
 const ARQUIVOS = ["./", "index.html", "manifest.webmanifest", "icone-180.png", "icone-192.png", "icone-512.png"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARQUIVOS.map(a => new Request(a, { cache: "reload" })))));
