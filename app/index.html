@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "06/10 · 15:35";</script>
+<script>window.__VERSAO = "06/10 · 15:36";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -2376,16 +2376,15 @@ async function cameraHabilidade(id) {
   const abre = async () => {
     para();
     try { fluxo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: frente ? "user" : "environment" }, audio: false });
-      video.srcObject = fluxo; video.classList.toggle("espelho", frente); await video.play(); st.textContent = ""; }
+      video.srcObject = fluxo; await video.play(); st.textContent = ""; }
     catch (e) { st.textContent = ""; st.append(h("button", { class: "btn gold", type: "button", style: "width:100%", onclick: () => { fecha(); entradaFoto(id, true); } }, "📸 Abrir a câmera do celular")); }
   };
   const clica = () => {
     if (!video.videoWidth) return;
-    // guarda exatamente o que aparecia na tela (recorte 3x4 do meio)
+    // guarda exatamente o que aparecia na tela (recorte 3x4 do meio); a selfie não é espelhada, fica como as pessoas veem
     const vw = video.videoWidth, vh = video.videoHeight, alvo = 3 / 4;
     let sw = vw, sh = vh; if (vw / vh > alvo) sw = vh * alvo; else sh = vw / alvo;
     const c = document.createElement("canvas"); c.width = Math.round(sw); c.height = Math.round(sh); const x = c.getContext("2d");
-    if (frente) { x.translate(c.width, 0); x.scale(-1, 1); }
     x.drawImage(video, (vw - sw) / 2, (vh - sh) / 2, sw, sh, 0, 0, c.width, c.height); para(); fotoComHabilidade(id, c);
   };
   const fecha = () => { para(); closeSheets(); };
