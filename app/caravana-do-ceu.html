@@ -3158,7 +3158,12 @@ function ligarGps(silencioso) {
 }
 async function reagir(para, r, texto) {
   if (!S.room) return false;
-  try { await S.room.emit("reacao", { para, r, texto: (texto || "").slice(0, 80) }); return true; } catch (e) { return false; }
+  try {
+    const ref = await S.room.emit("reacao", { para, r, texto: (texto || "").slice(0, 80) });
+    // quem está com o app fechado recebe a reação como notificação no celular
+    if (noSite() && ref && ref.id) fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ reacao: ref.id }), keepalive: true }).catch(() => {});
+    return true;
+  } catch (e) { return false; }
 }
 function abrirPessoa(id) {
   closeSheets();
@@ -3172,7 +3177,7 @@ function abrirPessoa(id) {
         h("p", { class: "small" }, h("span", { class: "dot" + (online ? " on" : "") }), online ? "Com o aplicativo aberto agora" : "Fora do aplicativo agora"))),
     !eu2 ? h("div", { class: "reacoes" }, REACOES.map(([r, e, t]) => h("button", { type: "button", class: "reac", onclick: () => envia(r, "") }, h("span", { class: "e", text: e }), h("span", { text: t })))) : null,
     !eu2 ? h("div", { class: "unlock" }, txt, h("button", { class: "btn gold", type: "button", onclick: () => { if (txt.value.trim()) envia("fala", txt.value.trim()); } }, "Falar")) : null,
-    !eu2 ? h("p", { class: "small", text: online ? "Com o app aberto: a reação aparece na hora, na tela de " + nome.split(" ")[0] + "." : "A reação só aparece para quem está com o app aberto. Para um recado que fica guardado, use o Chat." }) : null,
+    !eu2 ? h("p", { class: "small", text: online ? "Com o app aberto: a reação aparece na hora, na tela de " + nome.split(" ")[0] + "." : "Fora do app, a reação chega como notificação, se a pessoa ativou os avisos. Para um recado que fica guardado, use o Chat." }) : null,
     msg,
     h("div", { class: "actions" },
       p ? h("a", { class: "btn", href: `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`, target: "_blank", rel: "noopener" }, "Como chegar") : null,

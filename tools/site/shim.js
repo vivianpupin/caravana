@@ -409,10 +409,16 @@ const room = {
   },
   emit: (topic, data) => fs.collection("reacoes").add({ topic, data, by: me.id, ts: Date.now() }),
   on: (topic, fn) => {
-    const desde = Date.now() - 5000;
-    return fs.collection("reacoes").where("ts", ">", desde).onSnapshot(qs => {
-      qs.docChanges().forEach(c => { if (c.type !== "added") return; const d = c.doc.data(); if (d.topic === topic) fn({ data: d.data, by: d.by, isMe: d.by === me.id }); });
-    }, () => {});
+    // se a escuta cair (sem internet, ou antes de a pessoa virar membro), volta a escutar sozinha
+    let desde = Date.now() - 5000, off = () => {}, parado = false;
+    const vistos = new Set();
+    const liga = () => {
+      off = fs.collection("reacoes").where("ts", ">", desde).onSnapshot(qs => {
+        qs.docChanges().forEach(c => { if (c.type !== "added" || vistos.has(c.doc.id)) return; vistos.add(c.doc.id); const d = c.doc.data(); if (d.topic === topic) fn({ data: d.data, by: d.by, isMe: d.by === me.id }); });
+      }, () => { off(); if (!parado) setTimeout(() => { desde = Math.max(desde, Date.now() - 60000); liga(); }, 5000); });
+    };
+    liga();
+    return () => { parado = true; off(); };
   },
   join: () => room,
   leave: () => {},

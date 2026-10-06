@@ -18,6 +18,7 @@ export default async req => {
   if (corpo.selo) return avisarSelo(d, k, corpo.selo);
   if (corpo.habilidade) return avisarHabilidade(d, k, corpo.habilidade, corpo.para);
   if (corpo.pombo) return avisarPombo(d, k, corpo.pombo);
+  if (corpo.reacao) return avisarReacao(d, k, corpo.reacao);
   const { id } = corpo;
   if (!id || typeof id !== "string" || id.includes("/")) return Response.json({ ok: false }, { status: 400 });
   // só avisa uma vez por mensagem, e só se ela acabou de ser enviada
@@ -93,5 +94,24 @@ async function avisarPombo(d, k, id) {
   const v = await d.doc("viajantes/" + m.autor).get();
   const nome = String((v.exists && v.data().nome) || "Alguém da caravana").trim().split(/\s+/)[0];
   const enviados = await enviarPara(d, k, m.para, { title: "🕊️ Chegou um pombo-correio!", body: nome + (m.presente ? " te mandou uma cartinha e um presente." : " te mandou uma cartinha."), tag: "pombo-" + id, url: "./?aba=pombo" }, 24 * 3600);
+  return Response.json({ ok: true, enviados });
+}
+
+// reação mandada pelo mapa: avisa só a pessoa que recebeu (uma vez, e só se acabou de ser enviada)
+const REACOES = { oi: "👋 Oi!", namaste: "🙏 Namaste", amor: "❤️ Amor", chai: "☕ Bora um chai?", vem: "📍 Vem cá!", uau: "✨ Uau!", risada: "😂 Haha", espera: "⏳ Me espera!" };
+async function avisarReacao(d, k, id) {
+  if (typeof id !== "string" || id.includes("/")) return Response.json({ ok: false }, { status: 400 });
+  const ref = d.doc("reacoes/" + id);
+  const m = await d.runTransaction(async t => {
+    const s = await t.get(ref); if (!s.exists) return null;
+    const x = s.data(); if (x.avisado || Date.now() - (x.ts || 0) > 5 * 60 * 1000) return null;
+    t.update(ref, { avisado: true }); return x;
+  });
+  const r = m && m.data;
+  if (!r || typeof r.para !== "string" || r.para.includes("/") || r.para === m.by) return Response.json({ ok: false });
+  const v = await d.doc("viajantes/" + m.by).get();
+  const nome = String((v.exists && v.data().nome) || "Alguém da caravana").trim().split(/\s+/)[0];
+  const texto = r.r === "fala" ? String(r.texto || "").slice(0, 80) : REACOES[r.r] || "👋";
+  const enviados = await enviarPara(d, k, r.para, { title: nome + " · Caravana do Céu", body: texto, tag: "reacao-" + id, url: "./?aba=mapa" }, 3600);
   return Response.json({ ok: true, enviados });
 }
