@@ -2553,7 +2553,7 @@ const BONECO = {
   chapeu: [["fedora", "Chapéu de viajante"], ["safari", "Safári"], ["lenco", "Lenço"], ["turbante", "Turbante"], ["flores", "Coroa de flores"], ["sem", "Sem chapéu"]],
   roupa: [["basico", "Sem roupa"], ["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["sari2", "Sari de bolinhas"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
   roupaCor: ["#8B6B43", "#C2A878", "#5F6B45", "#8A3F32", "#D9822B", "#B83A6B", "#2F5D7C", "#E8E0CF", "#2B2622"],
-  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["violao", "Violão"], ["tambor", "Djembê"], ["maraca", "Maracá"], ["flautim", "Flauta"], ["sitar", "Sitar"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["chicote", "Chicote"], ["nenhum", "Nada"]],
+  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["violao", "Violão"], ["tambor", "Djembê"], ["maraca", "Maracá"], ["flautim", "Flauta"], ["sitar", "Sitar"], ["harmonium", "Harmonium"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["chicote", "Chicote"], ["nenhum", "Nada"]],
   colar: [["nenhum", "Nenhum"], ["guirlanda", "Guirlanda de flores"], ["rudraksha", "Rudraksha"], ["tulsi", "Contas de tulsi"], ["contas", "Contas coloridas"], ["ouro", "Colar de ouro"], ["moedas", "Colar de moedas"], ["om", "Pingente Om"]],
   testa: [["nada", "Nada"], ["bindi", "Bindi"], ["tilak", "Tilak"], ["cinzas", "Shivaísta · tripundra"], ["vaishnava", "Vaishnava · urdhva pundra"]],
   nariz: [["nenhum", "Sem piercing"], ["argola", "Argola no nariz"], ["ponto", "Brilhante no nariz"]],
@@ -2869,6 +2869,15 @@ function desenhaBoneco(b) {
       h("circle", { cx: 48.1, cy: 34, r: 2.3, fill: "#A0673F" }),
       h("ellipse", { cx: 48.1, cy: 74, rx: 7, ry: 6.4, fill: "#B07A45", stroke: "#6B4A2A", "stroke-width": .8 }), h("ellipse", { cx: 48.1, cy: 74, rx: 4, ry: 3.4, fill: "none", stroke: "#E0B24A", "stroke-width": .5 }),
       P("M47.6 35 L47.6 76 M48.6 35 L48.6 76", "none", { stroke: "#F1E2BC", "stroke-width": .22 })));
+    // harmonium: caixa de madeira com teclado na frente e o fole sanfonado atrás
+    if (A === "harmonium") T.append(h("g", null,
+      P("M41 58 L44 55 L44 70 L41 72 Z", "#5E3514"), P("M41.6 59 L43.4 57.6 M41.6 61.5 L43.4 60.1 M41.6 64 L43.4 62.6 M41.6 66.5 L43.4 65.1 M41.6 69 L43.4 67.6", "none", { stroke: "#C9A063", "stroke-width": .5 }),
+      h("rect", { x: 44, y: 60, width: 15, height: 12, rx: 1, fill: "#9A5A22", stroke: "#5E3514", "stroke-width": .7 }),
+      h("rect", { x: 44.6, y: 60.6, width: 13.8, height: 3.8, fill: "#F4EFE3", stroke: "#5E3514", "stroke-width": .4 }),
+      ...[46.5, 48.5, 50.5, 52.5, 54.5, 56.5].map(x => h("line", { x1: x, y1: 60.6, x2: x, y2: 64.4, stroke: "#8A7A62", "stroke-width": .3 })),
+      ...[45.9, 47.9, 51.9, 53.9, 55.9].map(x => h("rect", { x, y: 60.6, width: 1.2, height: 2.3, fill: "#2B1D14" })),
+      h("rect", { x: 46, y: 66, width: 11, height: 4, rx: .6, fill: "none", stroke: "#E0B24A", "stroke-width": .5 }),
+      h("circle", { cx: 48, cy: 68, r: .6, fill: "#E0B24A" }), h("circle", { cx: 51.5, cy: 68, r: .6, fill: "#E0B24A" }), h("circle", { cx: 55, cy: 68, r: .6, fill: "#E0B24A" })));
     if (A === "violao") T.append(h("g", { transform: "rotate(10 48 61)" },
       h("rect", { x: 47, y: 41, width: 3.2, height: 4.5, rx: .8, fill: "#3A2414" }),
       h("rect", { x: 47.6, y: 45, width: 2, height: 21, fill: "#5A3A22" }),
@@ -2895,7 +2904,7 @@ function desenhaBoneco(b) {
   if (exprG) g.append(...exprG);
   return g;
 }
-const INSTRUMENTOS = ["violao", "tambor", "maraca", "flautim", "sitar", "sino"];
+const INSTRUMENTOS = ["violao", "tambor", "maraca", "flautim", "sitar", "harmonium", "sino"];
 // bonecos antigos guardavam o objeto no mesmo campo do instrumento: o objeto passa para a mão direita
 function maosSeparadas(b) {
   if (!b || !b.acessorio || b.acessorio === "nenhum" || INSTRUMENTOS.includes(b.acessorio) || (b.acessorio2 && b.acessorio2 !== "nenhum")) return b;
@@ -2948,12 +2957,12 @@ const _desenhaBase = desenhaBoneco;
 desenhaBoneco = function (b0) {
   b0 = maosSeparadas(b0);
   const d = b0.deus && DEUS[b0.deus];
-  // na fantasia, o que a pessoa escolheu (instrumento, colar, testa) vale mais que o do deus; objeto, óculos, nariz e pés passam direto
+  // na fantasia, o que a pessoa escolheu (instrumento, colar, testa) vale mais que o do deus; objeto, óculos, nariz e pés passam direto.
+  // o chapéu fica guardado, mas quem aparece é a coroa do deus (a cabeça de Ganesha também é um "chapéu")
   const meu = {};
   if (b0.acessorio && b0.acessorio !== "nenhum") meu.acessorio = b0.acessorio;
   if (b0.colar && b0.colar !== "nenhum") meu.colar = b0.colar;
   if (b0.testa && b0.testa !== "nada") meu.testa = b0.testa;
-  if (b0.chapeu && b0.chapeu !== "sem") meu.chapeu = b0.chapeu;
   const b = d ? { ...b0, ...d, ...meu, cabelo: d.cabelo || (b0.cabelo === "careca" ? "curto" : b0.cabelo) } : b0;
   const base = { ...b, roupa: ["shiva", "dhoti"].includes(b.roupa) ? "yogi" : b.roupa, acessorio: d && !meu.acessorio ? "nenhum" : b.acessorio, acessorio2: b.acessorio2,
     chapeu: ["jata", "ganesha", "coroa", "coroaalta", "pena", "sol"].includes(b.chapeu) ? "sem" : b.chapeu, colar: d || ["cobra", "ouro", "flores"].includes(b.colar) ? "nenhum" : b.colar,
@@ -3058,7 +3067,7 @@ function vExplorador() {
     // quem ainda não montou começa do zero: só o básico, para ir vestindo
     S.bonecoRasc = salvo ? maosSeparadas(bonecoDe(S.uid)) : { ...bonecoPadrao(S.uid), roupa: "basico", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum", pet: "nenhum", deus: "nenhum", barba: "nao" };
   }
-  const b = S.bonecoRasc, set = (k, val) => { S.bonecoRasc = { ...S.bonecoRasc, [k]: val, ...(k === "deus" && val !== "nenhum" ? { chapeu: "sem", colar: "nenhum", testa: "nada", acessorio: "nenhum" } : {}) }; render(); };
+  const b = S.bonecoRasc, set = (k, val) => { S.bonecoRasc = { ...S.bonecoRasc, [k]: val }; render(); };
   const chips = (k, ops) => h("div", { class: "opts" }, ops.map(([val, lab]) => h("button", { type: "button", class: "opt", "aria-pressed": String(b[k] === val), onclick: () => set(k, val) }, lab)));
   const cores = (k, arr, rot) => h("div", { class: "opts" }, arr.map(c => h("button", { type: "button", class: "sw", style: `background:${c}`, "aria-label": rot, "aria-pressed": String(b[k] === c), onclick: () => set(k, c) })));
   const msg = h("p", { class: "msg" + (S.expMsg ? " ok" : ""), role: "status", text: S.expMsg || "" });
