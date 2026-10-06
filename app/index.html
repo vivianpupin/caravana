@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "06/10 · 15:36";</script>
+<script>window.__VERSAO = "06/10 · 15:52";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -777,6 +777,12 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 
 /* Montador de explorador */
 .builder{display:grid;gap:18px}
+.carvbon{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.carvgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
+.carvb{background:radial-gradient(circle at 50% 40%,#F4E6C4,#E4CC98);border:0;border-radius:14px;padding:6px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit;font-size:12px;color:var(--ink);cursor:pointer}
+.carvb .bonecosvg{width:56px;height:84px}
+.retprev{display:flex;flex-direction:column;align-items:center;gap:10px}
+.retprev img{width:100%;max-width:360px;border-radius:12px;box-shadow:var(--shadow)}
 @media (min-width:720px){.builder{grid-template-columns:260px 1fr;align-items:start}}
 .preview{background:radial-gradient(circle at 50% 40%,#F4E6C4,#E4CC98);border-radius:var(--r);padding:20px 14px;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:var(--shadow)}
 .tagname{font-family:var(--display);font-size:20px;font-weight:600;color:#3B2A1C}
@@ -3114,11 +3120,88 @@ function vExplorador() {
         // guarda o que está na tela e continua mostrando o mesmo boneco (clicar de novo não pode apagar as escolhas)
         if (S.salvandoExp || !S.bonecoRasc) return;
         const bon = { ...S.bonecoRasc }; S.salvandoExp = true;
-        try { await S.db.doc("viajantes/" + S.uid).update({ boneco: bon }); S.bonecoRasc = bon; S.expMsg = "Explorador salvo. Ele já aparece no mapa."; msg.textContent = S.expMsg; msg.className = "msg ok"; setTimeout(() => { S.expMsg = null; }, 6000); }
+        try { await S.db.doc("viajantes/" + S.uid).update({ boneco: bon }); S.bonecoRasc = bon; delete adesivoCache.eu; if (S.fotoAdesThumbs) delete S.fotoAdesThumbs.eu; S.expMsg = "Explorador salvo. Ele já aparece no mapa."; msg.textContent = S.expMsg; msg.className = "msg ok"; setTimeout(() => { S.expMsg = null; }, 6000); }
         catch (e) { msg.textContent = "Não consegui salvar. Tente de novo."; msg.className = "msg err"; }
         S.salvandoExp = false;
       } }, "Salvar meu explorador"), msg)
-      : h("p", { class: "small", style: "text-align:center", text: "Emita seu passaporte para salvar o seu explorador." }));
+      : h("p", { class: "small", style: "text-align:center", text: "Emita seu passaporte para salvar o seu explorador." }),
+    vSalvaExplorador(), vCaravanaBonecos(), vRetrato());
+}
+// ---------- Explorador: salvar como imagem, os exploradores da caravana e o retrato da turma ----------
+const bonecoImg = (b, lado) => svgParaImg(h("g", null, desenhaBoneco(b)), lado);
+const pngDe = cv => new Promise(ok => cv.toBlob(ok, "image/png"));
+const comBoneco = () => S.viajantes.filter(v => v.boneco);
+function vSalvaExplorador() {
+  const msg = h("p", { class: "msg", role: "status" });
+  return h("div", { class: "actions", style: "justify-content:center;flex-direction:column;align-items:center;gap:6px" },
+    h("button", { class: "btn", type: "button", onclick: async () => {
+      msg.textContent = "Preparando a imagem…"; msg.className = "msg";
+      try { const cv = await bonecoImg({ ...S.bonecoRasc }, 1400); await salvarNoRolo(pngDe(cv), "meu-explorador.png", msg); }
+      catch (e) { msg.textContent = "Não consegui gerar a imagem. Tente de novo."; msg.className = "msg err"; }
+    } }, "Salvar meu explorador como imagem"),
+    h("p", { class: "small", style: "text-align:center;margin:0", text: "Sai em PNG, com o fundo transparente. No Estúdio de fotos ele também aparece nos adesivos, em Meu explorador." }), msg);
+}
+function vCaravanaBonecos() {
+  const lista = comBoneco();
+  if (!lista.length) return null;
+  return h("div", { class: "carvbon" },
+    h("p", { class: "eyebrow rule", text: "A Caravana" }),
+    h("p", { class: "small", style: "text-align:center", text: "Os exploradores de quem já montou o seu. Toque para ver de perto." }),
+    h("div", { class: "carvgrid" }, lista.map(v => h("button", { type: "button", class: "carvb", onclick: () => verExplorador(v.id) },
+      bonecoSvg({ ...bonecoDe(v.id), pet: "nenhum" }, "bonecosvg"), h("span", { text: nomeDe(v.id).split(" ")[0] })))));
+}
+function verExplorador(id) {
+  closeSheets();
+  const box = h("div", { role: "dialog", "aria-label": nomeDe(id), style: "text-align:center" },
+    bonecoSvg(bonecoDe(id), "bonecosvg big"), h("h2", { text: nomeDe(id) }),
+    h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  document.body.append(sheet);
+}
+const CENARIOS = [["agra", "Taj Mahal"], ["varanasi", "Varanasi"], ["rishikesh", "Rishikesh"], ["jaipur", "Jaipur"], ["delhi", "Delhi"]];
+async function retratoCaravana(cen) {
+  const W = 1080, H = 1920, cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
+  const fundo = await carregaImg("img/abertura-" + cen + ".webp"), k = Math.max(W / fundo.width, H / fundo.height);
+  x.drawImage(fundo, (W - fundo.width * k) / 2, (H - fundo.height * k) / 2, fundo.width * k, fundo.height * k);
+  // título no céu escuro do alto
+  const simb = await carregaImg("img/simbolo-dourado.png").catch(() => null);
+  if (simb) { const sw = 110, sh = sw * simb.height / simb.width; x.drawImage(simb, W / 2 - sw / 2, 110, sw, sh); }
+  x.textAlign = "center"; x.fillStyle = "#F1E2BC"; x.font = '600 74px Cinzel, Georgia, serif'; x.fillText("CARAVANA DO CÉU", W / 2, 330);
+  x.font = '400 34px Poppins, sans-serif'; x.fillStyle = "#E8C07A"; x.fillText("TRAVESSIA DA ÍNDIA SAGRADA · 2026", W / 2, 390);
+  // os exploradores em fileiras, os de trás um pouco menores
+  const lista = comBoneco(), n = lista.length; if (!n) return cv;
+  const porFila = n <= 5 ? n : n <= 12 ? Math.ceil(n / 2) : Math.ceil(n / 3), filas = Math.ceil(n / porFila);
+  const imgs = await Promise.all(lista.map(v => bonecoImg({ ...bonecoDe(v.id), pet: "nenhum" }, 600)));
+  // desenha de trás para a frente: a fileira da frente cobre só os pés de quem está atrás
+  const larg0 = Math.min(300, (W - 60) / porFila) * 1.1;
+  for (let f = 0; f < filas; f++) {
+    const daFila = imgs.slice(f * porFila, (f + 1) * porFila), atras = filas - 1 - f, esc = 1 - atras * .12;
+    const larg = larg0 * esc, base = H - 80 - atras * larg0 * .78;
+    daFila.forEach((im, i) => {
+      const w = larg, hh = w * im.height / im.width, cx = W / 2 + (i - (daFila.length - 1) / 2) * (W - 60) / porFila * esc;
+      x.drawImage(im, cx - w / 2, base - hh, w, hh);
+    });
+  }
+  return cv;
+}
+function vRetrato() {
+  if (comBoneco().length < 1) return null;
+  const cen = S.retratoCen || "agra", msg = h("p", { class: "msg", role: "status" }), prev = h("div", { class: "retprev" });
+  return h("div", { class: "carvbon" },
+    h("p", { class: "eyebrow rule", text: "Retrato da Caravana" }),
+    h("p", { class: "small", style: "text-align:center", text: "Todos os exploradores juntos, num cenário da travessia. Escolha o lugar:" }),
+    h("div", { class: "opts", style: "justify-content:center" }, CENARIOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(cen === id), onclick: () => { S.retratoCen = id; render(); } }, n))),
+    h("div", { class: "actions", style: "justify-content:center" },
+      h("button", { class: "btn gold", type: "button", onclick: async ev => {
+        msg.textContent = "Montando o retrato…"; msg.className = "msg"; prev.textContent = "";
+        try {
+          const cv = await retratoCaravana(cen), url = cv.toDataURL("image/jpeg", .9);
+          prev.append(h("img", { src: url, alt: "Retrato da Caravana" }),
+            h("button", { class: "btn", type: "button", onclick: () => salvarNoRolo(new Promise(ok => cv.toBlob(ok, "image/jpeg", .92)), "retrato-da-caravana.jpg", msg) }, "Salvar retrato"));
+          msg.textContent = "";
+        } catch (e) { msg.textContent = "Não consegui montar o retrato. Tente de novo."; msg.className = "msg err"; }
+      } }, "Montar o retrato")),
+    prev, msg);
 }
 
 // ---------- Ao vivo: GPS, quem está online, reações ----------
@@ -3981,6 +4064,7 @@ const ADESIVOS = {
   "Caravana": [["img:img/simbolo-dourado.png", "Símbolo dourado"], ["img:img/simbolo-marrom.png", "Símbolo"], ["patch", "Patch bordado"], ["carimbo", "Carimbo"],
     ["postmark", "Carimbo do correio"], ["seloPostal", "Selo postal"], ["data", "Data da câmera"], ["linha", "Caravana do Céu · Índia 2026"], ["fita", "Fita adesiva"],
     ["estrela", "Estrela"], ["flor", "Flor de cravo"], ["guirlanda", "Guirlanda"], ["lungta", "Bandeirinhas de oração"]],
+  "Meu explorador": [["eu", "Meu explorador"]],
   "Bichos": [["pet:elefante", "Elefante"], ["pet:macaco", "Macaco"], ["pet:vaca", "Vaca sagrada"], ["pet:pavao", "Pavão"], ["pet:camelo", "Camelo"], ["pet:cabra", "Cabra"], ["pet:gato", "Gato"], ["pet:cachorro", "Cachorro"], ["ave:periquito", "Periquito"], ["ave:maina", "Mainá"], ["eu", "Meu bonequinho"]]
 };
 const adesivoCache = {};
@@ -4031,7 +4115,7 @@ function imgAdesivo(k) {
     if (k.startsWith("mao:")) return letreiro(k.slice(4), true);
     if (k.startsWith("pet:")) { const g = desenhaPet(k.slice(4)); g.firstChild && g.firstChild.remove(); return svgParaImg(g, 420); }
     if (k.startsWith("ave:")) return svgParaImg(h("g", null, passaroOmbro(k.slice(4))), 360);
-    if (k === "eu") return svgParaImg(h("g", null, desenhaBoneco({ ...bonecoDe(S.uid) })), 480);
+    if (k === "eu") return svgParaImg(h("g", null, desenhaBoneco({ ...bonecoDe(S.uid) })), 600);
     if (k.startsWith("e:")) { const cv = document.createElement("canvas"); cv.width = cv.height = 260; const x = cv.getContext("2d");
       x.font = '210px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(k.slice(2), 130, 142); return cv; }
     throw new Error("adesivo");
@@ -5885,7 +5969,7 @@ async function salvarNoRolo(blobP, nome, msg) {
   const dl = noSite() ? null : await (window.claude?.use?.("downloads") ?? null);
   const b = await blobP;
   if (dl) { try { await dl.save({ filename: nome, data: b }); msg.textContent = "Foto salva."; msg.className = "msg ok"; } catch (e) { msg.textContent = e && e.code === "declined" ? "" : "Não consegui salvar. Toque e segure na foto e escolha Salvar imagem."; msg.className = "msg"; } return; }
-  const f = new File([b], nome, { type: "image/jpeg" });
+  const f = new File([b], nome, { type: b.type || "image/jpeg" });
   // iPhone: abre a lista de compartilhar, onde fica "Salvar imagem" (vai direto para o rolo da câmera).
   // Android: baixa a foto, que aparece na galeria.
   if (ehIphone() && podeRolo()) { msg.textContent = "Na lista que abrir, toque em Salvar imagem."; msg.className = "msg"; try { await navigator.share({ files: [f] }); msg.textContent = "Pronto! Se escolheu Salvar imagem, a foto está no rolo da câmera."; msg.className = "msg ok"; } catch (e) { if (e && e.name !== "AbortError") { msg.textContent = "Toque e segure na foto e escolha Salvar imagem."; msg.className = "msg"; } } return; }
