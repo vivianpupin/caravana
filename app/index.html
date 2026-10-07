@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "07/10 · 06:44";</script>
+<script>window.__VERSAO = "07/10 · 06:49";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3158,6 +3158,7 @@ function verExplorador(id) {
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
 }
+const POSES = { agra: "turma", varanasi: "pulando", jaipur: "abraco", rishikesh: "bananeira", delhi: "fila" };
 const CENARIOS = [["agra", "Taj Mahal"], ["varanasi", "Varanasi"], ["rishikesh", "Rishikesh"], ["jaipur", "Jaipur"], ["delhi", "Delhi"]];
 async function retratoCaravana(cen, pose) {
   const W = 1080, H = 1920, cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
@@ -3169,44 +3170,61 @@ async function retratoCaravana(cen, pose) {
   x.textAlign = "center"; x.fillStyle = "#F1E2BC"; x.font = '600 74px Cinzel, Georgia, serif'; x.fillText("CARAVANA DO CÉU", W / 2, 330);
   x.font = '400 34px Poppins, sans-serif'; x.fillStyle = "#E8C07A"; x.fillText("TRAVESSIA DA ÍNDIA SAGRADA · 2026", W / 2, 390);
   const lista = comBoneco(), n = lista.length; if (!n) return cv;
-  const pulo = pose === "pulando";
+  // cada cidade tem a sua pose
+  const pulo = pose === "pulando", abraco = pose === "abraco", bananeira = pose === "bananeira", fila = pose === "fila";
+  const sorte = i => { const v = Math.sin(i * 12.9898 + 4.1) * 43758.5453; return v - Math.floor(v); };
   // fileiras: atrás mais gente, na frente menos (como foto de turma)
   const filas = n <= 5 ? 1 : n <= 11 ? 2 : 3, tam = [];
   { let resta = n; for (let f = 0; f < filas; f++) { const q = Math.round(resta / (filas - f) + (filas - 1 - f) * (filas > 1 ? .7 : 0)); tam.push(Math.min(resta, Math.max(1, q))); resta -= tam[f]; } }
-  // a líder fica no meio da fileira da frente
+  // a líder fica no meio da fileira da frente (na fila indiana, vai puxando a fila)
   const li = lista.findIndex(v => v.lider);
-  if (li >= 0) { const [l] = lista.splice(li, 1); lista.splice(n - tam[filas - 1] + Math.floor(tam[filas - 1] / 2), 0, l); }
-  const imgs = await Promise.all(lista.map(v => bonecoImg({ ...bonecoDe(v.id), pet: "nenhum", semSombra: pulo }, 600)));
-  const maxFila = Math.max(...tam), larg0 = Math.min(330, (W - 30) / maxFila * 1.4);
-  const sorte = i => { const v = Math.sin(i * 12.9898 + 4.1) * 43758.5453; return v - Math.floor(v); };
+  if (li >= 0) { const [l] = lista.splice(li, 1); lista.splice(fila ? 0 : n - tam[filas - 1] + Math.floor(tam[filas - 1] / 2), 0, l); }
+  const imgs = await Promise.all(lista.map(v => bonecoImg({ ...bonecoDe(v.id), pet: "nenhum", semSombra: pulo || bananeira || fila }, 600)));
+  const sombra = (cx, y, w, k) => { x.fillStyle = "rgba(20,12,6,.35)"; x.beginPath(); x.ellipse(cx, y, w * .26 * k, w * .045 * k, 0, 0, 7); x.fill(); };
+  const coracao = (cx, cy, r, cor) => { x.fillStyle = cor; x.beginPath(); x.moveTo(cx, cy + r * .9); x.bezierCurveTo(cx - r * 1.6, cy - r * .2, cx - r * .6, cy - r * 1.3, cx, cy - r * .4); x.bezierCurveTo(cx + r * .6, cy - r * 1.3, cx + r * 1.6, cy - r * .2, cx, cy + r * .9); x.fill(); };
+  if (fila) {
+    // Delhi: a caravana em fila indiana, serpenteando do fundo até a frente, todos marchando
+    const larg0 = 300;
+    for (let k = n - 1; k >= 0; k--) {
+      const t = n > 1 ? k / (n - 1) : 0, e = 1 - t * .62, w = larg0 * e, im = imgs[k], hh = w * im.height / im.width;
+      const cx = W / 2 + Math.sin(t * Math.PI * 1.6 + .4) * 340 * (1 - t * .3), chao = H - 70 - t * 1000 - (k % 2 ? 14 : 0) * e;
+      sombra(cx, chao - 4, w, 1);
+      x.save(); x.translate(cx, chao); x.rotate(.1); x.drawImage(im, -w / 2, -hh, w, hh); x.restore();
+    }
+    return cv;
+  }
+  const maxFila = Math.max(...tam), larg0 = Math.min(330, (W - 30) / maxFila * (abraco ? 1.6 : 1.4));
   let k0 = 0;
   for (let f = 0; f < filas; f++) {
-    const m = tam[f], atras = filas - 1 - f, esc = 1 - atras * .13, larg = larg0 * esc, base = H - 70 - atras * larg0 * (pulo ? 1.05 : .95);
-    const passo = Math.min(larg * .78, (W - 30 - larg * .55) / Math.max(1, m - 1));
+    const m = tam[f], atras = filas - 1 - f, esc = 1 - atras * .13, larg = larg0 * esc, base = H - 70 - atras * larg0 * (pulo || bananeira ? 1.05 : .95);
+    const passo = Math.min(larg * (abraco ? .58 : .78), (W - 30 - larg * .55) / Math.max(1, m - 1));
     for (let i = 0; i < m; i++) {
-      const im = imgs[k0 + i], t = m > 1 ? (i - (m - 1) / 2) / ((m - 1) / 2) : 0, sr = sorte(k0 + i);
-      // arco: as pontas um pouco mais para trás (mais altas e menores), cada um levemente inclinado para o centro
+      const k = k0 + i, im = imgs[k], t = m > 1 ? (i - (m - 1) / 2) / ((m - 1) / 2) : 0, sr = sorte(k);
       const e = esc * (1 - .08 * t * t), w = larg0 * e, hh = w * im.height / im.width;
-      const cx = W / 2 + (i - (m - 1) / 2) * passo, chao = base - (pulo ? 0 : 24 * t * t * esc);
-      const sobe = pulo ? 40 + sr * 120 * esc : 0, ang = pulo ? (sr - .5) * .45 : -t * .07;
-      if (pulo) { x.fillStyle = "rgba(20,12,6,.35)"; x.beginPath(); x.ellipse(cx, chao - 4, w * .26 * (1 - sobe / 400), w * .045, 0, 0, 7); x.fill(); }
-      x.save(); x.translate(cx, chao - sobe); x.rotate(ang); x.drawImage(im, -w / 2, -hh, w, hh); x.restore();
+      const cx = W / 2 + (i - (m - 1) / 2) * passo, chao = base - (pulo || bananeira ? 0 : (pose === "turma" ? 12 : 24) * t * t * esc);
+      // Taj Mahal: todos alinhados e retos. Varanasi: pulando. Jaipur: de dois em dois, cabeça com cabeça. Rishikesh: metade plantando bananeira
+      const sobe = pulo ? 40 + sr * 120 * esc : 0;
+      const ang = pulo ? (sr - .5) * .45 : abraco ? (i % 2 ? -.16 : .16) * (i === m - 1 && m % 2 ? 0 : 1) : bananeira ? (sr - .5) * .1 : 0;
+      const ponta = bananeira && k % 2 === 1;
+      if (pulo || bananeira) sombra(cx, chao - 4, w, pulo ? 1 - sobe / 400 : 1);
+      x.save();
+      if (ponta) { x.translate(cx, chao - hh); x.rotate(Math.PI + ang); x.drawImage(im, -w / 2, -hh, w, hh); }
+      else { x.translate(cx, chao - sobe); x.rotate(ang); x.drawImage(im, -w / 2, -hh, w, hh); }
+      x.restore();
+      if (abraco && i % 2 === 1) coracao(cx - passo / 2, chao - hh - 30 * e, 30 * e, "#E24A7A");
     }
     k0 += m;
   }
-  // na foto pulando, pétalas de cravo voando
   if (pulo) for (let i = 0; i < 26; i++) { const a = sorte(i + 99), b2 = sorte(i + 199); florMarigold(x, 40 + a * (W - 80), 520 + b2 * (H - 900), 10 + sorte(i + 299) * 14, i % 3 ? "#F08A12" : "#E3571A"); }
   return cv;
 }
 function vRetrato() {
   if (comBoneco().length < 1) return null;
-  const cen = S.retratoCen || "agra", pose = S.retratoPose || "turma", msg = h("p", { class: "msg", role: "status" }), prev = h("div", { class: "retprev" });
+  const cen = S.retratoCen || "agra", pose = POSES[cen] || "turma", msg = h("p", { class: "msg", role: "status" }), prev = h("div", { class: "retprev" });
   return h("div", { class: "carvbon" },
     h("p", { class: "eyebrow rule", text: "Retrato da Caravana" }),
     h("p", { class: "small", style: "text-align:center", text: "Todos os exploradores juntos, num cenário da travessia. Escolha o lugar:" }),
     h("div", { class: "opts", style: "justify-content:center" }, CENARIOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(cen === id), onclick: () => { S.retratoCen = id; render(); } }, n))),
-    h("p", { class: "small", style: "text-align:center", text: "E a pose:" }),
-    h("div", { class: "opts", style: "justify-content:center" }, [["turma", "Foto de turma"], ["pulando", "Todo mundo pulando"]].map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(pose === id), onclick: () => { S.retratoPose = id; render(); } }, n))),
     h("div", { class: "actions", style: "justify-content:center" },
       h("button", { class: "btn gold", type: "button", onclick: async ev => {
         msg.textContent = "Montando o retrato…"; msg.className = "msg"; prev.textContent = "";
