@@ -3132,7 +3132,7 @@ function vCaravanaBonecos() {
   if (!lista.length) return null;
   return h("div", { class: "carvbon" },
     h("p", { class: "eyebrow rule", text: "A Caravana" }),
-    h("p", { class: "small", style: "text-align:center", text: "Os exploradores de quem já montou o seu. Toque para ver de perto." }),
+    h("p", { class: "small", style: "text-align:center", text: "Nossa tribo reunida. Toque para ver de perto." }),
     h("div", { class: "carvgrid" }, lista.map(v => h("button", { type: "button", class: "carvb", onclick: () => verExplorador(v.id) },
       bonecoSvg({ ...bonecoDe(v.id), pet: "nenhum" }, "bonecosvg"), h("span", { text: nomeDe(v.id).split(" ")[0] })))));
 }
