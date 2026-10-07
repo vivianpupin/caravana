@@ -51,10 +51,12 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
 .dupla{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .dica{font-size:12px;color:var(--ui-soft);margin:0}
 .itens{display:flex;flex-direction:column;gap:6px}
-.item{display:grid;grid-template-columns:1fr 112px 30px;gap:6px;align-items:center}
+.item{display:grid;grid-template-columns:1fr 58px 96px 26px;gap:6px;align-items:center}
+.itens-cab{display:grid;grid-template-columns:1fr 58px 96px 26px;gap:6px;font-size:10.5px;letter-spacing:.04em}
 .item .x{border:0;background:none;color:var(--ui-soft);font-size:18px;padding:0}
 .item .x:hover{color:#9B2C1F}
 .total-ed{display:flex;justify-content:space-between;font-weight:800;padding:6px 2px 0;border-top:1px solid var(--linha);color:var(--ui-ink)}
+.total-ed + .total-ed{border-top:0;padding-top:0}
 .cor{display:flex;gap:8px;align-items:center}
 .cor input[type=color]{width:44px;height:36px;padding:2px;flex:none}
 
@@ -85,7 +87,14 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
 .tab{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .tab td{padding:2mm 0;border-bottom:.2mm solid var(--linha-pg);vertical-align:baseline}
 .tab td:last-child{text-align:right;white-space:nowrap;padding-left:6mm}
-.tab tr.tot td{border-bottom:0;padding-top:4mm;font-weight:900;font-size:16pt;letter-spacing:-.02em}
+.tab td small{font-weight:400;opacity:.7;margin-left:2mm}
+.tab tr.sub td{border-bottom:0;padding-top:3.5mm;font-weight:800}
+.tab tr.tot td{border-bottom:0;padding-top:1mm;font-weight:900;font-size:16pt;letter-spacing:-.02em}
+.tab tr.sub + tr.tot td{padding-top:1.5mm}
+.pagto{margin:3mm 0 0;font-weight:500}
+.data{margin:-5mm 0 8mm;font-weight:500}
+.validade{position:absolute;left:70mm;right:18mm;bottom:30mm;padding-top:3mm;border-top:.2mm solid var(--linha-pg);font-size:9pt}
+.validade b{font-weight:800}
 
 @media (max-width:900px){
   .app{grid-template-columns:1fr}
@@ -133,16 +142,24 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
           <label class="c">Cliente<input data-f="cliente" placeholder="Aparece na capa"></label>
           <label class="c">Nº<input data-f="numero"></label>
         </div>
+        <label class="c">Data do job<input type="date" data-f="dataJob"></label>
         <label class="c">Título<input data-f="titulo" placeholder="Orçamento foto e filme | Campanha ..."></label>
         <label class="c">Escopo produtivo<textarea data-f="escopo"></textarea></label>
         <label class="c">Veiculação<textarea data-f="veiculacao" style="min-height:44px"></textarea></label>
         <div class="c">Itens do orçamento
+          <div class="itens-cab"><span>Item</span><span>Qtd.</span><span>Valor</span><span></span></div>
           <div class="itens" id="itens"></div>
           <button class="btn min" id="b-item" style="align-self:flex-start">+ Item</button>
           <div class="total-ed"><span>Total</span><span id="total-ed"></span></div>
+          <div class="total-ed"><span>Total com nota</span><span id="total-nota-ed"></span></div>
         </div>
-        <label class="c">Desconto ou ajuste no total (R$)<input type="number" step="0.01" data-f="ajuste" placeholder="ex.: -500"></label>
-        <label class="c">Condições<textarea data-f="condicoes" style="min-height:100px"></textarea></label>
+        <div class="dupla">
+          <label class="c">Nota fiscal (%)<input type="number" step="0.5" min="0" data-f="notaPct" placeholder="0 = sem nota"></label>
+          <label class="c">Desconto / ajuste (R$)<input type="number" step="0.01" data-f="ajuste" placeholder="ex.: -500"></label>
+        </div>
+        <label class="c">Forma de pagamento (embaixo do total)<input data-f="formaPagamento"></label>
+        <label class="c">Condições<textarea data-f="condicoes" style="min-height:80px"></textarea></label>
+        <label class="c">Proposta válida por (dias)<input type="number" min="0" data-f="validade" placeholder="0 = não mostrar"></label>
       </div>
     </details>
 
@@ -164,7 +181,11 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
           <label class="c">Descrição<input data-f="descricao"></label>
           <label class="c">Ano<input data-f="ano" inputmode="numeric"></label>
         </div>
-        <label class="c">Rodapé (Instagram, site ou contato)<input data-f="rodape"></label>
+        <label class="c">Instagram ou site (rodapé)<input data-f="rodape"></label>
+        <div class="dupla">
+          <label class="c">WhatsApp (rodapé)<input data-f="whats" inputmode="tel"></label>
+          <label class="c">E-mail (rodapé)<input data-f="email" inputmode="email"></label>
+        </div>
         <label class="c">Laranja da marca<span class="cor"><input type="color" data-f="corDestaque"><input data-f="corDestaque" style="font-family:monospace"></span></label>
         <div class="dupla">
           <label class="c">Cor do papel<span class="cor"><input type="color" data-f="corPapel"><input data-f="corPapel" style="font-family:monospace"></span></label>
@@ -193,24 +214,25 @@ const uid = () => Math.random().toString(36).slice(2, 10);
 const ANO = String(new Date().getFullYear());
 
 /* Campos da empresa: passam de um orçamento para o próximo. */
-const FIXOS = ["marca", "descricao", "ano", "rodape", "corPapel", "corTinta", "corDestaque",
-  "condicoes", "pagamentos", "remarcacao", "cancelamento", "extra"];
+const FIXOS = ["marca", "descricao", "ano", "rodape", "whats", "email", "corPapel", "corTinta", "corDestaque",
+  "notaPct", "formaPagamento", "condicoes", "validade", "pagamentos", "remarcacao", "cancelamento", "extra"];
 
 function modelo() {
-  const item = (desc, valor) => ({ id: uid(), desc, valor });
+  const item = (desc, valor, qtd = "") => ({ id: uid(), desc, qtd, valor });
   return {
     id: uid(), criado: Date.now(), atualizado: Date.now(), numero: "",
-    cliente: "", titulo: "Orçamento foto e filme | Campanha",
-    escopo: "1 diária interna · 5 modelos · 7 produtos.\nDireção de foto e filme, com evolução de looks ao longo do dia.",
-    veiculacao: "Mídias online.",
-    itens: [item("Diária de foto e filme", 8500), item("Equipe (2 assistentes)", 1500)],
-    ajuste: "",
-    condicoes: "Hold de data (5 dias úteis) e first refusal aplicáveis.\nDiária de 9 horas, sendo 1 hora de almoço e 8 de produção.\nHora extra a partir da 10ª hora: 10% do valor da diária por hora.\nFração de 30 minutos contada como hora cheia.",
-    pagamentos: "Pagamento com nota fiscal, via pix ou transferência bancária, com prazo a combinar. Após 30 dias de atraso, a cobrança segue para negativação e protesto.",
+    cliente: "", titulo: "", dataJob: "",
+    escopo: "", veiculacao: "",
+    itens: [item("Fotos diária", 8000), item("Locação de equipamentos e assistente", 4000), item("Retouch", 85, 50)],
+    ajuste: "", notaPct: 13,
+    formaPagamento: "50% na reserva da data e 50% na entrega.",
+    condicoes: "Job de 10 horas, hora extra 20%.",
+    validade: 7,
+    pagamentos: "Pagamento via pix ou transferência bancária, com nota fiscal ou recibo, no prazo combinado. Após 30 dias de atraso, a cobrança segue para negativação e protesto.",
     remarcacao: "A nova data depende de consulta prévia de disponibilidade.",
     cancelamento: "Com menos de 3 dias de antecedência: cobrança de 50% do valor total.\nNo mesmo dia da diária: cobrança de 100% do valor total.",
     extra: "",
-    marca: "PUPIN+DELEU", descricao: "photo and film", ano: ANO, rodape: "@pupindeleu",
+    marca: "PUPIN+DELEU", descricao: "photo and film", ano: ANO, rodape: "@pupindeleu", whats: "", email: "",
     corPapel: "#F4F2EE", corTinta: "#111111", corDestaque: "#E8591A"
   };
 }
@@ -236,7 +258,12 @@ function salvar(ja) {
 function aviso(t) { const a = $("#aviso"); a.textContent = t; a.classList.add("on"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("on"), 2400); }
 
 /* ---------- Cálculo ---------- */
-const total = () => o.itens.reduce((s, i) => s + (Number(i.valor) || 0), 0) + (Number(o.ajuste) || 0);
+const qtdDe = i => (i.qtd === "" || i.qtd == null) ? 1 : Number(i.qtd) || 0;
+const valorItem = i => qtdDe(i) * (Number(i.valor) || 0);
+const total = () => o.itens.reduce((s, i) => s + valorItem(i), 0) + (Number(o.ajuste) || 0);
+const totalNota = () => total() * (1 + (Number(o.notaPct) || 0) / 100);
+const pct = v => (Number(v) || 0).toLocaleString("pt-BR") + "%";
+const diaBR = d => d ? d.split("-").reverse().join("/") : "";
 const nomeOrc = x => x.cliente || x.titulo || "Orçamento";
 
 /* ---------- Editor ---------- */
@@ -251,9 +278,14 @@ function desenharLista() {
 function desenharItens() {
   $("#itens").innerHTML = o.itens.map(i => `<div class="item" data-id="${i.id}">
     <input type="text" data-i="desc" value="${esc(i.desc)}" placeholder="Descrição">
-    <input type="number" step="0.01" min="0" data-i="valor" value="${i.valor}" placeholder="Valor">
+    <input type="number" step="1" min="0" data-i="qtd" value="${i.qtd ?? ""}" placeholder="1" title="Quantidade (ex.: 50 fotos)">
+    <input type="number" step="0.01" min="0" data-i="valor" value="${i.valor}" placeholder="Valor" title="Valor de cada unidade">
     <button class="x" data-x title="Remover">×</button></div>`).join("");
+  totaisEditor();
+}
+function totaisEditor() {
   $("#total-ed").textContent = brl(total());
+  $("#total-nota-ed").textContent = Number(o.notaPct) ? brl(totalNota()) : "—";
 }
 
 /* ---------- Páginas ---------- */
@@ -267,7 +299,9 @@ function desenhar() {
 
   const marca = esc(o.marca || ""), ano = esc(o.ano);
   const topo = n => `<div class="topo"><span class="num">${String(n).padStart(2, "0")}</span><span class="marca">${marca}</span></div>`;
-  const rod = `<div class="rod"><span>${esc(o.rodape)}</span><span>${o.numero ? "nº " + esc(o.numero) + " · " : ""}${ano}</span></div>`;
+  const contato = [o.rodape, o.whats, o.email].filter(x => x && x.trim()).map(esc).join("  ·  ");
+  const rod = `<div class="rod"><span>${contato}</span><span>${o.numero ? "nº " + esc(o.numero) + " · " : ""}${ano}</span></div>`;
+  const validoAte = Number(o.validade) > 0 ? new Date(o.criado + Number(o.validade) * 864e5).toLocaleDateString("pt-BR") : "";
   const bloco = (titulo, html) => html ? `<div class="bloco">${titulo ? `<h3>${titulo}</h3>` : ""}${html}</div>` : "";
   const par = t => t && t.trim() ? `<p>${linhas(t)}</p>` : "";
 
@@ -275,24 +309,29 @@ function desenhar() {
     <div class="marca">${marca}</div>
     ${o.descricao ? `<div class="desc">${esc(o.descricao)}</div>` : ""}
     <h2 class="forte orc">orçamento.</h2>
-    <div class="base"><span>${o.cliente ? `para <b>${esc(o.cliente)}</b>` : ""}</span><b>${ano}</b></div></div>`;
+    <div class="base"><span>${o.cliente ? `para <b>${esc(o.cliente)}</b>` : ""}${o.dataJob ? `  ·  job em <b>${diaBR(o.dataJob)}</b>` : ""}</span><b>${ano}</b></div></div>`;
 
   const itens = o.itens.filter(i => i.desc || Number(i.valor));
   const aj = Number(o.ajuste) || 0;
   const tabela = `<table class="tab">
-      ${itens.map(i => `<tr><td>${esc(i.desc)}</td><td>${brl(i.valor)}</td></tr>`).join("")}
+      ${itens.map(i => `<tr><td>${esc(i.desc)}${qtdDe(i) !== 1 ? `<small>${qtdDe(i).toLocaleString("pt-BR")} × ${brl(i.valor)}</small>` : ""}</td><td>${brl(valorItem(i))}</td></tr>`).join("")}
       ${aj ? `<tr><td>${aj < 0 ? "Desconto" : "Ajuste"}</td><td>${aj < 0 ? "− " : ""}${brl(Math.abs(aj))}</td></tr>` : ""}
-      <tr class="tot"><td>Total</td><td>${brl(total())}</td></tr></table>`;
-  const valores = `<div class="pg">${topo(1)}<div class="txt">
+      ${Number(o.notaPct)
+        ? `<tr class="sub"><td>Total</td><td>${brl(total())}</td></tr><tr class="tot"><td>Total com nota <small>+${pct(o.notaPct)}</small></td><td>${brl(totalNota())}</td></tr>`
+        : `<tr class="tot"><td>Total</td><td>${brl(total())}</td></tr>`}</table>
+      ${o.formaPagamento ? `<p class="pagto">${esc(o.formaPagamento)}</p>` : ""}`;
+  const condicoes = [Number(o.notaPct) ? `Nota fiscal (+${pct(o.notaPct)}) ou recibo.` : "", o.condicoes].filter(x => x && x.trim()).join("\n");
+  const valores = `<div class="pg">${topo(1)}<div class="txt"${validoAte ? ' style="bottom:42mm"' : ""}>
     <h2 class="forte">valores.</h2>
     <div class="corpo">
-      ${o.titulo ? `<p class="titulo">${esc(o.titulo)}</p>` : ""}
+      <p class="titulo">${esc(o.titulo || ("Orçamento " + (o.cliente || "")).trim())}</p>
+      ${o.dataJob ? `<p class="data">Data do job: ${diaBR(o.dataJob)}</p>` : ""}
       ${bloco("Escopo produtivo", par(o.escopo))}
       ${bloco("Veiculação", par(o.veiculacao))}
       ${bloco("Itens do orçamento", tabela)}
-      ${bloco("Condições", par(o.condicoes))}
+      ${bloco("Condições", par(condicoes))}
     </div>
-  </div>${rod}</div>`;
+  </div>${validoAte ? `<div class="validade">Orçamento válido até <b>${validoAte}</b>.</div>` : ""}${rod}</div>`;
 
   const info = `<div class="pg">${topo(2)}<div class="txt">
     <h2 class="forte">informações<br>e pagamento.</h2>
@@ -332,7 +371,7 @@ addEventListener("beforeprint", () => { $("#paginas").style.transform = ""; $("#
 addEventListener("afterprint", ajustarEscala);
 
 /* ---------- Eventos ---------- */
-function mudou(redesenharLista) { o.atualizado = Date.now(); $("#total-ed").textContent = brl(total()); desenhar(); if (redesenharLista) desenharLista(); salvar(); }
+function mudou(redesenharLista) { o.atualizado = Date.now(); totaisEditor(); desenhar(); if (redesenharLista) desenharLista(); salvar(); }
 $$("[data-f]").forEach(el => el.addEventListener("input", () => {
   const k = el.dataset.f;
   o[k] = el.value;
@@ -341,21 +380,22 @@ $$("[data-f]").forEach(el => el.addEventListener("input", () => {
 }));
 $("#itens").addEventListener("input", ev => {
   const it = o.itens.find(i => i.id === ev.target.closest(".item")?.dataset.id); if (!it) return;
-  it[ev.target.dataset.i] = ev.target.dataset.i === "valor" ? (ev.target.value === "" ? "" : Number(ev.target.value)) : ev.target.value;
+  const k = ev.target.dataset.i;
+  it[k] = k === "desc" ? ev.target.value : (ev.target.value === "" ? "" : Number(ev.target.value));
   mudou();
 });
 $("#itens").addEventListener("click", ev => {
   if (!ev.target.closest("[data-x]")) return;
   o.itens = o.itens.filter(i => i.id !== ev.target.closest(".item").dataset.id); desenharItens(); mudou();
 });
-$("#b-item").onclick = () => { o.itens.push({ id: uid(), desc: "", valor: "" }); desenharItens(); mudou(); $$("#itens input[data-i=desc]").at(-1).focus(); };
+$("#b-item").onclick = () => { o.itens.push({ id: uid(), desc: "", qtd: "", valor: "" }); desenharItens(); mudou(); $$("#itens input[data-i=desc]").at(-1).focus(); };
 
 $("#lista").onchange = ev => { o = db.lista.find(x => x.id === ev.target.value); salvar(true); preencher(); };
 $("#b-novo").onclick = () => {
   const n = modelo();
   FIXOS.forEach(k => n[k] = o[k]);
-  Object.assign(n, { numero: proximoNumero(), cliente: "", titulo: "Orçamento foto e filme | ", escopo: "", veiculacao: "",
-    itens: [{ id: uid(), desc: "", valor: "" }], ajuste: "", ano: ANO });
+  Object.assign(n, { numero: proximoNumero(), cliente: "", titulo: "", dataJob: "", escopo: "", veiculacao: "",
+    itens: o.itens.map(i => ({ ...i, id: uid() })), ajuste: "", ano: ANO });
   db.lista.push(n); o = n; salvar(true); preencher();
   $("details").open = true; $('[data-f="cliente"]').focus(); aviso("Novo orçamento criado");
 };
