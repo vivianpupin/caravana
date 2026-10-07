@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "07/10 · 06:49";</script>
+<script>window.__VERSAO = "07/10 · 06:51";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3141,6 +3141,17 @@ function vSalvaExplorador() {
     } }, "Salvar meu explorador no celular"),
     msg);
 }
+// bonequinho sempre no mesmo lugar e do mesmo tamanho no quadro; bicho, leão e braços extras transbordam para os lados
+function bonecoCentrado(b, cls) {
+  const svg = bonecoSvg(b, cls); svg.setAttribute("viewBox", "-3 -2 66 95"); return svg;
+}
+// na janela de ver de perto, o quadro se ajusta ao desenho inteiro (com bicho ou leão) e o conjunto fica no meio
+function bonecoInteiro(b, cls) {
+  const svg = bonecoSvg(b, cls);
+  requestAnimationFrame(() => { try { const bb = svg.firstChild.getBBox(); if (!bb.width) return; const w = Math.max(bb.width, bb.height / 1.5), hh = w * 1.5, p = w * .05;
+    svg.setAttribute("viewBox", `${bb.x + bb.width / 2 - w / 2 - p} ${bb.y + bb.height - hh - p} ${w + p * 2} ${hh + p * 2}`); } catch (e) {} });
+  return svg;
+}
 function vCaravanaBonecos() {
   const lista = comBoneco();
   if (!lista.length) return null;
@@ -3148,12 +3159,12 @@ function vCaravanaBonecos() {
     h("p", { class: "eyebrow rule", text: "A Caravana" }),
     h("p", { class: "small", style: "text-align:center", text: "Nossa tribo reunida. Toque para ver de perto." }),
     h("div", { class: "carvgrid" }, lista.map(v => h("button", { type: "button", class: "carvb", onclick: () => verExplorador(v.id) },
-      bonecoSvg({ ...bonecoDe(v.id), pet: "nenhum" }, "bonecosvg"), h("span", { text: nomeDe(v.id).split(" ")[0] })))));
+      bonecoCentrado({ ...bonecoDe(v.id), pet: "nenhum" }, "bonecosvg"), h("span", { text: nomeDe(v.id).split(" ")[0] })))));
 }
 function verExplorador(id) {
   closeSheets();
   const box = h("div", { role: "dialog", "aria-label": nomeDe(id), style: "text-align:center" },
-    bonecoSvg(bonecoDe(id), "bonecosvg big"), h("h2", { text: nomeDe(id) }),
+    bonecoInteiro(bonecoDe(id), "bonecosvg big"), h("h2", { text: nomeDe(id) }),
     h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")));
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
