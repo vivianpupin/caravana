@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "07/10 · 07:03";</script>
+<script>window.__VERSAO = "07/10 · 07:04";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3169,6 +3169,7 @@ function verExplorador(id) {
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
 }
+const SELO_CENARIO = { agra: "taj-mahal", varanasi: "varanasi", rishikesh: "rishikesh", jaipur: "jaipur", delhi: "india" };
 const POSES = { agra: "turma", varanasi: "pulando", jaipur: "abraco", rishikesh: "fogueira", delhi: "fila" };
 const CENARIOS = [["agra", "Taj Mahal"], ["varanasi", "Varanasi"], ["rishikesh", "Rishikesh"], ["jaipur", "Jaipur"], ["delhi", "Delhi"]];
 async function retratoCaravana(cen, pose) {
@@ -3256,11 +3257,15 @@ async function retratoCaravana(cen, pose) {
 }
 function vRetrato() {
   if (comBoneco().length < 1) return null;
-  const cen = S.retratoCen || "agra", pose = POSES[cen] || "turma", msg = h("p", { class: "msg", role: "status" }), prev = h("div", { class: "retprev" });
+  // cada cenário só abre depois que a caravana passa pela cidade (quando o selo dela é liberado); a líder vê todos
+  const livres = CENARIOS.filter(([id]) => S.isOwner || aberto(localDe(SELO_CENARIO[id])));
+  if (!livres.length) return h("div", { class: "carvbon" }, h("p", { class: "eyebrow rule", text: "Retrato da Caravana" }),
+    h("p", { class: "small", style: "text-align:center", text: "Todos os exploradores juntos, num cenário da travessia. Cada cenário se abre quando a caravana passa pela cidade." }));
+  const cen = livres.some(([id]) => id === S.retratoCen) ? S.retratoCen : livres[0][0], pose = POSES[cen] || "turma", msg = h("p", { class: "msg", role: "status" }), prev = h("div", { class: "retprev" });
   return h("div", { class: "carvbon" },
     h("p", { class: "eyebrow rule", text: "Retrato da Caravana" }),
     h("p", { class: "small", style: "text-align:center", text: "Todos os exploradores juntos, num cenário da travessia. Escolha o lugar:" }),
-    h("div", { class: "opts", style: "justify-content:center" }, CENARIOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(cen === id), onclick: () => { S.retratoCen = id; render(); } }, n))),
+    h("div", { class: "opts", style: "justify-content:center" }, livres.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(cen === id), onclick: () => { S.retratoCen = id; render(); } }, n))),
     h("div", { class: "actions", style: "justify-content:center" },
       h("button", { class: "btn gold", type: "button", onclick: async ev => {
         msg.textContent = "Montando o retrato…"; msg.className = "msg"; prev.textContent = "";
