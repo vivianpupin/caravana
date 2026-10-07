@@ -3,97 +3,132 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#E3E1DC">
+<meta name="theme-color" content="#F6F3EE">
 <title>Orçamento · PUPIN+DELEU</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700&family=Mulish:wght@200;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap">
 <style>
-/* Gerador de orçamentos: o editor fica à esquerda, as páginas A4 à direita; "Gerar PDF" imprime só as páginas. */
+/* Gerador de propostas PUPIN+DELEU: editor à esquerda, páginas A4 à direita; "Gerar PDF" imprime só as páginas.
+   Ordem pensada para vender: primeiro o projeto e o que o cliente recebe, depois o investimento, depois os próximos passos e a prova social. */
 :root{
-  --papel:#E3E1DC; --tinta:#282828; --suave:#6E6B66; --linha:rgba(40,40,40,.14);
+  --papel:#F6F3EE; --tinta:#111111; --laranja:#E8591A; --linha-pg:rgba(17,17,17,.16); --linha:rgba(40,40,40,.14);
   --ui-bg:#F4F3F0; --ui-panel:#FFFFFF; --ui-ink:#1F1F1F; --ui-soft:#6E6B66;
-  --titulo:"Inter Tight","Helvetica Neue",Arial,sans-serif;
-  --texto:"Mulish","Helvetica Neue",Arial,sans-serif;
+  --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --texto:"DM Sans","Helvetica Neue",Arial,sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--ui-bg);color:var(--ui-ink);font-family:var(--texto);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:2px solid var(--tinta);outline-offset:2px}
+:focus-visible{outline:2px solid var(--laranja);outline-offset:2px}
 
 /* ---------- Editor ---------- */
 .app{display:grid;grid-template-columns:minmax(340px,440px) 1fr;min-height:100vh}
 .editor{background:var(--ui-panel);border-right:1px solid var(--linha);height:100vh;overflow-y:auto;position:sticky;top:0}
 .ed-top{position:sticky;top:0;z-index:2;background:var(--ui-panel);border-bottom:1px solid var(--linha);padding:14px 18px;display:flex;flex-direction:column;gap:10px}
-.ed-top h1{font-family:var(--titulo);font-weight:700;font-size:22px;letter-spacing:-.03em;margin:0}
+.ed-top h1{font-family:var(--serif);font-style:italic;font-weight:400;font-size:32px;line-height:1;color:var(--laranja);margin:0}
+.ed-top h1 small{font-family:var(--texto);font-style:normal;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--ui-ink);margin-left:8px;vertical-align:middle}
 .linha-btn{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .btn{border:1px solid var(--linha);background:#fff;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700;white-space:nowrap}
 .btn:hover{background:var(--ui-bg)}
-.btn.pri{background:var(--tinta);color:#fff;border-color:var(--tinta)}
-.btn.pri:hover{background:#000}
+.btn.pri{background:var(--laranja);color:#fff;border-color:var(--laranja)}
+.btn.pri:hover{filter:brightness(.92)}
 .btn.min{padding:4px 10px;font-size:12px}
 .btn.del{color:#9B2C1F}
 select.lista{flex:1;min-width:0;border:1px solid var(--linha);border-radius:999px;padding:7px 12px;background:#fff;font-weight:700;font-size:13px}
+.alertas:empty{display:none}
+.alertas{background:#FCEBDD;color:#8A3410;border-radius:10px;padding:8px 12px;font-size:12.5px;font-weight:500}
 details{border-bottom:1px solid var(--linha)}
-summary{list-style:none;padding:14px 18px;font-family:var(--titulo);font-weight:700;font-size:15px;letter-spacing:-.01em;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+summary{list-style:none;padding:14px 18px;font-weight:700;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px}
+summary span{font-weight:400;font-size:12px;color:var(--ui-soft);margin-right:auto}
 summary::-webkit-details-marker{display:none}
 summary::after{content:"+";font-weight:400;font-size:20px;color:var(--ui-soft)}
 details[open] summary::after{content:"–"}
 .campos{padding:0 18px 18px;display:flex;flex-direction:column;gap:12px}
-label.c{display:flex;flex-direction:column;gap:4px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-soft)}
+label.c,.c{display:flex;flex-direction:column;gap:4px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-soft)}
+.c em{font-style:normal;font-weight:400;text-transform:none;letter-spacing:0}
 input,textarea,select{border:1px solid var(--linha);background:var(--ui-bg);border-radius:8px;padding:8px 10px;font-size:14px;width:100%;min-width:0;text-transform:none;letter-spacing:0;font-weight:400;color:var(--ui-ink)}
 textarea{resize:vertical;min-height:64px;line-height:1.45}
 .dupla{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.dica{font-size:12px;color:var(--ui-soft);margin:0}
+.dica{font-size:12px;color:var(--ui-soft);margin:0;font-weight:400;text-transform:none;letter-spacing:0}
 .itens{display:flex;flex-direction:column;gap:6px}
 .item{display:grid;grid-template-columns:1fr 112px 30px;gap:6px;align-items:center}
-.item input[type=text]{min-width:0}
 .item .x{border:0;background:none;color:var(--ui-soft);font-size:18px;padding:0}
 .item .x:hover{color:#9B2C1F}
-.total-ed{display:flex;justify-content:space-between;font-weight:700;padding:6px 2px 0;border-top:1px solid var(--linha)}
+.total-ed{display:flex;justify-content:space-between;font-weight:700;padding:6px 2px 0;border-top:1px solid var(--linha);color:var(--ui-ink)}
 .chk{display:flex;gap:8px;align-items:center;font-size:13.5px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--ui-ink)}
-.chk input{width:18px;height:18px;accent-color:var(--tinta)}
+.chk input{width:18px;height:18px;accent-color:var(--laranja)}
 .foto-prev{width:100%;max-height:180px;object-fit:cover;border-radius:8px;display:block}
 .cor{display:flex;gap:8px;align-items:center}
 .cor input[type=color]{width:44px;height:36px;padding:2px;flex:none}
 
 /* ---------- Páginas A4 ---------- */
+/* Identidade: papel claro, tudo em preto e só a marca e "orçamento." em laranja. */
 .previa{padding:28px 24px 80px;overflow-x:hidden}
 .paginas{display:flex;flex-direction:column;align-items:center;gap:24px;transform-origin:top center}
-.pg{width:210mm;height:297mm;background:var(--papel);color:var(--tinta);position:relative;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.08),0 12px 40px rgba(0,0,0,.10);font-family:var(--texto);font-size:10.6pt;line-height:1.5;flex:none}
-.grande{font-family:var(--titulo);font-weight:700;letter-spacing:-.055em;line-height:.98;margin:0}
-.pg .ano-rod{position:absolute;right:0;bottom:19mm;display:flex;align-items:center;gap:4mm;font-size:10pt;color:var(--suave)}
-.pg .ano-rod::after{content:"";display:block;width:65mm;height:0;border-top:.3mm solid var(--tinta)}
-.pg .bola{position:absolute;top:20.5mm;right:20.5mm;width:9.5mm;height:9.5mm;border:.45mm solid var(--tinta);border-radius:50%}
+.pg{width:210mm;height:297mm;background:var(--papel);color:var(--tinta);position:relative;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.08),0 12px 40px rgba(0,0,0,.10);font-family:var(--texto);font-size:10pt;line-height:1.55;flex:none}
+.serif{font-family:var(--serif);font-weight:400;letter-spacing:-.025em;line-height:.92;margin:0}
+.wm{font-weight:700;letter-spacing:.06em;color:var(--laranja);white-space:nowrap}
+.mini{font-size:7.6pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.pg .cab{position:absolute;left:16mm;right:16mm;top:13mm;display:flex;justify-content:space-between;align-items:baseline;padding-bottom:3mm;border-bottom:.25mm solid var(--tinta);font-size:8pt;letter-spacing:.12em;text-transform:uppercase}
+.pg .cab .wm{font-size:9.5pt}
+.pg .rod{position:absolute;left:16mm;right:16mm;bottom:12mm;display:flex;justify-content:space-between;gap:8mm;padding-top:3mm;border-top:.25mm solid var(--tinta);font-size:8pt;letter-spacing:.12em;text-transform:uppercase}
 /* capa */
-.capa h2{position:absolute;left:20.5mm;top:30mm;font-size:52pt}
-.capa .vert{position:absolute;left:118mm;top:32mm;height:172mm;border-left:.3mm solid var(--tinta)}
-.capa .horiz{position:absolute;left:118mm;top:160mm;width:70mm;border-top:.3mm solid var(--tinta)}
-.capa .marca{position:absolute;left:122mm;top:167mm;width:66mm}
-.capa .marca b{display:block;font-family:var(--titulo);font-weight:700;font-size:21pt;letter-spacing:.3em;line-height:1.1;white-space:nowrap}
-.capa .marca p{margin:4mm 0 0;font-size:8.6pt;line-height:1.25;text-transform:uppercase;white-space:pre-line}
-.capa .marca .ano{display:block;font-family:var(--titulo);font-size:19pt;margin-top:4mm;letter-spacing:-.02em}
-.capa .cat{position:absolute;left:20.5mm;bottom:28mm;font-family:var(--titulo);font-weight:700;font-size:17pt;letter-spacing:-.04em;text-transform:uppercase}
-.capa .cliente{position:absolute;left:20.5mm;top:56mm;font-size:11pt;color:var(--suave);max-width:90mm}
+.capa .topo{position:absolute;left:16mm;right:16mm;top:16mm;display:flex;justify-content:space-between;align-items:flex-start;gap:10mm;padding-bottom:6mm;border-bottom:.25mm solid var(--tinta)}
+.capa .topo .wm{display:block;font-size:24pt;letter-spacing:.04em;line-height:1}
+.capa .topo .desc{display:block;margin-top:2.5mm;font-size:9pt;letter-spacing:.22em;text-transform:uppercase;white-space:pre-line}
+.capa .topo .dir{text-align:right;font-size:9pt;line-height:1.55}
+.capa .topo .dir b{display:block;font-size:12pt;letter-spacing:.01em}
+.capa .projeto{position:absolute;left:16mm;right:16mm;bottom:96mm;font-family:var(--serif);font-size:26pt;line-height:1.1;max-width:150mm}
+.capa .projeto small{display:block;font-family:var(--texto);font-size:8pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin-bottom:3mm}
+.capa .orc{position:absolute;left:14mm;bottom:40mm;font-size:150pt;color:var(--laranja);font-style:italic;white-space:nowrap}
+.capa .base{position:absolute;left:16mm;right:16mm;bottom:16mm;display:flex;justify-content:space-between;gap:8mm;padding-top:4mm;border-top:.25mm solid var(--tinta);font-size:8.5pt;letter-spacing:.2em;text-transform:uppercase}
 /* páginas de texto */
-.txt{position:absolute;left:20.5mm;right:28mm;top:40mm;bottom:32mm;overflow:hidden}
-.txt .grande{font-size:50pt;margin-bottom:14mm}
-.txt h3{font-family:var(--texto);font-weight:700;font-size:10.6pt;text-transform:uppercase;margin:0 0 4.5mm;letter-spacing:.005em}
-.txt h4{font-family:var(--texto);font-weight:700;font-size:10.6pt;margin:0}
-.txt p{margin:0;white-space:pre-line}
-.txt .bloco{margin-bottom:6.5mm}
-.txt .bloco.largo{margin-bottom:9mm}
-.txt .itens-pdf div{white-space:nowrap}
-.txt .itens-pdf .tot{font-weight:700}
+.txt{position:absolute;left:16mm;right:16mm;top:34mm;bottom:27mm;overflow:hidden}
+.txt > .serif{font-size:50pt;margin:0 0 8mm}
+.faixa{display:flex;justify-content:space-between;gap:8mm;font-weight:700;font-size:10pt;text-transform:uppercase;letter-spacing:.06em;margin:0 0 4mm;padding:3mm 0;border-top:.25mm solid var(--tinta);border-bottom:.25mm solid var(--tinta)}
+.faixa span:last-child{font-weight:400}
+.sec{display:grid;grid-template-columns:42mm 1fr;gap:6mm;padding:3.5mm 0 4.5mm;border-bottom:.2mm solid var(--linha-pg)}
+.sec:last-child{border-bottom:0}
+.sec h3{margin:0;padding-top:.6mm}
+.sec p{margin:0;white-space:pre-line}
+.lista-pdf{margin:0;padding:0;list-style:none}
+.lista-pdf li{padding-left:5mm;position:relative;margin:.6mm 0}
+.lista-pdf li::before{content:"—";position:absolute;left:0}
+.objetivo{font-family:var(--serif);font-size:17pt;line-height:1.25;margin:0 0 6mm;max-width:165mm}
+.tab{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.tab td{padding:1.8mm 0;border-bottom:.2mm solid var(--linha-pg);vertical-align:baseline}
+.tab td:last-child{text-align:right;white-space:nowrap;padding-left:6mm}
+.tab tr.tot td{border-bottom:0;border-top:.35mm solid var(--tinta);padding-top:3.5mm}
+.tab tr.tot td:first-child{font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:8pt}
+.tab tr.tot td:last-child{font-family:var(--serif);font-size:30pt;line-height:1}
+.tab.opc td{color:var(--tinta)}
+.pagto{margin-top:2.5mm;font-weight:500}
+.validade{margin-top:6mm;border:.3mm solid var(--tinta);padding:3.5mm 4.5mm;display:flex;gap:6mm;align-items:baseline}
+.validade b{white-space:nowrap}
+.passos{display:grid;grid-template-columns:repeat(auto-fill,minmax(52mm,1fr));gap:4mm 6mm;margin:0 0 6mm;padding:0;list-style:none}
+.passos li{border-top:.25mm solid var(--tinta);padding-top:2.5mm;font-size:9.6pt;line-height:1.4}
+.passos li b{display:block;font-family:var(--serif);font-size:24pt;font-weight:400;line-height:1;margin-bottom:1.5mm}
+.cta{position:absolute;left:16mm;right:16mm;bottom:27mm;background:var(--tinta);color:var(--papel);padding:7mm 8mm;display:flex;justify-content:space-between;align-items:flex-end;gap:8mm}
+.cta .serif{font-size:30pt;line-height:1}
+.cta p{margin:2.5mm 0 0;font-size:9.5pt;max-width:95mm}
+.cta .contatos{text-align:right;font-size:9.5pt;line-height:1.6;white-space:nowrap}
+.cta .contatos b{display:block}
 /* portfolio */
-.port .grande{position:absolute;left:22mm;top:44mm;font-size:62pt}
-.port .desc{position:absolute;left:22mm;top:73mm;width:82mm;font-weight:200;font-size:11.4pt;line-height:1.5;text-align:justify}
-.port .desc a{color:inherit}
-.port .foto{position:absolute;left:21mm;top:96mm;width:113mm;height:168mm;object-fit:cover;filter:grayscale(1)}
+.port .foto,.port .sem-foto{position:absolute;left:16mm;top:27mm;height:150mm;width:178mm;object-fit:cover;filter:grayscale(1)}
 .port .foto.cor{filter:none}
-.port .sem-foto{position:absolute;left:21mm;top:96mm;width:113mm;height:168mm;border:.3mm dashed var(--suave);display:flex;align-items:center;justify-content:center;color:var(--suave);font-size:10pt;text-align:center;padding:10mm}
+.port .sem-foto{border:.3mm dashed var(--tinta);opacity:.5;display:flex;align-items:center;justify-content:center;font-size:10pt;text-align:center;padding:10mm}
+.port .baixo{position:absolute;left:16mm;right:16mm;top:184mm;bottom:27mm;display:grid;grid-template-columns:1fr 72mm;gap:4mm 10mm;align-content:start}
+.port .baixo > .serif{font-size:56pt}
+.port .desc{font-size:10pt;line-height:1.5;align-self:end;padding-bottom:2mm}
+.port .desc a{color:inherit;font-weight:700}
+.port .clientes{grid-column:1/-1;border-top:.25mm solid var(--tinta);padding-top:3mm;display:grid;grid-template-columns:42mm 1fr;gap:6mm}
+.port .clientes p{margin:0;font-weight:500;letter-spacing:.04em}
+.port blockquote{grid-column:1/-1;margin:0;border-top:.2mm solid var(--linha-pg);padding-top:3.5mm;display:grid;grid-template-columns:42mm 1fr;gap:6mm}
+.port blockquote p{margin:0;font-family:var(--serif);font-style:italic;font-size:15pt;line-height:1.25}
+.port blockquote cite{display:block;font-style:normal;font-size:8.5pt;margin-top:2mm;letter-spacing:.06em;text-transform:uppercase}
 
 @media (max-width:900px){
   .app{grid-template-columns:1fr}
@@ -110,7 +145,6 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
   .paginas{gap:0;transform:none!important;height:auto!important}
   .pg{box-shadow:none;break-after:page;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .pg:last-child{break-after:auto}
-  .pg.vazia{display:none}
 }
 .aviso{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(30px);background:var(--tinta);color:#fff;padding:10px 18px;border-radius:999px;font-size:13.5px;opacity:0;transition:.25s;pointer-events:none;z-index:9}
 .aviso.on{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -119,7 +153,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
 <div class="app">
   <aside class="editor">
     <div class="ed-top">
-      <h1>orçamento.</h1>
+      <h1>orçamento.<small>PUPIN+DELEU</small></h1>
       <div class="linha-btn">
         <select class="lista" id="lista" aria-label="Orçamentos salvos"></select>
         <button class="btn" id="b-novo" title="Novo orçamento com os mesmos dados da empresa e condições">+ Novo</button>
@@ -132,67 +166,103 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
         <button class="btn min del" id="b-excluir">Excluir</button>
         <input type="file" id="arquivo" accept=".json,application/json" hidden>
       </div>
+      <div class="alertas" id="alertas"></div>
     </div>
 
     <details open>
-      <summary>Orçamento</summary>
+      <summary>Cliente e projeto <span>capa</span></summary>
       <div class="campos">
-        <label class="c">Título (aparece em negrito)<input data-f="titulo" placeholder="ORÇAMENTO FOTO E FILME | CAMPANHA ..."></label>
-        <label class="c">Cliente (aparece na capa — opcional)<input data-f="cliente"></label>
+        <div class="dupla">
+          <label class="c">Cliente<input data-f="cliente" placeholder="Nome da marca"></label>
+          <label class="c">Proposta nº<input data-f="numero"></label>
+        </div>
+        <label class="c">Nome do projeto<input data-f="projeto" placeholder="Ex.: Campanha Verão 2027"></label>
+        <label class="c">Tipo de trabalho<input data-f="tipo" placeholder="Ex.: Foto e filme"></label>
+      </div>
+    </details>
+
+    <details>
+      <summary>O projeto <span>o que o cliente recebe</span></summary>
+      <div class="campos">
+        <label class="c">Objetivo <em>— o que você entendeu que o cliente quer (em uma frase, com as palavras dele)</em><textarea data-f="objetivo"></textarea></label>
         <label class="c">Escopo produtivo<textarea data-f="escopo"></textarea></label>
+        <label class="c">O que você recebe <em>— uma entrega por linha</em><textarea data-f="entregas" style="min-height:96px"></textarea></label>
+        <label class="c">Prazo de entrega<textarea data-f="prazo" style="min-height:44px"></textarea></label>
         <label class="c">Veiculação<textarea data-f="veiculacao" style="min-height:44px"></textarea></label>
-        <div class="c" style="display:flex;flex-direction:column;gap:6px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-soft)">Itens do orçamento
+      </div>
+    </details>
+
+    <details>
+      <summary>Investimento <span>valores</span></summary>
+      <div class="campos">
+        <div class="c">Itens
           <div class="itens" id="itens"></div>
-          <button class="btn min" id="b-item" style="align-self:flex-start">+ Item</button>
+          <button class="btn min" data-add="itens" style="align-self:flex-start">+ Item</button>
           <div class="total-ed"><span>Total</span><span id="total-ed"></span></div>
         </div>
-        <label class="c">Desconto ou ajuste no total (R$, opcional)<input type="number" step="0.01" data-f="ajuste" placeholder="ex.: -500"></label>
+        <label class="c">Desconto ou ajuste no total (R$)<input type="number" step="0.01" data-f="ajuste" placeholder="ex.: -500"></label>
+        <label class="c">Forma de pagamento <em>— resumo que aparece embaixo do total</em><input data-f="formaPagamento"></label>
+        <div class="c">Opcionais <em>— aparecem à parte, não somam no total</em>
+          <div class="itens" id="opcionais"></div>
+          <button class="btn min" data-add="opcionais" style="align-self:flex-start">+ Opcional</button>
+        </div>
         <label class="c">Condições<textarea data-f="condicoes" style="min-height:100px"></textarea></label>
+        <label class="c">Proposta válida por (dias)<input type="number" min="1" data-f="validade"></label>
       </div>
     </details>
 
     <details>
-      <summary>Informações e pagamento</summary>
+      <summary>Como seguimos <span>próximos passos e políticas</span></summary>
       <div class="campos">
-        <label class="c">Pagamentos<textarea data-f="pagamentos" style="min-height:100px"></textarea></label>
+        <label class="c">Próximos passos <em>— um por linha</em><textarea data-f="passos" style="min-height:96px"></textarea></label>
+        <label class="c">Pagamentos<textarea data-f="pagamentos" style="min-height:90px"></textarea></label>
         <label class="c">Política de remarcação<textarea data-f="remarcacao"></textarea></label>
         <label class="c">Política de cancelamento<textarea data-f="cancelamento"></textarea></label>
-        <label class="c">Observação extra (opcional)<textarea data-f="extra"></textarea></label>
+        <label class="c">Observações (opcional)<textarea data-f="extra"></textarea></label>
+        <label class="c">Chamada final<input data-f="cta"></label>
+        <div class="dupla">
+          <label class="c">WhatsApp<input data-f="whats" inputmode="tel"></label>
+          <label class="c">E-mail<input data-f="email" inputmode="email"></label>
+        </div>
       </div>
     </details>
 
     <details>
-      <summary>Portfolio</summary>
+      <summary>Portfolio <span>prova social</span></summary>
       <div class="campos">
         <label class="chk"><input type="checkbox" data-f="mostrarPortfolio"> Incluir página de portfolio</label>
-        <label class="c">Texto<textarea data-f="portTexto" style="min-height:44px"></textarea></label>
-        <div class="dupla">
-          <label class="c">Texto do link<input data-f="portLinkTexto"></label>
-          <label class="c">Endereço do link<input data-f="portLink" inputmode="url"></label>
-        </div>
         <label class="c">Foto<input type="file" accept="image/*" id="foto"></label>
         <img class="foto-prev" id="foto-prev" alt="" hidden>
         <div class="linha-btn">
           <label class="chk"><input type="checkbox" data-f="fotoCor"> Manter foto colorida</label>
           <button class="btn min del" id="b-tirar-foto" hidden>Tirar foto</button>
         </div>
+        <label class="c">Texto<textarea data-f="portTexto" style="min-height:44px"></textarea></label>
+        <div class="dupla">
+          <label class="c">Texto do link<input data-f="portLinkTexto"></label>
+          <label class="c">Endereço do link<input data-f="portLink" inputmode="url"></label>
+        </div>
+        <label class="c">Marcas que já confiaram <em>— separadas por vírgula</em><input data-f="clientes"></label>
+        <label class="c">Depoimento de cliente<textarea data-f="depoimento"></textarea></label>
+        <label class="c">Quem disse<input data-f="depoimentoAutor" placeholder="Nome, cargo · Marca"></label>
       </div>
     </details>
 
     <details>
-      <summary>Empresa e capa</summary>
+      <summary>Empresa e cores</summary>
       <div class="campos">
         <label class="c">Nome da marca<input data-f="marca"></label>
-        <label class="c">Descrição (embaixo do nome)<textarea data-f="descricao" style="min-height:52px"></textarea></label>
+        <label class="c">Descrição (embaixo do nome)<input data-f="descricao"></label>
         <div class="dupla">
           <label class="c">Categoria (rodapé da capa)<input data-f="categoria"></label>
           <label class="c">Ano<input data-f="ano" inputmode="numeric"></label>
         </div>
+        <label class="c">Laranja da marca<span class="cor"><input type="color" data-f="corDestaque"><input data-f="corDestaque" style="font-family:monospace"></span></label>
         <div class="dupla">
           <label class="c">Cor do papel<span class="cor"><input type="color" data-f="corPapel"><input data-f="corPapel" style="font-family:monospace"></span></label>
           <label class="c">Cor do texto<span class="cor"><input type="color" data-f="corTinta"><input data-f="corTinta" style="font-family:monospace"></span></label>
         </div>
-        <p class="dica">Marca, condições, pagamento, políticas e portfolio passam automaticamente para cada “+ Novo” orçamento.</p>
+        <p class="dica">Marca, condições, políticas, passos, contatos e portfolio passam automaticamente para cada “+ Novo”.</p>
       </div>
     </details>
     <div class="campos" style="padding-top:16px"><p class="dica">Tudo fica salvo neste aparelho. Use “Backup” de vez em quando para guardar uma cópia.<br>No celular, “Gerar PDF” abre a tela de impressão: escolha <b>Salvar como PDF</b> (ou compartilhe).</p></div>
@@ -213,34 +283,54 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": 
 const brl = v => "R$ " + (Number(v) || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const uid = () => Math.random().toString(36).slice(2, 10);
 const ANO = String(new Date().getFullYear());
+const dia = t => new Date(t).toLocaleDateString("pt-BR");
 
 /* Campos da empresa: passam de um orçamento para o próximo. */
-const FIXOS = ["marca", "descricao", "categoria", "ano", "corPapel", "corTinta", "condicoes", "pagamentos", "remarcacao", "cancelamento", "extra",
-  "mostrarPortfolio", "portTexto", "portLinkTexto", "portLink", "foto", "fotoCor"];
+const FIXOS = ["marca", "descricao", "categoria", "ano", "corPapel", "corTinta", "corDestaque", "tipo", "formaPagamento", "condicoes", "validade",
+  "passos", "pagamentos", "remarcacao", "cancelamento", "extra", "cta", "whats", "email",
+  "mostrarPortfolio", "portTexto", "portLinkTexto", "portLink", "foto", "fotoCor", "clientes", "depoimento", "depoimentoAutor"];
 
 function modelo() {
+  const item = (desc, valor) => ({ id: uid(), desc, valor });
   return {
-    id: uid(), criado: Date.now(), atualizado: Date.now(),
-    titulo: "ORÇAMENTO FOTO E FILME | CAMPANHA", cliente: "",
-    escopo: "1 diária interna - 5 modelos, 7 produtos.\nDiária com direção de fotografia, tratamento e entrega em alta resolução.",
+    id: uid(), criado: Date.now(), atualizado: Date.now(), numero: "",
+    cliente: "", projeto: "Campanha", tipo: "Foto e filme",
+    objetivo: "Criar imagens e filmes que traduzam a essência da marca e façam o público parar no feed, com uma produção leve e bem conduzida do começo ao fim.",
+    escopo: "1 diária interna · 5 modelos · 7 produtos.\nDireção de foto e filme, com evolução de looks ao longo do dia.",
+    entregas: "30 fotos tratadas em alta resolução\n1 filme de até 60 segundos (vertical e horizontal)\n3 cortes de 15 segundos para anúncios e stories\nGaleria online para download",
+    prazo: "Prévia em até 48 horas. Material final em até 10 dias úteis após a diária.",
     veiculacao: "Mídias online.",
-    itens: [{ id: uid(), desc: "Diária de fotografia", valor: 8500 }, { id: uid(), desc: "Equipe (2 assistentes)", valor: 1500 }],
+    itens: [item("Diária de foto e filme (direção + captação)", 8500), item("Equipe (2 assistentes)", 1500), item("Edição, tratamento e color grading", 2500)],
     ajuste: "",
-    condicoes: "Hold de data (5 dias úteis) e first refusal aplicáveis.\nDiária de 9 horas, sendo 1 hora de almoço e 8 de produção.\nHora extra a partir da 10ª hora: 10% do valor total da diária por hora.\nFração de 30min contada como hora cheia.",
-    pagamentos: "Pagamento com nota fiscal, sendo realizado mediante pix ou transferência bancária com prazo a combinar. Após 30 dias de atraso do prazo estimado, ocorrerá a solicitação da NEGATIVAÇÃO da empresa e pedido de protesto.",
-    remarcacao: "Para alteração de data é necessária consulta prévia de disponibilidade da nova data.",
-    cancelamento: "Cancelamento com menos de 3 dias de antecedência: cobrança de 50% do valor total.\nCancelamento no mesmo dia da diária: cobrança de 100% do valor total.",
+    formaPagamento: "50% na reserva da data e 50% na entrega do material.",
+    opcionais: [item("Making of em vídeo", 1800), item("Diária extra", 6500)],
+    condicoes: "Hold de data (5 dias úteis) e first refusal aplicáveis.\nDiária de 9 horas, sendo 1 hora de almoço e 8 de produção.\nHora extra a partir da 10ª hora: 10% do valor da diária por hora.\nFração de 30 minutos contada como hora cheia.",
+    validade: 7,
+    passos: "Aprovação desta proposta por WhatsApp ou e-mail\nContrato e sinal para reservar a data\nReunião de briefing e roteiro\nDia de produção\nEntrega do material",
+    pagamentos: "Pagamento com nota fiscal, via pix ou transferência bancária, nas datas combinadas. Após 30 dias de atraso, a cobrança segue para negativação e protesto.",
+    remarcacao: "A nova data depende de consulta prévia de disponibilidade.",
+    cancelamento: "Com menos de 3 dias de antecedência: cobrança de 50% do valor total.\nNo mesmo dia da diária: cobrança de 100% do valor total.",
     extra: "",
-    mostrarPortfolio: true, portTexto: "Você pode encontrar mais do nosso trabalho através do link:",
-    portLinkTexto: "@pupindeleu no Instagram.", portLink: "https://www.instagram.com/pupindeleu", foto: "", fotoCor: false,
-    marca: "PUPIN+DELEU", descricao: "PHOTO AND FILM", categoria: "PHOTO & FILM", ano: ANO, corPapel: "#E3E1DC", corTinta: "#282828"
+    cta: "Vamos criar juntos?", whats: "", email: "",
+    mostrarPortfolio: true, portTexto: "Veja mais do nosso trabalho em:",
+    portLinkTexto: "@pupindeleu", portLink: "https://www.instagram.com/pupindeleu", foto: "", fotoCor: false,
+    clientes: "", depoimento: "", depoimentoAutor: "",
+    marca: "PUPIN+DELEU", descricao: "photo and film", categoria: "Photo & Film", ano: ANO,
+    corPapel: "#F6F3EE", corTinta: "#111111", corDestaque: "#E8591A"
   };
 }
 
 /* ---------- Armazenamento ---------- */
 let db;
 try { db = JSON.parse(localStorage.getItem(CHAVE)); } catch (e) {}
-if (!db || !Array.isArray(db.lista) || !db.lista.length) db = { lista: [modelo()], atual: null };
+if (!db || !Array.isArray(db.lista) || !db.lista.length) db = { lista: [], atual: null };
+// Orçamentos antigos ganham os campos novos sem perder o que já tinham.
+db.lista = db.lista.map(x => Object.assign(modelo(), x));
+function proximoNumero() {
+  const n = db.lista.filter(x => String(x.numero).endsWith("/" + ANO)).length + 1;
+  return String(n).padStart(3, "0") + "/" + ANO;
+}
+if (!db.lista.length) { const m = modelo(); m.numero = proximoNumero(); db.lista.push(m); }
 let o = db.lista.find(x => x.id === db.atual) || db.lista[0];
 let timer = 0;
 function salvar(ja) {
@@ -253,7 +343,7 @@ function aviso(t) { const a = $("#aviso"); a.textContent = t; a.classList.add("o
 /* ---------- Cálculo ---------- */
 const subtotal = () => o.itens.reduce((s, i) => s + (Number(i.valor) || 0), 0);
 const total = () => subtotal() + (Number(o.ajuste) || 0);
-function nomeOrc(x) { return (x.cliente || x.titulo || "Orçamento").replace(/^ORÇAMENTO\s*/i, "").replace(/^[|\s-]+/, "") || "Orçamento"; }
+const nomeOrc = x => [x.cliente, x.projeto].filter(Boolean).join(" · ") || "Orçamento";
 
 /* ---------- Editor ---------- */
 function preencher() {
@@ -265,13 +355,15 @@ function preencher() {
 }
 function desenharLista() {
   $("#lista").innerHTML = db.lista.slice().sort((a, b) => b.atualizado - a.atualizado)
-    .map(x => `<option value="${x.id}"${x.id === o.id ? " selected" : ""}>${esc(nomeOrc(x))} · ${new Date(x.criado).toLocaleDateString("pt-BR")}</option>`).join("");
+    .map(x => `<option value="${x.id}"${x.id === o.id ? " selected" : ""}>${esc(x.numero)} · ${esc(nomeOrc(x))}</option>`).join("");
 }
 function desenharItens() {
-  $("#itens").innerHTML = o.itens.map(i => `<div class="item" data-id="${i.id}">
-    <input type="text" data-i="desc" value="${esc(i.desc)}" placeholder="Descrição">
-    <input type="number" step="0.01" min="0" data-i="valor" value="${i.valor}" placeholder="Valor">
-    <button class="x" data-x title="Remover item">×</button></div>`).join("");
+  for (const k of ["itens", "opcionais"]) {
+    $("#" + k).innerHTML = o[k].map(i => `<div class="item" data-id="${i.id}">
+      <input type="text" data-i="desc" value="${esc(i.desc)}" placeholder="Descrição">
+      <input type="number" step="0.01" min="0" data-i="valor" value="${i.valor}" placeholder="Valor">
+      <button class="x" data-x title="Remover">×</button></div>`).join("");
+  }
   totalEditor();
 }
 function totalEditor() { $("#total-ed").textContent = brl(total()); }
@@ -282,61 +374,102 @@ function fotoEditor() {
 }
 
 /* ---------- Páginas ---------- */
-function linhas(t) { return esc(t).trim(); }
+const linhas = t => esc(t).trim();
+const listaDe = t => String(t || "").split("\n").map(s => s.trim()).filter(Boolean);
 function desenhar() {
-  document.documentElement.style.setProperty("--papel", o.corPapel || "#E3E1DC");
-  document.documentElement.style.setProperty("--tinta", o.corTinta || "#282828");
-  document.title = "Orçamento " + nomeOrc(o) + " - " + (o.marca || "");
-  const ano = esc(o.ano);
-  const rod = `<div class="ano-rod">${ano}</div>`;
-  const marcaEspacada = esc((o.marca || "").toUpperCase().replace(/\s+/g, " "));
-  const bloco = (titulo, txt, cls = "") => txt && txt.trim() ? `<div class="bloco ${cls}"><h3>${titulo}</h3><p>${linhas(txt)}</p></div>` : "";
+  const raiz = document.documentElement.style;
+  raiz.setProperty("--papel", o.corPapel || "#F6F3EE");
+  raiz.setProperty("--tinta", o.corTinta || "#111111");
+  raiz.setProperty("--laranja", o.corDestaque || "#E8591A");
+  document.title = `Proposta ${o.numero || ""} ${nomeOrc(o)} - ${o.marca || ""}`.replace(/\//g, "-").trim();
+
+  const ano = esc(o.ano), marca = esc(o.marca || "");
+  const insta = o.portLink && /instagram\.com\/([^/?#]+)/.exec(o.portLink);
+  const assinatura = insta ? "@" + esc(insta[1]) : marca;
+  const validoAte = dia(o.criado + (Number(o.validade) || 7) * 864e5);
+  const temPort = !!o.mostrarPortfolio;
+  const nPag = temPort ? 4 : 3;
+  const cab = (n, nome) => `<div class="cab"><span class="wm">${marca}</span><span>${String(n).padStart(2, "0")} / ${String(nPag).padStart(2, "0")} · ${nome}</span></div>`;
+  const rod = `<div class="rod"><span>${assinatura}</span><span>${o.numero ? "Proposta nº " + esc(o.numero) + " · " : ""}${ano}</span></div>`;
+  const sec = (titulo, html) => html ? `<div class="sec"><h3 class="mini">${titulo}</h3><div>${html}</div></div>` : "";
+  const par = t => t && t.trim() ? `<p>${linhas(t)}</p>` : "";
+  const ul = t => { const l = listaDe(t); return l.length ? `<ul class="lista-pdf">${l.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""; };
+  const faixa = `<div class="faixa"><span>${esc([o.tipo, o.projeto].filter(Boolean).join(" | "))}</span><span>${esc(o.cliente)}</span></div>`;
 
   const capa = `<div class="pg capa">
-    <h2 class="grande">orçamento.</h2>
-    ${o.cliente ? `<div class="cliente">para ${esc(o.cliente)}</div>` : ""}
-    <div class="vert"></div><div class="horiz"></div>
-    <div class="marca"><b>${marcaEspacada}</b>${o.descricao ? `<p>${linhas(o.descricao)}</p>` : ""}<span class="ano">${ano}</span></div>
-    <div class="cat">${esc(o.categoria)}</div></div>`;
+    <div class="topo"><div><span class="wm">${marca}</span>${o.descricao ? `<span class="desc">${esc(o.descricao)}</span>` : ""}</div>
+      <div class="dir">${o.cliente ? `para<b>${esc(o.cliente)}</b>` : ""}${o.numero ? "Proposta nº " + esc(o.numero) + "<br>" : ""}${dia(o.criado)}</div></div>
+    ${o.projeto || o.tipo ? `<div class="projeto">${o.tipo ? `<small>${esc(o.tipo)}</small>` : ""}${esc(o.projeto)}</div>` : ""}
+    <h2 class="serif orc">orçamento.</h2>
+    <div class="base"><span>${esc(o.categoria)}</span><span>Válida até ${validoAte}</span><span>${ano}</span></div></div>`;
+
+  const projeto = `<div class="pg">${cab(1, "o projeto")}<div class="txt">
+    <h2 class="serif">o projeto</h2>
+    ${faixa}
+    ${o.objetivo?.trim() ? `<p class="objetivo">${linhas(o.objetivo)}</p>` : ""}
+    ${sec("Escopo produtivo", par(o.escopo))}
+    ${sec("O que você recebe", ul(o.entregas))}
+    ${sec("Prazo de entrega", par(o.prazo))}
+    ${sec("Veiculação", par(o.veiculacao))}
+  </div>${rod}</div>`;
 
   const itens = o.itens.filter(i => i.desc || Number(i.valor));
+  const opc = o.opcionais.filter(i => i.desc || Number(i.valor));
   const aj = Number(o.ajuste) || 0;
-  const valores = `<div class="pg"><div class="bola"></div><div class="txt">
-    <h2 class="grande">valores.</h2>
-    ${o.titulo ? `<div class="bloco largo"><h3>${esc(o.titulo)}</h3></div>` : ""}
-    ${o.escopo?.trim() ? `<div class="bloco"><h4>Escopo produtivo:</h4><p>${linhas(o.escopo)}</p></div>` : ""}
-    ${o.veiculacao?.trim() ? `<div class="bloco largo"><h4>Veiculação:</h4><p>${linhas(o.veiculacao)}</p></div>` : ""}
-    <div class="bloco largo"><h3>Itens do orçamento</h3><div class="itens-pdf">
-      ${itens.map(i => `<div>${esc(i.desc)} - ${brl(i.valor)}</div>`).join("")}
-      ${aj ? `<div>${aj < 0 ? "Desconto" : "Ajuste"} - ${aj < 0 ? "-" : ""}${brl(Math.abs(aj))}</div>` : ""}
-      <div class="tot">Total: ${brl(total())}</div></div></div>
-    ${bloco("Condições", o.condicoes)}
+  const tabela = `<table class="tab">
+      ${itens.map(i => `<tr><td>${esc(i.desc)}</td><td>${brl(i.valor)}</td></tr>`).join("")}
+      ${aj ? `<tr><td>${aj < 0 ? "Desconto" : "Ajuste"}</td><td>${aj < 0 ? "− " : ""}${brl(Math.abs(aj))}</td></tr>` : ""}
+      <tr class="tot"><td>Investimento total</td><td>${brl(total())}</td></tr></table>
+      ${o.formaPagamento ? `<p class="pagto">${esc(o.formaPagamento)}</p>` : ""}`;
+  const tabOpc = opc.length ? `<table class="tab opc">${opc.map(i => `<tr><td>${esc(i.desc)}</td><td>+ ${brl(i.valor)}</td></tr>`).join("")}</table>` : "";
+  const investimento = `<div class="pg">${cab(2, "investimento")}<div class="txt">
+    <h2 class="serif">investimento</h2>
+    ${faixa}
+    ${sec("Valores", tabela)}
+    ${sec("Opcionais", tabOpc)}
+    ${sec("Condições", par(o.condicoes))}
+    <div class="validade"><b class="mini">Válida até ${validoAte}</b><span>A data só fica reservada após a aprovação e o sinal. Nossa agenda é limitada.</span></div>
   </div>${rod}</div>`;
 
-  const info = `<div class="pg"><div class="bola"></div><div class="txt">
-    <h2 class="grande">informações e<br>pagamento</h2>
-    ${bloco("Pagamentos", o.pagamentos, "largo")}
-    ${bloco("Política de remarcação", o.remarcacao, "largo")}
-    ${bloco("Política de cancelamento", o.cancelamento, "largo")}
-    ${bloco("Observações", o.extra, "largo")}
-  </div>${rod}</div>`;
+  const passos = listaDe(o.passos);
+  const contatos = [o.whats && `<b>${esc(o.whats)}</b>`, o.email && esc(o.email), assinatura !== marca && assinatura].filter(Boolean);
+  const seguimos = `<div class="pg">${cab(3, "como seguimos")}<div class="txt" style="bottom:${o.cta || contatos.length ? 70 : 27}mm">
+    <h2 class="serif">como seguimos</h2>
+    ${passos.length ? `<ol class="passos">${passos.map((p, i) => `<li><b>${String(i + 1).padStart(2, "0")}</b>${esc(p)}</li>`).join("")}</ol>` : ""}
+    ${sec("Pagamentos", par(o.pagamentos))}
+    ${sec("Remarcação", par(o.remarcacao))}
+    ${sec("Cancelamento", par(o.cancelamento))}
+    ${sec("Observações", par(o.extra))}
+  </div>
+  ${o.cta || contatos.length ? `<div class="cta"><div><h2 class="serif">${esc(o.cta)}</h2><p>Para garantir a data, é só responder esta proposta até ${validoAte}.</p></div>
+    <div class="contatos">${contatos.join("<br>")}</div></div>` : ""}
+  ${rod}</div>`;
 
   const link = o.portLink ? `<a href="${esc(o.portLink)}">${esc(o.portLinkTexto || o.portLink)}</a>` : esc(o.portLinkTexto);
-  const port = o.mostrarPortfolio ? `<div class="pg port">
-    <h2 class="grande">portfolio</h2>
-    <div class="desc">${linhas(o.portTexto)}${link ? "<br>" + link : ""}</div>
+  const port = temPort ? `<div class="pg port">${cab(4, "portfolio")}
     ${o.foto ? `<img class="foto ${o.fotoCor ? "cor" : ""}" src="${o.foto}" alt="">` : `<div class="sem-foto so-tela">Coloque uma foto em “Portfolio” no editor</div>`}
-  </div>` : "";
+    <div class="baixo"><h2 class="serif">portfolio</h2><div class="desc">${linhas(o.portTexto)}${link ? "<br>" + link : ""}</div>
+      ${o.clientes?.trim() ? `<div class="clientes"><h3 class="mini">Quem já confiou</h3><p>${esc(o.clientes.split(",").map(s => s.trim()).filter(Boolean).join("  ·  "))}</p></div>` : ""}
+      ${o.depoimento?.trim() ? `<blockquote><h3 class="mini">Depoimento</h3><div><p>“${linhas(o.depoimento)}”</p>${o.depoimentoAutor ? `<cite>${esc(o.depoimentoAutor)}</cite>` : ""}</div></blockquote>` : ""}
+    </div>
+  ${rod}</div>` : "";
 
-  $("#paginas").innerHTML = capa + valores + info + port;
-  encaixarMarca();
+  $("#paginas").innerHTML = capa + projeto + investimento + seguimos + port;
+  encaixar();
+  conferir();
   ajustarEscala();
 }
-/* Nome da marca sempre numa linha só: diminui a letra até caber na coluna da capa. */
-function encaixarMarca() {
-  const b = $(".capa .marca b"); if (!b) return;
-  let pt = 21; b.style.fontSize = pt + "pt";
-  while (b.scrollWidth > b.parentNode.clientWidth && pt > 9) b.style.fontSize = (pt -= .5) + "pt";
+/* "orçamento." e o nome da marca sempre numa linha só: diminui a letra até caber. */
+function encaixar() {
+  const caber = (el, max, min, larg) => { if (!el) return; let pt = max; el.style.fontSize = pt + "pt"; while (el.scrollWidth > larg() && pt > min) el.style.fontSize = (pt -= 1) + "pt"; };
+  const capa = $(".capa"); if (!capa) return;
+  caber($(".orc", capa), 150, 40, () => capa.clientWidth - 2 * 14 * 96 / 25.4);
+  caber($(".topo .wm", capa), 24, 10, () => capa.clientWidth * .6);
+}
+/* Avisa quando o texto não cabe na página (ele seria cortado no PDF). */
+function conferir() {
+  const cheias = $$(".pg").map((pg, i) => [pg, i]).filter(([pg]) => [...pg.querySelectorAll(".txt,.baixo")].some(t => t.scrollHeight > t.clientHeight + 2));
+  $("#alertas").textContent = cheias.length ? `O texto não cabe na página ${cheias.map(([, i]) => i + 1).join(" e ")} — encurte um pouco para não ser cortado no PDF.` : "";
 }
 function ajustarEscala() {
   const P = $("#paginas"), larg = $(".previa").clientWidth - 40, pgW = 210 * 96 / 25.4;
@@ -353,42 +486,49 @@ function mudou(redesenharLista) { o.atualizado = Date.now(); totalEditor(); dese
 $$("[data-f]").forEach(el => el.addEventListener("input", () => {
   const k = el.dataset.f;
   o[k] = el.type === "checkbox" ? el.checked : el.value;
-  if (el.type === "color" || k.startsWith("cor")) $$(`[data-f="${k}"]`).forEach(x => x !== el && (x.value = el.value));
-  mudou(k === "cliente" || k === "titulo");
+  if (k.startsWith("cor")) $$(`[data-f="${k}"]`).forEach(x => x !== el && (x.value = el.value));
+  mudou(k === "cliente" || k === "projeto" || k === "numero");
 }));
-$("#itens").addEventListener("input", ev => {
-  const it = o.itens.find(i => i.id === ev.target.closest(".item")?.dataset.id); if (!it) return;
-  it[ev.target.dataset.i] = ev.target.dataset.i === "valor" ? (ev.target.value === "" ? "" : Number(ev.target.value)) : ev.target.value;
-  mudou();
+for (const k of ["itens", "opcionais"]) {
+  $("#" + k).addEventListener("input", ev => {
+    const it = o[k].find(i => i.id === ev.target.closest(".item")?.dataset.id); if (!it) return;
+    it[ev.target.dataset.i] = ev.target.dataset.i === "valor" ? (ev.target.value === "" ? "" : Number(ev.target.value)) : ev.target.value;
+    mudou();
+  });
+  $("#" + k).addEventListener("click", ev => {
+    if (!ev.target.closest("[data-x]")) return;
+    o[k] = o[k].filter(i => i.id !== ev.target.closest(".item").dataset.id); desenharItens(); mudou();
+  });
+}
+$$("[data-add]").forEach(b => b.onclick = () => {
+  const k = b.dataset.add; o[k].push({ id: uid(), desc: "", valor: "" }); desenharItens(); mudou();
+  $$(`#${k} input[data-i=desc]`).at(-1).focus();
 });
-$("#itens").addEventListener("click", ev => {
-  if (!ev.target.closest("[data-x]")) return;
-  o.itens = o.itens.filter(i => i.id !== ev.target.closest(".item").dataset.id); desenharItens(); mudou();
-});
-$("#b-item").onclick = () => { o.itens.push({ id: uid(), desc: "", valor: "" }); desenharItens(); mudou(); $$("#itens input[data-i=desc]").at(-1).focus(); };
 
 $("#lista").onchange = ev => { o = db.lista.find(x => x.id === ev.target.value); salvar(true); preencher(); };
 $("#b-novo").onclick = () => {
   const n = modelo();
   FIXOS.forEach(k => n[k] = o[k]);
-  n.titulo = "ORÇAMENTO FOTO E FILME | "; n.escopo = ""; n.veiculacao = ""; n.itens = [{ id: uid(), desc: "", valor: "" }];
-  n.ano = ANO;
+  Object.assign(n, { numero: proximoNumero(), cliente: "", projeto: "", objetivo: "", escopo: "", entregas: "", prazo: o.prazo, veiculacao: "",
+    itens: [{ id: uid(), desc: "", valor: "" }], opcionais: o.opcionais.map(i => ({ ...i, id: uid() })), ajuste: "", ano: ANO });
   db.lista.push(n); o = n; salvar(true); preencher();
-  $("details").open = true; $('[data-f="titulo"]').focus(); aviso("Novo orçamento criado");
+  $("details").open = true; $('[data-f="cliente"]').focus(); aviso("Novo orçamento criado");
 };
 $("#b-dup").onclick = () => {
-  const n = JSON.parse(JSON.stringify(o)); n.id = uid(); n.criado = n.atualizado = Date.now(); n.cliente = n.cliente ? n.cliente + " (cópia)" : ""; n.titulo += n.cliente ? "" : " (cópia)";
-  n.itens.forEach(i => i.id = uid()); db.lista.push(n); o = n; salvar(true); preencher(); aviso("Orçamento duplicado");
+  const n = JSON.parse(JSON.stringify(o)); n.id = uid(); n.criado = n.atualizado = Date.now(); n.numero = proximoNumero();
+  n.itens.forEach(i => i.id = uid()); n.opcionais.forEach(i => i.id = uid());
+  db.lista.push(n); o = n; salvar(true); preencher(); aviso("Orçamento duplicado (nº " + n.numero + ")");
 };
 $("#b-excluir").onclick = () => {
   if (!confirm(`Excluir “${nomeOrc(o)}”? Não dá para desfazer.`)) return;
   const fixos = Object.fromEntries(FIXOS.map(k => [k, o[k]]));
   db.lista = db.lista.filter(x => x.id !== o.id);
-  if (!db.lista.length) db.lista.push(Object.assign(modelo(), fixos));
+  if (!db.lista.length) { const m = Object.assign(modelo(), fixos); m.numero = proximoNumero(); db.lista.push(m); }
   o = db.lista[0]; salvar(true); preencher(); aviso("Orçamento excluído");
 };
 $("#b-pdf").onclick = () => {
-  if (o.mostrarPortfolio && !o.foto && !confirm("A página de portfolio está sem foto. Gerar o PDF assim mesmo? (ela sai sem imagem)")) return;
+  if ($("#alertas").textContent && !confirm($("#alertas").textContent + "\n\nGerar assim mesmo?")) return;
+  if (o.mostrarPortfolio && !o.foto && !confirm("A página de portfolio está sem foto. Gerar o PDF assim mesmo?")) return;
   desenhar(); setTimeout(() => window.print(), 50);
 };
 $("#b-backup").onclick = () => {
@@ -402,16 +542,16 @@ $("#arquivo").onchange = async ev => {
   const f = ev.target.files[0]; ev.target.value = ""; if (!f) return;
   try {
     const d = JSON.parse(await f.text()); let n = 0;
-    for (const x of d.lista || []) { if (!x || !Array.isArray(x.itens)) continue; if (db.lista.some(y => y.id === x.id)) x.id = uid(); db.lista.push(x); n++; }
+    for (const x of d.lista || []) { if (!x || !Array.isArray(x.itens)) continue; if (db.lista.some(y => y.id === x.id)) x.id = uid(); db.lista.push(Object.assign(modelo(), x)); n++; }
     salvar(true); desenharLista(); aviso(n ? `${n} orçamento(s) importado(s)` : "Nenhum orçamento no arquivo");
   } catch (e) { aviso("Arquivo inválido"); }
 };
-/* Foto: reduz para no máximo 1400px para caber no armazenamento do aparelho. */
+/* Foto: reduz para no máximo 1600px para caber no armazenamento do aparelho. */
 $("#foto").onchange = ev => {
   const f = ev.target.files[0]; ev.target.value = ""; if (!f) return;
   const img = new Image();
   img.onload = () => {
-    const k = Math.min(1, 1400 / Math.max(img.width, img.height));
+    const k = Math.min(1, 1600 / Math.max(img.width, img.height));
     const c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
     c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
     o.foto = c.toDataURL("image/jpeg", 0.85); URL.revokeObjectURL(img.src); fotoEditor(); mudou();
@@ -423,6 +563,6 @@ $("#b-tirar-foto").onclick = () => { o.foto = ""; fotoEditor(); mudou(); };
 addEventListener("beforeunload", () => salvar(true));
 
 preencher();
-if (document.fonts) document.fonts.ready.then(() => { encaixarMarca(); ajustarEscala(); });
+if (document.fonts) document.fonts.ready.then(() => { encaixar(); conferir(); ajustarEscala(); });
 </script>
 </body></html>
