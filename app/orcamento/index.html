@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#F4F2EE">
+<meta name="theme-color" content="#E3E1DC">
 <title>Orçamento</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icone-192.png">
@@ -13,32 +13,33 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800;9..40,900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Mulish:wght@300;400;600;700&display=swap">
 <style>
 /* Gerador de orçamentos PUPIN+DELEU: editor à esquerda, páginas A4 à direita; "Gerar PDF" imprime só as páginas.
-   Visual minimalista: uma fonte só (a mesma da marca), grossa nos títulos; laranja só na marca e em "orçamento.". */
+   Visual minimalista em preto e branco: títulos grossos (Inter Tight) e texto leve (Mulish) sobre papel cinza. */
 :root{
-  --papel:#F4F2EE; --tinta:#111111; --laranja:#E8591A; --linha-pg:rgba(17,17,17,.14); --linha:rgba(40,40,40,.14);
+  --papel:#E3E1DC; --tinta:#282828; --linha-pg:rgba(40,40,40,.16); --linha:rgba(40,40,40,.14);
   --ui-bg:#F4F3F0; --ui-panel:#FFFFFF; --ui-ink:#1F1F1F; --ui-soft:#6E6B66;
-  --fonte:"DM Sans","Helvetica Neue",Arial,sans-serif;
+  --fonte:"Mulish","Helvetica Neue",Arial,sans-serif;
+  --titulo:"Inter Tight","Helvetica Neue",Arial,sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--ui-bg);color:var(--ui-ink);font-family:var(--fonte);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:2px solid var(--laranja);outline-offset:2px}
+:focus-visible{outline:2px solid var(--tinta);outline-offset:2px}
 
 /* ---------- Editor ---------- */
 .app{display:grid;grid-template-columns:minmax(340px,440px) 1fr;min-height:100vh}
 .editor{background:var(--ui-panel);border-right:1px solid var(--linha);height:100vh;overflow-y:auto;position:sticky;top:0}
 .ed-top{position:sticky;top:0;z-index:2;background:var(--ui-panel);border-bottom:1px solid var(--linha);padding:14px 18px;display:flex;flex-direction:column;gap:10px}
-.ed-top h1{font-weight:900;font-size:26px;letter-spacing:-.05em;line-height:1;color:var(--laranja);margin:0}
+.ed-top h1{font-family:var(--titulo);font-weight:700;font-size:28px;letter-spacing:-.05em;line-height:1;color:var(--tinta);margin:0}
 .ed-top h1 small{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--ui-ink);margin-left:8px;vertical-align:middle}
 .linha-btn{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .btn{border:1px solid var(--linha);background:#fff;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700;white-space:nowrap}
 .btn:hover{background:var(--ui-bg)}
-.btn.pri{background:var(--laranja);color:#fff;border-color:var(--laranja)}
+.btn.pri{background:var(--tinta);color:#fff;border-color:var(--tinta)}
 .btn.pri:hover{filter:brightness(.92)}
 .btn.min{padding:4px 10px;font-size:12px}
 .btn.del{color:#9B2C1F}
@@ -68,40 +69,37 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
 .cor input[type=color]{width:44px;height:36px;padding:2px;flex:none}
 
 /* ---------- Páginas A4 ---------- */
+/* Preto e branco no papel cinza, na linha da referência: títulos grossos e apertados, texto leve e arejado. */
 .previa{padding:28px 24px 80px;overflow-x:hidden}
 .paginas{display:flex;flex-direction:column;align-items:center;gap:24px;transform-origin:top center}
-.pg{width:210mm;height:297mm;background:var(--papel);color:var(--tinta);position:relative;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.08),0 12px 40px rgba(0,0,0,.10);font-family:var(--fonte);font-size:10.4pt;line-height:1.55;flex:none}
-.forte{font-weight:900;letter-spacing:-.055em;line-height:.9;margin:0}
-.marca{font-weight:900;letter-spacing:-.02em;color:var(--laranja);white-space:nowrap;line-height:1}
-/* capa: marca no alto, "orçamento." enorme embaixo, cliente e ano no canto */
-.capa .marca{position:absolute;left:18mm;top:18mm;font-size:22pt}
-.capa .desc{position:absolute;left:18mm;top:28mm;font-size:9pt;font-weight:500;letter-spacing:.2em;text-transform:uppercase}
-.capa .orc{position:absolute;left:16mm;bottom:40mm;font-size:96pt;color:var(--laranja);white-space:nowrap}
-.capa .base{position:absolute;left:18mm;right:18mm;bottom:20mm;display:flex;justify-content:space-between;align-items:baseline;gap:10mm;padding-top:4mm;border-top:.6mm solid var(--tinta);font-size:9.5pt}
-.capa .base b{font-weight:800}
-/* páginas internas: marca pequena no alto à direita, título grosso, conteúdo numa coluna recuada */
-.pg .topo{position:absolute;left:18mm;right:18mm;top:18mm;display:flex;justify-content:space-between;align-items:baseline}
-.pg .topo .marca{font-size:10pt}
-.pg .topo .num{font-weight:800;font-size:10pt}
-.pg .rod{position:absolute;left:18mm;right:18mm;bottom:16mm;display:flex;justify-content:space-between;font-size:8.5pt;font-weight:500}
-.txt{position:absolute;left:18mm;right:18mm;top:40mm;bottom:30mm;overflow:hidden}
-.txt > .forte{font-size:54pt;padding-bottom:9mm;margin-bottom:9mm;border-bottom:.6mm solid var(--tinta)}
-.corpo{margin-left:52mm}
-.bloco{margin-bottom:8mm}
-.bloco h3{margin:0 0 2mm;font-size:9pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-.bloco p{margin:0;white-space:pre-line}
-.titulo{font-size:14pt;font-weight:800;letter-spacing:-.01em;line-height:1.25;margin:0 0 8mm}
-.tab{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-.tab td{padding:2mm 0;border-bottom:.2mm solid var(--linha-pg);vertical-align:baseline}
-.tab td:last-child{text-align:right;white-space:nowrap;padding-left:6mm}
-.tab td small{font-weight:400;opacity:.7;margin-left:2mm}
-.tab tr.sub td{border-bottom:0;padding-top:3.5mm;font-weight:800}
-.tab tr.tot td{border-bottom:0;padding-top:1mm;font-weight:900;font-size:16pt;letter-spacing:-.02em}
-.tab tr.sub + tr.tot td{padding-top:1.5mm}
-.pagto{margin:3mm 0 0;font-weight:500}
-.data{margin:-5mm 0 8mm;font-weight:500}
-.validade{position:absolute;left:70mm;right:18mm;bottom:30mm;padding-top:3mm;border-top:.2mm solid var(--linha-pg);font-size:9pt}
-.validade b{font-weight:800}
+.pg{width:210mm;height:297mm;background:var(--papel);color:var(--tinta);position:relative;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.08),0 12px 40px rgba(0,0,0,.10);font-family:var(--fonte);font-size:10.6pt;line-height:1.5;flex:none}
+.forte{font-family:var(--titulo);font-weight:700;letter-spacing:-.06em;line-height:.98;margin:0}
+/* capa: "orçamento." no alto; linha vertical e bloco da marca deslocados para a direita e para baixo */
+.capa .orc{position:absolute;left:20mm;top:30mm;font-size:60pt;white-space:nowrap}
+.capa .para{position:absolute;left:21mm;top:58mm;font-size:10.5pt;max-width:95mm}
+.capa .para b{font-weight:700}
+.capa .vert{position:absolute;left:128mm;top:52mm;height:200mm;border-left:.3mm solid var(--tinta)}
+.capa .horiz{position:absolute;left:128mm;right:0;top:206mm;border-top:.3mm solid var(--tinta)}
+.capa .bloco-marca{position:absolute;left:133mm;right:14mm;top:213mm}
+.capa .nome{display:block;font-family:var(--titulo);font-weight:700;font-size:19pt;letter-spacing:.32em;line-height:1.1;white-space:nowrap}
+.capa .desc{margin:4mm 0 0;font-size:8.6pt;line-height:1.25;text-transform:uppercase;font-weight:400}
+.capa .ano{display:block;font-family:var(--titulo);font-weight:500;font-size:19pt;margin-top:4mm;letter-spacing:-.02em}
+.capa .cat{position:absolute;left:20.5mm;bottom:26mm;font-family:var(--titulo);font-weight:700;font-size:16pt;letter-spacing:-.04em;text-transform:uppercase}
+/* páginas internas: bolinha no alto à esquerda, marca pequena à direita, ano com a linha saindo pela esquerda */
+.pg .bola{position:absolute;top:20mm;left:20.5mm;width:8mm;height:8mm;border:.45mm solid var(--tinta);border-radius:50%}
+.pg .marca-p{position:absolute;top:22mm;right:20.5mm;font-family:var(--titulo);font-weight:700;font-size:9pt;letter-spacing:.24em}
+.pg .rod{position:absolute;left:0;right:20.5mm;bottom:19mm;display:flex;align-items:center;gap:4mm;font-size:10pt;color:#5E5B57}
+.pg .rod::before{content:"";width:65mm;border-top:.3mm solid var(--tinta)}
+.pg .rod .contato{margin-left:auto;font-size:8.5pt}
+.txt{position:absolute;left:20.5mm;right:28mm;top:42mm;bottom:32mm;overflow:hidden}
+.txt > .forte{font-size:48pt;margin-bottom:13mm}
+.txt h3{font-family:var(--fonte);font-weight:700;font-size:10.6pt;text-transform:uppercase;margin:0 0 4.5mm}
+.txt h4{font-family:var(--fonte);font-weight:700;font-size:10.6pt;margin:0}
+.txt p{margin:0;white-space:pre-line}
+.txt .b{margin-bottom:6.5mm}
+.txt .b.largo{margin-bottom:9mm}
+.txt .tot{font-weight:700}
+.txt .valido{font-size:9.5pt;color:#5E5B57}
 
 @media (max-width:900px){
   .app{grid-template-columns:1fr}
@@ -197,7 +195,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
           <label class="c">WhatsApp (rodapé)<input data-f="whats" inputmode="tel"></label>
           <label class="c">E-mail (rodapé)<input data-f="email" inputmode="email"></label>
         </div>
-        <label class="c">Laranja da marca<span class="cor"><input type="color" data-f="corDestaque"><input data-f="corDestaque" style="font-family:monospace"></span></label>
+        <label class="c">Categoria (embaixo da capa)<input data-f="categoria"></label>
         <div class="dupla">
           <label class="c">Cor do papel<span class="cor"><input type="color" data-f="corPapel"><input data-f="corPapel" style="font-family:monospace"></span></label>
           <label class="c">Cor do texto<span class="cor"><input type="color" data-f="corTinta"><input data-f="corTinta" style="font-family:monospace"></span></label>
@@ -225,7 +223,7 @@ const uid = () => Math.random().toString(36).slice(2, 10);
 const ANO = String(new Date().getFullYear());
 
 /* Campos da empresa: passam de um orçamento para o próximo. */
-const FIXOS = ["marca", "descricao", "ano", "rodape", "whats", "email", "corPapel", "corTinta", "corDestaque",
+const FIXOS = ["marca", "descricao", "ano", "rodape", "whats", "email", "categoria", "corPapel", "corTinta",
   "notaPct", "formaPagamento", "condicoes", "validade", "pagamentos", "remarcacao", "cancelamento", "extra"];
 
 function modelo() {
@@ -244,7 +242,7 @@ function modelo() {
     cancelamento: "Com menos de 3 dias de antecedência: cobrança de 50% do valor total.\nNo mesmo dia da diária: cobrança de 100% do valor total.",
     extra: "",
     marca: "PUPIN+DELEU", descricao: "photo and film", ano: ANO, rodape: "@pupindeleu", whats: "", email: "",
-    corPapel: "#F4F2EE", corTinta: "#111111", corDestaque: "#E8591A"
+    categoria: "Photo & Film", corPapel: "#E3E1DC", corTinta: "#282828"
   };
 }
 
@@ -253,7 +251,8 @@ let db;
 try { db = JSON.parse(localStorage.getItem(CHAVE)); } catch (e) {}
 if (!db || !Array.isArray(db.lista) || !db.lista.length) db = { lista: [], atual: null };
 // Orçamentos de versões anteriores ganham os campos que faltam sem perder o que já tinham.
-db.lista = db.lista.map(x => { const m = Object.assign(modelo(), x); if (!x.titulo && (x.projeto || x.tipo)) m.titulo = [x.tipo, x.projeto].filter(Boolean).join(" | "); return m; });
+db.lista = db.lista.map(x => { const m = Object.assign(modelo(), x);
+  if (m.corPapel === "#F4F2EE") m.corPapel = "#E3E1DC"; if (m.corTinta === "#111111") m.corTinta = "#282828"; if (!x.titulo && (x.projeto || x.tipo)) m.titulo = [x.tipo, x.projeto].filter(Boolean).join(" | "); return m; });
 function proximoNumero() {
   const n = db.lista.filter(x => String(x.numero).endsWith("/" + ANO)).length + 1;
   return String(n).padStart(3, "0") + "/" + ANO;
@@ -303,55 +302,50 @@ function totaisEditor() {
 const linhas = t => esc(t).trim();
 function desenhar() {
   const raiz = document.documentElement.style;
-  raiz.setProperty("--papel", o.corPapel || "#F4F2EE");
-  raiz.setProperty("--tinta", o.corTinta || "#111111");
-  raiz.setProperty("--laranja", o.corDestaque || "#E8591A");
+  raiz.setProperty("--papel", o.corPapel || "#E3E1DC");
+  raiz.setProperty("--tinta", o.corTinta || "#282828");
   document.title = `Orçamento ${o.numero || ""} ${nomeOrc(o)} - ${o.marca || ""}`.replace(/\//g, "-").replace(/\s+/g, " ").trim();
 
   const marca = esc(o.marca || ""), ano = esc(o.ano);
-  const topo = n => `<div class="topo"><span class="num">${String(n).padStart(2, "0")}</span><span class="marca">${marca}</span></div>`;
   const contato = [o.rodape, o.whats, o.email].filter(x => x && x.trim()).map(esc).join("  ·  ");
-  const rod = `<div class="rod"><span>${contato}</span><span>${o.numero ? "nº " + esc(o.numero) + " · " : ""}${ano}</span></div>`;
+  const enfeite = `<div class="bola"></div><div class="marca-p">${marca}</div>`;
+  const rod = `<div class="rod"><span>${ano}</span><span class="contato">${contato}</span></div>`;
   const validoAte = Number(o.validade) > 0 ? new Date(o.criado + Number(o.validade) * 864e5).toLocaleDateString("pt-BR") : "";
-  const bloco = (titulo, html) => html ? `<div class="bloco">${titulo ? `<h3>${titulo}</h3>` : ""}${html}</div>` : "";
-  const par = t => t && t.trim() ? `<p>${linhas(t)}</p>` : "";
+  const b = (titulo, txt, largo, rotulo) => txt && txt.trim()
+    ? `<div class="b${largo ? " largo" : ""}">${rotulo ? `<h4>${titulo}:</h4>` : `<h3>${titulo}</h3>`}<p>${linhas(txt)}</p></div>` : "";
 
   const capa = `<div class="pg capa">
-    <div class="marca">${marca}</div>
-    ${o.descricao ? `<div class="desc">${esc(o.descricao)}</div>` : ""}
     <h2 class="forte orc">orçamento.</h2>
-    <div class="base"><span>${o.cliente ? `para <b>${esc(o.cliente)}</b>` : ""}${o.dataJob ? `  ·  job em <b>${diaBR(o.dataJob)}</b>` : ""}</span><b>${ano}</b></div></div>`;
+    ${o.cliente || o.dataJob ? `<div class="para">${o.cliente ? `para <b>${esc(o.cliente)}</b>` : ""}${o.dataJob ? `${o.cliente ? "<br>" : ""}${diaBR(o.dataJob)}` : ""}</div>` : ""}
+    <div class="vert"></div><div class="horiz"></div>
+    <div class="bloco-marca"><span class="nome">${marca}</span>${o.descricao ? `<p class="desc">${esc(o.descricao)}</p>` : ""}<span class="ano">${ano}</span></div>
+    ${o.categoria ? `<div class="cat">${esc(o.categoria)}</div>` : ""}</div>`;
 
   const itens = o.itens.filter(i => i.desc || Number(i.valor));
   const aj = Number(o.ajuste) || 0;
-  const tabela = `<table class="tab">
-      ${itens.map(i => `<tr><td>${esc(i.desc)}${qtdDe(i) !== 1 ? `<small>${qtdDe(i).toLocaleString("pt-BR")} × ${brl(i.valor)}</small>` : ""}</td><td>${brl(valorItem(i))}</td></tr>`).join("")}
-      ${aj ? `<tr><td>${aj < 0 ? "Desconto" : "Ajuste"}</td><td>${aj < 0 ? "− " : ""}${brl(Math.abs(aj))}</td></tr>` : ""}
-      ${Number(o.notaPct)
-        ? `<tr class="sub"><td>Total</td><td>${brl(total())}</td></tr><tr class="tot"><td>Total com nota <small>+${pct(o.notaPct)}</small></td><td>${brl(totalNota())}</td></tr>`
-        : `<tr class="tot"><td>Total</td><td>${brl(total())}</td></tr>`}</table>
-      ${o.formaPagamento ? `<p class="pagto">${esc(o.formaPagamento)}</p>` : ""}`;
-  const condicoes = [Number(o.notaPct) ? `Nota fiscal (+${pct(o.notaPct)}) ou recibo.` : "", o.condicoes].filter(x => x && x.trim()).join("\n");
-  const valores = `<div class="pg">${topo(1)}<div class="txt"${validoAte ? ' style="bottom:42mm"' : ""}>
+  const linhasItens = itens.map(i => `<div>${esc(i.desc)}${qtdDe(i) !== 1 ? ` (${qtdDe(i).toLocaleString("pt-BR")} × ${brl(i.valor)})` : ""} - ${brl(valorItem(i))}</div>`).join("")
+    + (aj ? `<div>${aj < 0 ? "Desconto" : "Ajuste"} - ${aj < 0 ? "−" : ""}${brl(Math.abs(aj))}</div>` : "")
+    + `<div class="tot">Total: ${brl(total())}</div>`
+    + (Number(o.notaPct) ? `<div class="tot">Total com nota (${pct(o.notaPct)}): ${brl(totalNota())}</div>` : "")
+    + (o.formaPagamento ? `<div style="margin-top:3mm">${esc(o.formaPagamento)}</div>` : "");
+  const condicoes = [Number(o.notaPct) ? `Nota fiscal (${pct(o.notaPct)}) ou recibo.` : "", o.condicoes].filter(x => x && x.trim()).join("\n");
+  const titulo = o.titulo || ("Orçamento " + (o.cliente || "")).trim();
+  const valores = `<div class="pg">${enfeite}<div class="txt">
     <h2 class="forte">valores.</h2>
-    <div class="corpo">
-      <p class="titulo">${esc(o.titulo || ("Orçamento " + (o.cliente || "")).trim())}</p>
-      ${o.dataJob ? `<p class="data">Data do job: ${diaBR(o.dataJob)}</p>` : ""}
-      ${bloco("Escopo produtivo", par(o.escopo))}
-      ${bloco("Veiculação", par(o.veiculacao))}
-      ${bloco("Itens do orçamento", tabela)}
-      ${bloco("Condições", par(condicoes))}
-    </div>
-  </div>${validoAte ? `<div class="validade">Orçamento válido até <b>${validoAte}</b>.</div>` : ""}${rod}</div>`;
+    <div class="b largo"><h3>${esc(titulo)}</h3>${o.dataJob ? `<p>Dia: ${diaBR(o.dataJob)}</p>` : ""}</div>
+    ${b("Escopo produtivo", o.escopo, false, true)}
+    ${b("Veiculação", o.veiculacao, true, true)}
+    <div class="b largo"><h3>Itens do orçamento</h3>${linhasItens}</div>
+    ${b("Condições", condicoes)}
+    ${validoAte ? `<p class="valido">Orçamento válido até ${validoAte}.</p>` : ""}
+  </div>${rod}</div>`;
 
-  const info = `<div class="pg">${topo(2)}<div class="txt">
-    <h2 class="forte">informações<br>e pagamento.</h2>
-    <div class="corpo">
-      ${bloco("Pagamentos", par(o.pagamentos))}
-      ${bloco("Remarcação", par(o.remarcacao))}
-      ${bloco("Cancelamento", par(o.cancelamento))}
-      ${bloco("Observações", par(o.extra))}
-    </div>
+  const info = `<div class="pg">${enfeite}<div class="txt">
+    <h2 class="forte">informações e<br>pagamento.</h2>
+    ${b("Pagamentos", o.pagamentos, true)}
+    ${b("Política de remarcação", o.remarcacao, true)}
+    ${b("Política de cancelamento", o.cancelamento, true)}
+    ${b("Observações", o.extra, true)}
   </div>${rod}</div>`;
 
   $("#paginas").innerHTML = capa + valores + info;
@@ -359,12 +353,13 @@ function desenhar() {
   conferir();
   ajustarEscala();
 }
-/* "orçamento." e o nome da marca sempre numa linha só: diminui a letra até caber. */
+/* "orçamento." e o nome da marca sempre numa linha só: diminui a letra até caber no espaço. */
 function encaixar() {
   const capa = $(".capa"); if (!capa) return;
-  const el = $(".orc", capa), larg = capa.clientWidth - 2 * 16 * 96 / 25.4;
-  let pt = 130; el.style.fontSize = pt + "pt";
-  while (el.scrollWidth > larg && pt > 40) el.style.fontSize = (pt -= 1) + "pt";
+  const mm = 96 / 25.4;
+  const caber = (el, max, larg) => { if (!el) return; let pt = max; el.style.fontSize = pt + "pt"; while (el.scrollWidth > larg && pt > 8) el.style.fontSize = (pt -= .5) + "pt"; };
+  caber($(".orc", capa), 60, (128 - 20 - 5) * mm);
+  caber($(".nome", capa), 19, (210 - 133 - 10) * mm);
 }
 /* Avisa quando o texto não cabe na página (ele seria cortado no PDF). */
 function conferir() {

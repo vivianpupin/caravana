@@ -1,5 +1,5 @@
 // Deixa o app de orçamento abrir mesmo sem internet. Só cuida da pasta /orcamento/ (o app da Caravana tem o dele).
-const CACHE = "orcamento-v2";
+const CACHE = "orcamento-v3";
 const ARQUIVOS = ["./", "manifest.webmanifest", "icone-192.png", "icone-512.png", "apple-touch-icon.png"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.allSettled(ARQUIVOS.map(a => c.add(new Request(a, { cache: "reload" }))))));
