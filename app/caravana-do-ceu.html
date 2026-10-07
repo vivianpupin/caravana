@@ -3124,8 +3124,8 @@ function vSalvaExplorador() {
       msg.textContent = "Preparando a imagem…"; msg.className = "msg";
       try { const cv = await bonecoImg({ ...S.bonecoRasc }, 1400); await salvarNoRolo(pngDe(cv), "meu-explorador.png", msg); }
       catch (e) { msg.textContent = "Não consegui gerar a imagem. Tente de novo."; msg.className = "msg err"; }
-    } }, "Salvar meu explorador como imagem"),
-    h("p", { class: "small", style: "text-align:center;margin:0", text: "Sai em PNG, com o fundo transparente. No Estúdio de fotos ele também aparece nos adesivos, em Meu explorador." }), msg);
+    } }, "Salvar meu explorador no celular"),
+    msg);
 }
 function vCaravanaBonecos() {
   const lista = comBoneco();

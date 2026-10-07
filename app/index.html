@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "06/10 · 15:52";</script>
+<script>window.__VERSAO = "07/10 · 06:40";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3138,8 +3138,8 @@ function vSalvaExplorador() {
       msg.textContent = "Preparando a imagem…"; msg.className = "msg";
       try { const cv = await bonecoImg({ ...S.bonecoRasc }, 1400); await salvarNoRolo(pngDe(cv), "meu-explorador.png", msg); }
       catch (e) { msg.textContent = "Não consegui gerar a imagem. Tente de novo."; msg.className = "msg err"; }
-    } }, "Salvar meu explorador como imagem"),
-    h("p", { class: "small", style: "text-align:center;margin:0", text: "Sai em PNG, com o fundo transparente. No Estúdio de fotos ele também aparece nos adesivos, em Meu explorador." }), msg);
+    } }, "Salvar meu explorador no celular"),
+    msg);
 }
 function vCaravanaBonecos() {
   const lista = comBoneco();
