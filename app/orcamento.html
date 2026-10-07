@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#E3E1DC">
+<title>Orçamento · PUPIN+DELEU</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700&family=Mulish:wght@200;400;700&display=swap">
+<style>
+/* Gerador de orçamentos: o editor fica à esquerda, as páginas A4 à direita; "Gerar PDF" imprime só as páginas. */
+:root{
+  --papel:#E3E1DC; --tinta:#282828; --suave:#6E6B66; --linha:rgba(40,40,40,.14);
+  --ui-bg:#F4F3F0; --ui-panel:#FFFFFF; --ui-ink:#1F1F1F; --ui-soft:#6E6B66;
+  --titulo:"Inter Tight","Helvetica Neue",Arial,sans-serif;
+  --texto:"Mulish","Helvetica Neue",Arial,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ui-bg);color:var(--ui-ink);font-family:var(--texto);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--tinta);outline-offset:2px}
+
+/* ---------- Editor ---------- */
+.app{display:grid;grid-template-columns:minmax(340px,440px) 1fr;min-height:100vh}
+.editor{background:var(--ui-panel);border-right:1px solid var(--linha);height:100vh;overflow-y:auto;position:sticky;top:0}
+.ed-top{position:sticky;top:0;z-index:2;background:var(--ui-panel);border-bottom:1px solid var(--linha);padding:14px 18px;display:flex;flex-direction:column;gap:10px}
+.ed-top h1{font-family:var(--titulo);font-weight:700;font-size:22px;letter-spacing:-.03em;margin:0}
+.linha-btn{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--linha);background:#fff;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700;white-space:nowrap}
+.btn:hover{background:var(--ui-bg)}
+.btn.pri{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+.btn.pri:hover{background:#000}
+.btn.min{padding:4px 10px;font-size:12px}
+.btn.del{color:#9B2C1F}
+select.lista{flex:1;min-width:0;border:1px solid var(--linha);border-radius:999px;padding:7px 12px;background:#fff;font-weight:700;font-size:13px}
+details{border-bottom:1px solid var(--linha)}
+summary{list-style:none;padding:14px 18px;font-family:var(--titulo);font-weight:700;font-size:15px;letter-spacing:-.01em;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-weight:400;font-size:20px;color:var(--ui-soft)}
+details[open] summary::after{content:"–"}
+.campos{padding:0 18px 18px;display:flex;flex-direction:column;gap:12px}
+label.c{display:flex;flex-direction:column;gap:4px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-soft)}
+input,textarea,select{border:1px solid var(--linha);background:var(--ui-bg);border-radius:8px;padding:8px 10px;font-size:14px;width:100%;min-width:0;text-transform:none;letter-spacing:0;font-weight:400;color:var(--ui-ink)}
+textarea{resize:vertical;min-height:64px;line-height:1.45}
+.dupla{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dica{font-size:12px;color:var(--ui-soft);margin:0}
+.itens{display:flex;flex-direction:column;gap:6px}
+.item{display:grid;grid-template-columns:1fr 112px 30px;gap:6px;align-items:center}
+.item input[type=text]{min-width:0}
+.item .x{border:0;background:none;color:var(--ui-soft);font-size:18px;padding:0}
+.item .x:hover{color:#9B2C1F}
+.total-ed{display:flex;justify-content:space-between;font-weight:700;padding:6px 2px 0;border-top:1px solid var(--linha)}
+.chk{display:flex;gap:8px;align-items:center;font-size:13.5px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--ui-ink)}
+.chk input{width:18px;height:18px;accent-color:var(--tinta)}
+.foto-prev{width:100%;max-height:180px;object-fit:cover;border-radius:8px;display:block}
+.cor{display:flex;gap:8px;align-items:center}
+.cor input[type=color]{width:44px;height:36px;padding:2px;flex:none}
+
+/* ---------- Páginas A4 ---------- */
+.previa{padding:28px 24px 80px;overflow-x:hidden}
+.paginas{display:flex;flex-direction:column;align-items:center;gap:24px;transform-origin:top center}
+.pg{width:210mm;height:297mm;background:var(--papel);color:var(--tinta);position:relative;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.08),0 12px 40px rgba(0,0,0,.10);font-family:var(--texto);font-size:10.6pt;line-height:1.5;flex:none}
+.grande{font-family:var(--titulo);font-weight:700;letter-spacing:-.055em;line-height:.98;margin:0}
+.pg .ano-rod{position:absolute;right:0;bottom:19mm;display:flex;align-items:center;gap:4mm;font-size:10pt;color:var(--suave)}
+.pg .ano-rod::after{content:"";display:block;width:65mm;height:0;border-top:.3mm solid var(--tinta)}
+.pg .bola{position:absolute;top:20.5mm;right:20.5mm;width:9.5mm;height:9.5mm;border:.45mm solid var(--tinta);border-radius:50%}
+/* capa */
+.capa h2{position:absolute;left:20.5mm;top:30mm;font-size:52pt}
+.capa .vert{position:absolute;left:118mm;top:32mm;height:172mm;border-left:.3mm solid var(--tinta)}
+.capa .horiz{position:absolute;left:118mm;top:160mm;width:70mm;border-top:.3mm solid var(--tinta)}
+.capa .marca{position:absolute;left:122mm;top:167mm;width:66mm}
+.capa .marca b{display:block;font-family:var(--titulo);font-weight:700;font-size:21pt;letter-spacing:.3em;line-height:1.1;white-space:nowrap}
+.capa .marca p{margin:4mm 0 0;font-size:8.6pt;line-height:1.25;text-transform:uppercase;white-space:pre-line}
+.capa .marca .ano{display:block;font-family:var(--titulo);font-size:19pt;margin-top:4mm;letter-spacing:-.02em}
+.capa .cat{position:absolute;left:20.5mm;bottom:28mm;font-family:var(--titulo);font-weight:700;font-size:17pt;letter-spacing:-.04em;text-transform:uppercase}
+.capa .cliente{position:absolute;left:20.5mm;top:56mm;font-size:11pt;color:var(--suave);max-width:90mm}
+/* páginas de texto */
+.txt{position:absolute;left:20.5mm;right:28mm;top:40mm;bottom:32mm;overflow:hidden}
+.txt .grande{font-size:50pt;margin-bottom:14mm}
+.txt h3{font-family:var(--texto);font-weight:700;font-size:10.6pt;text-transform:uppercase;margin:0 0 4.5mm;letter-spacing:.005em}
+.txt h4{font-family:var(--texto);font-weight:700;font-size:10.6pt;margin:0}
+.txt p{margin:0;white-space:pre-line}
+.txt .bloco{margin-bottom:6.5mm}
+.txt .bloco.largo{margin-bottom:9mm}
+.txt .itens-pdf div{white-space:nowrap}
+.txt .itens-pdf .tot{font-weight:700}
+/* portfolio */
+.port .grande{position:absolute;left:22mm;top:44mm;font-size:62pt}
+.port .desc{position:absolute;left:22mm;top:73mm;width:82mm;font-weight:200;font-size:11.4pt;line-height:1.5;text-align:justify}
+.port .desc a{color:inherit}
+.port .foto{position:absolute;left:21mm;top:96mm;width:113mm;height:168mm;object-fit:cover;filter:grayscale(1)}
+.port .foto.cor{filter:none}
+.port .sem-foto{position:absolute;left:21mm;top:96mm;width:113mm;height:168mm;border:.3mm dashed var(--suave);display:flex;align-items:center;justify-content:center;color:var(--suave);font-size:10pt;text-align:center;padding:10mm}
+
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  .editor{height:auto;position:static;border-right:0;border-bottom:1px solid var(--linha)}
+  .ed-top{position:static}
+  .previa{padding:20px 16px 60px}
+}
+@media print{
+  @page{size:A4;margin:0}
+  html,body{background:#fff}
+  .editor,.so-tela{display:none!important}
+  .app{display:block}
+  .previa{padding:0}
+  .paginas{gap:0;transform:none!important;height:auto!important}
+  .pg{box-shadow:none;break-after:page;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pg:last-child{break-after:auto}
+  .pg.vazia{display:none}
+}
+.aviso{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(30px);background:var(--tinta);color:#fff;padding:10px 18px;border-radius:999px;font-size:13.5px;opacity:0;transition:.25s;pointer-events:none;z-index:9}
+.aviso.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head><body>
+<div class="app">
+  <aside class="editor">
+    <div class="ed-top">
+      <h1>orçamento.</h1>
+      <div class="linha-btn">
+        <select class="lista" id="lista" aria-label="Orçamentos salvos"></select>
+        <button class="btn" id="b-novo" title="Novo orçamento com os mesmos dados da empresa e condições">+ Novo</button>
+      </div>
+      <div class="linha-btn">
+        <button class="btn pri" id="b-pdf">Gerar PDF</button>
+        <button class="btn min" id="b-dup">Duplicar</button>
+        <button class="btn min" id="b-backup">Backup</button>
+        <button class="btn min" id="b-importar">Importar</button>
+        <button class="btn min del" id="b-excluir">Excluir</button>
+        <input type="file" id="arquivo" accept=".json,application/json" hidden>
+      </div>
+    </div>
+
+    <details open>
+      <summary>Orçamento</summary>
+      <div class="campos">
+        <label class="c">Título (aparece em negrito)<input data-f="titulo" placeholder="ORÇAMENTO FOTO E FILME | CAMPANHA ..."></label>
+        <label class="c">Cliente (aparece na capa — opcional)<input data-f="cliente"></label>
+        <label class="c">Escopo produtivo<textarea data-f="escopo"></textarea></label>
+        <label class="c">Veiculação<textarea data-f="veiculacao" style="min-height:44px"></textarea></label>
+        <div class="c" style="display:flex;flex-direction:column;gap:6px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-soft)">Itens do orçamento
+          <div class="itens" id="itens"></div>
+          <button class="btn min" id="b-item" style="align-self:flex-start">+ Item</button>
+          <div class="total-ed"><span>Total</span><span id="total-ed"></span></div>
+        </div>
+        <label class="c">Desconto ou ajuste no total (R$, opcional)<input type="number" step="0.01" data-f="ajuste" placeholder="ex.: -500"></label>
+        <label class="c">Condições<textarea data-f="condicoes" style="min-height:100px"></textarea></label>
+      </div>
+    </details>
+
+    <details>
+      <summary>Informações e pagamento</summary>
+      <div class="campos">
+        <label class="c">Pagamentos<textarea data-f="pagamentos" style="min-height:100px"></textarea></label>
+        <label class="c">Política de remarcação<textarea data-f="remarcacao"></textarea></label>
+        <label class="c">Política de cancelamento<textarea data-f="cancelamento"></textarea></label>
+        <label class="c">Observação extra (opcional)<textarea data-f="extra"></textarea></label>
+      </div>
+    </details>
+
+    <details>
+      <summary>Portfolio</summary>
+      <div class="campos">
+        <label class="chk"><input type="checkbox" data-f="mostrarPortfolio"> Incluir página de portfolio</label>
+        <label class="c">Texto<textarea data-f="portTexto" style="min-height:44px"></textarea></label>
+        <div class="dupla">
+          <label class="c">Texto do link<input data-f="portLinkTexto"></label>
+          <label class="c">Endereço do link<input data-f="portLink" inputmode="url"></label>
+        </div>
+        <label class="c">Foto<input type="file" accept="image/*" id="foto"></label>
+        <img class="foto-prev" id="foto-prev" alt="" hidden>
+        <div class="linha-btn">
+          <label class="chk"><input type="checkbox" data-f="fotoCor"> Manter foto colorida</label>
+          <button class="btn min del" id="b-tirar-foto" hidden>Tirar foto</button>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>Empresa e capa</summary>
+      <div class="campos">
+        <label class="c">Nome da marca<input data-f="marca"></label>
+        <label class="c">Descrição (embaixo do nome)<textarea data-f="descricao" style="min-height:52px"></textarea></label>
+        <div class="dupla">
+          <label class="c">Categoria (rodapé da capa)<input data-f="categoria"></label>
+          <label class="c">Ano<input data-f="ano" inputmode="numeric"></label>
+        </div>
+        <div class="dupla">
+          <label class="c">Cor do papel<span class="cor"><input type="color" data-f="corPapel"><input data-f="corPapel" style="font-family:monospace"></span></label>
+          <label class="c">Cor do texto<span class="cor"><input type="color" data-f="corTinta"><input data-f="corTinta" style="font-family:monospace"></span></label>
+        </div>
+        <p class="dica">Marca, condições, pagamento, políticas e portfolio passam automaticamente para cada “+ Novo” orçamento.</p>
+      </div>
+    </details>
+    <div class="campos" style="padding-top:16px"><p class="dica">Tudo fica salvo neste aparelho. Use “Backup” de vez em quando para guardar uma cópia.<br>No celular, “Gerar PDF” abre a tela de impressão: escolha <b>Salvar como PDF</b> (ou compartilhe).</p></div>
+  </aside>
+
+  <section class="previa">
+    <div class="paginas" id="paginas"></div>
+  </section>
+</div>
+<div class="aviso" id="aviso"></div>
+
+<script>
+"use strict";
+const CHAVE = "orcamentos-pupindeleu-v1";
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const brl = v => "R$ " + (Number(v) || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const uid = () => Math.random().toString(36).slice(2, 10);
+const ANO = String(new Date().getFullYear());
+
+/* Campos da empresa: passam de um orçamento para o próximo. */
+const FIXOS = ["marca", "descricao", "categoria", "ano", "corPapel", "corTinta", "condicoes", "pagamentos", "remarcacao", "cancelamento", "extra",
+  "mostrarPortfolio", "portTexto", "portLinkTexto", "portLink", "foto", "fotoCor"];
+
+function modelo() {
+  return {
+    id: uid(), criado: Date.now(), atualizado: Date.now(),
+    titulo: "ORÇAMENTO FOTO E FILME | CAMPANHA", cliente: "",
+    escopo: "1 diária interna - 5 modelos, 7 produtos.\nDiária com direção de fotografia, tratamento e entrega em alta resolução.",
+    veiculacao: "Mídias online.",
+    itens: [{ id: uid(), desc: "Diária de fotografia", valor: 8500 }, { id: uid(), desc: "Equipe (2 assistentes)", valor: 1500 }],
+    ajuste: "",
+    condicoes: "Hold de data (5 dias úteis) e first refusal aplicáveis.\nDiária de 9 horas, sendo 1 hora de almoço e 8 de produção.\nHora extra a partir da 10ª hora: 10% do valor total da diária por hora.\nFração de 30min contada como hora cheia.",
+    pagamentos: "Pagamento com nota fiscal, sendo realizado mediante pix ou transferência bancária com prazo a combinar. Após 30 dias de atraso do prazo estimado, ocorrerá a solicitação da NEGATIVAÇÃO da empresa e pedido de protesto.",
+    remarcacao: "Para alteração de data é necessária consulta prévia de disponibilidade da nova data.",
+    cancelamento: "Cancelamento com menos de 3 dias de antecedência: cobrança de 50% do valor total.\nCancelamento no mesmo dia da diária: cobrança de 100% do valor total.",
+    extra: "",
+    mostrarPortfolio: true, portTexto: "Você pode encontrar mais do nosso trabalho através do link:",
+    portLinkTexto: "@pupindeleu no Instagram.", portLink: "https://www.instagram.com/pupindeleu", foto: "", fotoCor: false,
+    marca: "PUPIN+DELEU", descricao: "PHOTO AND FILM", categoria: "PHOTO & FILM", ano: ANO, corPapel: "#E3E1DC", corTinta: "#282828"
+  };
+}
+
+/* ---------- Armazenamento ---------- */
+let db;
+try { db = JSON.parse(localStorage.getItem(CHAVE)); } catch (e) {}
+if (!db || !Array.isArray(db.lista) || !db.lista.length) db = { lista: [modelo()], atual: null };
+let o = db.lista.find(x => x.id === db.atual) || db.lista[0];
+let timer = 0;
+function salvar(ja) {
+  clearTimeout(timer);
+  const f = () => { db.atual = o.id; try { localStorage.setItem(CHAVE, JSON.stringify(db)); } catch (e) { aviso("Sem espaço para salvar — tente uma foto menor"); } };
+  ja ? f() : (timer = setTimeout(f, 300));
+}
+function aviso(t) { const a = $("#aviso"); a.textContent = t; a.classList.add("on"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("on"), 2400); }
+
+/* ---------- Cálculo ---------- */
+const subtotal = () => o.itens.reduce((s, i) => s + (Number(i.valor) || 0), 0);
+const total = () => subtotal() + (Number(o.ajuste) || 0);
+function nomeOrc(x) { return (x.cliente || x.titulo || "Orçamento").replace(/^ORÇAMENTO\s*/i, "").replace(/^[|\s-]+/, "") || "Orçamento"; }
+
+/* ---------- Editor ---------- */
+function preencher() {
+  $$("[data-f]").forEach(el => {
+    const v = o[el.dataset.f];
+    if (el.type === "checkbox") el.checked = !!v; else el.value = v ?? "";
+  });
+  desenharItens(); desenharLista(); fotoEditor(); desenhar();
+}
+function desenharLista() {
+  $("#lista").innerHTML = db.lista.slice().sort((a, b) => b.atualizado - a.atualizado)
+    .map(x => `<option value="${x.id}"${x.id === o.id ? " selected" : ""}>${esc(nomeOrc(x))} · ${new Date(x.criado).toLocaleDateString("pt-BR")}</option>`).join("");
+}
+function desenharItens() {
+  $("#itens").innerHTML = o.itens.map(i => `<div class="item" data-id="${i.id}">
+    <input type="text" data-i="desc" value="${esc(i.desc)}" placeholder="Descrição">
+    <input type="number" step="0.01" min="0" data-i="valor" value="${i.valor}" placeholder="Valor">
+    <button class="x" data-x title="Remover item">×</button></div>`).join("");
+  totalEditor();
+}
+function totalEditor() { $("#total-ed").textContent = brl(total()); }
+function fotoEditor() {
+  const tem = !!o.foto;
+  $("#foto-prev").hidden = !tem; $("#b-tirar-foto").hidden = !tem;
+  if (tem) $("#foto-prev").src = o.foto;
+}
+
+/* ---------- Páginas ---------- */
+function linhas(t) { return esc(t).trim(); }
+function desenhar() {
+  document.documentElement.style.setProperty("--papel", o.corPapel || "#E3E1DC");
+  document.documentElement.style.setProperty("--tinta", o.corTinta || "#282828");
+  document.title = "Orçamento " + nomeOrc(o) + " - " + (o.marca || "");
+  const ano = esc(o.ano);
+  const rod = `<div class="ano-rod">${ano}</div>`;
+  const marcaEspacada = esc((o.marca || "").toUpperCase().replace(/\s+/g, " "));
+  const bloco = (titulo, txt, cls = "") => txt && txt.trim() ? `<div class="bloco ${cls}"><h3>${titulo}</h3><p>${linhas(txt)}</p></div>` : "";
+
+  const capa = `<div class="pg capa">
+    <h2 class="grande">orçamento.</h2>
+    ${o.cliente ? `<div class="cliente">para ${esc(o.cliente)}</div>` : ""}
+    <div class="vert"></div><div class="horiz"></div>
+    <div class="marca"><b>${marcaEspacada}</b>${o.descricao ? `<p>${linhas(o.descricao)}</p>` : ""}<span class="ano">${ano}</span></div>
+    <div class="cat">${esc(o.categoria)}</div></div>`;
+
+  const itens = o.itens.filter(i => i.desc || Number(i.valor));
+  const aj = Number(o.ajuste) || 0;
+  const valores = `<div class="pg"><div class="bola"></div><div class="txt">
+    <h2 class="grande">valores.</h2>
+    ${o.titulo ? `<div class="bloco largo"><h3>${esc(o.titulo)}</h3></div>` : ""}
+    ${o.escopo?.trim() ? `<div class="bloco"><h4>Escopo produtivo:</h4><p>${linhas(o.escopo)}</p></div>` : ""}
+    ${o.veiculacao?.trim() ? `<div class="bloco largo"><h4>Veiculação:</h4><p>${linhas(o.veiculacao)}</p></div>` : ""}
+    <div class="bloco largo"><h3>Itens do orçamento</h3><div class="itens-pdf">
+      ${itens.map(i => `<div>${esc(i.desc)} - ${brl(i.valor)}</div>`).join("")}
+      ${aj ? `<div>${aj < 0 ? "Desconto" : "Ajuste"} - ${aj < 0 ? "-" : ""}${brl(Math.abs(aj))}</div>` : ""}
+      <div class="tot">Total: ${brl(total())}</div></div></div>
+    ${bloco("Condições", o.condicoes)}
+  </div>${rod}</div>`;
+
+  const info = `<div class="pg"><div class="bola"></div><div class="txt">
+    <h2 class="grande">informações e<br>pagamento</h2>
+    ${bloco("Pagamentos", o.pagamentos, "largo")}
+    ${bloco("Política de remarcação", o.remarcacao, "largo")}
+    ${bloco("Política de cancelamento", o.cancelamento, "largo")}
+    ${bloco("Observações", o.extra, "largo")}
+  </div>${rod}</div>`;
+
+  const link = o.portLink ? `<a href="${esc(o.portLink)}">${esc(o.portLinkTexto || o.portLink)}</a>` : esc(o.portLinkTexto);
+  const port = o.mostrarPortfolio ? `<div class="pg port">
+    <h2 class="grande">portfolio</h2>
+    <div class="desc">${linhas(o.portTexto)}${link ? "<br>" + link : ""}</div>
+    ${o.foto ? `<img class="foto ${o.fotoCor ? "cor" : ""}" src="${o.foto}" alt="">` : `<div class="sem-foto so-tela">Coloque uma foto em “Portfolio” no editor</div>`}
+  </div>` : "";
+
+  $("#paginas").innerHTML = capa + valores + info + port;
+  encaixarMarca();
+  ajustarEscala();
+}
+/* Nome da marca sempre numa linha só: diminui a letra até caber na coluna da capa. */
+function encaixarMarca() {
+  const b = $(".capa .marca b"); if (!b) return;
+  let pt = 21; b.style.fontSize = pt + "pt";
+  while (b.scrollWidth > b.parentNode.clientWidth && pt > 9) b.style.fontSize = (pt -= .5) + "pt";
+}
+function ajustarEscala() {
+  const P = $("#paginas"), larg = $(".previa").clientWidth - 40, pgW = 210 * 96 / 25.4;
+  const k = Math.min(1, larg / pgW);
+  P.style.transform = k < 1 ? `scale(${k})` : "";
+  P.style.height = k < 1 ? (P.scrollHeight * k) + "px" : "";
+}
+addEventListener("resize", ajustarEscala);
+addEventListener("beforeprint", () => { $("#paginas").style.transform = ""; $("#paginas").style.height = ""; });
+addEventListener("afterprint", ajustarEscala);
+
+/* ---------- Eventos ---------- */
+function mudou(redesenharLista) { o.atualizado = Date.now(); totalEditor(); desenhar(); if (redesenharLista) desenharLista(); salvar(); }
+$$("[data-f]").forEach(el => el.addEventListener("input", () => {
+  const k = el.dataset.f;
+  o[k] = el.type === "checkbox" ? el.checked : el.value;
+  if (el.type === "color" || k.startsWith("cor")) $$(`[data-f="${k}"]`).forEach(x => x !== el && (x.value = el.value));
+  mudou(k === "cliente" || k === "titulo");
+}));
+$("#itens").addEventListener("input", ev => {
+  const it = o.itens.find(i => i.id === ev.target.closest(".item")?.dataset.id); if (!it) return;
+  it[ev.target.dataset.i] = ev.target.dataset.i === "valor" ? (ev.target.value === "" ? "" : Number(ev.target.value)) : ev.target.value;
+  mudou();
+});
+$("#itens").addEventListener("click", ev => {
+  if (!ev.target.closest("[data-x]")) return;
+  o.itens = o.itens.filter(i => i.id !== ev.target.closest(".item").dataset.id); desenharItens(); mudou();
+});
+$("#b-item").onclick = () => { o.itens.push({ id: uid(), desc: "", valor: "" }); desenharItens(); mudou(); $$("#itens input[data-i=desc]").at(-1).focus(); };
+
+$("#lista").onchange = ev => { o = db.lista.find(x => x.id === ev.target.value); salvar(true); preencher(); };
+$("#b-novo").onclick = () => {
+  const n = modelo();
+  FIXOS.forEach(k => n[k] = o[k]);
+  n.titulo = "ORÇAMENTO FOTO E FILME | "; n.escopo = ""; n.veiculacao = ""; n.itens = [{ id: uid(), desc: "", valor: "" }];
+  n.ano = ANO;
+  db.lista.push(n); o = n; salvar(true); preencher();
+  $("details").open = true; $('[data-f="titulo"]').focus(); aviso("Novo orçamento criado");
+};
+$("#b-dup").onclick = () => {
+  const n = JSON.parse(JSON.stringify(o)); n.id = uid(); n.criado = n.atualizado = Date.now(); n.cliente = n.cliente ? n.cliente + " (cópia)" : ""; n.titulo += n.cliente ? "" : " (cópia)";
+  n.itens.forEach(i => i.id = uid()); db.lista.push(n); o = n; salvar(true); preencher(); aviso("Orçamento duplicado");
+};
+$("#b-excluir").onclick = () => {
+  if (!confirm(`Excluir “${nomeOrc(o)}”? Não dá para desfazer.`)) return;
+  const fixos = Object.fromEntries(FIXOS.map(k => [k, o[k]]));
+  db.lista = db.lista.filter(x => x.id !== o.id);
+  if (!db.lista.length) db.lista.push(Object.assign(modelo(), fixos));
+  o = db.lista[0]; salvar(true); preencher(); aviso("Orçamento excluído");
+};
+$("#b-pdf").onclick = () => {
+  if (o.mostrarPortfolio && !o.foto && !confirm("A página de portfolio está sem foto. Gerar o PDF assim mesmo? (ela sai sem imagem)")) return;
+  desenhar(); setTimeout(() => window.print(), 50);
+};
+$("#b-backup").onclick = () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(db)], { type: "application/json" }));
+  a.download = `orcamentos-backup-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+};
+$("#b-importar").onclick = () => $("#arquivo").click();
+$("#arquivo").onchange = async ev => {
+  const f = ev.target.files[0]; ev.target.value = ""; if (!f) return;
+  try {
+    const d = JSON.parse(await f.text()); let n = 0;
+    for (const x of d.lista || []) { if (!x || !Array.isArray(x.itens)) continue; if (db.lista.some(y => y.id === x.id)) x.id = uid(); db.lista.push(x); n++; }
+    salvar(true); desenharLista(); aviso(n ? `${n} orçamento(s) importado(s)` : "Nenhum orçamento no arquivo");
+  } catch (e) { aviso("Arquivo inválido"); }
+};
+/* Foto: reduz para no máximo 1400px para caber no armazenamento do aparelho. */
+$("#foto").onchange = ev => {
+  const f = ev.target.files[0]; ev.target.value = ""; if (!f) return;
+  const img = new Image();
+  img.onload = () => {
+    const k = Math.min(1, 1400 / Math.max(img.width, img.height));
+    const c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    o.foto = c.toDataURL("image/jpeg", 0.85); URL.revokeObjectURL(img.src); fotoEditor(); mudou();
+  };
+  img.onerror = () => aviso("Não consegui abrir essa imagem");
+  img.src = URL.createObjectURL(f);
+};
+$("#b-tirar-foto").onclick = () => { o.foto = ""; fotoEditor(); mudou(); };
+addEventListener("beforeunload", () => salvar(true));
+
+preencher();
+if (document.fonts) document.fonts.ready.then(() => { encaixarMarca(); ajustarEscala(); });
+</script>
+</body></html>
