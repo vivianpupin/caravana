@@ -3155,7 +3155,7 @@ function verExplorador(id) {
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
 }
-const POSES = { agra: "turma", varanasi: "pulando", jaipur: "abraco", rishikesh: "bananeira", delhi: "fila" };
+const POSES = { agra: "turma", varanasi: "pulando", jaipur: "abraco", rishikesh: "fogueira", delhi: "fila" };
 const CENARIOS = [["agra", "Taj Mahal"], ["varanasi", "Varanasi"], ["rishikesh", "Rishikesh"], ["jaipur", "Jaipur"], ["delhi", "Delhi"]];
 async function retratoCaravana(cen, pose) {
   const W = 1080, H = 1920, cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
@@ -3168,7 +3168,7 @@ async function retratoCaravana(cen, pose) {
   x.font = '400 34px Poppins, sans-serif'; x.fillStyle = "#E8C07A"; x.fillText("TRAVESSIA DA ÍNDIA SAGRADA · 2026", W / 2, 390);
   const lista = comBoneco(), n = lista.length; if (!n) return cv;
   // cada cidade tem a sua pose
-  const pulo = pose === "pulando", abraco = pose === "abraco", bananeira = pose === "bananeira", fila = pose === "fila";
+  const pulo = pose === "pulando", abraco = pose === "abraco", bananeira = pose === "bananeira", fila = pose === "fila", fogueira = pose === "fogueira";
   const sorte = i => { const v = Math.sin(i * 12.9898 + 4.1) * 43758.5453; return v - Math.floor(v); };
   // fileiras: atrás mais gente, na frente menos (como foto de turma)
   const filas = n <= 5 ? 1 : n <= 11 ? 2 : 3, tam = [];
@@ -3176,9 +3176,34 @@ async function retratoCaravana(cen, pose) {
   // a líder fica no meio da fileira da frente (na fila indiana, vai puxando a fila)
   const li = lista.findIndex(v => v.lider);
   if (li >= 0) { const [l] = lista.splice(li, 1); lista.splice(fila ? 0 : n - tam[filas - 1] + Math.floor(tam[filas - 1] / 2), 0, l); }
-  const imgs = await Promise.all(lista.map(v => bonecoImg({ ...bonecoDe(v.id), pet: "nenhum", semSombra: pulo || bananeira || fila }, 600)));
+  const imgs = await Promise.all(lista.map(v => bonecoImg({ ...bonecoDe(v.id), pet: "nenhum", semSombra: pulo || bananeira || fila || fogueira }, 600)));
   const sombra = (cx, y, w, k) => { x.fillStyle = "rgba(20,12,6,.35)"; x.beginPath(); x.ellipse(cx, y, w * .26 * k, w * .045 * k, 0, 0, 7); x.fill(); };
   const coracao = (cx, cy, r, cor) => { x.fillStyle = cor; x.beginPath(); x.moveTo(cx, cy + r * .9); x.bezierCurveTo(cx - r * 1.6, cy - r * .2, cx - r * .6, cy - r * 1.3, cx, cy - r * .4); x.bezierCurveTo(cx + r * .6, cy - r * 1.3, cx + r * 1.6, cy - r * .2, cx, cy + r * .9); x.fill(); };
+  if (fogueira) {
+    // Rishikesh: roda sentada em volta da fogueira, aberta na frente para o fogo aparecer
+    const cx0 = W / 2, cy0 = H - 470, rx = 420, ry = 200, abre = 70 * Math.PI / 180, ini = Math.PI / 2 + abre / 2, vao = Math.PI * 2 - abre;
+    const lugares = imgs.map((im, k) => { const a = ini + vao * (n > 1 ? k / (n - 1) : .5); return { im, a, X: cx0 + Math.cos(a) * rx, Y: cy0 + Math.sin(a) * ry }; }).sort((p, q) => p.Y - q.Y);
+    const senta = ({ im, X, Y }) => {
+      const prof = (Y - (cy0 - ry)) / (ry * 2), w = 250 * (.62 + .45 * prof), hh = w * im.height / im.width, corte = .7;
+      x.fillStyle = "rgba(20,12,6,.4)"; x.beginPath(); x.ellipse(X, Y, w * .32, w * .06, 0, 0, 7); x.fill();
+      // sentado: só do quadril para cima, sobre uma almofada
+      x.drawImage(im, 0, 0, im.width, im.height * corte, X - w / 2, Y - hh * corte + w * .05, w, hh * corte);
+      x.fillStyle = "#8A3F32"; x.beginPath(); x.ellipse(X, Y + w * .02, w * .3, w * .07, 0, 0, 7); x.fill();
+      x.fillStyle = "#A8573F"; x.beginPath(); x.ellipse(X, Y - w * .01, w * .27, w * .05, 0, 0, 7); x.fill();
+    };
+    const fogo = () => {
+      const g = x.createRadialGradient(cx0, cy0, 10, cx0, cy0, 420); g.addColorStop(0, "rgba(255,170,60,.55)"); g.addColorStop(1, "rgba(255,140,40,0)");
+      x.fillStyle = g; x.beginPath(); x.ellipse(cx0, cy0, 520, 300, 0, 0, 7); x.fill();
+      x.strokeStyle = "#5E3514"; x.lineCap = "round"; x.lineWidth = 22;
+      for (const [a, b] of [[-70, 20], [70, 20], [-50, -10]]) { x.beginPath(); x.moveTo(cx0 + a, cy0 + b); x.lineTo(cx0 - a * .6, cy0 + b - 26); x.stroke(); }
+      for (const [w, hgt, cor] of [[120, 230, "#E3571A"], [90, 180, "#F08A12"], [56, 120, "#FFD27A"]]) {
+        x.fillStyle = cor; x.beginPath(); x.moveTo(cx0 - w / 2, cy0); x.quadraticCurveTo(cx0 - w * .7, cy0 - hgt * .5, cx0 - w * .1, cy0 - hgt * .7); x.quadraticCurveTo(cx0 - w * .05, cy0 - hgt * .85, cx0, cy0 - hgt);
+        x.quadraticCurveTo(cx0 + w * .25, cy0 - hgt * .6, cx0 + w * .35, cy0 - hgt * .55); x.quadraticCurveTo(cx0 + w * .7, cy0 - hgt * .3, cx0 + w / 2, cy0); x.closePath(); x.fill(); }
+      for (let i = 0; i < 18; i++) { x.fillStyle = i % 2 ? "#FFD27A" : "#F08A12"; x.beginPath(); x.arc(cx0 + (sorte(i + 7) - .5) * 260, cy0 - 250 - sorte(i + 17) * 380, 3 + sorte(i + 27) * 4, 0, 7); x.fill(); }
+    };
+    lugares.filter(l => l.Y < cy0).forEach(senta); fogo(); lugares.filter(l => l.Y >= cy0).forEach(senta);
+    return cv;
+  }
   if (fila) {
     // Delhi: a caravana em fila indiana, serpenteando do fundo até a frente, todos marchando
     const larg0 = 300;
