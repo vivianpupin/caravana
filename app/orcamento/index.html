@@ -4,7 +4,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#F4F2EE">
-<title>Orçamento · PUPIN+DELEU</title>
+<title>Orçamento</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icone-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Orçamento">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800;9..40,900&display=swap">
@@ -37,6 +43,7 @@ button{cursor:pointer}
 .btn.min{padding:4px 10px;font-size:12px}
 .btn.del{color:#9B2C1F}
 select.lista{flex:1;min-width:0;border:1px solid var(--linha);border-radius:999px;padding:7px 12px;background:#fff;font-weight:700;font-size:13px}
+.instalar{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
 .alertas:empty{display:none}
 .alertas{background:#FCEBDD;color:#8A3410;border-radius:10px;padding:8px 12px;font-size:12.5px;font-weight:500}
 details{border-bottom:1px solid var(--linha)}
@@ -131,6 +138,10 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
         <button class="btn min" id="b-importar">Importar</button>
         <button class="btn min del" id="b-excluir">Excluir</button>
         <input type="file" id="arquivo" accept=".json,application/json" hidden>
+      </div>
+      <div class="instalar" id="instalar" hidden>
+        <button class="btn" id="b-instalar">Instalar o app neste computador</button>
+        <p class="dica" id="dica-instalar"></p>
       </div>
       <div class="alertas" id="alertas"></div>
     </div>
@@ -431,6 +442,23 @@ $("#arquivo").onchange = async ev => {
   } catch (e) { aviso("Arquivo inválido"); }
 };
 addEventListener("beforeunload", () => salvar(true));
+
+/* Instalar como app (ícone "Orçamento" na mesa de trabalho / Dock, abre em janela própria). */
+const instalado = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+let pedidoInstalar = null;
+if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
+addEventListener("beforeinstallprompt", ev => {
+  ev.preventDefault(); pedidoInstalar = ev;
+  $("#instalar").hidden = false; $("#b-instalar").hidden = false; $("#dica-instalar").textContent = "";
+});
+addEventListener("appinstalled", () => { $("#instalar").hidden = true; aviso("App instalado: procure “Orçamento” no computador"); });
+$("#b-instalar").onclick = async () => { if (!pedidoInstalar) return; pedidoInstalar.prompt(); await pedidoInstalar.userChoice; pedidoInstalar = null; };
+if (!instalado && /Safari/.test(navigator.userAgent) && !/Chrome|Chromium|Edg/.test(navigator.userAgent) && location.protocol === "https:") {
+  $("#instalar").hidden = false; $("#b-instalar").hidden = true;
+  $("#dica-instalar").innerHTML = /Mac/.test(navigator.platform) && !("ontouchend" in document)
+    ? "Para instalar: no Safari, menu <b>Arquivo › Adicionar ao Dock</b>."
+    : "Para instalar: toque em <b>Compartilhar › Adicionar à Tela de Início</b>.";
+}
 
 preencher();
 if (document.fonts) document.fonts.ready.then(() => { encaixar(); conferir(); ajustarEscala(); });
