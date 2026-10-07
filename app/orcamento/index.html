@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F4F2EE">
+<title>Orçamento</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icone-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Orçamento">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800;9..40,900&display=swap">
+<style>
+/* Gerador de orçamentos PUPIN+DELEU: editor à esquerda, páginas A4 à direita; "Gerar PDF" imprime só as páginas.
+   Visual minimalista: uma fonte só (a mesma da marca), grossa nos títulos; laranja só na marca e em "orçamento.". */
+:root{
+  --papel:#F4F2EE; --tinta:#111111; --laranja:#E8591A; --linha-pg:rgba(17,17,17,.14); --linha:rgba(40,40,40,.14);
+  --ui-bg:#F4F3F0; --ui-panel:#FFFFFF; --ui-ink:#1F1F1F; --ui-soft:#6E6B66;
+  --fonte:"DM Sans","Helvetica Neue",Arial,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ui-bg);color:var(--ui-ink);font-family:var(--fonte);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--laranja);outline-offset:2px}
+
+/* ---------- Editor ---------- */
+.app{display:grid;grid-template-columns:minmax(340px,440px) 1fr;min-height:100vh}
+.editor{background:var(--ui-panel);border-right:1px solid var(--linha);height:100vh;overflow-y:auto;position:sticky;top:0}
+.ed-top{position:sticky;top:0;z-index:2;background:var(--ui-panel);border-bottom:1px solid var(--linha);padding:14px 18px;display:flex;flex-direction:column;gap:10px}
+.ed-top h1{font-weight:900;font-size:26px;letter-spacing:-.05em;line-height:1;color:var(--laranja);margin:0}
+.ed-top h1 small{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--ui-ink);margin-left:8px;vertical-align:middle}
+.linha-btn{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--linha);background:#fff;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700;white-space:nowrap}
+.btn:hover{background:var(--ui-bg)}
+.btn.pri{background:var(--laranja);color:#fff;border-color:var(--laranja)}
+.btn.pri:hover{filter:brightness(.92)}
+.btn.min{padding:4px 10px;font-size:12px}
+.btn.del{color:#9B2C1F}
+select.lista{flex:1;min-width:0;border:1px solid var(--linha);border-radius:999px;padding:7px 12px;background:#fff;font-weight:700;font-size:13px}
+.instalar{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.alertas:empty{display:none}
+.alertas{background:#FCEBDD;color:#8A3410;border-radius:10px;padding:8px 12px;font-size:12.5px;font-weight:500}
+details{border-bottom:1px solid var(--linha)}
+summary{list-style:none;padding:14px 18px;font-weight:800;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-weight:400;font-size:20px;color:var(--ui-soft)}
+details[open] summary::after{content:"–"}
+.campos{padding:0 18px 18px;display:flex;flex-direction:column;gap:12px}
+label.c,.c{display:flex;flex-direction:column;gap:4px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-soft)}
+input,textarea,select{border:1px solid var(--linha);background:var(--ui-bg);border-radius:8px;padding:8px 10px;font-size:14px;width:100%;min-width:0;text-transform:none;letter-spacing:0;font-weight:400;color:var(--ui-ink)}
+textarea{resize:vertical;min-height:64px;line-height:1.45}
+.dupla{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dica{font-size:12px;color:var(--ui-soft);margin:0}
+.itens{display:flex;flex-direction:column;gap:6px}
+.item{display:grid;grid-template-columns:1fr 58px 96px 26px;gap:6px;align-items:center}
+.itens-cab{display:grid;grid-template-columns:1fr 58px 96px 26px;gap:6px;font-size:10.5px;letter-spacing:.04em}
+.item .x{border:0;background:none;color:var(--ui-soft);font-size:18px;padding:0}
+.item .x:hover{color:#9B2C1F}
+.total-ed{display:flex;justify-content:space-between;font-weight:800;padding:6px 2px 0;border-top:1px solid var(--linha);color:var(--ui-ink)}
+.total-ed + .total-ed{border-top:0;padding-top:0}
+.cor{display:flex;gap:8px;align-items:center}
+.cor input[type=color]{width:44px;height:36px;padding:2px;flex:none}
+
+/* ---------- Páginas A4 ---------- */
+.previa{padding:28px 24px 80px;overflow-x:hidden}
+.paginas{display:flex;flex-direction:column;align-items:center;gap:24px;transform-origin:top center}
+.pg{width:210mm;height:297mm;background:var(--papel);color:var(--tinta);position:relative;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.08),0 12px 40px rgba(0,0,0,.10);font-family:var(--fonte);font-size:10.4pt;line-height:1.55;flex:none}
+.forte{font-weight:900;letter-spacing:-.055em;line-height:.9;margin:0}
+.marca{font-weight:900;letter-spacing:-.02em;color:var(--laranja);white-space:nowrap;line-height:1}
+/* capa: marca no alto, "orçamento." enorme embaixo, cliente e ano no canto */
+.capa .marca{position:absolute;left:18mm;top:18mm;font-size:22pt}
+.capa .desc{position:absolute;left:18mm;top:28mm;font-size:9pt;font-weight:500;letter-spacing:.2em;text-transform:uppercase}
+.capa .orc{position:absolute;left:16mm;bottom:40mm;font-size:96pt;color:var(--laranja);white-space:nowrap}
+.capa .base{position:absolute;left:18mm;right:18mm;bottom:20mm;display:flex;justify-content:space-between;align-items:baseline;gap:10mm;padding-top:4mm;border-top:.6mm solid var(--tinta);font-size:9.5pt}
+.capa .base b{font-weight:800}
+/* páginas internas: marca pequena no alto à direita, título grosso, conteúdo numa coluna recuada */
+.pg .topo{position:absolute;left:18mm;right:18mm;top:18mm;display:flex;justify-content:space-between;align-items:baseline}
+.pg .topo .marca{font-size:10pt}
+.pg .topo .num{font-weight:800;font-size:10pt}
+.pg .rod{position:absolute;left:18mm;right:18mm;bottom:16mm;display:flex;justify-content:space-between;font-size:8.5pt;font-weight:500}
+.txt{position:absolute;left:18mm;right:18mm;top:40mm;bottom:30mm;overflow:hidden}
+.txt > .forte{font-size:54pt;padding-bottom:9mm;margin-bottom:9mm;border-bottom:.6mm solid var(--tinta)}
+.corpo{margin-left:52mm}
+.bloco{margin-bottom:8mm}
+.bloco h3{margin:0 0 2mm;font-size:9pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.bloco p{margin:0;white-space:pre-line}
+.titulo{font-size:14pt;font-weight:800;letter-spacing:-.01em;line-height:1.25;margin:0 0 8mm}
+.tab{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.tab td{padding:2mm 0;border-bottom:.2mm solid var(--linha-pg);vertical-align:baseline}
+.tab td:last-child{text-align:right;white-space:nowrap;padding-left:6mm}
+.tab td small{font-weight:400;opacity:.7;margin-left:2mm}
+.tab tr.sub td{border-bottom:0;padding-top:3.5mm;font-weight:800}
+.tab tr.tot td{border-bottom:0;padding-top:1mm;font-weight:900;font-size:16pt;letter-spacing:-.02em}
+.tab tr.sub + tr.tot td{padding-top:1.5mm}
+.pagto{margin:3mm 0 0;font-weight:500}
+.data{margin:-5mm 0 8mm;font-weight:500}
+.validade{position:absolute;left:70mm;right:18mm;bottom:30mm;padding-top:3mm;border-top:.2mm solid var(--linha-pg);font-size:9pt}
+.validade b{font-weight:800}
+
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  .editor{height:auto;position:static;border-right:0;border-bottom:1px solid var(--linha)}
+  .ed-top{position:static}
+  .previa{padding:20px 16px 60px}
+}
+@media print{
+  @page{size:A4;margin:0}
+  html,body{background:#fff}
+  .editor{display:none!important}
+  .app{display:block}
+  .previa{padding:0}
+  .paginas{gap:0;transform:none!important;height:auto!important}
+  .pg{box-shadow:none;break-after:page;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pg:last-child{break-after:auto}
+}
+.aviso{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(30px);background:var(--tinta);color:#fff;padding:10px 18px;border-radius:999px;font-size:13.5px;opacity:0;transition:.25s;pointer-events:none;z-index:9}
+.aviso.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head><body>
+<div class="app">
+  <aside class="editor">
+    <div class="ed-top">
+      <h1>orçamento.<small>PUPIN+DELEU</small></h1>
+      <div class="linha-btn">
+        <select class="lista" id="lista" aria-label="Orçamentos salvos"></select>
+        <button class="btn" id="b-novo" title="Novo orçamento com os mesmos dados da empresa e condições">+ Novo</button>
+      </div>
+      <div class="linha-btn">
+        <button class="btn pri" id="b-pdf">Gerar PDF</button>
+        <button class="btn min" id="b-dup">Duplicar</button>
+        <button class="btn min" id="b-backup">Backup</button>
+        <button class="btn min" id="b-importar">Importar</button>
+        <button class="btn min del" id="b-excluir">Excluir</button>
+        <input type="file" id="arquivo" accept=".json,application/json" hidden>
+      </div>
+      <div class="instalar" id="instalar" hidden>
+        <button class="btn" id="b-instalar">Instalar o app neste computador</button>
+        <p class="dica" id="dica-instalar"></p>
+      </div>
+      <div class="alertas" id="alertas"></div>
+    </div>
+
+    <details open>
+      <summary>Orçamento</summary>
+      <div class="campos">
+        <div class="dupla">
+          <label class="c">Cliente<input data-f="cliente" placeholder="Aparece na capa"></label>
+          <label class="c">Nº<input data-f="numero"></label>
+        </div>
+        <label class="c">Data do job<input type="date" data-f="dataJob"></label>
+        <label class="c">Título<input data-f="titulo" placeholder="Orçamento foto e filme | Campanha ..."></label>
+        <label class="c">Escopo produtivo<textarea data-f="escopo"></textarea></label>
+        <label class="c">Veiculação<textarea data-f="veiculacao" style="min-height:44px"></textarea></label>
+        <div class="c">Itens do orçamento
+          <div class="itens-cab"><span>Item</span><span>Qtd.</span><span>Valor</span><span></span></div>
+          <div class="itens" id="itens"></div>
+          <button class="btn min" id="b-item" style="align-self:flex-start">+ Item</button>
+          <div class="total-ed"><span>Total</span><span id="total-ed"></span></div>
+          <div class="total-ed"><span>Total com nota</span><span id="total-nota-ed"></span></div>
+        </div>
+        <div class="dupla">
+          <label class="c">Nota fiscal (%)<input type="number" step="0.5" min="0" data-f="notaPct" placeholder="0 = sem nota"></label>
+          <label class="c">Desconto / ajuste (R$)<input type="number" step="0.01" data-f="ajuste" placeholder="ex.: -500"></label>
+        </div>
+        <label class="c">Forma de pagamento (embaixo do total)<input data-f="formaPagamento"></label>
+        <label class="c">Condições<textarea data-f="condicoes" style="min-height:80px"></textarea></label>
+        <label class="c">Proposta válida por (dias)<input type="number" min="0" data-f="validade" placeholder="0 = não mostrar"></label>
+      </div>
+    </details>
+
+    <details>
+      <summary>Informações e pagamento</summary>
+      <div class="campos">
+        <label class="c">Pagamentos<textarea data-f="pagamentos" style="min-height:100px"></textarea></label>
+        <label class="c">Política de remarcação<textarea data-f="remarcacao"></textarea></label>
+        <label class="c">Política de cancelamento<textarea data-f="cancelamento"></textarea></label>
+        <label class="c">Observações (opcional)<textarea data-f="extra"></textarea></label>
+      </div>
+    </details>
+
+    <details>
+      <summary>Empresa e cores</summary>
+      <div class="campos">
+        <label class="c">Nome da marca<input data-f="marca"></label>
+        <div class="dupla">
+          <label class="c">Descrição<input data-f="descricao"></label>
+          <label class="c">Ano<input data-f="ano" inputmode="numeric"></label>
+        </div>
+        <label class="c">Instagram ou site (rodapé)<input data-f="rodape"></label>
+        <div class="dupla">
+          <label class="c">WhatsApp (rodapé)<input data-f="whats" inputmode="tel"></label>
+          <label class="c">E-mail (rodapé)<input data-f="email" inputmode="email"></label>
+        </div>
+        <label class="c">Laranja da marca<span class="cor"><input type="color" data-f="corDestaque"><input data-f="corDestaque" style="font-family:monospace"></span></label>
+        <div class="dupla">
+          <label class="c">Cor do papel<span class="cor"><input type="color" data-f="corPapel"><input data-f="corPapel" style="font-family:monospace"></span></label>
+          <label class="c">Cor do texto<span class="cor"><input type="color" data-f="corTinta"><input data-f="corTinta" style="font-family:monospace"></span></label>
+        </div>
+        <p class="dica">Marca, condições e políticas passam automaticamente para cada “+ Novo”.</p>
+      </div>
+    </details>
+    <div class="campos" style="padding-top:16px"><p class="dica">Tudo fica salvo neste aparelho. Use “Backup” de vez em quando para guardar uma cópia.<br>No celular, “Gerar PDF” abre a tela de impressão: escolha <b>Salvar como PDF</b> (ou compartilhe).</p></div>
+  </aside>
+
+  <section class="previa">
+    <div class="paginas" id="paginas"></div>
+  </section>
+</div>
+<div class="aviso" id="aviso"></div>
+
+<script>
+"use strict";
+const CHAVE = "orcamentos-pupindeleu-v1";
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const brl = v => "R$ " + (Number(v) || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const uid = () => Math.random().toString(36).slice(2, 10);
+const ANO = String(new Date().getFullYear());
+
+/* Campos da empresa: passam de um orçamento para o próximo. */
+const FIXOS = ["marca", "descricao", "ano", "rodape", "whats", "email", "corPapel", "corTinta", "corDestaque",
+  "notaPct", "formaPagamento", "condicoes", "validade", "pagamentos", "remarcacao", "cancelamento", "extra"];
+
+function modelo() {
+  const item = (desc, valor, qtd = "") => ({ id: uid(), desc, qtd, valor });
+  return {
+    id: uid(), criado: Date.now(), atualizado: Date.now(), numero: "",
+    cliente: "", titulo: "", dataJob: "",
+    escopo: "", veiculacao: "",
+    itens: [item("Fotos diária", 8000), item("Locação de equipamentos e assistente", 4000), item("Retouch", 85, 50)],
+    ajuste: "", notaPct: 13,
+    formaPagamento: "50% na reserva da data e 50% na entrega.",
+    condicoes: "Job de 10 horas, hora extra 20%.",
+    validade: 7,
+    pagamentos: "Pagamento via pix ou transferência bancária, com nota fiscal ou recibo, no prazo combinado. Após 30 dias de atraso, a cobrança segue para negativação e protesto.",
+    remarcacao: "A nova data depende de consulta prévia de disponibilidade.",
+    cancelamento: "Com menos de 3 dias de antecedência: cobrança de 50% do valor total.\nNo mesmo dia da diária: cobrança de 100% do valor total.",
+    extra: "",
+    marca: "PUPIN+DELEU", descricao: "photo and film", ano: ANO, rodape: "@pupindeleu", whats: "", email: "",
+    corPapel: "#F4F2EE", corTinta: "#111111", corDestaque: "#E8591A"
+  };
+}
+
+/* ---------- Armazenamento ---------- */
+let db;
+try { db = JSON.parse(localStorage.getItem(CHAVE)); } catch (e) {}
+if (!db || !Array.isArray(db.lista) || !db.lista.length) db = { lista: [], atual: null };
+// Orçamentos de versões anteriores ganham os campos que faltam sem perder o que já tinham.
+db.lista = db.lista.map(x => { const m = Object.assign(modelo(), x); if (!x.titulo && (x.projeto || x.tipo)) m.titulo = [x.tipo, x.projeto].filter(Boolean).join(" | "); return m; });
+function proximoNumero() {
+  const n = db.lista.filter(x => String(x.numero).endsWith("/" + ANO)).length + 1;
+  return String(n).padStart(3, "0") + "/" + ANO;
+}
+if (!db.lista.length) { const m = modelo(); m.numero = proximoNumero(); db.lista.push(m); }
+let o = db.lista.find(x => x.id === db.atual) || db.lista[0];
+let timer = 0;
+function salvar(ja) {
+  clearTimeout(timer);
+  const f = () => { db.atual = o.id; try { localStorage.setItem(CHAVE, JSON.stringify(db)); } catch (e) { aviso("Não consegui salvar neste aparelho"); } };
+  ja ? f() : (timer = setTimeout(f, 300));
+}
+function aviso(t) { const a = $("#aviso"); a.textContent = t; a.classList.add("on"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("on"), 2400); }
+
+/* ---------- Cálculo ---------- */
+const qtdDe = i => (i.qtd === "" || i.qtd == null) ? 1 : Number(i.qtd) || 0;
+const valorItem = i => qtdDe(i) * (Number(i.valor) || 0);
+const total = () => o.itens.reduce((s, i) => s + valorItem(i), 0) + (Number(o.ajuste) || 0);
+const totalNota = () => total() * (1 + (Number(o.notaPct) || 0) / 100);
+const pct = v => (Number(v) || 0).toLocaleString("pt-BR") + "%";
+const diaBR = d => d ? d.split("-").reverse().join("/") : "";
+const nomeOrc = x => x.cliente || x.titulo || "Orçamento";
+
+/* ---------- Editor ---------- */
+function preencher() {
+  $$("[data-f]").forEach(el => { el.value = o[el.dataset.f] ?? ""; });
+  desenharItens(); desenharLista(); desenhar();
+}
+function desenharLista() {
+  $("#lista").innerHTML = db.lista.slice().sort((a, b) => b.atualizado - a.atualizado)
+    .map(x => `<option value="${x.id}"${x.id === o.id ? " selected" : ""}>${esc(x.numero)} · ${esc(nomeOrc(x))}</option>`).join("");
+}
+function desenharItens() {
+  $("#itens").innerHTML = o.itens.map(i => `<div class="item" data-id="${i.id}">
+    <input type="text" data-i="desc" value="${esc(i.desc)}" placeholder="Descrição">
+    <input type="number" step="1" min="0" data-i="qtd" value="${i.qtd ?? ""}" placeholder="1" title="Quantidade (ex.: 50 fotos)">
+    <input type="number" step="0.01" min="0" data-i="valor" value="${i.valor}" placeholder="Valor" title="Valor de cada unidade">
+    <button class="x" data-x title="Remover">×</button></div>`).join("");
+  totaisEditor();
+}
+function totaisEditor() {
+  $("#total-ed").textContent = brl(total());
+  $("#total-nota-ed").textContent = Number(o.notaPct) ? brl(totalNota()) : "—";
+}
+
+/* ---------- Páginas ---------- */
+const linhas = t => esc(t).trim();
+function desenhar() {
+  const raiz = document.documentElement.style;
+  raiz.setProperty("--papel", o.corPapel || "#F4F2EE");
+  raiz.setProperty("--tinta", o.corTinta || "#111111");
+  raiz.setProperty("--laranja", o.corDestaque || "#E8591A");
+  document.title = `Orçamento ${o.numero || ""} ${nomeOrc(o)} - ${o.marca || ""}`.replace(/\//g, "-").replace(/\s+/g, " ").trim();
+
+  const marca = esc(o.marca || ""), ano = esc(o.ano);
+  const topo = n => `<div class="topo"><span class="num">${String(n).padStart(2, "0")}</span><span class="marca">${marca}</span></div>`;
+  const contato = [o.rodape, o.whats, o.email].filter(x => x && x.trim()).map(esc).join("  ·  ");
+  const rod = `<div class="rod"><span>${contato}</span><span>${o.numero ? "nº " + esc(o.numero) + " · " : ""}${ano}</span></div>`;
+  const validoAte = Number(o.validade) > 0 ? new Date(o.criado + Number(o.validade) * 864e5).toLocaleDateString("pt-BR") : "";
+  const bloco = (titulo, html) => html ? `<div class="bloco">${titulo ? `<h3>${titulo}</h3>` : ""}${html}</div>` : "";
+  const par = t => t && t.trim() ? `<p>${linhas(t)}</p>` : "";
+
+  const capa = `<div class="pg capa">
+    <div class="marca">${marca}</div>
+    ${o.descricao ? `<div class="desc">${esc(o.descricao)}</div>` : ""}
+    <h2 class="forte orc">orçamento.</h2>
+    <div class="base"><span>${o.cliente ? `para <b>${esc(o.cliente)}</b>` : ""}${o.dataJob ? `  ·  job em <b>${diaBR(o.dataJob)}</b>` : ""}</span><b>${ano}</b></div></div>`;
+
+  const itens = o.itens.filter(i => i.desc || Number(i.valor));
+  const aj = Number(o.ajuste) || 0;
+  const tabela = `<table class="tab">
+      ${itens.map(i => `<tr><td>${esc(i.desc)}${qtdDe(i) !== 1 ? `<small>${qtdDe(i).toLocaleString("pt-BR")} × ${brl(i.valor)}</small>` : ""}</td><td>${brl(valorItem(i))}</td></tr>`).join("")}
+      ${aj ? `<tr><td>${aj < 0 ? "Desconto" : "Ajuste"}</td><td>${aj < 0 ? "− " : ""}${brl(Math.abs(aj))}</td></tr>` : ""}
+      ${Number(o.notaPct)
+        ? `<tr class="sub"><td>Total</td><td>${brl(total())}</td></tr><tr class="tot"><td>Total com nota <small>+${pct(o.notaPct)}</small></td><td>${brl(totalNota())}</td></tr>`
+        : `<tr class="tot"><td>Total</td><td>${brl(total())}</td></tr>`}</table>
+      ${o.formaPagamento ? `<p class="pagto">${esc(o.formaPagamento)}</p>` : ""}`;
+  const condicoes = [Number(o.notaPct) ? `Nota fiscal (+${pct(o.notaPct)}) ou recibo.` : "", o.condicoes].filter(x => x && x.trim()).join("\n");
+  const valores = `<div class="pg">${topo(1)}<div class="txt"${validoAte ? ' style="bottom:42mm"' : ""}>
+    <h2 class="forte">valores.</h2>
+    <div class="corpo">
+      <p class="titulo">${esc(o.titulo || ("Orçamento " + (o.cliente || "")).trim())}</p>
+      ${o.dataJob ? `<p class="data">Data do job: ${diaBR(o.dataJob)}</p>` : ""}
+      ${bloco("Escopo produtivo", par(o.escopo))}
+      ${bloco("Veiculação", par(o.veiculacao))}
+      ${bloco("Itens do orçamento", tabela)}
+      ${bloco("Condições", par(condicoes))}
+    </div>
+  </div>${validoAte ? `<div class="validade">Orçamento válido até <b>${validoAte}</b>.</div>` : ""}${rod}</div>`;
+
+  const info = `<div class="pg">${topo(2)}<div class="txt">
+    <h2 class="forte">informações<br>e pagamento.</h2>
+    <div class="corpo">
+      ${bloco("Pagamentos", par(o.pagamentos))}
+      ${bloco("Remarcação", par(o.remarcacao))}
+      ${bloco("Cancelamento", par(o.cancelamento))}
+      ${bloco("Observações", par(o.extra))}
+    </div>
+  </div>${rod}</div>`;
+
+  $("#paginas").innerHTML = capa + valores + info;
+  encaixar();
+  conferir();
+  ajustarEscala();
+}
+/* "orçamento." e o nome da marca sempre numa linha só: diminui a letra até caber. */
+function encaixar() {
+  const capa = $(".capa"); if (!capa) return;
+  const el = $(".orc", capa), larg = capa.clientWidth - 2 * 16 * 96 / 25.4;
+  let pt = 130; el.style.fontSize = pt + "pt";
+  while (el.scrollWidth > larg && pt > 40) el.style.fontSize = (pt -= 1) + "pt";
+}
+/* Avisa quando o texto não cabe na página (ele seria cortado no PDF). */
+function conferir() {
+  const cheias = $$(".pg").map((pg, i) => [pg, i]).filter(([pg]) => { const t = $(".txt", pg); return t && t.scrollHeight > t.clientHeight + 2; });
+  $("#alertas").textContent = cheias.length ? `O texto não cabe na página ${cheias.map(([, i]) => i + 1).join(" e ")} — encurte um pouco para não ser cortado no PDF.` : "";
+}
+function ajustarEscala() {
+  const P = $("#paginas"), larg = $(".previa").clientWidth - 40, pgW = 210 * 96 / 25.4;
+  const k = Math.min(1, larg / pgW);
+  P.style.transform = k < 1 ? `scale(${k})` : "";
+  P.style.height = k < 1 ? (P.scrollHeight * k) + "px" : "";
+}
+addEventListener("resize", ajustarEscala);
+addEventListener("beforeprint", () => { $("#paginas").style.transform = ""; $("#paginas").style.height = ""; });
+addEventListener("afterprint", ajustarEscala);
+
+/* ---------- Eventos ---------- */
+function mudou(redesenharLista) { o.atualizado = Date.now(); totaisEditor(); desenhar(); if (redesenharLista) desenharLista(); salvar(); }
+$$("[data-f]").forEach(el => el.addEventListener("input", () => {
+  const k = el.dataset.f;
+  o[k] = el.value;
+  if (k.startsWith("cor")) $$(`[data-f="${k}"]`).forEach(x => x !== el && (x.value = el.value));
+  mudou(k === "cliente" || k === "titulo" || k === "numero");
+}));
+$("#itens").addEventListener("input", ev => {
+  const it = o.itens.find(i => i.id === ev.target.closest(".item")?.dataset.id); if (!it) return;
+  const k = ev.target.dataset.i;
+  it[k] = k === "desc" ? ev.target.value : (ev.target.value === "" ? "" : Number(ev.target.value));
+  mudou();
+});
+$("#itens").addEventListener("click", ev => {
+  if (!ev.target.closest("[data-x]")) return;
+  o.itens = o.itens.filter(i => i.id !== ev.target.closest(".item").dataset.id); desenharItens(); mudou();
+});
+$("#b-item").onclick = () => { o.itens.push({ id: uid(), desc: "", qtd: "", valor: "" }); desenharItens(); mudou(); $$("#itens input[data-i=desc]").at(-1).focus(); };
+
+$("#lista").onchange = ev => { o = db.lista.find(x => x.id === ev.target.value); salvar(true); preencher(); };
+$("#b-novo").onclick = () => {
+  const n = modelo();
+  FIXOS.forEach(k => n[k] = o[k]);
+  Object.assign(n, { numero: proximoNumero(), cliente: "", titulo: "", dataJob: "", escopo: "", veiculacao: "",
+    itens: o.itens.map(i => ({ ...i, id: uid() })), ajuste: "", ano: ANO });
+  db.lista.push(n); o = n; salvar(true); preencher();
+  $("details").open = true; $('[data-f="cliente"]').focus(); aviso("Novo orçamento criado");
+};
+$("#b-dup").onclick = () => {
+  const n = JSON.parse(JSON.stringify(o)); n.id = uid(); n.criado = n.atualizado = Date.now(); n.numero = proximoNumero();
+  n.itens.forEach(i => i.id = uid());
+  db.lista.push(n); o = n; salvar(true); preencher(); aviso("Orçamento duplicado (nº " + n.numero + ")");
+};
+$("#b-excluir").onclick = () => {
+  if (!confirm(`Excluir “${nomeOrc(o)}”? Não dá para desfazer.`)) return;
+  const fixos = Object.fromEntries(FIXOS.map(k => [k, o[k]]));
+  db.lista = db.lista.filter(x => x.id !== o.id);
+  if (!db.lista.length) { const m = Object.assign(modelo(), fixos); m.numero = proximoNumero(); db.lista.push(m); }
+  o = db.lista[0]; salvar(true); preencher(); aviso("Orçamento excluído");
+};
+$("#b-pdf").onclick = () => {
+  if ($("#alertas").textContent && !confirm($("#alertas").textContent + "\n\nGerar assim mesmo?")) return;
+  desenhar(); setTimeout(() => window.print(), 50);
+};
+$("#b-backup").onclick = () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(db)], { type: "application/json" }));
+  a.download = `orcamentos-backup-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+};
+$("#b-importar").onclick = () => $("#arquivo").click();
+$("#arquivo").onchange = async ev => {
+  const f = ev.target.files[0]; ev.target.value = ""; if (!f) return;
+  try {
+    const d = JSON.parse(await f.text()); let n = 0;
+    for (const x of d.lista || []) { if (!x || !Array.isArray(x.itens)) continue; if (db.lista.some(y => y.id === x.id)) x.id = uid(); db.lista.push(Object.assign(modelo(), x)); n++; }
+    salvar(true); desenharLista(); aviso(n ? `${n} orçamento(s) importado(s)` : "Nenhum orçamento no arquivo");
+  } catch (e) { aviso("Arquivo inválido"); }
+};
+addEventListener("beforeunload", () => salvar(true));
+
+/* Instalar como app (ícone "Orçamento" na mesa de trabalho / Dock, abre em janela própria). */
+const instalado = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+let pedidoInstalar = null;
+if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
+addEventListener("beforeinstallprompt", ev => {
+  ev.preventDefault(); pedidoInstalar = ev;
+  $("#instalar").hidden = false; $("#b-instalar").hidden = false; $("#dica-instalar").textContent = "";
+});
+addEventListener("appinstalled", () => { $("#instalar").hidden = true; aviso("App instalado: procure “Orçamento” no computador"); });
+$("#b-instalar").onclick = async () => { if (!pedidoInstalar) return; pedidoInstalar.prompt(); await pedidoInstalar.userChoice; pedidoInstalar = null; };
+if (!instalado && /Safari/.test(navigator.userAgent) && !/Chrome|Chromium|Edg/.test(navigator.userAgent) && location.protocol === "https:") {
+  $("#instalar").hidden = false; $("#b-instalar").hidden = true;
+  $("#dica-instalar").innerHTML = /Mac/.test(navigator.platform) && !("ontouchend" in document)
+    ? "Para instalar: no Safari, menu <b>Arquivo › Adicionar ao Dock</b>."
+    : "Para instalar: toque em <b>Compartilhar › Adicionar à Tela de Início</b>.";
+}
+
+preencher();
+if (document.fonts) document.fonts.ready.then(() => { encaixar(); conferir(); ajustarEscala(); });
+</script>
+</body></html>
