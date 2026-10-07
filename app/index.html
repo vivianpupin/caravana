@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "07/10 · 06:42";</script>
+<script>window.__VERSAO = "07/10 · 06:44";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -2771,7 +2771,7 @@ function desenhaBoneco(b) {
   const longa = ["vestido", "sari", "cigana", "monge", "kurta"].includes(b.roupa);
   const calca = b.roupa === "basico" ? pele : b.roupa === "terno" ? roupa : b.roupa === "academia" ? "#2B2622" : b.roupa === "yogi" ? branco : b.roupa === "kurta" ? "#EDE6D6" : "#5A4630";
   const cor = b.roupa === "monge" ? (roupa === "#8B6B43" || roupa === "#C2A878" ? "#D9822B" : roupa) : b.roupa === "yogi" ? branco : roupa;
-  g.append(h("ellipse", { cx: 30, cy: 86, rx: 15, ry: 3.2, fill: "rgba(40,28,15,.28)" }));
+  if (!b.semSombra) g.append(h("ellipse", { cx: 30, cy: 86, rx: 15, ry: 3.2, fill: "rgba(40,28,15,.28)" }));
   if (b.pet && b.pet !== "nenhum") g.append(desenhaPet(b.pet));
   // pernas e saias
   if (b.roupa === "cigana") g.append(P("M18 52 L42 52 L50 80 Q46 83 42 80 Q38 83 34 80 Q30 83 26 80 Q22 83 18 80 Q14 83 10 80 Z", cor), P("M13 72 L47 72 L48 76 L12 76 Z", ouro, { opacity: .8 }));
@@ -3159,7 +3159,7 @@ function verExplorador(id) {
   document.body.append(sheet);
 }
 const CENARIOS = [["agra", "Taj Mahal"], ["varanasi", "Varanasi"], ["rishikesh", "Rishikesh"], ["jaipur", "Jaipur"], ["delhi", "Delhi"]];
-async function retratoCaravana(cen) {
+async function retratoCaravana(cen, pose) {
   const W = 1080, H = 1920, cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
   const fundo = await carregaImg("img/abertura-" + cen + ".webp"), k = Math.max(W / fundo.width, H / fundo.height);
   x.drawImage(fundo, (W - fundo.width * k) / 2, (H - fundo.height * k) / 2, fundo.width * k, fundo.height * k);
@@ -3168,34 +3168,50 @@ async function retratoCaravana(cen) {
   if (simb) { const sw = 110, sh = sw * simb.height / simb.width; x.drawImage(simb, W / 2 - sw / 2, 110, sw, sh); }
   x.textAlign = "center"; x.fillStyle = "#F1E2BC"; x.font = '600 74px Cinzel, Georgia, serif'; x.fillText("CARAVANA DO CÉU", W / 2, 330);
   x.font = '400 34px Poppins, sans-serif'; x.fillStyle = "#E8C07A"; x.fillText("TRAVESSIA DA ÍNDIA SAGRADA · 2026", W / 2, 390);
-  // os exploradores em fileiras, os de trás um pouco menores
   const lista = comBoneco(), n = lista.length; if (!n) return cv;
-  const porFila = n <= 5 ? n : n <= 12 ? Math.ceil(n / 2) : Math.ceil(n / 3), filas = Math.ceil(n / porFila);
-  const imgs = await Promise.all(lista.map(v => bonecoImg({ ...bonecoDe(v.id), pet: "nenhum" }, 600)));
-  // desenha de trás para a frente: a fileira da frente cobre só os pés de quem está atrás
-  const larg0 = Math.min(300, (W - 60) / porFila) * 1.1;
+  const pulo = pose === "pulando";
+  // fileiras: atrás mais gente, na frente menos (como foto de turma)
+  const filas = n <= 5 ? 1 : n <= 11 ? 2 : 3, tam = [];
+  { let resta = n; for (let f = 0; f < filas; f++) { const q = Math.round(resta / (filas - f) + (filas - 1 - f) * (filas > 1 ? .7 : 0)); tam.push(Math.min(resta, Math.max(1, q))); resta -= tam[f]; } }
+  // a líder fica no meio da fileira da frente
+  const li = lista.findIndex(v => v.lider);
+  if (li >= 0) { const [l] = lista.splice(li, 1); lista.splice(n - tam[filas - 1] + Math.floor(tam[filas - 1] / 2), 0, l); }
+  const imgs = await Promise.all(lista.map(v => bonecoImg({ ...bonecoDe(v.id), pet: "nenhum", semSombra: pulo }, 600)));
+  const maxFila = Math.max(...tam), larg0 = Math.min(330, (W - 30) / maxFila * 1.4);
+  const sorte = i => { const v = Math.sin(i * 12.9898 + 4.1) * 43758.5453; return v - Math.floor(v); };
+  let k0 = 0;
   for (let f = 0; f < filas; f++) {
-    const daFila = imgs.slice(f * porFila, (f + 1) * porFila), atras = filas - 1 - f, esc = 1 - atras * .12;
-    const larg = larg0 * esc, base = H - 80 - atras * larg0 * .78;
-    daFila.forEach((im, i) => {
-      const w = larg, hh = w * im.height / im.width, cx = W / 2 + (i - (daFila.length - 1) / 2) * (W - 60) / porFila * esc;
-      x.drawImage(im, cx - w / 2, base - hh, w, hh);
-    });
+    const m = tam[f], atras = filas - 1 - f, esc = 1 - atras * .13, larg = larg0 * esc, base = H - 70 - atras * larg0 * (pulo ? 1.05 : .95);
+    const passo = Math.min(larg * .78, (W - 30 - larg * .55) / Math.max(1, m - 1));
+    for (let i = 0; i < m; i++) {
+      const im = imgs[k0 + i], t = m > 1 ? (i - (m - 1) / 2) / ((m - 1) / 2) : 0, sr = sorte(k0 + i);
+      // arco: as pontas um pouco mais para trás (mais altas e menores), cada um levemente inclinado para o centro
+      const e = esc * (1 - .08 * t * t), w = larg0 * e, hh = w * im.height / im.width;
+      const cx = W / 2 + (i - (m - 1) / 2) * passo, chao = base - (pulo ? 0 : 24 * t * t * esc);
+      const sobe = pulo ? 40 + sr * 120 * esc : 0, ang = pulo ? (sr - .5) * .45 : -t * .07;
+      if (pulo) { x.fillStyle = "rgba(20,12,6,.35)"; x.beginPath(); x.ellipse(cx, chao - 4, w * .26 * (1 - sobe / 400), w * .045, 0, 0, 7); x.fill(); }
+      x.save(); x.translate(cx, chao - sobe); x.rotate(ang); x.drawImage(im, -w / 2, -hh, w, hh); x.restore();
+    }
+    k0 += m;
   }
+  // na foto pulando, pétalas de cravo voando
+  if (pulo) for (let i = 0; i < 26; i++) { const a = sorte(i + 99), b2 = sorte(i + 199); florMarigold(x, 40 + a * (W - 80), 520 + b2 * (H - 900), 10 + sorte(i + 299) * 14, i % 3 ? "#F08A12" : "#E3571A"); }
   return cv;
 }
 function vRetrato() {
   if (comBoneco().length < 1) return null;
-  const cen = S.retratoCen || "agra", msg = h("p", { class: "msg", role: "status" }), prev = h("div", { class: "retprev" });
+  const cen = S.retratoCen || "agra", pose = S.retratoPose || "turma", msg = h("p", { class: "msg", role: "status" }), prev = h("div", { class: "retprev" });
   return h("div", { class: "carvbon" },
     h("p", { class: "eyebrow rule", text: "Retrato da Caravana" }),
     h("p", { class: "small", style: "text-align:center", text: "Todos os exploradores juntos, num cenário da travessia. Escolha o lugar:" }),
     h("div", { class: "opts", style: "justify-content:center" }, CENARIOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(cen === id), onclick: () => { S.retratoCen = id; render(); } }, n))),
+    h("p", { class: "small", style: "text-align:center", text: "E a pose:" }),
+    h("div", { class: "opts", style: "justify-content:center" }, [["turma", "Foto de turma"], ["pulando", "Todo mundo pulando"]].map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(pose === id), onclick: () => { S.retratoPose = id; render(); } }, n))),
     h("div", { class: "actions", style: "justify-content:center" },
       h("button", { class: "btn gold", type: "button", onclick: async ev => {
         msg.textContent = "Montando o retrato…"; msg.className = "msg"; prev.textContent = "";
         try {
-          const cv = await retratoCaravana(cen), url = cv.toDataURL("image/jpeg", .9);
+          const cv = await retratoCaravana(cen, pose), url = cv.toDataURL("image/jpeg", .9);
           prev.append(h("img", { src: url, alt: "Retrato da Caravana" }),
             h("button", { class: "btn", type: "button", onclick: () => salvarNoRolo(new Promise(ok => cv.toBlob(ok, "image/jpeg", .92)), "retrato-da-caravana.jpg", msg) }, "Salvar retrato"));
           msg.textContent = "";
