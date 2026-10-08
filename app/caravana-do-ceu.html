@@ -4787,7 +4787,6 @@ function vFotos() {
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Registros da Travessia" }))),
     abasFotos(),
-    F.vivo ? h("p", { class: "small", style: "text-align:center;margin:0 0 8px", text: "Escolha o filtro, a moldura e os adesivos com a câmera ligada e toque em 📸 para fotografar. Ou toque em Fototeca e aplique os filtros da Caravana numa foto que você já tirou." }) : null,
     F.img ? h("div", { class: "estudio" },
       h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas),
         F.vivo ? h("div", { class: "actions camacoes", style: "justify-content:center;align-items:center" },
