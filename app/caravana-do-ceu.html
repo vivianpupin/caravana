@@ -3764,6 +3764,7 @@ const FILTROS = [
 const GRAOS = [["auto", "Do filtro"], ["nenhum", "Sem grão"], ["leve", "Leve"], ["medio", "Médio"], ["forte", "Forte"], ["super8", "Super 8"]];
 const FORMATOS = [["original", "Original"], ["reels", "Reels 9:16"], ["post", "Post 4:5"], ["quadrado", "Quadrado"]];
 const PATCHES = [["caravana", "Caravana"], ["india", "Índia + Caravana"], ["lugar", "Do lugar"], ["colecao", "Coleção"], ["nenhum", "Sem patch"]];
+const SELOS_COLECAO = ["india", "taj-mahal", "ganesha", "jaipur", "govind-dev-ji", "varanasi", "diwali", "ganga-aarti", "manikarnika", "durga-kund", "sankat-mochan", "batismo", "rishikesh", "kunjapuri", "caverna", "travessia"];
 const PATCH_CIDADE = { Delhi: "india", Agra: "taj-mahal", Jaipur: "jaipur", Varanasi: "varanasi", Rishikesh: "rishikesh" };
 const MOLDURAS = [["polaroid", "Polaroid"], ["postal", "Cartão-postal"], ["ingresso", "Ingresso"], ["arco", "Janela de palácio"], ["guirlanda", "Guirlanda de flores"], ["bandeirinhas", "Bandeirinhas de oração"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
 const imgCache = {};
@@ -4131,6 +4132,8 @@ const ADESIVOS = {
   "Caravana": [["img:img/simbolo-dourado.png", "Símbolo dourado"], ["img:img/simbolo-marrom.png", "Símbolo"], ["patch", "Patch bordado"], ["carimbo", "Carimbo"],
     ["postmark", "Carimbo do correio"], ["seloPostal", "Selo postal"], ["data", "Data da câmera"], ["linha", "Caravana do Céu · Índia 2026"], ["fita", "Fita adesiva"],
     ["estrela", "Estrela"], ["flor", "Flor de cravo"], ["guirlanda", "Guirlanda"], ["lungta", "Bandeirinhas de oração"]],
+  // carimbos e cartão-postal soltos, para colar em qualquer moldura
+  "Carimbos": [["postalCombo", "Selo e carimbo do correio"], ["seloPostal", "Selo postal"], ["postmark", "Carimbo do correio"], ["carimbo", "Carimbo da Caravana"], ["mao:Saudações da Índia", "Saudações da Índia"]],
   "Meu explorador": [["eu", "Meu explorador"]],
   "Bichos": [["pet:elefante", "Elefante"], ["pet:macaco", "Macaco"], ["pet:vaca", "Vaca sagrada"], ["pet:pavao", "Pavão"], ["pet:camelo", "Camelo"], ["pet:cabra", "Cabra"], ["pet:gato", "Gato"], ["pet:cachorro", "Cachorro"], ["ave:periquito", "Periquito"], ["ave:maina", "Mainá"], ["eu", "Meu bonequinho"]]
 };
@@ -4177,6 +4180,9 @@ function imgAdesivo(k) {
       x.translate(150, 180); x.fillStyle = "#FBF6EA"; x.beginPath(); const d = 18; for (let X = -sw / 2; X <= sw / 2; X += d) { x.moveTo(X + 7, -sh / 2); x.arc(X, -sh / 2, 7, 0, 7); } x.fill(); x.fillRect(-sw / 2, -sh / 2, sw, sh);
       x.fillStyle = "#8A3F32"; x.fillRect(-sw / 2 + 18, -sh / 2 + 18, sw - 36, sh - 36); const sb = simboloEm(dourado, "#E8C07A", 130); x.drawImage(sb, -sb.width / 2, -sh / 2 + 44);
       x.fillStyle = "#F4E6C4"; x.textAlign = "center"; x.font = '600 34px Cinzel, Georgia, serif'; x.fillText("ÍNDIA", 0, sh / 2 - 70); x.font = '500 26px Poppins, sans-serif'; x.fillText("2026 · ₹ 26", 0, sh / 2 - 36); return cv; }
+    if (k === "postalCombo") { const selo = await imgAdesivo("seloPostal"), marca = await imgAdesivo("postmark"), [cv, x] = tela(720, 420);
+      x.save(); x.translate(560, 200); x.rotate(.06); x.shadowColor = "rgba(0,0,0,.35)"; x.shadowBlur = 14; x.shadowOffsetY = 4; x.drawImage(selo, -selo.width * .5 * 1.05, -selo.height * .5 * 1.05, selo.width * 1.05, selo.height * 1.05); x.restore();
+      x.globalAlpha = .9; x.drawImage(marca, 10, 100, marca.width * .95, marca.height * .95); return cv; }
     if (k.startsWith("hab:")) return caixaHabilidade(k.slice(4), (eu() || {}).genero);
     if (k.startsWith("txt:")) return letreiro(k.slice(4), false);
     if (k.startsWith("mao:")) return letreiro(k.slice(4), true);
@@ -4453,7 +4459,23 @@ async function colaPatches(c, F, ox, oy, w, hh) {
   const caixa = S.fotoPatchRect = { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 };
   const dourado = await carregaImg("img/simbolo-dourado.png"), base = Math.min(w, hh) * .3, pad = Math.min(w, hh) * .04;
   const lugar = PATCH_CIDADE[F.cidade] || "india";
-  const lista = tipo === "caravana" ? ["caravana"] : tipo === "india" ? ["india", "caravana"] : tipo === "lugar" ? [lugar, "caravana"] : [...new Set(["india", lugar === "india" ? "taj-mahal" : lugar, "caravana"])];
+  // Do lugar: só o selo da cidade, grande. Coleção: os selos que a pessoa já ganhou, espalhados como um álbum
+  if (tipo === "lugar" || tipo === "colecao") {
+    const ganhos = tipo === "lugar" ? [lugar] : SELOS_COLECAO.filter(id => aberto(localDe(id)));
+    const ids = ganhos.length ? ganhos.slice(-7) : ["india", lugar === "india" ? "taj-mahal" : lugar];
+    const n = ids.length, alt = tipo === "lugar" ? base * 1.3 : Math.min(base, (w - pad * 2) / Math.max(2.2, n * .78));
+    for (let i = 0; i < n; i++) {
+      let im; try { im = await carregaImg(`insignias/${ids[i]}.webp`); } catch (e) { continue; }
+      const ih = alt, iw = ih * im.width / im.height, rot = tipo === "lugar" ? .08 : ((i * 37) % 7 - 3) * .05;
+      const cx = ox + (tipo === "lugar" ? w - pad - iw / 2 : pad + iw / 2 + (n > 1 ? i * (w - pad * 2 - iw) / (n - 1) : 0));
+      const cy = oy + hh - pad - ih / 2 - (tipo === "lugar" ? 0 : (i % 2) * ih * .18);
+      c.save(); c.translate(cx, cy); c.rotate(rot); c.shadowColor = "rgba(0,0,0,.45)"; c.shadowBlur = alt * .08; c.shadowOffsetY = alt * .03;
+      c.drawImage(im, -iw / 2, -ih / 2, iw, ih); c.restore();
+      caixa.x0 = Math.min(caixa.x0, cx - iw / 2); caixa.y0 = Math.min(caixa.y0, cy - ih / 2); caixa.x1 = Math.max(caixa.x1, cx + iw / 2); caixa.y1 = Math.max(caixa.y1, cy + ih / 2);
+    }
+    return;
+  }
+  const lista = tipo === "caravana" ? ["caravana"] : ["india", "caravana"];
   const pos = [[w - pad, hh - pad, .1, 1], [w - pad - base * .62, hh - pad - base * .28, -.14, .92], [pad, pad, -.08, .9]];
   const ordem = lista.slice().reverse();
   for (let i = ordem.length - 1; i >= 0; i--) {
