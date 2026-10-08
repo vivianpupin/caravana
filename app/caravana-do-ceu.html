@@ -3765,6 +3765,7 @@ const GRAOS = [["auto", "Do filtro"], ["nenhum", "Sem grão"], ["leve", "Leve"],
 const FORMATOS = [["original", "Original"], ["reels", "Reels 9:16"], ["post", "Post 4:5"], ["quadrado", "Quadrado"]];
 const PATCHES = [["caravana", "Caravana"], ["india", "Índia + Caravana"], ["lugar", "Do lugar"], ["colecao", "Coleção"], ["nenhum", "Sem patch"]];
 const SELOS_COLECAO = ["india", "taj-mahal", "ganesha", "jaipur", "govind-dev-ji", "varanasi", "diwali", "ganga-aarti", "manikarnika", "durga-kund", "sankat-mochan", "batismo", "rishikesh", "kunjapuri", "caverna", "travessia"];
+const seloLiberado = id => S.isOwner || aberto(localDe(id));
 const PATCH_CIDADE = { Delhi: "india", Agra: "taj-mahal", Jaipur: "jaipur", Varanasi: "varanasi", Rishikesh: "rishikesh" };
 const MOLDURAS = [["polaroid", "Polaroid"], ["postal", "Cartão-postal"], ["ingresso", "Ingresso"], ["arco", "Janela de palácio"], ["guirlanda", "Guirlanda de flores"], ["bandeirinhas", "Bandeirinhas de oração"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
 const imgCache = {};
@@ -4460,9 +4461,10 @@ async function colaPatches(c, F, ox, oy, w, hh) {
   const dourado = await carregaImg("img/simbolo-dourado.png"), base = Math.min(w, hh) * .3, pad = Math.min(w, hh) * .04;
   const lugar = PATCH_CIDADE[F.cidade] || "india";
   // Do lugar: só o selo da cidade, grande. Coleção: os selos que a pessoa já ganhou, espalhados como um álbum
-  if (tipo === "lugar" || tipo === "colecao") {
-    const ganhos = tipo === "lugar" ? [lugar] : SELOS_COLECAO.filter(id => aberto(localDe(id)));
-    const ids = ganhos.length ? ganhos.slice(-7) : ["india", lugar === "india" ? "taj-mahal" : lugar];
+  // (selo só aparece depois de liberado no passaporte; antes disso entra o patch da Caravana)
+  const ganhos = (tipo === "lugar" ? [lugar] : SELOS_COLECAO).filter(seloLiberado);
+  if ((tipo === "lugar" || tipo === "colecao") && ganhos.length) {
+    const ids = ganhos.slice(-7);
     const n = ids.length, alt = tipo === "lugar" ? base * 1.3 : Math.min(base, (w - pad * 2) / Math.max(2.2, n * .78));
     for (let i = 0; i < n; i++) {
       let im; try { im = await carregaImg(`insignias/${ids[i]}.webp`); } catch (e) { continue; }
@@ -4475,7 +4477,7 @@ async function colaPatches(c, F, ox, oy, w, hh) {
     }
     return;
   }
-  const lista = tipo === "caravana" ? ["caravana"] : ["india", "caravana"];
+  const lista = tipo === "india" && seloLiberado("india") ? ["india", "caravana"] : ["caravana"];
   const pos = [[w - pad, hh - pad, .1, 1], [w - pad - base * .62, hh - pad - base * .28, -.14, .92], [pad, pad, -.08, .9]];
   const ordem = lista.slice().reverse();
   for (let i = ordem.length - 1; i >= 0; i--) {
@@ -4524,6 +4526,8 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
   }
   canvas.style.touchAction = ades.length ? "none" : "";
   const catA = ADESIVOS[S.fotoCatA] ? S.fotoCatA : "Selos";
+  // selos do passaporte: só os que já foram liberados
+  const listaA = ADESIVOS[catA].filter(([k]) => !k.startsWith("img:insignias/") || seloLiberado(k.slice(14, -5)));
   const LUGARES = [[.5, .5], [.26, .3], [.74, .3], [.26, .72], [.74, .72], [.5, .22], [.5, .8], [.16, .5], [.84, .5]];
   const poeAdesivo = k => { const [lx, ly] = LUGARES[ades.length % LUGARES.length]; ades.push({ k, x: lx, y: ly, s: k.startsWith("img:insignias/") ? .26 : k === "linha" || k === "guirlanda" || k === "lungta" ? .9 : k === "data" ? .35 : .3, r: 0 }); S[SEL] = ades.length - 1; render(); };
   const sel = S[SEL] != null ? ades[S[SEL]] : null;
@@ -4535,7 +4539,8 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
   const painelAdesivos = h("div", { class: "adesbox" },
     h("p", { class: "lab", text: "Adesivos" }),
     h("div", { class: "opts" }, Object.keys(ADESIVOS).map(cn => h("button", { type: "button", class: "opt", "aria-pressed": String(catA === cn), onclick: () => { S.fotoCatA = cn; render(); } }, cn))),
-    h("div", { class: "adesgrade" }, ADESIVOS[catA].map(([k, n]) => h("button", { type: "button", class: "adesbt", title: n, "aria-label": "Colocar " + n, onclick: () => poeAdesivo(k) }, thumbAdesivo(k)))),
+    catA === "Selos" && !listaA.length ? h("p", { class: "small", text: "Os selos aparecem aqui conforme forem liberados no passaporte, em cada cidade." }) : null,
+    h("div", { class: "adesgrade" }, listaA.map(([k, n]) => h("button", { type: "button", class: "adesbt", title: n, "aria-label": "Colocar " + n, onclick: () => poeAdesivo(k) }, thumbAdesivo(k)))),
     ades.length ? h("p", { class: "small", style: "margin:6px 0 0", text: "Toque no adesivo na foto para escolher. Arraste para mudar de lugar; com dois dedos, aumenta e gira." }) : null);
   const barraSel = sel ? h("div", { class: "adessel" },
     h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.s = Math.max(.06, a.s / 1.2); }) }, "Menor"),
@@ -4681,7 +4686,7 @@ function vFotos() {
         F.vivo ? h("div", { class: "actions camacoes", style: "justify-content:center;align-items:center" },
           h("button", { class: "btn ghost", type: "button", onclick: () => { const C = S.camEst; if (C) { C.frente = !C.frente; ligaCam(); } } }, "↺ Virar"),
           h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: tiraFotoVivo }, "📸"),
-          h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "Galeria"))
+          h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "🖼️ Fototeca"))
         : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [] }; render(); } }, "📸 Nova foto")),
         barraSel, tiraFiltros(F, id => set("filtro", id)), barraIntensidade),
       h("div", { class: "fcontrols" },
