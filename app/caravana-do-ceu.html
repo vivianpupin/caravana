@@ -4787,6 +4787,7 @@ function vFotos() {
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Registros da Travessia" }))),
     abasFotos(),
+    F.vivo ? h("p", { class: "small", style: "text-align:center;margin:0 0 8px", text: "Escolha o filtro, a moldura e os adesivos com a câmera ligada e toque em 📸 para fotografar. Ou toque em Fototeca e aplique os filtros da Caravana numa foto que você já tirou." }) : null,
     F.img ? h("div", { class: "estudio" },
       h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas),
         F.vivo ? h("div", { class: "actions camacoes", style: "justify-content:center;align-items:center" },
@@ -4807,7 +4808,7 @@ function vFotos() {
         painelAdesivos,
         // volta tudo ao começo (filtro, grão, formato, patch, moldura e adesivos) sem trocar a foto
         h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn", type: "button", onclick: () => { S.fotoSel = null; S.foto = { ...S.foto, filtro: "original", intens: 1, grao: "auto", formato: "original", patch: "nenhum", moldura: "nenhuma", adesivos: [] }; render(); } }, "Tirar tudo")),
-        F.vivo ? h("p", { class: "small", style: "text-align:center", text: "Escolha filtro, moldura e adesivos com a câmera ligada. Depois toque em 📸 para tirar a foto." }) :
+        F.vivo ? null :
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no rolo da câmera"),
           h("button", { class: "btn", type: "button", onclick: mural }, "Enviar para a galeria da caravana"),
