@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "08/10 · 08:33";</script>
+<script>window.__VERSAO = "08/10 · 08:34";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3860,12 +3860,12 @@ function super8Luz(ctx, w, hh) {
 }
 // grão de película: grosso, colorido e irregular, como Super 8 revelado
 function pelicula(ctx, w, hh) {
-  const esc = 2.6, gw = Math.ceil(w / esc), gh = Math.ceil(hh / esc), n = document.createElement("canvas"); n.width = gw; n.height = gh;
+  // grão fino de película: do tamanho de um pontinho na foto final, quase sem cor, mais presente nos meios-tons
+  const esc = Math.max(1, Math.max(w, hh) / 1500), gw = Math.ceil(w / esc), gh = Math.ceil(hh / esc), n = document.createElement("canvas"); n.width = gw; n.height = gh;
   const nc = n.getContext("2d"), d = nc.createImageData(gw, gh), q = d.data;
-  for (let i = 0; i < q.length; i += 4) { const b = Math.random() * 255, cor = (Math.random() - .5) * 60; q[i] = b + cor; q[i + 1] = b - cor * .3; q[i + 2] = b - cor; q[i + 3] = 255; }
+  for (let i = 0; i < q.length; i += 4) { const b = 128 + ((Math.random() + Math.random() + Math.random()) / 3 - .5) * 210, cor = (Math.random() - .5) * 14; q[i] = b + cor; q[i + 1] = b; q[i + 2] = b - cor; q[i + 3] = 255; }
   nc.putImageData(d, 0, 0);
-  ctx.save(); ctx.imageSmoothingEnabled = true; ctx.globalCompositeOperation = "overlay"; ctx.globalAlpha = .26; ctx.drawImage(n, 0, 0, w, hh);
-  ctx.globalCompositeOperation = "soft-light"; ctx.globalAlpha = .3; ctx.drawImage(n, 0, 0, gw, gh, 0, 0, w * 1.003, hh * 1.003); ctx.restore();
+  ctx.save(); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high"; ctx.globalCompositeOperation = "overlay"; ctx.globalAlpha = .22; ctx.drawImage(n, 0, 0, w, hh); ctx.restore();
 }
 // luz vazando no filme (light leaks): sempre no mesmo lugar, para a prévia bater com a foto salva
 function vazaLuz(ctx, w, hh, tipo) {
