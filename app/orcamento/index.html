@@ -42,11 +42,11 @@ button{cursor:pointer}
 .btn.pri{background:var(--tinta);color:#fff;border-color:var(--tinta)}
 .btn.pri:hover{filter:brightness(.92)}
 .btn.min{padding:4px 10px;font-size:12px}
-.btn.del{color:#9B2C1F}
+.btn.del{color:var(--tinta);text-decoration:underline;text-underline-offset:2px}
 select.lista{flex:1;min-width:0;border:1px solid var(--linha);border-radius:999px;padding:7px 12px;background:#fff;font-weight:700;font-size:13px}
 .instalar{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
 .alertas:empty{display:none}
-.alertas{background:#FCEBDD;color:#8A3410;border-radius:10px;padding:8px 12px;font-size:12.5px;font-weight:500}
+.alertas{background:transparent;border:1px solid var(--tinta);color:var(--tinta);border-radius:10px;padding:8px 12px;font-size:12.5px;font-weight:500}
 details{border-bottom:1px solid var(--linha)}
 summary{list-style:none;padding:14px 18px;font-weight:800;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
 summary::-webkit-details-marker{display:none}
@@ -62,7 +62,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
 .item{display:grid;grid-template-columns:1fr 58px 96px 26px;gap:6px;align-items:center}
 .itens-cab{display:grid;grid-template-columns:1fr 58px 96px 26px;gap:6px;font-size:10.5px;letter-spacing:.04em}
 .item .x{border:0;background:none;color:var(--ui-soft);font-size:18px;padding:0}
-.item .x:hover{color:#9B2C1F}
+.item .x:hover{color:var(--tinta)}
 .total-ed{display:flex;justify-content:space-between;font-weight:800;padding:6px 2px 0;border-top:1px solid var(--linha);color:var(--ui-ink)}
 .total-ed + .total-ed{border-top:0;padding-top:0}
 .cor{display:flex;gap:8px;align-items:center}
@@ -84,13 +84,11 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
 .capa .nome{display:block;font-family:var(--titulo);font-weight:700;font-size:19pt;letter-spacing:.32em;line-height:1.1;white-space:nowrap}
 .capa .desc{margin:4mm 0 0;font-size:8.6pt;line-height:1.25;text-transform:uppercase;font-weight:400}
 .capa .ano{display:block;font-family:var(--titulo);font-weight:500;font-size:19pt;margin-top:4mm;letter-spacing:-.02em}
-.capa .cat{position:absolute;left:20.5mm;bottom:26mm;font-family:var(--titulo);font-weight:700;font-size:16pt;letter-spacing:-.04em;text-transform:uppercase}
-/* páginas internas: bolinha no alto à esquerda, marca pequena à direita, ano com a linha saindo pela esquerda */
+.capa .contato{position:absolute;left:20.5mm;bottom:26mm;font-size:9pt}
+/* páginas internas: só a bolinha no alto à esquerda e o ano com a linha saindo pela esquerda */
 .pg .bola{position:absolute;top:20mm;left:20.5mm;width:8mm;height:8mm;border:.45mm solid var(--tinta);border-radius:50%}
-.pg .marca-p{position:absolute;top:22mm;right:20.5mm;font-family:var(--titulo);font-weight:700;font-size:9pt;letter-spacing:.24em}
-.pg .rod{position:absolute;left:0;right:20.5mm;bottom:19mm;display:flex;align-items:center;gap:4mm;font-size:10pt;color:#5E5B57}
+.pg .rod{position:absolute;left:0;right:20.5mm;bottom:19mm;display:flex;align-items:center;gap:4mm;font-size:10pt}
 .pg .rod::before{content:"";width:65mm;border-top:.3mm solid var(--tinta)}
-.pg .rod .contato{margin-left:auto;font-size:8.5pt}
 .txt{position:absolute;left:20.5mm;right:28mm;top:42mm;bottom:32mm;overflow:hidden}
 .txt > .forte{font-size:48pt;margin-bottom:13mm}
 .txt h3{font-family:var(--fonte);font-weight:700;font-size:10.6pt;text-transform:uppercase;margin:0 0 4.5mm}
@@ -99,7 +97,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
 .txt .b{margin-bottom:6.5mm}
 .txt .b.largo{margin-bottom:9mm}
 .txt .tot{font-weight:700}
-.txt .valido{font-size:9.5pt;color:#5E5B57}
+.txt .valido{font-size:9.5pt}
 
 @media (max-width:900px){
   .app{grid-template-columns:1fr}
@@ -190,12 +188,11 @@ textarea{resize:vertical;min-height:64px;line-height:1.45}
           <label class="c">Descrição<input data-f="descricao"></label>
           <label class="c">Ano<input data-f="ano" inputmode="numeric"></label>
         </div>
-        <label class="c">Instagram ou site (rodapé)<input data-f="rodape"></label>
+        <label class="c">Instagram ou site (capa)<input data-f="rodape"></label>
         <div class="dupla">
-          <label class="c">WhatsApp (rodapé)<input data-f="whats" inputmode="tel"></label>
-          <label class="c">E-mail (rodapé)<input data-f="email" inputmode="email"></label>
+          <label class="c">WhatsApp (capa)<input data-f="whats" inputmode="tel"></label>
+          <label class="c">E-mail (capa)<input data-f="email" inputmode="email"></label>
         </div>
-        <label class="c">Categoria (embaixo da capa)<input data-f="categoria"></label>
         <div class="dupla">
           <label class="c">Cor do papel<span class="cor"><input type="color" data-f="corPapel"><input data-f="corPapel" style="font-family:monospace"></span></label>
           <label class="c">Cor do texto<span class="cor"><input type="color" data-f="corTinta"><input data-f="corTinta" style="font-family:monospace"></span></label>
@@ -223,7 +220,7 @@ const uid = () => Math.random().toString(36).slice(2, 10);
 const ANO = String(new Date().getFullYear());
 
 /* Campos da empresa: passam de um orçamento para o próximo. */
-const FIXOS = ["marca", "descricao", "ano", "rodape", "whats", "email", "categoria", "corPapel", "corTinta",
+const FIXOS = ["marca", "descricao", "ano", "rodape", "whats", "email", "corPapel", "corTinta",
   "notaPct", "formaPagamento", "condicoes", "validade", "pagamentos", "remarcacao", "cancelamento", "extra"];
 
 function modelo() {
@@ -242,7 +239,7 @@ function modelo() {
     cancelamento: "Com menos de 3 dias de antecedência: cobrança de 50% do valor total.\nNo mesmo dia da diária: cobrança de 100% do valor total.",
     extra: "",
     marca: "PUPIN+DELEU", descricao: "photo and film", ano: ANO, rodape: "@pupindeleu", whats: "", email: "",
-    categoria: "Photo & Film", corPapel: "#E3E1DC", corTinta: "#282828"
+    corPapel: "#E3E1DC", corTinta: "#282828"
   };
 }
 
@@ -308,8 +305,8 @@ function desenhar() {
 
   const marca = esc(o.marca || ""), ano = esc(o.ano);
   const contato = [o.rodape, o.whats, o.email].filter(x => x && x.trim()).map(esc).join("  ·  ");
-  const enfeite = `<div class="bola"></div><div class="marca-p">${marca}</div>`;
-  const rod = `<div class="rod"><span>${ano}</span><span class="contato">${contato}</span></div>`;
+  const enfeite = `<div class="bola"></div>`;
+  const rod = `<div class="rod"><span>${ano}</span></div>`;
   const validoAte = Number(o.validade) > 0 ? new Date(o.criado + Number(o.validade) * 864e5).toLocaleDateString("pt-BR") : "";
   const b = (titulo, txt, largo, rotulo) => txt && txt.trim()
     ? `<div class="b${largo ? " largo" : ""}">${rotulo ? `<h4>${titulo}:</h4>` : `<h3>${titulo}</h3>`}<p>${linhas(txt)}</p></div>` : "";
@@ -319,7 +316,7 @@ function desenhar() {
     ${o.cliente || o.dataJob ? `<div class="para">${o.cliente ? `para <b>${esc(o.cliente)}</b>` : ""}${o.dataJob ? `${o.cliente ? "<br>" : ""}${diaBR(o.dataJob)}` : ""}</div>` : ""}
     <div class="vert"></div><div class="horiz"></div>
     <div class="bloco-marca"><span class="nome">${marca}</span>${o.descricao ? `<p class="desc">${esc(o.descricao)}</p>` : ""}<span class="ano">${ano}</span></div>
-    ${o.categoria ? `<div class="cat">${esc(o.categoria)}</div>` : ""}</div>`;
+    ${contato ? `<div class="contato">${contato}</div>` : ""}</div>`;
 
   const itens = o.itens.filter(i => i.desc || Number(i.valor));
   const aj = Number(o.ajuste) || 0;
