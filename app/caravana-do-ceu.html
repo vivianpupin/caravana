@@ -4735,7 +4735,7 @@ function quadroCam() {
 function vFotos() {
   if (S.fotoAba === "mural") return vMural();
   if (S.fotoAba === "tira") return vTira();
-  const F0 = S.foto || (S.foto = { filtro: "luz-dourada", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "original", legenda: "", cidade: "", data: "" });
+  const F0 = S.foto || (S.foto = { filtro: "original", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "original", legenda: "", cidade: "", data: "" });
   if (!F0.img && podeCamera() && !S.camFalhou) { const C = iniciaVivo(); S.foto = { ...F0, img: C.frame, vivo: true }; }
   const F = S.foto;
   const hoje = hojeIso(), dia = (S.roteiro?.dias || []).find(d => d.iso === hoje);
@@ -4746,7 +4746,7 @@ function vFotos() {
   const msg = h("p", { class: "msg", role: "status" });
   const fi = h("input", { type: "file", accept: "image/*", id: "estudio-foto", hidden: true, onchange: async () => {
     const f = fi.files[0]; if (!f) return;
-    try { const bmp = await abreFoto(f); fechaVivo(); S.foto = { ...S.foto, img: bmp, vivo: false }; render(); } catch (e) { msg.textContent = "Não consegui abrir essa foto. Tente outra, em JPG ou PNG."; msg.className = "msg err"; }
+    try { const bmp = await abreFoto(f); fechaVivo(); S.foto = { ...S.foto, img: bmp, vivo: false, filtro: "original", intens: 1 }; render(); } catch (e) { msg.textContent = "Não consegui abrir essa foto. Tente outra, em JPG ou PNG."; msg.className = "msg err"; }
     fi.value = "";
   } });
   const set = (k, v) => { S.foto = { ...S.foto, [k]: v }; render(); };
