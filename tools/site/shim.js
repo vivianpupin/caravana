@@ -415,7 +415,7 @@ const room = {
     const liga = () => {
       off = fs.collection("reacoes").where("ts", ">", desde).onSnapshot(qs => {
         qs.docChanges().forEach(c => { if (c.type !== "added" || vistos.has(c.doc.id)) return; vistos.add(c.doc.id); const d = c.doc.data(); if (d.topic === topic) fn({ data: d.data, by: d.by, isMe: d.by === me.id }); });
-      }, () => { off(); if (!parado) setTimeout(() => { desde = Math.max(desde, Date.now() - 60000); liga(); }, 5000); });
+      }, () => { off(); if (!parado) setTimeout(() => { if (parado) return; desde = Math.max(desde, Date.now() - 60000); if (vistos.size > 500) vistos.clear(); liga(); }, 5000); });
     };
     liga();
     return () => { parado = true; off(); };
