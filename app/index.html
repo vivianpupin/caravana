@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "07/10 · 07:04";</script>
+<script>window.__VERSAO = "08/10 · 07:37";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -872,6 +872,12 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
   .fotoframe .fotocanvas{max-height:46vh}
 }
 .fcontrols{display:flex;flex-direction:column;gap:8px;min-width:0}
+.camest{display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.camquadro{border-radius:var(--r);overflow:hidden;background:#1E1A16;display:grid;place-items:center;box-shadow:var(--shadow)}
+.camtela{width:100%;height:auto;max-height:58vh;object-fit:contain;display:block}
+.camvideo{display:none}
+.camfiltros{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.camfiltros .opt{flex:0 0 auto}
 .fotovazia{background:var(--panel);border:1.5px dashed var(--sand);border-radius:var(--r);padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
 .fotovazia img{width:90px;height:auto}
 .fotovazia b{font-family:var(--display);font-size:22px;font-weight:500}
@@ -4560,6 +4566,59 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
   }
   return { painelAdesivos, barraSel };
 }
+// Estúdio: abre direto na câmera, já com um filtro ao vivo; a foto tirada vai para o editor com o mesmo filtro
+const FILTROS_CAM = ["luz-dourada", "ganges", "super8", "vintage", "polaroid", "rosa", "himalaia", "cinema", "kashi", "original"];
+function camEstudio(fi) {
+  if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) return null;
+  let C = S.camEst;
+  if (C && C.falhou) return null;
+  if (!C) {
+    C = S.camEst = { frente: false, filtro: FILTROS_CAM[0] };
+    C.video = h("video", { playsinline: true, autoplay: true, muted: true, class: "camvideo" }); C.video.setAttribute("playsinline", ""); C.video.muted = true;
+    C.tela = h("canvas", { class: "camtela", "aria-label": "Câmera" });
+    C.st = h("p", { class: "msg", role: "status", text: "Abrindo a câmera…" });
+    const chips = FILTROS_CAM.map(id => { const f = FILTROS.find(x => x.id === id) || FILTROS[0];
+      return h("button", { type: "button", class: "opt", "aria-pressed": String(C.filtro === id), onclick: ev => { C.filtro = id; chips.forEach(b => b.setAttribute("aria-pressed", String(b === ev.currentTarget))); } }, f.nome); });
+    const clica = () => {
+      const v = C.video; if (!v.videoWidth) return;
+      const c = document.createElement("canvas"); c.width = v.videoWidth; c.height = v.videoHeight; c.getContext("2d").drawImage(v, 0, 0);
+      paraCam(); S.foto = { ...(S.foto || {}), img: c, filtro: C.filtro, intens: 1 }; S.camEst = null; render();
+    };
+    C.wrap = h("div", { class: "camest" }, h("div", { class: "camquadro" }, C.tela), C.st,
+      h("div", { class: "opts camfiltros" }, chips),
+      h("div", { class: "actions", style: "justify-content:center;align-items:center" },
+        h("button", { class: "btn ghost", type: "button", onclick: () => { C.frente = !C.frente; ligaCam(); } }, "↺ Virar"),
+        h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: clica }, "📸"),
+        h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "Galeria")));
+    ligaCam();
+  }
+  return C.wrap;
+}
+function paraCam() { const C = S.camEst; if (C && C.fluxo) { C.fluxo.getTracks().forEach(t => t.stop()); C.fluxo = null; } }
+async function ligaCam() {
+  const C = S.camEst; if (!C) return; paraCam();
+  try {
+    C.fluxo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: C.frente ? "user" : "environment", width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false });
+    C.video.srcObject = C.fluxo; await C.video.play(); C.st.textContent = "";
+    if (!C.rodando) { C.rodando = true; requestAnimationFrame(quadroCam); }
+  } catch (e) { C.falhou = true; paraCam(); render(); }
+}
+// desenha a câmera com o filtro, em tamanho pequeno para ficar leve; o sorteio do filtro é sempre o mesmo para a luz não piscar
+function quadroCam() {
+  const C = S.camEst;
+  if (!C) return;
+  if (!C.wrap.isConnected) { if (!document.hidden) { C.rodando = false; paraCam(); S.camEst = null; } else requestAnimationFrame(quadroCam); return; }
+  const v = C.video;
+  if (v.videoWidth) {
+    const k = 480 / Math.max(v.videoWidth, v.videoHeight), w = Math.round(v.videoWidth * k), hh = Math.round(v.videoHeight * k), t = C.tela;
+    if (t.width !== w || t.height !== hh) { t.width = w; t.height = hh; }
+    const x = t.getContext("2d", { willReadFrequently: true }); x.drawImage(v, 0, 0, w, hh);
+    const f = FILTROS.find(y => y.id === C.filtro) || FILTROS[0], rnd = Math.random; let sem = 7;
+    Math.random = () => { sem = (sem * 16807) % 2147483647; return sem / 2147483647; };
+    try { aplicaFiltro(x, w, hh, f, "auto"); } catch (e) {} finally { Math.random = rnd; }
+  }
+  requestAnimationFrame(quadroCam);
+}
 function vFotos() {
   if (S.fotoAba === "mural") return vMural();
   if (S.fotoAba === "tira") return vTira();
@@ -4615,7 +4674,7 @@ function vFotos() {
     abasFotos(),
     F.img ? h("div", { class: "estudio" },
       h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas),
-        h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "↺ Trocar foto")),
+        h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.foto = { ...S.foto, img: null, adesivos: [] }; render(); } }, "📸 Nova foto")),
         barraSel, tiraFiltros(F, id => set("filtro", id)), barraIntensidade),
       h("div", { class: "fcontrols" },
         h("p", { class: "lab", text: "Grão de filme" }),
@@ -4632,6 +4691,7 @@ function vFotos() {
           h("button", { class: "btn", type: "button", onclick: mural }, "Enviar para a galeria da caravana"),
           h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "Trocar foto")),
         msg)) :
+      camEstudio(fi) ||
       h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
         h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "Escolha uma foto" }),
         h("span", { text: "Filtros da Caravana, adesivos com bichinhos da Índia, firulas, molduras de cartão-postal, ingresso, guirlanda e mais. Depois é só salvar ou enviar para a Galeria da Caravana." })),
