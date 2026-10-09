@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "08/10 · 09:32";</script>
+<script>window.__VERSAO = "09/10 · 15:14";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1670,7 +1670,9 @@ function vTravessia() {
       h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] })),
     h("div", { class: "clock" },
       f > 0 ? h("div", null, h("b", { text: f }), h("span", { text: f === 1 ? "dia para embarcar" : "dias para embarcar" }))
-            : h("div", null, h("b", { text: "13" }), h("span", { text: "dias de travessia" })),
+            : dHoje ? h("div", null, h("b", { text: "Dia " + dHoje.n }), h("span", { text: "de " + dias.length + (dHoje.cidade ? " · " + dHoje.cidade : "") }))
+            : hoje > dias[dias.length - 1].iso ? h("div", null, h("b", { text: String(dias.length) }), h("span", { text: "Travessia concluída" }))
+            : h("div", null, h("b", { text: String(dias.length) }), h("span", { text: "dias de travessia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "Asia/Kolkata", text: horaEm("Asia/Kolkata") }), h("span", { text: "Agora na Índia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +8h30" }))),
     vOnlineLider(),
