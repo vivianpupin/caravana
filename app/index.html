@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 13:53";</script>
+<script>window.__VERSAO = "10/10 · 13:55";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1083,6 +1083,8 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .celcapa{width:46px;height:auto;flex:none;filter:sepia(.2) drop-shadow(0 4px 6px rgba(0,0,0,.6))}
 .estudiocel .fotoframe{border-radius:14px;padding:8px;background:linear-gradient(180deg,#14100C,#0A0806);box-shadow:inset 0 0 0 1.5px rgba(232,192,122,.35),0 10px 24px rgba(0,0,0,.6)}
 .estudiocel .fotoframe{width:fit-content;max-width:100%;align-self:center;margin:0 auto}
+@media (min-width:820px){.estudiocel .fotoframe{position:relative}}
+@media (max-width:819px){.estudiocel .fotoframe{position:sticky;top:0;z-index:3}.estudiocel .fotoframe .fotocanvas{max-height:36vh}}
 .celmesa{margin:0 0 4px;font:700 12px "Courier Prime",monospace;letter-spacing:.22em;text-transform:uppercase;color:#E2C27E;text-align:center;padding-bottom:8px;border-bottom:1.5px dashed rgba(214,180,128,.3)}
 .estudiocel .fcontrols{background:rgba(20,13,8,.45);border:1px solid rgba(232,192,122,.18);border-radius:14px;padding:16px 14px;box-shadow:inset 0 2px 10px rgba(0,0,0,.4)}
 .estudiocel .lab{font-family:"Courier Prime",monospace;letter-spacing:.16em;color:#C9A96A!important}
@@ -5852,7 +5854,7 @@ function vFotos() {
       h("div", { class: "celtit" }, h("p", { class: "celeye", text: "Arsenal de Travessia" }), h("h1", { text: "Câmera do celular" }),
         h("p", { class: "celsub", text: "Tire a foto com o celular e revele aqui: filtros, grão de filme, molduras e adesivos da Caravana." }))),
     F.img ? h("div", { class: "estudio" },
-      h("div", { class: "fotofixa" }, h("div", { class: "fotoframe", style: "position:relative" }, canvas, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
+      h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
         F.vivo ? h("div", { class: "actions camacoes", style: "justify-content:center;align-items:center" },
           h("button", { class: "btn ghost", type: "button", onclick: () => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); render(); } } }, C0frente() ? "↺ Virar câmera" : "↺ Selfie"),
           h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: () => { if (!S.gravando) tiraFotoVivo(); } }, "📸"),
