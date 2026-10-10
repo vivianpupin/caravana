@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 12:44";</script>
+<script>window.__VERSAO = "10/10 · 12:46";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -3704,14 +3704,17 @@ function ligarGps(silencioso) {
   if (S.gpsWatch != null) return;
   if (!navigator.geolocation) { S.gpsMsg = "Este navegador não tem GPS. Abra o app pelo Safari (iPhone) ou Chrome (Android)."; render(); return; }
   S.gpsMsg = "Procurando você…"; render();
-  let ultimoDb = 0;
+  // economia da cota do Firebase: a posição só vai para os outros quando a pessoa anda uns 50 m
+  // (parada, manda de novo só a cada 8 min, para continuar aparecendo como ao vivo no mapa)
+  let ultimoDb = 0, ultimaSala = 0, ondeDb = null, ondeSala = null;
+  const andou = (de, lat, lng) => !de || distKm(de, { lat, lng }) >= 0.05;
   const recebe = pos => {
     const lat = +pos.coords.latitude.toFixed(5), lng = +pos.coords.longitude.toFixed(5), cidadeId = pertoCidade({ lat, lng }), ts = Date.now();
     if (!S.gpsOn) lsSet("cdi-gps", "1");
     S.gpsOn = true; S.gpsMsg = "Você está ao vivo no mapa. A caravana vê você andando enquanto o aplicativo estiver aberto.";
     S.aoVivo[S.uid] = { lat, lng, cidadeId, ts, prec: Math.round(pos.coords.accuracy || 0) };
-    S.room?.presence({ uid: S.uid, lat, lng, cidadeId, ts }).catch(() => {});
-    if (ts - ultimoDb > 60000 && S.db && eu()) { ultimoDb = ts; S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: S.rua && distKm(S.rua, { lat, lng }) < 1 ? S.rua.lugar || "" : "", nota: "", link: "", gps: true, ts }).catch(() => {}); }
+    if (S.room && ((andou(ondeSala, lat, lng) && ts - ultimaSala > 15000) || ts - ultimaSala > 8 * 60000)) { ultimaSala = ts; ondeSala = { lat, lng }; S.room.presence({ uid: S.uid, lat, lng, cidadeId, ts }).catch(() => {}); }
+    if (((andou(ondeDb, lat, lng) && ts - ultimoDb > 60000) || ts - ultimoDb > 30 * 60000) && S.db && eu()) { ultimoDb = ts; ondeDb = { lat, lng }; S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: S.rua && distKm(S.rua, { lat, lng }) < 1 ? S.rua.lugar || "" : "", nota: "", link: "", gps: true, ts }).catch(() => {}); }
     if (S.arrastando) { S.pendente = true; return; }
     if (S.tab === "mapa" && !document.querySelector(".sheet")) render();
   };
