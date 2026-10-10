@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 14:13";</script>
+<script>window.__VERSAO = "10/10 · 14:16";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -801,6 +801,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .fotofixa{position:sticky;top:0;z-index:3;background:var(--bg,#F5EFE3);padding-top:6px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .tirafotos{display:flex;gap:8px;flex-wrap:wrap}.tiramini{display:flex;align-items:center;gap:6px;border:1px solid var(--line2);background:var(--panel);border-radius:999px;padding:5px 12px;font-size:13px;color:var(--ink)}.tiramini b{color:#A3231A}.tiramini.mais{border-style:dashed;color:var(--soft)}
 .intens{display:grid;grid-template-columns:auto 1fr 44px;align-items:center;gap:10px;margin:8px 2px 0;font-size:13px;color:var(--soft)}
+.intens[hidden]{display:none}
 .intens input{width:100%;accent-color:#3F4938}
 .intens b{text-align:right;color:var(--ink);font-weight:600}
 .trocafoto{display:flex;justify-content:center}
@@ -4517,7 +4518,7 @@ function tiraFiltros(F, escolhe) {
       S.fotoThumbs[f.id] = t;
     }
     const img = h("img", { alt: "", src: t._url || (t._url = t.toDataURL("image/jpeg", .8)) });
-    return h("button", { type: "button", role: "option", class: "fthumb", "aria-selected": String(F.filtro === f.id), onclick: () => escolhe(f.id) }, img, h("span", { text: f.nome }));
+    return h("button", { type: "button", role: "option", class: "fthumb", "aria-selected": String(F.filtro === f.id), onclick: e => escolhe(f.id, e.currentTarget) }, img, h("span", { text: f.nome }));
   }));
   let pronto = false;
   tira.addEventListener("scroll", () => { if (pronto && tira.isConnected) S.fotoTiraX = tira.scrollLeft; }, { passive: true });
@@ -5025,6 +5026,9 @@ async function colaPatches(c, F, ox, oy, w, hh) {
 function editorAdesivos(canvas, chave, estado, redesenha) {
   // adesivos: tocar num adesivo da lista coloca na foto; na foto, arrastar muda de lugar e dois dedos aumentam e giram
   const E = estado(), ades = E.adesivos || (E.adesivos = []), SEL = chave + "Sel";
+  // muda só o painel de adesivos e a barra do adesivo escolhido (a foto fica parada, nada pisca)
+  const atualiza = () => { const box = document.querySelector(".adesbox"); if (!box) return render();
+    const r = editorAdesivos(canvas, chave, estado, redesenha); box.replaceWith(r.painelAdesivos); document.querySelector(".adessel,.adessel-lugar")?.replaceWith(r.barraSel); redesenha(); };
   const pontoFoto = ev => { const G = S[chave + "Geo"], r = canvas.getBoundingClientRect(); if (!G || !r.width) return null;
     const px = (ev.clientX - r.left) * canvas.width / r.width, py = (ev.clientY - r.top) * canvas.height / r.height;
     const x = (px - G.fx) / G.fs, y = (py - G.fy) / G.fs; return { x, y, rx: (x - G.ox) / G.w, ry: (y - G.oy) / G.hh }; };
@@ -5036,10 +5040,10 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
       if (toques.size === 1) {
         const rs = S[chave + "AdesRect"] || []; let achou = -1;
         for (let i = rs.length - 1; i >= 0; i--) { const q = rs[i]; if (q && Math.hypot(p.x - q.cx, p.y - q.cy) <= q.r * 1.15) { achou = i; break; } }
-        if (achou < 0) { if (S[SEL] != null) { S[SEL] = null; render(); } return; }
+        if (achou < 0) { if (S[SEL] != null) { S[SEL] = null; atualiza(); } return; }
         ev.preventDefault(); canvas.setPointerCapture(ev.pointerId);
         const a = Fa.adesivos[achou]; arr = { i: achou, dx: a.x - p.rx, dy: a.y - p.ry };
-        if (S[SEL] !== achou) { S[SEL] = achou; render(); }
+        if (S[SEL] !== achou) { S[SEL] = achou; atualiza(); }
       } else if (toques.size === 2 && arr) { const [p1, p2] = [...toques.values()], a = Fa.adesivos[arr.i];
         arr.d0 = Math.hypot(p1.x - p2.x, p1.y - p2.y); arr.a0 = Math.atan2(p2.y - p1.y, p2.x - p1.x); arr.s0 = a.s; arr.r0 = a.r || 0; }
     });
@@ -5059,16 +5063,16 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
   // selos do passaporte: só os que já foram liberados
   const listaA = ADESIVOS[catA].filter(([k]) => !k.startsWith("img:insignias/") || seloLiberado(k.slice(14, -5)));
   const LUGARES = [[.5, .5], [.26, .3], [.74, .3], [.26, .72], [.74, .72], [.5, .22], [.5, .8], [.16, .5], [.84, .5]];
-  const poeAdesivo = k => { const [lx, ly] = LUGARES[ades.length % LUGARES.length]; ades.push({ k, x: lx, y: ly, s: k.startsWith("img:insignias/") ? .26 : k === "linha" || k === "guirlanda" || k === "lungta" ? .9 : k === "data" ? .35 : .3, r: 0 }); S[SEL] = ades.length - 1; render(); };
+  const poeAdesivo = k => { const [lx, ly] = LUGARES[ades.length % LUGARES.length]; ades.push({ k, x: lx, y: ly, s: k.startsWith("img:insignias/") ? .26 : k === "linha" || k === "guirlanda" || k === "lungta" ? .9 : k === "data" ? .35 : .3, r: 0 }); S[SEL] = ades.length - 1; atualiza(); };
   const sel = S[SEL] != null ? ades[S[SEL]] : null;
-  const mexe = fn => { if (!sel) return; fn(sel); render(); };
+  const mexe = fn => { if (!sel) return; fn(sel); atualiza(); };
   if (S.fotoAdesThumbs == null) S.fotoAdesThumbs = {};
   const thumbAdesivo = k => { const im = h("img", { alt: "", src: S.fotoAdesThumbs[k] || "img/simbolo-marrom.png", class: S.fotoAdesThumbs[k] ? "" : "carregando" });
     if (!S.fotoAdesThumbs[k]) imgAdesivo(k).then(i => { const cv = document.createElement("canvas"), L = 96, e = L / Math.max(i.width, i.height); cv.width = Math.max(1, i.width * e); cv.height = Math.max(1, i.height * e); cv.getContext("2d").drawImage(i, 0, 0, cv.width, cv.height); S.fotoAdesThumbs[k] = cv.toDataURL(); im.src = S.fotoAdesThumbs[k]; im.className = ""; }).catch(() => {});
     return im; };
   const painelAdesivos = h("div", { class: "adesbox" },
     h("p", { class: "lab", text: "Adesivos" }),
-    h("div", { class: "opts" }, Object.keys(ADESIVOS).map(cn => h("button", { type: "button", class: "opt", "aria-pressed": String(catA === cn), onclick: () => { S.fotoCatA = cn; render(); } }, cn))),
+    h("div", { class: "opts" }, Object.keys(ADESIVOS).map(cn => h("button", { type: "button", class: "opt", "aria-pressed": String(catA === cn), onclick: () => { S.fotoCatA = cn; atualiza(); } }, cn))),
     catA === "Selos" && !listaA.length ? h("p", { class: "small", text: "Os selos aparecem aqui conforme forem liberados no passaporte, em cada cidade." }) : null,
     h("div", { class: "adesgrade" }, listaA.map(([k, n]) => h("button", { type: "button", class: "adesbt", title: n, "aria-label": "Colocar " + n, onclick: () => poeAdesivo(k) }, thumbAdesivo(k)))),
     ades.length ? h("p", { class: "small", style: "margin:6px 0 0", text: "Toque no adesivo na foto para escolher. Arraste para mudar de lugar; com dois dedos, aumenta e gira." }) : null);
@@ -5078,13 +5082,13 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
     h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.r = (a.r || 0) - .26; }) }, "↺"),
     h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.r = (a.r || 0) + .26; }) }, "↻"),
     h("button", { type: "button", class: "opt", onclick: () => mexe(a => { a.esp = !a.esp; }) }, "Espelhar"),
-    h("button", { type: "button", class: "opt", onclick: () => { ades.splice(S[SEL], 1); S[SEL] = null; render(); } }, "Tirar"),
-    h("button", { type: "button", class: "opt", "aria-pressed": "true", onclick: () => { S[SEL] = null; render(); } }, "Pronto")) : null;
+    h("button", { type: "button", class: "opt", onclick: () => { ades.splice(S[SEL], 1); S[SEL] = null; atualiza(); } }, "Tirar"),
+    h("button", { type: "button", class: "opt", "aria-pressed": "true", onclick: () => { S[SEL] = null; atualiza(); } }, "Pronto")) : h("span", { class: "adessel-lugar", hidden: true });
   // xizinho em cima do adesivo escolhido, para tirar da foto com um toque (não sai na foto salva)
   if (!canvas._xis) {
     const x = canvas._xis = h("button", { type: "button", class: "adesx", "aria-label": "Tirar este adesivo", hidden: true,
       onpointerdown: e => e.stopPropagation(),
-      onclick: e => { e.stopPropagation(); const i = S[SEL], lst = estado().adesivos || []; if (i == null || !lst[i]) return; lst.splice(i, 1); S[SEL] = null; x.hidden = true; render(); } }, "×");
+      onclick: e => { e.stopPropagation(); const i = S[SEL], lst = estado().adesivos || []; if (i == null || !lst[i]) return; lst.splice(i, 1); S[SEL] = null; x.hidden = true; atualiza(); } }, "×");
     const segue = () => {
       if (!canvas.isConnected) { x.remove(); canvas._xis = null; if (canvas._xisP) canvas._xisP.remove(); return; }
       const pai = canvas.parentElement; if (pai && x.parentElement !== pai) { if (getComputedStyle(pai).position === "static") pai.style.position = "relative"; pai.append(x); }
@@ -5097,7 +5101,7 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
       // patches (só no Estúdio): um xizinho no canto do grupo de patches volta para "Sem patch"
       const P = chave === "foto" && S.foto && S.foto.patch && S.foto.patch !== "nenhum" ? S.fotoPatchRect : null;
       if (P && G && canvas.width && pai) {
-        if (!canvas._xisP) { canvas._xisP = h("button", { type: "button", class: "adesx", "aria-label": "Tirar o patch", onpointerdown: e => e.stopPropagation(), onclick: e => { e.stopPropagation(); S.foto.patch = "nenhum"; S.fotoPatchRect = null; canvas._xisP.hidden = true; render(); } }, "×"); }
+        if (!canvas._xisP) { canvas._xisP = h("button", { type: "button", class: "adesx", "aria-label": "Tirar o patch", onpointerdown: e => e.stopPropagation(), onclick: e => { e.stopPropagation(); S.foto.patch = "nenhum"; S.fotoPatchRect = null; canvas._xisP.hidden = true; atualiza(); } }, "×"); }
         const xp = canvas._xisP; if (xp.parentElement !== pai) pai.append(xp);
         const r = canvas.getBoundingClientRect(), pr = pai.getBoundingClientRect(), k = r.width / canvas.width;
         const dir = (P.x1 * G.fs + G.fx) * k, topo = (P.y0 * G.fs + G.fy) * k;
@@ -5846,7 +5850,14 @@ function vFotos() {
     try { const bmp = await abreFoto(f); fechaVivo(); S.foto = { ...S.foto, img: bmp, vivo: false, filtro: "original", intens: 1, recorte: null }; render(); } catch (e) { msg.textContent = "Não consegui abrir essa foto. Tente outra, em JPG ou PNG."; msg.className = "msg err"; }
     fi.value = "";
   } });
-  const set = (k, v) => { S.foto = { ...S.foto, [k]: v }; render(); };
+  // muda só o botão escolhido e a foto (e mostra/esconde a Intensidade); só o formato, que esconde as molduras, ainda redesenha
+  const set = (k, v, el) => {
+    S.foto = { ...S.foto, [k]: v };
+    if (!el || k === "formato" || !el.isConnected) { render(); return; }
+    const bi = document.querySelector(".estudiocel .intens"); if (k === "filtro" && bi) bi.hidden = !v || v === "original";
+    const grupo = el.parentElement; grupo.querySelectorAll("[aria-pressed]").forEach(b => b.setAttribute("aria-pressed", String(b === el))); grupo.querySelectorAll("[aria-selected]").forEach(b => b.setAttribute("aria-selected", String(b === el)));
+    montaFoto.img = null; if (!S.foto.vivo) redesenha();
+  };
   const leg = h("input", { type: "text", id: "estudio-legenda", maxlength: "40", placeholder: "Legenda (ex.: Amanhecer no Ganges)", value: F.legenda });
   leg.addEventListener("change", () => set("legenda", leg.value.trim()));
   const cid = h("select", { id: "estudio-cidade", "aria-label": "Cidade" }, h("option", { value: "", text: "Sem cidade" }),
@@ -5880,7 +5891,7 @@ function vFotos() {
   const pct = Math.round((F.intens == null ? 1 : F.intens) * 100), rotPct = h("b", { text: pct + "%" });
   const faixa = h("input", { type: "range", min: "0", max: "100", step: "1", value: String(pct), "aria-label": "Intensidade do filtro" });
   faixa.addEventListener("input", () => { S.foto.intens = +faixa.value / 100; rotPct.textContent = faixa.value + "%"; redesenha(); });
-  const barraIntensidade = F.filtro && F.filtro !== "original" ? h("label", { class: "intens" }, h("span", { text: "Intensidade" }), faixa, rotPct) : null;
+  const barraIntensidade = h("label", { class: "intens", hidden: !(F.filtro && F.filtro !== "original") }, h("span", { text: "Intensidade" }), faixa, rotPct);
   // câmera do celular: o estúdio com filtros e adesivos, com o mesmo título da maleta e um voltar claro
   // mesmo couro escuro das outras câmeras: em cima o celular de capa de couro, embaixo a mesa de revelação
   const voltaCel = h("button", { type: "button", class: "cfvolta", "aria-label": "Voltar para a maleta", onclick: voltaEstante }, h("span", { class: "cfvoltaic" }), h("span", { text: "Maleta" }));
@@ -5888,26 +5899,26 @@ function vFotos() {
   return h("section", { class: "view estudiocel" },
     h("div", { class: "celtopo" }, voltaCel,
       h("div", { class: "celtit" }, h("p", { class: "celeye", text: "Arsenal de Travessia" }), h("h1", { text: "Câmera do celular" }),
-        h("p", { class: "celsub", text: "Tire a foto com o celular e revele aqui: filtros, grão de filme, molduras e adesivos da Caravana." }))),
+        h("p", { class: "celsub", text: "Tire a foto com o celular e revele aqui: filtros, molduras e adesivos da Caravana." }))),
     F.img ? h("div", { class: "estudio" },
       h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
         F.vivo ? h("div", { class: "actions camacoes", style: "justify-content:center;align-items:center" },
-          h("button", { class: "btn ghost", type: "button", onclick: () => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); render(); } } }, C0frente() ? "↺ Virar câmera" : "↺ Selfie"),
+          h("button", { class: "btn ghost", type: "button", onclick: e => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); e.currentTarget.textContent = C.frente ? "↺ Virar câmera" : "↺ Selfie"; } } }, C0frente() ? "↺ Virar câmera" : "↺ Selfie"),
           h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: () => { if (!S.gravando) tiraFotoVivo(); } }, "📸"),
           h("button", { class: "btn ghost celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "■ Parar" : "● Filmar"),
           h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, iconeFototeca(), "Fototeca"))
         : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [], filtro: "original", intens: 1, thumbSrc: null }; render(); } }, "📸 Nova foto")),
         F.vivo && (S.fotosDiario || []).length ? h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros (fotos e filmes)")) : null,
         F.vivo ? h("p", { class: "celdica", text: S.gravando ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure ● Filmar, ou toque uma vez para começar e outra para parar." }) : null,
-        barraSel, tiraFiltros(F, id => set("filtro", id)), barraIntensidade),
+        barraSel, tiraFiltros(F, (id, el) => set("filtro", id, el)), barraIntensidade),
       h("div", { class: "fcontrols" },
         h("p", { class: "celmesa", text: "Mesa de revelação" }),
         h("p", { class: "lab", text: "Formato" }),
-        h("div", { class: "opts" }, FORMATOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.formato || "original") === id), onclick: () => set("formato", id) }, n))),
+        h("div", { class: "opts" }, FORMATOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.formato || "original") === id), onclick: e => set("formato", id, e.currentTarget) }, n))),
         h("p", { class: "lab", text: "Patches" }),
-        h("div", { class: "opts" }, PATCHES.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.patch || "nenhum") === id), onclick: () => set("patch", id) }, n))),
+        h("div", { class: "opts" }, PATCHES.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.patch || "nenhum") === id), onclick: e => set("patch", id, e.currentTarget) }, n))),
         F.formato === "reels" ? null : h("p", { class: "lab", text: "Moldura" }),
-        F.formato === "reels" ? null : h("div", { class: "opts" }, MOLDURAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: () => set("moldura", id) }, n))),
+        F.formato === "reels" ? null : h("div", { class: "opts" }, MOLDURAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: e => set("moldura", id, e.currentTarget) }, n))),
         painelAdesivos,
         // sem "Grão de filme" aqui: os filtros já trazem o grão de cada um
         // volta tudo ao começo (filtro, grão, formato, patch, moldura e adesivos) sem trocar a foto
