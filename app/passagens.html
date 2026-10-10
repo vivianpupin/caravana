@@ -30,6 +30,9 @@ button.claro{background:transparent;color:#E2C08A;box-shadow:inset 0 0 0 1px rgb
 </head><body><main>
 <h1>Passagens da Caravana</h1>
 <p class="sub">Escreva uma pessoa por linha: nome e número do passaporte, separados por vírgula. Se quiser um assento diferente do número, ponha um terceiro número.</p>
+<label for="pal">Palavra da caravana</label>
+<input id="pal" type="text" autocomplete="off" autocapitalize="none" placeholder="a palavra que abre o app">
+<p class="dica">Ela vai escondida em cada passagem, na raspadinha do canhoto. Fica guardada só neste celular.</p>
 <label for="nomes">Viajantes</label>
 <textarea id="nomes" placeholder="Ana Paula, 7&#10;João Pedro, 3&#10;Mariana, 12, 21"></textarea>
 <p class="dica">Exemplo: “Ana Paula, 7” gera a passagem Nº 07, assento 07.</p>
@@ -39,17 +42,19 @@ button.claro{background:transparent;color:#E2C08A;box-shadow:inset 0 0 0 1px rgb
 <script>
 const BASE = location.origin.includes("localhost") ? "https://caravanaindiaapp.netlify.app" : location.origin;
 const lista = document.getElementById("lista"), campo = document.getElementById("nomes");
-try { campo.value = localStorage.getItem("cdi-passagens") || ""; } catch (e) {}
+const pal = document.getElementById("pal");
+try { campo.value = localStorage.getItem("cdi-passagens") || ""; pal.value = localStorage.getItem("cdi-pal") || ""; } catch (e) {}
+const esconde = w => btoa(unescape(encodeURIComponent(w.trim().toLowerCase()))).replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
 const slug = n => n.trim().toLowerCase().replace(/\s+/g, "-");
 const copia = async (txt, el) => { try { await navigator.clipboard.writeText(txt); } catch (e) { const t = document.createElement("textarea"); t.value = txt; document.body.append(t); t.select(); document.execCommand("copy"); t.remove(); }
   const ok = document.createElement("span"); ok.className = "ok"; ok.textContent = "copiado"; el.after(ok); setTimeout(() => ok.remove(), 1500); };
 function gera() {
-  try { localStorage.setItem("cdi-passagens", campo.value); } catch (e) {}
+  try { localStorage.setItem("cdi-passagens", campo.value); localStorage.setItem("cdi-pal", pal.value); } catch (e) {}
   lista.textContent = "";
   for (const linha of campo.value.split("\n")) {
     const [nome, num, ass] = linha.split(",").map(x => (x || "").trim()); if (!nome) continue;
     const n = (num || "").replace(/\D/g, ""), a = (ass || "").replace(/\D/g, "");
-    const link = BASE + "/embarque/" + slug(nome).replace(/[\/?#%&]/g, "") + (n ? "/" + n.padStart(2, "0") : "") + (a ? "/" + a.padStart(2, "0") : "");
+    const link = BASE + "/embarque/" + slug(nome).replace(/[\/?#%&]/g, "") + (n ? "/" + n.padStart(2, "0") : "") + (a ? "/" + a.padStart(2, "0") : "") + (pal.value.trim() ? "#k=" + esconde(pal.value) : "");
     const msg = nome.split(" ")[0] + ", sua passagem para a Índia chegou ✈️\n" + link;
     const it = document.createElement("div"); it.className = "item";
     const t = document.createElement("b"); t.textContent = nome + (n ? " · Nº " + n.padStart(2, "0") : "");

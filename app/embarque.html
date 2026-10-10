@@ -65,6 +65,17 @@ body{background:var(--fundo) radial-gradient(ellipse at 50% 0%,#241A11,#0E0B08 7
 .qr svg{width:100%;height:100%;display:block}.qr svg path,.qr svg rect[fill="black"],.qr svg rect[fill="#000000"]{fill:#1F160E}.qr svg rect[fill="white"],.qr svg rect[fill="#ffffff"]{fill:transparent}
 .canhoto p{margin:0;flex:1;font:400 11px/1.5 "Courier Prime",monospace;color:#4A3522}
 .canhoto p b{display:block;font:400 16px "Special Elite",monospace;color:var(--tinta);letter-spacing:.06em}
+/* raspadinha: a palavra da caravana escondida sob uma camada dourada */
+.raspa{margin:0 18px 18px;position:relative}
+.raspa span{display:block;font:700 9px "Courier Prime",monospace;letter-spacing:.22em;color:#7A5A3A;margin-bottom:5px}
+.raspa .area{position:relative;height:58px;border-radius:6px;overflow:hidden;box-shadow:inset 0 0 0 1.5px rgba(43,31,20,.35);background:rgba(255,250,235,.35);display:grid;place-items:center;touch-action:none}
+.raspa .palavra{font:400 28px "Special Elite",monospace;letter-spacing:.14em;color:var(--tinta);text-transform:uppercase}
+.raspa canvas{position:absolute;inset:0;width:100%;height:100%;cursor:pointer;transition:opacity .6s}
+.raspa.aberta canvas{opacity:0;pointer-events:none}
+.raspa.aberta .palavra{animation:surge .7s ease}
+.raspa small{display:block;margin-top:6px;font:400 11px/1.4 "Courier Prime",monospace;color:#5A4430;opacity:0;transition:opacity .6s}
+.raspa.aberta small{opacity:1}
+@keyframes surge{0%{transform:scale(.9);filter:blur(2px)}100%{transform:none;filter:none}}
 .vert{writing-mode:vertical-rl;transform:rotate(180deg);font:700 12px "Courier Prime",monospace;letter-spacing:.2em;color:var(--carimbo)}
 /* carimbos de tinta vermelha */
 .carimbo{position:absolute;pointer-events:none;color:var(--carimbo);opacity:0;mix-blend-mode:multiply}
@@ -127,6 +138,11 @@ body{background:var(--fundo) radial-gradient(ellipse at 50% 0%,#241A11,#0E0B08 7
       <span class="vert" id="serie2">Nº 0000</span>
       <div class="carimbo c3">ॐ SHANTI</div>
     </div>
+    <div class="raspa" id="raspa" hidden>
+      <span>PALAVRA DA CARAVANA</span>
+      <div class="area"><b class="palavra" id="palavra"></b><canvas id="ouro" aria-label="Raspe com o dedo para ver a palavra"></canvas></div>
+      <small>Guarde esta palavra. Ela abre o aplicativo da Caravana.</small>
+    </div>
   </div>
 </article>
 
@@ -155,6 +171,10 @@ body{background:var(--fundo) radial-gradient(ellipse at 50% 0%,#241A11,#0E0B08 7
   document.getElementById("serie").textContent = serie; document.getElementById("serie2").textContent = serie;
   if (nome) document.title = "Passagem de " + nome.split(" ")[0] + " · Caravana do Céu";
   try { if (nome) localStorage.setItem("cdi-bilhete", JSON.stringify({ nome, num })); } catch (e) {}
+  // raspadinha: a palavra vem escondida no fim do link (#k=...), nunca vai para o servidor
+  const k = new URLSearchParams(location.hash.slice(1)).get("k");
+  let palavra = ""; try { if (k) palavra = decodeURIComponent(escape(atob(k.replace(/-/g, "+").replace(/_/g, "/")))); } catch (e) {}
+  if (palavra) raspadinha(palavra);
   // QR da própria passagem (para abrir em outro aparelho ou no papel)
   try { const qr = qrcode(0, "M"); qr.addData(location.href); qr.make();
     document.getElementById("qr").innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true }); } catch (e) {}
@@ -166,5 +186,36 @@ body{background:var(--fundo) radial-gradient(ellipse at 50% 0%,#241A11,#0E0B08 7
     setTimeout(() => { location.href = "/"; }, 650);
   });
 })();
+function raspadinha(palavra) {
+  const box = document.getElementById("raspa"), cv = document.getElementById("ouro"), area = cv.parentElement;
+  box.hidden = false; document.getElementById("palavra").textContent = palavra;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const pinta = () => {
+    const w = area.clientWidth, hh = area.clientHeight; cv.width = w * dpr; cv.height = hh * dpr;
+    const x = cv.getContext("2d"); x.scale(dpr, dpr);
+    // camada de ouro escovado, com o convite escrito
+    const g = x.createLinearGradient(0, 0, w, hh); g.addColorStop(0, "#8E6A38"); g.addColorStop(.3, "#E2C08A"); g.addColorStop(.55, "#B48A4C"); g.addColorStop(.8, "#E8CC98"); g.addColorStop(1, "#8E6A38");
+    x.fillStyle = g; x.fillRect(0, 0, w, hh);
+    x.globalAlpha = .18; for (let i = 0; i < 260; i++) { x.fillStyle = Math.random() < .5 ? "#fff" : "#3A2A16"; x.fillRect(Math.random() * w, Math.random() * hh, Math.random() * 18 + 2, 1); } x.globalAlpha = 1;
+    x.fillStyle = "rgba(43,31,20,.78)"; x.font = "700 12px 'Courier Prime', monospace"; x.textAlign = "center"; x.textBaseline = "middle";
+    x.fillText("✦  RASPE COM O DEDO  ✦", w / 2, hh / 2);
+  };
+  pinta(); if (document.fonts) document.fonts.ready.then(() => { if (!box.classList.contains("aberta")) pinta(); });
+  const x = cv.getContext("2d"); let raspando = false, n = 0;
+  const ponto = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * dpr, (e.clientY - r.top) * dpr]; };
+  const raspa = e => {
+    const [px, py] = ponto(e); x.save(); x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = "destination-out";
+    x.beginPath(); x.arc(px, py, 18 * dpr, 0, 7); x.fill(); x.restore();
+    if (++n % 6 === 0) { // quanto já foi raspado
+      const d = x.getImageData(0, 0, cv.width, cv.height).data; let v = 0, t = 0; for (let i = 3; i < d.length; i += 64) { t++; if (d[i] < 40) v++; }
+      if (v / t > .5) abre();
+    }
+  };
+  const abre = () => { if (box.classList.contains("aberta")) return; box.classList.add("aberta"); if (navigator.vibrate) navigator.vibrate([20, 40, 20]);
+  };
+  cv.addEventListener("pointerdown", e => { raspando = true; cv.setPointerCapture(e.pointerId); raspa(e); e.preventDefault(); });
+  cv.addEventListener("pointermove", e => { if (raspando) { raspa(e); e.preventDefault(); } });
+  const solta = () => { raspando = false; }; cv.addEventListener("pointerup", solta); cv.addEventListener("pointercancel", solta);
+}
 </script>
 </body></html>
