@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 08:00";</script>
+<script>window.__VERSAO = "10/10 · 08:06";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -900,24 +900,24 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .contato .quadro{background:none;border:0;padding:0;display:flex;flex-direction:column;gap:3px;cursor:pointer}
 .contato .quadro img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:2px}
 .contato .quadro span{font:500 9px "Courier Prime",monospace;color:#E8C07A;text-align:left;line-height:1.2}
-.permissoes{position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:max(60px,env(safe-area-inset-top)) 20px max(28px,env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(20,14,10,0),rgba(20,14,10,.35) 30%,rgba(20,14,10,.85) 55%,#1B1511 72%),url(img/abertura-varanasi.webp) center top/cover #1B1511;overflow:auto}
-.pcartao{margin-top:22vh;width:100%;max-width:420px;border:1px solid rgba(232,192,122,.45);border-radius:22px;padding:22px 20px 14px;background:rgba(27,21,17,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#F1E2BC;text-align:center}
-.pcartao .psimb{width:46px;height:auto;opacity:.9}
-.pcartao h2{font-family:Cinzel,var(--display),serif;font-weight:600;letter-spacing:.06em;color:#E8C07A;margin:6px 0 6px;font-size:26px}
-.pcartao p{font-size:14px;line-height:1.5;color:#E9DCC2;margin:0 0 10px}
+.permissoes{position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:14px;padding:20px 24px max(26px,env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(20,14,10,0),rgba(20,14,10,.4) 40%,rgba(20,14,10,.9) 70%,#1B1511),url(img/abertura-varanasi.webp) center top/cover #1B1511;overflow:auto}
+.pcartao{width:100%;max-width:320px;border:1px solid rgba(232,192,122,.35);border-radius:16px;padding:14px 16px 6px;background:rgba(27,21,17,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#F1E2BC;text-align:center}
+.pcartao .psimb{display:none}
+.pcartao h2{font-family:Cinzel,var(--display),serif;font-weight:600;letter-spacing:.08em;color:#E8C07A;margin:0 0 2px;font-size:17px}
+.pcartao p{font-size:12px;line-height:1.4;color:#C7B493;margin:0 0 4px}
 .plista{display:flex;flex-direction:column}
-.plinha{display:flex;align-items:center;gap:14px;background:none;border:0;border-bottom:1px solid rgba(232,192,122,.22);padding:14px 4px;color:inherit;text-align:left;font:inherit;cursor:pointer}
+.plinha{display:flex;align-items:center;gap:11px;background:none;border:0;border-bottom:1px solid rgba(232,192,122,.16);padding:9px 2px;color:inherit;text-align:left;font:inherit;cursor:pointer}
 .plinha:last-child{border-bottom:0}
-.plinha.travado{opacity:.55;cursor:default}
+.plinha.travado{opacity:.5;cursor:default}
 .plinha.pedindo{opacity:.6}
-.picone{width:30px;height:30px;flex:0 0 30px;color:#F1E2BC}
+.picone{width:20px;height:20px;flex:0 0 20px;color:#F1E2BC}
 .picone svg{width:100%;height:100%}
-.ptexto{flex:1;display:flex;flex-direction:column;gap:2px}
-.ptexto b{font-size:17px;font-weight:500}
-.ptexto small{font-size:12px;color:#C7B493}
-.pcheck{width:28px;height:28px;flex:0 0 28px;border-radius:50%;border:1.6px solid rgba(232,192,122,.6);display:grid;place-items:center;color:#1B1511;font-weight:700;font-size:15px}
-.pcheck.on{background:#7FB58A;border-color:#7FB58A;color:#14211A}
-.pcont{width:100%;max-width:420px;margin-top:24px;background:#3F4938;color:#F1E2BC;border:0;font-size:18px;padding:16px}
+.ptexto{flex:1;display:flex;flex-direction:column;gap:0}
+.ptexto b{font-size:14px;font-weight:500}
+.ptexto small{font-size:10.5px;color:#B8A684;line-height:1.3}
+.pcheck{width:20px;height:20px;flex:0 0 20px;border-radius:50%;border:1.4px solid rgba(232,192,122,.55);display:grid;place-items:center;color:#14211A;font-weight:700;font-size:11px}
+.pcheck.on{background:#7FB58A;border-color:#7FB58A}
+.pcont{width:100%;max-width:320px;background:#3F4938;color:#F1E2BC;border:0;font-size:15px;padding:12px}
 .fotovazia{background:var(--panel);border:1.5px dashed var(--sand);border-radius:var(--r);padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
 .fotovazia img{width:90px;height:auto}
 .fotovazia b{font-family:var(--display);font-size:22px;font-weight:500}
@@ -5120,16 +5120,16 @@ function telaPermissoes(st) {
   const pedeNot = async () => { await ativarAvisos(); ok.not = avisosLigados(); };
   const lista = h("div", { class: "plista" });
   const atualiza = () => { lista.textContent = ""; lista.append(
-    linha("cam", "Câmera", "Para fotografar com as câmeras da Caravana", pedeCam, !podeCamera()),
-    linha("loc", "Localização", "Para você aparecer no mapa da caravana", pedeLoc, !navigator.geolocation),
-    linha("not", "Notificações", st.notPode ? "Para receber as mensagens da tribo" : "Instale o app na tela de início para ativar", pedeNot, !st.notPode)); };
+    linha("cam", "Câmera", "Para fotografar", pedeCam, !podeCamera()),
+    linha("loc", "Localização", "Para aparecer no mapa", pedeLoc, !navigator.geolocation),
+    linha("not", "Notificações", st.notPode ? "Para receber as mensagens" : "Instale o app para ativar", pedeNot, !st.notPode)); };
   atualiza();
   const fecha = () => { lsSet("cdi-perm", String(Date.now())); tela.remove(); };
   const tela = h("div", { class: "permissoes", role: "dialog", "aria-label": "Permissões" },
     h("div", { class: "pcartao" },
       h("img", { src: "img/simbolo-dourado.png", alt: "", class: "psimb" }),
       h("h2", { text: "Permissões" }),
-      h("p", { text: "Para a travessia funcionar por inteiro, o app precisa da sua permissão. Toque em cada uma:" }),
+      h("p", { text: "Toque em cada uma para liberar." }),
       lista),
     h("button", { class: "btn pcont", type: "button", onclick: fecha }, "Continuar"));
   document.body.append(tela);
