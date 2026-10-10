@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 15:24";</script>
+<script>window.__VERSAO = "10/10 · 15:27";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -5612,7 +5612,7 @@ function verFotos(i) {
       ontouchstart: e => { x0 = e.touches[0].clientX; }, ontouchend: e => { if (x0 == null) return; const d = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(d) > 50) verFotos(i + (d < 0 ? 1 : -1)); } },
     h("button", { type: "button", class: "nvfechar", "aria-label": "Fechar", onclick: () => tela.remove() }, "×"),
     h("p", { class: "nvinfo", text: [new Date(it.ts).toLocaleDateString("pt-BR"), it.cidade, it.camera].filter(Boolean).join(" · ") + "   " + (i + 1) + "/" + l.length }),
-    h("div", { class: "nvfoto" }, /^video/.test(it.blob.type) ? h("video", { src: url, poster: it.capa ? (it.capaUrl || (it.capaUrl = URL.createObjectURL(it.capa))) : null, controls: true, autoplay: true, loop: true, muted: true, playsinline: true }) : h("img", { src: url, alt: "", class: /Kashi|Instant/.test(it.camera || "") && !(S.reveladas ||= new Set()).has(it.id) ? "revelando" : "" }),
+    h("div", { class: "nvfoto" }, /^video/.test(it.blob.type) ? h("video", { src: url, poster: it.capa ? (it.capaUrl || (it.capaUrl = URL.createObjectURL(it.capa))) : null, controls: true, autoplay: true, loop: true, muted: true, playsinline: true }) : h("img", { src: url, alt: "", class: "" }),
       i > 0 ? h("button", { type: "button", class: "nvseta e", "aria-label": "Foto anterior", onclick: () => verFotos(i - 1) }, "‹") : null,
       i < l.length - 1 ? h("button", { type: "button", class: "nvseta d", "aria-label": "Próxima foto", onclick: () => verFotos(i + 1) }, "›") : null),
     h("div", { class: "nvbase" },
@@ -5627,14 +5627,7 @@ function verFotos(i) {
         catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("rect", { x: "3", y: "5", width: "18", height: "14", rx: "2" }), h("path", { d: "M3 16l5-5 4 4 3-3 6 6" })))),
     msg);
   document.body.append(tela);
-  // foto instantânea: aparece escura e vai revelando; chacoalhar o celular acelera, como na vida real
-  const im = tela.querySelector("img.revelando");
-  if (im) { S.reveladas.add(it.id);
-    const sacode = e => { const a = e.accelerationIncludingGravity || e.acceleration; if (a && Math.abs(a.x || 0) + Math.abs(a.y || 0) + Math.abs(a.z || 0) > 30) { im.classList.add("rapido"); removeEventListener("devicemotion", sacode); } };
-    try { if (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") DeviceMotionEvent.requestPermission().catch(() => {}); } catch (e) {}
-    addEventListener("devicemotion", sacode); im.addEventListener("animationend", () => removeEventListener("devicemotion", sacode), { once: true });
-    tela.append(h("p", { class: "nvdica", text: "Revelando… chacoalhe o celular para acelerar" }));
-    im.addEventListener("animationend", () => tela.querySelector(".nvdica")?.remove(), { once: true }); }
+  // Kashi: a foto aparece direto, sem esperar revelar nem chacoalhar o celular
 }
 const cidadeHoje = () => { const d = (S.roteiro?.dias || []).find(x => x.iso === hojeIso()); return d ? d.cidade : ""; };
 // ---------- Diário de Viajante: as fotos das câmeras ficam guardadas no próprio celular ----------
