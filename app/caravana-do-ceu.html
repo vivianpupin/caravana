@@ -976,10 +976,12 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfitem .camfoto img{max-height:52px}
 .cfcorpo.comfoto{container-type:size;background:#0B0908}
 .cfpalco{position:absolute!important;inset:0;z-index:1!important;overflow:hidden}
-.cfimg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(100cqw,56.25cqh);aspect-ratio:9/16}
+.cfimg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:max(100cqw,56.25cqh);aspect-ratio:9/16}
 .cffundo{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(18px) brightness(.8)}
 .cfimg>img{position:absolute;inset:0;width:100%;height:100%;display:block}
 .cfjanelafoto{position:absolute!important;border-radius:6px}
+.cfluzfoto{position:absolute;width:6.4%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;font-size:0;pointer-events:none;transition:background .1s,box-shadow .1s}
+.cfluzfoto.on{background:radial-gradient(circle,#FFE08A,#F2A63A 55%,rgba(242,166,58,0) 72%);box-shadow:0 0 18px 6px rgba(242,180,70,.7)}
 .cfbotaofoto{position:absolute;aspect-ratio:1;border-radius:50%;border:0;background:transparent;cursor:pointer}
 .cfbotaofoto:active{background:rgba(0,0,0,.25);box-shadow:inset 0 4px 10px rgba(0,0,0,.5)}
 .comfoto .cfgravado,.comfoto::before{display:none}
@@ -4857,11 +4859,11 @@ const CAMERAS_C = [
 ];
 // fotos realistas (quando estiverem na pasta img/cameras): corpo de perto com o visor, câmera inteira recortada e a estante
 const FOTO_CAM = {
-  rajastao: { visor: [.328, .351, .669, .449], botao: [.498, .560, .07] },
-  descartavel: { visor: [.32, .36, .76, .55], botao: [.53, .80, .18] },
-  instantanea: { visor: [.35, .31, .64, .47], botao: [.48, .75, .15] },
-  super8: { visor: [.19, .26, .87, .42], botao: [.34, .63, .14] },
-  quatro: { visor: [.40, .30, .72, .60], botao: [.56, .74, .14] },
+  rajastao: { visor: [.627, .239, .822, .599], botao: [.362, .509, .09] },
+  descartavel: { visor: [.699, .381, .948, .565], botao: [.350, .493, .13] },
+  instantanea: { visor: [.318, .210, .686, .446], botao: [.503, .699, .11] },
+  super8: { visor: [.185, .093, .815, .380], botao: [.498, .601, .09] },
+  quatro: { visor: [.278, .318, .765, .628], botao: [.512, .786, .09], luzes: [.356, .433, .512, .589].map(y => [.146, y]) },
 };
 const fotoOk = S.fotoOk = {};
 // confere uma vez se cada imagem já existe; se existir, a tela passa a usar a foto
@@ -4946,9 +4948,10 @@ function vCameraFisica(c) {
     h("img", { src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }),
     h("div", { class: "cfjanela cfjanelafoto", style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : null,
       c.id === "super8" ? h("span", { class: "cfmira", "aria-hidden": "true" }) : null),
+    (fc.luzes || []).map(([x, y]) => h("span", { class: "cfluz cfluzfoto", style: `left:${x * 100}%;top:${y * 100}%` })),
     F.vivo ? h("button", { type: "button", class: "cfbotaofoto", "aria-label": "Tirar foto", onclick: dispara, style: `left:${(fc.botao[0] - fc.botao[2]) * 100}%;top:calc(${fc.botao[1] * 100}% - ${fc.botao[2] * 100 * 9 / 16}%);width:${fc.botao[2] * 200}%` }) : null)) : null;
   const corpo = h("div", { class: "cfcorpo cf-" + c.id + (fotoCorpo ? " comfoto" : "") }, palco,
-    c.rajadas ? h("div", { class: "cfluzes", "aria-hidden": "true" }, [1, 2, 3, 4].map(n => h("span", { class: "cfluz" }, String(n)))) : null,
+    c.rajadas && !fotoCorpo ? h("div", { class: "cfluzes", "aria-hidden": "true" }, [1, 2, 3, 4].map(n => h("span", { class: "cfluz" }, String(n)))) : null,
     h("div", { class: "cfgravado", "aria-hidden": "true", text: { quatro: "CARAVANA", rajastao: "35", descartavel: "BAZAR", instantanea: "KASHI", super8: "8" }[c.id] || "" }),
     h("div", { class: "cftopo" },
       h("button", { type: "button", class: "cfsair", "aria-label": "Voltar para a estante", onclick: voltaEstante }, "×"),
