@@ -864,6 +864,28 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .camvideo{display:none}
 .camfiltros{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
 .camfiltros .opt{flex:0 0 auto}
+.estante{background:linear-gradient(180deg,#3A2A1F,#2B1F17);border-radius:14px;padding:14px 10px 6px;box-shadow:inset 0 0 0 3px #4A3527,0 10px 24px rgba(40,24,12,.25)}
+.prateleira{margin-bottom:12px}
+.prateleira .itens{display:flex;justify-content:space-around;align-items:flex-end;gap:8px;padding:0 6px;min-height:120px}
+.prateleira .tabua{height:14px;border-radius:3px;background:linear-gradient(180deg,#B07A4A,#8A5A34 60%,#5E3C22);box-shadow:0 6px 10px rgba(0,0,0,.45)}
+.camitem{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;flex:1;max-width:48%}
+.camitem .camdesenho{width:100%;max-width:150px;filter:drop-shadow(0 6px 6px rgba(0,0,0,.5))}
+.camitem .camdesenho svg{width:100%;height:auto;display:block}
+.etiqueta{background:#F1E2BC;color:#3A2A1C;font:600 12px Poppins,sans-serif;padding:3px 9px;border-radius:3px;transform:rotate(-2deg);box-shadow:0 2px 3px rgba(0,0,0,.35);margin-bottom:-4px}
+.camview .camtopo{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.camview .camtopo b{font-family:var(--display);font-size:22px;font-weight:500}
+.visor{background:#1E1A16;border-radius:16px;padding:10px;box-shadow:inset 0 0 0 4px #3A2C22,0 10px 24px rgba(40,24,12,.3);display:grid;place-items:center;min-height:200px}
+.visor .fotocanvas{max-height:46vh;border-radius:8px}
+.camdesenho.grande{width:min(78%,330px);margin:14px auto 4px;cursor:pointer;filter:drop-shadow(0 10px 10px rgba(40,24,12,.35))}
+.camdesenho.grande svg{width:100%;height:auto;display:block}
+.camdesenho.grande:active{transform:scale(.98)}
+.flashcam{position:fixed;inset:0;background:#fff;z-index:9999;pointer-events:none;animation:flashcam .45s ease-out forwards}
+@keyframes flashcam{from{opacity:.95}to{opacity:0}}
+.diario{margin-top:22px;display:flex;flex-direction:column;gap:10px}
+.contato{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#1E1A16;padding:8px;border-radius:8px}
+.contato .quadro{background:none;border:0;padding:0;display:flex;flex-direction:column;gap:3px;cursor:pointer}
+.contato .quadro img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:2px}
+.contato .quadro span{font:500 9px "Courier Prime",monospace;color:#E8C07A;text-align:left;line-height:1.2}
 .fotovazia{background:var(--panel);border:1.5px dashed var(--sand);border-radius:var(--r);padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
 .fotovazia img{width:90px;height:auto}
 .fotovazia b{font-family:var(--display);font-size:22px;font-weight:500}
@@ -4650,6 +4672,132 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
   }
   return { painelAdesivos, barraSel };
 }
+// ---------- Câmeras da Caravana: estante de câmeras antigas + diário de viajante ----------
+// cada câmera é um desenho próprio da Caravana e leva junto o seu filtro, moldura e jeito de fotografar
+const SIMB = '<image href="img/simbolo-dourado.png" ';
+const CAMERAS_C = [
+  { id: "celular", nome: "Câmera do celular", frase: "Todos os filtros, molduras e adesivos do Estúdio, do seu jeito.",
+    svg: `<svg viewBox="0 0 120 150"><rect x="22" y="8" width="76" height="136" rx="16" fill="#8A3F32"/><rect x="26" y="12" width="68" height="128" rx="13" fill="#A04B3B"/>
+      <rect x="32" y="18" width="34" height="34" rx="10" fill="#2B2622"/><circle cx="41" cy="27" r="6" fill="#111"/><circle cx="41" cy="27" r="3" fill="#3E5A6A"/><circle cx="57" cy="27" r="6" fill="#111"/><circle cx="57" cy="27" r="3" fill="#3E5A6A"/><circle cx="41" cy="43" r="6" fill="#111"/><circle cx="41" cy="43" r="3" fill="#3E5A6A"/><circle cx="57" cy="43" r="2.5" fill="#E8D9A8"/>
+      ${SIMB} x="44" y="78" width="32" height="32"/></svg>` },
+  { id: "rajastao", nome: "Rajastão 35", frase: "Telêmetro de filme 35 mm. Cor quente, contraste de Jaipur.",
+    preset: { filtro: "cid-jaipur", moldura: "nenhuma", formato: "original", grao: "auto" },
+    svg: `<svg viewBox="0 0 200 120"><rect x="14" y="20" width="172" height="26" rx="8" fill="#D9D4CA"/><rect x="14" y="20" width="172" height="10" rx="5" fill="#EEEAE2"/>
+      <rect x="30" y="12" width="22" height="10" rx="3" fill="#BFB9AE"/><circle cx="41" cy="11" r="5" fill="#8A3F32" class="disparo"/><rect x="140" y="13" width="30" height="8" rx="3" fill="#BFB9AE"/>
+      <rect x="14" y="40" width="172" height="62" rx="10" fill="#2B2622"/><rect x="14" y="40" width="172" height="62" rx="10" fill="url(#couro)" opacity=".5"/>
+      <rect x="118" y="26" width="22" height="12" rx="2" fill="#5E6E78"/><rect x="146" y="26" width="16" height="12" rx="2" fill="#5E6E78"/><rect x="119" y="27" width="8" height="10" fill="#8FA5B0" opacity=".6"/>
+      <circle cx="78" cy="68" r="30" fill="#C9C4BA"/><circle cx="78" cy="68" r="24" fill="#1A1714"/><circle cx="78" cy="68" r="17" fill="#2E3A44"/><circle cx="78" cy="68" r="10" fill="#4C6878"/><circle cx="72" cy="62" r="4" fill="#B8D4E0" opacity=".7"/>
+      ${SIMB} x="140" y="58" width="26" height="26"/><text x="70" y="31" font-family="Cinzel,serif" font-size="8" fill="#5A544A" text-anchor="middle">RAJASTÃO 35</text>
+      <defs><pattern id="couro" width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".8" fill="#000"/></pattern></defs></svg>` },
+  { id: "descartavel", nome: "Descartável do Bazar", frase: "Câmera de papelão com flash estourado e data no canto.",
+    preset: { filtro: "cid-delhi", moldura: "nenhuma", formato: "original", grao: "auto", flash: 1, adesivos: [{ k: "data", x: .78, y: .9, s: .32, r: 0 }] },
+    svg: `<svg viewBox="0 0 200 120"><rect x="12" y="22" width="176" height="84" rx="10" fill="#1E1A16"/>
+      <rect x="20" y="28" width="160" height="72" rx="6" fill="#E3A93B"/><rect x="20" y="28" width="160" height="18" fill="#8A3F32"/><rect x="20" y="82" width="160" height="18" fill="#8A3F32"/>
+      <path d="M20 46 L180 46 L180 52 L20 52Z" fill="#F4E6C4"/><text x="100" y="41" font-family="Poppins,sans-serif" font-weight="700" font-size="9" fill="#F4E6C4" text-anchor="middle">DESCARTÁVEL DO BAZAR</text>
+      <rect x="130" y="54" width="42" height="24" rx="3" fill="#EDEDED"/><rect x="133" y="57" width="36" height="18" rx="2" fill="#FFF7D9"/><path d="M133 66 L169 66" stroke="#E0C77A"/>
+      <circle cx="84" cy="66" r="20" fill="#1E1A16"/><circle cx="84" cy="66" r="13" fill="#2E3A44"/><circle cx="84" cy="66" r="6" fill="#55707E"/><circle cx="80" cy="62" r="3" fill="#B8D4E0" opacity=".7"/>
+      <rect x="28" y="54" width="18" height="12" rx="2" fill="#2E3A44"/><rect x="150" y="12" width="26" height="12" rx="3" fill="#2B2622"/><circle cx="40" cy="20" r="6" fill="#2B2622" class="disparo"/>
+      ${SIMB} x="34" y="76" width="18" height="18"/><text x="100" y="95" font-family="Courier Prime,monospace" font-size="7" fill="#F4E6C4" text-anchor="middle">27 POSES · ÍNDIA 2026</text></svg>` },
+  { id: "instantanea", nome: "Instantânea Kashi", frase: "A foto sai na hora, com moldura branca e cor lilás.",
+    preset: { filtro: "cid-kashi", moldura: "polaroid", formato: "original", grao: "auto" },
+    svg: `<svg viewBox="0 0 160 150"><rect x="14" y="14" width="132" height="122" rx="18" fill="#EAD7DC"/><rect x="14" y="88" width="132" height="48" rx="18" fill="#D9BFC6"/><rect x="14" y="88" width="132" height="14" fill="#D9BFC6"/>
+      <rect x="74" y="14" width="6" height="122" fill="#8A3F32"/><rect x="80" y="14" width="4" height="122" fill="#D9A53A"/>
+      <rect x="26" y="24" width="30" height="20" rx="4" fill="#F7F3EA"/><rect x="29" y="27" width="24" height="14" rx="2" fill="#FFF8DA"/><rect x="108" y="24" width="24" height="18" rx="4" fill="#2B2622"/><rect x="111" y="27" width="18" height="12" rx="2" fill="#4C6878"/>
+      <circle cx="80" cy="74" r="32" fill="#2B2622"/><circle cx="80" cy="74" r="26" fill="#3A3330"/><circle cx="80" cy="74" r="18" fill="#2E3A44"/><circle cx="80" cy="74" r="9" fill="#55707E"/><circle cx="74" cy="68" r="4" fill="#B8D4E0" opacity=".7"/>
+      <circle cx="32" cy="72" r="8" fill="#B8432F" class="disparo"/><rect x="34" y="122" width="92" height="5" rx="2.5" fill="#2B2622"/>
+      ${SIMB} x="114" y="94" width="22" height="22"/></svg>` },
+  { id: "super8", nome: "Super 8 do Ganges", frase: "Filmadora antiga: película, luz vazando e furinhos do filme.",
+    preset: { filtro: "super8", moldura: "super8", formato: "original", grao: "auto" },
+    svg: `<svg viewBox="0 0 200 130"><rect x="56" y="22" width="122" height="62" rx="10" fill="#3A2C22"/><rect x="56" y="22" width="122" height="14" rx="7" fill="#5A4636"/>
+      <rect x="18" y="36" width="44" height="36" rx="6" fill="#1E1A16"/><rect x="10" y="40" width="12" height="28" rx="4" fill="#2B2622"/><circle cx="16" cy="54" r="9" fill="#2E3A44"/><circle cx="16" cy="54" r="4" fill="#55707E"/>
+      <rect x="160" y="10" width="34" height="18" rx="5" fill="#2B2622"/><rect x="186" y="14" width="8" height="10" rx="2" fill="#4C6878"/>
+      <path d="M118 84 L144 84 L136 124 L112 124 Z" fill="#2B2622"/><circle cx="128" cy="96" r="5" fill="#B8432F" class="disparo"/>
+      <circle cx="96" cy="52" r="14" fill="#D9A53A"/><text x="96" y="58" font-family="Cinzel,serif" font-weight="700" font-size="17" fill="#3A2C22" text-anchor="middle">8</text>
+      ${SIMB} x="138" y="44" width="24" height="24"/><text x="117" y="32" font-family="Cinzel,serif" font-size="7" fill="#E8D9A8" text-anchor="middle">SUPER 8 DO GANGES</text></svg>` },
+];
+const imgCam = c => { const d = h("div", { class: "camdesenho", "aria-hidden": "true" }); d.innerHTML = c.svg; return d; };
+// estante: tábuas de madeira com as câmeras em cima e uma etiqueta de papel com o nome
+function vEstante() {
+  const fil = [CAMERAS_C.slice(0, 2), CAMERAS_C.slice(2, 4), CAMERAS_C.slice(4)];
+  return h("section", { class: "view" },
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Registros da Travessia" }))),
+    abasFotos(),
+    h("div", { class: "estante" }, fil.map(lin => h("div", { class: "prateleira" },
+      h("div", { class: "itens" }, lin.map(c => h("button", { type: "button", class: "camitem", onclick: () => escolheCamera(c.id) },
+        imgCam(c), h("span", { class: "etiqueta", text: c.nome })))),
+      h("div", { class: "tabua" })))),
+    vDiarioViajante());
+}
+const fotoDaCamera = c => ({ filtro: "original", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "original", legenda: "", cidade: "", data: "", ...(c.preset || {}), adesivos: (c.preset && c.preset.adesivos || []).map(a => ({ ...a })) });
+function escolheCamera(id) {
+  fechaVivo(); const c = CAMERAS_C.find(x => x.id === id);
+  S.camSel = id; S.fotoSel = null; S.camFalhou = false; S.foto = fotoDaCamera(c);
+  render(); $("#main") && ($("#main").scrollTop = 0);
+}
+const voltaEstante = () => { fechaVivo(); S.camSel = null; S.foto = null; render(); };
+// som de obturador, curtinho
+function cliqueSom() { try { const A = window.AudioContext || window.webkitAudioContext, a = S.audioCtx || (S.audioCtx = new A()), n = a.createBufferSource(), b = a.createBuffer(1, a.sampleRate * .08, a.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3); n.buffer = b; const g = a.createGain(); g.gain.value = .5; n.connect(g); g.connect(a.destination); n.start(); } catch (e) {} }
+function vCameraFisica(c) {
+  const F0 = S.foto || (S.foto = fotoDaCamera(c));
+  if (!F0.img && podeCamera() && !S.camFalhou) { const C = iniciaVivo(); S.foto = { ...F0, img: C.frame, vivo: true }; }
+  const F = S.foto, canvas = S.fotoCanvas || (S.fotoCanvas = h("canvas", { class: "fotocanvas", "aria-label": "Visor da câmera" })), msg = h("p", { class: "msg", role: "status" });
+  if (F.img && !F.vivo) requestAnimationFrame(() => montaFoto(canvas).then(() => { if (S.guardarDiario) { S.guardarDiario = false; canvas.toBlob(b => b && guardaNoDiario(b, c), "image/jpeg", .88); } }).catch(() => {}));
+  const dispara = () => { if (!F.vivo) return; cliqueSom(); if (c.preset && c.preset.flash) { const fl = h("div", { class: "flashcam" }); document.body.append(fl); setTimeout(() => fl.remove(), 450); } S.guardarDiario = true; tiraFotoVivo(); };
+  const corpo = imgCam(c); corpo.classList.add("grande"); corpo.addEventListener("click", dispara);
+  const blob = () => new Promise(res => canvas.toBlob(res, "image/jpeg", .92));
+  return h("section", { class: "view camview" },
+    h("div", { class: "camtopo" }, h("button", { class: "btn ghost", type: "button", onclick: voltaEstante }, "← Estante"), h("b", { text: c.nome })),
+    h("div", { class: "visor" + (F.vivo ? " vivo" : "") }, F.img ? canvas : h("p", { class: "small", text: "Não consegui abrir a câmera. Confira se o app pode usar a câmera nos ajustes do celular." })),
+    corpo,
+    F.vivo ? h("div", { class: "actions", style: "justify-content:center;align-items:center" },
+        h("button", { class: "btn ghost", type: "button", onclick: () => { const C = S.camEst; if (C) { C.frente = !C.frente; ligaCam(); } } }, "↺ Virar"),
+        h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: dispara }, "📸"))
+      : h("div", { class: "actions", style: "justify-content:center;flex-wrap:wrap" },
+        h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(blob(), "caravana-" + c.id + ".jpg", msg) }, "Salvar no celular"),
+        h("button", { class: "btn", type: "button", onclick: async () => {
+          if (!S.assets || !eu()) { msg.textContent = "Para enviar à galeria, emita seu passaporte."; msg.className = "msg err"; return; }
+          msg.textContent = "Enviando…"; msg.className = "msg";
+          try { const r = await S.assets.upload(await blob()); await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade: cidadeHoje(), legenda: c.nome, ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
+          catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; } } }, "Enviar para a Galeria"),
+        h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null }; render(); } }, "📸 Outra foto")),
+    F.vivo ? null : h("p", { class: "small", style: "text-align:center", text: "Guardada no seu Diário de Viajante." }),
+    msg);
+}
+const cidadeHoje = () => { const d = (S.roteiro?.dias || []).find(x => x.iso === hojeIso()); return d ? d.cidade : ""; };
+// ---------- Diário de Viajante: as fotos das câmeras ficam guardadas no próprio celular ----------
+function bancoDiario() { return S.bdDiario ||= new Promise((ok, no) => { const q = indexedDB.open("caravana-diario", 1); q.onupgradeneeded = () => q.result.createObjectStore("fotos", { keyPath: "id" }); q.onsuccess = () => ok(q.result); q.onerror = () => no(q.error); }); }
+async function guardaNoDiario(blob, c) {
+  try { const db = await bancoDiario(), item = { id: Date.now() + "-" + Math.random().toString(36).slice(2, 6), ts: Date.now(), camera: c.nome, cidade: cidadeHoje(), blob };
+    await new Promise((ok, no) => { const t = db.transaction("fotos", "readwrite"); t.objectStore("fotos").put(item); t.oncomplete = ok; t.onerror = () => no(t.error); });
+    S.fotosDiario = null; } catch (e) {}
+}
+async function lerDiario() {
+  try { const db = await bancoDiario(); return await new Promise((ok, no) => { const q = db.transaction("fotos").objectStore("fotos").getAll(); q.onsuccess = () => ok(q.result.sort((a, b) => b.ts - a.ts)); q.onerror = () => no(q.error); }); } catch (e) { return []; }
+}
+async function apagaDoDiario(id) { try { const db = await bancoDiario(); await new Promise(ok => { const t = db.transaction("fotos", "readwrite"); t.objectStore("fotos").delete(id); t.oncomplete = ok; t.onerror = ok; }); } catch (e) {} S.fotosDiario = null; render(); }
+function vDiarioViajante() {
+  if (!S.fotosDiario) { S.fotosDiario = []; lerDiario().then(l => { S.fotosDiario = l; S.fotosDiarioPronto = true; if (S.tab === "fotos" && !S.camSel) render(); }); }
+  const l = S.fotosDiario;
+  const dia = ts => { const d = new Date(ts); return d.getDate() + " " + MES[d.getMonth()].toLowerCase(); };
+  return h("div", { class: "diario" },
+    h("p", { class: "eyebrow rule", text: "Diário de Viajante" }),
+    !l.length ? h("p", { class: "small", style: "text-align:center", text: "As fotos que você tirar com as câmeras da estante ficam guardadas aqui, com o dia, a cidade e a câmera." }) :
+    h("div", { class: "contato" }, l.map(it => { const u = it.url || (it.url = URL.createObjectURL(it.blob));
+      return h("button", { type: "button", class: "quadro", onclick: () => verNoDiario(it) }, h("img", { src: u, alt: "", loading: "lazy" }),
+        h("span", { text: [dia(it.ts), it.cidade, it.camera].filter(Boolean).join(" · ") })); })));
+}
+function verNoDiario(it) {
+  closeSheets(); const msg = h("p", { class: "msg", role: "status" });
+  const box = h("div", { role: "dialog", "aria-label": "Foto do diário", style: "text-align:center" },
+    h("img", { src: it.url, alt: "", style: "max-width:100%;max-height:60vh;border-radius:10px" }),
+    h("p", { class: "small", text: [new Date(it.ts).toLocaleDateString("pt-BR"), it.cidade, it.camera].filter(Boolean).join(" · ") }),
+    h("div", { class: "actions", style: "justify-content:center;flex-wrap:wrap" },
+      h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(Promise.resolve(it.blob), "caravana-diario.jpg", msg) }, "Salvar no celular"),
+      h("button", { class: "btn ghost", type: "button", onclick: () => { if (confirm("Apagar esta foto do diário?")) { closeSheets(); apagaDoDiario(it.id); } } }, "Apagar"),
+      h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")), msg);
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box); document.body.append(sheet);
+}
 // Estúdio: abre direto na câmera, com o editor inteiro (filtros, molduras, adesivos…) aplicado ao vivo; o clique congela a foto
 // ícone da fototeca: molduras de foto empilhadas em terracota e areia, no tom da Caravana
 const iconeFototeca = () => h("svg", { viewBox: "0 0 24 24", width: "20", height: "20", "aria-hidden": "true", style: "vertical-align:-4px;margin-right:6px" },
@@ -4758,6 +4906,8 @@ function quadroCam() {
 function vFotos() {
   if (S.fotoAba === "mural") return vMural();
   if (S.fotoAba === "tira") return vTira();
+  if (!S.camSel) return vEstante();
+  if (S.camSel !== "celular") return vCameraFisica(CAMERAS_C.find(c => c.id === S.camSel) || CAMERAS_C[1]);
   const F0 = S.foto || (S.foto = { filtro: "original", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "original", legenda: "", cidade: "", data: "" });
   if (!F0.img && podeCamera() && !S.camFalhou) { const C = iniciaVivo(); S.foto = { ...F0, img: C.frame, vivo: true }; }
   const F = S.foto;
@@ -4810,6 +4960,7 @@ function vFotos() {
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Registros da Travessia" }))),
     abasFotos(),
+    h("div", { class: "actions", style: "margin:0 0 6px" }, h("button", { class: "btn ghost", type: "button", onclick: voltaEstante }, "← Estante de câmeras")),
     F.img ? h("div", { class: "estudio" },
       h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas),
         F.vivo ? h("div", { class: "actions camacoes", style: "justify-content:center;align-items:center" },
@@ -6240,7 +6391,7 @@ const CIDADES_MURAL = ["Delhi", "Agra", "Jaipur", "Varanasi", "Rishikesh"];
 function abasFotos() {
   const a = S.fotoAba || "estudio";
   return h("div", { class: "fcats", role: "tablist", style: "margin-top:-4px" },
-    [["estudio", "Estúdio"], ["tira", "Cabine de Fotos"], ["mural", "Galeria da Caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
+    [["estudio", "Câmeras"], ["tira", "Cabine de Fotos"], ["mural", "Galeria da Caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
 }
 // Salvar foto no rolo da câmera: no celular abre o menu de compartilhar, onde aparece "Salvar imagem"
 const podeRolo = () => { try { return !!(navigator.canShare && navigator.canShare({ files: [new File([new Blob(["x"], { type: "image/jpeg" })], "t.jpg", { type: "image/jpeg" })] })); } catch (e) { return false; } };
