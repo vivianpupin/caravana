@@ -1084,7 +1084,7 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .faixacota b{font-size:13.5px}
 .faixacota a{align-self:flex-start;margin-top:5px;padding:6px 12px;border-radius:999px;background:#F5EFE4;color:#8A3F32;font-weight:600;text-decoration:none}
 .vidmini{position:relative;display:block;width:100%;height:100%}
-.vidmini video{width:100%;height:100%;object-fit:cover;display:block}
+.vidmini video,.vidmini img{width:100%;height:100%;object-fit:cover;display:block}
 .vidplay{position:absolute;left:50%;top:50%;width:34%;max-width:40px;min-width:18px;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
 .cfvoltaseta{display:none}
 .cfvolta.topo{flex-direction:row;gap:6px;margin:0;padding:7px 14px 7px 10px;border-radius:999px;font-size:11px;align-self:center;flex:0 0 auto;position:relative;z-index:5}
@@ -5341,10 +5341,12 @@ async function filma(c) {
   const mr = new MediaRecorder(rec.captureStream(24), tipo ? { mimeType: tipo, videoBitsPerSecond: 3.5e6 } : undefined), partes = [];
   mr.ondataavailable = e => e.data && e.data.size && partes.push(e.data);
   mr.onstop = async () => { clearInterval(copia); clearTimeout(limite); S.gravando = null; mostraGravando();
-    const b = new Blob(partes, { type: (tipo || "video/webm").split(";")[0] }); if (b.size) { await guardaNoDiario(b, c); S.fotosDiario = await lerDiario(); if (S.camSel === c.id) mostraGravando(true);
+    const b = new Blob(partes, { type: (tipo || "video/webm").split(";")[0] }); if (b.size) { await guardaNoDiario(b, c, capa ? { capa } : null); S.fotosDiario = await lerDiario(); if (S.camSel === c.id) mostraGravando(true);
       // o filme vai para a carteira de Registros (na Maleta, embaixo das câmeras); no celular não há miniatura, então avisa onde ficou
       avisoReacao("🎞️ Filme guardado nos Registros, na Maleta, embaixo das câmeras."); }
     else avisoReacao("Não consegui gravar o filme neste celular."); };
+  // capa do filme: o primeiro quadro, guardado como foto, para a miniatura nunca ficar preta (o iPhone não mostra quadro de vídeo parado)
+  let capa = null; setTimeout(() => { const k = document.createElement("canvas"); k.width = 360; k.height = 640; k.getContext("2d").drawImage(rec, 0, 0, 360, 640); k.toBlob(b => { capa = b; }, "image/jpeg", .8); }, 250);
   const limite = setTimeout(() => mr.state === "recording" && mr.stop(), 60000);
   S.gravando = mr; S.gravouEm = Date.now(); mr.start(500); cliqueSom(); mostraGravando();
 }
@@ -5517,7 +5519,7 @@ function verFotos(i) {
       ontouchstart: e => { x0 = e.touches[0].clientX; }, ontouchend: e => { if (x0 == null) return; const d = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(d) > 50) verFotos(i + (d < 0 ? 1 : -1)); } },
     h("button", { type: "button", class: "nvfechar", "aria-label": "Fechar", onclick: () => tela.remove() }, "×"),
     h("p", { class: "nvinfo", text: [new Date(it.ts).toLocaleDateString("pt-BR"), it.cidade, it.camera].filter(Boolean).join(" · ") + "   " + (i + 1) + "/" + l.length }),
-    h("div", { class: "nvfoto" }, /^video/.test(it.blob.type) ? h("video", { src: url, controls: true, autoplay: true, loop: true, muted: true, playsinline: true }) : h("img", { src: url, alt: "", class: /Kashi|Instant/.test(it.camera || "") && !(S.reveladas ||= new Set()).has(it.id) ? "revelando" : "" }),
+    h("div", { class: "nvfoto" }, /^video/.test(it.blob.type) ? h("video", { src: url, poster: it.capa ? (it.capaUrl || (it.capaUrl = URL.createObjectURL(it.capa))) : null, controls: true, autoplay: true, loop: true, muted: true, playsinline: true }) : h("img", { src: url, alt: "", class: /Kashi|Instant/.test(it.camera || "") && !(S.reveladas ||= new Set()).has(it.id) ? "revelando" : "" }),
       i > 0 ? h("button", { type: "button", class: "nvseta e", "aria-label": "Foto anterior", onclick: () => verFotos(i - 1) }, "‹") : null,
       i < l.length - 1 ? h("button", { type: "button", class: "nvseta d", "aria-label": "Próxima foto", onclick: () => verFotos(i + 1) }, "›") : null),
     h("div", { class: "nvbase" },
@@ -5543,8 +5545,8 @@ function verFotos(i) {
 const cidadeHoje = () => { const d = (S.roteiro?.dias || []).find(x => x.iso === hojeIso()); return d ? d.cidade : ""; };
 // ---------- Diário de Viajante: as fotos das câmeras ficam guardadas no próprio celular ----------
 function bancoDiario() { return S.bdDiario ||= new Promise((ok, no) => { const q = indexedDB.open("caravana-diario", 1); q.onupgradeneeded = () => q.result.createObjectStore("fotos", { keyPath: "id" }); q.onsuccess = () => ok(q.result); q.onerror = () => no(q.error); }); }
-async function guardaNoDiario(blob, c) {
-  try { const db = await bancoDiario(), item = { id: Date.now() + "-" + Math.random().toString(36).slice(2, 6), ts: Date.now(), camera: c.nome, cidade: cidadeHoje(), blob };
+async function guardaNoDiario(blob, c, extra) {
+  try { const db = await bancoDiario(), item = { id: Date.now() + "-" + Math.random().toString(36).slice(2, 6), ts: Date.now(), camera: c.nome, cidade: cidadeHoje(), blob, ...(extra || {}) };
     await new Promise((ok, no) => { const t = db.transaction("fotos", "readwrite"); t.objectStore("fotos").put(item); t.oncomplete = ok; t.onerror = () => no(t.error); });
     S.fotosDiario = null; } catch (e) {}
 }
@@ -5557,10 +5559,34 @@ setTimeout(() => { if (S.fotosDiario) return; lerDiario().then(l => { if (!S.fot
 function miniMidia(it, extra) {
   const u = it.url || (it.url = URL.createObjectURL(it.blob));
   if (!/^video/.test(it.blob.type)) return h("img", { src: u, alt: "", ...(extra || {}) });
+  const ic0 = () => { const i = h("span", { class: "vidplay", "aria-hidden": "true" }); i.innerHTML = '<svg viewBox="0 0 24 24" width="100%" height="100%"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.45)" stroke="rgba(255,255,255,.85)" stroke-width="1.2"/><path d="M10 8l6 4-6 4z" fill="#fff"/></svg>'; return i; };
+  if (it.capa) return h("span", { class: "vidmini" + (extra && extra.class ? " " + extra.class : "") }, h("img", { src: it.capaUrl || (it.capaUrl = URL.createObjectURL(it.capa)), alt: "" }), ic0());
+  fazCapa(it);
   const v = h("video", { src: u + "#t=0.1", muted: true, playsinline: true, preload: "auto", class: extra && extra.class, onloadedmetadata: e => { try { if (e.target.currentTime < .05) e.target.currentTime = .1; } catch (x) {} } });
   v.setAttribute("playsinline", ""); v.muted = true;
   const ic = h("span", { class: "vidplay", "aria-hidden": "true" }); ic.innerHTML = '<svg viewBox="0 0 24 24" width="100%" height="100%"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.45)" stroke="rgba(255,255,255,.85)" stroke-width="1.2"/><path d="M10 8l6 4-6 4z" fill="#fff"/></svg>';
-  return h("span", { class: "vidmini" + (extra && extra.class ? " " + extra.class : "") }, v, ic);
+  return h("span", { class: "vidmini" + (extra && extra.class ? " " + extra.class : ""), "data-vid": it.id, "data-cls": (extra && extra.class) || "" }, v, ic);
+}
+// filme antigo sem capa: tira o primeiro quadro uma vez, guarda junto do filme e troca as miniaturas pretas pela imagem
+function fazCapa(it) {
+  if (it.capa || it.fazendoCapa) return; it.fazendoCapa = true;
+  const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "auto"; v.src = it.url;
+  let feito = false;
+  const tira = () => {
+    if (feito || !v.videoWidth) return; feito = true;
+    const k = document.createElement("canvas"), e = 640 / Math.max(v.videoWidth, v.videoHeight); k.width = Math.round(v.videoWidth * e); k.height = Math.round(v.videoHeight * e);
+    k.getContext("2d").drawImage(v, 0, 0, k.width, k.height); try { v.pause(); } catch (x) {}
+    k.toBlob(async b => {
+      if (!b) return; it.capa = b;
+      try { const db = await bancoDiario(); const t = db.transaction("fotos", "readwrite"); const { url, capaUrl, fazendoCapa, ...guardar } = it; t.objectStore("fotos").put(guardar); } catch (x) {}
+      document.querySelectorAll(`[data-vid="${it.id}"]`).forEach(el => el.replaceWith(miniMidia(it, el.dataset.cls ? { class: el.dataset.cls } : null)));
+    }, "image/jpeg", .8);
+  };
+  v.addEventListener("loadeddata", () => { try { v.currentTime = .1; } catch (x) {} });
+  v.addEventListener("seeked", () => requestAnimationFrame(tira));
+  v.addEventListener("timeupdate", () => { if (v.currentTime > .05) tira(); });
+  // no iPhone o quadro só aparece depois de tocar um instante (mudo)
+  v.play?.().then(() => setTimeout(() => { tira(); }, 200)).catch(() => {});
 }
 async function apagaDoDiario(id) { try { const db = await bancoDiario(); await new Promise(ok => { const t = db.transaction("fotos", "readwrite"); t.objectStore("fotos").delete(id); t.oncomplete = ok; t.onerror = ok; }); } catch (e) {}
   // tira só aquela foto da lista e redesenha só a carteira (ou a miniatura da câmera), sem a tela toda piscar
