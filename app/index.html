@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 12:43";</script>
+<script>window.__VERSAO = "10/10 · 12:44";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -5725,8 +5725,6 @@ function vFotos() {
         barraSel, tiraFiltros(F, id => set("filtro", id)), barraIntensidade),
       h("div", { class: "fcontrols" },
         h("p", { class: "celmesa", text: "Mesa de revelação" }),
-        h("p", { class: "lab", text: "Grão de filme" }),
-        h("div", { class: "opts" }, GRAOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.grao || "auto") === id), onclick: () => set("grao", id) }, n))),
         h("p", { class: "lab", text: "Formato" }),
         h("div", { class: "opts" }, FORMATOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.formato || "original") === id), onclick: () => set("formato", id) }, n))),
         h("p", { class: "lab", text: "Patches" }),
@@ -5734,6 +5732,9 @@ function vFotos() {
         F.formato === "reels" ? null : h("p", { class: "lab", text: "Moldura" }),
         F.formato === "reels" ? null : h("div", { class: "opts" }, MOLDURAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: () => set("moldura", id) }, n))),
         painelAdesivos,
+        // o grão fica por último na mesa de revelação
+        h("p", { class: "lab", text: "Grão de filme" }),
+        h("div", { class: "opts" }, GRAOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.grao || "auto") === id), onclick: () => set("grao", id) }, n))),
         // volta tudo ao começo (filtro, grão, formato, patch, moldura e adesivos) sem trocar a foto
         h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn", type: "button", onclick: () => { S.fotoSel = null; S.foto = { ...S.foto, filtro: "original", intens: 1, grao: "auto", formato: "original", patch: "nenhum", moldura: "nenhuma", adesivos: [] }; render(); } }, "Remover tudo")),
         F.vivo ? null :
