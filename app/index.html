@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 12:04";</script>
+<script>window.__VERSAO = "10/10 · 12:09";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1045,7 +1045,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfbaixo .cfmini{flex:0 0 52px;width:52px;height:68px;align-self:center;margin:0 0 0 12px;border-radius:4px;padding:0;box-shadow:0 0 0 1.5px rgba(232,192,122,.55),0 4px 8px rgba(0,0,0,.5)}
 .cfbaixo .cfmini:empty{background:repeating-linear-gradient(135deg,rgba(255,255,255,.04) 0 4px,rgba(0,0,0,0) 4px 8px),#1A120C}
 /* separa a última foto da fileira de câmeras: um fio dourado e as câmeras somem suavemente na beirada, em vez de cortar seco */
-.cfbaixo .cffita{position:relative;margin-left:12px;border-left:1px solid rgba(232,192,122,.25);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 22px,#000 calc(100% - 22px),transparent);padding-left:18px!important;padding-right:18px!important}
+.cfbaixo .cffita{position:relative;margin-left:12px;border-left:1px solid rgba(232,192,122,.25);-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);padding-left:18px!important;padding-right:18px!important}
 .cftopovazio{width:40px;flex:0 0 40px}
 .cfitem{flex:0 0 86px;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;padding:2px;cursor:pointer;color:#D9C7A4;font:600 11px Poppins,sans-serif;text-transform:uppercase;letter-spacing:.04em}
 .cfitem .camdesenho{width:70px;height:52px;display:grid;place-items:center;filter:drop-shadow(0 3px 4px rgba(0,0,0,.6))}
@@ -4100,7 +4100,7 @@ const FILTROS = [
   // Quatro Tempos: câmera de brinquedo de várias lentes: cores saturadas, vinheta forte, granulado
   { id: "cam-lomo", cat: "Câmeras", nome: "Quatro Tempos", m: [.98, .04, 0, .02, 1.02, .02, 0, .05, .9], lift: 0, con: 1.32, sat: 1.12, split: [[14, 22, 10], [255, 236, 190]], add: [0, 4, -4], vin: .2, grao: 18, pelicula: 1 },
   { id: "cam-campo", cat: "Câmeras", nome: "Agra 1900", m: [.393, .769, .189, .349, .686, .168, .272, .534, .131], lift: 14, con: 1.18, sat: 1, vin: .72, grao: 28, pelicula: 1 },
-  { id: "cam-campo-vermelho", cat: "Câmeras", nome: "Agra 1900 vermelha", m: [.46, .82, .2, .26, .55, .12, .2, .42, .1], lift: 12, con: 1.2, sat: 1, vin: .72, grao: 28, pelicula: 1 },
+  { id: "cam-campo-vermelho", cat: "Câmeras", nome: "Agra 1900 vermelha", m: [.4, .78, .16, .12, .24, .05, .08, .17, .03], lift: 4, con: 1.32, sat: 1, vin: .72, grao: 28, pelicula: 1 },
   { id: "cam-campo-marrom", cat: "Câmeras", nome: "Agra 1900 marrom", m: [.33, .65, .16, .27, .53, .13, .2, .4, .1], lift: 8, con: 1.24, sat: 1, vin: .75, grao: 28, pelicula: 1 },
   { id: "cam-couro", cat: "Câmeras", nome: "Delhi 1955", m: [1.02, .06, 0, .03, .96, .03, 0, .06, .86], lift: 26, con: .92, sat: .72, split: [[40, 58, 62], [255, 232, 196]], add: [8, 4, -4], vin: .36, grao: 14, pelicula: 1 },
   { id: "cam-cine", cat: "Câmeras", nome: "Cine", lift: 10, con: 1.18, sat: .7, split: [[14, 38, 44], [242, 196, 150]], add: [2, 0, 2], vin: .5, grao: 20, pelicula: 1 },
@@ -5554,7 +5554,7 @@ function quadroCam() {
       fx.globalAlpha = 1; if (intens < .999) fx.drawImage(v, 0, 0, w, hh); fx.globalAlpha = intens; fx.drawImage(fl, 0, 0); fx.globalAlpha = 1;
       // miniaturas dos filtros: tiradas da câmera crua, depois de a luz assentar (~meio segundo)
       C.n = (C.n || 0) + 1;
-      if (C.n === 15) { const cr = document.createElement("canvas"); cr.width = w; cr.height = hh; cr.getContext("2d").drawImage(v, 0, 0, w, hh); S.foto = { ...S.foto, thumbSrc: cr }; S.fotoThumbsDe = null; render(); }
+      if (C.n === 15) { const cr = document.createElement("canvas"); cr.width = w; cr.height = hh; cr.getContext("2d").drawImage(v, 0, 0, w, hh); S.foto = { ...S.foto, thumbSrc: cr }; S.fotoThumbsDe = null; if (!S.camSel) render(); } // nas câmeras da maleta não redesenha a tela (não pisca)
       C.filtrado = true;
     } catch (e) { C.gl = null; } }
     if (!C.filtrado) fx.drawImage(v, 0, 0, w, hh);
@@ -5622,10 +5622,10 @@ function vFotos() {
   const faixa = h("input", { type: "range", min: "0", max: "100", step: "1", value: String(pct), "aria-label": "Intensidade do filtro" });
   faixa.addEventListener("input", () => { S.foto.intens = +faixa.value / 100; rotPct.textContent = faixa.value + "%"; redesenha(); });
   const barraIntensidade = F.filtro && F.filtro !== "original" ? h("label", { class: "intens" }, h("span", { text: "Intensidade" }), faixa, rotPct) : null;
+  // câmera do celular: o estúdio com filtros e adesivos, com o mesmo título da maleta e um voltar claro
   return h("section", { class: "view" },
-    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Registros da Travessia" }))),
-    abasFotos(),
-    h("div", { class: "actions", style: "margin:0 0 6px" }, h("button", { class: "btn ghost", type: "button", onclick: voltaEstante }, "← Estante de câmeras")),
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Arsenal de Travessia" }), h("h1", { text: "Câmera do celular" }))),
+    h("div", { class: "actions", style: "margin:0 0 6px" }, h("button", { class: "btn ghost", type: "button", onclick: voltaEstante }, "← Voltar para a maleta")),
     F.img ? h("div", { class: "estudio" },
       h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas),
         F.vivo ? h("div", { class: "actions camacoes", style: "justify-content:center;align-items:center" },
