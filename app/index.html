@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 12:49";</script>
+<script>window.__VERSAO = "10/10 · 12:51";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1093,6 +1093,10 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .estudiocel .btn.gold{background:linear-gradient(180deg,#D2B378,#9C7A44);color:#2A1C10;border-color:#D2B378}
 .estudiocel .fthumb span{color:#CDB894}.estudiocel .fthumb[aria-selected="true"] span{color:#F3D9A4}
 .estudiocel .fotovazia{background:#33241A;color:#F1E2BC;border-color:rgba(232,192,122,.3)}
+.faixacota{position:fixed;z-index:990;left:10px;right:10px;top:max(10px,env(safe-area-inset-top));display:flex;flex-direction:column;gap:3px;padding:10px 14px;border-radius:12px;background:#3F4938;color:#F5EFE4;font-size:12.5px;line-height:1.4;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.faixacota.lider{background:#8A3F32}
+.faixacota b{font-size:13.5px}
+.faixacota a{align-self:flex-start;margin-top:5px;padding:6px 12px;border-radius:999px;background:#F5EFE4;color:#8A3F32;font-weight:600;text-decoration:none}
 /* a fileira sempre para com uma câmera inteira encostada no fio dourado, nunca cortada pela metade */
 .cfbaixo .cffita{scroll-snap-type:x mandatory;scroll-padding-left:18px}.cfbaixo .cfitem{flex:0 0 calc((100% - 12px) / 3);min-width:0;scroll-snap-align:start}
 .cftopovazio{width:40px;flex:0 0 40px}
@@ -5151,6 +5155,19 @@ function vEstante() {
 }
 const fotoDaCamera = c => ({ filtro: "original", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "original", legenda: "", cidade: "", data: "", ...(c.preset || {}), adesivos: (c.preset && c.preset.adesivos || []).map(a => ({ ...a })) });
 document.addEventListener("contextmenu", e => { if (e.target.closest?.(".camfull,.nomovisor,.carteira")) e.preventDefault(); });
+// limite grátis do Firebase acabou: faixa no topo. A líder vê o que fazer e o botão do Firebase; os viajantes sabem que mensagens e fotos não estão saindo
+function faixaCota(esgotou) {
+  document.querySelector(".faixacota")?.remove();
+  if (!esgotou) return;
+  const f = S.isOwner
+    ? h("div", { class: "faixacota lider", role: "alert" }, h("b", { text: "O app atingiu o limite grátis de hoje." }),
+        h("span", { text: "Chat, mural e mapa voltam sozinhos por volta das 13h30 (horário da Índia), ou na hora se você ativar o plano Blaze." }),
+        h("a", { href: "https://console.firebase.google.com/project/app-caravana-70c8a/usage/details", target: "_blank", rel: "noopener" }, "Abrir o Firebase"))
+    : h("div", { class: "faixacota", role: "status" }, h("b", { text: "A conversa está pausada por um tempo." }),
+        h("span", { text: "Mensagens e fotos novas não estão sendo enviadas agora. Tente de novo mais tarde; o que já está no app continua aqui." }));
+  document.body.append(f);
+}
+window.addEventListener("caravana-cota", e => faixaCota(e.detail));
 // deixa as fotos de todas as câmeras prontas na memória, para a troca não mostrar fundo preto enquanto a imagem chega
 function preparaCameras() { if (S.camPrep) return; S.camPrep = []; for (const c of CAMERAS_C) { const i = new Image(); i.src = "img/cameras/" + c.id + "-corpo.jpg"; i.decode?.().catch(() => {}); S.camPrep.push(i); } }
 function escolheCamera(id) {

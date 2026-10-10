@@ -304,14 +304,30 @@ function achata(obj, pre = "", out = {}) {
   return out;
 }
 const snapDoc = s => ({ id: s.id, exists: s.exists, data: () => s.data() || {} });
+// cota do Firebase: quando o limite grátis do dia acaba, o banco recusa com "resource-exhausted".
+// Avisa o app (faixa para a líder e para os viajantes) e tenta de novo a cada 2 min até o banco voltar.
+let cotaEsgotada = false;
+const ehCota = e => !!e && (e.code === "resource-exhausted" || /resource.exhausted|quota/i.test(e.message || ""));
+function marcaCota(v) { if (cotaEsgotada === v) return; cotaEsgotada = v; window.__cotaEsgotada = v; window.dispatchEvent(new CustomEvent("caravana-cota", { detail: v })); }
+const vigia = p => p.catch(e => { if (ehCota(e)) marcaCota(true); throw e; });
+// escuta que se refaz sozinha depois de uma recusa por cota (o Firestore encerra a escuta quando dá erro)
+function ouve(q, conv, cb, err) {
+  let off = null, parou = false, t = null;
+  const liga = () => { off = q.onSnapshot(s => { if (!s.metadata.fromCache) marcaCota(false); cb(conv(s)); }, e => {
+    if (ehCota(e)) { marcaCota(true); if (!parou) t = setTimeout(liga, 120000); }
+    (err || (() => {}))(e);
+  }); };
+  liga();
+  return () => { parou = true; clearTimeout(t); off && off(); };
+}
 function refDoc(r) {
   return {
     id: r.id,
-    get: async () => snapDoc(await r.get()),
-    set: d => r.set(d),
-    update: d => r.update(achata(d)),
-    delete: () => r.delete(),
-    onSnapshot: (cb, err) => r.onSnapshot(s => cb(snapDoc(s)), err || (() => {})),
+    get: async () => snapDoc(await vigia(r.get())),
+    set: d => vigia(r.set(d)),
+    update: d => vigia(r.update(achata(d))),
+    delete: () => vigia(r.delete()),
+    onSnapshot: (cb, err) => ouve(r, snapDoc, cb, err),
   };
 }
 function refCol(q, base) {
@@ -320,9 +336,9 @@ function refCol(q, base) {
     orderBy: (f, d) => refCol(q.orderBy(f, d || "asc"), base),
     limit: n => refCol(q.limit(n), base),
     where: (a, op, b) => refCol(q.where(a, op === "eq" ? "==" : op, b), base),
-    onSnapshot: (cb, err) => q.onSnapshot(qs => cb({ docs: qs.docs.map(snapDoc), size: qs.size, empty: qs.empty }), err || (() => {})),
-    get: async () => { const qs = await q.get(); return { docs: qs.docs.map(snapDoc), size: qs.size, empty: qs.empty }; },
-    add: async d => { const r = await base.add(d); return { id: r.id }; },
+    onSnapshot: (cb, err) => ouve(q, qs => ({ docs: qs.docs.map(snapDoc), size: qs.size, empty: qs.empty }), cb, err),
+    get: async () => { const qs = await vigia(q.get()); return { docs: qs.docs.map(snapDoc), size: qs.size, empty: qs.empty }; },
+    add: async d => { const r = await vigia(base.add(d)); return { id: r.id }; },
     doc: id => refDoc(id ? base.doc(id) : base.doc()),
   };
 }
@@ -390,7 +406,7 @@ const assets = {
 const VIVO = 5 * 60 * 1000; // quem não avisou há 5 min sai do "online"
 let minhaPresenca = {}, batida = null;
 function iniciarPresenca() {
-  const bate = () => fs.doc("presenca/" + me.id).set({ by: me.id, presence: minhaPresenca, ts: Date.now() }).catch(() => {});
+  const bate = () => fs.doc("presenca/" + me.id).set({ by: me.id, presence: minhaPresenca, ts: Date.now() }).then(() => marcaCota(false), e => { if (ehCota(e)) marcaCota(true); });
   bate(); clearInterval(batida); batida = setInterval(bate, 120000); // avisa que está online a cada 2 min (economiza a cota do Firebase)
   window.addEventListener("pagehide", () => fs.doc("presenca/" + me.id).delete().catch(() => {}));
 }
