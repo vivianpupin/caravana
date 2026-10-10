@@ -1047,6 +1047,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfcorpo.comfoto>*:not(.cfpalco){pointer-events:none}
 .cfcorpo.comfoto>* button,.cfcorpo.comfoto>* a,.cfcorpo.comfoto .cfdepois,.cfcorpo.comfoto .cfdepois *{pointer-events:auto}
 .cfbotaofoto{z-index:5}
+.cf-campo .cfchave{padding:4px 7px;font-size:8.5px;gap:5px}.cf-campo .cfchave i{width:24px}
 body:has(.camfull) nav.tabs,body:has(.camfull) .navmais{display:none!important}
 .cfluzfoto{position:absolute;width:6.4%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;font-size:0;pointer-events:none;transition:background .1s,box-shadow .1s}
 .cfluzfoto.on{background:radial-gradient(circle,#FFE08A,#F2A63A 55%,rgba(242,166,58,0) 72%);box-shadow:0 0 18px 6px rgba(242,180,70,.7)}
@@ -4946,13 +4947,14 @@ const FOTO_CAM = {
   super8: { visor: [.2, .105, .795, .365], botao: [.498, .601, .09] },
   quatro: { visor: [.255, .31, .73, .625], botao: [.512, .786, .09], luzes: [.356, .433, .512, .589].map(y => [.146, y]) },
   // a de madeira mostra a imagem de cabeça para baixo no vidro fosco, como as câmeras de campo de verdade
-  campo: { visor: [.2, .2, .8, .72], botao: [.6, .875, .07] },
-  couro: { visor: [.655, .255, .81, .6], botao: [.39, .51, .07] },
+  campo: { visor: [.196, .193, .805, .78], botao: [.489, .869, .05] },
+  couro: { visor: [.643, .252, .824, .608], botao: [.381, .513, .074] },
 };
 // compartimentos da mala (fração da imagem): 3 colunas × 2 fileiras
 const MALA_CASAS = [[.155, .41, .35, .545], [.39, .41, .605, .545], [.635, .41, .86, .545], [.135, .575, .345, .725], [.38, .575, .62, .725], [.645, .575, .88, .725]];
 // mala de 8 (4 colunas × 2 fileiras): ajustar quando a foto chegar
-const MALA_OITO = [[.13, .40, .31, .55], [.31, .40, .5, .55], [.5, .40, .69, .55], [.69, .40, .87, .55], [.13, .56, .31, .72], [.31, .56, .5, .72], [.5, .56, .69, .72], [.69, .56, .87, .72]];
+const MALA_OITO = { celular: [.117, .41, .307, .548], rajastao: [.312, .41, .487, .548], descartavel: [.493, .41, .678, .548], campo: [.683, .41, .879, .548],
+  instantanea: [.095, .56, .307, .726], quatro: [.312, .56, .487, .726], super8: [.493, .56, .678, .726], couro: [.683, .56, .879, .726] };
 const MALA_CHEIA = [[.159, .403, .365, .548], [.376, .403, .614, .548], [.625, .403, .869, .548], [.122, .565, .36, .729], [.371, .565, .625, .729], [.636, .565, .89, .729]];
 const fotoOk = S.fotoOk = {};
 // confere uma vez se cada imagem já existe; se existir, a tela passa a usar a foto
@@ -4967,7 +4969,7 @@ function vEstante() {
       if (!cheia && !vazia) return null;
       const src = oito ? "img/cameras/mala-oito.jpg" : cheia ? "img/cameras/mala-cheia.jpg" : "img/cameras/mala.jpg", casas = oito ? MALA_OITO : cheia ? MALA_CHEIA : MALA_CASAS;
       return h("div", { class: "malafoto" + (cheia ? " cheia" : "") }, h("img", { src, alt: "", class: "estantefundo" }),
-        CAMERAS_C.slice(0, casas.length).map((c, k) => { const [x0, y0, x1, y1] = casas[k];
+        (oito ? CAMERAS_C.filter(c => casas[c.id]) : CAMERAS_C.slice(0, casas.length)).map((c, k) => { const [x0, y0, x1, y1] = oito ? casas[c.id] : casas[k];
           return h("button", { type: "button", class: "namala nm-" + c.id, "aria-label": c.nome, style: `left:${x0 * 100}%;top:${y0 * 100}%;width:${(x1 - x0) * 100}%;height:${(y1 - y0) * 100}%;--giro:${[-3, 2, -1.5, 2.5, -2, 1.5][k] || 0}deg`, onclick: () => escolheCamera(c.id) },
             cheia ? null : imgCam(c)); })); })();
   const fil = [CAMERAS_C.slice(0, 2), CAMERAS_C.slice(2, 4), CAMERAS_C.slice(4)];
