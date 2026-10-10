@@ -1068,6 +1068,7 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .celsub{margin:4px 0 0;font-size:12.5px;line-height:1.45;color:#CDB894}
 .celcapa{width:46px;height:auto;flex:none;filter:sepia(.2) drop-shadow(0 4px 6px rgba(0,0,0,.6))}
 .estudiocel .fotoframe{border-radius:14px;padding:8px;background:linear-gradient(180deg,#14100C,#0A0806);box-shadow:inset 0 0 0 1.5px rgba(232,192,122,.35),0 10px 24px rgba(0,0,0,.6)}
+.estudiocel .fotoframe{width:fit-content;max-width:100%;align-self:center;margin:0 auto}
 .celmesa{margin:0 0 4px;font:700 12px "Courier Prime",monospace;letter-spacing:.22em;text-transform:uppercase;color:#E2C27E;text-align:center;padding-bottom:8px;border-bottom:1.5px dashed rgba(214,180,128,.3)}
 .estudiocel .fcontrols{background:rgba(20,13,8,.45);border:1px solid rgba(232,192,122,.18);border-radius:14px;padding:16px 14px;box-shadow:inset 0 2px 10px rgba(0,0,0,.4)}
 .estudiocel .lab{font-family:"Courier Prime",monospace;letter-spacing:.16em;color:#C9A96A!important}
@@ -5643,7 +5644,8 @@ function vFotos() {
   if (!S.camSel) return vEstante();
   if (S.camSel !== "celular") return vCameraFisica(CAMERAS_C.find(c => c.id === S.camSel) || CAMERAS_C[1]);
   const F0 = S.foto || (S.foto = { filtro: "original", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "original", legenda: "", cidade: "", data: "" });
-  if (!F0.img && podeCamera() && !S.camFalhou) { const C = iniciaVivo(); S.foto = { ...F0, img: C.frame, vivo: true }; }
+  // a câmera do celular fotografa em pé (9:16), como as outras câmeras da maleta; foto escolhida da fototeca fica do jeito que é
+  if (!F0.img && podeCamera() && !S.camFalhou) { const C = iniciaVivo(); S.foto = { ...F0, img: C.frame, vivo: true, recorte: 9 / 16 }; }
   const F = S.foto;
   const hoje = hojeIso(), dia = (S.roteiro?.dias || []).find(d => d.iso === hoje);
   if (!F.cidade && !F._auto) { F.cidade = dia ? dia.cidade.split(" ")[0] : ""; F._auto = true; }
@@ -5653,7 +5655,7 @@ function vFotos() {
   const msg = h("p", { class: "msg", role: "status" });
   const fi = h("input", { type: "file", accept: "image/*", id: "estudio-foto", hidden: true, onchange: async () => {
     const f = fi.files[0]; if (!f) return;
-    try { const bmp = await abreFoto(f); fechaVivo(); S.foto = { ...S.foto, img: bmp, vivo: false, filtro: "original", intens: 1 }; render(); } catch (e) { msg.textContent = "Não consegui abrir essa foto. Tente outra, em JPG ou PNG."; msg.className = "msg err"; }
+    try { const bmp = await abreFoto(f); fechaVivo(); S.foto = { ...S.foto, img: bmp, vivo: false, filtro: "original", intens: 1, recorte: null }; render(); } catch (e) { msg.textContent = "Não consegui abrir essa foto. Tente outra, em JPG ou PNG."; msg.className = "msg err"; }
     fi.value = "";
   } });
   const set = (k, v) => { S.foto = { ...S.foto, [k]: v }; render(); };
