@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 09:30";</script>
+<script>window.__VERSAO = "10/10 · 09:31";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -965,6 +965,13 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .nvcompart{width:62px;height:62px;border:0;border-radius:50%;background:none;color:#8E8E8E;cursor:pointer}
 .nvacao{width:44px;height:44px;border:0;border-radius:50%;background:none;color:#6E6E6E;cursor:pointer}
 .nomovisor .msg{color:#ccc;min-height:1em;margin:6px 0 0}
+.quatrovisor{justify-content:flex-start;overflow-y:auto;background-color:#4F5A42;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .5 0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>");padding-top:max(70px,calc(env(safe-area-inset-top) + 56px))}
+.quatrovisor .nvfechar{background:rgba(0,0,0,.25);color:#E8E4D6}
+.qvlentes{display:flex;gap:6px;padding:9px 12px;border-radius:999px;background:linear-gradient(180deg,#1D2117,#0B0D08);box-shadow:0 0 0 5px #3E4734,0 0 0 6px rgba(0,0,0,.5),inset 0 2px 4px rgba(0,0,0,.8);margin-bottom:34px;flex:0 0 auto}
+.qvlentes i{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#8A8F96 0 8%,#2C3036 22%,#0A0B0D 60%,#1A1C20 70%,#050506);box-shadow:0 0 0 2px #2A2E24,inset 0 0 0 3px #15170F}
+.qvlista{display:flex;flex-direction:column;gap:14px;width:100%;max-width:520px;padding-bottom:24px}
+.qvfoto{border:0;padding:0;background:none;cursor:pointer;box-shadow:0 8px 18px rgba(0,0,0,.45)}
+.qvfoto img{width:100%;display:block}
 .cfvisor{width:100%;display:grid;place-items:center;flex:1;min-height:0}
 .cfmoldura{display:grid;place-items:center;padding:14px;border-radius:22px;background:linear-gradient(180deg,#2C2926,#141210);box-shadow:inset 0 2px 3px rgba(255,255,255,.12),inset 0 -3px 6px rgba(0,0,0,.6),0 14px 26px rgba(0,0,0,.55)}
 .cfjanela{position:relative;overflow:hidden;background:#0B0908;display:grid;place-items:center;border-radius:10px;box-shadow:inset 0 0 0 2px #000,inset 0 0 18px rgba(0,0,0,.8)}
@@ -4951,14 +4958,15 @@ function vCameraFisica(c) {
   // Quatro Tempos: quatro disparos seguidos; cada um vira uma faixa em pé, lado a lado (como a câmera de 4 lentes), com divisórias pretas irregulares
   const rajada = async () => {
     const C = S.camEst, v = C && C.video; if (!v || !v.videoWidth || C.rajando) return; C.rajando = true;
-    const vw = v.videoWidth, vh = v.videoHeight, R = 3 / 2;
-    let sw = vw, sh = vw / R; if (sh > vh) { sh = vh; sw = vh * R; }
-    const sx = (vw - sw) / 2, sy = (vh - sh) / 2, W = Math.round(Math.min(2000, sw)), H = Math.round(W / R), fx = W / 4, k0 = sw / 4;
+    // como a 1234 da NOMO: cada lente vê o MEIO da cena num instante diferente, e as 4 faixas ficam lado a lado
+    const vw = v.videoWidth, vh = v.videoHeight, R = 3 / 2, W = 2000, H = Math.round(W / R), fx = W / 4;
+    let sh = vh, k0 = sh * fx / H; if (k0 > vw) { k0 = vw; sh = k0 * H / fx; }
+    const sx = (vw - k0) / 2, sy = (vh - sh) / 2;
     const out = document.createElement("canvas"); out.width = W; out.height = H; const o = out.getContext("2d");
     for (let k = 0; k < 4; k++) {
       cliqueSom(); if (navigator.vibrate) navigator.vibrate(18);
       document.querySelectorAll(".cfluz").forEach((l, i) => l.classList.toggle("on", i <= k));
-      o.drawImage(v, sx + k * k0, sy, k0, sh, k * fx, 0, fx, H);
+      o.drawImage(v, sx, sy, k0, sh, k * fx, 0, fx, H);
       if (k < 3) await new Promise(res => setTimeout(res, 260));
     }
     // divisórias: linhas pretas finas, levemente tortas, como a borda do filme entre as lentes
@@ -4984,7 +4992,7 @@ function vCameraFisica(c) {
     c.id === "super8" ? [h("span", { class: "cfmira", "aria-hidden": "true" }), h("span", { class: "cfrazao", text: F.recorte === 2.35 ? "2.35:1" : "4:3" })] : null);
   const visor = h("div", { class: "cfvisor" }, h("div", { class: "cfmoldura" }, janela));
   const obturador = h("button", { type: "button", class: "cfdisparo", "aria-label": "Tirar foto", onclick: dispara }, c.id === "descartavel" ? h("i", { "aria-hidden": "true" }, "• • •") : c.rajadas ? h("i", { "aria-hidden": "true" }, "AGORA") : null);
-  const miniatura = h("button", { type: "button", class: "cfmini" + (S.revelando ? " revelando" : ""), "aria-label": "Ver as fotos", onclick: () => { if (ult) verFotos(0); } },
+  const miniatura = h("button", { type: "button", class: "cfmini" + (S.revelando ? " revelando" : ""), "aria-label": "Ver as fotos", onclick: () => { if (ult) c.rajadas ? verQuatro() : verFotos(0); } },
     ult ? h("img", { src: ult.url || (ult.url = URL.createObjectURL(ult.blob)), alt: "" }) : null);
   const chave = (rotA, rotB, ligadoB, fn, cls) => h("button", { type: "button", class: "cfchave " + (cls || "") + (ligadoB ? " b" : ""), onclick: fn }, h("span", { text: rotA }), h("i", { "aria-hidden": "true" }), h("span", { text: rotB }));
   const controles = h("div", { class: "cfcontroles" },
@@ -5051,6 +5059,17 @@ async function marcaCaravana(cv, g) {
   desenha(img);
 }
 // visor de fotos em tela preta, como a NOMO: a foto no meio, a marquinha no canto e a seta de compartilhar embaixo
+// Quatro Tempos: as fotos dela ficam numa lista sobre o corpo verde da câmera, com as 4 lentes em cima (como a 1234 da NOMO)
+function verQuatro() {
+  const todas = S.fotosDiario || [], l = todas.filter(x => x.camera === "Quatro Tempos"); if (!l.length) return verFotos(0);
+  document.querySelector(".nomovisor")?.remove();
+  const tela = h("div", { class: "nomovisor quatrovisor", role: "dialog", "aria-label": "Fotos da Quatro Tempos" },
+    h("button", { type: "button", class: "nvfechar", "aria-label": "Fechar", onclick: () => tela.remove() }, "×"),
+    h("div", { class: "qvlentes", "aria-hidden": "true" }, [1, 2, 3, 4].map(() => h("i"))),
+    h("div", { class: "qvlista" }, l.map(it => h("button", { type: "button", class: "qvfoto", "aria-label": "Abrir foto", onclick: () => verFotos(todas.indexOf(it)) },
+      h("img", { src: it.url || (it.url = URL.createObjectURL(it.blob)), alt: "", loading: "lazy" })))));
+  document.body.append(tela);
+}
 function verFotos(i) {
   const l = S.fotosDiario || []; if (!l.length) return; i = Math.max(0, Math.min(i, l.length - 1)); const it = l[i];
   document.querySelector(".nomovisor")?.remove(); const msg = h("p", { class: "msg", role: "status" });
