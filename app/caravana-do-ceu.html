@@ -920,7 +920,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .contato .quadro{background:none;border:0;padding:0;display:flex;flex-direction:column;gap:3px;cursor:pointer}
 .contato .quadro img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:2px}
 .contato .quadro span{font:500 9px "Courier Prime",monospace;color:#E8C07A;text-align:left;line-height:1.2}
-.permissoes{position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;padding:24px;background:#1B1511;isolation:isolate;overflow:auto}
+.permissoes{animation:permEntra .5s ease both;position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;padding:24px;background:#1B1511;isolation:isolate;overflow:auto}
+@keyframes permEntra{from{opacity:0}to{opacity:1}}
 .permissoes::before{content:"";position:fixed;inset:-40px;background:url(img/abertura-agra.webp) 50% 35%/cover;filter:blur(7px) brightness(.72) saturate(1.1);z-index:-1}
 .pcartao{width:100%;max-width:320px;border:1px solid rgba(232,192,122,.35);border-radius:16px;padding:14px 16px 6px;background:rgba(27,21,17,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#F1E2BC;text-align:center}
 .pcartao .psimb{display:none}
