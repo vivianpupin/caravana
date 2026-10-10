@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 12:17";</script>
+<script>window.__VERSAO = "10/10 · 12:24";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1613,6 +1613,8 @@ function h(tag, attrs, ...kids) {
     else if (k === "text") el.textContent = v;
     else el.setAttribute(k, v === true ? "" : v);
   }
+  // imagem que já estava na tela aparece na hora quando a aba é redesenhada, sem um instante em branco (o "pisca")
+  if (tag === "img" && !(attrs && attrs.decoding)) el.decoding = "sync";
   for (const k of kids.flat(Infinity)) if (k != null && k !== false) el.append(k.nodeType ? k : String(k));
   return el;
 }
@@ -5063,7 +5065,9 @@ const MALA_OITO = { celular: [0.091, 0.389, 0.294, 0.560], rajastao: [0.300, 0.3
 const MALA_CHEIA = [[.159, .403, .365, .548], [.376, .403, .614, .548], [.625, .403, .869, .548], [.122, .565, .36, .729], [.371, .565, .625, .729], [.636, .565, .89, .729]];
 const fotoOk = S.fotoOk = {};
 // confere uma vez se cada imagem já existe; se existir, a tela passa a usar a foto
-function temFoto(src) { if (src in fotoOk) return fotoOk[src]; fotoOk[src] = false; const i = new Image(); i.onload = () => { fotoOk[src] = true; if (S.tab === "fotos") render(); }; i.src = src; return false; }
+// fotos das câmeras que existem no app: sabendo de antemão, a aba Fotos já abre pronta, sem redesenhar a tela a cada imagem que chega (era isso que fazia o app piscar)
+const FOTOS_CAM = new Set(["campo-corpo.jpg", "campo.png", "carteira-foto.jpg", "carteira.webp", "celular-estante.png", "celular.png", "couro-corpo.jpg", "couro.png", "descartavel-corpo.jpg", "descartavel-estante.png", "descartavel.png", "estante.jpg", "etiqueta1.png", "etiqueta2.png", "etiqueta3.png", "instantanea-corpo.jpg", "instantanea-estante.png", "instantanea.png", "mala-cheia.jpg", "mala-oito.webp", "mala-papel.webp", "mala.jpg", "maleta-foto.jpg", "quatro-corpo.jpg", "quatro-estante.png", "quatro.png", "rajastao-corpo.jpg", "rajastao-estante.png", "rajastao.png", "super8-corpo.jpg", "super8-estante.png", "super8.png"]);
+function temFoto(src) { const m = /^img\/cameras\/(.+)$/.exec(src); if (m) return FOTOS_CAM.has(m[1]); if (src in fotoOk) return fotoOk[src]; fotoOk[src] = false; const i = new Image(); i.onload = () => { fotoOk[src] = true; if (S.tab === "fotos") render(); }; i.src = src; return false; }
 // naEstante: versão da foto já com a luz quente e as sombras da estante
 const imgCam = (c, naEstante) => { const src = "img/cameras/" + c.id + (naEstante ? "-estante" : "") + ".png";
   if (temFoto(src)) return h("div", { class: "camdesenho camfoto", "aria-hidden": "true" }, h("img", { src, alt: "" }));
@@ -5419,6 +5423,8 @@ async function guardaNoDiario(blob, c) {
 async function lerDiario() {
   try { const db = await bancoDiario(); return await new Promise((ok, no) => { const q = db.transaction("fotos").objectStore("fotos").getAll(); q.onsuccess = () => ok(q.result.sort((a, b) => b.ts - a.ts)); q.onerror = () => no(q.error); }); } catch (e) { return []; }
 }
+// lê as fotos guardadas logo depois que o app abre, para a aba Fotos não precisar redesenhar quando elas chegam
+setTimeout(() => { if (S.fotosDiario) return; lerDiario().then(l => { if (!S.fotosDiario) { S.fotosDiario = l; S.fotosDiarioPronto = true; } }).catch(() => {}); }, 1500);
 async function apagaDoDiario(id) { try { const db = await bancoDiario(); await new Promise(ok => { const t = db.transaction("fotos", "readwrite"); t.objectStore("fotos").delete(id); t.oncomplete = ok; t.onerror = ok; }); } catch (e) {} S.fotosDiario = null; render(); }
 // Registros: as fotos ficam dentro de uma carteira de couro de viajante, 4 por página; arrastando para o lado, aparecem as anteriores
 const CARTEIRA_FOTO = [[0.134, 0.103, 0.396, 0.431], [0.595, 0.103, 0.863, 0.431], [0.132, 0.559, 0.396, 0.890], [0.595, 0.559, 0.866, 0.890]];
@@ -7632,6 +7638,8 @@ function vRupias() {
 // ---------- dados ----------
 // cada coleção só redesenha as abas que mostram aqueles dados (evita a tela pular à toa)
 const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos"], cartas: ["travessia", "pombo"], cartasP: ["travessia", "pombo"], pombosIn: ["pombo"], pombosOut: ["pombo"] };
+let calmoT = 0, calmoUlt = 0;
+function renderCalmo() { if (calmoT) return; const falta = Math.max(0, 15000 - (Date.now() - calmoUlt)); calmoT = setTimeout(() => { calmoT = 0; calmoUlt = Date.now(); if (!(S.camSel && S.tab === "fotos") && !document.querySelector(".sheet") && !document.activeElement?.matches?.("input,textarea,select,[contenteditable]")) render(); }, falta); }
 function listen(col, key, q, after) {
   let primeira = true;
   (q || S.db.collection(col)).onSnapshot(snap => {
@@ -7640,7 +7648,10 @@ function listen(col, key, q, after) {
     // aviso novo da líder: redesenha qualquer aba para ele aparecer em destaque na hora
     let avisoNovo = false;
     if (key === "chat") { const av = avisoAtual(); if (av && avisoEmDestaque(av) && S.avisoVisto !== av.id) { S.avisoVisto = av.id; avisoNovo = !primeira; } }
-    if (primeira || avisoNovo || !USA[key] || USA[key].includes(S.tab)) render();
+    // com a câmera aberta, novidade dos outros não redesenha a tela (redesenhar reinicia o visor e a tela pisca)
+    // posições chegam de todo mundo a cada minuto: o mapa redesenha no máximo a cada 15 s
+    const quer = primeira || avisoNovo || !USA[key] || USA[key].includes(S.tab);
+    if (quer && (primeira || avisoNovo || !(S.camSel && S.tab === "fotos"))) { if (key === "posicoes" && !primeira) renderCalmo(); else render(); }
     primeira = false; refreshSheet();
   }, () => { S.dbReady = true; if (after) after(); render(); });
 }
