@@ -976,14 +976,15 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 /* a luz do abajur vem da esquerda: quem está à direita fica um pouco mais na sombra */
 .prateleirafoto .camitem:last-child .camdesenho svg,.prateleirafoto .camitem:last-child .camfoto img{filter:brightness(.66) sepia(.28) saturate(.95) contrast(1.08) drop-shadow(-2px 0 3px rgba(0,0,0,.55))}
 .prateleirafoto .naprat-instantanea .camfoto img{filter:brightness(.8) sepia(.18) saturate(1.05) contrast(1.04) drop-shadow(-2px 0 3px rgba(0,0,0,.55))}
+.prateleirafoto .camfoto img{filter:drop-shadow(-2px 0 3px rgba(0,0,0,.6))!important}
 .naprat-celular{--h:62%}.naprat-rajastao{--h:38%}.naprat-descartavel{--h:36%}.naprat-instantanea{--h:70%}.naprat-quatro{--h:68%}.naprat-super8{--h:27%}
 /* etiqueta de papel envelhecido presa com um alfinete na parede, logo acima de cada câmera */
-.prateleirafoto .etiqueta{position:absolute;bottom:calc(var(--h,60%) + 7px);left:50%;transform:translateX(-50%) rotate(-2.5deg);font:700 6.5px/1.2 "Courier Prime",monospace;letter-spacing:.04em;padding:6px 7px 2px;margin:0;white-space:nowrap;border-radius:0;color:rgba(46,28,14,.78);
-  background:radial-gradient(ellipse at 18% 70%,rgba(120,72,24,.35),rgba(120,72,24,0) 40%),radial-gradient(ellipse at 85% 25%,rgba(110,64,20,.3),rgba(110,64,20,0) 35%),linear-gradient(180deg,#D8C59A,#BFA572);
-  box-shadow:inset 0 0 5px rgba(92,52,14,.75),inset 0 0 1px rgba(60,30,8,.9);
-  clip-path:polygon(0 4%,9% 0,23% 3%,41% 0,58% 2%,76% 0,91% 3%,100% 1%,99% 38%,100% 71%,98% 100%,80% 97%,62% 100%,44% 97%,27% 100%,12% 96%,1% 100%,0 64%,2% 33%);
-  filter:brightness(.6) sepia(.45) drop-shadow(0 2px 2px rgba(0,0,0,.7));text-shadow:0 0 1px rgba(46,28,14,.3)}
-.prateleirafoto .camitem:last-child .etiqueta{transform:translateX(-50%) rotate(2deg);filter:brightness(.52) sepia(.45) drop-shadow(0 2px 2px rgba(0,0,0,.7))}
+.prateleirafoto .etiqueta{position:absolute;bottom:calc(var(--h,60%) + 7px);left:50%;transform:translateX(-50%) rotate(-2.5deg);font:700 6.5px/1.2 "Courier Prime",monospace;letter-spacing:.04em;padding:6px 8px 3px;margin:0;white-space:nowrap;border-radius:0;color:rgba(42,24,10,.72);
+  background:url(img/cameras/etiqueta1.png) center/100% 100% no-repeat;box-shadow:none;clip-path:none;
+  filter:brightness(.66) sepia(.15) drop-shadow(0 2px 2px rgba(0,0,0,.75));text-shadow:0 0 .6px rgba(42,24,10,.5)}
+.naprat-rajastao .etiqueta,.naprat-quatro .etiqueta{background-image:url(img/cameras/etiqueta2.png)}
+.naprat-descartavel .etiqueta,.naprat-super8 .etiqueta{background-image:url(img/cameras/etiqueta3.png)}
+.prateleirafoto .camitem:last-child .etiqueta{transform:translateX(-50%) rotate(2deg);filter:brightness(.58) sepia(.15) drop-shadow(0 2px 2px rgba(0,0,0,.75))}
 .prateleirafoto .etiqueta::before{content:"";position:absolute;left:50%;top:1px;width:3.5px;height:3.5px;margin-left:-1.75px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#B89A5A,#4A3414)}
 .camfoto img{width:100%;height:auto;max-height:130px;object-fit:contain;filter:drop-shadow(0 8px 6px rgba(0,0,0,.6))}
 .cfitem .camfoto img{max-height:52px}
@@ -4881,7 +4882,8 @@ const FOTO_CAM = {
 const fotoOk = S.fotoOk = {};
 // confere uma vez se cada imagem já existe; se existir, a tela passa a usar a foto
 function temFoto(src) { if (src in fotoOk) return fotoOk[src]; fotoOk[src] = false; const i = new Image(); i.onload = () => { fotoOk[src] = true; if (S.tab === "fotos") render(); }; i.src = src; return false; }
-const imgCam = c => { const src = "img/cameras/" + c.id + ".png";
+// naEstante: versão da foto já com a luz quente e as sombras da estante
+const imgCam = (c, naEstante) => { const src = "img/cameras/" + c.id + (naEstante ? "-estante" : "") + ".png";
   if (temFoto(src)) return h("div", { class: "camdesenho camfoto", "aria-hidden": "true" }, h("img", { src, alt: "" }));
   const d = h("div", { class: "camdesenho", "aria-hidden": "true" }); d.innerHTML = c.svg; return d; };
 // estante: tábuas de madeira com as câmeras em cima e uma etiqueta de papel com o nome
@@ -4892,7 +4894,7 @@ function vEstante() {
     abasFotos(),
     temFoto("img/cameras/estante.jpg") ? h("div", { class: "estantefoto" }, h("img", { src: "img/cameras/estante.jpg", alt: "", class: "estantefundo" }),
       fil.map((lin, k) => h("div", { class: "prateleirafoto", style: `top:${[16.75, 35.1, 53.4][k]}%` }, lin.map(c => h("button", { type: "button", class: "camitem naprat-" + c.id, onclick: () => escolheCamera(c.id) },
-        imgCam(c), h("span", { class: "etiqueta", text: c.nome })))))) :
+        imgCam(c, true), h("span", { class: "etiqueta", text: c.nome })))))) :
     h("div", { class: "estante" }, fil.map(lin => h("div", { class: "prateleira" },
       h("div", { class: "itens" }, lin.map(c => h("button", { type: "button", class: "camitem", onclick: () => escolheCamera(c.id) },
         imgCam(c), h("span", { class: "etiqueta", text: c.nome })))),
