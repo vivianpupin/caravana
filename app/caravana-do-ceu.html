@@ -1042,6 +1042,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 /* o disparador: sem anel; embaixo, CLICK bordado na própria câmera em fio de ouro gasto */
 .cfbotaofoto{box-shadow:none;animation:none}
 /* selfie: um botãozinho de metal recartilhado no canto da câmera, com SELFIE bordado em ouro */
+.cf-instantanea .cfbotaofoto::after{top:calc(100% + 24px)}
 .cfselfie{position:absolute;z-index:5;width:7.5%;aspect-ratio:1;transform:translate(-50%,-50%);border:0;border-radius:50%;cursor:pointer;padding:0;
   background:radial-gradient(circle at 38% 32%,#F2EEE6 0 10%,#B9B3A8 30%,#6E6A63 62%,#3A3733 78%),repeating-conic-gradient(#2A2724 0 6deg,#8E8A83 6deg 12deg);
   box-shadow:0 0 0 2px #1E1B18,0 3px 5px rgba(0,0,0,.6),inset 0 -2px 3px rgba(0,0,0,.45)}
@@ -4950,14 +4951,14 @@ const CAMERAS_C = [
 // fotos realistas (quando estiverem na pasta img/cameras): corpo de perto com o visor, câmera inteira recortada e a estante
 const FOTO_CAM = {
   // visor: a janela grande onde a imagem ao vivo aparece inteira (no formato da foto que vai sair); botao: o disparador da própria câmera
-  rajastao: { visor: [.625, .24, .825, .595], botao: [.362, .509, .09], selfie: [.74, .8] },
+  rajastao: { visor: [.223, .191, .75, .764], botao: [.502, .879, .085], selfie: [.84, .88] },
   descartavel: { visor: [.705, .385, .915, .565], botao: [.350, .493, .13], selfie: [.82, .8] },
   instantanea: { visor: [.32, .21, .68, .44], botao: [.503, .699, .11], selfie: [.8, .86] },
   super8: { visor: [.2, .105, .795, .365], botao: [.498, .601, .09], selfie: [.8, .76] },
   quatro: { visor: [.255, .31, .73, .625], botao: [.512, .786, .09], selfie: [.8, .88], luzes: [.356, .433, .512, .589].map(y => [.146, y]) },
   // a de madeira mostra a imagem de cabeça para baixo no vidro fosco, como as câmeras de campo de verdade
   campo: { visor: [.196, .193, .805, .78], botao: [.489, .869, .05], selfie: [.82, .87] },
-  couro: { visor: [.643, .252, .824, .608], botao: [.381, .513, .074], selfie: [.74, .8] },
+  couro: { visor: [.223, .166, .759, .779], botao: [.491, .883, .071], selfie: [.84, .9] },
 };
 // compartimentos da mala (fração da imagem): 3 colunas × 2 fileiras
 const MALA_CASAS = [[.155, .41, .35, .545], [.39, .41, .605, .545], [.635, .41, .86, .545], [.135, .575, .345, .725], [.38, .575, .62, .725], [.645, .575, .88, .725]];
