@@ -987,6 +987,12 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfitem .camdesenho svg{max-width:100%;max-height:100%;width:auto;height:auto}
 .cfitem.on span{background:#282722;color:#F1E2BC;border-radius:999px;padding:2px 9px}
 /* fotos realistas */
+.malafoto{position:relative;width:100%;max-width:440px;aspect-ratio:9/16;margin:0 auto;border-radius:14px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.4)}
+.namala{position:absolute;z-index:1;border:0;background:none;padding:6%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.namala .camdesenho{width:100%;height:100%;display:flex;align-items:center;justify-content:center;transform:rotate(var(--giro,0deg))}
+.namala .camdesenho svg,.namala .camfoto img{max-width:100%;max-height:100%;width:auto;height:auto;filter:brightness(.92) sepia(.12) saturate(.95) drop-shadow(5px 7px 5px rgba(0,0,0,.6))}
+.namala .etiqueta{position:absolute;left:50%;bottom:-2%;transform:translateX(-50%) rotate(var(--giro,0deg));font:700 6.5px/1.2 "Courier Prime",monospace;letter-spacing:.04em;padding:5px 7px 2px;margin:0;white-space:nowrap;border-radius:0;color:rgba(42,24,10,.75);background:url(img/cameras/etiqueta1.png) center/100% 100% no-repeat;box-shadow:none;filter:brightness(.92) drop-shadow(0 2px 2px rgba(0,0,0,.6))}
+.nm-rajastao .etiqueta,.nm-quatro .etiqueta{background-image:url(img/cameras/etiqueta2.png)}.nm-descartavel .etiqueta,.nm-super8 .etiqueta{background-image:url(img/cameras/etiqueta3.png)}
 .estantefoto{position:relative;width:100%;max-width:440px;border-radius:14px;overflow:hidden;aspect-ratio:9/16;margin:0 auto;box-shadow:0 12px 28px rgba(0,0,0,.4)}
 .estantefundo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .prateleirafoto{position:absolute;z-index:1;left:21%;right:21%;height:15%;display:flex;justify-content:space-around;align-items:flex-end}
@@ -3966,14 +3972,14 @@ const FILTROS = [
   // filtros próprios das câmeras da estante (estilo de filme de câmera antiga)
   // filtros das câmeras da estante, cada um no jeito do filme que aquela câmera usaria
   // Rajastão 35: negativo colorido quente (tipo Kodak Gold): pele dourada, amarelos fortes, sombras marrons
-  { id: "cam-kodak", cat: "Câmeras", nome: "Rajastão 35", m: [1.06, .04, -.02, .02, 1, .0, -.04, .06, .86], lift: 12, con: 1.08, sat: 1.12, split: [[46, 30, 18], [255, 224, 170]], add: [8, 4, -8], vin: .26, grao: 12, pelicula: 1 },
+  { id: "cam-kodak", cat: "Câmeras", nome: "Rajastão 35", m: [1.03, .02, -.01, .01, 1, 0, -.02, .03, .98], lift: 8, con: 1.12, sat: 1.1, split: [[26, 32, 30], [255, 244, 228]], add: [2, 1, -2], vin: .3, grao: 12, pelicula: 1 },
   // Descartável: filme de câmera descartável (tipo Fuji Superia): verdes e cianos fortes, sombras esverdeadas, contraste e grão
-  { id: "cam-fuji", cat: "Câmeras", nome: "Descartável", m: [.98, .04, 0, .02, 1.04, .02, 0, .06, 1], lift: 16, con: 1.22, sat: 1.2, split: [[8, 52, 44], [255, 240, 214]], add: [-2, 6, 0], vin: .38, grao: 28, pelicula: 1 },
+  { id: "cam-fuji", cat: "Câmeras", nome: "Descartável", m: [1, .02, 0, .01, 1.02, .01, 0, .03, 1], lift: 12, con: 1.16, sat: 1.12, split: [[14, 40, 34], [255, 248, 236]], add: [0, 3, 1], vin: .32, grao: 24, pelicula: 1 },
   // Instantânea: filme instantâneo: lavado, sombras azuladas, luzes cremosas, pouco contraste
-  { id: "cam-instant", cat: "Câmeras", nome: "Instantânea", lift: 34, con: .86, sat: .84, split: [[52, 62, 90], [255, 234, 206]], add: [10, 4, 2], vin: .3, grao: 10, brilho: .22 },
+  { id: "cam-instant", cat: "Câmeras", nome: "Instantânea", lift: 30, con: .9, sat: .9, split: [[48, 60, 86], [255, 244, 230]], add: [3, 2, 2], vin: .28, grao: 10, brilho: .18 },
   // Super 8: cinema de época: cores apagadas, sombras azul-petróleo, pele alaranjada, vinheta pesada
   // Quatro Tempos: câmera de brinquedo de várias lentes: cores saturadas, vinheta forte, granulado
-  { id: "cam-lomo", cat: "Câmeras", nome: "Quatro Tempos", m: [.96, .06, 0, .02, 1.02, .02, -.02, .06, .84], lift: 6, con: 1.16, sat: 1.12, split: [[24, 36, 16], [255, 214, 140]], add: [2, 6, -10], vin: .5, grao: 22, pelicula: 1 },
+  { id: "cam-lomo", cat: "Câmeras", nome: "Quatro Tempos", m: [.99, .03, 0, .01, 1.02, .01, 0, .03, .98], lift: 4, con: 1.2, sat: 1.1, split: [[18, 32, 22], [252, 242, 222]], add: [0, 3, -1], vin: .55, grao: 20, pelicula: 1 },
   { id: "cam-cine", cat: "Câmeras", nome: "Cine", lift: 10, con: 1.18, sat: .7, split: [[14, 38, 44], [242, 196, 150]], add: [2, 0, 2], vin: .5, grao: 20, pelicula: 1 },
   // estilo de câmera de filme de viagem: um para cada cidade
   { id: "cid-delhi", cat: "Profissionais", nome: "Delhi", lift: 34, con: 0.9, sat: 0.85, add: [22, -4, 4], leak: "rosa", brilho: 0.4, vin: 0.32, grao: 18, pelicula: 1 },
@@ -4901,6 +4907,8 @@ const FOTO_CAM = {
   super8: { visor: [.185, .093, .815, .380], botao: [.498, .601, .09] },
   quatro: { visor: [.278, .318, .765, .628], botao: [.512, .786, .09], luzes: [.356, .433, .512, .589].map(y => [.146, y]) },
 };
+// compartimentos da mala (fração da imagem): 3 colunas × 2 fileiras
+const MALA_CASAS = [[.16, .39, .36, .555], [.40, .39, .60, .555], [.64, .39, .84, .555], [.16, .565, .36, .73], [.40, .565, .60, .73], [.64, .565, .84, .73]];
 const fotoOk = S.fotoOk = {};
 // confere uma vez se cada imagem já existe; se existir, a tela passa a usar a foto
 function temFoto(src) { if (src in fotoOk) return fotoOk[src]; fotoOk[src] = false; const i = new Image(); i.onload = () => { fotoOk[src] = true; if (S.tab === "fotos") render(); }; i.src = src; return false; }
@@ -4914,6 +4922,11 @@ function vEstante() {
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Registros da Travessia" }))),
     abasFotos(),
+    // a caravana está em movimento: as câmeras viajam numa mala de couro aberta sobre a areia, cada uma no seu compartimento
+    temFoto("img/cameras/mala.jpg") ? h("div", { class: "malafoto" }, h("img", { src: "img/cameras/mala.jpg", alt: "", class: "estantefundo" }),
+      CAMERAS_C.map((c, k) => { const [x0, y0, x1, y1] = MALA_CASAS[k] || MALA_CASAS[0];
+        return h("button", { type: "button", class: "namala nm-" + c.id, style: `left:${x0 * 100}%;top:${y0 * 100}%;width:${(x1 - x0) * 100}%;height:${(y1 - y0) * 100}%;--giro:${[-3, 2, -1.5, 2.5, -2, 1.5][k]}deg`, onclick: () => escolheCamera(c.id) },
+          imgCam(c), h("span", { class: "etiqueta", text: c.nome })); })) :
     temFoto("img/cameras/estante.jpg") ? h("div", { class: "estantefoto" }, h("img", { src: "img/cameras/estante.jpg", alt: "", class: "estantefundo" }),
       fil.map((lin, k) => h("div", { class: "prateleirafoto", style: `top:${[16.75, 35.1, 53.4][k]}%` }, lin.map(c => h("button", { type: "button", class: "camitem naprat-" + c.id, onclick: () => escolheCamera(c.id) },
         imgCam(c, true), h("span", { class: "etiqueta", text: c.nome })))))) :
