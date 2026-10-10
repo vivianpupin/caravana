@@ -130,7 +130,9 @@ if (pronto) {
   setTimeout(() => { if (!document.getElementById("portao")) document.documentElement.classList.remove("espera"); }, 5000);
 }
 // o próprio app tira o "espera" quando já sabe o que mostrar (boas-vindas ou a página certa); 8 s é só segurança
-const fecharPortao = () => { document.getElementById("portao")?.remove(); setTimeout(() => document.documentElement.classList.remove("espera"), 4000); };
+// quem ainda não viu a boas-vindas do app: o próprio app tira o "espera" quando a boas-vindas já está na tela (antes o app aparecia por trás e piscava)
+const fecharPortao = () => { document.getElementById("portao")?.remove(); let bv = false; try { bv = localStorage.getItem("cdi-bv") === "1"; } catch (e) {}
+  setTimeout(() => document.documentElement.classList.remove("espera"), bv ? 4000 : 9000); };
 const el = (tag, props = {}, ...kids) => { const e = document.createElement(tag); Object.assign(e, props); e.append(...kids); return e; };
 
 // ---------- estado ----------
