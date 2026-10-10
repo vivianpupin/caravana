@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 13:28";</script>
+<script>window.__VERSAO = "10/10 · 13:32";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -4481,8 +4481,16 @@ function emFormato(canvas, foto, fmt) {
   if (S.fotoGeo) Object.assign(S.fotoGeo, { fx: (W - pw) / 2, fy: (H - ph) / 2, fs: esc });
 }
 // fita de filtros: cada um com a miniatura da própria foto; desliza para o lado
+// foto de exemplo (Taj Mahal entre os arcos) para os quadradinhos de filtro enquanto a câmera está ao vivo:
+// assim cada quadradinho sempre mostra o que o filtro faz, mesmo com a câmera escura ou ainda ligando
+function amostraFiltro() {
+  if (S.amostraFiltro) return S.amostraFiltro.complete && S.amostraFiltro.naturalWidth ? S.amostraFiltro : null;
+  const im = S.amostraFiltro = new Image(); im.src = "img/abertura-agra.webp";
+  im.onload = () => { S.fotoThumbsDe = null; if (S.tab === "fotos" && S.camSel === "celular") render(); };
+  return null;
+}
 function tiraFiltros(F, escolhe) {
-  const fonte = (F.vivo && F.thumbSrc) || F.img;
+  const fonte = (F.vivo && amostraFiltro()) || (F.vivo && F.thumbSrc) || F.img;
   if (S.fotoThumbsDe !== fonte) { S.fotoThumbs = {}; S.fotoThumbsDe = fonte; }
   // os profissionais logo depois do Original, para aparecerem primeiro
   const ordem = [FILTROS[0], ...FILTROS.filter(f => f.cat === "Profissionais"), ...FILTROS.slice(1).filter(f => f.cat !== "Festa" && f.cat !== "Profissionais" && f.cat !== "Câmeras")];
@@ -5187,7 +5195,7 @@ function faixaCota(esgotou) {
 }
 window.addEventListener("caravana-cota", e => faixaCota(e.detail));
 // deixa as fotos de todas as câmeras prontas na memória, para a troca não mostrar fundo preto enquanto a imagem chega
-function preparaCameras() { if (S.camPrep) return; S.camPrep = []; for (const c of CAMERAS_C) { const i = new Image(); i.src = "img/cameras/" + c.id + "-corpo.jpg"; i.decode?.().catch(() => {}); S.camPrep.push(i); } }
+function preparaCameras() { amostraFiltro(); if (S.camPrep) return; S.camPrep = []; for (const c of CAMERAS_C) { const i = new Image(); i.src = "img/cameras/" + c.id + "-corpo.jpg"; i.decode?.().catch(() => {}); S.camPrep.push(i); } }
 // botão claro de voltar para a maleta (no alto da câmera, onde a pessoa procura o "voltar")
 function voltaMaleta(onde) {
   const b = h("button", { type: "button", class: "cfvolta" + (onde ? " " + onde : ""), "aria-label": "Voltar para a maleta", onclick: voltaEstante },
@@ -5628,18 +5636,19 @@ function pegaFluxoGuardado(frente) {
   clearTimeout(G.t); S.fluxoGuardado = null; return G.fluxo;
 }
 document.addEventListener("visibilitychange", () => { const G = S.fluxoGuardado; if (document.hidden && G) { G.fluxo.getTracks().forEach(t => t.stop()); clearTimeout(G.t); S.fluxoGuardado = null; } });
-function paraCam() { const C = S.camEst; if (C && C.fluxo) { guardaFluxo(C.fluxo, !!C.frente); C.fluxo = null; } }
+// guarda o fluxo com o lado em que ele foi aberto (o Virar troca C.frente antes; sem isso a câmera de trás voltava no lugar da selfie)
+function paraCam() { const C = S.camEst; if (C && C.fluxo) { guardaFluxo(C.fluxo, !!C.fluxoFrente); C.fluxo = null; } }
 function fechaVivo() { paraCam(); if (S.camEst) S.camEst.rodando = false; S.camEst = null; }
 async function ligaCam() {
   const C = S.camEst; if (!C) return; paraCam();
-  const vez = C.vez = (C.vez || 0) + 1;
+  const vez = C.vez = (C.vez || 0) + 1, lado = !!C.frente;
   try {
     // pede a câmera da frente ou de trás com "exact": sem isso o iPhone às vezes ignora o pedido e continua na de trás (o Virar não virava)
-    const pede = exato => navigator.mediaDevices.getUserMedia({ video: { facingMode: exato ? { exact: C.frente ? "user" : "environment" } : (C.frente ? "user" : "environment"), width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false });
-    const fluxo = pegaFluxoGuardado(!!C.frente) || await pede(true).catch(() => pede(false));
+    const pede = exato => navigator.mediaDevices.getUserMedia({ video: { facingMode: exato ? { exact: lado ? "user" : "environment" } : (lado ? "user" : "environment"), width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false });
+    const fluxo = pegaFluxoGuardado(lado) || await pede(true).catch(() => pede(false));
     // se a câmera já foi fechada ou virada de novo enquanto esperava, desliga este fluxo e sai
-    if (S.camEst !== C || C.vez !== vez) { guardaFluxo(fluxo, !!C.frente); return; }
-    C.fluxo = fluxo; C.video.srcObject = fluxo; await C.video.play();
+    if (S.camEst !== C || C.vez !== vez) { guardaFluxo(fluxo, lado); return; }
+    C.fluxo = fluxo; C.fluxoFrente = lado; C.video.srcObject = fluxo; await C.video.play();
     if (!C.rodando) { C.rodando = true; requestAnimationFrame(quadroCam); }
   } catch (e) { if (S.camEst !== C || C.vez !== vez) return; fechaVivo(); S.camFalhou = true; if (S.foto && S.foto.vivo) S.foto = { ...S.foto, img: null, vivo: false }; render(); }
 }
