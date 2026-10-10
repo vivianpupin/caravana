@@ -88,9 +88,10 @@ body{background:var(--fundo) radial-gradient(ellipse at 50% 0%,#241A11,#0E0B08 7
 .vert{writing-mode:vertical-rl;transform:rotate(180deg);font:700 12px "Courier Prime",monospace;letter-spacing:.2em;color:var(--carimbo)}
 /* carimbos de tinta vermelha */
 .carimbo{position:absolute;pointer-events:none;color:var(--carimbo);opacity:0;mix-blend-mode:multiply}
-.c1{left:112px;top:178px;width:84px;height:84px;border:3px solid currentColor;border-radius:50%;display:grid;place-items:center;text-align:center;font:700 8.5px "Courier Prime",monospace;letter-spacing:.14em;line-height:1.35;--rot:-14deg;animation:carimba .45s 1.5s cubic-bezier(.3,1.6,.5,1) forwards}
-.c1::before{content:"";position:absolute;inset:5px;border:1.5px solid currentColor;border-radius:50%}
-.c1 b{display:block;font:700 12px Cinzel,serif;letter-spacing:.06em}
+.c1{right:8px;top:86px;width:96px;height:96px;--rot:-13deg;animation:carimba .45s 1.5s cubic-bezier(.3,1.6,.5,1) forwards;
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='104' height='104'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' seed='4'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.5 1.75'/></filter><rect width='104' height='104' filter='url(%23n)'/></svg>");
+          mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='104' height='104'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' seed='4'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.5 1.75'/></filter><rect width='104' height='104' filter='url(%23n)'/></svg>")}
+.c1 svg{width:100%;height:100%;display:block;overflow:visible}
 .c3{right:46px;bottom:8px;font:700 11px "Courier Prime",monospace;letter-spacing:.14em;border-top:2px solid currentColor;border-bottom:2px solid currentColor;padding:2px 4px;color:#3A4A6A;--rot:-4deg;animation:carimba .4s 2s cubic-bezier(.3,1.6,.5,1) forwards}
 .embarca{margin-top:26px;display:flex;flex-direction:column;align-items:center;gap:12px;opacity:0;animation:aparece .8s 2.3s ease forwards;width:100%;max-width:380px}
 .lacre{position:relative;width:83px;height:83px;border:0;padding:0;border-radius:50%;background:url(/img/lacre-escuro.webp) center/contain no-repeat;cursor:pointer;-webkit-tap-highlight-color:transparent;
@@ -140,7 +141,17 @@ body.saindo>*{transition:opacity .5s ease;opacity:0}
         <div class="campo gcampo"><span>Guardião da travessia</span>
           <div class="gselo"><i class="gfoto" aria-hidden="true"><img id="gimg" src="/deuses/ganesha.webp" alt=""></i><div><b id="gnome">—</b><em id="gfrase"></em></div></div></div>
       </div>
-      <div class="carimbo c1"><div>EMBARQUE<br><b>AUTORIZADO</b>CARAVANA DO CÉU</div></div>
+      <div class="carimbo c1" aria-hidden="true"><svg viewBox="0 0 120 120">
+        <defs><path id="cimo" d="M60,60 m-41,0 a41,41 0 1,1 82,0"/><path id="cbaixo" d="M60,60 m-45,0 a45,45 0 1,0 90,0"/></defs>
+        <g fill="none" stroke="currentColor"><circle cx="60" cy="60" r="56" stroke-width="3.6"/><circle cx="60" cy="60" r="51" stroke-width="1.1"/><circle cx="60" cy="60" r="31" stroke-width="1.1"/></g>
+        <text font-family="Courier Prime,monospace" font-weight="700" font-size="10.5" letter-spacing="2.6" fill="currentColor"><textPath href="#cimo" startOffset="50%" text-anchor="middle">EMBARQUE</textPath></text>
+        <text font-family="Courier Prime,monospace" font-weight="700" font-size="9" letter-spacing="2.2" fill="currentColor"><textPath href="#cbaixo" startOffset="50%" text-anchor="middle">CARAVANA DO CÉU</textPath></text>
+        <text x="16" y="64" font-size="8" fill="currentColor" text-anchor="middle">✦</text><text x="104" y="64" font-size="8" fill="currentColor" text-anchor="middle">✦</text>
+        <rect x="6" y="49" width="108" height="22" fill="#E8D8B6" stroke="currentColor" stroke-width="2.2"/>
+        <text x="60" y="65.5" font-family="Cinzel,serif" font-weight="700" font-size="13.5" letter-spacing="1" fill="currentColor" text-anchor="middle">AUTORIZADO</text>
+        <text x="60" y="44" font-family="Courier Prime,monospace" font-weight="700" font-size="8" fill="currentColor" text-anchor="middle">Nº 2026</text>
+        <text x="60" y="84" font-family="Courier Prime,monospace" font-weight="700" font-size="8" fill="currentColor" text-anchor="middle">BRASIL · DELHI</text>
+      </svg></div>
     </div>
     <div class="picote"><i></i></div>
     <div class="canhoto">

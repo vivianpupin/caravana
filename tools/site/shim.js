@@ -97,6 +97,11 @@ if (pronto) {
   // quem já entrou neste celular vê o app na hora (como antes); só quem ainda não entrou espera a tela certa
   let jaEntrou = false; try { jaEntrou = localStorage.getItem("cdi-entrou") === "1"; } catch (e) {}
   if (!jaEntrou) document.documentElement.classList.add("espera");
+  // primeira vez no celular, fora do app instalado: a boas-vindas aparece na hora, sem esperar o login carregar (antes ficava um fundo vazio e piscava)
+  const celular0 = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
+  const instalado0 = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  if (!jaEntrou && celular0 && !instalado0 && !window.CARAVANA_NAVEGADOR_INTERNO && location.protocol === "https:")
+    document.addEventListener("DOMContentLoaded", () => { try { telaInstalar(); } catch (e) {} });
   // segurança: nunca deixa a tela escura presa (sem internet a conferência pode demorar)
   setTimeout(() => { if (!document.getElementById("portao")) document.documentElement.classList.remove("espera"); }, 5000);
 }
@@ -217,7 +222,8 @@ function celAnimado() {
 // primeira vez no celular: antes do passo a passo de instalar, uma tela de boas-vindas animada com o lacre de embarcar
 function telaInstalar() {
   let viu = false; try { viu = sessionStorage.getItem("cdi-bv-inst") === "1"; } catch (e) {}
-  if (viu || document.getElementById("bvinst")) return passosInstalar();
+  if (document.getElementById("bvinst")) return;
+  if (viu) return passosInstalar();
   const st = document.createElement("style");
   st.textContent = `#bvinst{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px 24px;text-align:center;color:#E2C08A;
     background:linear-gradient(180deg,rgba(14,11,8,.35),rgba(14,11,8,.75)),url(img/bilhete-textura.jpg) center/cover,#0E0B08;font-family:Poppins,system-ui,sans-serif;transition:opacity .6s}
