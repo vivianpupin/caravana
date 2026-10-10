@@ -387,11 +387,11 @@ const assets = {
 };
 
 // ---------- sala ao vivo (presença e reações) ----------
-const VIVO = 3 * 60 * 1000;
+const VIVO = 5 * 60 * 1000; // quem não avisou há 5 min sai do "online"
 let minhaPresenca = {}, batida = null;
 function iniciarPresenca() {
   const bate = () => fs.doc("presenca/" + me.id).set({ by: me.id, presence: minhaPresenca, ts: Date.now() }).catch(() => {});
-  bate(); clearInterval(batida); batida = setInterval(bate, 45000);
+  bate(); clearInterval(batida); batida = setInterval(bate, 120000); // avisa que está online a cada 2 min (economiza a cota do Firebase)
   window.addEventListener("pagehide", () => fs.doc("presenca/" + me.id).delete().catch(() => {}));
 }
 const room = {
