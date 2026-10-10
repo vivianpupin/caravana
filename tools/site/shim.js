@@ -67,6 +67,20 @@ const css = `
 @media (max-height:760px){#portao.inst .cel{zoom:.66}#portao.inst .cx{gap:8px}}
 @media (max-height:600px){#portao{padding:12px 14px 40px}#portao.inst .cel{zoom:.5}#portao.inst .cx{padding:14px 16px 16px;gap:6px}#portao.inst .cx>div>img{width:34px}#portao.inst h1{font-size:min(17px,4.6vw)}#portao.inst .como{font-size:9.5px}#portao .leg{gap:5px}#portao .leg p{font-size:13.5px}#portao .leg p small{font-size:11.5px}}
 #portao .andr{width:100%;display:flex;flex-direction:column;gap:7px;text-align:left}#portao .andr p{font-size:14.5px;line-height:1.4;color:#3B2A1C;display:flex;gap:8px;align-items:flex-start}#portao .andr p.t{font:600 11px Poppins,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#A07C45;margin-top:4px}#portao .andr b.n{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#3F4938;color:#F6EDDA;font-size:12px}#portao .leg[hidden],#portao .andr[hidden]{display:none}
+#portao .abas{display:flex;gap:6px;background:#E9DEC8;border-radius:999px;padding:4px;width:100%}
+#portao .abas .aba{flex:1;justify-content:center;padding:9px 10px;background:transparent;color:#6B5A43;font-size:14px}
+#portao .abas .aba.on{background:#3F4938;color:#F6EDDA}
+#portao .man{list-style:none;margin:2px 0 0;padding:0;width:100%;display:flex;flex-direction:column;gap:12px;text-align:left}
+#portao .man[hidden]{display:none}
+#portao .man li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.4;color:#3B2A1C}
+#portao .man b.n{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#3F4938;color:#F6EDDA;font-size:12.5px;margin-top:1px}
+#portao .man .ilus{margin-top:6px}
+#portao .man .chip{display:inline-flex;align-items:center;gap:6px;font:500 13px -apple-system,system-ui,sans-serif;font-style:normal;color:#1d1d1f;background:#fff;border:1px solid #E2D6C0;border-radius:10px;padding:7px 12px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+#portao .man .chip svg{width:16px;height:16px}
+#portao .man .chip.redondo{border-radius:999px;padding:6px 14px;font-weight:700;letter-spacing:.08em}
+#portao .man .chip.azul{color:#2F6FD6;font-weight:600}
+#portao .man .icone{display:inline-block;width:44px;height:44px;border-radius:11px;background:#F5EFE4 url(img/simbolo-marrom.png) center/68% no-repeat;border:1px solid #E2D6C0;box-shadow:0 2px 5px rgba(0,0,0,.12)}
+#portao .man li.obs{font-size:13px;color:#6B5A43;background:#F1E8D6;border-radius:12px;padding:10px 12px}
 #portao .como{font:300 10px Poppins,system-ui,sans-serif;letter-spacing:.03em;color:#5A4A38;margin:2px 0 -2px}
 #portao .leg{width:100%;display:flex;flex-direction:column;gap:8px;text-align:left}
 #portao .leg p{opacity:1!important;animation:none!important;font-size:15px;line-height:1.4;color:#3B2A1C;display:flex;gap:8px;align-items:flex-start}
@@ -253,42 +267,36 @@ function telaInstalar() {
   };
 }
 function passosInstalar() {
-  const ua = navigator.userAgent, android = /Android/i.test(ua), ipad = /iPad/i.test(ua) || /Macintosh/.test(ua), noTopo = ipad || /CriOS|FxiOS|EdgiOS/i.test(ua);
+  // manual de instalar: só o passo a passo, com uma aba para iPhone e outra para Android (abre na do celular da pessoa)
+  const ua = navigator.userAgent, android = /Android/i.test(ua);
   tituloPortao = "";
-  if (android) {
-    const dica = el("p", { className: "inst" });
-    const bt = el("button", { id: "instalar", type: "button", onclick: async () => {
-      const e = pedidoInstalar;
-      if (!e) { dica.innerHTML = "Toque em <b>⋮</b> no alto e depois em <b>Instalar app</b>"; return; }
-      pedidoInstalar = null;
-      try { await e.prompt(); const r = await e.userChoice; if (r && r.outcome === "accepted") telaInstalado(); } catch (x) {}
-    } }, "Instalar o app");
-    portao(el("p", { className: "como", textContent: "Como instalar o aplicativo" }), bt, dica);
-    return document.getElementById("portao").classList.add("inst");
-  }
-  const leg = el("div", { className: "leg" });
-  leg.innerHTML = noTopo
-    ? '<p><b class="n">1</b><span>Toque em ' + COMP + "</span></p>" +
-      '<p><b class="n">2</b><span>Toque em <b>Adicionar à Tela de Início</b><small>Não apareceu? Toque em <b>Ver mais</b> e procure na lista</small></span></p>' +
-      '<p><b class="n">3</b><span>Toque em <b>Adicionar</b>, no alto</span></p>' +
-      '<p><b class="n">4</b><span>Abra o aplicativo pelo ícone da <b>Caravana</b> na Tela de Início do seu celular</span></p>'
-    : '<p><b class="n">1</b><span>Toque nos <b>três pontinhos •••</b> no canto de baixo, à direita</span></p>' +
-      '<p><b class="n">2</b><span>Toque em ' + COMP + " <b>Compartilhar</b></span></p>" +
-      '<p><b class="n">3</b><span>Toque em <b>Ver mais</b></span></p>' +
-      '<p><b class="n">4</b><span>Toque em <b>Adicionar à Tela de Início</b></span></p>' +
-      '<p><b class="n">5</b><span>Toque em <b>Adicionar</b>, no alto</span></p>' +
-      '<p><b class="n">6</b><span>Abra o aplicativo pelo ícone da <b>Caravana</b> na Tela de Início</span></p>';
-  // quem usa Android (Samsung, Motorola...) vê o seu passo a passo
-  const andr = el("div", { className: "andr", hidden: true });
-  andr.innerHTML = '<p class="t">No Chrome</p><p><b class="n">1</b><span>Toque nos <b>três pontinhos ⋮</b> no alto, à direita</span></p>' +
-    '<p><b class="n">2</b><span>Toque em <b>Adicionar à tela inicial</b> (ou <b>Instalar app</b>)</span></p><p><b class="n">3</b><span>Toque em <b>Instalar</b> ou <b>Adicionar</b></span></p>' +
-    '<p class="t">No navegador da Samsung</p><p><b class="n">1</b><span>Toque nas <b>três linhas ≡</b> embaixo, à direita</span></p>' +
-    '<p><b class="n">2</b><span>Toque em <b>Adicionar página a</b> e depois em <b>Tela inicial</b></span></p>' +
-    '<p class="t">Depois</p><p><b class="n">✓</b><span>Abra o aplicativo pelo ícone da <b>Caravana</b> na tela do celular</span></p>';
-  const btA = el("button", { type: "button", className: "claro", onclick: () => { andr.hidden = !andr.hidden; btA.textContent = andr.hidden ? "Tem Android ou Samsung? Toque aqui" : "Voltar ao iPhone"; leg.hidden = !andr.hidden; } }, "Tem Android ou Samsung? Toque aqui");
-  portao(el("p", { id: "instalar", className: "como", textContent: "Como instalar o aplicativo" }), celAnimado(), leg, andr, btA);
+  const chip = (txt, cls) => '<i class="chip' + (cls ? " " + cls : "") + '">' + txt + "</i>";
+  const passo = (n, txt, ilus) => '<li><b class="n">' + n + '</b><div><span>' + txt + "</span>" + (ilus ? '<div class="ilus">' + ilus + "</div>" : "") + "</div></li>";
+  const SHARE = '<svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1"/></svg>';
+  const ios = el("ol", { className: "man" });
+  ios.innerHTML =
+    passo(1, "No Safari, toque nos <b>três pontinhos</b> no canto de baixo, à direita", chip("•••", "redondo")) +
+    passo(2, "Toque em <b>Compartilhar</b>", chip(SHARE + " Compartilhar")) +
+    passo(3, "Role e toque em <b>Ver mais</b>", chip("Ver mais ›")) +
+    passo(4, "Toque em <b>Adicionar à Tela de Início</b>", chip("Adicionar à Tela de Início ⊞")) +
+    passo(5, "Toque em <b>Adicionar</b>, no alto da tela", chip("Adicionar", "azul")) +
+    passo(6, "Pronto! Abra o aplicativo pelo ícone da <b>Caravana</b> na Tela de Início", '<i class="icone"></i>');
+  const and = el("ol", { className: "man" });
+  and.innerHTML =
+    passo(1, "No Chrome, toque nos <b>três pontinhos</b> no alto, à direita", chip("⋮", "redondo")) +
+    passo(2, "Toque em <b>Adicionar à tela inicial</b> ou <b>Instalar app</b>", chip("Adicionar à tela inicial")) +
+    passo(3, "Toque em <b>Instalar</b>", chip("Instalar", "azul")) +
+    passo(4, "Pronto! Abra o aplicativo pelo ícone da <b>Caravana</b> na tela do celular", '<i class="icone"></i>') +
+    '<li class="obs"><span><b>No navegador da Samsung:</b> toque nas três linhas <b>≡</b> embaixo, à direita, depois em <b>Adicionar página a</b> e em <b>Tela inicial</b>.</span></li>';
+  const ja = el("button", { type: "button", hidden: true, onclick: async () => { const e = pedidoInstalar; if (!e) return; pedidoInstalar = null;
+    try { await e.prompt(); const r = await e.userChoice; if (r && r.outcome === "accepted") telaInstalado(); } catch (x) {} } }, "Instalar agora");
+  if (android && pedidoInstalar) ja.hidden = false;
+  const abaI = el("button", { type: "button", className: "aba" }, "iPhone"), abaA = el("button", { type: "button", className: "aba" }, "Android");
+  const mostra = qual => { ios.hidden = qual !== "ios"; and.hidden = qual !== "and"; abaI.classList.toggle("on", qual === "ios"); abaA.classList.toggle("on", qual === "and"); ja.hidden = !(qual === "and" && pedidoInstalar); };
+  abaI.onclick = () => mostra("ios"); abaA.onclick = () => mostra("and");
+  portao(el("p", { id: "instalar", className: "como", textContent: "Como instalar o aplicativo" }), el("div", { className: "abas" }, abaI, abaA), ios, and, ja);
+  mostra(android ? "and" : "ios");
   document.getElementById("portao").classList.add("inst");
-  document.getElementById("portao").append(el("div", { className: "seta" + (noTopo ? " topo" : ""), textContent: noTopo ? "↑" : "↓" }));
 }
 function telaInstalado() {
   tituloPortao = "";
