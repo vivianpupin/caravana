@@ -5497,7 +5497,14 @@ async function lerDiario() {
 }
 // lê as fotos guardadas logo depois que o app abre, para a aba Fotos não precisar redesenhar quando elas chegam
 setTimeout(() => { if (S.fotosDiario) return; lerDiario().then(l => { if (!S.fotosDiario) { S.fotosDiario = l; S.fotosDiarioPronto = true; } }).catch(() => {}); }, 1500);
-async function apagaDoDiario(id) { try { const db = await bancoDiario(); await new Promise(ok => { const t = db.transaction("fotos", "readwrite"); t.objectStore("fotos").delete(id); t.oncomplete = ok; t.onerror = ok; }); } catch (e) {} S.fotosDiario = null; render(); }
+async function apagaDoDiario(id) { try { const db = await bancoDiario(); await new Promise(ok => { const t = db.transaction("fotos", "readwrite"); t.objectStore("fotos").delete(id); t.oncomplete = ok; t.onerror = ok; }); } catch (e) {}
+  // tira só aquela foto da lista e redesenha só a carteira (ou a miniatura da câmera), sem a tela toda piscar
+  const l = S.fotosDiario || [], k = l.findIndex(x => x.id === id); if (k >= 0) { const [x] = l.splice(k, 1); if (x && x.url) setTimeout(() => URL.revokeObjectURL(x.url), 2000); }
+  const pags = Math.max(1, Math.ceil(l.length / 4)); if ((S.pagReg || 0) > pags - 1) S.pagReg = pags - 1;
+  const cart = document.querySelector(".diariofotos"), mini = document.querySelector(".cfmini");
+  if (cart) cart.replaceWith(vDiarioViajante());
+  if (mini) { const u = l[0]; mini.replaceChildren(...(u ? [h(/^video/.test(u.blob.type) ? "video" : "img", { src: u.url || (u.url = URL.createObjectURL(u.blob)), alt: "", muted: true, playsinline: true, preload: "metadata" })] : [])); }
+}
 // Registros: as fotos ficam dentro de uma carteira de couro de viajante, 4 por página; arrastando para o lado, aparecem as anteriores
 const CARTEIRA_FOTO = [[0.134, 0.103, 0.396, 0.431], [0.595, 0.103, 0.863, 0.431], [0.132, 0.559, 0.396, 0.890], [0.595, 0.559, 0.866, 0.890]];
 const CARTEIRA_JAN = [[0.090, 0.067, 0.383, 0.426], [0.606, 0.067, 0.907, 0.426], [0.087, 0.565, 0.383, 0.928], [0.606, 0.565, 0.910, 0.928]];
