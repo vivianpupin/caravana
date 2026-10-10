@@ -5271,7 +5271,7 @@ function vCameraFisica(c) {
     c.id === "super8" ? [h("span", { class: "cfmira", "aria-hidden": "true" }), h("span", { class: "cfrazao", text: F.recorte === 2.35 ? "2.35:1" : "4:3" })] : null);
   const visor = h("div", { class: "cfvisor" }, h("div", { class: "cfmoldura" }, janela));
   const obturador = h("button", { type: "button", class: "cfdisparo", "aria-label": "Tirar foto", onclick: dispara }, c.id === "descartavel" ? h("i", { "aria-hidden": "true" }, "• • •") : c.rajadas ? h("i", { "aria-hidden": "true" }, "AGORA") : null);
-  const miniatura = h("button", { type: "button", class: "cfmini" + (S.revelando ? " revelando" : ""), "aria-label": "Ver as fotos", onclick: () => { if (ult) c.rajadas ? verQuatro() : verFotos(0); } },
+  const miniatura = h("button", { type: "button", class: "cfmini" + (S.revelando ? " revelando" : ""), "aria-label": "Ver as fotos", onclick: () => { if ((S.fotosDiario || [])[0]) c.rajadas ? verQuatro() : verFotos(0); } }, // lê a lista na hora (a miniatura muda sem redesenhar a tela)
     ult ? miniMidia(ult) : null);
   const chave = (rotA, rotB, ligadoB, fn, cls) => h("button", { type: "button", class: "cfchave " + (cls || "") + (ligadoB ? " b" : ""), onclick: fn }, h("span", { text: rotA }), h("i", { "aria-hidden": "true" }), h("span", { text: rotB }));
   const controles = h("div", { class: "cfcontroles" },
@@ -5512,6 +5512,18 @@ function verQuatro() {
       miniMidia(it, { loading: "lazy" })))));
   document.body.append(tela);
 }
+// leva para a carteira de Registros (na Maleta, embaixo das câmeras), saindo da câmera se estiver numa
+function irRegistros() {
+  document.querySelectorAll(".nomovisor").forEach(e => e.remove());
+  fechaVivo(); S.camSel = null; S.foto = null; S.fotoSel = null; S.fotoAba = "estudio";
+  if (S.tab !== "fotos") go("fotos"); else render();
+  requestAnimationFrame(() => document.querySelector(".diariofotos")?.scrollIntoView({ block: "start", behavior: "smooth" }));
+}
+function iconeRegistros() {
+  const s = h("span", { "aria-hidden": "true", style: "display:inline-flex" });
+  s.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M12 4v16M6 8h3.5v4H6zM14.5 8H18v4h-3.5zM6 14.5h3.5M14.5 14.5H18"/></svg>';
+  return s;
+}
 function verFotos(i) {
   const l = S.fotosDiario || []; if (!l.length) return; i = Math.max(0, Math.min(i, l.length - 1)); const it = l[i];
   document.querySelector(".nomovisor")?.remove(); const msg = h("p", { class: "msg", role: "status" });
@@ -5529,6 +5541,7 @@ function verFotos(i) {
       i < l.length - 1 ? h("button", { type: "button", class: "nvseta d", "aria-label": "Próxima foto", onclick: () => verFotos(i + 1) }, "›") : null),
     h("div", { class: "nvbase" },
       h("button", { type: "button", class: "nvvoltar", onclick: () => tela.remove() }, "← Câmera"),
+      h("button", { type: "button", class: "nvacao", "data-txt": "Ver meus Registros", "aria-label": "Ver meus Registros", onclick: () => { tela.remove(); irRegistros(); }, html: null }, iconeRegistros()),
       h("button", { type: "button", class: "nvacao", "data-txt": "Apagar", "aria-label": "Apagar", onclick: () => { if (confirm("Apagar esta foto?")) { tela.remove(); apagaDoDiario(it.id); } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("path", { d: "M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" }))),
       h("button", { type: "button", class: "nvcompart", "data-txt": "Salvar no dispositivo", "aria-label": "Salvar no dispositivo", onclick: compartilhar }, h("svg", { viewBox: "0 0 24 24", width: "34", height: "34", fill: "currentColor" }, h("path", { d: "M14 5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11V5z" }))),
       h("button", { type: "button", class: "nvacao", "data-txt": "Enviar para a Galeria da Caravana", "aria-label": "Enviar para a Galeria da Caravana", onclick: async () => {
