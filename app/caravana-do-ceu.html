@@ -973,8 +973,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfmini img{width:100%;height:100%;object-fit:cover}
 .cfmini.revelando img{opacity:.35;filter:blur(2px)}.cfmini.revelando{animation:revela 1s ease-in-out infinite alternate}
 @keyframes revela{from{box-shadow:0 0 0 4px rgba(0,0,0,.45),0 0 0 5px rgba(255,255,255,.12)}to{box-shadow:0 0 0 4px rgba(0,0,0,.45),0 0 0 6px rgba(232,192,122,.7)}}
-.cfjanela.pisca::before{content:"";position:absolute;inset:0;z-index:3;background:#000;animation:pisca .22s ease-out forwards}
-@keyframes pisca{from{opacity:1}to{opacity:0}}
+.cfjanela.pisca::before{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(180deg,#0B0907 0 50%,#0B0907 50% 100%);clip-path:inset(50% 0 50% 0);animation:obtura .26s cubic-bezier(.4,0,.2,1)}
+@keyframes obtura{0%{clip-path:inset(50% 0 50% 0)}45%{clip-path:inset(0 0 0 0)}55%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(50% 0 50% 0)}}
 .nomovisor{position:fixed;inset:0;z-index:950;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom))}
 .nvfechar{position:absolute;z-index:3;top:max(16px,calc(env(safe-area-inset-top) + 8px));left:14px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.08);color:#ddd;font-size:24px;cursor:pointer}
 .nvinfo{position:absolute;top:max(22px,calc(env(safe-area-inset-top) + 10px));left:64px;right:14px;margin:0;font:500 11px "Courier Prime",monospace;color:rgba(255,255,255,.5);text-align:right}
@@ -5212,7 +5212,8 @@ async function filma(c) {
 function piscaVisor() { const j = document.querySelector(".cfjanela"); if (!j) return; j.classList.remove("pisca"); void j.offsetWidth; j.classList.add("pisca"); }
 // revela a foto com o filtro e a moldura da câmera, carimba a marca da Caravana e guarda no Diário de Viajante
 async function revelaFoto(img, c, extra) {
-  S.revelando = (S.revelando || 0) + 1; render();
+  // sem redesenhar a tela: só o quadradinho da última foto muda, para nada piscar
+  S.revelando = (S.revelando || 0) + 1; document.querySelector(".cfmini")?.classList.add("revelando");
   try {
     const out = document.createElement("canvas");
     const Fx = { ...S.foto, ...(extra || {}), img, vivo: false }; if (Fx.molduraFinal) Fx.moldura = Fx.molduraFinal; // o visor mostra só a cena; a moldura branca aparece na foto revelada
@@ -5225,7 +5226,12 @@ async function revelaFoto(img, c, extra) {
     if (b) await guardaNoDiario(b, c);
     S.fotosDiario = await lerDiario();
   } catch (e) {}
-  S.revelando--; if (S.camSel === c.id) render();
+  S.revelando--;
+  const mini = document.querySelector(".cfmini"), ult = (S.fotosDiario || [])[0];
+  if (mini && S.camSel === c.id) {
+    if (!S.revelando) mini.classList.remove("revelando");
+    if (ult) { const u = ult.url || (ult.url = URL.createObjectURL(ult.blob)), novo = h(/^video/.test(ult.blob.type) ? "video" : "img", { src: u, alt: "", muted: true, playsinline: true, preload: "metadata" }); mini.replaceChildren(novo); }
+  } else if (S.camSel === c.id) render();
 }
 // toda foto das câmeras sai em 9:16, pronta para Reels e Stories: o que já é 9:16 só ajusta o tamanho; o resto vai no meio, sobre preto ou sobre a própria foto desfocada
 function paraReels(cv, modo) {
