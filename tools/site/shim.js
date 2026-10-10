@@ -67,11 +67,18 @@ const css = `
 @media (max-height:760px){#portao.inst .cel{zoom:.66}#portao.inst .cx{gap:8px}}
 @media (max-height:600px){#portao{padding:12px 14px 40px}#portao.inst .cel{zoom:.5}#portao.inst .cx{padding:14px 16px 16px;gap:6px}#portao.inst .cx>div>img{width:34px}#portao.inst h1{font-size:min(17px,4.6vw)}#portao.inst .como{font-size:9.5px}#portao .leg{gap:5px}#portao .leg p{font-size:13.5px}#portao .leg p small{font-size:11.5px}}
 #portao .andr{width:100%;display:flex;flex-direction:column;gap:7px;text-align:left}#portao .andr p{font-size:14.5px;line-height:1.4;color:#3B2A1C;display:flex;gap:8px;align-items:flex-start}#portao .andr p.t{font:600 11px Poppins,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#A07C45;margin-top:4px}#portao .andr b.n{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#3F4938;color:#F6EDDA;font-size:12px}#portao .leg[hidden],#portao .andr[hidden]{display:none}
+#portao .cel.and .barra{top:0;bottom:auto;border-top:0;border-bottom:1px solid #e6dccb;padding:0 4px}
+#portao .cel.and .pag{inset:34px 0 0}
+#portao .cel.and .folha{top:30px;bottom:auto;left:auto;right:3px;width:94%;border-radius:10px;transform-origin:top right;transform:scale(0);animation-name:folhaA}
+#portao .cel.and .dedo{animation-name:dedoA}
+#portao .cel.and .dlg .top b{color:#1a73e8}
+@keyframes folhaA{0.0%,18.3%{transform:scale(0)}21.7%,46.1%{transform:scale(1)}47.8%,100.0%{transform:scale(0)}}
+@keyframes dedoA{0.0%{left:50%;top:55%;opacity:0}2.2%,8.3%{left:50%;top:55%;opacity:1;transform:scale(1)}14.4%{left:calc(100% - 34px);top:4px;transform:scale(1)}16.1%{transform:scale(.7)}17.8%,25.6%{left:calc(100% - 34px);top:4px;transform:scale(1)}32.2%{left:48%;top:70px;transform:scale(1)}33.9%{transform:scale(.7)}35.6%,48.9%{left:48%;top:70px;transform:scale(1)}55.6%{left:calc(100% - 36px);top:4px;transform:scale(1)}57.2%{transform:scale(.7)}58.9%,72.2%{left:calc(100% - 36px);top:4px;transform:scale(1)}78.9%{left:calc(50% - 13px);top:61px;transform:scale(1)}80.6%{transform:scale(.7)}82.2%{left:calc(50% - 13px);top:61px;transform:scale(1);opacity:1}87.8%,100.0%{left:calc(50% - 13px);top:61px;opacity:0}}
 #portao .abas{display:flex;gap:6px;background:#E9DEC8;border-radius:999px;padding:4px;width:100%}
 #portao .abas .aba{flex:1;justify-content:center;padding:9px 10px;background:transparent;color:#6B5A43;font-size:14px}
 #portao .abas .aba.on{background:#3F4938;color:#F6EDDA}
 #portao .man{list-style:none;margin:2px 0 0;padding:0;width:100%;display:flex;flex-direction:column;gap:12px;text-align:left}
-#portao .man[hidden]{display:none}
+#portao .man[hidden],#portao .cel[hidden]{display:none}
 #portao .man li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.4;color:#3B2A1C}
 #portao .man b.n{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#3F4938;color:#F6EDDA;font-size:12.5px;margin-top:1px}
 #portao .man .ilus{margin-top:6px}
@@ -225,8 +232,13 @@ let pedidoInstalar = null;
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); pedidoInstalar = e; });
 window.addEventListener("appinstalled", () => { pedidoInstalar = null; if (document.getElementById("instalar")) telaInstalado(); });
 const COMP = '<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1"/></svg></span>';
-function celAnimado() {
-  const d = el("div", { className: "cel" });
+function celAnimado(andr) {
+  const d = el("div", { className: "cel" + (andr ? " and" : "") });
+  if (andr) { d.innerHTML = '<div class="tela"><div class="pag"><img src="img/simbolo-marrom.png" alt=""><i></i><i style="width:70px"></i></div>' +
+    '<div class="barra"><span style="flex:1;margin:0 6px;height:14px;border-radius:7px;background:#eee"></span><span class="comp"><svg viewBox="0 0 24 24" fill="#444"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></span></div>' +
+    '<div class="folha"><div>Nova guia</div><div class="alvo">Adicionar à tela inicial</div><div>Configurações</div></div>' +
+    '<div class="dlg"><div class="top"><span>Cancelar</span><b>Instalar</b></div><div class="row"><i></i>Caravana</div></div>' +
+    '<div class="home"><b></b><b></b><b></b><b></b><b class="app"></b><b></b></div><div class="dedo"></div></div>'; return d; }
   d.innerHTML = '<div class="tela"><div class="pag"><img src="img/simbolo-marrom.png" alt=""><i></i><i style="width:70px"></i></div>' +
     '<div class="barra"><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></span><span class="comp"><svg viewBox="0 0 24 24" fill="#2F6FD6"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></span></div>' +
     '<div class="folha"><div>Compartilhar</div><div class="alvo">Adicionar à Tela de Início <span>⊞</span></div><div>Ver mais</div></div>' +
@@ -292,9 +304,10 @@ function passosInstalar() {
     try { await e.prompt(); const r = await e.userChoice; if (r && r.outcome === "accepted") telaInstalado(); } catch (x) {} } }, "Instalar agora");
   if (android && pedidoInstalar) ja.hidden = false;
   const abaI = el("button", { type: "button", className: "aba" }, "iPhone"), abaA = el("button", { type: "button", className: "aba" }, "Android");
-  const mostra = qual => { ios.hidden = qual !== "ios"; and.hidden = qual !== "and"; abaI.classList.toggle("on", qual === "ios"); abaA.classList.toggle("on", qual === "and"); ja.hidden = !(qual === "and" && pedidoInstalar); };
+  const celI = celAnimado(false), celA = celAnimado(true);
+  const mostra = qual => { ios.hidden = qual !== "ios"; and.hidden = qual !== "and"; celI.hidden = qual !== "ios"; celA.hidden = qual !== "and"; abaI.classList.toggle("on", qual === "ios"); abaA.classList.toggle("on", qual === "and"); ja.hidden = !(qual === "and" && pedidoInstalar); };
   abaI.onclick = () => mostra("ios"); abaA.onclick = () => mostra("and");
-  portao(el("p", { id: "instalar", className: "como", textContent: "Como instalar o aplicativo" }), el("div", { className: "abas" }, abaI, abaA), ios, and, ja);
+  portao(el("p", { id: "instalar", className: "como", textContent: "Como instalar o aplicativo" }), el("div", { className: "abas" }, abaI, abaA), celI, celA, ios, and, ja);
   mostra(android ? "and" : "ios");
   document.getElementById("portao").classList.add("inst");
 }
