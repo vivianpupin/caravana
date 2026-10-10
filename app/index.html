@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 11:03";</script>
+<script>window.__VERSAO = "10/10 · 11:06";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -896,14 +896,16 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .flashcam{position:fixed;inset:0;background:#fff;z-index:9999;pointer-events:none;animation:flashcam .45s ease-out forwards}
 @keyframes flashcam{from{opacity:.95}to{opacity:0}}
 .diario{margin-top:22px;display:flex;flex-direction:column;gap:10px}
-/* Diário de Viajante: mural de juta de tenda, com as fotos presas por alfinetes */
-.diariofotos .contato{position:relative;gap:18px 12px;padding:22px 16px 24px;border-radius:4px;background-color:#A88A5C;
-  background-image:repeating-linear-gradient(0deg,rgba(60,40,18,.22) 0 1px,rgba(0,0,0,0) 1px 3px),repeating-linear-gradient(90deg,rgba(60,40,18,.2) 0 1px,rgba(255,236,200,.08) 1px 2px,rgba(0,0,0,0) 2px 3px),radial-gradient(ellipse at 30% 20%,rgba(255,230,180,.25),rgba(0,0,0,0) 60%),radial-gradient(ellipse at 80% 90%,rgba(40,24,8,.3),rgba(0,0,0,0) 55%);
-  box-shadow:inset 0 0 0 6px #6E5232,inset 0 0 0 7px rgba(0,0,0,.35),inset 0 0 30px rgba(40,24,8,.45),0 8px 18px rgba(40,24,8,.3)}
-.diariofotos .quadro{position:relative;background:#F4EEE2!important;padding:5px 5px 18px!important;transform:rotate(var(--g,0deg));box-shadow:0 4px 7px rgba(30,18,6,.45);border-radius:1px}
-.diariofotos .quadro::before{content:"";position:absolute;left:50%;top:-5px;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#F2C2A0,#8A3F32 60%,#4A1E16);box-shadow:0 2px 2px rgba(0,0,0,.45);z-index:2}
-.diariofotos .quadro img,.diariofotos .quadro video{width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:0}
-.diariofotos .quadro span{position:absolute;left:5px;right:5px;bottom:3px;font:400 9px/1 Caveat,"Segoe Print",cursive!important;color:#3A2A1C!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Diário de Viajante: laboratório de revelação dentro da tenda — luz vermelha de segurança, varais de barbante e as fotos secando presas por prendedores */
+.diariofotos .contato{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:34px 12px;padding:38px 14px 22px;border-radius:6px;
+  background-color:#2A0E0A;background-image:radial-gradient(ellipse 70% 45% at 50% 0%,rgba(255,60,30,.42),rgba(255,40,20,0) 70%),repeating-linear-gradient(100deg,rgba(0,0,0,.18) 0 2px,rgba(0,0,0,0) 2px 7px),repeating-linear-gradient(10deg,rgba(255,120,80,.05) 0 1px,rgba(0,0,0,0) 1px 5px),linear-gradient(180deg,#3A120C,#1A0806);
+  box-shadow:inset 0 0 40px rgba(0,0,0,.7),0 8px 18px rgba(30,8,4,.35)}
+.diariofotos .contato::after{content:"";position:absolute;left:50%;top:6px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:radial-gradient(circle,#FF8A60,#E8321C 55%,#7A1208);box-shadow:0 0 18px 6px rgba(255,60,30,.55)}
+.diariofotos .quadro{position:relative;background:none!important;padding:0!important;transform:rotate(var(--g,0deg));transform-origin:50% 0;box-shadow:none;border-radius:0}
+.diariofotos .quadro::after{content:"";position:absolute;left:-40px;right:-40px;top:-9px;height:1.5px;background:#C9A878;opacity:.75;box-shadow:0 1px 1px rgba(0,0,0,.6);z-index:0}
+.diariofotos .quadro::before{content:"";position:absolute;left:50%;top:-15px;width:9px;height:22px;margin-left:-4.5px;border-radius:2px;background:linear-gradient(90deg,#8A6238,#C9A06A 45%,#7A5430);box-shadow:0 2px 2px rgba(0,0,0,.6);z-index:2}
+.diariofotos .quadro img,.diariofotos .quadro video{position:relative;z-index:1;width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:1px;box-shadow:0 6px 10px rgba(0,0,0,.6);filter:sepia(.12) saturate(.95) brightness(.94)}
+.diariofotos .quadro span{position:relative;z-index:1;display:block;margin-top:5px;font:600 8px/1.2 "Courier Prime",monospace!important;color:rgba(255,170,140,.75)!important;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .contato{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#1E1A16;padding:8px;border-radius:8px}
 .contato .quadro{background:none;border:0;padding:0;display:flex;flex-direction:column;gap:3px;cursor:pointer}
 .contato .quadro img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:2px}
