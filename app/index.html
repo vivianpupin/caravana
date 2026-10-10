@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 11:35";</script>
+<script>window.__VERSAO = "10/10 · 11:37";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1042,7 +1042,10 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cffita::-webkit-scrollbar{display:none}
 .cfbaixo{display:flex;align-items:stretch;background-color:#3A281B;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .45 0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>"),linear-gradient(180deg,#4A3424,#2A1C12);box-shadow:inset 0 3px 8px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,220,170,.08);border-top:1px solid #1A110A}
 .cfbaixo .cffita{flex:1;min-width:0;border-top:0;background:none!important;box-shadow:none!important}
-.cfbaixo .cfmini{flex:0 0 58px;width:58px;height:58px;align-self:center;margin:0 4px 0 12px;border-radius:6px;padding-bottom:0}
+.cfbaixo .cfmini{flex:0 0 52px;width:52px;height:68px;align-self:center;margin:0 0 0 12px;border-radius:4px;padding:0;box-shadow:0 0 0 1.5px rgba(232,192,122,.55),0 4px 8px rgba(0,0,0,.5)}
+.cfbaixo .cfmini:empty{background:repeating-linear-gradient(135deg,rgba(255,255,255,.04) 0 4px,rgba(0,0,0,0) 4px 8px),#1A120C}
+/* separa a última foto da fileira de câmeras: um fio dourado e as câmeras somem suavemente na beirada, em vez de cortar seco */
+.cfbaixo .cffita{position:relative;margin-left:12px;border-left:1px solid rgba(232,192,122,.25);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 22px,#000 calc(100% - 22px),transparent);padding-left:18px!important;padding-right:18px!important}
 .cftopovazio{width:40px;flex:0 0 40px}
 .cfitem{flex:0 0 86px;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;padding:2px;cursor:pointer;color:#D9C7A4;font:600 11px Poppins,sans-serif;text-transform:uppercase;letter-spacing:.04em}
 .cfitem .camdesenho{width:70px;height:52px;display:grid;place-items:center;filter:drop-shadow(0 3px 4px rgba(0,0,0,.6))}
@@ -5205,7 +5208,7 @@ async function filma(c) {
   if (S.gravando) { S.gravando.stop(); return; }
   const tela = S.fotoCanvas; if (!tela || !tela.captureStream || !window.MediaRecorder) { alert("Este celular não consegue filmar pelo app."); return; }
   const W = 720, H = 1280, rec = document.createElement("canvas"); rec.width = W; rec.height = H; const x = rec.getContext("2d");
-  const marca = document.createElement("canvas"); marca.width = W; marca.height = H; await marcaCaravana(marca, { ox: 0, oy: 0, w: W, hh: H });
+  const marca = document.createElement("canvas"); marca.width = W; marca.height = H; await marcaCaravana(marca, { ox: 0, oy: 0, w: W, hh: H }, c && c.id === "rajastao");
   const copia = setInterval(() => { const e = Math.max(W / tela.width, H / tela.height), w = tela.width * e, hh = tela.height * e; x.fillStyle = "#000"; x.fillRect(0, 0, W, H); x.drawImage(tela, (W - w) / 2, (H - hh) / 2, w, hh); x.drawImage(marca, 0, 0); }, 1000 / 24);
   const tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || "";
   const mr = new MediaRecorder(rec.captureStream(24), tipo ? { mimeType: tipo, videoBitsPerSecond: 4e6 } : undefined), partes = [];
@@ -5225,7 +5228,7 @@ async function revelaFoto(img, c, extra) {
     await montaFoto(out, Fx);
     personalidade(out, Fx.geo, c);
     variaFilme(out, Fx.geo, c);
-    await marcaCaravana(out, Fx.geo);
+    await marcaCaravana(out, Fx.geo, c && c.id === "rajastao");
     const fim = paraReels(out, Fx.reels);
     const b = await new Promise(ok => fim.toBlob(ok, "image/jpeg", .9));
     if (b) await guardaNoDiario(b, c);
@@ -5323,14 +5326,14 @@ function variaFilme(cv, g, c) {
   x.restore();
 }
 // a marquinha no canto de baixo da foto: o símbolo dourado e CARAVANA escrito de lado, como as câmeras de filme fazem
-async function marcaCaravana(cv, g) {
+async function marcaCaravana(cv, g, pb) {
   // marca como a data impressa pelas câmeras de filme: laranja queimado, um pouco borrada e com brilho, "dentro" da foto
   const c = cv.getContext("2d"), G = g && g.w ? g : { ox: 0, oy: 0, w: cv.width, hh: cv.height }, u = Math.max(G.w, G.hh) / 1000;
   const img = await carregaImg("img/simbolo-claro.png").catch(() => carregaImg("img/simbolo-dourado.png").catch(() => null));
   const m = document.createElement("canvas"); m.width = Math.ceil(280 * u); m.height = Math.ceil(70 * u); const t = m.getContext("2d");
   if (img) t.drawImage(img, 6 * u, 10 * u, 46 * u, 46 * u * img.height / img.width);
   t.font = `700 ${22 * u}px "Courier Prime", "Courier New", monospace`; t.textBaseline = "middle"; t.fillStyle = "#fff"; t.letterSpacing = `${4 * u}px`; t.fillText("CARAVANA", 62 * u, 36 * u);
-  t.globalCompositeOperation = "source-in"; t.fillStyle = "#FF8A3C"; t.fillRect(0, 0, m.width, m.height);
+  t.globalCompositeOperation = "source-in"; t.fillStyle = pb ? "#E8E8E4" : "#FF8A3C"; t.fillRect(0, 0, m.width, m.height); // na câmera preto e branco, a marca também sai sem cor
   const x = G.ox + 30 * u, y = G.oy + G.hh - 30 * u - m.height;
   c.save(); c.globalCompositeOperation = "screen";
   c.filter = `blur(${3.2 * u}px)`; c.globalAlpha = .55; c.drawImage(m, x, y);
