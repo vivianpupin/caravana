@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 15:22";</script>
+<script>window.__VERSAO = "10/10 · 15:24";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -5251,7 +5251,7 @@ function faixaCota(esgotou) {
 }
 window.addEventListener("caravana-cota", e => faixaCota(e.detail));
 // deixa as fotos de todas as câmeras prontas na memória, para a troca não mostrar fundo preto enquanto a imagem chega
-function preparaCameras() { amostraFiltro(); if (S.camPrep) return; S.camPrep = []; for (const c of CAMERAS_C) { if (!FOTOS_CAM.has(c.id + "-corpo.jpg")) continue; const i = new Image(); i.src = "img/cameras/" + c.id + "-corpo.jpg"; i.decode?.().catch(() => {}); S.camPrep.push(i); } }
+function preparaCameras() { amostraFiltro(); if (S.camPrep) return; S.camPrep = []; for (const c of CAMERAS_C) { if (!FOTOS_CAM.has(c.id + "-corpo.jpg")) continue; fetch("img/cameras/" + c.id + "-corpo.jpg").catch(() => {}); S.camPrep.push(c.id); } } // só baixa para o cache (não segura as 7 fotos abertas na memória do iPhone)
 // botão claro de voltar para a maleta (no alto da câmera, onde a pessoa procura o "voltar")
 function voltaMaleta(onde) {
   const b = h("button", { type: "button", class: "cfvolta" + (onde ? " " + onde : ""), "aria-label": "Voltar para a maleta", onclick: voltaEstante },
@@ -5836,7 +5836,8 @@ function quadroCam() {
   if (!v.videoWidth || v.readyState < 2 || performance.now() - (C.vivoDesde || 0) < 350) { requestAnimationFrame(quadroCam); return; }
   if (v.videoWidth && !C.ocupado) {
     const f = FILTROS.find(y => y.id === F.filtro) || FILTROS[0], G = !(f.arco || f.holi) && glVivo(C);
-    const lado = G ? 1280 : 800, k = lado / Math.max(v.videoWidth, v.videoHeight), w = Math.round(v.videoWidth * k), hh = Math.round(v.videoHeight * k);
+    const lado = G ? 960 : 640, // tamanho do visor ao vivo: maior que isso o iPhone fica sem memória e some com as fotos das câmeras
+      k = lado / Math.max(v.videoWidth, v.videoHeight), w = Math.round(v.videoWidth * k), hh = Math.round(v.videoHeight * k);
     // o visor já recorta no formato da foto (ex.: 9:16) antes dos efeitos, para a vinheta e as luzes caírem nas bordas certas, como na foto final
     let sx = 0, sy = 0, sw = w, sh = hh; const rec = F.recorte;
     if (rec) { if (w / hh > rec) { sw = hh * rec; sx = (w - sw) / 2; } else { sh = w / rec; sy = (hh - sh) / 2; } }
