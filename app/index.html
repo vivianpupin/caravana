@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 09:42";</script>
+<script>window.__VERSAO = "10/10 · 09:44";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -4926,7 +4926,7 @@ const FOTO_CAM = {
   quatro: { visor: [.278, .318, .765, .628], botao: [.512, .786, .09], luzes: [.356, .433, .512, .589].map(y => [.146, y]) },
 };
 // compartimentos da mala (fração da imagem): 3 colunas × 2 fileiras
-const MALA_CASAS = [[.16, .39, .36, .555], [.40, .39, .60, .555], [.64, .39, .84, .555], [.16, .565, .36, .73], [.40, .565, .60, .73], [.64, .565, .84, .73]];
+const MALA_CASAS = [[.155, .41, .35, .545], [.39, .41, .605, .545], [.635, .41, .86, .545], [.135, .575, .345, .725], [.38, .575, .62, .725], [.645, .575, .88, .725]];
 const fotoOk = S.fotoOk = {};
 // confere uma vez se cada imagem já existe; se existir, a tela passa a usar a foto
 function temFoto(src) { if (src in fotoOk) return fotoOk[src]; fotoOk[src] = false; const i = new Image(); i.onload = () => { fotoOk[src] = true; if (S.tab === "fotos") render(); }; i.src = src; return false; }
