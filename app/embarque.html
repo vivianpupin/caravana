@@ -61,11 +61,15 @@ body{background:var(--fundo) radial-gradient(ellipse at 50% 0%,#241A11,#0E0B08 7
 .picote::after,.picote i{content:"";position:absolute;top:50%;width:22px;height:22px;border-radius:50%;background:var(--fundo);transform:translateY(-50%)}
 .picote::after{right:-11px}.picote i{left:-11px}
 .canhoto{position:relative;display:flex;align-items:center;gap:14px;padding:4px 18px 18px}
-/* selo do guardião da travessia: a divindade num medalhão dourado, como um selo colado no canhoto */
-.guardiao{position:relative;width:86px;height:86px;flex:none;border-radius:50%;padding:5px;background:conic-gradient(from 20deg,#8E6A38,#E2C08A,#9C7A44,#F0D7A6,#8E6A38,#C9A062,#8E6A38);box-shadow:0 3px 8px rgba(0,0,0,.35),inset 0 0 0 1px rgba(60,40,20,.5);transform:rotate(-4deg)}
-.guardiao::before{content:"";position:absolute;inset:2px;border-radius:50%;border:1px dashed rgba(60,40,20,.55)}
-.guardiao img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 22%;display:block;box-shadow:inset 0 0 0 2px rgba(60,40,20,.6);filter:sepia(.15) saturate(1.05)}
-.gtexto{display:block;font:700 9px "Courier Prime",monospace;letter-spacing:.2em;color:#7A5A3A;margin-bottom:2px}
+/* guardião: selinho de carimbo preto e branco, rústico, com borda serrilhada de selo postal */
+.gselo{display:flex;align-items:center;gap:9px;margin-top:5px}
+.gfoto{flex:none;width:56px;height:66px;padding:5px;transform:rotate(-4deg);background:radial-gradient(circle at 3px 3px,transparent 2px,#F1E8D4 2.4px) -3px -3px/6px 6px;filter:drop-shadow(0 1px 1.5px rgba(40,30,20,.35))}
+.gfoto img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 18%;filter:grayscale(1) contrast(1.6) brightness(.85) sepia(.18);
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.4 1.6'/></filter><rect width='80' height='80' filter='url(%23n)'/></svg>");
+          mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.4 1.6'/></filter><rect width='80' height='80' filter='url(%23n)'/></svg>")}
+.gselo b{display:block;font:400 18px "Special Elite",monospace;letter-spacing:.02em}
+.gselo em{display:block;font:italic 400 11px/1.3 "Special Elite",monospace;color:#5A4430;opacity:.85}
+.campo.gcampo span{letter-spacing:.14em}
 .qr{width:82px;height:82px;flex:none;padding:4px;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(43,31,20,.3)}
 .qr svg{width:100%;height:100%;display:block}.qr svg path,.qr svg rect[fill="black"],.qr svg rect[fill="#000000"]{fill:#1F160E}.qr svg rect[fill="white"],.qr svg rect[fill="#ffffff"]{fill:transparent}
 .canhoto p{margin:0;flex:1;font:400 11px/1.5 "Courier Prime",monospace;color:#4A3522}
@@ -84,7 +88,7 @@ body{background:var(--fundo) radial-gradient(ellipse at 50% 0%,#241A11,#0E0B08 7
 .vert{writing-mode:vertical-rl;transform:rotate(180deg);font:700 12px "Courier Prime",monospace;letter-spacing:.2em;color:var(--carimbo)}
 /* carimbos de tinta vermelha */
 .carimbo{position:absolute;pointer-events:none;color:var(--carimbo);opacity:0;mix-blend-mode:multiply}
-.c1{right:16px;top:104px;width:92px;height:92px;border:3px solid currentColor;border-radius:50%;display:grid;place-items:center;text-align:center;font:700 8.5px "Courier Prime",monospace;letter-spacing:.14em;line-height:1.35;--rot:-14deg;animation:carimba .45s 1.5s cubic-bezier(.3,1.6,.5,1) forwards}
+.c1{left:112px;top:178px;width:84px;height:84px;border:3px solid currentColor;border-radius:50%;display:grid;place-items:center;text-align:center;font:700 8.5px "Courier Prime",monospace;letter-spacing:.14em;line-height:1.35;--rot:-14deg;animation:carimba .45s 1.5s cubic-bezier(.3,1.6,.5,1) forwards}
 .c1::before{content:"";position:absolute;inset:5px;border:1.5px solid currentColor;border-radius:50%}
 .c1 b{display:block;font:700 12px Cinzel,serif;letter-spacing:.06em}
 .c3{right:46px;bottom:8px;font:700 11px "Courier Prime",monospace;letter-spacing:.14em;border-top:2px solid currentColor;border-bottom:2px solid currentColor;padding:2px 4px;color:#3A4A6A;--rot:-4deg;animation:carimba .4s 2s cubic-bezier(.3,1.6,.5,1) forwards}
@@ -133,14 +137,15 @@ body.saindo>*{transition:opacity .5s ease;opacity:0}
       <div class="campos">
         <div class="campo inteiro"><span>Viajante</span><b id="nome">—</b></div>
         <div class="campo"><span>Passaporte</span><b id="pass">Nº —</b></div>
-        <div class="campo"><span>Guardião</span><b id="gnome">—</b></div>
+        <div class="campo gcampo"><span>Guardião da travessia</span>
+          <div class="gselo"><i class="gfoto" aria-hidden="true"><img id="gimg" src="/deuses/ganesha.webp" alt=""></i><div><b id="gnome">—</b><em id="gfrase"></em></div></div></div>
       </div>
       <div class="carimbo c1"><div>EMBARQUE<br><b>AUTORIZADO</b>CARAVANA DO CÉU</div></div>
     </div>
     <div class="picote"><i></i></div>
     <div class="canhoto">
-      <div class="guardiao" aria-hidden="true"><img id="gimg" src="/deuses/ganesha.webp" alt=""></div>
-      <p><span class="gtexto">GUARDIÃO DA TRAVESSIA</span><b id="gnome2">—</b><span id="gfrase"></span><br><span style="opacity:.75">Viajante: <span id="nome2">—</span></span></p>
+      <div class="qr" id="qr" aria-hidden="true"></div>
+      <p>CANHOTO DO VIAJANTE<b id="nome2">—</b>Guarde esta passagem.<br>Ela abre a sua travessia.</p>
       <span class="vert" id="serie2">Nº 0000</span>
       <div class="carimbo c3">ॐ SHANTI</div>
     </div>
@@ -158,6 +163,7 @@ body.saindo>*{transition:opacity .5s ease;opacity:0}
   <p>Toque no lacre para ingressar no mundo Caravana.</p>
 </div>
 
+<script src="/qrcode.min.js"></script>
 <script>
 // o link de cada pessoa: /embarque/ana-paula/07  (ou ?n=Ana%20Paula&p=07&a=12)
 (function () {
@@ -179,6 +185,9 @@ body.saindo>*{transition:opacity .5s ease;opacity:0}
   const k = new URLSearchParams(location.hash.slice(1)).get("k");
   let palavra = ""; try { if (k) palavra = decodeURIComponent(escape(atob(k.replace(/-/g, "+").replace(/_/g, "/")))); } catch (e) {}
   if (palavra) raspadinha(palavra);
+  // QR da própria passagem (para abrir em outro aparelho ou no papel)
+  try { const qr = qrcode(0, "M"); qr.addData(location.href); qr.make();
+    document.getElementById("qr").innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true }); } catch (e) {}
   // guardião da travessia: escolhido pela líder no link, ou sorteado pelo número do passaporte
   const G = [["ganesha", "Ganesha", "abre os caminhos"], ["hanuman", "Hanuman", "a coragem e a devoção"], ["lakshmi", "Lakshmi", "a abundância e a graça"], ["shiva", "Shiva", "a transformação"],
     ["durga", "Durga", "a força que protege"], ["saraswati", "Saraswati", "a sabedoria e as artes"], ["krishna", "Krishna", "o amor e a alegria"], ["ganga", "Ganga", "a purificação"],
@@ -186,7 +195,7 @@ body.saindo>*{transition:opacity .5s ease;opacity:0}
   const pedido = String(q.get("g") || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   const g = G.find(x => x[0] === pedido) || G[(+num || 0) % 8];
   document.getElementById("gimg").src = "/deuses/" + g[0] + ".webp";
-  document.getElementById("gnome").textContent = g[1]; document.getElementById("gnome2").textContent = g[1].toUpperCase();
+  document.getElementById("gnome").textContent = g[1];
   document.getElementById("gfrase").textContent = g[2];
   document.getElementById("embarcar").addEventListener("click", () => {
     // o bilheteiro picota a passagem (um furo no canhoto) e a pessoa segue para o app
