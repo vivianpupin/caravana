@@ -53,7 +53,7 @@ const css = `
 #portao .home b{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.25);justify-self:center}
 #portao .home .app{background:#F5EFE4 url(img/simbolo-marrom.png) center/70% no-repeat;animation:pop 18s infinite}
 #portao .dedo{position:absolute;width:26px;height:26px;border-radius:50%;background:rgba(138,63,50,.55);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);animation:dedo 18s infinite;left:50%;top:60%;z-index:3}
-@keyframes dedo{0.0%{left:60%;top:45%;opacity:0}2.2%,8.3%{left:60%;top:45%;opacity:1;transform:scale(1)}14.4%{left:calc(50% - 13px);top:calc(100% - 30px);transform:scale(1)}16.1%{transform:scale(.7)}17.8%,25.6%{left:calc(50% - 13px);top:calc(100% - 30px);transform:scale(1)}32.2%{left:calc(50% - 13px);top:calc(100% - 78px);transform:scale(1)}33.9%{transform:scale(.7)}35.6%,48.9%{left:calc(50% - 13px);top:calc(100% - 78px);transform:scale(1)}55.6%{left:calc(100% - 36px);top:4px;transform:scale(1)}57.2%{transform:scale(.7)}58.9%,72.2%{left:calc(100% - 36px);top:4px;transform:scale(1)}78.9%{left:calc(50% - 13px);top:61px;transform:scale(1)}80.6%{transform:scale(.7)}82.2%{left:calc(50% - 13px);top:61px;transform:scale(1);opacity:1}87.8%,100.0%{left:calc(50% - 13px);top:61px;opacity:0}}
+@keyframes dedo{0.0%{left:60%;top:45%;opacity:0}2.2%,8.3%{left:60%;top:45%;opacity:1;transform:scale(1)}14.4%{left:calc(100% - 40px);top:calc(100% - 30px);transform:scale(1)}16.1%{transform:scale(.7)}17.8%,25.6%{left:calc(100% - 40px);top:calc(100% - 30px);transform:scale(1)}32.2%{left:calc(50% - 13px);top:calc(100% - 78px);transform:scale(1)}33.9%{transform:scale(.7)}35.6%,48.9%{left:calc(50% - 13px);top:calc(100% - 78px);transform:scale(1)}55.6%{left:calc(100% - 36px);top:4px;transform:scale(1)}57.2%{transform:scale(.7)}58.9%,72.2%{left:calc(100% - 36px);top:4px;transform:scale(1)}78.9%{left:calc(50% - 13px);top:61px;transform:scale(1)}80.6%{transform:scale(.7)}82.2%{left:calc(50% - 13px);top:61px;transform:scale(1);opacity:1}87.8%,100.0%{left:calc(50% - 13px);top:61px;opacity:0}}
 @keyframes folha{0.0%,18.3%{transform:translateY(105%)}21.7%,46.1%{transform:translateY(0)}47.8%,100.0%{transform:translateY(105%)}}
 @keyframes alvo{0.0%,33.3%{background:#f3f1ee}33.9%,46.1%{background:#dfe9fb}47.8%,100.0%{background:#f3f1ee}}
 @keyframes dlg{0.0%,46.7%{opacity:0}48.9%,68.3%{opacity:1}70.6%,100.0%{opacity:0}}
@@ -66,9 +66,10 @@ const css = `
 #portao.inst .cel{zoom:.8}
 @media (max-height:760px){#portao.inst .cel{zoom:.66}#portao.inst .cx{gap:8px}}
 @media (max-height:600px){#portao{padding:12px 14px 40px}#portao.inst .cel{zoom:.5}#portao.inst .cx{padding:14px 16px 16px;gap:6px}#portao.inst .cx>div>img{width:34px}#portao.inst h1{font-size:min(17px,4.6vw)}#portao.inst .como{font-size:9.5px}#portao .leg{gap:5px}#portao .leg p{font-size:13.5px}#portao .leg p small{font-size:11.5px}}
+#portao .andr{width:100%;display:flex;flex-direction:column;gap:7px;text-align:left}#portao .andr p{font-size:14.5px;line-height:1.4;color:#3B2A1C;display:flex;gap:8px;align-items:flex-start}#portao .andr p.t{font:600 11px Poppins,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#A07C45;margin-top:4px}#portao .andr b.n{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#3F4938;color:#F6EDDA;font-size:12px}#portao .leg[hidden],#portao .andr[hidden]{display:none}
 #portao .como{font:300 10px Poppins,system-ui,sans-serif;letter-spacing:.03em;color:#5A4A38;margin:2px 0 -2px}
 #portao .leg{width:100%;display:flex;flex-direction:column;gap:8px;text-align:left}
-#portao .leg p{opacity:0;font-size:15px;line-height:1.4;color:#3B2A1C;display:flex;gap:8px;align-items:flex-start}
+#portao .leg p{opacity:1!important;animation:none!important;font-size:15px;line-height:1.4;color:#3B2A1C;display:flex;gap:8px;align-items:flex-start}
 #portao .leg p small{display:block;font-size:12.5px;color:#7A6650;margin-top:2px}
 #portao .leg p b.n{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#3F4938;color:#F6EDDA;font-size:12px;margin-top:1px}
 #portao .leg .ic{width:26px;height:26px;vertical-align:-7px}#portao .leg .ic svg{width:16px;height:16px}
@@ -213,8 +214,8 @@ const COMP = '<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#2F6
 function celAnimado() {
   const d = el("div", { className: "cel" });
   d.innerHTML = '<div class="tela"><div class="pag"><img src="img/simbolo-marrom.png" alt=""><i></i><i style="width:70px"></i></div>' +
-    '<div class="barra"><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></span><span class="comp"><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></span></div>' +
-    '<div class="folha"><div>Copiar</div><div class="alvo">Adicionar à Tela de Início <span>⊞</span></div><div>Adicionar aos Favoritos</div></div>' +
+    '<div class="barra"><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="#2F6FD6" stroke-width="2"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></span><span class="comp"><svg viewBox="0 0 24 24" fill="#2F6FD6"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></span></div>' +
+    '<div class="folha"><div>Compartilhar</div><div class="alvo">Adicionar à Tela de Início <span>⊞</span></div><div>Ver mais</div></div>' +
     '<div class="dlg"><div class="top"><span>Cancelar</span><b>Adicionar</b></div><div class="row"><i></i>Caravana</div></div>' +
     '<div class="home"><b></b><b></b><b></b><b></b><b class="app"></b><b></b></div><div class="dedo"></div></div>';
   return d;
@@ -266,11 +267,26 @@ function passosInstalar() {
     return document.getElementById("portao").classList.add("inst");
   }
   const leg = el("div", { className: "leg" });
-  leg.innerHTML = '<p><b class="n">1</b><span>Toque em ' + COMP + (noTopo ? "" : "<small>Não achou? Toque em ••• e depois em Compartilhar</small>") + "</span></p>" +
-    '<p><b class="n">2</b><span>Toque em <b>Adicionar à Tela de Início</b><small>Não apareceu? Toque em <b>Ver mais</b> e procure na lista</small></span></p>' +
-    '<p><b class="n">3</b><span>Toque em <b>Adicionar</b>, no alto</span></p>' +
-    '<p><b class="n">4</b><span>Abra o aplicativo pelo ícone da <b>Caravana</b> na Tela de Início do seu celular</span></p>';
-  portao(el("p", { id: "instalar", className: "como", textContent: "Como instalar o aplicativo" }), celAnimado(), leg);
+  leg.innerHTML = noTopo
+    ? '<p><b class="n">1</b><span>Toque em ' + COMP + "</span></p>" +
+      '<p><b class="n">2</b><span>Toque em <b>Adicionar à Tela de Início</b><small>Não apareceu? Toque em <b>Ver mais</b> e procure na lista</small></span></p>' +
+      '<p><b class="n">3</b><span>Toque em <b>Adicionar</b>, no alto</span></p>' +
+      '<p><b class="n">4</b><span>Abra o aplicativo pelo ícone da <b>Caravana</b> na Tela de Início do seu celular</span></p>'
+    : '<p><b class="n">1</b><span>Toque nos <b>três pontinhos •••</b> no canto de baixo, à direita</span></p>' +
+      '<p><b class="n">2</b><span>Toque em ' + COMP + " <b>Compartilhar</b></span></p>" +
+      '<p><b class="n">3</b><span>Toque em <b>Ver mais</b></span></p>' +
+      '<p><b class="n">4</b><span>Toque em <b>Adicionar à Tela de Início</b></span></p>' +
+      '<p><b class="n">5</b><span>Toque em <b>Adicionar</b>, no alto</span></p>' +
+      '<p><b class="n">6</b><span>Abra o aplicativo pelo ícone da <b>Caravana</b> na Tela de Início</span></p>';
+  // quem usa Android (Samsung, Motorola...) vê o seu passo a passo
+  const andr = el("div", { className: "andr", hidden: true });
+  andr.innerHTML = '<p class="t">No Chrome</p><p><b class="n">1</b><span>Toque nos <b>três pontinhos ⋮</b> no alto, à direita</span></p>' +
+    '<p><b class="n">2</b><span>Toque em <b>Adicionar à tela inicial</b> (ou <b>Instalar app</b>)</span></p><p><b class="n">3</b><span>Toque em <b>Instalar</b> ou <b>Adicionar</b></span></p>' +
+    '<p class="t">No navegador da Samsung</p><p><b class="n">1</b><span>Toque nas <b>três linhas ≡</b> embaixo, à direita</span></p>' +
+    '<p><b class="n">2</b><span>Toque em <b>Adicionar página a</b> e depois em <b>Tela inicial</b></span></p>' +
+    '<p class="t">Depois</p><p><b class="n">✓</b><span>Abra o aplicativo pelo ícone da <b>Caravana</b> na tela do celular</span></p>';
+  const btA = el("button", { type: "button", className: "claro", onclick: () => { andr.hidden = !andr.hidden; btA.textContent = andr.hidden ? "Tem Android ou Samsung? Toque aqui" : "Voltar ao iPhone"; leg.hidden = !andr.hidden; } }, "Tem Android ou Samsung? Toque aqui");
+  portao(el("p", { id: "instalar", className: "como", textContent: "Como instalar o aplicativo" }), celAnimado(), leg, andr, btA);
   document.getElementById("portao").classList.add("inst");
   document.getElementById("portao").append(el("div", { className: "seta" + (noTopo ? " topo" : ""), textContent: noTopo ? "↑" : "↓" }));
 }
