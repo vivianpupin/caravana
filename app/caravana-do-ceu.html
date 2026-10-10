@@ -1030,7 +1030,9 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfjanelafoto{position:absolute!important;border-radius:6px;background:#050505;box-shadow:inset 0 0 10px rgba(0,0,0,.9)}
 .cfjanelafoto.invertido .fotocanvas{transform:rotate(180deg)}
 .cfjanelafoto.invertido{background:#2A2622}
-.cfjanelafoto .fotocanvas{object-fit:cover!important;filter:saturate(.92) contrast(1.04)}
+.cfjanelafoto.inteira .fotocanvas{object-fit:contain!important}
+.cf-couro .cfcontroles{margin-left:auto}
+.cfjanelafoto .fotocanvas{object-fit:contain!important;filter:saturate(.92) contrast(1.04)}
 /* olhar por dentro do visor: o vidro com reflexo, a borda escura do túnel da ocular e as linhas de enquadramento da câmera */
 .cfjanelafoto::after{background:linear-gradient(155deg,rgba(255,255,255,.16),rgba(255,255,255,.03) 28%,rgba(255,255,255,0) 45%),radial-gradient(ellipse 72% 78% at 50% 50%,rgba(0,0,0,0) 55%,rgba(0,0,0,.55) 88%,rgba(0,0,0,.9) 100%)!important;box-shadow:inset 0 0 0 2px rgba(0,0,0,.85),inset 0 0 18px 4px rgba(0,0,0,.7)}
 .cfvf{position:absolute;inset:0;pointer-events:none;z-index:2}
@@ -1057,7 +1059,6 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfcorpo.comfoto>*:not(.cfpalco){pointer-events:none}
 .cfcorpo.comfoto>* button,.cfcorpo.comfoto>* a,.cfcorpo.comfoto .cfdepois,.cfcorpo.comfoto .cfdepois *{pointer-events:auto}
 .cfbotaofoto{z-index:5}
-.cf-campo .cfchave{padding:4px 7px;font-size:8.5px;gap:5px}.cf-campo .cfchave i{width:24px}
 body:has(.camfull) nav.tabs,body:has(.camfull) .navmais{display:none!important}
 .cfluzfoto{position:absolute;width:6.4%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;font-size:0;pointer-events:none;transition:background .1s,box-shadow .1s}
 .cfluzfoto.on{background:radial-gradient(circle,#FFE08A,#F2A63A 55%,rgba(242,166,58,0) 72%);box-shadow:0 0 18px 6px rgba(242,180,70,.7)}
@@ -4957,8 +4958,8 @@ const FOTO_CAM = {
   super8: { visor: [.2, .105, .795, .365], botao: [.498, .601, .09], selfie: [.8, .76] },
   quatro: { visor: [.255, .31, .73, .625], botao: [.512, .786, .09], selfie: [.8, .88], luzes: [.356, .433, .512, .589].map(y => [.146, y]) },
   // a de madeira mostra a imagem de cabeça para baixo no vidro fosco, como as câmeras de campo de verdade
-  campo: { visor: [.196, .193, .805, .78], botao: [.489, .869, .05], selfie: [.82, .87] },
-  couro: { visor: [.223, .166, .759, .779], botao: [.491, .883, .071], selfie: [.84, .9] },
+  campo: { visor: [.152, .126, .545, .477], botao: [.692, .817, .089], selfie: [.24, .78] },
+  couro: { visor: [.598, .216, .795, .497], botao: [.237, .879, .1], selfie: [.7, .7], inteira: 1 },
 };
 // compartimentos da mala (fração da imagem): 3 colunas × 2 fileiras
 const MALA_CASAS = [[.155, .41, .35, .545], [.39, .41, .605, .545], [.635, .41, .86, .545], [.135, .575, .345, .725], [.38, .575, .62, .725], [.645, .575, .88, .725]];
@@ -5071,7 +5072,7 @@ function vCameraFisica(c) {
   // com a foto realista: a câmera de perto ocupa a tela, a imagem ao vivo entra no visor da foto e o botão da foto dispara
   const palco = fotoCorpo ? h("div", { class: "cfpalco", "aria-hidden": "false" }, h("img", { class: "cffundo", src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }), h("div", { class: "cfimg" },
     h("img", { src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }),
-    h("div", { class: "cfjanela cfjanelafoto" + (fc.invertido ? " invertido" : ""), style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : null,
+    h("div", { class: "cfjanela cfjanelafoto" + (fc.invertido ? " invertido" : "") + (fc.inteira ? " inteira" : ""), style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : null,
       c.id === "super8" ? h("span", { class: "cfmira", "aria-hidden": "true" }) : null,
       h("span", { class: "cfvf", "aria-hidden": "true" }, ...({
         rajastao: [h("i", { class: "moldura" }), h("i", { class: "ponto" })],
