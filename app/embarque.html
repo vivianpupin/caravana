@@ -73,12 +73,11 @@ body{background:var(--fundo) radial-gradient(ellipse at 50% 0%,#241A11,#0E0B08 7
 .c1 b{display:block;font:700 12px Cinzel,serif;letter-spacing:.06em}
 .c3{right:46px;bottom:8px;font:700 11px "Courier Prime",monospace;letter-spacing:.14em;border-top:2px solid currentColor;border-bottom:2px solid currentColor;padding:2px 4px;color:#3A4A6A;--rot:-4deg;animation:carimba .4s 2s cubic-bezier(.3,1.6,.5,1) forwards}
 .embarca{margin-top:26px;display:flex;flex-direction:column;align-items:center;gap:12px;opacity:0;animation:aparece .8s 2.3s ease forwards;width:100%;max-width:380px}
-.portao{position:relative;width:100%;border:0;cursor:pointer;padding:16px 18px;color:var(--ouro2);-webkit-tap-highlight-color:transparent;
-  background:linear-gradient(180deg,rgba(14,11,8,.15),rgba(14,11,8,.4)),url(/img/bilhete-textura.jpg) center/cover,#120E0A;
-  box-shadow:0 10px 24px rgba(0,0,0,.6),inset 0 0 0 1px rgba(201,160,98,.8),inset 0 0 0 5px rgba(14,11,8,.9),inset 0 0 0 6px rgba(201,160,98,.45);
-  display:flex;align-items:center;justify-content:center;gap:14px;font:700 15px Cinzel,serif;letter-spacing:.36em;animation:brilha 2.6s 3.1s ease-in-out infinite}
-.portao::before,.portao::after{content:"✦";font-size:10px;letter-spacing:0;color:var(--ouro)}
-.portao:active{transform:translateY(1px)}
+.lacre{position:relative;width:118px;height:118px;border:0;padding:0;border-radius:50%;background:url(/img/lacre-escuro.webp) center/contain no-repeat;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.75));animation:brilha 2.8s 3.1s ease-in-out infinite}
+.lacre:active{transform:scale(.95)}
+.lacre.aperta{animation:aperta .45s ease forwards}
+.rotulo{font:700 12px Cinzel,serif;letter-spacing:.42em;color:var(--ouro2);margin-top:-2px}
 .embarca p{margin:0;max-width:300px;text-align:center;color:#C9B28A;font-size:12.5px;line-height:1.5}
 .embarca p b{color:var(--ouro2);font-weight:600}
 /* furo de picotador, como o do bilheteiro, quando a pessoa embarca */
@@ -86,7 +85,8 @@ body{background:var(--fundo) radial-gradient(ellipse at 50% 0%,#241A11,#0E0B08 7
 .bilhete.picotado{animation:treme .3s ease}
 @keyframes fura{to{transform:scale(1)}}
 @keyframes treme{30%{transform:translateY(2px) rotate(-.6deg)}60%{transform:translateY(-1px) rotate(.4deg)}}
-@keyframes brilha{0%,100%{filter:none}50%{filter:drop-shadow(0 0 10px rgba(226,192,138,.35))}}
+@keyframes brilha{0%,100%{filter:drop-shadow(0 8px 14px rgba(0,0,0,.75))}50%{filter:drop-shadow(0 8px 14px rgba(0,0,0,.75)) drop-shadow(0 0 14px rgba(226,192,138,.4))}}
+@keyframes aperta{40%{transform:scale(.9)}100%{transform:scale(1.04);filter:drop-shadow(0 0 22px rgba(226,192,138,.7))}}
 @keyframes chega{to{transform:none;opacity:1}}
 @keyframes aparece{to{opacity:1}}
 @keyframes carimba{0%{opacity:0;transform:scale(1.8) rotate(var(--rot))}100%{opacity:.8;transform:scale(1) rotate(var(--rot))}}
@@ -131,8 +131,9 @@ body{background:var(--fundo) radial-gradient(ellipse at 50% 0%,#241A11,#0E0B08 7
 </article>
 
 <div class="embarca">
-  <button class="portao" id="embarcar" type="button" aria-label="Embarcar: abrir o aplicativo da travessia">EMBARCAR</button>
-  <p>Toque em embarcar para ingressar na Caravana.</p>
+  <button class="lacre" id="embarcar" type="button" aria-label="Embarcar: ingressar na Caravana"></button>
+  <div class="rotulo">EMBARCAR</div>
+  <p>Toque no lacre para ingressar na Caravana.</p>
 </div>
 
 <script src="/qrcode.min.js"></script>
@@ -161,7 +162,7 @@ body{background:var(--fundo) radial-gradient(ellipse at 50% 0%,#241A11,#0E0B08 7
     // o bilheteiro picota a passagem (um furo no canhoto) e a pessoa segue para o app
     const bl = document.querySelector(".bilhete"), ca = document.querySelector(".canhoto"), f = document.createElement("span");
     f.className = "furo"; f.style.left = (ca.offsetWidth - 74) + "px"; f.style.top = "34px"; ca.append(f);
-    bl.classList.add("picotado"); if (navigator.vibrate) navigator.vibrate(30);
+    bl.classList.add("picotado"); document.getElementById("embarcar").classList.add("aperta"); if (navigator.vibrate) navigator.vibrate(30);
     setTimeout(() => { location.href = "/"; }, 650);
   });
 })();
