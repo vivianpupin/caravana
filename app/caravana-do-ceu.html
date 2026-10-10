@@ -985,7 +985,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .nvseta.e{left:-8px}.nvseta.d{right:-8px}
 .nvbase{display:flex;align-items:flex-start;justify-content:center;gap:14px;padding-top:18px;position:relative;z-index:3}
 .nvacao,.nvcompart{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;height:auto!important;width:auto!important;min-width:58px;color:#B9B2A6!important}
-.nvacao::after,.nvcompart::after{content:attr(data-txt);font:500 10px/1.2 Poppins,sans-serif;color:#C9C1B3;white-space:normal;max-width:72px;text-align:center}
+.nvacao::after,.nvcompart::after{content:attr(data-txt);font:500 10px/1.2 Poppins,sans-serif;color:#C9C1B3;white-space:normal;max-width:96px;text-align:center}
 .nvvoltar{border:1px solid rgba(232,192,122,.5);background:rgba(232,192,122,.12);color:#E8C07A;border-radius:999px;padding:9px 14px;font:600 12px Poppins,sans-serif;cursor:pointer}
 .nvcompart{width:62px;height:62px;border:0;border-radius:50%;background:none;color:#8E8E8E;cursor:pointer}
 .nvacao{width:44px;height:44px;border:0;border-radius:50%;background:none;color:#6E6E6E;cursor:pointer}
@@ -1083,6 +1083,9 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .faixacota.lider{background:#8A3F32}
 .faixacota b{font-size:13.5px}
 .faixacota a{align-self:flex-start;margin-top:5px;padding:6px 12px;border-radius:999px;background:#F5EFE4;color:#8A3F32;font-weight:600;text-decoration:none}
+.vidmini{position:relative;display:block;width:100%;height:100%}
+.vidmini video{width:100%;height:100%;object-fit:cover;display:block}
+.vidplay{position:absolute;left:50%;top:50%;width:34%;max-width:40px;min-width:18px;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
 /* a fileira sempre para com uma câmera inteira encostada no fio dourado, nunca cortada pela metade */
 .cfbaixo .cffita{scroll-snap-type:x mandatory;scroll-padding-left:18px}.cfbaixo .cfitem{flex:0 0 calc((100% - 12px) / 3);min-width:0;scroll-snap-align:start}
 .cftopovazio{width:40px;flex:0 0 40px}
@@ -4908,8 +4911,8 @@ function vTira() {
         h("div", { class: "opts" }, TIRA_FILTROS.map(id => FILTROS.find(f => f.id === id)).filter(Boolean).map(f => h("button", { type: "button", class: "opt", "aria-pressed": String(T.filtro === f.id), onclick: () => set("filtro", f.id) }, f.nome))),
         painelAdesivos,
         h("div", { class: "actions" },
-          h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no rolo da câmera"),
-          h("button", { class: "btn", type: "button", onclick: () => envia("mural") }, "Enviar para a galeria da caravana")),
+          h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no dispositivo"),
+          h("button", { class: "btn", type: "button", onclick: () => envia("mural") }, "Enviar para a Galeria da Caravana")),
         msg)) :
       h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
         h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "Escolha de 2 a 4 fotos" }),
@@ -5230,7 +5233,7 @@ function vCameraFisica(c) {
   const visor = h("div", { class: "cfvisor" }, h("div", { class: "cfmoldura" }, janela));
   const obturador = h("button", { type: "button", class: "cfdisparo", "aria-label": "Tirar foto", onclick: dispara }, c.id === "descartavel" ? h("i", { "aria-hidden": "true" }, "• • •") : c.rajadas ? h("i", { "aria-hidden": "true" }, "AGORA") : null);
   const miniatura = h("button", { type: "button", class: "cfmini" + (S.revelando ? " revelando" : ""), "aria-label": "Ver as fotos", onclick: () => { if (ult) c.rajadas ? verQuatro() : verFotos(0); } },
-    ult ? h(/^video/.test(ult.blob.type) ? "video" : "img", { src: ult.url || (ult.url = URL.createObjectURL(ult.blob)), alt: "", muted: true, playsinline: true, preload: "metadata" }) : null);
+    ult ? miniMidia(ult) : null);
   const chave = (rotA, rotB, ligadoB, fn, cls) => h("button", { type: "button", class: "cfchave " + (cls || "") + (ligadoB ? " b" : ""), onclick: fn }, h("span", { text: rotA }), h("i", { "aria-hidden": "true" }), h("span", { text: rotB }));
   const controles = h("div", { class: "cfcontroles" },
     FOTO_CAM[c.id] && temFoto("img/cameras/" + c.id + "-corpo.jpg") ? null : chave("Atrás", "Selfie", frente, virar),
@@ -5265,12 +5268,12 @@ function vCameraFisica(c) {
       : !F.img ? null : h("div", { class: "cfdepois" },
         h("p", { class: "cfguardada", text: "Guardada nos seus Registros" }),
         h("div", { class: "actions", style: "justify-content:center;flex-wrap:wrap" },
-          h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(blob(), "caravana-" + c.id + ".jpg", msg) }, "Salvar no celular"),
+          h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(blob(), "caravana-" + c.id + ".jpg", msg) }, "Salvar no dispositivo"),
           h("button", { class: "btn", type: "button", onclick: async () => {
             if (!S.assets || !eu()) { msg.textContent = "Para enviar à galeria, emita seu passaporte."; msg.className = "msg err"; return; }
             msg.textContent = "Enviando…"; msg.className = "msg";
             try { const r = await S.assets.upload(await blob()); await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade: cidadeHoje(), legenda: c.nome, ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
-            catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; } } }, "Enviar para a Galeria"),
+            catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; } } }, "Enviar para a Galeria da Caravana"),
           h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null }; render(); } }, "📸 Outra foto")), msg));
   const fita = h("div", { class: "cffita" }, CAMERAS_C.map(x => h("button", { type: "button", class: "cfitem" + (x.id === c.id ? " on" : ""), onclick: () => { if (x.id !== c.id) { S.camFlash = null; escolheCamera(x.id); } } },
     imgCam(x), h("span", { text: { celular: "Celular", quatro: "4 Tempos", super8: "Super 8" }[x.id] || x.nome.split(" ")[0] }))));
@@ -5330,7 +5333,7 @@ async function revelaFoto(img, c, extra) {
   const mini = document.querySelector(".cfmini"), ult = (S.fotosDiario || [])[0];
   if (mini && S.camSel === c.id) {
     if (!S.revelando) mini.classList.remove("revelando");
-    if (ult) { const u = ult.url || (ult.url = URL.createObjectURL(ult.blob)), novo = h(/^video/.test(ult.blob.type) ? "video" : "img", { src: u, alt: "", muted: true, playsinline: true, preload: "metadata" }); mini.replaceChildren(novo); }
+    if (ult) mini.replaceChildren(miniMidia(ult));
   } else if (S.camSel === c.id) render();
 }
 // toda foto das câmeras sai em 9:16, pronta para Reels e Stories: o que já é 9:16 só ajusta o tamanho; o resto vai no meio, sobre preto ou sobre a própria foto desfocada
@@ -5446,7 +5449,7 @@ function verQuatro() {
     h("button", { type: "button", class: "nvfechar", "aria-label": "Fechar", onclick: () => tela.remove() }, "×"),
     h("div", { class: "qvlentes", "aria-hidden": "true" }, [1, 2, 3, 4].map(() => h("i"))),
     h("div", { class: "qvlista" }, l.map(it => h("button", { type: "button", class: "qvfoto", "aria-label": "Abrir foto", onclick: () => verFotos(todas.indexOf(it)) },
-      /^video/.test(it.blob.type) ? h("video", { src: it.url || (it.url = URL.createObjectURL(it.blob)), muted: true, playsinline: true, preload: "metadata" }) : h("img", { src: it.url || (it.url = URL.createObjectURL(it.blob)), alt: "", loading: "lazy" })))));
+      miniMidia(it, { loading: "lazy" })))));
   document.body.append(tela);
 }
 function verFotos(i) {
@@ -5467,8 +5470,8 @@ function verFotos(i) {
     h("div", { class: "nvbase" },
       h("button", { type: "button", class: "nvvoltar", onclick: () => tela.remove() }, "← Câmera"),
       h("button", { type: "button", class: "nvacao", "data-txt": "Apagar", "aria-label": "Apagar", onclick: () => { if (confirm("Apagar esta foto?")) { tela.remove(); apagaDoDiario(it.id); } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("path", { d: "M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" }))),
-      h("button", { type: "button", class: "nvcompart", "data-txt": "Salvar ou enviar", "aria-label": "Compartilhar ou salvar", onclick: compartilhar }, h("svg", { viewBox: "0 0 24 24", width: "34", height: "34", fill: "currentColor" }, h("path", { d: "M14 5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11V5z" }))),
-      h("button", { type: "button", class: "nvacao", "data-txt": "Enviar à Galeria", "aria-label": "Enviar para a Galeria da Caravana", onclick: async () => {
+      h("button", { type: "button", class: "nvcompart", "data-txt": "Salvar no dispositivo", "aria-label": "Salvar no dispositivo", onclick: compartilhar }, h("svg", { viewBox: "0 0 24 24", width: "34", height: "34", fill: "currentColor" }, h("path", { d: "M14 5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11V5z" }))),
+      h("button", { type: "button", class: "nvacao", "data-txt": "Enviar para a Galeria da Caravana", "aria-label": "Enviar para a Galeria da Caravana", onclick: async () => {
         if (!S.assets || !eu()) { msg.textContent = "Para enviar à galeria, emita seu passaporte."; msg.className = "msg err"; return; }
         msg.textContent = "Enviando…"; msg.className = "msg";
         try { const rr = await S.assets.upload(it.blob); await S.db.collection("mural").add({ autor: S.uid, fotoId: rr.id, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
@@ -5497,13 +5500,22 @@ async function lerDiario() {
 }
 // lê as fotos guardadas logo depois que o app abre, para a aba Fotos não precisar redesenhar quando elas chegam
 setTimeout(() => { if (S.fotosDiario) return; lerDiario().then(l => { if (!S.fotosDiario) { S.fotosDiario = l; S.fotosDiarioPronto = true; } }).catch(() => {}); }, 1500);
+// miniatura de foto ou de filme: o filme mostra o primeiro quadro (não fica preto) e o símbolo de play por cima
+function miniMidia(it, extra) {
+  const u = it.url || (it.url = URL.createObjectURL(it.blob));
+  if (!/^video/.test(it.blob.type)) return h("img", { src: u, alt: "", ...(extra || {}) });
+  const v = h("video", { src: u + "#t=0.1", muted: true, playsinline: true, preload: "auto", class: extra && extra.class, onloadedmetadata: e => { try { if (e.target.currentTime < .05) e.target.currentTime = .1; } catch (x) {} } });
+  v.setAttribute("playsinline", ""); v.muted = true;
+  const ic = h("span", { class: "vidplay", "aria-hidden": "true" }); ic.innerHTML = '<svg viewBox="0 0 24 24" width="100%" height="100%"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.45)" stroke="rgba(255,255,255,.85)" stroke-width="1.2"/><path d="M10 8l6 4-6 4z" fill="#fff"/></svg>';
+  return h("span", { class: "vidmini" + (extra && extra.class ? " " + extra.class : "") }, v, ic);
+}
 async function apagaDoDiario(id) { try { const db = await bancoDiario(); await new Promise(ok => { const t = db.transaction("fotos", "readwrite"); t.objectStore("fotos").delete(id); t.oncomplete = ok; t.onerror = ok; }); } catch (e) {}
   // tira só aquela foto da lista e redesenha só a carteira (ou a miniatura da câmera), sem a tela toda piscar
   const l = S.fotosDiario || [], k = l.findIndex(x => x.id === id); if (k >= 0) { const [x] = l.splice(k, 1); if (x && x.url) setTimeout(() => URL.revokeObjectURL(x.url), 2000); }
   const pags = Math.max(1, Math.ceil(l.length / 4)); if ((S.pagReg || 0) > pags - 1) S.pagReg = pags - 1;
   const cart = document.querySelector(".diariofotos"), mini = document.querySelector(".cfmini");
   if (cart) cart.replaceWith(vDiarioViajante());
-  if (mini) { const u = l[0]; mini.replaceChildren(...(u ? [h(/^video/.test(u.blob.type) ? "video" : "img", { src: u.url || (u.url = URL.createObjectURL(u.blob)), alt: "", muted: true, playsinline: true, preload: "metadata" })] : [])); }
+  if (mini) { const u = l[0]; mini.replaceChildren(...(u ? [miniMidia(u)] : [])); }
 }
 // Registros: as fotos ficam dentro de uma carteira de couro de viajante, 4 por página; arrastando para o lado, aparecem as anteriores
 const CARTEIRA_FOTO = [[0.134, 0.103, 0.396, 0.431], [0.595, 0.103, 0.863, 0.431], [0.132, 0.559, 0.396, 0.890], [0.595, 0.559, 0.866, 0.890]];
@@ -5512,7 +5524,7 @@ function vDiarioViajante() {
   if (!S.fotosDiario) { S.fotosDiario = []; lerDiario().then(l => { S.fotosDiario = l; S.fotosDiarioPronto = true; if (S.tab === "fotos") render(); }); }
   const l = S.fotosDiario;
   const dia = ts => { const d = new Date(ts); return d.getDate() + " " + MES[d.getMonth()].toLowerCase(); };
-  const midia = (it, cls) => { const u = it.url || (it.url = URL.createObjectURL(it.blob)); return /^video/.test(it.blob.type) ? h("video", { src: u, muted: true, playsinline: true, preload: "metadata", class: cls }) : h("img", { src: u, alt: "", loading: cls === "lista" ? "lazy" : "eager", class: cls }); };
+  const midia = (it, cls) => miniMidia(it, { class: cls, loading: cls === "lista" ? "lazy" : "eager" });
   const cfoto = temFoto("img/cameras/carteira-foto.jpg");
   if (cfoto || temFoto("img/cameras/carteira.webp")) {
     const pags = Math.max(1, Math.ceil(l.length / 4)), pg = Math.min(S.pagReg || 0, pags - 1), vai = n => { S.pagReg = Math.max(0, Math.min(pags - 1, n)); const velho = document.querySelector(".diariofotos"); if (velho) velho.replaceWith(vDiarioViajante()); else render(); };
@@ -5542,7 +5554,7 @@ function verNoDiario(it) {
     h("img", { src: it.url, alt: "", style: "max-width:100%;max-height:60vh;border-radius:10px" }),
     h("p", { class: "small", text: [new Date(it.ts).toLocaleDateString("pt-BR"), it.cidade, it.camera].filter(Boolean).join(" · ") }),
     h("div", { class: "actions", style: "justify-content:center;flex-wrap:wrap" },
-      h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(Promise.resolve(it.blob), "caravana-diario.jpg", msg) }, "Salvar no celular"),
+      h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(Promise.resolve(it.blob), "caravana-diario.jpg", msg) }, "Salvar no dispositivo"),
       h("button", { class: "btn ghost", type: "button", onclick: () => { if (confirm("Apagar esta foto do diário?")) { closeSheets(); apagaDoDiario(it.id); } } }, "Apagar"),
       h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")), msg);
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box); document.body.append(sheet);
@@ -5752,8 +5764,8 @@ function vFotos() {
         h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn", type: "button", onclick: () => { S.fotoSel = null; S.foto = { ...S.foto, filtro: "original", intens: 1, grao: "auto", formato: "original", patch: "nenhum", moldura: "nenhuma", adesivos: [] }; render(); } }, "Remover tudo")),
         F.vivo ? null :
         h("div", { class: "actions" },
-          h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no rolo da câmera"),
-          h("button", { class: "btn", type: "button", onclick: mural }, "Enviar para a galeria da caravana"),
+          h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no dispositivo"),
+          h("button", { class: "btn", type: "button", onclick: mural }, "Enviar para a Galeria da Caravana"),
           h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "Trocar foto")),
         msg)) :
       h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
@@ -7282,7 +7294,7 @@ function abrirFotoMural(f) {
     f.legenda ? h("h3", { text: f.legenda }) : null,
     h("p", { class: "small", text: "Enviada por " + nomeDe(f.autor) }), st,
     h("div", { class: "actions", style: "justify-content:center" },
-      h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(fetch(blob(f.fotoId)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + ".jpg", st) }, "Salvar no rolo da câmera")),
+      h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(fetch(blob(f.fotoId)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + ".jpg", st) }, "Salvar no dispositivo")),
     h("div", { class: "foot2" },
       meu ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (!confirm("Apagar esta foto da galeria?")) return; apagaFotoMural(f).then(closeSheets, () => { st.textContent = "Não consegui apagar a foto."; st.className = "msg err"; }); } }, "Apagar foto") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
