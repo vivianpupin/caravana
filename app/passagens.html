@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0E0B08">
+<meta name="robots" content="noindex">
+<title>Passagens · Caravana do Céu</title>
+<link rel="icon" href="/img/icone-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:#0E0B08 radial-gradient(ellipse at 50% 0%,#241A11,#0E0B08 70%);color:#E8D6B0;font:15px/1.5 Poppins,system-ui,sans-serif;min-height:100vh;padding:max(22px,env(safe-area-inset-top)) 16px 40px}
+main{max-width:560px;margin:0 auto}
+h1{font:700 20px Cinzel,serif;letter-spacing:.12em;color:#E2C08A;margin:0 0 4px}
+.sub{margin:0 0 20px;color:#BFA67A;font-size:13px}
+label{display:block;font:600 11px Poppins,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#C9A062;margin:0 0 6px}
+textarea,input{width:100%;background:#1A140E;color:#F3E3C0;border:1px solid rgba(201,160,98,.4);border-radius:10px;padding:12px;font:15px/1.5 Poppins,sans-serif}
+textarea{min-height:150px}
+.dica{font-size:12px;color:#9E8763;margin:6px 0 16px}
+button{background:linear-gradient(180deg,#D2B378,#9C7A44);color:#2A1C10;border:0;border-radius:999px;padding:10px 18px;font:600 13px Poppins,sans-serif;cursor:pointer}
+button.claro{background:transparent;color:#E2C08A;box-shadow:inset 0 0 0 1px rgba(201,160,98,.6)}
+.lista{display:flex;flex-direction:column;gap:12px;margin-top:20px}
+.item{background:#17110C;border:1px solid rgba(201,160,98,.25);border-radius:12px;padding:12px 14px}
+.item b{font:700 15px Cinzel,serif;color:#E2C08A;letter-spacing:.06em}
+.item pre{white-space:pre-wrap;word-break:break-all;margin:8px 0 10px;font:13px/1.5 Poppins,sans-serif;color:#E8D6B0}
+.item .acoes{display:flex;flex-wrap:wrap;gap:8px}
+.ok{color:#9FD39A;font-size:12px;margin-left:6px}
+</style>
+</head><body><main>
+<h1>Passagens da Caravana</h1>
+<p class="sub">Escreva uma pessoa por linha: nome e número do passaporte, separados por vírgula. Se quiser um assento diferente do número, ponha um terceiro número.</p>
+<label for="nomes">Viajantes</label>
+<textarea id="nomes" placeholder="Ana Paula, 7&#10;João Pedro, 3&#10;Mariana, 12, 21"></textarea>
+<p class="dica">Exemplo: “Ana Paula, 7” gera a passagem Nº 07, assento 07.</p>
+<button id="gerar" type="button">Gerar passagens</button>
+<div class="lista" id="lista"></div>
+</main>
+<script>
+const BASE = location.origin.includes("localhost") ? "https://caravanaindiaapp.netlify.app" : location.origin;
+const lista = document.getElementById("lista"), campo = document.getElementById("nomes");
+try { campo.value = localStorage.getItem("cdi-passagens") || ""; } catch (e) {}
+const slug = n => n.trim().toLowerCase().replace(/\s+/g, "-");
+const copia = async (txt, el) => { try { await navigator.clipboard.writeText(txt); } catch (e) { const t = document.createElement("textarea"); t.value = txt; document.body.append(t); t.select(); document.execCommand("copy"); t.remove(); }
+  const ok = document.createElement("span"); ok.className = "ok"; ok.textContent = "copiado"; el.after(ok); setTimeout(() => ok.remove(), 1500); };
+function gera() {
+  try { localStorage.setItem("cdi-passagens", campo.value); } catch (e) {}
+  lista.textContent = "";
+  for (const linha of campo.value.split("\n")) {
+    const [nome, num, ass] = linha.split(",").map(x => (x || "").trim()); if (!nome) continue;
+    const n = (num || "").replace(/\D/g, ""), a = (ass || "").replace(/\D/g, "");
+    const link = BASE + "/embarque/" + slug(nome).replace(/[\/?#%&]/g, "") + (n ? "/" + n.padStart(2, "0") : "") + (a ? "/" + a.padStart(2, "0") : "");
+    const msg = nome.split(" ")[0] + ", sua passagem para a Índia chegou ✈️\n" + link;
+    const it = document.createElement("div"); it.className = "item";
+    const t = document.createElement("b"); t.textContent = nome + (n ? " · Nº " + n.padStart(2, "0") : "");
+    const pre = document.createElement("pre"); pre.textContent = msg;
+    const ac = document.createElement("div"); ac.className = "acoes";
+    const b1 = document.createElement("button"); b1.type = "button"; b1.textContent = "Copiar mensagem"; b1.onclick = () => copia(msg, b1);
+    const b2 = document.createElement("button"); b2.type = "button"; b2.className = "claro"; b2.textContent = "Mandar no WhatsApp"; b2.onclick = () => window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
+    const b3 = document.createElement("button"); b3.type = "button"; b3.className = "claro"; b3.textContent = "Ver passagem"; b3.onclick = () => window.open(link, "_blank");
+    ac.append(b1, b2, b3); it.append(t, pre, ac); lista.append(it);
+  }
+}
+document.getElementById("gerar").onclick = gera;
+if (campo.value.trim()) gera();
+</script>
+</body></html>
