@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 09:50";</script>
+<script>window.__VERSAO = "10/10 · 09:51";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -4946,8 +4946,8 @@ function vEstante() {
     // mala-cheia.jpg: a foto já com as câmeras dentro (geradas juntas, sem recorte); aí os botões ficam invisíveis por cima de cada compartimento
     (temFoto("img/cameras/mala-cheia.jpg") | temFoto("img/cameras/mala.jpg")) ? h("div", { class: "malafoto" + (temFoto("img/cameras/mala-cheia.jpg") ? " cheia" : "") }, h("img", { src: temFoto("img/cameras/mala-cheia.jpg") ? "img/cameras/mala-cheia.jpg" : "img/cameras/mala.jpg", alt: "", class: "estantefundo" }),
       CAMERAS_C.map((c, k) => { const [x0, y0, x1, y1] = (temFoto("img/cameras/mala-cheia.jpg") ? MALA_CHEIA : MALA_CASAS)[k] || MALA_CASAS[0];
-        return h("button", { type: "button", class: "namala nm-" + c.id, style: `left:${x0 * 100}%;top:${y0 * 100}%;width:${(x1 - x0) * 100}%;height:${(y1 - y0) * 100}%;--giro:${[-3, 2, -1.5, 2.5, -2, 1.5][k]}deg`, onclick: () => escolheCamera(c.id) },
-          temFoto("img/cameras/mala-cheia.jpg") ? null : imgCam(c), h("span", { class: "etiqueta", text: { celular: "Celular", descartavel: "Descartável", instantanea: "Instantânea", super8: "Super 8" }[c.id] || c.nome })); })) :
+        return h("button", { type: "button", class: "namala nm-" + c.id, "aria-label": c.nome, style: `left:${x0 * 100}%;top:${y0 * 100}%;width:${(x1 - x0) * 100}%;height:${(y1 - y0) * 100}%;--giro:${[-3, 2, -1.5, 2.5, -2, 1.5][k]}deg`, onclick: () => escolheCamera(c.id) },
+          temFoto("img/cameras/mala-cheia.jpg") ? null : imgCam(c)); })) :
     temFoto("img/cameras/estante.jpg") ? h("div", { class: "estantefoto" }, h("img", { src: "img/cameras/estante.jpg", alt: "", class: "estantefundo" }),
       fil.map((lin, k) => h("div", { class: "prateleirafoto", style: `top:${[16.75, 35.1, 53.4][k]}%` }, lin.map(c => h("button", { type: "button", class: "camitem naprat-" + c.id, onclick: () => escolheCamera(c.id) },
         imgCam(c, true), h("span", { class: "etiqueta", text: c.nome })))))) :
