@@ -214,7 +214,38 @@ function celAnimado() {
     '<div class="home"><b></b><b></b><b></b><b></b><b class="app"></b><b></b></div><div class="dedo"></div></div>';
   return d;
 }
+// primeira vez no celular: antes do passo a passo de instalar, uma tela de boas-vindas animada com o lacre de embarcar
 function telaInstalar() {
+  let viu = false; try { viu = sessionStorage.getItem("cdi-bv-inst") === "1"; } catch (e) {}
+  if (viu || document.getElementById("bvinst")) return passosInstalar();
+  const st = document.createElement("style");
+  st.textContent = `#bvinst{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px 24px;text-align:center;color:#E2C08A;
+    background:linear-gradient(180deg,rgba(14,11,8,.35),rgba(14,11,8,.75)),url(img/bilhete-textura.jpg) center/cover,#0E0B08;font-family:Poppins,system-ui,sans-serif;transition:opacity .6s}
+  #bvinst.sai{opacity:0}
+  #bvinst::after{content:"";position:absolute;inset:14px;border:1px solid rgba(201,160,98,.5);pointer-events:none}
+  #bvinst .s{width:64px;opacity:0;animation:bvsobe 1.2s .2s ease forwards}
+  #bvinst small{font:600 11px Cinzel,Georgia,serif;letter-spacing:.42em;color:#C9A062;opacity:0;animation:bvsobe 1s .8s ease forwards}
+  #bvinst h1{margin:0;font:700 26px/1.25 Cinzel,Georgia,serif;letter-spacing:.06em;color:#F0D7A6;opacity:0;animation:bvsobe 1.2s 1.2s ease forwards}
+  #bvinst p{margin:0;max-width:300px;font:400 italic 19px/1.5 Georgia,serif;color:#E8D2A4;opacity:0;animation:bvsobe 1.4s 2s ease forwards}
+  #bvinst .fio{width:120px;height:1px;background:linear-gradient(90deg,transparent,#C9A062,transparent);opacity:0;animation:bvsobe 1s 1.7s ease forwards}
+  #bvinst button{margin-top:14px;width:86px;height:86px;border:0;padding:0;border-radius:50%;background:url(img/lacre-escuro.webp) center/contain no-repeat;cursor:pointer;opacity:0;-webkit-tap-highlight-color:transparent;
+    animation:bvsobe 1s 2.9s ease forwards,bvbrilha 2.6s 3.9s ease-in-out infinite;filter:drop-shadow(0 8px 14px rgba(0,0,0,.75))}
+  #bvinst button:active{transform:scale(.94)}
+  #bvinst b.r{font:700 13px/1.6 Cinzel,serif;letter-spacing:.32em;padding-left:.32em;color:#E2C08A;opacity:0;animation:bvsobe 1s 3.1s ease forwards}
+  @keyframes bvsobe{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @keyframes bvbrilha{0%,100%{filter:drop-shadow(0 8px 14px rgba(0,0,0,.75))}50%{filter:drop-shadow(0 8px 14px rgba(0,0,0,.75)) drop-shadow(0 0 16px rgba(226,192,138,.45))}}
+  @media (prefers-reduced-motion:reduce){#bvinst *{animation-duration:.01s!important;animation-delay:0s!important}}`;
+  document.head.append(st);
+  const d = document.createElement("div"); d.id = "bvinst";
+  d.innerHTML = '<img class="s" src="img/simbolo-dourado.png" alt=""><small>Caravana do Céu</small><h1>Bem-vindo ao aplicativo<br>da Caravana do Céu</h1><div class="fio"></div><p>Aqui inicia a sua travessia.</p><button type="button" aria-label="Embarcar"></button><b class="r">EMBARCAR</b>';
+  document.body.append(d); document.documentElement.classList.remove("espera");
+  d.querySelector("button").onclick = () => {
+    try { sessionStorage.setItem("cdi-bv-inst", "1"); } catch (e) {}
+    if (navigator.vibrate) navigator.vibrate(25);
+    passosInstalar(); d.classList.add("sai"); setTimeout(() => d.remove(), 650);
+  };
+}
+function passosInstalar() {
   const ua = navigator.userAgent, android = /Android/i.test(ua), ipad = /iPad/i.test(ua) || /Macintosh/.test(ua), noTopo = ipad || /CriOS|FxiOS|EdgiOS/i.test(ua);
   tituloPortao = "";
   if (android) {
