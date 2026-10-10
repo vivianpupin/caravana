@@ -3714,10 +3714,10 @@ function ligarGps(silencioso) {
   if (S.gpsWatch != null && silencioso !== true) { lsSet("cdi-gps", "0"); navigator.geolocation.clearWatch(S.gpsWatch); S.gpsWatch = null; S.gpsOn = false; S.gpsMsg = "Localização ao vivo desligada."; S.room?.presence({ lat: null, lng: null, cidadeId: null, ts: null }).catch(() => {}); render(); return; }
   if (S.gpsWatch != null) return;
   if (!navigator.geolocation) { S.gpsMsg = "Este navegador não tem GPS. Abra o app pelo Safari (iPhone) ou Chrome (Android)."; render(); return; }
-  S.gpsMsg = "Procurando você…"; render();
+  S.gpsMsg = "Procurando você…"; // sem redesenhar aqui: a primeira posição já redesenha o mapa (antes piscava duas vezes)
   // economia da cota do Firebase: a posição só vai para os outros quando a pessoa anda uns 50 m
   // (parada, manda de novo só a cada 8 min, para continuar aparecendo como ao vivo no mapa)
-  let ultimoDb = 0, ultimaSala = 0, ondeDb = null, ondeSala = null;
+  let ultimoDb = 0, ultimaSala = 0, ondeDb = null, ondeSala = null, telaEm = 0, ondeTela = null;
   const andou = (de, lat, lng) => !de || distKm(de, { lat, lng }) >= 0.05;
   const recebe = pos => {
     const lat = +pos.coords.latitude.toFixed(5), lng = +pos.coords.longitude.toFixed(5), cidadeId = pertoCidade({ lat, lng }), ts = Date.now();
@@ -3727,7 +3727,8 @@ function ligarGps(silencioso) {
     if (S.room && ((andou(ondeSala, lat, lng) && ts - ultimaSala > 15000) || ts - ultimaSala > 8 * 60000)) { ultimaSala = ts; ondeSala = { lat, lng }; S.room.presence({ uid: S.uid, lat, lng, cidadeId, ts }).catch(() => {}); }
     if (((andou(ondeDb, lat, lng) && ts - ultimoDb > 60000) || ts - ultimoDb > 30 * 60000) && S.db && eu()) { ultimoDb = ts; ondeDb = { lat, lng }; S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: S.rua && distKm(S.rua, { lat, lng }) < 1 ? S.rua.lugar || "" : "", nota: "", link: "", gps: true, ts }).catch(() => {}); }
     if (S.arrastando) { S.pendente = true; return; }
-    if (S.tab === "mapa" && !document.querySelector(".sheet")) render();
+    // o GPS manda várias leituras seguidas: o mapa redesenha na primeira e depois só a cada 8 s, se a pessoa andou (senão piscava)
+    if (S.tab === "mapa" && !document.querySelector(".sheet") && (!ondeTela || (ts - telaEm > 8000 && distKm(ondeTela, { lat, lng }) > .01))) { telaEm = ts; ondeTela = { lat, lng }; render(); }
   };
   // primeiro uma posição rápida (rede/wi-fi), depois o GPS fino acompanhando
   navigator.geolocation.getCurrentPosition(recebe, () => {}, { enableHighAccuracy: false, maximumAge: 120000, timeout: 8000 });
@@ -5193,7 +5194,7 @@ function faixaCota(esgotou) {
 }
 window.addEventListener("caravana-cota", e => faixaCota(e.detail));
 // deixa as fotos de todas as câmeras prontas na memória, para a troca não mostrar fundo preto enquanto a imagem chega
-function preparaCameras() { amostraFiltro(); if (S.camPrep) return; S.camPrep = []; for (const c of CAMERAS_C) { const i = new Image(); i.src = "img/cameras/" + c.id + "-corpo.jpg"; i.decode?.().catch(() => {}); S.camPrep.push(i); } }
+function preparaCameras() { amostraFiltro(); if (S.camPrep) return; S.camPrep = []; for (const c of CAMERAS_C) { if (!FOTOS_CAM.has(c.id + "-corpo.jpg")) continue; const i = new Image(); i.src = "img/cameras/" + c.id + "-corpo.jpg"; i.decode?.().catch(() => {}); S.camPrep.push(i); } }
 // botão claro de voltar para a maleta (no alto da câmera, onde a pessoa procura o "voltar")
 function voltaMaleta(onde) {
   const b = h("button", { type: "button", class: "cfvolta" + (onde ? " " + onde : ""), "aria-label": "Voltar para a maleta", onclick: voltaEstante },
@@ -5267,7 +5268,10 @@ function vCameraFisica(c) {
   const blob = () => new Promise(res => canvas.toBlob(res, "image/jpeg", .92));
   if (!S.fotosDiario) vDiarioViajante();
   const ult = (S.fotosDiario || [])[0];
-  const virar = () => { const C = S.camEst; if (C) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); render(); } };
+  const virar = () => { const C = S.camEst; if (!C || S.gravando) return; C.frente = !C.frente; S.camFrente = C.frente; ligaCam();
+    // muda só o botão (sem redesenhar a câmera inteira)
+    document.querySelectorAll(".cfselfie").forEach(b => { b.classList.toggle("on", C.frente); b.setAttribute("aria-label", C.frente ? "Voltar para a câmera de trás" : "Selfie"); });
+    document.querySelectorAll(".cfchave").forEach(b => { if (/Selfie/.test(b.textContent)) b.classList.toggle("b", C.frente); }); };
   const frente = !!(S.camEst && S.camEst.frente);
   // peças da câmera
   const janela = h("div", { class: "cfjanela", style: c.id === "super8" ? "--razao:" + (F.recorte === 2.35 ? 2.35 : 4 / 3) : null }, F.img ? canvas : h("p", { class: "small", text: "Libere a câmera nos ajustes do celular." }),
@@ -5280,14 +5284,14 @@ function vCameraFisica(c) {
   const controles = h("div", { class: "cfcontroles" },
     FOTO_CAM[c.id] && temFoto("img/cameras/" + c.id + "-corpo.jpg") ? null : chave("Atrás", "Selfie", frente, virar),
     c.tons ? h("div", { class: "cftons", role: "radiogroup", "aria-label": "Tom da foto" }, c.tons.map(([f, cor, nome]) => h("button", { type: "button", role: "radio", "aria-checked": S.foto.filtro === f ? "true" : "false", "aria-label": nome, class: "cftom" + (S.foto.filtro === f ? " on" : ""), style: `--cor:${cor}`, onclick: e => { S.foto = { ...S.foto, filtro: f }; montaFoto.img = null; const b = e.currentTarget; b.parentNode.querySelectorAll(".cftom").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-checked", x === b ? "true" : "false"); }); } }))) : null,
-    c.filma ? chave("Foto", "Filme", S.camModo === "filme", () => { if (S.gravando) return; S.camModo = S.camModo === "filme" ? "foto" : "filme"; render(); }) : null);
+    c.filma ? chave("Foto", "Filme", S.camModo === "filme", ev => { if (S.gravando) return; S.camModo = S.camModo === "filme" ? "foto" : "filme"; trocaModoFilme(c, ev.currentTarget); }) : null);
   const fc = FOTO_CAM[c.id], fotoCorpo = fc && temFoto("img/cameras/" + c.id + "-corpo.jpg");
   // com a foto realista: a câmera de perto ocupa a tela, a imagem ao vivo entra no visor da foto e o botão da foto dispara
   const palco = fotoCorpo ? h("div", { class: "cfpalco", "aria-hidden": "false" }, h("img", { class: "cffundo", src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }), h("div", { class: "cfimg" },
     h("img", { src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }),
     h("div", { class: "cfjanela cfjanelafoto" + (fc.invertido ? " invertido" : "") + (fc.inteira ? " inteira" : ""), style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : null,
       F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando", "aria-live": "polite" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null,
-      c.filma && S.camModo === "filme" && F.vivo ? h("span", { class: "cfdicafilme" }, h("span", { class: "longa", text: S.gravando ? "Solte ou toque para parar · até 1 min" : "Segure para filmar · ou toque para começar e parar" }), h("span", { class: "curta", text: S.gravando ? "Solte para parar" : "Segure para filmar" })) : null,
+      c.filma && S.camModo === "filme" && F.vivo ? dicaFilme() : null,
       c.id === "super8" ? h("span", { class: "cfmira", "aria-hidden": "true" }) : null,
       h("span", { class: "cfvf", "aria-hidden": "true" }, ...({
         rajastao: [h("i", { class: "moldura" }), h("i", { class: "ponto" })],
@@ -5327,6 +5331,18 @@ function vCameraFisica(c) {
   // a última foto fica no começo da faixa de baixo, fora da câmera, para não atrapalhar o visor
   preparaCameras();
   return h("section", { class: "camfull" }, caixa, h("div", { class: "cfbaixo" }, miniatura, fita));
+}
+// Foto ⇄ Filme muda só a chave, o nome do botão e a instrução no visor (sem redesenhar a câmera: não pisca)
+function dicaFilme() {
+  return h("span", { class: "cfdicafilme" }, h("span", { class: "longa", text: S.gravando ? "Solte ou toque para parar · até 1 min" : "Segure para filmar · ou toque para começar e parar" }), h("span", { class: "curta", text: S.gravando ? "Solte para parar" : "Segure para filmar" }));
+}
+function trocaModoFilme(c, chaveEl) {
+  const filme = S.camModo === "filme";
+  chaveEl?.classList.toggle("b", filme);
+  document.querySelector(".cfcorpo")?.classList.toggle("modofilme", filme);
+  document.querySelector(".cfbotaofoto")?.setAttribute("aria-label", filme ? "Filmar" : "Tirar foto");
+  document.querySelector(".cfdicafilme")?.remove();
+  const jan = document.querySelector(".cfjanelafoto"); if (filme && jan && S.foto && S.foto.vivo) jan.append(dicaFilme());
 }
 // filmar funciona dos dois jeitos: segurando o botão (para quando solta) ou tocando uma vez para começar e outra para parar
 function apertaFilmar(e, c, F, sempre) {
