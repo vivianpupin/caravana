@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 09:14";</script>
+<script>window.__VERSAO = "10/10 · 09:15";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -992,9 +992,13 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .prateleirafoto .naprat-instantanea .camfoto img{filter:brightness(.8) sepia(.18) saturate(1.05) contrast(1.04) drop-shadow(-2px 0 3px rgba(0,0,0,.55))}
 .naprat-celular{--h:62%}.naprat-rajastao{--h:38%}.naprat-descartavel{--h:36%}.naprat-instantanea{--h:70%}.naprat-quatro{--h:68%}.naprat-super8{--h:27%}
 /* etiqueta de papel envelhecido presa com um alfinete na parede, logo acima de cada câmera */
-.prateleirafoto .etiqueta{position:absolute;bottom:calc(var(--h,60%) + 7px);left:50%;transform:translateX(-50%) rotate(-2.5deg);font:700 6.5px/1.2 "Courier Prime",monospace;letter-spacing:.03em;padding:2px 5px 1px;margin:0;white-space:nowrap;border-radius:1px;color:#3A2A1C;background:linear-gradient(180deg,#E9DCBC,#D3C19A);box-shadow:0 2px 3px rgba(0,0,0,.6);filter:brightness(.64) sepia(.3);text-shadow:none}
-.prateleirafoto .camitem:last-child .etiqueta{transform:translateX(-50%) rotate(2deg);filter:brightness(.56) sepia(.3)}
-.prateleirafoto .etiqueta::before{content:"";position:absolute;left:50%;top:-2px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#F3D58A,#8A6420);box-shadow:0 1px 1px rgba(0,0,0,.6)}
+.prateleirafoto .etiqueta{position:absolute;bottom:calc(var(--h,60%) + 7px);left:50%;transform:translateX(-50%) rotate(-2.5deg);font:700 6.5px/1.2 "Courier Prime",monospace;letter-spacing:.04em;padding:6px 7px 2px;margin:0;white-space:nowrap;border-radius:0;color:rgba(46,28,14,.78);
+  background:radial-gradient(ellipse at 18% 70%,rgba(120,72,24,.35),rgba(120,72,24,0) 40%),radial-gradient(ellipse at 85% 25%,rgba(110,64,20,.3),rgba(110,64,20,0) 35%),linear-gradient(180deg,#D8C59A,#BFA572);
+  box-shadow:inset 0 0 5px rgba(92,52,14,.75),inset 0 0 1px rgba(60,30,8,.9);
+  clip-path:polygon(0 4%,9% 0,23% 3%,41% 0,58% 2%,76% 0,91% 3%,100% 1%,99% 38%,100% 71%,98% 100%,80% 97%,62% 100%,44% 97%,27% 100%,12% 96%,1% 100%,0 64%,2% 33%);
+  filter:brightness(.6) sepia(.45) drop-shadow(0 2px 2px rgba(0,0,0,.7));text-shadow:0 0 1px rgba(46,28,14,.3)}
+.prateleirafoto .camitem:last-child .etiqueta{transform:translateX(-50%) rotate(2deg);filter:brightness(.52) sepia(.45) drop-shadow(0 2px 2px rgba(0,0,0,.7))}
+.prateleirafoto .etiqueta::before{content:"";position:absolute;left:50%;top:1px;width:3.5px;height:3.5px;margin-left:-1.75px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#B89A5A,#4A3414)}
 .camfoto img{width:100%;height:auto;max-height:130px;object-fit:contain;filter:drop-shadow(0 8px 6px rgba(0,0,0,.6))}
 .cfitem .camfoto img{max-height:52px}
 .cfcorpo.comfoto{container-type:size;background:#0B0908}
