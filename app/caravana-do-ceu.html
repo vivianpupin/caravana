@@ -951,6 +951,11 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .nvcompart{width:62px;height:62px;border:0;border-radius:50%;background:none;color:#8E8E8E;cursor:pointer}
 .nvacao{width:44px;height:44px;border:0;border-radius:50%;background:none;color:#6E6E6E;cursor:pointer}
 .nomovisor .msg{color:#ccc;min-height:1em;margin:6px 0 0}
+.nvfoto img.revelando{animation:revelaKashi 18s ease-out forwards}
+.nvfoto img.revelando.rapido{animation-duration:3s}
+@keyframes revelaKashi{0%{filter:brightness(.08) saturate(0) contrast(.6) sepia(.4)}35%{filter:brightness(.35) saturate(.2) contrast(.7) sepia(.5)}100%{filter:none}}
+.nvdica{position:absolute;bottom:max(96px,calc(env(safe-area-inset-bottom) + 86px));left:0;right:0;text-align:center;margin:0;font:500 11px "Courier Prime",monospace;color:rgba(255,255,255,.55)}
+.cfchave.esperando{box-shadow:0 0 0 2px rgba(232,192,122,.85),0 0 12px rgba(232,192,122,.5)}
 .quatrovisor{justify-content:flex-start;overflow-y:auto;background-color:#4F5A42;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .5 0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>");padding-top:max(70px,calc(env(safe-area-inset-top) + 56px))}
 .quatrovisor .nvfechar{background:rgba(0,0,0,.25);color:#E8E4D6}
 .qvlentes{display:flex;gap:6px;padding:9px 12px;border-radius:999px;background:linear-gradient(180deg,#1D2117,#0B0D08);box-shadow:0 0 0 5px #3E4734,0 0 0 6px rgba(0,0,0,.5),inset 0 2px 4px rgba(0,0,0,.8);margin-bottom:34px;flex:0 0 auto}
@@ -1023,6 +1028,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cffundo{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(18px) brightness(.8)}
 .cfimg>img{position:absolute;inset:0;width:100%;height:100%;display:block}
 .cfjanelafoto{position:absolute!important;border-radius:6px;background:#050505;box-shadow:inset 0 0 10px rgba(0,0,0,.9)}
+.cfjanelafoto.invertido .fotocanvas{transform:rotate(180deg)}
+.cfjanelafoto.invertido{background:#2A2622}
 .cfjanelafoto .fotocanvas{object-fit:cover!important;filter:saturate(.92) contrast(1.04)}
 /* olhar por dentro do visor: o vidro com reflexo, a borda escura do túnel da ocular e as linhas de enquadramento da câmera */
 .cfjanelafoto::after{background:linear-gradient(155deg,rgba(255,255,255,.16),rgba(255,255,255,.03) 28%,rgba(255,255,255,0) 45%),radial-gradient(ellipse 72% 78% at 50% 50%,rgba(0,0,0,0) 55%,rgba(0,0,0,.55) 88%,rgba(0,0,0,.9) 100%)!important;box-shadow:inset 0 0 0 2px rgba(0,0,0,.85),inset 0 0 18px 4px rgba(0,0,0,.7)}
@@ -3999,6 +4006,8 @@ const FILTROS = [
   // Super 8: cinema de época: cores apagadas, sombras azul-petróleo, pele alaranjada, vinheta pesada
   // Quatro Tempos: câmera de brinquedo de várias lentes: cores saturadas, vinheta forte, granulado
   { id: "cam-lomo", cat: "Câmeras", nome: "Quatro Tempos", m: [.99, .03, 0, .01, 1.02, .01, 0, .03, .98], lift: 4, con: 1.2, sat: 1.1, split: [[18, 32, 22], [252, 242, 222]], add: [0, 3, -1], vin: .55, grao: 20, pelicula: 1 },
+  { id: "cam-campo", cat: "Câmeras", nome: "Agra 1900", m: [.393, .769, .189, .349, .686, .168, .272, .534, .131], lift: 14, con: 1.18, sat: 1, vin: .72, grao: 28, pelicula: 1 },
+  { id: "cam-couro", cat: "Câmeras", nome: "Delhi 1955", m: [1.02, .06, 0, .03, .96, .03, 0, .06, .86], lift: 26, con: .92, sat: .72, split: [[40, 58, 62], [255, 232, 196]], add: [8, 4, -4], vin: .36, grao: 14, pelicula: 1 },
   { id: "cam-cine", cat: "Câmeras", nome: "Cine", lift: 10, con: 1.18, sat: .7, split: [[14, 38, 44], [242, 196, 150]], add: [2, 0, 2], vin: .5, grao: 20, pelicula: 1 },
   // estilo de câmera de filme de viagem: um para cada cidade
   { id: "cid-delhi", cat: "Profissionais", nome: "Delhi", lift: 34, con: 0.9, sat: 0.85, add: [22, -4, 4], leak: "rosa", brilho: 0.4, vin: 0.32, grao: 18, pelicula: 1 },
@@ -4921,6 +4930,12 @@ const CAMERAS_C = [
   { id: "super8", nome: "Super 8 do Ganges", frase: "Filmadora antiga: película, luz vazando e furinhos do filme.",
     preset: { filtro: "cam-cine", moldura: "nenhuma", recorte: 4 / 3, formato: "original", grao: "auto", reels: "preto" },
     svg: `<svg viewBox="0 0 240 170" xmlns="http://www.w3.org/2000/svg"><defs> <linearGradient id="s8corpo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6A5242"/><stop offset=".2" stop-color="#4A382C"/><stop offset="1" stop-color="#241A14"/></linearGradient> <linearGradient id="s8metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EDEAE4"/><stop offset=".5" stop-color="#A9A59E"/><stop offset="1" stop-color="#6E6A64"/></linearGradient> <linearGradient id="s8cano" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4440"/><stop offset=".45" stop-color="#1E1B19"/><stop offset="1" stop-color="#0A0908"/></linearGradient> <radialGradient id="s8ouro" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#FFE7A3"/><stop offset=".6" stop-color="#D9A53A"/><stop offset="1" stop-color="#8A6420"/></radialGradient> <pattern id="s8couro" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#1E1B18"/><path d="M0 1.5h2M3 4.5h2.5M1 3.2h1M4 .8h1.5" stroke="#2E2A26" stroke-width="1.1" stroke-linecap="round"/><circle cx="5" cy="3" r=".6" fill="#0F0D0B"/></pattern></defs> <path d="M140 104 L172 104 L162 160 Q160 166 154 166 L136 166 Q130 166 131 160 Z" fill="url(#s8cano)"/> <path d="M141 112 L166 112 L163 128 L139 128 Z" fill="url(#s8couro)" opacity=".9"/> <circle cx="153" cy="118" r="5.5" fill="#B8432F"/><circle cx="151.5" cy="116.5" r="1.8" fill="#fff" opacity=".45"/> <rect x="172" y="20" width="54" height="26" rx="7" fill="url(#s8cano)"/><rect x="216" y="25" width="12" height="16" rx="3" fill="#2E3A44"/><rect x="218" y="27" width="5" height="12" fill="#9FC0D4" opacity=".4"/> <rect x="62" y="34" width="150" height="74" rx="12" fill="url(#s8corpo)"/> <rect x="62" y="34" width="150" height="8" rx="4" fill="#fff" opacity=".12"/> <rect x="72" y="58" width="130" height="40" rx="6" fill="url(#s8couro)"/> <rect x="22" y="44" width="48" height="56" rx="8" fill="url(#s8cano)"/> <rect x="10" y="48" width="16" height="48" rx="6" fill="url(#s8metal)"/> <defs> <radialGradient id="s8vid" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#6E5A9E"/><stop offset=".35" stop-color="#2B3A6A"/><stop offset=".7" stop-color="#0E1424"/><stop offset="1" stop-color="#05070C"/></radialGradient> <radialGradient id="s8cob" cx="65%" cy="70%" r="45%"><stop offset="0" stop-color="#7FE0B8" stop-opacity=".55"/><stop offset="1" stop-color="#7FE0B8" stop-opacity="0"/></radialGradient> <linearGradient id="s8aro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E6E2DA"/><stop offset=".5" stop-color="#9C978F"/><stop offset="1" stop-color="#55524D"/></linearGradient> <linearGradient id="s8aro2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2A2A2A"/><stop offset="1" stop-color="#0A0A0A"/></linearGradient> </defs> <circle cx="18" cy="73.2" r="20.8" fill="rgba(0,0,0,.35)"/> <circle cx="18" cy="72" r="20" fill="url(#s8aro)"/> <circle cx="18" cy="72" r="18.6" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="1" stroke-dasharray="0.8 0.8"/> <circle cx="18" cy="72" r="16.4" fill="url(#s8aro2)"/> <circle cx="18" cy="72" r="14.8" fill="#151515" stroke="#3A3A3A" stroke-width="0.4"/> <circle cx="18" cy="72" r="12.4" fill="url(#s8vid)"/> <circle cx="18" cy="72" r="12.4" fill="url(#s8cob)"/> <circle cx="18" cy="72" r="6" fill="#05070C" opacity=".75"/> <ellipse cx="14" cy="67" rx="3.5999999999999996" ry="2" fill="#fff" opacity=".75" transform="rotate(-35 14 67)"/> <circle cx="22.4" cy="76" r="1" fill="#fff" opacity=".5"/> <path d="M6.4 72 A 11.6 11.6 0 0 1 18 60.4" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="0.8"/> <circle cx="108" cy="72" r="17" fill="url(#s8ouro)"/><circle cx="108" cy="72" r="17" fill="none" stroke="#6E4E18" stroke-width="1.2"/> <text x="108" y="80" font-family="Cinzel,Georgia,serif" font-weight="700" font-size="21" fill="#3A2C22" text-anchor="middle">8</text> <text x="137" y="51" font-family="Cinzel,Georgia,serif" font-size="8.5" font-weight="600" fill="#E8D9A8" text-anchor="middle" letter-spacing="1.4">SUPER 8 DO GANGES</text> <image href="img/simbolo-dourado.png" x="160" y="62" width="30" height="30"/> </svg>` },
+  { id: "campo", nome: "Agra 1900", frase: "Câmera de campo de madeira e latão, de placa de vidro. Sépia de 1900.",
+    preset: { filtro: "cam-campo", moldura: "nenhuma", recorte: 9 / 16, formato: "original", grao: "auto", reels: "preto" },
+    svg: `<svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="30" width="100" height="70" rx="4" fill="#7A4A2A"/><circle cx="70" cy="65" r="20" fill="#B8913F"/><circle cx="70" cy="65" r="12" fill="#1A1410"/></svg>` },
+  { id: "couro", nome: "Delhi 1955", frase: "Câmera 35 mm dos anos 50 no estojo de couro. Cor desbotada de álbum de família.",
+    preset: { filtro: "cam-couro", moldura: "nenhuma", recorte: 9 / 16, formato: "original", grao: "auto", reels: "preto" },
+    svg: `<svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="30" width="104" height="66" rx="10" fill="#7B4A28"/><circle cx="70" cy="64" r="20" fill="#2A2420"/><circle cx="70" cy="64" r="11" fill="#0E0C0B"/></svg>` },
 ];
 // fotos realistas (quando estiverem na pasta img/cameras): corpo de perto com o visor, câmera inteira recortada e a estante
 const FOTO_CAM = {
@@ -4930,9 +4945,14 @@ const FOTO_CAM = {
   instantanea: { visor: [.32, .21, .68, .44], botao: [.503, .699, .11] },
   super8: { visor: [.2, .105, .795, .365], botao: [.498, .601, .09] },
   quatro: { visor: [.255, .31, .73, .625], botao: [.512, .786, .09], luzes: [.356, .433, .512, .589].map(y => [.146, y]) },
+  // a de madeira mostra a imagem de cabeça para baixo no vidro fosco, como as câmeras de campo de verdade
+  campo: { visor: [.2, .2, .8, .72], botao: [.6, .875, .07], invertido: 1 },
+  couro: { visor: [.335, .165, .53, .245], botao: [.565, .8, .07] },
 };
 // compartimentos da mala (fração da imagem): 3 colunas × 2 fileiras
 const MALA_CASAS = [[.155, .41, .35, .545], [.39, .41, .605, .545], [.635, .41, .86, .545], [.135, .575, .345, .725], [.38, .575, .62, .725], [.645, .575, .88, .725]];
+// mala de 8 (4 colunas × 2 fileiras): ajustar quando a foto chegar
+const MALA_OITO = [[.13, .40, .31, .55], [.31, .40, .5, .55], [.5, .40, .69, .55], [.69, .40, .87, .55], [.13, .56, .31, .72], [.31, .56, .5, .72], [.5, .56, .69, .72], [.69, .56, .87, .72]];
 const MALA_CHEIA = [[.159, .403, .365, .548], [.376, .403, .614, .548], [.625, .403, .869, .548], [.122, .565, .36, .729], [.371, .565, .625, .729], [.636, .565, .89, .729]];
 const fotoOk = S.fotoOk = {};
 // confere uma vez se cada imagem já existe; se existir, a tela passa a usar a foto
@@ -4943,16 +4963,21 @@ const imgCam = (c, naEstante) => { const src = "img/cameras/" + c.id + (naEstant
   const d = h("div", { class: "camdesenho", "aria-hidden": "true" }); d.innerHTML = c.svg; return d; };
 // estante: tábuas de madeira com as câmeras em cima e uma etiqueta de papel com o nome
 function vEstante() {
+  const mala = (() => { const oito = temFoto("img/cameras/mala-oito.jpg"), cheia = oito || temFoto("img/cameras/mala-cheia.jpg"), vazia = temFoto("img/cameras/mala.jpg");
+      if (!cheia && !vazia) return null;
+      const src = oito ? "img/cameras/mala-oito.jpg" : cheia ? "img/cameras/mala-cheia.jpg" : "img/cameras/mala.jpg", casas = oito ? MALA_OITO : cheia ? MALA_CHEIA : MALA_CASAS;
+      return h("div", { class: "malafoto" + (cheia ? " cheia" : "") }, h("img", { src, alt: "", class: "estantefundo" }),
+        CAMERAS_C.slice(0, casas.length).map((c, k) => { const [x0, y0, x1, y1] = casas[k];
+          return h("button", { type: "button", class: "namala nm-" + c.id, "aria-label": c.nome, style: `left:${x0 * 100}%;top:${y0 * 100}%;width:${(x1 - x0) * 100}%;height:${(y1 - y0) * 100}%;--giro:${[-3, 2, -1.5, 2.5, -2, 1.5][k] || 0}deg`, onclick: () => escolheCamera(c.id) },
+            cheia ? null : imgCam(c)); })); })();
   const fil = [CAMERAS_C.slice(0, 2), CAMERAS_C.slice(2, 4), CAMERAS_C.slice(4)];
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Registros da Travessia" }))),
     abasFotos(),
     // a caravana está em movimento: as câmeras viajam numa mala de couro aberta sobre a areia, cada uma no seu compartimento
     // mala-cheia.jpg: a foto já com as câmeras dentro (geradas juntas, sem recorte); aí os botões ficam invisíveis por cima de cada compartimento
-    (temFoto("img/cameras/mala-cheia.jpg") | temFoto("img/cameras/mala.jpg")) ? h("div", { class: "malafoto" + (temFoto("img/cameras/mala-cheia.jpg") ? " cheia" : "") }, h("img", { src: temFoto("img/cameras/mala-cheia.jpg") ? "img/cameras/mala-cheia.jpg" : "img/cameras/mala.jpg", alt: "", class: "estantefundo" }),
-      CAMERAS_C.map((c, k) => { const [x0, y0, x1, y1] = (temFoto("img/cameras/mala-cheia.jpg") ? MALA_CHEIA : MALA_CASAS)[k] || MALA_CASAS[0];
-        return h("button", { type: "button", class: "namala nm-" + c.id, "aria-label": c.nome, style: `left:${x0 * 100}%;top:${y0 * 100}%;width:${(x1 - x0) * 100}%;height:${(y1 - y0) * 100}%;--giro:${[-3, 2, -1.5, 2.5, -2, 1.5][k]}deg`, onclick: () => escolheCamera(c.id) },
-          temFoto("img/cameras/mala-cheia.jpg") ? null : imgCam(c)); })) :
+    // mala-oito.jpg: a mala maior, com as 8 câmeras; se ainda não estiver, usa a de 6 (as câmeras novas ficam só na faixa de baixo)
+    mala ? mala :
     temFoto("img/cameras/estante.jpg") ? h("div", { class: "estantefoto" }, h("img", { src: "img/cameras/estante.jpg", alt: "", class: "estantefundo" }),
       fil.map((lin, k) => h("div", { class: "prateleirafoto", style: `top:${[16.75, 35.1, 53.4][k]}%` }, lin.map(c => h("button", { type: "button", class: "camitem naprat-" + c.id, onclick: () => escolheCamera(c.id) },
         imgCam(c, true), h("span", { class: "etiqueta", text: c.nome })))))) :
@@ -4965,7 +4990,7 @@ function vEstante() {
 const fotoDaCamera = c => ({ filtro: "original", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "original", legenda: "", cidade: "", data: "", ...(c.preset || {}), adesivos: (c.preset && c.preset.adesivos || []).map(a => ({ ...a })) });
 function escolheCamera(id) {
   fechaVivo(); const c = CAMERAS_C.find(x => x.id === id);
-  S.camSel = id; S.fotoSel = null; S.camFalhou = false; S.foto = fotoDaCamera(c);
+  S.camSel = id; S.fotoSel = null; S.camFalhou = false; S.camDupla = false; S.duplaA = null; S.foto = fotoDaCamera(c);
   render(); $("#main") && ($("#main").scrollTop = 0);
 }
 const voltaEstante = () => { fechaVivo(); S.camSel = null; S.foto = null; render(); };
@@ -4973,7 +4998,7 @@ const voltaEstante = () => { fechaVivo(); S.camSel = null; S.foto = null; render
 function cliqueSom() { try { const A = window.AudioContext || window.webkitAudioContext, a = S.audioCtx || (S.audioCtx = new A()), n = a.createBufferSource(), b = a.createBuffer(1, a.sampleRate * .08, a.sampleRate), d = b.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3); n.buffer = b; const g = a.createGain(); g.gain.value = .5; n.connect(g); g.connect(a.destination); n.start(); } catch (e) {} }
 // tela da câmera: o próprio corpo da câmera ocupa a tela; a imagem ao vivo aparece no visor, o disparo é o botão de metal
-const FILME_CAM = { quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
+const FILME_CAM = { campo: "Placa de vidro · sépia · 1900", couro: "Filme 35 mm desbotado · 1955", quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
 function vCameraFisica(c) {
   const F0 = S.foto || (S.foto = fotoDaCamera(c));
   if (!F0.img && podeCamera() && !S.camFalhou) { const C = iniciaVivo(); S.foto = { ...F0, img: C.frame, vivo: true }; }
@@ -5006,6 +5031,12 @@ function vCameraFisica(c) {
   const dispara = () => { if (!F.vivo) return; if (c.rajadas) return rajada(); const C = S.camEst, v = C && C.video; if (!v || !v.videoWidth) return;
     cliqueSom(); if (navigator.vibrate) navigator.vibrate(30); if (flashOn) { const fl = h("div", { class: "flashcam" }); document.body.append(fl); setTimeout(() => fl.remove(), 450); }
     const q = document.createElement("canvas"); q.width = v.videoWidth; q.height = v.videoHeight; q.getContext("2d").drawImage(v, 0, 0);
+    // dupla exposição: o primeiro clique guarda, o segundo sobrepõe as duas cenas como filme exposto duas vezes
+    if (S.camDupla) {
+      if (!S.duplaA) { S.duplaA = q; piscaVisor(); render(); return; }
+      const g = q.getContext("2d"); g.globalCompositeOperation = "screen"; g.globalAlpha = .62; g.drawImage(S.duplaA, 0, 0, q.width, q.height); g.globalAlpha = 1; g.globalCompositeOperation = "source-over";
+      S.duplaA = null;
+    }
     piscaVisor(); revelaFoto(q, c); };
   const blob = () => new Promise(res => canvas.toBlob(res, "image/jpeg", .92));
   if (!S.fotosDiario) vDiarioViajante();
@@ -5023,12 +5054,13 @@ function vCameraFisica(c) {
   const controles = h("div", { class: "cfcontroles" },
     chave("Atrás", "Selfie", frente, virar),
     chave("Sem flash", "Flash", flashOn, () => { S.camFlash = !flashOn; render(); }),
+    c.rajadas ? null : chave("Uma", "Dupla", !!S.camDupla, () => { S.camDupla = !S.camDupla; S.duplaA = null; render(); }, S.duplaA ? "esperando" : ""),
     null);
   const fc = FOTO_CAM[c.id], fotoCorpo = fc && temFoto("img/cameras/" + c.id + "-corpo.jpg");
   // com a foto realista: a câmera de perto ocupa a tela, a imagem ao vivo entra no visor da foto e o botão da foto dispara
   const palco = fotoCorpo ? h("div", { class: "cfpalco", "aria-hidden": "false" }, h("img", { class: "cffundo", src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }), h("div", { class: "cfimg" },
     h("img", { src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }),
-    h("div", { class: "cfjanela cfjanelafoto", style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : null,
+    h("div", { class: "cfjanela cfjanelafoto" + (fc.invertido ? " invertido" : ""), style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : null,
       c.id === "super8" ? h("span", { class: "cfmira", "aria-hidden": "true" }) : null,
       h("span", { class: "cfvf", "aria-hidden": "true" }, ...({
         rajastao: [h("i", { class: "moldura" }), h("i", { class: "ponto" })],
@@ -5074,6 +5106,7 @@ async function revelaFoto(img, c, extra) {
     const out = document.createElement("canvas");
     const Fx = { ...S.foto, ...(extra || {}), img, vivo: false }; if (Fx.molduraFinal) Fx.moldura = Fx.molduraFinal; // o visor mostra só a cena; a moldura branca aparece na foto revelada
     await montaFoto(out, Fx);
+    variaFilme(out, Fx.geo, c);
     await marcaCaravana(out, Fx.geo);
     const fim = paraReels(out, Fx.reels);
     const b = await new Promise(ok => fim.toBlob(ok, "image/jpeg", .9));
@@ -5093,6 +5126,31 @@ function paraReels(cv, modo) {
   const m = modo === "desfoque" ? W * .07 : 0, e = Math.min((W - m * 2) / cv.width, (H - m * 2) / cv.height), pw = cv.width * e, ph = cv.height * e;
   c.save(); if (modo === "desfoque") { c.shadowColor = "rgba(0,0,0,.45)"; c.shadowBlur = 40; c.shadowOffsetY = 14; }
   c.drawImage(cv, (W - pw) / 2, (H - ph) / 2, pw, ph); c.restore(); return out;
+}
+// filme de verdade nunca sai igual: a cada clique sorteia exposição, poeira, fiapos e, às vezes, luz vazando pela borda
+function variaFilme(cv, g, c) {
+  const x = cv.getContext("2d"), G = g && g.w ? g : { ox: 0, oy: 0, w: cv.width, hh: cv.height }, u = Math.max(G.w, G.hh) / 1000, R = Math.random;
+  x.save(); x.beginPath(); x.rect(G.ox, G.oy, G.w, G.hh); x.clip();
+  // exposição levemente diferente
+  const e = (R() - .5) * .16; x.globalCompositeOperation = e > 0 ? "screen" : "multiply"; x.fillStyle = e > 0 ? `rgba(255,236,210,${e})` : `rgba(40,30,20,${-e})`; x.fillRect(G.ox, G.oy, G.w, G.hh);
+  x.globalCompositeOperation = "source-over";
+  // luz vazando (mais comum nas câmeras de filme baratas)
+  const chance = { descartavel: .75, quatro: .7, super8: .55, rajastao: .35, instantanea: .3 }[c && c.id] ?? .4;
+  if (R() < chance) {
+    const lado = Math.floor(R() * 4), px = [G.ox, G.ox + G.w, G.ox + G.w * R(), G.ox + G.w * R()][lado], py = [G.oy + G.hh * R(), G.oy + G.hh * R(), G.oy, G.oy + G.hh][lado];
+    const rr = Math.max(G.w, G.hh) * (.25 + R() * .35), gr = x.createRadialGradient(px, py, 0, px, py, rr), cor = R() < .5 ? "255,120,40" : "255,70,60", a = .35 + R() * .35;
+    gr.addColorStop(0, `rgba(${cor},${a})`); gr.addColorStop(.45, `rgba(255,170,80,${a * .45})`); gr.addColorStop(1, "rgba(255,170,80,0)");
+    x.globalCompositeOperation = "screen"; x.fillStyle = gr; x.fillRect(G.ox, G.oy, G.w, G.hh); x.globalCompositeOperation = "source-over";
+  }
+  // poeira e fiapos
+  const n = 6 + Math.floor(R() * 18);
+  for (let i = 0; i < n; i++) {
+    const px = G.ox + R() * G.w, py = G.oy + R() * G.hh, claro = R() < .5;
+    x.fillStyle = claro ? `rgba(255,250,240,${.35 + R() * .4})` : `rgba(10,8,6,${.35 + R() * .4})`;
+    if (R() < .8) { x.beginPath(); x.arc(px, py, (.6 + R() * 2.2) * u, 0, 7); x.fill(); }
+    else { x.strokeStyle = x.fillStyle; x.lineWidth = (.6 + R()) * u; x.beginPath(); x.moveTo(px, py); x.bezierCurveTo(px + (R() - .5) * 40 * u, py + (R() - .5) * 40 * u, px + (R() - .5) * 40 * u, py + (R() - .5) * 40 * u, px + (R() - .5) * 60 * u, py + (R() - .5) * 60 * u); x.stroke(); }
+  }
+  x.restore();
 }
 // a marquinha no canto de baixo da foto: o símbolo dourado e CARAVANA escrito de lado, como as câmeras de filme fazem
 async function marcaCaravana(cv, g) {
@@ -5127,7 +5185,7 @@ function verFotos(i) {
       ontouchstart: e => { x0 = e.touches[0].clientX; }, ontouchend: e => { if (x0 == null) return; const d = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(d) > 50) verFotos(i + (d < 0 ? 1 : -1)); } },
     h("button", { type: "button", class: "nvfechar", "aria-label": "Fechar", onclick: () => tela.remove() }, "×"),
     h("p", { class: "nvinfo", text: [new Date(it.ts).toLocaleDateString("pt-BR"), it.cidade, it.camera].filter(Boolean).join(" · ") + "   " + (i + 1) + "/" + l.length }),
-    h("div", { class: "nvfoto" }, h("img", { src: url, alt: "" }),
+    h("div", { class: "nvfoto" }, h("img", { src: url, alt: "", class: /Kashi|Instant/.test(it.camera || "") && !(S.reveladas ||= new Set()).has(it.id) ? "revelando" : "" }),
       i > 0 ? h("button", { type: "button", class: "nvseta e", "aria-label": "Foto anterior", onclick: () => verFotos(i - 1) }, "‹") : null,
       i < l.length - 1 ? h("button", { type: "button", class: "nvseta d", "aria-label": "Próxima foto", onclick: () => verFotos(i + 1) }, "›") : null),
     h("div", { class: "nvbase" },
@@ -5140,6 +5198,14 @@ function verFotos(i) {
         catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("rect", { x: "3", y: "5", width: "18", height: "14", rx: "2" }), h("path", { d: "M3 16l5-5 4 4 3-3 6 6" })))),
     msg);
   document.body.append(tela);
+  // foto instantânea: aparece escura e vai revelando; chacoalhar o celular acelera, como na vida real
+  const im = tela.querySelector("img.revelando");
+  if (im) { S.reveladas.add(it.id);
+    const sacode = e => { const a = e.accelerationIncludingGravity || e.acceleration; if (a && Math.abs(a.x || 0) + Math.abs(a.y || 0) + Math.abs(a.z || 0) > 30) { im.classList.add("rapido"); removeEventListener("devicemotion", sacode); } };
+    try { if (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") DeviceMotionEvent.requestPermission().catch(() => {}); } catch (e) {}
+    addEventListener("devicemotion", sacode); im.addEventListener("animationend", () => removeEventListener("devicemotion", sacode), { once: true });
+    tela.append(h("p", { class: "nvdica", text: "Revelando… chacoalhe o celular para acelerar" }));
+    im.addEventListener("animationend", () => tela.querySelector(".nvdica")?.remove(), { once: true }); }
 }
 const cidadeHoje = () => { const d = (S.roteiro?.dias || []).find(x => x.iso === hojeIso()); return d ? d.cidade : ""; };
 // ---------- Diário de Viajante: as fotos das câmeras ficam guardadas no próprio celular ----------
