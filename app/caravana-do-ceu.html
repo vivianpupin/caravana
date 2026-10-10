@@ -1091,6 +1091,13 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .cfvolta.topo .cfvoltaseta{display:inline;font:700 18px/1 Poppins,sans-serif;margin:-2px -1px 0 0}
 .cfvolta.topo .cfvoltaic{display:flex}
 .cfbaixo .cfmini{margin-left:14px!important}
+.celfilmar{color:#F3B4A4!important;border-color:rgba(243,140,120,.5)!important}
+.celfilmar.gravando{background:#A8322A!important;color:#fff!important;border-color:#A8322A!important;animation:revela 1s ease-in-out infinite alternate}
+.celdica{margin:0;text-align:center;font-size:11.5px;color:#CDB894}
+.cfdicafilme .curta{display:none}
+.cf-descartavel .cfdicafilme .longa,.cf-instantanea .cfdicafilme .longa{display:none}
+.cf-descartavel .cfdicafilme .curta,.cf-instantanea .cfdicafilme .curta{display:inline}
+.cf-descartavel .cfdicafilme,.cf-instantanea .cfdicafilme{left:4px;right:4px;bottom:5px;padding:4px 5px;font-size:9.5px}
 /* a fileira sempre para com uma câmera inteira encostada no fio dourado, nunca cortada pela metade */
 .cfbaixo .cffita{scroll-snap-type:x mandatory;scroll-padding-left:18px}.cfbaixo .cfitem{flex:0 0 calc((100% - 12px) / 3);min-width:0;scroll-snap-align:start}
 .cftopovazio{width:40px;flex:0 0 40px}
@@ -5093,6 +5100,8 @@ const CAMERAS_C = [
     preset: { filtro: "cam-couro", moldura: "nenhuma", recorte: 9 / 16, formato: "original", grao: "auto", reels: "preto" },
     svg: `<svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="30" width="104" height="66" rx="10" fill="#7B4A28"/><circle cx="70" cy="64" r="20" fill="#2A2420"/><circle cx="70" cy="64" r="11" fill="#0E0C0B"/></svg>` },
 ];
+// todas as câmeras da maleta também filmam (chave Foto/Filme); o celular filma pelo botão Filmar do estúdio
+for (const c of CAMERAS_C) if (c.id !== "celular") c.filma = 1;
 // fotos realistas (quando estiverem na pasta img/cameras): corpo de perto com o visor, câmera inteira recortada e a estante
 const FOTO_CAM = {
   // visor: a janela grande onde a imagem ao vivo aparece inteira (no formato da foto que vai sair); botao: o disparador da própria câmera
@@ -5217,7 +5226,7 @@ function vCameraFisica(c) {
     piscaVisor(); revelaFoto(out, c, { recorte: null });
   };
   // como na NOMO: o clique revela a foto por trás, a câmera continua ligada e a miniatura do canto mostra a foto nova
-  const dispara = () => { if (!F.vivo) return; if (c.rajadas) return rajada(); if (c.filma && S.camModo === "filme") return; const C = S.camEst, v = C && C.video; if (!v || !v.videoWidth) return;
+  const dispara = () => { if (!F.vivo) return; if (c.filma && S.camModo === "filme") return; if (c.rajadas) return rajada(); const C = S.camEst, v = C && C.video; if (!v || !v.videoWidth) return;
     cliqueSom(); if (navigator.vibrate) navigator.vibrate(30); if (flashOn) { const fl = h("div", { class: "flashcam" }); document.body.append(fl); setTimeout(() => fl.remove(), 450); }
     const q = document.createElement("canvas"); q.width = v.videoWidth; q.height = v.videoHeight; q.getContext("2d").drawImage(v, 0, 0);
     // obturador lento: a câmera de placa fica aberta quase um segundo e soma as imagens; o que se mexe sai riscado, como foto de 1900
@@ -5256,7 +5265,7 @@ function vCameraFisica(c) {
   const palco = fotoCorpo ? h("div", { class: "cfpalco", "aria-hidden": "false" }, h("img", { class: "cffundo", src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }), h("div", { class: "cfimg" },
     h("img", { src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }),
     h("div", { class: "cfjanela cfjanelafoto" + (fc.invertido ? " invertido" : "") + (fc.inteira ? " inteira" : ""), style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : null,
-      c.filma && S.camModo === "filme" && F.vivo ? h("span", { class: "cfdicafilme", text: S.gravando ? "Solte ou toque para parar · até 20 s" : "Segure para filmar · ou toque para começar e parar" }) : null,
+      c.filma && S.camModo === "filme" && F.vivo ? h("span", { class: "cfdicafilme" }, h("span", { class: "longa", text: S.gravando ? "Solte ou toque para parar · até 20 s" : "Segure para filmar · ou toque para começar e parar" }), h("span", { class: "curta", text: S.gravando ? "Solte para parar" : "Segure para filmar" })) : null,
       c.id === "super8" ? h("span", { class: "cfmira", "aria-hidden": "true" }) : null,
       h("span", { class: "cfvf", "aria-hidden": "true" }, ...({
         rajastao: [h("i", { class: "moldura" }), h("i", { class: "ponto" })],
@@ -5298,8 +5307,9 @@ function vCameraFisica(c) {
   return h("section", { class: "camfull" }, caixa, h("div", { class: "cfbaixo" }, miniatura, fita));
 }
 // filmar funciona dos dois jeitos: segurando o botão (para quando solta) ou tocando uma vez para começar e outra para parar
-function apertaFilmar(e, c, F) {
-  if (!c.filma || S.camModo !== "filme" || !F.vivo) return;
+function apertaFilmar(e, c, F, sempre) {
+  if (!sempre && (!c.filma || S.camModo !== "filme")) return;
+  if (!F || !F.vivo) return;
   e.preventDefault();
   if (S.gravando) { S.gravando.stop(); return; }
   const t0 = Date.now(); filma(c);
@@ -5753,9 +5763,11 @@ function vFotos() {
       h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas),
         F.vivo ? h("div", { class: "actions camacoes", style: "justify-content:center;align-items:center" },
           h("button", { class: "btn ghost", type: "button", onclick: () => { const C = S.camEst; if (C) { C.frente = !C.frente; ligaCam(); } } }, "↺ Virar"),
-          h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: tiraFotoVivo }, "📸"),
+          h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: () => { if (!S.gravando) tiraFotoVivo(); } }, "📸"),
+          h("button", { class: "btn ghost celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "■ Parar" : "● Filmar"),
           h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, iconeFototeca(), "Fototeca"))
         : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [], filtro: "original", intens: 1, thumbSrc: null }; render(); } }, "📸 Nova foto")),
+        F.vivo ? h("p", { class: "celdica", text: S.gravando ? "Gravando… solte ou toque em Parar · até 20 segundos. O filme vai para os Registros." : "Para filmar: segure ● Filmar, ou toque uma vez para começar e outra para parar." }) : null,
         barraSel, tiraFiltros(F, id => set("filtro", id)), barraIntensidade),
       h("div", { class: "fcontrols" },
         h("p", { class: "celmesa", text: "Mesa de revelação" }),
