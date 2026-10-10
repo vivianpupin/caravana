@@ -936,6 +936,21 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfmarca small{font:500 10px "Courier Prime",monospace;color:#F1E2BC;opacity:.75}
 .cfmini{width:76px;height:54px;flex:0 0 76px;border-radius:8px;border:0;background:#0B0908;overflow:hidden;padding:0;cursor:pointer;box-shadow:0 0 0 4px rgba(0,0,0,.45),0 0 0 5px rgba(255,255,255,.12),0 6px 12px rgba(0,0,0,.5)}
 .cfmini img{width:100%;height:100%;object-fit:cover}
+.cfmini.revelando img{opacity:.35;filter:blur(2px)}.cfmini.revelando{animation:revela 1s ease-in-out infinite alternate}
+@keyframes revela{from{box-shadow:0 0 0 4px rgba(0,0,0,.45),0 0 0 5px rgba(255,255,255,.12)}to{box-shadow:0 0 0 4px rgba(0,0,0,.45),0 0 0 6px rgba(232,192,122,.7)}}
+.cfjanela.pisca::before{content:"";position:absolute;inset:0;z-index:3;background:#000;animation:pisca .22s ease-out forwards}
+@keyframes pisca{from{opacity:1}to{opacity:0}}
+.nomovisor{position:fixed;inset:0;z-index:950;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom))}
+.nvfechar{position:absolute;top:max(12px,env(safe-area-inset-top));left:14px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.08);color:#ddd;font-size:24px;cursor:pointer}
+.nvinfo{position:absolute;top:max(22px,calc(env(safe-area-inset-top) + 10px));left:64px;right:14px;margin:0;font:500 11px "Courier Prime",monospace;color:rgba(255,255,255,.5);text-align:right}
+.nvfoto{position:relative;flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+.nvfoto img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.nvseta{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:60px;border:0;background:none;color:rgba(255,255,255,.45);font-size:40px;cursor:pointer}
+.nvseta.e{left:-8px}.nvseta.d{right:-8px}
+.nvbase{display:flex;align-items:center;justify-content:center;gap:46px;padding-top:18px}
+.nvcompart{width:62px;height:62px;border:0;border-radius:50%;background:none;color:#8E8E8E;cursor:pointer}
+.nvacao{width:44px;height:44px;border:0;border-radius:50%;background:none;color:#6E6E6E;cursor:pointer}
+.nomovisor .msg{color:#ccc;min-height:1em;margin:6px 0 0}
 .cfvisor{width:100%;display:grid;place-items:center;flex:1;min-height:0}
 .cfmoldura{display:grid;place-items:center;padding:14px;border-radius:22px;background:linear-gradient(180deg,#2C2926,#141210);box-shadow:inset 0 2px 3px rgba(255,255,255,.12),inset 0 -3px 6px rgba(0,0,0,.6),0 14px 26px rgba(0,0,0,.55)}
 .cfjanela{position:relative;overflow:hidden;background:#0B0908;display:grid;place-items:center;border-radius:10px;box-shadow:inset 0 0 0 2px #000,inset 0 0 18px rgba(0,0,0,.8)}
@@ -4156,9 +4171,9 @@ function carimbo(c, cx, cy, R, dourado, rot) {
   for (let k = 0; k < 900; k++) { x.globalAlpha = Math.random() * .8; x.beginPath(); x.arc(Math.random() * tc.width, Math.random() * tc.height, Math.random() * 2.4 * u, 0, 7); x.fill(); }
   c.save(); c.translate(cx, cy); c.rotate(rot || 0); c.globalAlpha = .9; c.globalCompositeOperation = "multiply"; c.drawImage(tc, -m, -m); c.restore();
 }
-async function montaFoto(canvas) {
+async function montaFoto(canvas, Fx) {
   // Reels: a foto ocupa a tela inteira em 9:16 (recorte do meio), sem moldura
-  const reels = S.foto && S.foto.formato === "reels", F = reels ? { ...S.foto, moldura: "nenhuma" } : S.foto; if (!F || !F.img) return;
+  const F0 = Fx || S.foto, reels = F0 && F0.formato === "reels", F = reels ? { ...F0, moldura: "nenhuma" } : F0; if (!F || !F.img) return;
   const img = F.img; let sx = 0, sy = 0, sw = img.width, sh = img.height;
   const rec = reels ? 9 / 16 : F.recorte;
   if (rec) { if (sw / sh > rec) { sw = sh * rec; sx = (img.width - sw) / 2; } else { sh = sw / rec; sy = (img.height - sh) / 2; } }
@@ -4222,7 +4237,7 @@ async function montaFoto(canvas) {
   }
   await colaPatches(c, F, ox, oy, w, hh);
   await colaAdesivos(c, F, ox, oy, w, hh);
-  S.fotoGeo = { ox, oy, w, hh, fx: 0, fy: 0, fs: 1 };
+  const geo = { ox, oy, w, hh, fx: 0, fy: 0, fs: 1 }; if (Fx) Fx.geo = geo; else S.fotoGeo = geo;
   if (!reels) emFormato(canvas, tmp, F.formato || "original");
 }
 // coloca a foto INTEIRA num formato de rede social, com a própria foto desfocada no fundo
@@ -4937,9 +4952,14 @@ function vCameraFisica(c) {
     for (let k = 1; k < 4; k++) { const x0 = k * fx, lw = Math.max(4, W * .006); o.beginPath(); o.moveTo(x0 - lw / 2, 0);
       for (let y = 0; y <= H; y += H / 24) o.lineTo(x0 - lw / 2 + (Math.random() - .5) * lw * .5, y);
       for (let y = H; y >= 0; y -= H / 24) o.lineTo(x0 + lw / 2 + (Math.random() - .5) * lw * .5, y); o.closePath(); o.fill(); }
-    fechaVivo(); S.guardarDiario = true; S.foto = { ...S.foto, img: out, vivo: false, recorte: null }; render();
+    C.rajando = false; setTimeout(() => document.querySelectorAll(".cfluz").forEach(l => l.classList.remove("on")), 900);
+    piscaVisor(); revelaFoto(out, c, { recorte: null });
   };
-  const dispara = () => { if (!F.vivo) return; if (c.rajadas) return rajada(); cliqueSom(); if (navigator.vibrate) navigator.vibrate(30); if (flashOn) { const fl = h("div", { class: "flashcam" }); document.body.append(fl); setTimeout(() => fl.remove(), 450); } S.guardarDiario = true; tiraFotoVivo(); };
+  // como na NOMO: o clique revela a foto por trás, a câmera continua ligada e a miniatura do canto mostra a foto nova
+  const dispara = () => { if (!F.vivo) return; if (c.rajadas) return rajada(); const C = S.camEst, v = C && C.video; if (!v || !v.videoWidth) return;
+    cliqueSom(); if (navigator.vibrate) navigator.vibrate(30); if (flashOn) { const fl = h("div", { class: "flashcam" }); document.body.append(fl); setTimeout(() => fl.remove(), 450); }
+    const q = document.createElement("canvas"); q.width = v.videoWidth; q.height = v.videoHeight; q.getContext("2d").drawImage(v, 0, 0);
+    piscaVisor(); revelaFoto(q, c); };
   const blob = () => new Promise(res => canvas.toBlob(res, "image/jpeg", .92));
   if (!S.fotosDiario) vDiarioViajante();
   const ult = (S.fotosDiario || [])[0];
@@ -4950,7 +4970,7 @@ function vCameraFisica(c) {
     c.id === "super8" ? [h("span", { class: "cfmira", "aria-hidden": "true" }), h("span", { class: "cfrazao", text: F.recorte === 2.35 ? "2.35:1" : "4:3" })] : null);
   const visor = h("div", { class: "cfvisor" }, h("div", { class: "cfmoldura" }, janela));
   const obturador = h("button", { type: "button", class: "cfdisparo", "aria-label": "Tirar foto", onclick: dispara }, c.id === "descartavel" ? h("i", { "aria-hidden": "true" }, "• • •") : c.rajadas ? h("i", { "aria-hidden": "true" }, "AGORA") : null);
-  const miniatura = h("button", { type: "button", class: "cfmini", "aria-label": "Diário de Viajante", onclick: () => { voltaEstante(); requestAnimationFrame(() => document.querySelector(".diario")?.scrollIntoView({ behavior: "smooth" })); } },
+  const miniatura = h("button", { type: "button", class: "cfmini" + (S.revelando ? " revelando" : ""), "aria-label": "Ver as fotos", onclick: () => { if (ult) verFotos(0); } },
     ult ? h("img", { src: ult.url || (ult.url = URL.createObjectURL(ult.blob)), alt: "" }) : null);
   const chave = (rotA, rotB, ligadoB, fn, cls) => h("button", { type: "button", class: "cfchave " + (cls || "") + (ligadoB ? " b" : ""), onclick: fn }, h("span", { text: rotA }), h("i", { "aria-hidden": "true" }), h("span", { text: rotB }));
   const controles = h("div", { class: "cfcontroles" },
@@ -4992,6 +5012,57 @@ function vCameraFisica(c) {
   const caixa = h("div", { class: "cfcaixa cx-" + c.id + (fotoCorpo ? " comfoto" : "") }, pecas.map(k => h("span", { class: k, "aria-hidden": "true" })), corpo);
   return h("section", { class: "camfull" }, caixa, fita);
 }
+function piscaVisor() { const j = document.querySelector(".cfjanela"); if (!j) return; j.classList.remove("pisca"); void j.offsetWidth; j.classList.add("pisca"); }
+// revela a foto com o filtro e a moldura da câmera, carimba a marca da Caravana e guarda no Diário de Viajante
+async function revelaFoto(img, c, extra) {
+  S.revelando = (S.revelando || 0) + 1; render();
+  try {
+    const out = document.createElement("canvas");
+    const Fx = { ...S.foto, ...(extra || {}), img, vivo: false };
+    await montaFoto(out, Fx);
+    await marcaCaravana(out, Fx.geo);
+    const b = await new Promise(ok => out.toBlob(ok, "image/jpeg", .9));
+    if (b) await guardaNoDiario(b, c);
+    S.fotosDiario = await lerDiario();
+  } catch (e) {}
+  S.revelando--; if (S.camSel === c.id) render();
+}
+// a marquinha no canto de baixo da foto: o símbolo dourado e CARAVANA escrito de lado, como as câmeras de filme fazem
+async function marcaCaravana(cv, g) {
+  const c = cv.getContext("2d"), G = g && g.w ? g : { ox: 0, oy: 0, w: cv.width, hh: cv.height }, u = Math.max(G.w, G.hh) / 1000;
+  const x = G.ox + 34 * u, y = G.oy + G.hh - 30 * u, img = await carregaImg("img/simbolo-dourado.png").catch(() => null);
+  const desenha = im => { c.save(); c.globalAlpha = .9; c.shadowColor = "rgba(0,0,0,.55)"; c.shadowBlur = 6 * u;
+    if (im) c.drawImage(im, x + 30 * u, y - 70 * u, 62 * u, 62 * u * im.height / im.width);
+    c.translate(x + 12 * u, y); c.rotate(-Math.PI / 2); c.fillStyle = "#F1E2BC"; c.font = `700 ${19 * u}px Poppins, sans-serif`; c.textBaseline = "alphabetic"; c.fillText("CARAVANA", 0, 0); c.restore(); };
+  desenha(img);
+}
+// visor de fotos em tela preta, como a NOMO: a foto no meio, a marquinha no canto e a seta de compartilhar embaixo
+function verFotos(i) {
+  const l = S.fotosDiario || []; if (!l.length) return; i = Math.max(0, Math.min(i, l.length - 1)); const it = l[i];
+  document.querySelector(".nomovisor")?.remove(); const msg = h("p", { class: "msg", role: "status" });
+  const url = it.url || (it.url = URL.createObjectURL(it.blob));
+  const compartilhar = async () => { const f = new File([it.blob], "caravana-" + it.id + ".jpg", { type: "image/jpeg" });
+    if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f] }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
+    salvarNoRolo(Promise.resolve(it.blob), "caravana-" + it.id + ".jpg", msg); };
+  let x0 = null;
+  const tela = h("div", { class: "nomovisor", role: "dialog", "aria-label": "Fotos",
+      ontouchstart: e => { x0 = e.touches[0].clientX; }, ontouchend: e => { if (x0 == null) return; const d = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(d) > 50) verFotos(i + (d < 0 ? 1 : -1)); } },
+    h("button", { type: "button", class: "nvfechar", "aria-label": "Fechar", onclick: () => tela.remove() }, "×"),
+    h("p", { class: "nvinfo", text: [new Date(it.ts).toLocaleDateString("pt-BR"), it.cidade, it.camera].filter(Boolean).join(" · ") + "   " + (i + 1) + "/" + l.length }),
+    h("div", { class: "nvfoto" }, h("img", { src: url, alt: "" }),
+      i > 0 ? h("button", { type: "button", class: "nvseta e", "aria-label": "Foto anterior", onclick: () => verFotos(i - 1) }, "‹") : null,
+      i < l.length - 1 ? h("button", { type: "button", class: "nvseta d", "aria-label": "Próxima foto", onclick: () => verFotos(i + 1) }, "›") : null),
+    h("div", { class: "nvbase" },
+      h("button", { type: "button", class: "nvacao", "aria-label": "Apagar", onclick: () => { if (confirm("Apagar esta foto?")) { tela.remove(); apagaDoDiario(it.id); } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("path", { d: "M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" }))),
+      h("button", { type: "button", class: "nvcompart", "aria-label": "Compartilhar ou salvar", onclick: compartilhar }, h("svg", { viewBox: "0 0 24 24", width: "34", height: "34", fill: "currentColor" }, h("path", { d: "M14 5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11V5z" }))),
+      h("button", { type: "button", class: "nvacao", "aria-label": "Enviar para a Galeria da Caravana", onclick: async () => {
+        if (!S.assets || !eu()) { msg.textContent = "Para enviar à galeria, emita seu passaporte."; msg.className = "msg err"; return; }
+        msg.textContent = "Enviando…"; msg.className = "msg";
+        try { const rr = await S.assets.upload(it.blob); await S.db.collection("mural").add({ autor: S.uid, fotoId: rr.id, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
+        catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("rect", { x: "3", y: "5", width: "18", height: "14", rx: "2" }), h("path", { d: "M3 16l5-5 4 4 3-3 6 6" })))),
+    msg);
+  document.body.append(tela);
+}
 const cidadeHoje = () => { const d = (S.roteiro?.dias || []).find(x => x.iso === hojeIso()); return d ? d.cidade : ""; };
 // ---------- Diário de Viajante: as fotos das câmeras ficam guardadas no próprio celular ----------
 function bancoDiario() { return S.bdDiario ||= new Promise((ok, no) => { const q = indexedDB.open("caravana-diario", 1); q.onupgradeneeded = () => q.result.createObjectStore("fotos", { keyPath: "id" }); q.onsuccess = () => ok(q.result); q.onerror = () => no(q.error); }); }
@@ -5012,7 +5083,7 @@ function vDiarioViajante() {
     h("p", { class: "eyebrow rule", text: "Diário de Viajante" }),
     !l.length ? h("p", { class: "small", style: "text-align:center", text: "As fotos que você tirar com as câmeras da estante ficam guardadas aqui, com o dia, a cidade e a câmera." }) :
     h("div", { class: "contato" }, l.map(it => { const u = it.url || (it.url = URL.createObjectURL(it.blob));
-      return h("button", { type: "button", class: "quadro", onclick: () => verNoDiario(it) }, h("img", { src: u, alt: "", loading: "lazy" }),
+      return h("button", { type: "button", class: "quadro", onclick: () => verFotos(l.indexOf(it)) }, h("img", { src: u, alt: "", loading: "lazy" }),
         h("span", { text: [dia(it.ts), it.cidade, it.camera].filter(Boolean).join(" · ") })); })));
 }
 function verNoDiario(it) {
