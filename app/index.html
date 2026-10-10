@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 11:06";</script>
+<script>window.__VERSAO = "10/10 · 11:12";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -896,16 +896,18 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .flashcam{position:fixed;inset:0;background:#fff;z-index:9999;pointer-events:none;animation:flashcam .45s ease-out forwards}
 @keyframes flashcam{from{opacity:.95}to{opacity:0}}
 .diario{margin-top:22px;display:flex;flex-direction:column;gap:10px}
-/* Diário de Viajante: laboratório de revelação dentro da tenda — luz vermelha de segurança, varais de barbante e as fotos secando presas por prendedores */
-.diariofotos .contato{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:34px 12px;padding:38px 14px 22px;border-radius:6px;
-  background-color:#2A0E0A;background-image:radial-gradient(ellipse 70% 45% at 50% 0%,rgba(255,60,30,.42),rgba(255,40,20,0) 70%),repeating-linear-gradient(100deg,rgba(0,0,0,.18) 0 2px,rgba(0,0,0,0) 2px 7px),repeating-linear-gradient(10deg,rgba(255,120,80,.05) 0 1px,rgba(0,0,0,0) 1px 5px),linear-gradient(180deg,#3A120C,#1A0806);
-  box-shadow:inset 0 0 40px rgba(0,0,0,.7),0 8px 18px rgba(30,8,4,.35)}
-.diariofotos .contato::after{content:"";position:absolute;left:50%;top:6px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:radial-gradient(circle,#FF8A60,#E8321C 55%,#7A1208);box-shadow:0 0 18px 6px rgba(255,60,30,.55)}
-.diariofotos .quadro{position:relative;background:none!important;padding:0!important;transform:rotate(var(--g,0deg));transform-origin:50% 0;box-shadow:none;border-radius:0}
-.diariofotos .quadro::after{content:"";position:absolute;left:-40px;right:-40px;top:-9px;height:1.5px;background:#C9A878;opacity:.75;box-shadow:0 1px 1px rgba(0,0,0,.6);z-index:0}
-.diariofotos .quadro::before{content:"";position:absolute;left:50%;top:-15px;width:9px;height:22px;margin-left:-4.5px;border-radius:2px;background:linear-gradient(90deg,#8A6238,#C9A06A 45%,#7A5430);box-shadow:0 2px 2px rgba(0,0,0,.6);z-index:2}
-.diariofotos .quadro img,.diariofotos .quadro video{position:relative;z-index:1;width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:1px;box-shadow:0 6px 10px rgba(0,0,0,.6);filter:sepia(.12) saturate(.95) brightness(.94)}
-.diariofotos .quadro span{position:relative;z-index:1;display:block;margin-top:5px;font:600 8px/1.2 "Courier Prime",monospace!important;color:rgba(255,170,140,.75)!important;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Diário de Viajante: carteira de couro de viajante, aberta; cada foto enfiada num bolso de couro costurado */
+.diariofotos .contato{position:relative;display:grid;grid-template-columns:repeat(2,1fr);gap:16px 14px;padding:22px 18px 24px;border-radius:14px;
+  background-color:#5A3420;background-image:radial-gradient(ellipse at 25% 15%,rgba(255,210,160,.18),rgba(0,0,0,0) 55%),radial-gradient(ellipse at 80% 90%,rgba(0,0,0,.35),rgba(0,0,0,0) 60%),repeating-radial-gradient(circle at 37% 61%,rgba(0,0,0,.06) 0 1px,rgba(0,0,0,0) 1px 3px),linear-gradient(90deg,#4E2C1A,#6A3E26 49%,#3A2012 50%,#6A3E26 51%,#4E2C1A);
+  box-shadow:inset 0 0 0 7px rgba(0,0,0,.18),inset 0 0 0 8px rgba(230,190,140,.35),inset 0 0 26px rgba(0,0,0,.55),0 10px 22px rgba(40,20,8,.4)}
+.diariofotos .contato::before{content:"";position:absolute;inset:7px;border-radius:10px;border:1.5px dashed rgba(232,200,150,.55);pointer-events:none}
+.diariofotos .quadro{position:relative;background:none!important;padding:0!important;transform:none;box-shadow:none;border-radius:0;overflow:hidden;aspect-ratio:3/4}
+.diariofotos .quadro img,.diariofotos .quadro video{position:absolute;left:8%;right:8%;top:4%;width:84%;height:auto;aspect-ratio:9/16;object-fit:cover;border-radius:2px;box-shadow:0 2px 5px rgba(0,0,0,.55);filter:sepia(.1) saturate(.95)}
+/* o bolso de couro na frente, cobrindo a parte de baixo da foto */
+.diariofotos .quadro::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;border-radius:4px 4px 6px 6px;z-index:1;
+  background:radial-gradient(ellipse at 30% 0%,rgba(255,210,160,.22),rgba(0,0,0,0) 60%),linear-gradient(180deg,#7A4A2C,#5A3420);box-shadow:0 -3px 6px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,220,170,.35);border-top:1px solid #3A2012}
+.diariofotos .quadro::before{content:"";position:absolute;left:6px;right:6px;bottom:6px;height:calc(34% - 12px);z-index:2;border:1.5px dashed rgba(232,200,150,.55);border-radius:3px}
+.diariofotos .quadro span{position:absolute;z-index:3;left:10px;right:10px;bottom:14px;font:600 9px/1.25 "Courier Prime",monospace!important;color:rgba(240,214,170,.85)!important;text-align:center;text-shadow:0 1px 0 rgba(0,0,0,.6);white-space:normal}
 .contato{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#1E1A16;padding:8px;border-radius:8px}
 .contato .quadro{background:none;border:0;padding:0;display:flex;flex-direction:column;gap:3px;cursor:pointer}
 .contato .quadro img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:2px}
@@ -5135,7 +5137,7 @@ function vCameraFisica(c) {
     fotoCorpo ? h("div", { class: "cfvisor" }) : visor,
     F.vivo ? h("div", { class: "cfbase" }, controles, fotoCorpo ? h("span") : obturador)
       : !F.img ? null : h("div", { class: "cfdepois" },
-        h("p", { class: "cfguardada", text: "Guardada no seu Diário de Viajante" }),
+        h("p", { class: "cfguardada", text: "Guardada nos seus Registros" }),
         h("div", { class: "actions", style: "justify-content:center;flex-wrap:wrap" },
           h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(blob(), "caravana-" + c.id + ".jpg", msg) }, "Salvar no celular"),
           h("button", { class: "btn", type: "button", onclick: async () => {
@@ -5301,7 +5303,7 @@ function vDiarioViajante() {
   const l = S.fotosDiario;
   const dia = ts => { const d = new Date(ts); return d.getDate() + " " + MES[d.getMonth()].toLowerCase(); };
   return h("div", { class: "diario diariofotos" },
-    h("p", { class: "eyebrow rule", text: "Diário de Viajante" }),
+    h("p", { class: "eyebrow rule", text: "Registros" }),
     !l.length ? h("p", { class: "small", style: "text-align:center", text: "As fotos que você tirar com as câmeras da estante ficam guardadas aqui, com o dia, a cidade e a câmera." }) :
     h("div", { class: "contato" }, l.map(it => { const u = it.url || (it.url = URL.createObjectURL(it.blob));
       return h("button", { type: "button", class: "quadro", style: `--g:${((it.ts % 9) - 4) * .8}deg`, onclick: () => verFotos(l.indexOf(it)) }, /^video/.test(it.blob.type) ? h("video", { src: u, muted: true, playsinline: true, preload: "metadata" }) : h("img", { src: u, alt: "", loading: "lazy" }),
