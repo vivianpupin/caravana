@@ -5265,7 +5265,7 @@ function vCameraFisica(c) {
   const palco = fotoCorpo ? h("div", { class: "cfpalco", "aria-hidden": "false" }, h("img", { class: "cffundo", src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }), h("div", { class: "cfimg" },
     h("img", { src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }),
     h("div", { class: "cfjanela cfjanelafoto" + (fc.invertido ? " invertido" : "") + (fc.inteira ? " inteira" : ""), style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : null,
-      c.filma && S.camModo === "filme" && F.vivo ? h("span", { class: "cfdicafilme" }, h("span", { class: "longa", text: S.gravando ? "Solte ou toque para parar · até 20 s" : "Segure para filmar · ou toque para começar e parar" }), h("span", { class: "curta", text: S.gravando ? "Solte para parar" : "Segure para filmar" })) : null,
+      c.filma && S.camModo === "filme" && F.vivo ? h("span", { class: "cfdicafilme" }, h("span", { class: "longa", text: S.gravando ? "Solte ou toque para parar · até 1 min" : "Segure para filmar · ou toque para começar e parar" }), h("span", { class: "curta", text: S.gravando ? "Solte para parar" : "Segure para filmar" })) : null,
       c.id === "super8" ? h("span", { class: "cfmira", "aria-hidden": "true" }) : null,
       h("span", { class: "cfvf", "aria-hidden": "true" }, ...({
         rajastao: [h("i", { class: "moldura" }), h("i", { class: "ponto" })],
@@ -5316,7 +5316,7 @@ function apertaFilmar(e, c, F, sempre) {
   const solta = () => { document.removeEventListener("pointerup", solta); document.removeEventListener("pointercancel", solta); if (Date.now() - t0 > 700 && S.gravando) S.gravando.stop(); };
   document.addEventListener("pointerup", solta); document.addEventListener("pointercancel", solta);
 }
-// Super 8 filmando: grava a própria imagem do visor (já com o filtro), sem som, como filme mudo; até 20 segundos
+// filmando: grava a própria imagem do visor (já com o filtro), sem som, como filme mudo; até 1 minuto
 async function filma(c) {
   if (S.gravando) { S.gravando.stop(); return; }
   const tela = S.fotoCanvas; if (!tela || !tela.captureStream || !window.MediaRecorder) { alert("Este celular não consegue filmar pelo app."); return; }
@@ -5324,11 +5324,14 @@ async function filma(c) {
   const marca = document.createElement("canvas"); marca.width = W; marca.height = H; await marcaCaravana(marca, { ox: 0, oy: 0, w: W, hh: H }, c && c.id === "rajastao");
   const copia = setInterval(() => { const e = Math.max(W / tela.width, H / tela.height), w = tela.width * e, hh = tela.height * e; x.fillStyle = "#000"; x.fillRect(0, 0, W, H); x.drawImage(tela, (W - w) / 2, (H - hh) / 2, w, hh); x.drawImage(marca, 0, 0); }, 1000 / 24);
   const tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || "";
-  const mr = new MediaRecorder(rec.captureStream(24), tipo ? { mimeType: tipo, videoBitsPerSecond: 4e6 } : undefined), partes = [];
+  const mr = new MediaRecorder(rec.captureStream(24), tipo ? { mimeType: tipo, videoBitsPerSecond: 2.5e6 } : undefined), partes = [];
   mr.ondataavailable = e => e.data && e.data.size && partes.push(e.data);
   mr.onstop = async () => { clearInterval(copia); clearTimeout(limite); S.gravando = null; render();
-    const b = new Blob(partes, { type: (tipo || "video/webm").split(";")[0] }); if (b.size) { await guardaNoDiario(b, c); S.fotosDiario = await lerDiario(); if (S.camSel === c.id) render(); } };
-  const limite = setTimeout(() => mr.state === "recording" && mr.stop(), 20000);
+    const b = new Blob(partes, { type: (tipo || "video/webm").split(";")[0] }); if (b.size) { await guardaNoDiario(b, c); S.fotosDiario = await lerDiario(); if (S.camSel === c.id) render();
+      // o filme vai para a carteira de Registros (na Maleta, embaixo das câmeras); no celular não há miniatura, então avisa onde ficou
+      avisoReacao("🎞️ Filme guardado nos Registros, na Maleta, embaixo das câmeras."); }
+    else avisoReacao("Não consegui gravar o filme neste celular."); };
+  const limite = setTimeout(() => mr.state === "recording" && mr.stop(), 60000);
   S.gravando = mr; S.gravouEm = Date.now(); mr.start(500); cliqueSom(); render();
 }
 function piscaVisor() { const j = document.querySelector(".cfjanela"); if (!j) return; j.classList.remove("pisca"); void j.offsetWidth; j.classList.add("pisca"); }
@@ -5767,7 +5770,8 @@ function vFotos() {
           h("button", { class: "btn ghost celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "■ Parar" : "● Filmar"),
           h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, iconeFototeca(), "Fototeca"))
         : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [], filtro: "original", intens: 1, thumbSrc: null }; render(); } }, "📸 Nova foto")),
-        F.vivo ? h("p", { class: "celdica", text: S.gravando ? "Gravando… solte ou toque em Parar · até 20 segundos. O filme vai para os Registros." : "Para filmar: segure ● Filmar, ou toque uma vez para começar e outra para parar." }) : null,
+        F.vivo && !S.gravando && (S.fotosDiario || []).length ? h("div", { class: "actions", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros (fotos e filmes)")) : null,
+        F.vivo ? h("p", { class: "celdica", text: S.gravando ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure ● Filmar, ou toque uma vez para começar e outra para parar." }) : null,
         barraSel, tiraFiltros(F, id => set("filtro", id)), barraIntensidade),
       h("div", { class: "fcontrols" },
         h("p", { class: "celmesa", text: "Mesa de revelação" }),
