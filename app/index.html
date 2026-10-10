@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 13:51";</script>
+<script>window.__VERSAO = "10/10 · 13:53";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1203,12 +1203,12 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
   background:radial-gradient(circle at 38% 32%,#F2EEE6 0 10%,#B9B3A8 30%,#6E6A63 62%,#3A3733 78%),repeating-conic-gradient(#2A2724 0 6deg,#8E8A83 6deg 12deg);
   box-shadow:0 0 0 2px #1E1B18,0 3px 5px rgba(0,0,0,.6),inset 0 -2px 3px rgba(0,0,0,.45)}
 .cfselfie.on{transform:translate(-50%,-50%) scale(.93);filter:brightness(.82);box-shadow:0 0 0 2px #1E1B18,0 1px 2px rgba(0,0,0,.6),inset 0 2px 4px rgba(0,0,0,.6)}
-.cfselfie::after{content:"SELFIE";position:absolute;left:50%;top:calc(100% + 6px);transform:translateX(-50%);font:700 8px/1 "Courier Prime",monospace;letter-spacing:.28em;padding-left:.28em;white-space:nowrap;pointer-events:none;
-  color:transparent;background:repeating-linear-gradient(115deg,#7A5A24 0 1px,#E9C77E 1px 2.2px,#B98D3F 2.2px 3.2px);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 1px 0 rgba(0,0,0,.75));opacity:.85}
+.cfselfie::after{content:"SELFIE";position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);font:700 12px/1 "Courier Prime",monospace;letter-spacing:.26em;white-space:nowrap;pointer-events:none;
+  color:#F6E3B4;padding:5px 9px 5px calc(9px + .26em);border-radius:999px;background:rgba(18,11,6,.66);box-shadow:0 1px 3px rgba(0,0,0,.45);text-shadow:0 1px 1px rgba(0,0,0,.8)}
 .cfbotaofoto:active{background:rgba(0,0,0,.25)}
 /* CLICK / FILM legíveis em qualquer câmera: letra clara de máquina de escrever numa plaquinha escura */
 .cfbotaofoto::after{content:"CLICK";position:absolute;left:50%;top:calc(100% + 12px);transform:translateX(-50%);font:700 12px/1 "Courier Prime",monospace;letter-spacing:.26em;white-space:nowrap;pointer-events:none;
-  color:#F6E3B4;padding:5px 9px 5px calc(9px + .26em);border-radius:999px;background:rgba(18,11,6,.66);box-shadow:0 1px 3px rgba(0,0,0,.45),inset 0 0 0 1px rgba(232,192,122,.35);text-shadow:0 1px 1px rgba(0,0,0,.8)}
+  color:#F6E3B4;padding:5px 9px 5px calc(9px + .26em);border-radius:999px;background:rgba(18,11,6,.66);box-shadow:0 1px 3px rgba(0,0,0,.45);text-shadow:0 1px 1px rgba(0,0,0,.8)}
 .gravando .cfbotaofoto::after{color:#FFD2C8;background:rgba(150,30,20,.8)}
 /* com a foto da câmera, as camadas vazias por cima não podem roubar o toque do botão */
 .cfcorpo.comfoto>*:not(.cfpalco){pointer-events:none}
@@ -4255,8 +4255,9 @@ function aplicaFiltro(ctx, w, hh, f, graoEsc, modo) {
   if (modo === "efeitos") { efeitosRapidos(ctx, w, hh, f.vin || 0, g); efeitosFiltro(ctx, w, hh, f); return; }
   const d = ctx.getImageData(0, 0, w, hh), p = d.data, m = f.m, con = f.con || 1, add = f.add || [0, 0, 0], sat = f.sat || 1, lift = f.lift || 0;
   const cx = w / 2, cy = hh / 2, rmax = Math.hypot(cx, cy), vin = modo === "cor" ? 0 : (f.vin || 0);
+  const forca = f.forca || 1.3; // todos os filtros 30% mais fortes (mais perto das referências)
   for (let y = 0, i = 0; y < hh; y++) for (let x = 0; x < w; x++, i += 4) {
-    let R = p[i], G = p[i + 1], B = p[i + 2];
+    let R = p[i], G = p[i + 1], B = p[i + 2]; const R0 = R, G0 = G, B0 = B;
     if (m) { const r = R, gg = G, b = B; R = r * m[0] + gg * m[1] + b * m[2]; G = r * m[3] + gg * m[4] + b * m[5]; B = r * m[6] + gg * m[7] + b * m[8]; }
     const L = .299 * R + .587 * G + .114 * B;
     if (sat !== 1) { R = L + (R - L) * sat; G = L + (G - L) * sat; B = L + (B - L) * sat; }
@@ -4269,6 +4270,7 @@ function aplicaFiltro(ctx, w, hh, f, graoEsc, modo) {
     R = (R - 128) * con + 128 + add[0]; G = (G - 128) * con + 128 + add[1]; B = (B - 128) * con + 128 + add[2];
     if (lift) { R = lift + R * (1 - lift / 255); G = lift + G * (1 - lift / 255); B = lift + B * (1 - lift / 255); }
     if (vin) { const k = 1 - vin * Math.pow(Math.hypot(x - cx, y - cy) / rmax, 2.2); R *= k; G *= k; B *= k; }
+    if (forca !== 1) { R = R0 + (R - R0) * forca; G = G0 + (G - G0) * forca; B = B0 + (B - B0) * forca; }
     if (g) { const n = (Math.random() - .5) * g; R += n; G += n; B += n; }
     p[i] = R; p[i + 1] = G; p[i + 2] = B;
   }
@@ -5852,7 +5854,7 @@ function vFotos() {
     F.img ? h("div", { class: "estudio" },
       h("div", { class: "fotofixa" }, h("div", { class: "fotoframe", style: "position:relative" }, canvas, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
         F.vivo ? h("div", { class: "actions camacoes", style: "justify-content:center;align-items:center" },
-          h("button", { class: "btn ghost", type: "button", onclick: () => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); render(); } } }, C0frente() ? "↺ Câmera de trás" : "↺ Selfie"),
+          h("button", { class: "btn ghost", type: "button", onclick: () => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); render(); } } }, C0frente() ? "↺ Virar câmera" : "↺ Selfie"),
           h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: () => { if (!S.gravando) tiraFotoVivo(); } }, "📸"),
           h("button", { class: "btn ghost celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "■ Parar" : "● Filmar"),
           h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, iconeFototeca(), "Fototeca"))
