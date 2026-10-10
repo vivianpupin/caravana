@@ -146,7 +146,8 @@ if (!pronto) {
   firebase.initializeApp(CFG.firebase);
   auth = firebase.auth();
   fs = firebase.firestore();
-  fs.settings({ ignoreUndefinedProperties: true, merge: true });
+  // guarda até 200 MB no celular (fotos do mural já vistas não são baixadas de novo)
+  fs.settings({ ignoreUndefinedProperties: true, merge: true, cacheSizeBytes: 200 * 1024 * 1024 });
   fs.enablePersistence({ synchronizeTabs: true }).catch(() => {});
 
   // volta do login do Google (celular): se deu erro, mostra na tela de entrar
@@ -161,6 +162,9 @@ if (!pronto) {
   auth.onAuthStateChanged(async u => {
     if (!u) return telaLogin();
     const email = String(u.email || "").toLowerCase();
+    // a líder digitou o e-mail dela mas escolheu outra conta do Google: não entra como viajante comum, avisa qual conta escolher
+    let pediu = ""; try { pediu = sessionStorage.getItem("cdi-google-email") || ""; sessionStorage.removeItem("cdi-google-email"); } catch (e) {}
+    if (pediu && pediu !== email) { erroLogin = "Você entrou com a conta " + email + ". Para entrar como líder, escolha a conta " + pediu + " no Google."; await auth.signOut(); return; }
     me = { id: u.uid, name: u.displayName || email.split("@")[0], avatarUrl: u.photoURL || "", email, isOwner: lideres.includes(email) && u.emailVerified };
     // não espera a internet confirmar: com sinal fraco isso segurava a entrada no app
     fs.doc("perfis/" + u.uid).set({ name: me.name, avatarUrl: me.avatarUrl, ts: Date.now() }).catch(() => {});
@@ -202,12 +206,13 @@ async function entrarComEmail(email, palavra, erro, bt) {
   if (!palavra) { erro.textContent = "Digite a palavra da caravana."; return; }
   // a líder entra pela conta Google (é o que confirma que o e-mail é dela)
   if (lideres.includes(email)) {
-    bt.disabled = true; bt.textContent = "Abrindo o Google…";
+    bt.disabled = true; bt.textContent = "Abrindo o Google…"; try { sessionStorage.setItem("cdi-google-email", email); } catch (x) {}
     const prov = new firebase.auth.GoogleAuthProvider(); prov.setCustomParameters({ prompt: "select_account", login_hint: email });
     const vai = () => { try { sessionStorage.setItem("cdi-google", "1"); } catch (x) {} return auth.signInWithRedirect(prov); };
     try { if (celular) await vai(); else await auth.signInWithPopup(prov); return; }
     catch (e) { try { await vai(); return; } catch (x) {} erro.textContent = "Não consegui entrar. Tente de novo."; bt.disabled = false; bt.textContent = "Entrar"; return; }
   }
+  try { sessionStorage.removeItem("cdi-google-email"); } catch (x) {}
   erro.textContent = ""; erroLogin = ""; bt.disabled = true; bt.textContent = "Entrando…"; palavraDigitada = palavra;
   try { await auth.signInWithEmailAndPassword(email, senhaDe(palavra)); return; }
   catch (e) {
@@ -359,10 +364,17 @@ function telaCriarPalavra() {
 function entrar() { try { localStorage.setItem("cdi-entrou", "1"); } catch (e) {} fecharPortao(); resolvePronto(true); iniciarPresenca(); }
 
 // Na primeira entrada da líder, copia o conteúdo do app (cidades, lugares, saberes, carta final).
+// textos já gravados no banco que precisaram de correção (roda quando a líder abre o app; só grava se ainda estiver o texto antigo)
+const CORRECOES = [["locais/kunjapuri", "dica", /sobre as neves/, "atrás dos picos do Himalaia"], ["ensinamentos/sati", "texto", /picos nevados do Himalaia/, "picos do Himalaia"]];
+async function corrigir() {
+  for (const [caminho, campo, velho, novo] of CORRECOES) {
+    try { const d = await fs.doc(caminho).get(); const v = d.exists ? d.data()[campo] : null; if (typeof v === "string" && velho.test(v)) await fs.doc(caminho).update({ [campo]: v.replace(velho, novo) }); } catch (e) {}
+  }
+}
 async function semear() {
   try {
     const t = await fs.collection("locais").limit(1).get();
-    if (!t.empty) return;
+    if (!t.empty) return corrigir();
     let lote = fs.batch(), n = 0;
     for (const [col, docs] of Object.entries(SEED)) for (const [id, data] of Object.entries(docs)) {
       lote.set(fs.doc(col + "/" + id), data); n++;
@@ -451,7 +463,9 @@ window.__blobUrl = id => {
   if (fotos[id]) return fotos[id];
   if (!pedindo.has(id) && fs) {
     pedindo.add(id);
-    fs.doc("fotos/" + id).get().then(s => {
+    // foto nunca muda: procura primeiro no celular e só baixa se ainda não tiver (economiza o chip)
+    const ref = fs.doc("fotos/" + id);
+    ref.get({ source: "cache" }).then(s => s.exists ? s : ref.get()).catch(() => ref.get()).then(s => {
       if (s.exists) { fotos[id] = s.data().data; clearTimeout(avisoTimer); avisoTimer = setTimeout(() => window.dispatchEvent(new Event("caravana-foto")), 60); }
     }).catch(() => pedindo.delete(id));
   }

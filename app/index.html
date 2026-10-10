@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 15:44";</script>
+<script>window.__VERSAO = "10/10 · 18:08";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3027,7 +3027,7 @@ const BONECO = {
   chapeu: [["fedora", "Chapéu de viajante"], ["safari", "Safári"], ["lenco", "Lenço"], ["turbante", "Turbante"], ["flores", "Coroa de flores"], ["sem", "Sem chapéu"]],
   roupa: [["basico", "Sem roupa"], ["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["sari2", "Sari de bolinhas"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
   roupaCor: ["#8B6B43", "#C2A878", "#5F6B45", "#8A3F32", "#D9822B", "#B83A6B", "#2F5D7C", "#E8E0CF", "#2B2622"],
-  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["violao", "Violão"], ["tambor", "Djembê"], ["maraca", "Maracá"], ["flautim", "Flauta"], ["sitar", "Sitar"], ["harmonium", "Harmonium"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["chicote", "Chicote"], ["nenhum", "Nada"]],
+  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["violao", "Violão"], ["tambor", "Djembê"], ["manjira", "Manjira"], ["flautim", "Flauta"], ["sitar", "Sitar"], ["harmonium", "Harmonium"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["tridente", "Tridente"], ["nenhum", "Nada"]],
   colar: [["nenhum", "Nenhum"], ["guirlanda", "Guirlanda de flores"], ["rudraksha", "Rudraksha"], ["tulsi", "Contas de tulsi"], ["contas", "Contas coloridas"], ["ouro", "Colar de ouro"], ["moedas", "Colar de moedas"], ["om", "Pingente Om"]],
   testa: [["nada", "Nada"], ["bindi", "Bindi"], ["tilak", "Tilak"], ["cinzas", "Shivaísta · tripundra"], ["vaishnava", "Vaishnava · urdhva pundra"]],
   nariz: [["nenhum", "Sem piercing"], ["argola", "Argola no nariz"], ["ponto", "Brilhante no nariz"]],
@@ -3321,7 +3321,9 @@ function desenhaBoneco(b) {
   if (oc === "sol") g.append(h("rect", { x: 22.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), h("rect", { x: 30.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), h("line", { x1: 29.2, y1: 21.5, x2: 30.8, y2: 21.5, stroke: "#1E1A16", "stroke-width": 1 }));
   if (oc === "grau") g.append(h("rect", { x: 23, y: 20.6, width: 6.2, height: 4, rx: .8, fill: "rgba(255,255,255,.18)", stroke: "#5A3A22", "stroke-width": .9 }), h("rect", { x: 30.8, y: 20.6, width: 6.2, height: 4, rx: .8, fill: "rgba(255,255,255,.18)", stroke: "#5A3A22", "stroke-width": .9 }), h("line", { x1: 29.2, y1: 22, x2: 30.8, y2: 22, stroke: "#5A3A22", "stroke-width": .8 }));
   // o que leva nas mãos: instrumento na mão esquerda; o objeto vai na direita, espelhado
-  for (const [A, T] of [[b.acessorio, g], [b.acessorio2, b.acessorio2 && b.acessorio2 !== "nenhum" ? g.appendChild(h("g", { transform: "translate(60 0) scale(-1 1)" })) : null]]) {
+  // maracá virou manjira e chicote virou tridente: quem já tinha escolhido vê o novo
+  const troca = a => ({ maraca: "manjira", chicote: "tridente" })[a] || a;
+  for (const [A, T] of [[troca(b.acessorio), g], [troca(b.acessorio2), b.acessorio2 && b.acessorio2 !== "nenhum" ? g.appendChild(h("g", { transform: "translate(60 0) scale(-1 1)" })) : null]]) {
     if (!A || !T) continue;
   if (A === "japamala") { for (let i = 0; i < 14; i++) { const t = i / 14 * Math.PI * 2; T.append(h("circle", { cx: 48 + Math.cos(t) * 4.5, cy: 66 + Math.sin(t) * 6, r: 1.15, fill: "#7A4A2B" })); } T.append(h("rect", { x: 47, y: 72, width: 2, height: 5, fill: "#A3231A" })); }
     if (A === "incenso") T.append(h("line", { x1: 47, y1: 60, x2: 51, y2: 46, stroke: "#7A4A2B", "stroke-width": 1.2 }), h("circle", { cx: 51, cy: 46, r: 1, fill: "#E0661C" }), P("M51 45 Q54 41 51 38 Q48 35 52 31", "none", { stroke: "rgba(120,110,100,.55)", "stroke-width": 1.1, "stroke-linecap": "round" }));
@@ -3330,10 +3332,11 @@ function desenhaBoneco(b) {
       P("M44.5 53.5 L46.5 60 L48.5 53.5 L50 60 L51.5 53.5 L53.5 60 L55.5 53.5", "none", { stroke: "#F1E2BC", "stroke-width": .6 }),
       h("rect", { x: 43.2, y: 52.2, width: 13.6, height: 1.4, rx: .6, fill: "#5E3514" }), h("rect", { x: 46.3, y: 70.6, width: 7.4, height: 1.4, rx: .6, fill: "#5E3514" }),
       h("ellipse", { cx: 50, cy: 51, rx: 6.5, ry: 1.7, fill: "#E9D7B0", stroke: "#8A6B43", "stroke-width": .5 }));
-    if (A === "maraca") T.append(h("line", { x1: 48, y1: 63, x2: 50.5, y2: 53, stroke: "#7A4A2B", "stroke-width": 1.6, "stroke-linecap": "round" }),
-      h("ellipse", { cx: 51.3, cy: 49, rx: 4, ry: 4.8, fill: "#C0472B", stroke: "#7A2A18", "stroke-width": .6 }), P("M47.6 49 Q51.3 51 55 49", "none", { stroke: "#F2C94C", "stroke-width": 1 }),
-      ...[[50, 46.5], [52.6, 46.8], [49.8, 51.4], [52.8, 51.5]].map(([x, y]) => h("circle", { cx: x, cy: y, r: .55, fill: "#F4EFE3" })),
-      P("M56.5 44 Q58 45.5 57.5 47.5 M58.8 42.8 Q61 45.3 60.2 48.4", "none", { stroke: "rgba(90,63,34,.55)", "stroke-width": .6, "stroke-linecap": "round" }));
+    // manjira: os dois pratinhos de bronze dos kirtans, presos por um cordão vermelho
+    if (A === "manjira") T.append(P("M47.5 60.5 Q50 55 53.5 51.5", "none", { stroke: "#A3231A", "stroke-width": .9, "stroke-linecap": "round" }),
+      h("g", { transform: "rotate(-18 47 61)" }, h("ellipse", { cx: 47, cy: 61, rx: 4.6, ry: 1.9, fill: "#C99A3A", stroke: "#7A5A1E", "stroke-width": .5 }), h("ellipse", { cx: 47, cy: 60.3, rx: 1.6, ry: .8, fill: "#E8C873", stroke: "#7A5A1E", "stroke-width": .4 }), h("path", { d: "M43.2 61.3 Q47 62.6 50.8 61.3", fill: "none", stroke: "#F2DC9A", "stroke-width": .5 })),
+      h("g", { transform: "rotate(24 54 51)" }, h("ellipse", { cx: 54, cy: 51, rx: 4.6, ry: 1.9, fill: "#C99A3A", stroke: "#7A5A1E", "stroke-width": .5 }), h("ellipse", { cx: 54, cy: 50.3, rx: 1.6, ry: .8, fill: "#E8C873", stroke: "#7A5A1E", "stroke-width": .4 }), h("path", { d: "M50.2 51.3 Q54 52.6 57.8 51.3", fill: "none", stroke: "#F2DC9A", "stroke-width": .5 })),
+      P("M57.5 46 Q59 47.5 58.5 49.5 M59.8 44.8 Q62 47.3 61.2 50.4", "none", { stroke: "rgba(90,63,34,.55)", "stroke-width": .6, "stroke-linecap": "round" }));
     if (A === "flautim") T.append(h("line", { x1: 44.5, y1: 67, x2: 53.5, y2: 45, stroke: "#C9A063", "stroke-width": 2.2, "stroke-linecap": "round" }),
       ...[.25, .38, .5, .62].map(t => h("circle", { cx: 44.5 + 9 * t, cy: 67 - 22 * t, r: .45, fill: "#5A3A22" })),
       ...[.08, .88].map(t => h("line", { x1: 43.4 + 9 * t, y1: 66.6 - 22 * t, x2: 45.6 + 9 * t, y2: 67.4 - 22 * t, stroke: "#A3231A", "stroke-width": .9 })));
@@ -3363,9 +3366,10 @@ function desenhaBoneco(b) {
     if (A === "lotus") T.append(...[-40, -15, 15, 40].map(a => h("ellipse", { cx: 48 + Math.sin(a * Math.PI / 180) * 4, cy: 54 - Math.cos(a * Math.PI / 180) * 2, rx: 2, ry: 4.5, fill: "#E7849E", transform: `rotate(${a} ${48 + Math.sin(a * Math.PI / 180) * 4} ${54 - Math.cos(a * Math.PI / 180) * 2})` })), h("ellipse", { cx: 48, cy: 56, rx: 5.5, ry: 2, fill: "#5F8A4A" }), h("circle", { cx: 48, cy: 54, r: 1.4, fill: "#F2C94C" }));
     if (A === "sino") T.append(P("M44 62 Q44 55 48 55 Q52 55 52 62 L53.5 64 L42.5 64 Z", ouro), h("circle", { cx: 48, cy: 65, r: 1.2, fill: "#8A6B2A" }), h("rect", { x: 47, y: 52, width: 2, height: 3.5, fill: "#8A6B2A" }));
     if (A === "bolsa") T.append(h("line", { x1: 20, y1: 36, x2: 41, y2: 55, stroke: couro, "stroke-width": 1.8 }), h("rect", { x: 37, y: 51, width: 10, height: 9, rx: 2, fill: "#7A5431" }), h("rect", { x: 37, y: 51, width: 10, height: 3.5, rx: 1.5, fill: "#5E3F24" }));
-    if (A === "chicote") T.append(h("ellipse", { cx: 50, cy: 70, rx: 6.5, ry: 3.6, fill: "none", stroke: "#4A3322", "stroke-width": 1.8 }), h("ellipse", { cx: 50, cy: 72.5, rx: 6, ry: 3.4, fill: "none", stroke: "#5A3F28", "stroke-width": 1.8 }), h("ellipse", { cx: 50, cy: 75, rx: 5.5, ry: 3.1, fill: "none", stroke: "#4A3322", "stroke-width": 1.8 }),
-      h("rect", { x: 45.5, y: 55.5, width: 3.2, height: 12, rx: 1.4, fill: "#2B1D14", transform: "rotate(-12 47 61)" }), h("rect", { x: 45.3, y: 58, width: 3.6, height: 1.2, fill: "#C9A063", transform: "rotate(-12 47 61)" }),
-      h("path", { d: "M55.5 75 Q58 80 55 83 Q52 86 57 86.5 L60 85.5", fill: "none", stroke: "#4A3322", "stroke-width": 1.2, "stroke-linecap": "round" }));
+    // trishula, o tridente de Shiva
+    if (A === "tridente") T.append(h("line", { x1: 48, y1: 40, x2: 48, y2: 84, stroke: "#6B4A2A", "stroke-width": 1.6, "stroke-linecap": "round" }),
+      P("M43 44 Q43 38 44 36 M48 44 L48 34 M53 44 Q53 38 52 36", "none", { stroke: "#C9CDD2", "stroke-width": 1.8, "stroke-linecap": "round" }), P("M43 44 L53 44", "none", { stroke: "#C9CDD2", "stroke-width": 1.8 }),
+      h("rect", { x: 46.6, y: 45.2, width: 2.8, height: 1.6, rx: .5, fill: "#C9A063" }));
     if (A === "lanterna") T.append(h("circle", { cx: 48, cy: 67, r: 7, fill: "rgba(255,196,90,.35)" }), h("rect", { x: 45.5, y: 62, width: 5, height: 8, rx: 1, fill: "#C9A063" }), h("rect", { x: 46.5, y: 63.5, width: 3, height: 5, fill: "#FFD27A" }), h("line", { x1: 48, y1: 62, x2: 48, y2: 59, stroke: couro, "stroke-width": 1 }));
     if (A === "mapa") T.append(h("g", { transform: "rotate(-10 50 60)" },
       h("path", { d: "M40 52 L46 53.5 L52 52 L58 53.5 L58 67 L52 65.5 L46 67 L40 65.5 Z", fill: "#EAD6A8", stroke: "#8A6B43", "stroke-width": .7, "stroke-linejoin": "round" }),
@@ -3378,9 +3382,10 @@ function desenhaBoneco(b) {
   if (exprG) g.append(...exprG);
   return g;
 }
-const INSTRUMENTOS = ["violao", "tambor", "maraca", "flautim", "sitar", "harmonium", "sino"];
+const INSTRUMENTOS = ["violao", "tambor", "manjira", "flautim", "sitar", "harmonium", "sino"];
 // bonecos antigos guardavam o objeto no mesmo campo do instrumento: o objeto passa para a mão direita
 function maosSeparadas(b) {
+  if (b && (b.acessorio === "maraca" || b.acessorio === "chicote" || b.acessorio2 === "chicote")) b = { ...b, acessorio: b.acessorio === "maraca" ? "manjira" : b.acessorio === "chicote" ? "tridente" : b.acessorio, acessorio2: b.acessorio2 === "chicote" ? "tridente" : b.acessorio2 };
   if (!b || !b.acessorio || b.acessorio === "nenhum" || INSTRUMENTOS.includes(b.acessorio) || (b.acessorio2 && b.acessorio2 !== "nenhum")) return b;
   return { ...b, acessorio2: b.acessorio, acessorio: "nenhum" };
 }
@@ -4277,7 +4282,11 @@ const seloLiberado = id => S.isOwner || aberto(localDe(id));
 const PATCH_CIDADE = { Delhi: "india", Agra: "taj-mahal", Jaipur: "jaipur", Varanasi: "varanasi", Rishikesh: "rishikesh" };
 const MOLDURAS = [["polaroid", "Polaroid"], ["postal", "Cartão-postal"], ["ingresso", "Ingresso"], ["arco", "Janela de palácio"], ["guirlanda", "Guirlanda de flores"], ["bandeirinhas", "Bandeirinhas de oração"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
 const imgCache = {};
-function carregaImg(src) { return imgCache[src] ||= new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; }); }
+// se a imagem falhar (sem internet), não guarda o erro: na próxima vez tenta de novo
+function carregaImg(src) { return imgCache[src] ||= new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = e => { delete imgCache[src]; no(e); }; i.src = src; }); }
+// para as fotos e a câmera: sem a imagem (sem internet), desenha sem ela em vez de travar o visor (ficava tudo preto)
+const imgVazia = () => { const c = document.createElement("canvas"); c.width = c.height = 1; return c; };
+const carregaImgOu = src => carregaImg(src).catch(() => imgVazia());
 // filtro copiado de uma foto (LUT 3D): cada cor da foto vira a cor que o filtro de referência dá
 const lutCache = {};
 function aplicaLut(ctx, w, hh, f) {
@@ -4471,7 +4480,7 @@ async function montaFoto(canvas, Fx) {
     const mc = mix.getContext("2d"); mc.globalAlpha = 1; mc.drawImage(img, sx, sy, sw, sh, 0, 0, w, hh); mc.globalAlpha = intens; mc.drawImage(tmp, 0, 0); mc.globalAlpha = 1; tmp = mix;
   }
   const u = Math.max(w, hh) / 1000, legenda = [F.legenda, F.cidade].filter(Boolean).join(" · "), data = F.data;
-  const [marrom, dourado] = await Promise.all([carregaImg("img/simbolo-marrom.png"), carregaImg("img/simbolo-dourado.png")]);
+  const [marrom, dourado] = await Promise.all([carregaImgOu("img/simbolo-marrom.png"), carregaImgOu("img/simbolo-dourado.png")]);
   let W = w, H = hh, ox = 0, oy = 0;
   if (F.moldura === "polaroid") { const m = Math.round(40 * u); W = w + m * 2; H = hh + m + Math.round(190 * u); ox = m; oy = m; }
   if (F.moldura === "super8") { const m = Math.round(34 * u), banda = Math.round(120 * u); W = w + banda + m; H = hh + m * 2; ox = banda; oy = m; }
@@ -4733,8 +4742,8 @@ function letreiro(texto, mao) {
 function imgAdesivo(k) {
   return adesivoCache[k] ||= (async () => {
     if (k.startsWith("img:")) return carregaImg(k.slice(4));
-    if (k === "patch") return patchCaravana(await carregaImg("img/simbolo-dourado.png"), 400);
-    if (k === "carimbo") { const cv = document.createElement("canvas"); cv.width = cv.height = 420; carimbo(cv.getContext("2d"), 210, 210, 180, await carregaImg("img/simbolo-dourado.png"), -.2); return cv; }
+    if (k === "patch") return patchCaravana(await carregaImgOu("img/simbolo-dourado.png"), 400);
+    if (k === "carimbo") { const cv = document.createElement("canvas"); cv.width = cv.height = 420; carimbo(cv.getContext("2d"), 210, 210, 180, await carregaImgOu("img/simbolo-dourado.png"), -.2); return cv; }
     const tela = (w, hh) => { const cv = document.createElement("canvas"); cv.width = w; cv.height = hh; return [cv, cv.getContext("2d")]; };
     if (k === "flor") { const [cv, x] = tela(260, 260); florMarigold(x, 130, 130, 110, "#F08A12"); return cv; }
     if (k === "estrela") { const [cv, x] = tela(260, 260); x.shadowColor = "rgba(255,210,120,.9)"; x.shadowBlur = 30; estrela4(x, 130, 130, 110, "#FFE3A3"); return cv; }
@@ -4750,7 +4759,7 @@ function imgAdesivo(k) {
       x.beginPath(); x.arc(150, 150, 130, 0, 7); x.stroke(); x.beginPath(); x.arc(150, 150, 104, 0, 7); x.stroke();
       x.textAlign = "center"; x.font = '600 34px Poppins, sans-serif'; x.fillText("CARAVANA", 150, 140); x.fillText("DO CÉU", 150, 180); x.font = '500 22px Poppins, sans-serif'; x.fillText("ÍNDIA · 2026", 150, 222);
       for (let k2 = 0; k2 < 4; k2++) { x.beginPath(); for (let X = 0; X < 230; X += 5) x.lineTo(285 + X, 90 + k2 * 40 + Math.sin(X / 16) * 8); x.stroke(); } return cv; }
-    if (k === "seloPostal") { const dourado = await carregaImg("img/simbolo-dourado.png"), [cv, x] = tela(300, 360), sw = 260, sh = 320;
+    if (k === "seloPostal") { const dourado = await carregaImgOu("img/simbolo-dourado.png"), [cv, x] = tela(300, 360), sw = 260, sh = 320;
       x.translate(150, 180); x.fillStyle = "#FBF6EA"; x.beginPath(); const d = 18; for (let X = -sw / 2; X <= sw / 2; X += d) { x.moveTo(X + 7, -sh / 2); x.arc(X, -sh / 2, 7, 0, 7); } x.fill(); x.fillRect(-sw / 2, -sh / 2, sw, sh);
       x.fillStyle = "#8A3F32"; x.fillRect(-sw / 2 + 18, -sh / 2 + 18, sw - 36, sh - 36); const sb = simboloEm(dourado, "#E8C07A", 130); x.drawImage(sb, -sb.width / 2, -sh / 2 + 44);
       x.fillStyle = "#F4E6C4"; x.textAlign = "center"; x.font = '600 34px Cinzel, Georgia, serif'; x.fillText("ÍNDIA", 0, sh / 2 - 70); x.font = '500 26px Poppins, sans-serif'; x.fillText("2026 · ₹ 26", 0, sh / 2 - 36); return cv; }
@@ -4808,7 +4817,7 @@ async function montaTira(canvas) {
     const x = t.getContext("2d", { willReadFrequently: true }); x.drawImage(img, 0, 0, t.width, t.height);
     aplicaFiltro(x, t.width, t.height, f, "auto"); return (T.prontas[chave] = t);
   });
-  const [marrom, dourado] = await Promise.all([carregaImg("img/simbolo-marrom.png"), carregaImg("img/simbolo-dourado.png")]);
+  const [marrom, dourado] = await Promise.all([carregaImgOu("img/simbolo-marrom.png"), carregaImgOu("img/simbolo-dourado.png")]);
   const n = fotos.length, e = T.estilo;
   let W, H; const c = canvas.getContext("2d");
   const simb = (img, cor, alt, cx, cy) => { const sb = simboloEm(img, cor, alt); c.drawImage(sb, cx - sb.width / 2, cy - sb.height / 2); };
@@ -5031,7 +5040,7 @@ function patchCaravana(img, alt) {
 async function colaPatches(c, F, ox, oy, w, hh) {
   const tipo = F.patch || "nenhum"; S.fotoPatchRect = null; if (tipo === "nenhum") return;
   const caixa = S.fotoPatchRect = { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 };
-  const dourado = await carregaImg("img/simbolo-dourado.png"), base = Math.min(w, hh) * .3, pad = Math.min(w, hh) * .04;
+  const dourado = await carregaImgOu("img/simbolo-dourado.png"), base = Math.min(w, hh) * .3, pad = Math.min(w, hh) * .04;
   const lugar = PATCH_CIDADE[F.cidade] || "india";
   // Do lugar: só o selo da cidade, grande. Coleção: os selos que a pessoa já ganhou, espalhados como um álbum
   // (selo só aparece depois de liberado no passaporte; antes disso entra o patch da Caravana)
@@ -5641,10 +5650,10 @@ function bancoDiario() { return S.bdDiario ||= new Promise((ok, no) => { const q
 async function guardaNoDiario(blob, c, extra) {
   try { const db = await bancoDiario(), item = { id: Date.now() + "-" + Math.random().toString(36).slice(2, 6), ts: Date.now(), camera: c.nome, cidade: cidadeHoje(), blob, ...(extra || {}) };
     await new Promise((ok, no) => { const t = db.transaction("fotos", "readwrite"); t.objectStore("fotos").put(item); t.oncomplete = ok; t.onerror = () => no(t.error); });
-    S.fotosDiario = null; } catch (e) {}
+    S.diarioAnt = S.fotosDiario; S.fotosDiario = null; } catch (e) {}
 }
 async function lerDiario() {
-  try { const db = await bancoDiario(); return await new Promise((ok, no) => { const q = db.transaction("fotos").objectStore("fotos").getAll(); q.onsuccess = () => { const velhos = new Map((S.fotosDiario || []).map(x => [x.id, x])); ok(q.result.map(x => velhos.get(x.id) || x).sort((a, b) => b.ts - a.ts)); }; q.onerror = () => no(q.error); }); } catch (e) { return []; }
+  try { const db = await bancoDiario(); return await new Promise((ok, no) => { const q = db.transaction("fotos").objectStore("fotos").getAll(); q.onsuccess = () => { const velhos = new Map((S.fotosDiario || S.diarioAnt || []).map(x => [x.id, x])); ok(q.result.map(x => velhos.get(x.id) || x).sort((a, b) => b.ts - a.ts)); }; q.onerror = () => no(q.error); }); } catch (e) { return []; }
 }
 // lê as fotos guardadas logo depois que o app abre, para a aba Fotos não precisar redesenhar quando elas chegam
 setTimeout(() => { if (S.fotosDiario) return; lerDiario().then(l => { if (!S.fotosDiario) { S.fotosDiario = l; S.fotosDiarioPronto = true; } }).catch(() => {}); }, 1500);
@@ -5932,7 +5941,8 @@ function vFotos() {
     try { const r = await S.assets.upload(await blobDoCanvas()); await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade: F.cidade || "", legenda: F.legenda || "", ts: Date.now() }); msg.textContent = "Foto na galeria da caravana."; msg.className = "msg ok"; }
     catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
   };
-  if (F.img && !F.vivo) requestAnimationFrame(() => montaFoto(canvas).catch(() => {}));
+  // foto tirada com o celular também vai para os Registros (como nas câmeras da maleta)
+  if (F.img && !F.vivo) requestAnimationFrame(() => montaFoto(canvas).then(() => { if (S.guardarCel) { S.guardarCel = false; canvas.toBlob(b => b && guardaNoDiario(b, CAMERAS_C.find(x => x.id === "celular") || { nome: "Celular" }).then(() => lerDiario()).then(l => { S.fotosDiario = l; }), "image/jpeg", .9); } }).catch(() => {}));
   const redesenha = () => { if (redesenha.pend) return; redesenha.pend = true; requestAnimationFrame(() => { redesenha.pend = false; montaFoto(canvas).catch(() => {}); }); };
   const { painelAdesivos, barraSel } = editorAdesivos(canvas, "foto", () => S.foto, redesenha);
   // intensidade: desliza e a foto muda na hora, sem redesenhar a tela toda
@@ -5952,7 +5962,7 @@ function vFotos() {
       h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
         F.vivo ? h("div", { class: "actions camacoes", style: "justify-content:center;align-items:center" },
           h("button", { class: "btn ghost", type: "button", onclick: e => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); e.currentTarget.textContent = C.frente ? "↺ Virar câmera" : "↺ Selfie"; } } }, C0frente() ? "↺ Virar câmera" : "↺ Selfie"),
-          h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: () => { if (!S.gravando) tiraFotoVivo(); } }, "📸"),
+          h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: () => { if (!S.gravando) { S.guardarCel = true; tiraFotoVivo(); } } }, "📸"),
           h("button", { class: "btn ghost celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "■ Parar" : "● Filmar"),
           h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, iconeFototeca(), "Fototeca"))
         : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [], filtro: "original", intens: 1, thumbSrc: null }; render(); } }, "📸 Nova foto")),
@@ -8040,7 +8050,7 @@ if ("serviceWorker" in navigator) {
   // procura versão nova sempre que o app abre ou volta para a tela, e recarrega sozinho quando chega
   const tinha = !!navigator.serviceWorker.controller; let recarregou = false;
   navigator.serviceWorker.addEventListener("controllerchange", () => { if (tinha && !recarregou) { recarregou = true; location.reload(); } });
-  navigator.serviceWorker.register("sw.js").then(r => { r.update(); document.addEventListener("visibilitychange", () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {});
+  navigator.serviceWorker.register("sw.js").then(r => { r.update(); navigator.serviceWorker.ready.then(g => g.active && g.active.postMessage("completa")).catch(() => {}); document.addEventListener("visibilitychange", () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {});
 }
 // o iPhone às vezes volta para o app sem recarregar: confere a versão publicada e recarrega se mudou
 (function () {

@@ -43,7 +43,7 @@ if ("serviceWorker" in navigator) {
   // procura versão nova sempre que o app abre ou volta para a tela, e recarrega sozinho quando chega
   const tinha = !!navigator.serviceWorker.controller; let recarregou = false;
   navigator.serviceWorker.addEventListener("controllerchange", () => { if (tinha && !recarregou) { recarregou = true; location.reload(); } });
-  navigator.serviceWorker.register("sw.js").then(r => { r.update(); document.addEventListener("visibilitychange", () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {});
+  navigator.serviceWorker.register("sw.js").then(r => { r.update(); navigator.serviceWorker.ready.then(g => g.active && g.active.postMessage("completa")).catch(() => {}); document.addEventListener("visibilitychange", () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {});
 }
 // o iPhone às vezes volta para o app sem recarregar: confere a versão publicada e recarrega se mudou
 (function () {
@@ -74,6 +74,8 @@ _arqs = ["index.html", "shim.js", "config.js", "manifest.webmanifest"] + sorted(
 _marca = hashlib.sha1(b"".join((_app / a).read_bytes() for a in _arqs if a != "index.html")).hexdigest()[:10]
 _sw = (_app / "sw.js").read_text(encoding="utf-8")
 _sw = _re.sub(r"/\*ARQUIVOS\*/.*?/\*FIM\*/", lambda m: "/*ARQUIVOS*/" + _json.dumps(_arqs) + "/*FIM*/", _sw, flags=_re.S)
+_marcas = {a: hashlib.sha1((_app / a).read_bytes()).hexdigest()[:10] for a in _arqs if a != "index.html"}
+_sw = _re.sub(r"/\*MARCAS\*/.*?/\*FIMM\*/", lambda m: "/*MARCAS*/" + _json.dumps(_marcas) + "/*FIMM*/", _sw, flags=_re.S)
 _sw = _re.sub(r"^// marca: .*\n", "", _sw, flags=_re.M)
 (_app / "sw.js").write_text("// marca: " + _marca + "\n" + _sw, encoding="utf-8")
 print("app/index.html gerado")
