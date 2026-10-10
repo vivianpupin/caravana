@@ -5589,6 +5589,7 @@ const iconeFototeca = () => h("svg", { viewBox: "0 0 24 24", width: "20", height
   h("circle", { cx: "7.6", cy: "11.6", r: "1.5", fill: "#C7745C" }),
   h("path", { d: "M4.4 18.2 L8.8 14 L11.4 16.4 L13.6 14.4 L16 17.2 L16 18.4 L4.4 18.4 Z", fill: "#C98A73" }));
 const podeCamera = () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+const C0frente = () => !!(S.camEst && S.camEst.frente);
 function iniciaVivo() {
   let C = S.camEst;
   if (!C) {
@@ -5618,7 +5619,9 @@ async function ligaCam() {
   const C = S.camEst; if (!C) return; paraCam();
   const vez = C.vez = (C.vez || 0) + 1;
   try {
-    const fluxo = pegaFluxoGuardado(!!C.frente) || await navigator.mediaDevices.getUserMedia({ video: { facingMode: C.frente ? "user" : "environment", width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false });
+    // pede a câmera da frente ou de trás com "exact": sem isso o iPhone às vezes ignora o pedido e continua na de trás (o Virar não virava)
+    const pede = exato => navigator.mediaDevices.getUserMedia({ video: { facingMode: exato ? { exact: C.frente ? "user" : "environment" } : (C.frente ? "user" : "environment"), width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false });
+    const fluxo = pegaFluxoGuardado(!!C.frente) || await pede(true).catch(() => pede(false));
     // se a câmera já foi fechada ou virada de novo enquanto esperava, desliga este fluxo e sai
     if (S.camEst !== C || C.vez !== vez) { guardaFluxo(fluxo, !!C.frente); return; }
     C.fluxo = fluxo; C.video.srcObject = fluxo; await C.video.play();
@@ -5765,7 +5768,7 @@ function vFotos() {
     F.img ? h("div", { class: "estudio" },
       h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas),
         F.vivo ? h("div", { class: "actions camacoes", style: "justify-content:center;align-items:center" },
-          h("button", { class: "btn ghost", type: "button", onclick: () => { const C = S.camEst; if (C) { C.frente = !C.frente; ligaCam(); } } }, "↺ Virar"),
+          h("button", { class: "btn ghost", type: "button", onclick: () => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); render(); } } }, C0frente() ? "↺ Câmera de trás" : "↺ Selfie"),
           h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: () => { if (!S.gravando) tiraFotoVivo(); } }, "📸"),
           h("button", { class: "btn ghost celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "■ Parar" : "● Filmar"),
           h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, iconeFototeca(), "Fototeca"))
