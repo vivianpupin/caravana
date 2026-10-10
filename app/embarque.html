@@ -113,6 +113,18 @@ body.saindo>*{transition:opacity .5s ease;opacity:0}
 @keyframes aparece{to{opacity:1}}
 @keyframes carimba{0%{opacity:0;transform:scale(1.8) rotate(var(--rot))}100%{opacity:.8;transform:scale(1) rotate(var(--rot))}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important}}
+/* compacta para caber tudo na tela do celular, com o lacre à vista sem rolar */
+body{padding-top:max(10px,env(safe-area-inset-top))!important;padding-bottom:max(12px,env(safe-area-inset-bottom))!important}
+.faixa{padding:10px 14px 9px!important}.medalha{width:46px!important;height:46px!important}.faixa b{font-size:13px!important}
+.corpo{padding:8px 16px 2px!important}.tipo{margin:2px 0 0!important}
+.rota{padding:6px 4px 0!important}.rota b{font-size:25px!important}.rota small{font-size:12px!important;margin-top:3px!important}
+.campos{margin-top:6px!important}.campo{padding:6px 6px 5px!important}.campo b{font-size:17px!important}.campo.inteiro b{font-size:20px!important}
+.gselo{margin-top:3px!important}.gfoto{width:44px!important;height:52px!important;padding:4px!important}.gselo b{font-size:16px!important}.gselo em{font-size:10px!important}
+.c1{top:52px!important;width:80px!important;height:80px!important}
+.picote{height:18px!important}
+.canhoto{padding:2px 16px 10px!important;gap:12px!important}.qr{width:62px!important;height:62px!important}.canhoto p{font-size:10px!important}.canhoto p b{font-size:14px!important}
+.raspa{margin:0 16px 12px!important}.raspa .area{height:44px!important}.raspa .palavra{font-size:22px!important}.raspa small{margin-top:4px!important}
+.embarca{margin-top:12px!important;gap:6px!important}.lacre{width:76px!important;height:76px!important}.rotulo{margin-top:2px!important;font-size:12px!important}
 </style>
 </head><body>
 
