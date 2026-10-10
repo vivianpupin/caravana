@@ -96,10 +96,7 @@ if (pronto) {
   document.head.append(st);
   // quem já entrou neste celular vê o app na hora (como antes); só quem ainda não entrou espera a tela certa
   let jaEntrou = false; try { jaEntrou = localStorage.getItem("cdi-entrou") === "1"; } catch (e) {}
-  // no celular fora do app instalado vem primeiro o passo a passo de instalar: nada do app aparece por trás (senão pisca)
-  const naoInstalado = (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent)))
-    && !(matchMedia("(display-mode: standalone)").matches || navigator.standalone === true) && !window.CARAVANA_NAVEGADOR_INTERNO && location.protocol === "https:";
-  if (!jaEntrou || naoInstalado) document.documentElement.classList.add("espera");
+  if (!jaEntrou) document.documentElement.classList.add("espera");
   // segurança: nunca deixa a tela escura presa (sem internet a conferência pode demorar)
   setTimeout(() => { if (!document.getElementById("portao")) document.documentElement.classList.remove("espera"); }, 5000);
 }
@@ -130,9 +127,6 @@ if (!pronto) {
     return Promise.race([ref.get(), new Promise(r => setTimeout(() => r("demorou"), 6000))]).catch(() => null);
   };
   auth.onAuthStateChanged(async u => {
-    // no celular, fora do app instalado: primeiro o passo a passo para instalar na Tela de Início, mesmo para quem já entrou antes
-    // (o app não abre como página do Safari/Chrome; quem abre pelo ícone segue normalmente)
-    if (precisaInstalar()) return telaInstalar();
     if (!u) return telaLogin();
     const email = String(u.email || "").toLowerCase();
     me = { id: u.uid, name: u.displayName || email.split("@")[0], avatarUrl: u.photoURL || "", email, isOwner: lideres.includes(email) && u.emailVerified };
