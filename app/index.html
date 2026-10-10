@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 08:40";</script>
+<script>window.__VERSAO = "10/10 · 08:47";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -981,16 +981,17 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 /* fotos realistas */
 .estantefoto{position:relative;width:100%;max-width:440px;border-radius:14px;overflow:hidden;aspect-ratio:9/16;margin:0 auto;box-shadow:0 12px 28px rgba(0,0,0,.4)}
 .estantefundo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.prateleirafoto{position:absolute;left:12%;right:12%;height:14%;display:flex;justify-content:space-around;align-items:flex-end}
+.prateleirafoto{position:absolute;left:22%;right:22%;height:15%;display:flex;justify-content:space-around;align-items:flex-end}
 .prateleirafoto .camitem{max-width:46%;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:2px;padding:0;margin:0}
 .prateleirafoto .camdesenho{height:78%;width:auto;max-width:100%;display:flex;align-items:flex-end;justify-content:center}
 .prateleirafoto .camdesenho svg,.prateleirafoto .camfoto img{height:100%;width:auto;max-width:100%;max-height:none;filter:drop-shadow(0 6px 5px rgba(0,0,0,.65))}
-.prateleirafoto .etiqueta{font-size:10px;padding:2px 7px;margin:0}
+.prateleirafoto .etiqueta{font-size:8.5px;line-height:1.2;padding:1px 6px;margin:0;max-width:100%;text-align:center}
 .camfoto img{width:100%;height:auto;max-height:130px;object-fit:contain;filter:drop-shadow(0 8px 6px rgba(0,0,0,.6))}
 .cfitem .camfoto img{max-height:52px}
 .cfcorpo.comfoto{container-type:size;background:#0B0908}
 .cfpalco{position:absolute!important;inset:0;z-index:1!important;overflow:hidden}
 .cfimg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(100cqw,56.25cqh);aspect-ratio:9/16}
+.cffundo{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(18px) brightness(.8)}
 .cfimg>img{position:absolute;inset:0;width:100%;height:100%;display:block}
 .cfjanelafoto{position:absolute!important;border-radius:6px}
 .cfbotaofoto{position:absolute;aspect-ratio:1;border-radius:50%;border:0;background:transparent;cursor:pointer}
@@ -4870,7 +4871,7 @@ const CAMERAS_C = [
 ];
 // fotos realistas (quando estiverem na pasta img/cameras): corpo de perto com o visor, câmera inteira recortada e a estante
 const FOTO_CAM = {
-  rajastao: { visor: [.28, .25, .74, .49], botao: [.50, .81, .19] },
+  rajastao: { visor: [.328, .351, .669, .449], botao: [.498, .560, .07] },
   descartavel: { visor: [.32, .36, .76, .55], botao: [.53, .80, .18] },
   instantanea: { visor: [.35, .31, .64, .47], botao: [.48, .75, .15] },
   super8: { visor: [.19, .26, .87, .42], botao: [.34, .63, .14] },
@@ -4889,7 +4890,7 @@ function vEstante() {
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Registros da Travessia" }))),
     abasFotos(),
     temFoto("img/cameras/estante.jpg") ? h("div", { class: "estantefoto" }, h("img", { src: "img/cameras/estante.jpg", alt: "", class: "estantefundo" }),
-      fil.map((lin, k) => h("div", { class: "prateleirafoto", style: `top:${[18, 37, 56][k]}%` }, lin.map(c => h("button", { type: "button", class: "camitem", onclick: () => escolheCamera(c.id) },
+      fil.map((lin, k) => h("div", { class: "prateleirafoto", style: `top:${[16.8, 34.7, 51.7][k]}%` }, lin.map(c => h("button", { type: "button", class: "camitem", onclick: () => escolheCamera(c.id) },
         imgCam(c), h("span", { class: "etiqueta", text: c.nome })))))) :
     h("div", { class: "estante" }, fil.map(lin => h("div", { class: "prateleira" },
       h("div", { class: "itens" }, lin.map(c => h("button", { type: "button", class: "camitem", onclick: () => escolheCamera(c.id) },
@@ -4955,7 +4956,7 @@ function vCameraFisica(c) {
     c.id === "super8" ? chave("Cine", "TV", F.recorte !== 2.35, () => { S.foto = { ...S.foto, recorte: F.recorte === 2.35 ? 4 / 3 : 2.35 }; montaFoto.img = null; render(); }) : null);
   const fc = FOTO_CAM[c.id], fotoCorpo = fc && temFoto("img/cameras/" + c.id + "-corpo.jpg");
   // com a foto realista: a câmera de perto ocupa a tela, a imagem ao vivo entra no visor da foto e o botão da foto dispara
-  const palco = fotoCorpo ? h("div", { class: "cfpalco", "aria-hidden": "false" }, h("div", { class: "cfimg" },
+  const palco = fotoCorpo ? h("div", { class: "cfpalco", "aria-hidden": "false" }, h("img", { class: "cffundo", src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }), h("div", { class: "cfimg" },
     h("img", { src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }),
     h("div", { class: "cfjanela cfjanelafoto", style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : null,
       c.id === "super8" ? h("span", { class: "cfmira", "aria-hidden": "true" }) : null),
