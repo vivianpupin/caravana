@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 15:30";</script>
+<script>window.__VERSAO = "10/10 · 15:44";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -4235,10 +4235,10 @@ const FILTROS = [
   { id: "cam-campo-vermelho", cat: "Câmeras", nome: "Agra 1900 vermelha", m: [.4, .78, .16, .12, .24, .05, .08, .17, .03], lift: 4, con: 1.32, sat: 1, vin: .72, grao: 28, pelicula: 1 },
   { id: "cam-campo-marrom", cat: "Câmeras", nome: "Agra 1900 marrom", m: [.33, .65, .16, .27, .53, .13, .2, .4, .1], lift: 8, con: 1.24, sat: 1, vin: .75, grao: 28, pelicula: 1 },
   // Delhi 1955: cor de filme dos anos 50 com vida (contraste e cor fortes, como a Durga), em três tons: natural, quente e frio
-  { id: "cam-couro", cat: "Câmeras", nome: "Delhi 1955", m: [1.03, .03, -.01, .02, .99, .01, -.01, .03, .93], lift: 8, con: 1.28, sat: 1.22, split: [[34, 30, 28], [255, 236, 206]], add: [5, 2, -2], vin: .36, grao: 12, pelicula: 1 },
-  { id: "cam-couro-quente", cat: "Câmeras", nome: "Delhi 1955 quente", m: [1.08, .04, -.02, .03, 1, 0, -.03, .02, .84], lift: 8, con: 1.3, sat: 1.28, split: [[50, 26, 12], [255, 226, 180]], add: [14, 5, -12], vin: .38, grao: 12, pelicula: 1 },
-  { id: "cam-couro-frio", cat: "Câmeras", nome: "Delhi 1955 fria", m: [.94, .02, .02, .01, 1, .02, .02, .04, 1.08], lift: 8, con: 1.28, sat: 1.15, split: [[16, 34, 48], [235, 242, 255]], add: [-6, 1, 12], vin: .36, grao: 12, pelicula: 1 },
-  { id: "cam-cine", cat: "Câmeras", nome: "Cine", lift: 10, con: 1.18, sat: .7, split: [[14, 38, 44], [242, 196, 150]], add: [2, 0, 2], vin: .5, grao: 20, pelicula: 1 },
+  { id: "cam-couro", cat: "Câmeras", nome: "Delhi 1955", m: [1.03, .04, -.01, .03, .98, .01, -.01, .04, .88], lift: 16, con: 1.46, sat: 1.06, split: [[52, 36, 22], [255, 230, 190]], add: [9, 3, -10], vin: .46, grao: 16, pelicula: 1 },
+  { id: "cam-couro-quente", cat: "Câmeras", nome: "Delhi 1955 quente", m: [1.08, .04, -.02, .03, 1, 0, -.03, .02, .84], lift: 16, con: 1.48, sat: 1.12, split: [[62, 32, 14], [255, 222, 172]], add: [16, 6, -16], vin: .48, grao: 16, pelicula: 1 },
+  { id: "cam-couro-frio", cat: "Câmeras", nome: "Delhi 1955 fria", m: [.94, .02, .02, .01, 1, .02, .02, .04, 1.08], lift: 16, con: 1.46, sat: .98, split: [[20, 36, 50], [240, 238, 228]], add: [-4, 1, 10], vin: .46, grao: 16, pelicula: 1 },
+  { id: "cam-cine", cat: "Câmeras", nome: "Cine", lift: 10, con: 1.36, sat: .7, split: [[14, 38, 44], [242, 196, 150]], add: [2, 0, 2], vin: .54, grao: 32, pelicula: 1 },
   // estilo de câmera de filme de viagem: um para cada cidade
   { id: "cid-delhi", cat: "Profissionais", nome: "Delhi", lift: 34, con: 0.9, sat: 0.85, add: [22, -4, 4], leak: "rosa", brilho: 0.4, vin: 0.32, grao: 18, pelicula: 1 },
   { id: "cid-agra", cat: "Profissionais", nome: "Agra", lift: 12, con: 1.08, sat: 1.12, split: [[60, 30, 8], [255, 238, 205]], add: [10, 3, -10], vin: 0.25, grao: 10, pelicula: 1 },
@@ -5213,11 +5213,16 @@ const imgCam = (c, naEstante) => { const src = "img/cameras/" + c.id + (naEstant
   if (temFoto(src)) return h("div", { class: "camdesenho camfoto", "aria-hidden": "true" }, h("img", { src, alt: "" }));
   const d = h("div", { class: "camdesenho", "aria-hidden": "true" }); d.innerHTML = c.svg; return d; };
 // estante: tábuas de madeira com as câmeras em cima e uma etiqueta de papel com o nome
+// a foto da maleta e a da carteira são abertas uma vez só e ficam prontas na memória: ao voltar para a aba Maleta a mesma imagem
+// já desenhada volta para a tela (antes cada clique criava uma imagem nova e o iPhone mostrava o fundo vazio por um instante)
+const IMG_FIXA = new Map();
+function imgFixa(src, cls) { let i = IMG_FIXA.get(src); if (!i) { i = new Image(); i.decoding = "sync"; i.alt = ""; i.src = src; if (i.decode) i.decode().catch(() => {}); IMG_FIXA.set(src, i); } i.className = cls; return i; }
+setTimeout(() => { for (const f of ["maleta-foto.jpg", "carteira-foto.jpg"]) if (temFoto("img/cameras/" + f)) imgFixa("img/cameras/" + f, ""); }, 800);
 function vEstante() {
   const mala = (() => { const foto = temFoto("img/cameras/maleta-foto.jpg"), papel = foto || temFoto("img/cameras/mala-papel.webp"), oito = papel || temFoto("img/cameras/mala-oito.webp"), cheia = oito || temFoto("img/cameras/mala-cheia.jpg"), vazia = temFoto("img/cameras/mala.jpg");
       if (!cheia && !vazia) return null;
       const src = foto ? "img/cameras/maleta-foto.jpg" : papel ? "img/cameras/mala-papel.webp" : oito ? "img/cameras/mala-oito.webp" : cheia ? "img/cameras/mala-cheia.jpg" : "img/cameras/mala.jpg", casas = foto ? MALA_FOTO : papel ? MALA_PAPEL : oito ? MALA_OITO : cheia ? MALA_CHEIA : MALA_CASAS;
-      return h("div", { class: "malafoto" + (cheia ? " cheia" : "") + (foto ? " foto" : papel ? " papel" : oito ? " solta" : "") }, h("img", { src, alt: "", class: "estantefundo" }),
+      return h("div", { class: "malafoto" + (cheia ? " cheia" : "") + (foto ? " foto" : papel ? " papel" : oito ? " solta" : "") }, imgFixa(src, "estantefundo"),
         (oito ? CAMERAS_C.filter(c => casas[c.id]) : CAMERAS_C.slice(0, casas.length)).map((c, k) => { const [x0, y0, x1, y1] = oito ? casas[c.id] : casas[k];
           return h("button", { type: "button", class: "namala nm-" + c.id, "aria-label": c.nome, style: `left:${x0 * 100}%;top:${y0 * 100}%;width:${(x1 - x0) * 100}%;height:${(y1 - y0) * 100}%;--giro:${[-3, 2, -1.5, 2.5, -2, 1.5][k] || 0}deg`, onclick: () => escolheCamera(c.id) },
             cheia ? null : imgCam(c)); })); })();
@@ -5276,7 +5281,7 @@ function cliqueSom() { try { const A = window.AudioContext || window.webkitAudio
 const FILME_CAM = { campo: "Placa de vidro · obturador lento · 1900", couro: "Filme 35 mm desbotado · 1955", quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
 function vCameraFisica(c) {
   const F0 = S.foto || (S.foto = fotoDaCamera(c));
-  if (!F0.img && podeCamera() && !S.camFalhou) { const C = iniciaVivo(); S.foto = { ...F0, img: C.frame, vivo: true }; }
+  if (!F0.img && podeCamera() && !S.camFalhou) { const C = iniciaVivo(F0); S.foto = { ...F0, img: C.frame, vivo: true }; }
   const F = S.foto, canvas = S.fotoCanvas || (S.fotoCanvas = h("canvas", { class: "fotocanvas", "aria-label": "Visor da câmera" })), msg = h("p", { class: "msg", role: "status" });
   if (F.img && !F.vivo) requestAnimationFrame(() => montaFoto(canvas).then(() => { if (S.guardarDiario) { S.guardarDiario = false; canvas.toBlob(b => b && guardaNoDiario(b, c).then(() => { if (S.camSel === c.id) render(); }), "image/jpeg", .88); } }).catch(() => {}));
   const flashOn = false; // sem flash em nenhuma câmera
@@ -5639,7 +5644,7 @@ async function guardaNoDiario(blob, c, extra) {
     S.fotosDiario = null; } catch (e) {}
 }
 async function lerDiario() {
-  try { const db = await bancoDiario(); return await new Promise((ok, no) => { const q = db.transaction("fotos").objectStore("fotos").getAll(); q.onsuccess = () => ok(q.result.sort((a, b) => b.ts - a.ts)); q.onerror = () => no(q.error); }); } catch (e) { return []; }
+  try { const db = await bancoDiario(); return await new Promise((ok, no) => { const q = db.transaction("fotos").objectStore("fotos").getAll(); q.onsuccess = () => { const velhos = new Map((S.fotosDiario || []).map(x => [x.id, x])); ok(q.result.map(x => velhos.get(x.id) || x).sort((a, b) => b.ts - a.ts)); }; q.onerror = () => no(q.error); }); } catch (e) { return []; }
 }
 // lê as fotos guardadas logo depois que o app abre, para a aba Fotos não precisar redesenhar quando elas chegam
 setTimeout(() => { if (S.fotosDiario) return; lerDiario().then(l => { if (!S.fotosDiario) { S.fotosDiario = l; S.fotosDiarioPronto = true; } }).catch(() => {}); }, 1500);
@@ -5709,7 +5714,7 @@ function vDiarioViajante() {
     return h("div", { class: "diario diariofotos" },
       h("p", { class: "eyebrow rule", text: "Registros" }),
       h("div", { class: "carteira" + (cfoto ? " foto" : ""), ontouchstart: e => { x0 = e.touches[0].clientX; }, ontouchend: e => { if (x0 == null) return; const d = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(d) > 50) vai(pg + (d < 0 ? 1 : -1)); } },
-        cfoto ? h("img", { src: "img/cameras/carteira-foto.jpg", alt: "", class: "cfundo" }) : null,
+        cfoto ? imgFixa("img/cameras/carteira-foto.jpg", "cfundo") : null,
         (cfoto ? CARTEIRA_FOTO : CARTEIRA_JAN).map(([a, b, c2, d], k) => { const it = l[pg * 4 + k];
           return h("button", { type: "button", class: "cjanela" + (it ? "" : " vazia"), "aria-label": it ? "Abrir foto" : "Espaço vazio", style: `left:${a * 100}%;top:${b * 100}%;width:${(c2 - a) * 100}%;height:${(d - b) * 100}%`, onclick: () => it && verFotos(l.indexOf(it)) }, it ? midia(it) : null); }),
         cfoto ? null : h("img", { src: "img/cameras/carteira.webp", alt: "", class: "cfundo" })),
@@ -5745,13 +5750,17 @@ const iconeFototeca = () => h("svg", { viewBox: "0 0 24 24", width: "20", height
   h("path", { d: "M4.4 18.2 L8.8 14 L11.4 16.4 L13.6 14.4 L16 17.2 L16 18.4 L4.4 18.4 Z", fill: "#C98A73" }));
 const podeCamera = () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 const C0frente = () => !!(S.camEst && S.camEst.frente);
-function iniciaVivo() {
+function iniciaVivo(F0) {
   let C = S.camEst;
   if (!C) {
     C = S.camEst = { frente: false, frame: document.createElement("canvas") };
     C.frame.width = 480; C.frame.height = 640;
     const ant = S.quadroAnterior; S.quadroAnterior = null;
     if (ant && ant.width) { C.frame.width = ant.width; C.frame.height = ant.height; C.frame.getContext("2d").drawImage(ant, 0, 0); C.acordou = true; }
+    else if (S.vivoCru && S.vivoCru.width && F0) { // a última cena da câmera, já com o filtro desta câmera, enquanto a câmera liga
+      try { const q = S.vivoCru, rec = F0.recorte; let sw = q.width, sh = q.height; if (rec) { if (sw / sh > rec) sw = sh * rec; else sh = sw / rec; }
+        C.frame.width = Math.round(sw); C.frame.height = Math.round(sh); const x = C.frame.getContext("2d"); x.drawImage(q, (q.width - sw) / 2, (q.height - sh) / 2, sw, sh, 0, 0, C.frame.width, C.frame.height);
+        const f = FILTROS.find(y => y.id === F0.filtro); if (f) aplicaFiltro(x, C.frame.width, C.frame.height, f, F0.grao || "auto"); C.acordou = true; } catch (e) {} }
     C.video = h("video", { playsinline: true, autoplay: true, muted: true, class: "camvideo" }); C.video.setAttribute("playsinline", ""); C.video.muted = true;
     ligaCam();
   }
@@ -5781,7 +5790,6 @@ async function ligaCam() {
     // se a câmera já foi fechada ou virada de novo enquanto esperava, desliga este fluxo e sai
     if (S.camEst !== C || C.vez !== vez) { guardaFluxo(fluxo, lado); return; }
     C.fluxo = fluxo; C.fluxoFrente = lado; C.video.srcObject = fluxo; await C.video.play(); C.acordou = true; C.vivoDesde = performance.now();
-    setTimeout(() => document.querySelectorAll(".cfligando").forEach(e => e.remove()), 300);
     if (!C.rodando) { C.rodando = true; requestAnimationFrame(quadroCam); }
   } catch (e) { if (S.camEst !== C || C.vez !== vez) return; fechaVivo(); S.camFalhou = true; if (S.foto && S.foto.vivo) S.foto = { ...S.foto, img: null, vivo: false }; render(); }
 }
@@ -5860,7 +5868,11 @@ function quadroCam() {
     // o sorteio do filtro (luz, grão) é sempre o mesmo, para a imagem não piscar
     const rnd = Math.random; let sem = 7; Math.random = () => { sem = (sem * 16807) % 2147483647; return sem / 2147483647; };
     let pr; try { pr = montaFoto(tela); } finally { Math.random = rnd; }
-    Promise.resolve(pr).catch(() => {}).finally(() => { C.ocupado = false; C.quadros = (C.quadros || 0) + 1; });
+    Promise.resolve(pr).catch(() => {}).finally(() => { C.ocupado = false; C.quadros = (C.quadros || 0) + 1;
+      // a imagem de verdade já está no visor: só agora tira o aviso "Ligando a câmera…" (antes ele saía antes e o visor ficava preto um instante)
+      if (C.quadros === 1) document.querySelectorAll(".cfligando").forEach(e => e.remove());
+      // guarda uma cópia pequena da cena para a próxima câmera abrir já com imagem, em vez de preto
+      if (C.quadros % 20 === 1) { try { const q = S.vivoCru || (S.vivoCru = document.createElement("canvas")), r = 360 / Math.max(v.videoWidth, v.videoHeight); q.width = Math.round(v.videoWidth * r); q.height = Math.round(v.videoHeight * r); q.getContext("2d").drawImage(v, 0, 0, q.width, q.height); } catch (e) {} } });
     // sem a placa de vídeo: as miniaturas saem da primeira imagem
     if (!C.primeira && !C.filtrado) { C.primeira = true; S.fotoThumbsDe = null; render(); }
   }
@@ -5873,7 +5885,7 @@ function vFotos() {
   if (S.camSel !== "celular") return vCameraFisica(CAMERAS_C.find(c => c.id === S.camSel) || CAMERAS_C[1]);
   const F0 = S.foto || (S.foto = { filtro: "original", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "original", legenda: "", cidade: "", data: "" });
   // a câmera do celular fotografa em pé (9:16), como as outras câmeras da maleta; foto escolhida da fototeca fica do jeito que é
-  if (!F0.img && podeCamera() && !S.camFalhou) { const C = iniciaVivo(); S.foto = { ...F0, img: C.frame, vivo: true, recorte: 9 / 16 }; }
+  if (!F0.img && podeCamera() && !S.camFalhou) { const C = iniciaVivo({ ...F0, recorte: 9 / 16 }); S.foto = { ...F0, img: C.frame, vivo: true, recorte: 9 / 16 }; }
   const F = S.foto;
   const hoje = hojeIso(), dia = (S.roteiro?.dias || []).find(d => d.iso === hoje);
   if (!F.cidade && !F._auto) { F.cidade = dia ? dia.cidade.split(" ")[0] : ""; F._auto = true; }
