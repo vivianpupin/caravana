@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 14:42";</script>
+<script>window.__VERSAO = "10/10 · 14:44";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -2678,6 +2678,7 @@ function vPassaporte() {
         h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : tituloViajante(g), totalViagens(g) > 1 ? totalViagens(g) + " viagens" : "", g.cidade].filter(Boolean).join(" · ") }), medalhasDe(g, 24)),
         h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null,
     vMinhasHabilidades(), vHabilidadesLider(),
+    vPalavraLider(),
     vGenteLider(),
     S.isOwner || aberto(localDe("travessia")) ? h("button", { class: "folhear video", type: "button", onclick: abrirVideoPassaporte },
       h("span", { class: "vidico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("path", { d: "M8 5.5v13l11-6.5z", fill: "#3B2A1C" }))),
@@ -2875,6 +2876,28 @@ function vHabilidadesLider() {
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: () => { if (confirm("Liberar \"" + nA + "\" para todos?")) darHabilidade(id, gente.map(v => v.id)); } }, "Liberar para todos")));
     })));
+}
+// Só a líder: ver e trocar a palavra-chave que abre o app (fica guardada no Firebase, em privado/acesso)
+function vPalavraLider() {
+  if (!S.isOwner || !noSite() || !S.db) return null;
+  const atual = h("b", { class: "palavraatual", text: S.palavraAtual == null ? "…" : (S.palavraAtual || "(nenhuma)") });
+  if (S.palavraAtual === undefined) { S.palavraAtual = null; S.db.doc("privado/acesso").get().then(d => { S.palavraAtual = d.exists ? String(d.data().palavra || "") : ""; document.querySelectorAll(".palavraatual").forEach(e => { e.textContent = S.palavraAtual || "(nenhuma)"; }); }).catch(() => { S.palavraAtual = undefined; }); }
+  const campo = h("input", { type: "text", id: "nova-palavra", placeholder: "nova palavra-chave", autocomplete: "off", autocapitalize: "none" });
+  const msg = h("p", { class: "msg", role: "status" });
+  const troca = async () => {
+    const nova = campo.value.trim().toLowerCase(); if (!nova) return;
+    if (nova.length < 4) { msg.textContent = "Use pelo menos 4 letras."; msg.className = "msg err"; return; }
+    if (!confirm("Trocar a palavra-chave para \"" + nova + "\"?\n\nQuem já está no app continua dentro. Quem entrar depois usa a palavra nova.")) return;
+    try { await S.db.doc("privado/acesso").set({ palavra: nova, anterior: S.palavraAtual || "", ts: Date.now() }); S.palavraAtual = nova;
+      document.querySelectorAll(".palavraatual").forEach(e => { e.textContent = nova; }); campo.value = ""; msg.textContent = "Pronto. A palavra-chave agora é " + nova + "."; msg.className = "msg ok"; }
+    catch (e) { msg.textContent = "Não consegui trocar. Tente de novo."; msg.className = "msg err"; }
+  };
+  return h("div", { class: "panel" },
+    h("p", { class: "eyebrow", text: "Só você vê · palavra-chave" }),
+    h("h2", null, "Palavra-chave: ", atual),
+    h("p", { class: "small", text: "É a palavra que cada pessoa digita para entrar no app. Use a mesma na página Passagens, para ela aparecer na raspadinha." }),
+    h("div", { class: "unlock" }, campo, h("button", { class: "btn gold", type: "button", onclick: troca }, "Trocar")), msg,
+    h("p", { class: "small" }, h("a", { href: "passagens.html", target: "_blank" }, "Abrir a página Passagens →")));
 }
 // Só a líder: todo mundo da caravana numa tabela só (entrou no app, passaporte, instalado, avisos, localização) e opção de remover
 function vGenteLider() {
