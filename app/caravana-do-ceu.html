@@ -4146,7 +4146,7 @@ function tiraFiltros(F, escolhe) {
   const fonte = (F.vivo && F.thumbSrc) || F.img;
   if (S.fotoThumbsDe !== fonte) { S.fotoThumbs = {}; S.fotoThumbsDe = fonte; }
   // os profissionais logo depois do Original, para aparecerem primeiro
-  const ordem = [FILTROS[0], ...FILTROS.filter(f => f.cat === "Profissionais"), ...FILTROS.slice(1).filter(f => f.cat !== "Festa" && f.cat !== "Profissionais")];
+  const ordem = [FILTROS[0], ...FILTROS.filter(f => f.cat === "Profissionais"), ...FILTROS.slice(1).filter(f => f.cat !== "Festa" && f.cat !== "Profissionais" && f.cat !== "Câmeras")];
   const tira = h("div", { class: "filmstrip", role: "listbox", "aria-label": "Filtros" }, ordem.map(f => {
     let t = S.fotoThumbs[f.id];
     if (!t) {
