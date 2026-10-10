@@ -5568,26 +5568,36 @@ function miniMidia(it, extra) {
   const ic = h("span", { class: "vidplay", "aria-hidden": "true" }); ic.innerHTML = '<svg viewBox="0 0 24 24" width="100%" height="100%"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.45)" stroke="rgba(255,255,255,.85)" stroke-width="1.2"/><path d="M10 8l6 4-6 4z" fill="#fff"/></svg>';
   return h("span", { class: "vidmini" + (extra && extra.class ? " " + extra.class : ""), "data-vid": it.id, "data-cls": (extra && extra.class) || "" }, v, ic);
 }
-// filme antigo sem capa: tira o primeiro quadro uma vez, guarda junto do filme e troca as miniaturas pretas pela imagem
+// filme antigo sem capa: tira o primeiro quadro uma vez, guarda junto do filme e troca as miniaturas pretas pela imagem.
+// No iPhone o vídeo só entrega imagem se estiver na página e tocando (mudo): por isso entra escondido, um de cada vez.
+const filaCapa = []; let fazendoFila = false;
 function fazCapa(it) {
-  if (it.capa || it.fazendoCapa) return; it.fazendoCapa = true;
-  const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "auto"; v.src = it.url;
+  if (it.capa || it.fazendoCapa) return; it.fazendoCapa = true; filaCapa.push(it); if (!fazendoFila) proxCapa();
+}
+function proxCapa() {
+  const it = filaCapa.shift(); if (!it) { fazendoFila = false; return; } fazendoFila = true;
+  const v = document.createElement("video"); v.muted = true; v.defaultMuted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("muted", ""); v.preload = "auto";
+  v.style.cssText = "position:fixed;left:0;top:0;width:2px;height:2px;opacity:.01;pointer-events:none;z-index:-1";
+  document.body.append(v);
   let feito = false;
+  const fim = () => { clearTimeout(desiste); try { v.pause(); v.removeAttribute("src"); v.load(); } catch (x) {} v.remove(); setTimeout(proxCapa, 50); };
+  const desiste = setTimeout(() => { if (!feito) { feito = true; it.fazendoCapa = false; fim(); } }, 6000);
   const tira = () => {
     if (feito || !v.videoWidth) return; feito = true;
     const k = document.createElement("canvas"), e = 640 / Math.max(v.videoWidth, v.videoHeight); k.width = Math.round(v.videoWidth * e); k.height = Math.round(v.videoHeight * e);
-    k.getContext("2d").drawImage(v, 0, 0, k.width, k.height); try { v.pause(); } catch (x) {}
+    try { k.getContext("2d").drawImage(v, 0, 0, k.width, k.height); } catch (x) { fim(); return; }
     k.toBlob(async b => {
-      if (!b) return; it.capa = b;
+      fim(); if (!b) return; it.capa = b;
       try { const db = await bancoDiario(); const t = db.transaction("fotos", "readwrite"); const { url, capaUrl, fazendoCapa, ...guardar } = it; t.objectStore("fotos").put(guardar); } catch (x) {}
       document.querySelectorAll(`[data-vid="${it.id}"]`).forEach(el => el.replaceWith(miniMidia(it, el.dataset.cls ? { class: el.dataset.cls } : null)));
     }, "image/jpeg", .8);
   };
-  v.addEventListener("loadeddata", () => { try { v.currentTime = .1; } catch (x) {} });
-  v.addEventListener("seeked", () => requestAnimationFrame(tira));
-  v.addEventListener("timeupdate", () => { if (v.currentTime > .05) tira(); });
-  // no iPhone o quadro só aparece depois de tocar um instante (mudo)
-  v.play?.().then(() => setTimeout(() => { tira(); }, 200)).catch(() => {});
+  const espera = () => v.requestVideoFrameCallback ? v.requestVideoFrameCallback(() => tira()) : setTimeout(tira, 250);
+  v.addEventListener("playing", espera, { once: true });
+  v.addEventListener("seeked", () => setTimeout(tira, 60));
+  v.addEventListener("loadeddata", () => { if (v.paused) { try { v.currentTime = .15; } catch (x) {} } });
+  v.src = it.url || (it.url = URL.createObjectURL(it.blob));
+  const pl = v.play(); if (pl && pl.catch) pl.catch(() => {});
 }
 async function apagaDoDiario(id) { try { const db = await bancoDiario(); await new Promise(ok => { const t = db.transaction("fotos", "readwrite"); t.objectStore("fotos").delete(id); t.oncomplete = ok; t.onerror = ok; }); } catch (e) {}
   // tira só aquela foto da lista e redesenha só a carteira (ou a miniatura da câmera), sem a tela toda piscar
