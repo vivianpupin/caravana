@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 10:39";</script>
+<script>window.__VERSAO = "10/10 · 10:47";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -955,13 +955,14 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfjanela.pisca::before{content:"";position:absolute;inset:0;z-index:3;background:#000;animation:pisca .22s ease-out forwards}
 @keyframes pisca{from{opacity:1}to{opacity:0}}
 .nomovisor{position:fixed;inset:0;z-index:950;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom))}
-.nvfechar{position:absolute;top:max(12px,env(safe-area-inset-top));left:14px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.08);color:#ddd;font-size:24px;cursor:pointer}
+.nvfechar{position:absolute;z-index:3;top:max(16px,calc(env(safe-area-inset-top) + 8px));left:14px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.08);color:#ddd;font-size:24px;cursor:pointer}
 .nvinfo{position:absolute;top:max(22px,calc(env(safe-area-inset-top) + 10px));left:64px;right:14px;margin:0;font:500 11px "Courier Prime",monospace;color:rgba(255,255,255,.5);text-align:right}
 .nvfoto{position:relative;flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
 .nvfoto img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 .nvseta{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:60px;border:0;background:none;color:rgba(255,255,255,.45);font-size:40px;cursor:pointer}
 .nvseta.e{left:-8px}.nvseta.d{right:-8px}
-.nvbase{display:flex;align-items:center;justify-content:center;gap:46px;padding-top:18px}
+.nvbase{display:flex;align-items:center;justify-content:center;gap:28px;padding-top:18px;position:relative;z-index:3}
+.nvvoltar{border:1px solid rgba(232,192,122,.5);background:rgba(232,192,122,.12);color:#E8C07A;border-radius:999px;padding:9px 14px;font:600 12px Poppins,sans-serif;cursor:pointer}
 .nvcompart{width:62px;height:62px;border:0;border-radius:50%;background:none;color:#8E8E8E;cursor:pointer}
 .nvacao{width:44px;height:44px;border:0;border-radius:50%;background:none;color:#6E6E6E;cursor:pointer}
 .nomovisor .msg{color:#ccc;min-height:1em;margin:6px 0 0}
@@ -1001,11 +1002,17 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfdepois .msg{color:#F1E2BC}
 .cffita{display:flex;gap:6px;overflow-x:auto;padding:10px 12px max(12px,env(safe-area-inset-bottom));background-color:#3A281B;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .45 0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>"),linear-gradient(180deg,#4A3424,#2A1C12);box-shadow:inset 0 3px 8px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,220,170,.08);border-top:1px solid #1A110A;scrollbar-width:none}
 .cffita::-webkit-scrollbar{display:none}
+.cfbaixo{display:flex;align-items:stretch;background-color:#3A281B;background-image:linear-gradient(180deg,#4A3424,#2A1C12);border-top:1px solid #1A110A}
+.cfbaixo .cffita{flex:1;min-width:0;border-top:0}
+.cfbaixo .cfmini{flex:0 0 58px;width:58px;height:58px;align-self:center;margin:0 4px 0 12px;border-radius:6px;padding-bottom:0}
+.cftopovazio{width:40px;flex:0 0 40px}
 .cfitem{flex:0 0 86px;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;padding:2px;cursor:pointer;color:#D9C7A4;font:600 11px Poppins,sans-serif;text-transform:uppercase;letter-spacing:.04em}
 .cfitem .camdesenho{width:70px;height:52px;display:grid;place-items:center;filter:drop-shadow(0 3px 4px rgba(0,0,0,.6))}
 .cfitem .camdesenho svg{max-width:100%;max-height:100%;width:auto;height:auto}
 .cfitem.on span{background:#C7B493;color:#282722;border-radius:999px;padding:2px 9px}
 /* fotos realistas */
+.malafoto.solta{aspect-ratio:883/1358;max-width:400px;overflow:visible;border-radius:0;box-shadow:none}
+.malafoto.solta .estantefundo{filter:drop-shadow(0 18px 22px rgba(40,24,10,.45))}
 .malafoto{position:relative;width:100%;max-width:440px;aspect-ratio:9/16;margin:0 auto;border-radius:14px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.4)}
 .namala{position:absolute;z-index:1;border:0;background:none;padding:6px 6px 14px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .namala:active{background:radial-gradient(ellipse at center,rgba(255,220,160,.18),rgba(255,220,160,0) 70%)}
@@ -1046,7 +1053,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfjanelafoto.invertido{background:#2A2622}
 .cfjanelafoto.inteira .fotocanvas{object-fit:contain!important}
 .cf-couro .cfcontroles{margin-left:auto}
-.cfjanelafoto .fotocanvas{object-fit:contain!important;filter:saturate(.92) contrast(1.04)}
+.cfjanelafoto .fotocanvas{position:absolute;inset:0;width:100%!important;height:100%!important;object-fit:contain!important;filter:saturate(.92) contrast(1.04)}
 /* olhar por dentro do visor: o vidro com reflexo, a borda escura do túnel da ocular e as linhas de enquadramento da câmera */
 .cfjanelafoto::after{background:linear-gradient(155deg,rgba(255,255,255,.16),rgba(255,255,255,.03) 28%,rgba(255,255,255,0) 45%),radial-gradient(ellipse 72% 78% at 50% 50%,rgba(0,0,0,0) 55%,rgba(0,0,0,.55) 88%,rgba(0,0,0,.9) 100%)!important;box-shadow:inset 0 0 0 2px rgba(0,0,0,.85),inset 0 0 18px 4px rgba(0,0,0,.7)}
 .cfvf{position:absolute;inset:0;pointer-events:none;z-index:2}
@@ -1497,7 +1504,7 @@ nav.tabs button{position:relative}
     <button data-tab="conversa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span>Chat</button>
     <button data-tab="cambio"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 8h6M9 10.8h6M10.5 8c2.2 0 3.2 1.2 3.2 2.8S12.7 13.6 10.5 13.6H9.5l4.2 3.4"/></svg></span>Câmbio</button>
     <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
-    <button data-tab="fotos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h3l1.6-2.2h6.8L17 7.5h3a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.8"/><path d="M17.5 10.3h.01"/></svg></span>Câmera</button>
+    <button data-tab="fotos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12.5" rx="1.6"/><path d="M9 7.5V5.6a1.1 1.1 0 0 1 1.1-1.1h3.8A1.1 1.1 0 0 1 15 5.6v1.9"/><path d="M3 12.5h18"/><path d="M7.5 7.5v12.5M16.5 7.5v12.5"/><rect x="10.6" y="11.4" width="2.8" height="2.4" rx=".4"/></svg></span>Maleta</button>
     <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Pedra</button>
     <button data-tab="pombo"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.6c-.3-1.2-.2-2.3.5-2.9l3.1.2-2.4 1.2c-.4.4-.8 1-1.2 1.5z"/><path d="M12 6.6l.1 9.4"/><path d="M12 9.4C9.4 7.2 6.4 6.9 2.8 8.4M12 9.4c2.6-2.2 5.6-2.5 9.2-1M5 8l-.6 2.4M7.4 7.5l-.4 2.6M9.8 8.1l-.3 2.3M19 8l.6 2.4M16.6 7.5l.4 2.6M14.2 8.1l.3 2.3"/><path d="M12.1 16l-3 4.2M12.1 16l.1 4.8M12.1 16l3 4.2"/></svg></span>Pombo</button>
   </nav>
@@ -4954,7 +4961,7 @@ const CAMERAS_C = [
     preset: { filtro: "cam-lomo", moldura: "nenhuma", formato: "original", grao: "auto", recorte: 9 / 16, reels: "preto" },
     svg: `<svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="qcorpo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6E7A5E"/><stop offset=".5" stop-color="#4F5A42"/><stop offset="1" stop-color="#38402E"/></linearGradient><radialGradient id="qvid" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#6E5A9E"/><stop offset=".45" stop-color="#22305A"/><stop offset="1" stop-color="#05070C"/></radialGradient><linearGradient id="qbr" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".15" stop-color="#fff" stop-opacity=".25"/><stop offset=".3" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect x="58" y="4" width="44" height="14" rx="4" fill="#2B2622"/><rect x="24" y="14" width="112" height="180" rx="18" fill="url(#qcorpo)"/><rect x="24" y="14" width="112" height="180" rx="18" fill="url(#qbr)"/><rect x="58" y="26" width="44" height="120" rx="22" fill="#1E2218"/><rect x="62" y="30" width="36" height="112" rx="18" fill="#0E100B"/><circle cx="80" cy="46" r="11" fill="#222"/><circle cx="80" cy="46" r="8" fill="url(#qvid)"/><circle cx="77" cy="43" r="2.4" fill="#fff" opacity=".7"/><circle cx="80" cy="72" r="11" fill="#222"/><circle cx="80" cy="72" r="8" fill="url(#qvid)"/><circle cx="77" cy="69" r="2.4" fill="#fff" opacity=".7"/><circle cx="80" cy="98" r="11" fill="#222"/><circle cx="80" cy="98" r="8" fill="url(#qvid)"/><circle cx="77" cy="95" r="2.4" fill="#fff" opacity=".7"/><circle cx="80" cy="124" r="11" fill="#222"/><circle cx="80" cy="124" r="8" fill="url(#qvid)"/><circle cx="77" cy="121" r="2.4" fill="#fff" opacity=".7"/><circle cx="80" cy="170" r="14" fill="#151513"/><circle cx="80" cy="170" r="10" fill="#2A2A26"/><text x="38" y="62" font-family="monospace" font-weight="700" font-size="13" fill="#3A4230">1</text><text x="38" y="88" font-family="monospace" font-weight="700" font-size="13" fill="#3A4230">2</text><text x="38" y="114" font-family="monospace" font-weight="700" font-size="13" fill="#3A4230">3</text><text x="38" y="140" font-family="monospace" font-weight="700" font-size="13" fill="#3A4230">4</text><image href="img/simbolo-dourado.png" x="106" y="40" width="22" height="22"/></svg>` },
   { id: "super8", nome: "Super 8 do Ganges", frase: "Filmadora antiga: película, luz vazando e furinhos do filme.",
-    preset: { filtro: "cam-cine", moldura: "nenhuma", recorte: 4 / 3, formato: "original", grao: "auto", reels: "preto" },
+    preset: { filtro: "cam-cine", moldura: "nenhuma", recorte: 9 / 16, formato: "original", grao: "auto", reels: "preto" },
     svg: `<svg viewBox="0 0 240 170" xmlns="http://www.w3.org/2000/svg"><defs> <linearGradient id="s8corpo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6A5242"/><stop offset=".2" stop-color="#4A382C"/><stop offset="1" stop-color="#241A14"/></linearGradient> <linearGradient id="s8metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EDEAE4"/><stop offset=".5" stop-color="#A9A59E"/><stop offset="1" stop-color="#6E6A64"/></linearGradient> <linearGradient id="s8cano" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4440"/><stop offset=".45" stop-color="#1E1B19"/><stop offset="1" stop-color="#0A0908"/></linearGradient> <radialGradient id="s8ouro" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#FFE7A3"/><stop offset=".6" stop-color="#D9A53A"/><stop offset="1" stop-color="#8A6420"/></radialGradient> <pattern id="s8couro" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#1E1B18"/><path d="M0 1.5h2M3 4.5h2.5M1 3.2h1M4 .8h1.5" stroke="#2E2A26" stroke-width="1.1" stroke-linecap="round"/><circle cx="5" cy="3" r=".6" fill="#0F0D0B"/></pattern></defs> <path d="M140 104 L172 104 L162 160 Q160 166 154 166 L136 166 Q130 166 131 160 Z" fill="url(#s8cano)"/> <path d="M141 112 L166 112 L163 128 L139 128 Z" fill="url(#s8couro)" opacity=".9"/> <circle cx="153" cy="118" r="5.5" fill="#B8432F"/><circle cx="151.5" cy="116.5" r="1.8" fill="#fff" opacity=".45"/> <rect x="172" y="20" width="54" height="26" rx="7" fill="url(#s8cano)"/><rect x="216" y="25" width="12" height="16" rx="3" fill="#2E3A44"/><rect x="218" y="27" width="5" height="12" fill="#9FC0D4" opacity=".4"/> <rect x="62" y="34" width="150" height="74" rx="12" fill="url(#s8corpo)"/> <rect x="62" y="34" width="150" height="8" rx="4" fill="#fff" opacity=".12"/> <rect x="72" y="58" width="130" height="40" rx="6" fill="url(#s8couro)"/> <rect x="22" y="44" width="48" height="56" rx="8" fill="url(#s8cano)"/> <rect x="10" y="48" width="16" height="48" rx="6" fill="url(#s8metal)"/> <defs> <radialGradient id="s8vid" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#6E5A9E"/><stop offset=".35" stop-color="#2B3A6A"/><stop offset=".7" stop-color="#0E1424"/><stop offset="1" stop-color="#05070C"/></radialGradient> <radialGradient id="s8cob" cx="65%" cy="70%" r="45%"><stop offset="0" stop-color="#7FE0B8" stop-opacity=".55"/><stop offset="1" stop-color="#7FE0B8" stop-opacity="0"/></radialGradient> <linearGradient id="s8aro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E6E2DA"/><stop offset=".5" stop-color="#9C978F"/><stop offset="1" stop-color="#55524D"/></linearGradient> <linearGradient id="s8aro2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2A2A2A"/><stop offset="1" stop-color="#0A0A0A"/></linearGradient> </defs> <circle cx="18" cy="73.2" r="20.8" fill="rgba(0,0,0,.35)"/> <circle cx="18" cy="72" r="20" fill="url(#s8aro)"/> <circle cx="18" cy="72" r="18.6" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="1" stroke-dasharray="0.8 0.8"/> <circle cx="18" cy="72" r="16.4" fill="url(#s8aro2)"/> <circle cx="18" cy="72" r="14.8" fill="#151515" stroke="#3A3A3A" stroke-width="0.4"/> <circle cx="18" cy="72" r="12.4" fill="url(#s8vid)"/> <circle cx="18" cy="72" r="12.4" fill="url(#s8cob)"/> <circle cx="18" cy="72" r="6" fill="#05070C" opacity=".75"/> <ellipse cx="14" cy="67" rx="3.5999999999999996" ry="2" fill="#fff" opacity=".75" transform="rotate(-35 14 67)"/> <circle cx="22.4" cy="76" r="1" fill="#fff" opacity=".5"/> <path d="M6.4 72 A 11.6 11.6 0 0 1 18 60.4" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="0.8"/> <circle cx="108" cy="72" r="17" fill="url(#s8ouro)"/><circle cx="108" cy="72" r="17" fill="none" stroke="#6E4E18" stroke-width="1.2"/> <text x="108" y="80" font-family="Cinzel,Georgia,serif" font-weight="700" font-size="21" fill="#3A2C22" text-anchor="middle">8</text> <text x="137" y="51" font-family="Cinzel,Georgia,serif" font-size="8.5" font-weight="600" fill="#E8D9A8" text-anchor="middle" letter-spacing="1.4">SUPER 8 DO GANGES</text> <image href="img/simbolo-dourado.png" x="160" y="62" width="30" height="30"/> </svg>` },
   { id: "campo", nome: "Agra 1900", frase: "Câmera de campo de madeira e latão, de placa de vidro. Sépia de 1900.",
     preset: { filtro: "cam-campo", moldura: "nenhuma", recorte: 9 / 16, formato: "original", grao: "auto", reels: "preto" },
@@ -4978,8 +4985,7 @@ const FOTO_CAM = {
 // compartimentos da mala (fração da imagem): 3 colunas × 2 fileiras
 const MALA_CASAS = [[.155, .41, .35, .545], [.39, .41, .605, .545], [.635, .41, .86, .545], [.135, .575, .345, .725], [.38, .575, .62, .725], [.645, .575, .88, .725]];
 // mala de 8 (4 colunas × 2 fileiras): ajustar quando a foto chegar
-const MALA_OITO = { celular: [.117, .41, .307, .548], rajastao: [.312, .41, .487, .548], descartavel: [.493, .41, .678, .548], campo: [.683, .41, .879, .548],
-  instantanea: [.095, .56, .307, .726], quatro: [.312, .56, .487, .726], super8: [.493, .56, .678, .726], couro: [.683, .56, .879, .726] };
+const MALA_OITO = { celular: [0.091, 0.389, 0.294, 0.560], rajastao: [0.300, 0.389, 0.487, 0.560], descartavel: [0.493, 0.389, 0.691, 0.560], campo: [0.696, 0.389, 0.906, 0.560], instantanea: [0.068, 0.575, 0.294, 0.780], quatro: [0.300, 0.575, 0.487, 0.780], super8: [0.493, 0.575, 0.691, 0.780], couro: [0.696, 0.575, 0.906, 0.780] };
 const MALA_CHEIA = [[.159, .403, .365, .548], [.376, .403, .614, .548], [.625, .403, .869, .548], [.122, .565, .36, .729], [.371, .565, .625, .729], [.636, .565, .89, .729]];
 const fotoOk = S.fotoOk = {};
 // confere uma vez se cada imagem já existe; se existir, a tela passa a usar a foto
@@ -4990,16 +4996,16 @@ const imgCam = (c, naEstante) => { const src = "img/cameras/" + c.id + (naEstant
   const d = h("div", { class: "camdesenho", "aria-hidden": "true" }); d.innerHTML = c.svg; return d; };
 // estante: tábuas de madeira com as câmeras em cima e uma etiqueta de papel com o nome
 function vEstante() {
-  const mala = (() => { const oito = temFoto("img/cameras/mala-oito.jpg"), cheia = oito || temFoto("img/cameras/mala-cheia.jpg"), vazia = temFoto("img/cameras/mala.jpg");
+  const mala = (() => { const oito = temFoto("img/cameras/mala-oito.webp"), cheia = oito || temFoto("img/cameras/mala-cheia.jpg"), vazia = temFoto("img/cameras/mala.jpg");
       if (!cheia && !vazia) return null;
-      const src = oito ? "img/cameras/mala-oito.jpg" : cheia ? "img/cameras/mala-cheia.jpg" : "img/cameras/mala.jpg", casas = oito ? MALA_OITO : cheia ? MALA_CHEIA : MALA_CASAS;
-      return h("div", { class: "malafoto" + (cheia ? " cheia" : "") }, h("img", { src, alt: "", class: "estantefundo" }),
+      const src = oito ? "img/cameras/mala-oito.webp" : cheia ? "img/cameras/mala-cheia.jpg" : "img/cameras/mala.jpg", casas = oito ? MALA_OITO : cheia ? MALA_CHEIA : MALA_CASAS;
+      return h("div", { class: "malafoto" + (cheia ? " cheia" : "") + (oito ? " solta" : "") }, h("img", { src, alt: "", class: "estantefundo" }),
         (oito ? CAMERAS_C.filter(c => casas[c.id]) : CAMERAS_C.slice(0, casas.length)).map((c, k) => { const [x0, y0, x1, y1] = oito ? casas[c.id] : casas[k];
           return h("button", { type: "button", class: "namala nm-" + c.id, "aria-label": c.nome, style: `left:${x0 * 100}%;top:${y0 * 100}%;width:${(x1 - x0) * 100}%;height:${(y1 - y0) * 100}%;--giro:${[-3, 2, -1.5, 2.5, -2, 1.5][k] || 0}deg`, onclick: () => escolheCamera(c.id) },
             cheia ? null : imgCam(c)); })); })();
   const fil = [CAMERAS_C.slice(0, 2), CAMERAS_C.slice(2, 4), CAMERAS_C.slice(4)];
   return h("section", { class: "view" },
-    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Registros da Travessia" }))),
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Arsenal de Travessia" }), h("h1", { text: "Escolha sua câmera" }))),
     abasFotos(),
     // a caravana está em movimento: as câmeras viajam numa mala de couro aberta sobre a areia, cada uma no seu compartimento
     // mala-cheia.jpg: a foto já com as câmeras dentro (geradas juntas, sem recorte); aí os botões ficam invisíveis por cima de cada compartimento
@@ -5104,7 +5110,7 @@ function vCameraFisica(c) {
     h("div", { class: "cftopo" },
       h("button", { type: "button", class: "cfsair", "aria-label": "Voltar para a estante", onclick: voltaEstante }, "×"),
       h("span", { class: "cfmarca" }, h("img", { src: "img/simbolo-dourado.png", alt: "" }), h("span", null, h("b", { text: c.nome }), h("small", { text: FILME_CAM[c.id] || "" }))),
-      miniatura),
+      h("span", { class: "cftopovazio" })),
     fotoCorpo ? h("div", { class: "cfvisor" }) : visor,
     F.vivo ? h("div", { class: "cfbase" }, controles, fotoCorpo ? h("span") : obturador)
       : !F.img ? null : h("div", { class: "cfdepois" },
@@ -5123,7 +5129,8 @@ function vCameraFisica(c) {
   // a câmera inteira, vista de trás: corpo com cantos e bordas à mostra, botões em cima, alças dos lados
   const pecas = { rajastao: ["cfrebob", "cfvelo", "cfalca e", "cfalca d"], descartavel: ["cfroda"], instantanea: [], super8: ["cfalca e", "cfalca d"], quatro: ["cfalca e"] }[c.id] || [];
   const caixa = h("div", { class: "cfcaixa cx-" + c.id + (fotoCorpo ? " comfoto" : "") }, pecas.map(k => h("span", { class: k, "aria-hidden": "true" })), corpo);
-  return h("section", { class: "camfull" }, caixa, fita);
+  // a última foto fica no começo da faixa de baixo, fora da câmera, para não atrapalhar o visor
+  return h("section", { class: "camfull" }, caixa, h("div", { class: "cfbaixo" }, miniatura, fita));
 }
 function piscaVisor() { const j = document.querySelector(".cfjanela"); if (!j) return; j.classList.remove("pisca"); void j.offsetWidth; j.classList.add("pisca"); }
 // revela a foto com o filtro e a moldura da câmera, carimba a marca da Caravana e guarda no Diário de Viajante
@@ -5185,7 +5192,8 @@ async function marcaCaravana(cv, g) {
   const x = G.ox + 34 * u, y = G.oy + G.hh - 30 * u, img = await carregaImg("img/simbolo-dourado.png").catch(() => null);
   const desenha = im => { c.save(); c.globalAlpha = .9; c.shadowColor = "rgba(0,0,0,.55)"; c.shadowBlur = 6 * u;
     if (im) c.drawImage(im, x + 30 * u, y - 70 * u, 62 * u, 62 * u * im.height / im.width);
-    c.translate(x + 12 * u, y); c.rotate(-Math.PI / 2); c.fillStyle = "#F1E2BC"; c.font = `700 ${19 * u}px Poppins, sans-serif`; c.textBaseline = "alphabetic"; c.fillText("CARAVANA", 0, 0); c.restore(); };
+    // o nome deitado, no canto de baixo à esquerda; o símbolo fica onde estava
+    c.fillStyle = "#F1E2BC"; c.font = `700 ${19 * u}px Poppins, sans-serif`; c.textBaseline = "alphabetic"; c.letterSpacing = `${3 * u}px`; c.fillText("CARAVANA", x, y + 10 * u); c.restore(); };
   desenha(img);
 }
 // visor de fotos em tela preta, como a NOMO: a foto no meio, a marquinha no canto e a seta de compartilhar embaixo
@@ -5216,6 +5224,7 @@ function verFotos(i) {
       i > 0 ? h("button", { type: "button", class: "nvseta e", "aria-label": "Foto anterior", onclick: () => verFotos(i - 1) }, "‹") : null,
       i < l.length - 1 ? h("button", { type: "button", class: "nvseta d", "aria-label": "Próxima foto", onclick: () => verFotos(i + 1) }, "›") : null),
     h("div", { class: "nvbase" },
+      h("button", { type: "button", class: "nvvoltar", onclick: () => tela.remove() }, "← Câmera"),
       h("button", { type: "button", class: "nvacao", "aria-label": "Apagar", onclick: () => { if (confirm("Apagar esta foto?")) { tela.remove(); apagaDoDiario(it.id); } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("path", { d: "M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" }))),
       h("button", { type: "button", class: "nvcompart", "aria-label": "Compartilhar ou salvar", onclick: compartilhar }, h("svg", { viewBox: "0 0 24 24", width: "34", height: "34", fill: "currentColor" }, h("path", { d: "M14 5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11V5z" }))),
       h("button", { type: "button", class: "nvacao", "aria-label": "Enviar para a Galeria da Caravana", onclick: async () => {
@@ -5286,15 +5295,26 @@ function iniciaVivo() {
   }
   return C;
 }
-function paraCam() { const C = S.camEst; if (C && C.fluxo) { C.fluxo.getTracks().forEach(t => t.stop()); C.fluxo = null; } }
+// a câmera do celular não é desligada na hora: fica guardada por 2 minutos, assim trocar de câmera ou voltar não pede permissão de novo
+function guardaFluxo(fluxo, frente) {
+  const G = S.fluxoGuardado; if (G && G.fluxo !== fluxo) { G.fluxo.getTracks().forEach(t => t.stop()); clearTimeout(G.t); }
+  S.fluxoGuardado = { fluxo, frente, t: setTimeout(() => { if (S.fluxoGuardado && S.fluxoGuardado.fluxo === fluxo) { fluxo.getTracks().forEach(t => t.stop()); S.fluxoGuardado = null; } }, 120000) };
+}
+function pegaFluxoGuardado(frente) {
+  const G = S.fluxoGuardado; if (!G) return null;
+  if (G.frente !== frente || !G.fluxo.getVideoTracks().some(t => t.readyState === "live")) { G.fluxo.getTracks().forEach(t => t.stop()); clearTimeout(G.t); S.fluxoGuardado = null; return null; }
+  clearTimeout(G.t); S.fluxoGuardado = null; return G.fluxo;
+}
+document.addEventListener("visibilitychange", () => { const G = S.fluxoGuardado; if (document.hidden && G) { G.fluxo.getTracks().forEach(t => t.stop()); clearTimeout(G.t); S.fluxoGuardado = null; } });
+function paraCam() { const C = S.camEst; if (C && C.fluxo) { guardaFluxo(C.fluxo, !!C.frente); C.fluxo = null; } }
 function fechaVivo() { paraCam(); if (S.camEst) S.camEst.rodando = false; S.camEst = null; }
 async function ligaCam() {
   const C = S.camEst; if (!C) return; paraCam();
   const vez = C.vez = (C.vez || 0) + 1;
   try {
-    const fluxo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: C.frente ? "user" : "environment", width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false });
+    const fluxo = pegaFluxoGuardado(!!C.frente) || await navigator.mediaDevices.getUserMedia({ video: { facingMode: C.frente ? "user" : "environment", width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false });
     // se a câmera já foi fechada ou virada de novo enquanto esperava, desliga este fluxo e sai
-    if (S.camEst !== C || C.vez !== vez) { fluxo.getTracks().forEach(t => t.stop()); return; }
+    if (S.camEst !== C || C.vez !== vez) { guardaFluxo(fluxo, !!C.frente); return; }
     C.fluxo = fluxo; C.video.srcObject = fluxo; await C.video.play();
     if (!C.rodando) { C.rodando = true; requestAnimationFrame(quadroCam); }
   } catch (e) { if (S.camEst !== C || C.vez !== vez) return; fechaVivo(); S.camFalhou = true; if (S.foto && S.foto.vivo) S.foto = { ...S.foto, img: null, vivo: false }; render(); }
