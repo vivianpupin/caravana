@@ -125,6 +125,13 @@ body{padding-top:max(10px,env(safe-area-inset-top))!important;padding-bottom:max
 .canhoto{padding:2px 16px 10px!important;gap:12px!important}.qr{width:62px!important;height:62px!important}.canhoto p{font-size:10px!important}.canhoto p b{font-size:14px!important}
 .raspa{margin:0 16px 12px!important}.raspa .area{height:44px!important}.raspa .palavra{font-size:22px!important}.raspa small{margin-top:4px!important}
 .embarca{margin-top:12px!important;gap:6px!important}.lacre{width:76px!important;height:76px!important}.rotulo{margin-top:2px!important;font-size:12px!important}
+/* o bilhete ocupa o centro da tela, um pouco maior; o lacre fica embaixo; tudo numa tela só, sem rolar */
+body{min-height:100vh;min-height:100dvh;justify-content:space-between;gap:10px}
+.bilhete{margin:auto 0;max-width:400px!important}
+.embarca{margin-top:0!important}
+@media (min-height:700px){.corpo{padding:12px 18px 4px!important}.rota b{font-size:28px!important}.campo{padding:8px 6px 7px!important}.campo.inteiro b{font-size:22px!important}
+  .gfoto{width:48px!important;height:57px!important}.qr{width:70px!important;height:70px!important}.raspa .area{height:50px!important}.faixa{padding:12px 14px 11px!important}.medalha{width:52px!important;height:52px!important}}
+@media (min-height:780px){.rota b{font-size:30px!important}.campo b{font-size:19px!important}.campo.inteiro b{font-size:24px!important}.campo{padding:10px 6px 9px!important}.picote{height:22px!important}.canhoto{padding:4px 18px 14px!important}}
 </style>
 </head><body>
 
