@@ -106,6 +106,7 @@ const css = `
 `;
 let tituloPortao = "Travessia da<br>Índia Sagrada";
 function portao(...kids) {
+  window.__tiraVeu?.(); // a tela de entrar/instalar já cobre tudo: o véu de abertura sai
   let el = document.getElementById("portao");
   if (!el) { const st = document.createElement("style"); st.textContent = css; document.head.append(st); el = document.createElement("div"); el.id = "portao"; document.body.append(el); }
   const cx = document.createElement("div"); cx.className = "cx";
@@ -275,7 +276,7 @@ function telaInstalar() {
   document.head.append(st);
   const d = document.createElement("div"); d.id = "bvinst";
   d.innerHTML = '<img class="s" src="img/simbolo-dourado.png" alt=""><small>Caravana do Céu</small><h1>Bem-vindo ao aplicativo<br>da Caravana do Céu</h1><div class="fio"></div><p>Aqui inicia a sua travessia.</p><button type="button" aria-label="Embarcar"></button><b class="r">EMBARCAR</b>';
-  document.body.append(d); document.documentElement.classList.remove("espera");
+  document.body.append(d); document.documentElement.classList.remove("espera"); window.__tiraVeu?.();
   d.querySelector("button").onclick = () => {
     try { sessionStorage.setItem("cdi-bv-inst", "1"); } catch (e) {}
     if (navigator.vibrate) navigator.vibrate(25);

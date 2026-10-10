@@ -17,8 +17,25 @@ head = """<!doctype html>
 <script>window.__VERSAO = "%s";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
-<style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
+<style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
+/* véu de abertura: cobre o app nos primeiros instantes, enquanto ele decide o que mostrar (boas-vindas, abertura do dia, permissões, cartas);
+   assim nenhuma tela aparece "por cima" do app já aberto, nada pisca */
+#veu{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;background:#120E0A url(img/bilhete-textura.jpg) center/cover;transition:opacity .45s ease}
+#veu img{width:58px;opacity:.9;animation:veupulsa 1.6s ease-in-out infinite}
+#veu.sai{opacity:0;pointer-events:none}
+@keyframes veupulsa{50%{opacity:.45;transform:scale(.96)}}
+</style>
 </head><body>
+<div id="veu" aria-hidden="true"><img src="img/simbolo-dourado.png" alt=""></div>
+<script>
+// tira o véu quando o app já abriu e as telas de início (boas-vindas, abertura, avisos) já tiveram tempo de entrar; nunca fica mais de 6 s
+(function () {
+  let foi = false; const t0 = Date.now();
+  window.__tiraVeu = function () { if (foi) return; foi = true; const v = document.getElementById("veu"); if (!v) return; v.classList.add("sai"); setTimeout(function () { v.remove(); }, 500); };
+  window.__veuPronto = function () { setTimeout(window.__tiraVeu, Math.max(1300, 2000 - (Date.now() - t0))); };
+  setTimeout(window.__tiraVeu, 6000);
+})();
+</script>
 """
 tail = """
 <script>

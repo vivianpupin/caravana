@@ -7,11 +7,28 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 15:19";</script>
+<script>window.__VERSAO = "10/10 · 15:20";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
-<style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
+<style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
+/* véu de abertura: cobre o app nos primeiros instantes, enquanto ele decide o que mostrar (boas-vindas, abertura do dia, permissões, cartas);
+   assim nenhuma tela aparece "por cima" do app já aberto, nada pisca */
+#veu{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;background:#120E0A url(img/bilhete-textura.jpg) center/cover;transition:opacity .45s ease}
+#veu img{width:58px;opacity:.9;animation:veupulsa 1.6s ease-in-out infinite}
+#veu.sai{opacity:0;pointer-events:none}
+@keyframes veupulsa{50%{opacity:.45;transform:scale(.96)}}
+</style>
 </head><body>
+<div id="veu" aria-hidden="true"><img src="img/simbolo-dourado.png" alt=""></div>
+<script>
+// tira o véu quando o app já abriu e as telas de início (boas-vindas, abertura, avisos) já tiveram tempo de entrar; nunca fica mais de 6 s
+(function () {
+  let foi = false; const t0 = Date.now();
+  window.__tiraVeu = function () { if (foi) return; foi = true; const v = document.getElementById("veu"); if (!v) return; v.classList.add("sai"); setTimeout(function () { v.remove(); }, 500); };
+  window.__veuPronto = function () { setTimeout(window.__tiraVeu, Math.max(1300, 2000 - (Date.now() - t0))); };
+  setTimeout(window.__tiraVeu, 6000);
+})();
+</script>
 <title>Caravana Índia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -7930,6 +7947,7 @@ function listen(col, key, q, after) {
   (q || S.db.collection(col)).onSnapshot(snap => {
     S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() })); if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = ajustaSaberes(S.ens); guardaCache(key);
     S.dbReady = true; if (after) after(); if (key === "chat") marcaChat();
+    if (!S.veuAvisado) { S.veuAvisado = true; window.__veuPronto?.(); } // primeiros dados chegaram: o véu de abertura sai logo depois
     // aviso novo da líder: redesenha qualquer aba para ele aparecer em destaque na hora
     let avisoNovo = false;
     if (key === "chat") { const av = avisoAtual(); if (av && avisoEmDestaque(av) && S.avisoVisto !== av.id) { S.avisoVisto = av.id; avisoNovo = !primeira; } }
@@ -7976,7 +7994,7 @@ render();
       vProntos.then(decide); setTimeout(decide, 6000);
     } else { vProntos.then(libera); setTimeout(libera, 5000); }
   }
-  if (!db) { S.dbReady = true; render(); return; }
+  if (!db) { S.dbReady = true; render(); window.__veuPronto?.(); return; }
   listen("cidades", "cidades"); listen("locais", "locais"); listen("ensinamentos", "ens");
   listen("viajantes", "viajantes", null, () => {
     S.vReady = true;
