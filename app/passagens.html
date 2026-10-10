@@ -29,13 +29,13 @@ button.claro{background:transparent;color:#E2C08A;box-shadow:inset 0 0 0 1px rgb
 </style>
 </head><body><main>
 <h1>Passagens da Caravana</h1>
-<p class="sub">Escreva uma pessoa por linha: nome e número do passaporte, separados por vírgula. Se quiser um assento diferente do número, ponha um terceiro número.</p>
+<p class="sub">Escreva uma pessoa por linha: nome e número do passaporte, separados por vírgula. Se quiser escolher o guardião da pessoa, ponha o nome dele depois (Ganesha, Hanuman, Lakshmi, Shiva, Durga, Saraswati, Krishna, Ganga, Parvati, Vishnu, Surya, Kali, Brahma). Sem guardião, ele é sorteado pelo número.</p>
 <label for="pal">Palavra-chave</label>
 <input id="pal" type="text" autocomplete="off" autocapitalize="none" placeholder="a palavra que abre o app">
 <p class="dica">Ela vai escondida em cada passagem, na raspadinha do canhoto. Fica guardada só neste celular.</p>
 <label for="nomes">Viajantes</label>
-<textarea id="nomes" placeholder="Ana Paula, 7&#10;João Pedro, 3&#10;Mariana, 12, 21"></textarea>
-<p class="dica">Exemplo: “Ana Paula, 7” gera a passagem Nº 07, assento 07.</p>
+<textarea id="nomes" placeholder="Ana Paula, 7&#10;João Pedro, 3, Hanuman&#10;Mariana, 12"></textarea>
+<p class="dica">Exemplo: “João Pedro, 3, Hanuman” gera a passagem Nº 03 com Hanuman de guardião.</p>
 <button id="gerar" type="button">Gerar passagens</button>
 <div class="lista" id="lista"></div>
 </main>
@@ -53,11 +53,11 @@ function gera() {
   lista.textContent = "";
   for (const linha of campo.value.split("\n")) {
     const [nome, num, ass] = linha.split(",").map(x => (x || "").trim()); if (!nome) continue;
-    const n = (num || "").replace(/\D/g, ""), a = (ass || "").replace(/\D/g, "");
-    const link = BASE + "/embarque/" + slug(nome).replace(/[\/?#%&]/g, "") + (n ? "/" + n.padStart(2, "0") : "") + (a ? "/" + a.padStart(2, "0") : "") + (pal.value.trim() ? "#k=" + esconde(pal.value) : "");
+    const n = (num || "").replace(/\D/g, ""), a = (ass || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, "");
+    const link = BASE + "/embarque/" + slug(nome).replace(/[\/?#%&]/g, "") + (n ? "/" + n.padStart(2, "0") : "") + (a ? "/" + a : "") + (pal.value.trim() ? "#k=" + esconde(pal.value) : "");
     const msg = nome.split(" ")[0] + ", sua passagem para a Índia chegou ✈️\n" + link;
     const it = document.createElement("div"); it.className = "item";
-    const t = document.createElement("b"); t.textContent = nome + (n ? " · Nº " + n.padStart(2, "0") : "");
+    const t = document.createElement("b"); t.textContent = nome + (n ? " · Nº " + n.padStart(2, "0") : "") + (a ? " · " + a.charAt(0).toUpperCase() + a.slice(1) : "");
     const pre = document.createElement("pre"); pre.textContent = msg;
     const ac = document.createElement("div"); ac.className = "acoes";
     const b1 = document.createElement("button"); b1.type = "button"; b1.textContent = "Copiar mensagem"; b1.onclick = () => copia(msg, b1);
