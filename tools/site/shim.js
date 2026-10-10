@@ -74,6 +74,11 @@ const css = `
 #portao .cel.and .dlg .top b{color:#1a73e8}
 @keyframes folhaA{0.0%,18.3%{transform:scale(0)}21.7%,46.1%{transform:scale(1)}47.8%,100.0%{transform:scale(0)}}
 @keyframes dedoA{0.0%{left:50%;top:55%;opacity:0}2.2%,8.3%{left:50%;top:55%;opacity:1;transform:scale(1)}14.4%{left:calc(100% - 34px);top:4px;transform:scale(1)}16.1%{transform:scale(.7)}17.8%,25.6%{left:calc(100% - 34px);top:4px;transform:scale(1)}32.2%{left:48%;top:70px;transform:scale(1)}33.9%{transform:scale(.7)}35.6%,48.9%{left:48%;top:70px;transform:scale(1)}55.6%{left:calc(100% - 36px);top:4px;transform:scale(1)}57.2%{transform:scale(.7)}58.9%,72.2%{left:calc(100% - 36px);top:4px;transform:scale(1)}78.9%{left:calc(50% - 13px);top:61px;transform:scale(1)}80.6%{transform:scale(.7)}82.2%{left:calc(50% - 13px);top:61px;transform:scale(1);opacity:1}87.8%,100.0%{left:calc(50% - 13px);top:61px;opacity:0}}
+#portao [hidden]{display:none!important}
+#portao.inst{overflow-y:auto;-webkit-overflow-scrolling:touch;place-items:start center}
+#portao .rolar{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;background:#3F4938;color:#F6EDDA;font:600 13px Poppins,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.35);cursor:pointer;animation:rolpulo 1.4s ease-in-out infinite;transition:opacity .3s}
+#portao .rolar.some{opacity:0;pointer-events:none}
+@keyframes rolpulo{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,5px)}}
 #portao .abas{display:flex;gap:6px;background:#E9DEC8;border-radius:999px;padding:4px;width:100%}
 #portao .abas .aba{flex:1;justify-content:center;padding:9px 10px;background:transparent;color:#6B5A43;font-size:14px}
 #portao .abas .aba.on{background:#3F4938;color:#F6EDDA}
@@ -309,7 +314,12 @@ function passosInstalar() {
   abaI.onclick = () => mostra("ios"); abaA.onclick = () => mostra("and");
   portao(el("p", { id: "instalar", className: "como", textContent: "Como instalar o aplicativo" }), el("div", { className: "abas" }, abaI, abaA), celI, celA, ios, and, ja);
   mostra(android ? "and" : "ios");
-  document.getElementById("portao").classList.add("inst");
+  const pt = document.getElementById("portao"); pt.classList.add("inst");
+  // a página é maior que a tela: um botão "role para baixo" até a pessoa chegar no fim
+  const rol = el("button", { type: "button", className: "rolar", onclick: () => pt.scrollBy({ top: pt.clientHeight * .7, behavior: "smooth" }) }, "Role para ver tudo ↓");
+  pt.append(rol);
+  const confere = () => rol.classList.toggle("some", pt.scrollTop + pt.clientHeight >= pt.scrollHeight - 30);
+  pt.addEventListener("scroll", confere, { passive: true }); [abaI, abaA].forEach(b => b.addEventListener("click", () => setTimeout(confere, 50))); setTimeout(confere, 60);
 }
 function telaInstalado() {
   tituloPortao = "";
