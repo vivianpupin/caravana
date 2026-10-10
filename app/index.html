@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 12:26";</script>
+<script>window.__VERSAO = "10/10 · 12:27";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -1054,8 +1054,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfbaixo .cfitem.on{opacity:1}
 .cfbaixo .cfitem.on .camfoto img{filter:sepia(.18) brightness(.95) contrast(1.05) drop-shadow(0 3px 3px rgba(0,0,0,.65))}
 .cfbaixo .cfitem.on span{background:linear-gradient(180deg,#D2B378,#9C7A44 60%,#7E5F31);color:#2A1C10;border-radius:3px;padding:2px 8px;box-shadow:inset 0 1px 0 rgba(255,240,200,.45),inset 0 -1px 0 rgba(0,0,0,.35),0 2px 3px rgba(0,0,0,.5);text-shadow:0 1px 0 rgba(255,235,190,.35)}
-.cfbaixo{padding-bottom:env(safe-area-inset-bottom)}
-.cfbaixo .cffita{padding-top:16px!important;padding-bottom:10px!important;align-items:center}
+.cfbaixo{padding-bottom:calc(env(safe-area-inset-bottom) * .55)}
+.cfbaixo .cffita{padding-top:14px!important;padding-bottom:8px!important;align-items:center}
 .cfbaixo .cfmini{align-self:center;margin-top:6px}
 .cfbaixo .cfitem{justify-content:flex-end;gap:7px}
 .cfbaixo .cfitem .camdesenho{height:50px;place-items:end center}
@@ -5228,7 +5228,7 @@ function vCameraFisica(c) {
           h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null }; render(); } }, "📸 Outra foto")), msg));
   const fita = h("div", { class: "cffita" }, CAMERAS_C.map(x => h("button", { type: "button", class: "cfitem" + (x.id === c.id ? " on" : ""), onclick: () => { if (x.id !== c.id) { S.camFlash = null; escolheCamera(x.id); } } },
     imgCam(x), h("span", { text: { celular: "Celular", quatro: "4 Tempos", super8: "Super 8" }[x.id] || x.nome.split(" ")[0] }))));
-  requestAnimationFrame(() => { const on = fita.querySelector(".on"), it = fita.querySelector(".cfitem"); if (!on || !it) return; const passo = it.offsetWidth + 6, k = [...fita.children].indexOf(on); fita.scrollLeft = Math.max(0, k - 1) * passo; });
+  requestAnimationFrame(() => { const on = fita.querySelector(".on"), it = fita.querySelector(".cfitem"); if (!on || !it) return; const passo = it.offsetWidth + 6, k = [...fita.children].indexOf(on); fita.style.scrollSnapType = "none"; fita.scrollLeft = Math.max(0, k - 1) * passo; setTimeout(() => { fita.scrollLeft = Math.max(0, k - 1) * passo; fita.style.scrollSnapType = ""; }, 80); });
   // a câmera inteira, vista de trás: corpo com cantos e bordas à mostra, botões em cima, alças dos lados
   const pecas = { rajastao: ["cfrebob", "cfvelo", "cfalca e", "cfalca d"], descartavel: ["cfroda"], instantanea: [], super8: ["cfalca e", "cfalca d"], quatro: ["cfalca e"] }[c.id] || [];
   const caixa = h("div", { class: "cfcaixa cx-" + c.id + (fotoCorpo ? " comfoto" : "") }, pecas.map(k => h("span", { class: k, "aria-hidden": "true" })), corpo);
