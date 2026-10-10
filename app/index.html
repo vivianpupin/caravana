@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 15:20";</script>
+<script>window.__VERSAO = "10/10 · 15:22";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -4299,8 +4299,9 @@ function aplicaFiltro(ctx, w, hh, f, graoEsc, modo) {
   if (!f.m && !f.con && !f.sat && !f.duo && !f.split && !f.arco && !f.holi && !gF && !f.leak) return;
   if (modo === "efeitos") { efeitosRapidos(ctx, w, hh, f.vin || 0, g); efeitosFiltro(ctx, w, hh, f); return; }
   const d = ctx.getImageData(0, 0, w, hh), p = d.data, m = f.m, con = f.con || 1, add = f.add || [0, 0, 0], sat = f.sat || 1, lift = f.lift || 0;
-  const cx = w / 2, cy = hh / 2, rmax = Math.hypot(cx, cy), vin = modo === "cor" ? 0 : Math.min(.85, (f.vin || 0) * 1.6), grosso = Math.max(w, hh) > 500;
-  const forca = f.forca || 1.5; // filtros bem puxados na foto de verdade (a pessoa diminui na Intensidade se quiser)
+  const cx = w / 2, cy = hh / 2, rmax = Math.hypot(cx, cy), vin = modo === "cor" ? 0 : (f.vin || 0);
+  // filtros do Estúdio (câmera do celular) um pouco mais puxados; os das câmeras da maleta ficam como eram
+  const forca = f.forca || (f.cat === "Câmeras" ? 1 : 1.3);
   for (let y = 0, i = 0; y < hh; y++) for (let x = 0; x < w; x++, i += 4) {
     let R = p[i], G = p[i + 1], B = p[i + 2]; const R0 = R, G0 = G, B0 = B;
     if (m) { const r = R, gg = G, b = B; R = r * m[0] + gg * m[1] + b * m[2]; G = r * m[3] + gg * m[4] + b * m[5]; B = r * m[6] + gg * m[7] + b * m[8]; }
@@ -4316,21 +4317,18 @@ function aplicaFiltro(ctx, w, hh, f, graoEsc, modo) {
     if (lift) { R = lift + R * (1 - lift / 255); G = lift + G * (1 - lift / 255); B = lift + B * (1 - lift / 255); }
     if (vin) { const k = 1 - vin * Math.pow(Math.hypot(x - cx, y - cy) / rmax, 2.2); R *= k; G *= k; B *= k; }
     if (forca !== 1) { R = R0 + (R - R0) * forca; G = G0 + (G - G0) * forca; B = B0 + (B - B0) * forca; }
-    if (g && !grosso) { const n = (Math.random() - .5) * g; R += n; G += n; B += n; }
+    if (g) { const n = (Math.random() - .5) * g; R += n; G += n; B += n; }
     p[i] = R; p[i + 1] = G; p[i + 2] = B;
   }
   ctx.putImageData(d, 0, 0);
-  // na foto grande o grão vai por cima em pontinhos maiores, para aparecer como na miniatura
-  if (g && grosso) { const e = Math.max(w, hh) / 520, n = ruido(Math.ceil(w / e), Math.ceil(hh / e), "g"); ctx.save(); ctx.imageSmoothingEnabled = true; ctx.globalCompositeOperation = "overlay"; ctx.globalAlpha = Math.min(1, g / 32); ctx.drawImage(n, 0, 0, w, hh); ctx.restore(); }
   if (modo !== "cor") efeitosFiltro(ctx, w, hh, f);
 }
 // vinheta e grão desenhados por cima (rápido, para a câmera ao vivo)
 function efeitosRapidos(ctx, w, hh, vin, g) {
-  vin = Math.min(.85, (vin || 0) * 1.6);
   if (vin) { const cx = w / 2, cy = hh / 2, R = Math.hypot(cx, cy), gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
     for (const t of [0, .3, .5, .7, .85, 1]) gr.addColorStop(t, `rgba(0,0,0,${Math.min(1, vin * Math.pow(t, 2.2))})`);
     ctx.save(); ctx.fillStyle = gr; ctx.fillRect(0, 0, w, hh); ctx.restore(); }
-  if (g) { const e = Math.max(1, Math.max(w, hh) / 520), n = ruido(Math.ceil(w / e), Math.ceil(hh / e), "g"); ctx.save(); ctx.globalCompositeOperation = "overlay"; ctx.globalAlpha = Math.min(1, g / 32); ctx.drawImage(n, 0, 0, w, hh); ctx.restore(); }
+  if (g) { const n = ruido(w, hh, "g"); ctx.save(); ctx.globalCompositeOperation = "overlay"; ctx.globalAlpha = Math.min(1, g / 40); ctx.drawImage(n, 0, 0, w, hh); ctx.restore(); }
 }
 // textura de ruído guardada por tamanho (não precisa sortear de novo a cada foto)
 const ruidoCache = {};
@@ -4374,7 +4372,7 @@ function super8Luz(ctx, w, hh) {
 // grão de película: grosso, colorido e irregular, como Super 8 revelado
 // Kashi: grão, poeirinha e brilho tingidos de rosa por cima da foto, sem lavar os pretos
 function graoRosa(ctx, w, hh) {
-  const esc = Math.max(1, Math.max(w, hh) / 480), gw = Math.ceil(w / esc), gh = Math.ceil(hh / esc), ck = "rosa" + gw + "x" + gh;
+  const esc = Math.max(1, Math.max(w, hh) / 1500), gw = Math.ceil(w / esc), gh = Math.ceil(hh / esc), ck = "rosa" + gw + "x" + gh;
   let n = ruidoCache[ck];
   if (!n) { limpaRuido(); n = ruidoCache[ck] = document.createElement("canvas"); n.width = gw; n.height = gh;
     const nc = n.getContext("2d"), d = nc.createImageData(gw, gh), q = d.data;
@@ -4392,7 +4390,7 @@ function graoRosa(ctx, w, hh) {
 }
 function pelicula(ctx, w, hh) {
   // grão fino de película: do tamanho de um pontinho na foto final, quase sem cor, mais presente nos meios-tons
-  const esc = Math.max(1, Math.max(w, hh) / 520), gw = Math.ceil(w / esc), gh = Math.ceil(hh / esc), ck = "pel" + gw + "x" + gh;
+  const esc = Math.max(1, Math.max(w, hh) / 1500), gw = Math.ceil(w / esc), gh = Math.ceil(hh / esc), ck = "pel" + gw + "x" + gh;
   let n = ruidoCache[ck];
   if (!n) { limpaRuido(); n = ruidoCache[ck] = document.createElement("canvas"); n.width = gw; n.height = gh;
     const nc = n.getContext("2d"), d = nc.createImageData(gw, gh), q = d.data;
@@ -5788,7 +5786,7 @@ async function ligaCam() {
     const fluxo = pegaFluxoGuardado(lado) || await pede(true).catch(() => pede(false));
     // se a câmera já foi fechada ou virada de novo enquanto esperava, desliga este fluxo e sai
     if (S.camEst !== C || C.vez !== vez) { guardaFluxo(fluxo, lado); return; }
-    C.fluxo = fluxo; C.fluxoFrente = lado; C.video.srcObject = fluxo; await C.video.play(); C.acordou = true;
+    C.fluxo = fluxo; C.fluxoFrente = lado; C.video.srcObject = fluxo; await C.video.play(); C.acordou = true; C.vivoDesde = performance.now();
     setTimeout(() => document.querySelectorAll(".cfligando").forEach(e => e.remove()), 300);
     if (!C.rodando) { C.rodando = true; requestAnimationFrame(quadroCam); }
   } catch (e) { if (S.camEst !== C || C.vez !== vez) return; fechaVivo(); S.camFalhou = true; if (S.foto && S.foto.vivo) S.foto = { ...S.foto, img: null, vivo: false }; render(); }
@@ -5834,6 +5832,8 @@ function quadroCam() {
   const tela = S.fotoCanvas, F = S.foto;
   if (!F || !F.vivo || F.img !== C.frame || !tela || !tela.isConnected) { if (!document.hidden) { fechaVivo(); if (F && F.vivo) S.foto = { ...F, img: null, vivo: false }; } else requestAnimationFrame(quadroCam); return; }
   const v = C.video;
+  // os primeiros quadros da câmera recém-ligada vêm pretos: o visor segura a última imagem até a câmera nova mostrar de verdade
+  if (!v.videoWidth || v.readyState < 2 || performance.now() - (C.vivoDesde || 0) < 350) { requestAnimationFrame(quadroCam); return; }
   if (v.videoWidth && !C.ocupado) {
     const f = FILTROS.find(y => y.id === F.filtro) || FILTROS[0], G = !(f.arco || f.holi) && glVivo(C);
     const lado = G ? 1280 : 800, k = lado / Math.max(v.videoWidth, v.videoHeight), w = Math.round(v.videoWidth * k), hh = Math.round(v.videoHeight * k);
