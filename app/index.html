@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 15:27";</script>
+<script>window.__VERSAO = "10/10 · 15:30";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -4234,7 +4234,10 @@ const FILTROS = [
   { id: "cam-campo", cat: "Câmeras", nome: "Agra 1900", m: [.393, .769, .189, .349, .686, .168, .272, .534, .131], lift: 14, con: 1.18, sat: 1, vin: .72, grao: 28, pelicula: 1 },
   { id: "cam-campo-vermelho", cat: "Câmeras", nome: "Agra 1900 vermelha", m: [.4, .78, .16, .12, .24, .05, .08, .17, .03], lift: 4, con: 1.32, sat: 1, vin: .72, grao: 28, pelicula: 1 },
   { id: "cam-campo-marrom", cat: "Câmeras", nome: "Agra 1900 marrom", m: [.33, .65, .16, .27, .53, .13, .2, .4, .1], lift: 8, con: 1.24, sat: 1, vin: .75, grao: 28, pelicula: 1 },
-  { id: "cam-couro", cat: "Câmeras", nome: "Delhi 1955", m: [1.02, .06, 0, .03, .96, .03, 0, .06, .86], lift: 26, con: .92, sat: .72, split: [[40, 58, 62], [255, 232, 196]], add: [8, 4, -4], vin: .36, grao: 14, pelicula: 1 },
+  // Delhi 1955: cor de filme dos anos 50 com vida (contraste e cor fortes, como a Durga), em três tons: natural, quente e frio
+  { id: "cam-couro", cat: "Câmeras", nome: "Delhi 1955", m: [1.03, .03, -.01, .02, .99, .01, -.01, .03, .93], lift: 8, con: 1.28, sat: 1.22, split: [[34, 30, 28], [255, 236, 206]], add: [5, 2, -2], vin: .36, grao: 12, pelicula: 1 },
+  { id: "cam-couro-quente", cat: "Câmeras", nome: "Delhi 1955 quente", m: [1.08, .04, -.02, .03, 1, 0, -.03, .02, .84], lift: 8, con: 1.3, sat: 1.28, split: [[50, 26, 12], [255, 226, 180]], add: [14, 5, -12], vin: .38, grao: 12, pelicula: 1 },
+  { id: "cam-couro-frio", cat: "Câmeras", nome: "Delhi 1955 fria", m: [.94, .02, .02, .01, 1, .02, .02, .04, 1.08], lift: 8, con: 1.28, sat: 1.15, split: [[16, 34, 48], [235, 242, 255]], add: [-6, 1, 12], vin: .36, grao: 12, pelicula: 1 },
   { id: "cam-cine", cat: "Câmeras", nome: "Cine", lift: 10, con: 1.18, sat: .7, split: [[14, 38, 44], [242, 196, 150]], add: [2, 0, 2], vin: .5, grao: 20, pelicula: 1 },
   // estilo de câmera de filme de viagem: um para cada cidade
   { id: "cid-delhi", cat: "Profissionais", nome: "Delhi", lift: 34, con: 0.9, sat: 0.85, add: [22, -4, 4], leak: "rosa", brilho: 0.4, vin: 0.32, grao: 18, pelicula: 1 },
@@ -5175,7 +5178,7 @@ const CAMERAS_C = [
   { id: "campo", lento: 1, tons: [["cam-campo", "#C9A24E", "Âmbar"], ["cam-campo-vermelho", "#A8432F", "Vermelho"], ["cam-campo-marrom", "#6B4428", "Marrom"]], nome: "Agra 1900", frase: "Câmera de campo de madeira e latão, de placa de vidro. Sépia de 1900.",
     preset: { filtro: "cam-campo", moldura: "nenhuma", recorte: 9 / 16, formato: "original", grao: "auto", reels: "preto" },
     svg: `<svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="30" width="100" height="70" rx="4" fill="#7A4A2A"/><circle cx="70" cy="65" r="20" fill="#B8913F"/><circle cx="70" cy="65" r="12" fill="#1A1410"/></svg>` },
-  { id: "couro", nome: "Delhi 1955", frase: "Câmera 35 mm dos anos 50 no estojo de couro. Cor desbotada de álbum de família.",
+  { id: "couro", tons: [["cam-couro-quente", "#D88A3A", "Quente"], ["cam-couro", "#B58E6A", "Natural"], ["cam-couro-frio", "#4F84A8", "Fria"]], nome: "Delhi 1955", frase: "Câmera 35 mm dos anos 50 no estojo de couro. Cor desbotada de álbum de família.",
     preset: { filtro: "cam-couro", moldura: "nenhuma", recorte: 9 / 16, formato: "original", grao: "auto", reels: "preto" },
     svg: `<svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="30" width="104" height="66" rx="10" fill="#7B4A28"/><circle cx="70" cy="64" r="20" fill="#2A2420"/><circle cx="70" cy="64" r="11" fill="#0E0C0B"/></svg>` },
 ];
@@ -5503,12 +5506,10 @@ function personalidade(cv, g, c) {
   } else if (id === "super8") { // leve tremido do quadro e as listras finas da película
     x.globalCompositeOperation = "source-over"; x.globalAlpha = .28; x.drawImage(cv, G.ox, G.oy, G.w, G.hh, G.ox + (R() - .5) * 8 * u, G.oy + (2 + R() * 4) * u, G.w, G.hh); x.globalAlpha = 1;
     x.globalCompositeOperation = "overlay"; for (let k = 0; k < 3 + R() * 4; k++) { x.fillStyle = `rgba(${R() < .5 ? "255,255,255" : "0,0,0"},${.15 + R() * .2})`; x.fillRect(G.ox + R() * G.w, G.oy, (.6 + R() * 1.2) * u, G.hh); }
-  } else if (id === "campo") { // placa de vidro: bordas irregulares e riscos finos
+  } else if (id === "campo") { // placa de vidro: só as bordas escurecidas (sem riscos nem manchas em volta)
     x.globalCompositeOperation = "multiply"; sombra(.75, .35);
-    x.globalCompositeOperation = "screen"; x.strokeStyle = "rgba(255,245,220,.35)"; for (let k = 0; k < 6 + R() * 6; k++) { x.lineWidth = (.4 + R() * .8) * u; x.beginPath(); const sx = G.ox + R() * G.w, sy = G.oy + R() * G.hh; x.moveTo(sx, sy); x.lineTo(sx + (R() - .5) * 200 * u, sy + (R() - .5) * 400 * u); x.stroke(); }
-    x.globalCompositeOperation = "multiply"; x.fillStyle = "rgba(20,10,4,.55)"; x.filter = `blur(${10 * u}px)`; for (let k = 0; k < 60; k++) { const t = R(), lado = Math.floor(R() * 4), rr = (6 + R() * 22) * u; const px = lado === 0 ? G.ox : lado === 1 ? G.ox + G.w : G.ox + t * G.w, py = lado === 2 ? G.oy : lado === 3 ? G.oy + G.hh : G.oy + t * G.hh; x.beginPath(); x.arc(px, py, rr, 0, 7); x.fill(); } x.filter = "none";
-  } else if (id === "couro") { // álbum de família: amarelado suave e um canto gasto
-    x.globalCompositeOperation = "soft-light"; x.fillStyle = "rgba(240,200,120,.45)"; x.fillRect(G.ox, G.oy, G.w, G.hh);
+  } else if (id === "couro") { // álbum de família: um toque amarelado (leve, para não acinzentar nem brigar com o tom escolhido) e um canto gasto
+    x.globalCompositeOperation = "soft-light"; x.fillStyle = "rgba(240,200,120,.18)"; x.fillRect(G.ox, G.oy, G.w, G.hh);
     const qx = G.ox + (R() < .5 ? 0 : G.w), qy = G.oy + (R() < .5 ? 0 : G.hh), gr = x.createRadialGradient(qx, qy, 0, qx, qy, L * .22); gr.addColorStop(0, "rgba(245,232,205,.85)"); gr.addColorStop(.5, "rgba(245,232,205,.25)"); gr.addColorStop(1, "rgba(245,232,205,0)");
     x.globalCompositeOperation = "screen"; x.fillStyle = gr; x.fillRect(G.ox, G.oy, G.w, G.hh);
   }
@@ -5551,8 +5552,8 @@ function variaFilme(cv, g, c) {
   }
   // guarda esta foto pequena, para uma possível dupla exposição na próxima
   try { const q = document.createElement("canvas"); q.width = 360; q.height = Math.round(360 * G.hh / G.w); q.getContext("2d").drawImage(cv, G.ox, G.oy, G.w, G.hh, 0, 0, q.width, q.height); S.quadroAnterior = q; } catch (e) {}
-  // poeira e fiapos
-  const n = 6 + Math.floor(R() * 18);
+  // poeira e fiapos (a Agra não leva: a Vivian quer a foto limpa, sem riscos nem bolinhas)
+  const n = c && c.id === "campo" ? 0 : 6 + Math.floor(R() * 18);
   for (let i = 0; i < n; i++) {
     const px = G.ox + R() * G.w, py = G.oy + R() * G.hh, claro = R() < .5;
     x.fillStyle = claro ? `rgba(255,250,240,${.35 + R() * .4})` : `rgba(10,8,6,${.35 + R() * .4})`;
