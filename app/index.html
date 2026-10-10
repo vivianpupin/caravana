@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 13:39";</script>
+<script>window.__VERSAO = "10/10 · 13:47";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}</style>
@@ -4179,7 +4179,8 @@ const FILTROS = [
   // Rajastão 35: negativo colorido quente (tipo Kodak Gold): pele dourada, amarelos fortes, sombras marrons
   { id: "cam-kodak", cat: "Câmeras", nome: "Rajastão 35", m: [.3, .59, .11, .3, .59, .11, .3, .59, .11], lift: 6, con: 1.28, sat: .001, split: [[16, 16, 16], [246, 246, 244]], add: [0, 0, 0], vin: .34, grao: 20, pelicula: 1 },
   // Descartável: filme de câmera descartável (tipo Fuji Superia): verdes e cianos fortes, sombras esverdeadas, contraste e grão
-  { id: "cam-fuji", cat: "Câmeras", nome: "Descartável", m: [1, .02, 0, .01, 1.02, .01, 0, .03, 1], lift: 12, con: 1.16, sat: 1.12, split: [[14, 40, 34], [255, 248, 236]], add: [0, 3, 1], vin: .32, grao: 24, pelicula: 1 },
+  // Bazar: a referência da Vivian (descartável de verdade): tudo puxado para o quente amarelado, preto levantado e quente, branco que nunca estoura (fica creme)
+  { id: "cam-fuji", cat: "Câmeras", nome: "Descartável", m: [.83, 0, 0, 0, .81, 0, 0, 0, .79], lift: 14, con: 1.16, sat: 1.3, split: [[74, 43, -20], [224, 204, 198]], add: [10, 2, -20], vin: .18, grao: 18, pelicula: 1 },
   // Instantânea: filme instantâneo: lavado, sombras azuladas, luzes cremosas, pouco contraste
   { id: "cam-instant", cat: "Câmeras", nome: "Durga", m: [1.04, .02, -.02, .01, 1, 0, -.02, .02, .94], lift: 2, con: 1.42, sat: 1.18, split: [[40, 26, 18], [255, 232, 196]], add: [5, 2, -3], vin: .4, grao: 10 },
   // Super 8: cinema de época: cores apagadas, sombras azul-petróleo, pele alaranjada, vinheta pesada
@@ -4691,7 +4692,7 @@ function imgAdesivo(k) {
     if (k === "lungta") { const [cv, x] = tela(1000, 260); bandeirinhas(x, 10, 0, 980, 1); return cv; }
     if (k === "fita") { const [cv, x] = tela(420, 110); x.fillStyle = "rgba(236,222,190,.85)"; x.beginPath(); x.moveTo(8, 20); for (let y = 20; y <= 90; y += 10) x.lineTo(y % 20 ? 0 : 12, y); x.lineTo(412, 90); for (let y = 90; y >= 20; y -= 10) x.lineTo(y % 20 ? 420 : 408, y); x.closePath(); x.fill();
       x.strokeStyle = "rgba(160,130,90,.3)"; x.setLineDash([4, 5]); x.strokeRect(20, 26, 380, 58); return cv; }
-    if (k === "data") { const d = new Date(), txt = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"][d.getMonth()] + " " + String(d.getDate()).padStart(2, "0") + " '" + String(d.getFullYear()).slice(2);
+    if (k === "data") { const d = new Date(), txt = String(d.getDate()).padStart(2, "0") + " " + String(d.getMonth() + 1).padStart(2, "0") + " '" + String(d.getFullYear()).slice(2); // como a data das descartáveis: 10 10 '26
       const [cv, x] = tela(460, 120); x.font = '700 76px "Courier Prime", monospace'; x.fillStyle = "#FF8A1C"; x.shadowColor = "rgba(255,120,20,.9)"; x.shadowBlur = 16; x.textBaseline = "middle"; x.fillText(txt, 14, 62); return cv; }
     if (k === "linha") { const [cv, x] = tela(1100, 120); x.font = '600 58px Cinzel, Georgia, serif'; x.textAlign = "center"; x.textBaseline = "middle"; x.shadowColor = "rgba(0,0,0,.55)"; x.shadowBlur = 12; x.fillStyle = "#F1E2BC"; x.fillText("CARAVANA DO CÉU · ÍNDIA 2026", 550, 62); return cv; }
     if (k === "postmark") { const [cv, x] = tela(520, 300); x.strokeStyle = "rgba(40,30,70,.75)"; x.fillStyle = "rgba(40,30,70,.8)"; x.lineWidth = 6;
@@ -5428,8 +5429,8 @@ function personalidade(cv, g, c) {
     const N = Math.round(G.w * G.hh / (90 * u * u)); x.globalCompositeOperation = "overlay";
     for (let i = 0; i < N; i++) { const v = R(); x.fillStyle = v < .5 ? "rgba(0,0,0,.35)" : "rgba(255,255,255,.3)"; const r = (.8 + R() * 1.6) * u; x.fillRect(G.ox + R() * G.w, G.oy + R() * G.hh, r, r); }
   } else if (id === "descartavel") { // flash estourado no meio, cantos caindo no escuro
-    x.globalCompositeOperation = "screen"; const gr = x.createRadialGradient(cx, cy * .98, 0, cx, cy, L * .42); gr.addColorStop(0, "rgba(255,248,230,.32)"); gr.addColorStop(1, "rgba(255,248,230,0)"); x.fillStyle = gr; x.fillRect(G.ox, G.oy, G.w, G.hh);
-    x.globalCompositeOperation = "multiply"; sombra(.55, .45);
+    x.globalCompositeOperation = "screen"; const gr = x.createRadialGradient(cx, cy * .98, 0, cx, cy, L * .42); gr.addColorStop(0, "rgba(255,240,200,.14)"); gr.addColorStop(1, "rgba(255,240,200,0)"); x.fillStyle = gr; x.fillRect(G.ox, G.oy, G.w, G.hh);
+    x.globalCompositeOperation = "multiply"; sombra(.3, .3);
   } else if (id === "instantanea") { // Durga: muito contraste e só um quente leve, com o preto bem fundo
     x.globalCompositeOperation = "soft-light"; x.fillStyle = "rgba(255,190,120,.22)"; x.fillRect(G.ox, G.oy, G.w, G.hh);
     x.globalCompositeOperation = "multiply"; sombra(.4, .55);
