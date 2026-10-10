@@ -1131,6 +1131,8 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 
 .cfjanela.expondo::before{content:"SEGURE FIRME";position:absolute;z-index:4;left:0;right:0;bottom:10px;text-align:center;font:700 10px "Courier Prime",monospace;letter-spacing:.2em;color:#F3D9A4;text-shadow:0 1px 3px #000}
 .gravando .cfbotaofoto::after{content:"PARAR"}
+.cfdicafilme{position:absolute;z-index:4;left:8%;right:8%;bottom:10px;padding:6px 10px;border-radius:8px;background:rgba(12,8,5,.62);color:#F3E3C0;font:600 10.5px/1.35 Poppins,sans-serif;text-align:center;pointer-events:none}
+
 .gravando .cfjanelafoto::before{content:"● REC";position:absolute;z-index:4;top:8px;right:10px;font:700 11px "Courier Prime",monospace;color:#FF4A3A;text-shadow:0 0 6px rgba(255,60,40,.8);animation:piscarec 1s steps(2) infinite}
 @keyframes piscarec{50%{opacity:0}}
 /* selfie: um botãozinho de metal recartilhado no canto da câmera, com SELFIE bordado em ouro */
@@ -5156,7 +5158,7 @@ function vCameraFisica(c) {
     piscaVisor(); revelaFoto(out, c, { recorte: null });
   };
   // como na NOMO: o clique revela a foto por trás, a câmera continua ligada e a miniatura do canto mostra a foto nova
-  const dispara = () => { if (!F.vivo) return; if (c.rajadas) return rajada(); if (c.filma && S.camModo === "filme") return filma(c); const C = S.camEst, v = C && C.video; if (!v || !v.videoWidth) return;
+  const dispara = () => { if (!F.vivo) return; if (c.rajadas) return rajada(); if (c.filma && S.camModo === "filme") return; const C = S.camEst, v = C && C.video; if (!v || !v.videoWidth) return;
     cliqueSom(); if (navigator.vibrate) navigator.vibrate(30); if (flashOn) { const fl = h("div", { class: "flashcam" }); document.body.append(fl); setTimeout(() => fl.remove(), 450); }
     const q = document.createElement("canvas"); q.width = v.videoWidth; q.height = v.videoHeight; q.getContext("2d").drawImage(v, 0, 0);
     // obturador lento: a câmera de placa fica aberta quase um segundo e soma as imagens; o que se mexe sai riscado, como foto de 1900
@@ -5195,6 +5197,7 @@ function vCameraFisica(c) {
   const palco = fotoCorpo ? h("div", { class: "cfpalco", "aria-hidden": "false" }, h("img", { class: "cffundo", src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }), h("div", { class: "cfimg" },
     h("img", { src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }),
     h("div", { class: "cfjanela cfjanelafoto" + (fc.invertido ? " invertido" : "") + (fc.inteira ? " inteira" : ""), style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : null,
+      c.filma && S.camModo === "filme" && F.vivo ? h("span", { class: "cfdicafilme", text: S.gravando ? "Solte ou toque para parar · até 20 s" : "Segure para filmar · ou toque para começar e parar" }) : null,
       c.id === "super8" ? h("span", { class: "cfmira", "aria-hidden": "true" }) : null,
       h("span", { class: "cfvf", "aria-hidden": "true" }, ...({
         rajastao: [h("i", { class: "moldura" }), h("i", { class: "ponto" })],
@@ -5205,7 +5208,7 @@ function vCameraFisica(c) {
       }[c.id] || []))),
     fc.selfie ? h("button", { type: "button", class: "cfselfie" + (frente ? " on" : ""), "aria-label": frente ? "Voltar para a câmera de trás" : "Selfie", onclick: virar, style: `left:${fc.selfie[0] * 100}%;top:${fc.selfie[1] * 100}%` }) : null,
     (fc.luzes || []).map(([x, y]) => h("span", { class: "cfluz cfluzfoto", style: `left:${x * 100}%;top:${y * 100}%` })),
-    F.vivo ? h("button", { type: "button", class: "cfbotaofoto", "aria-label": "Tirar foto", onclick: dispara, style: `left:${(fc.botao[0] - fc.botao[2]) * 100}%;top:calc(${fc.botao[1] * 100}% - ${fc.botao[2] * 100 * 9 / 16}%);width:${fc.botao[2] * 200}%` }) : null)) : null;
+    F.vivo ? h("button", { type: "button", class: "cfbotaofoto", "aria-label": c.filma && S.camModo === "filme" ? "Filmar" : "Tirar foto", onclick: dispara, onpointerdown: e => apertaFilmar(e, c, F), style: `left:${(fc.botao[0] - fc.botao[2]) * 100}%;top:calc(${fc.botao[1] * 100}% - ${fc.botao[2] * 100 * 9 / 16}%);width:${fc.botao[2] * 200}%` }) : null)) : null;
   const corpo = h("div", { class: "cfcorpo cf-" + c.id + (fotoCorpo ? " comfoto" : "") + (S.gravando ? " gravando" : "") + (c.filma && S.camModo === "filme" ? " modofilme" : "") }, palco,
     c.rajadas && !fotoCorpo ? h("div", { class: "cfluzes", "aria-hidden": "true" }, [1, 2, 3, 4].map(n => h("span", { class: "cfluz" }, String(n)))) : null,
     h("div", { class: "cfgravado", "aria-hidden": "true", text: { quatro: "CARAVANA", rajastao: "35", descartavel: "BAZAR", instantanea: "KASHI", super8: "8" }[c.id] || "" }),
@@ -5237,6 +5240,15 @@ function vCameraFisica(c) {
   volta.firstChild.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V5.5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 5.5v2M3 12.5h18M10.5 12.5v2h3v-2"/></svg>';
   preparaCameras();
   return h("section", { class: "camfull" }, caixa, h("div", { class: "cfbaixo" }, volta, miniatura, fita));
+}
+// filmar funciona dos dois jeitos: segurando o botão (para quando solta) ou tocando uma vez para começar e outra para parar
+function apertaFilmar(e, c, F) {
+  if (!c.filma || S.camModo !== "filme" || !F.vivo) return;
+  e.preventDefault();
+  if (S.gravando) { S.gravando.stop(); return; }
+  const t0 = Date.now(); filma(c);
+  const solta = () => { document.removeEventListener("pointerup", solta); document.removeEventListener("pointercancel", solta); if (Date.now() - t0 > 700 && S.gravando) S.gravando.stop(); };
+  document.addEventListener("pointerup", solta); document.addEventListener("pointercancel", solta);
 }
 // Super 8 filmando: grava a própria imagem do visor (já com o filtro), sem som, como filme mudo; até 20 segundos
 async function filma(c) {
