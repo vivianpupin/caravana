@@ -5335,13 +5335,30 @@ async function filma(c) {
   const tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || "";
   const mr = new MediaRecorder(rec.captureStream(24), tipo ? { mimeType: tipo, videoBitsPerSecond: 3.5e6 } : undefined), partes = [];
   mr.ondataavailable = e => e.data && e.data.size && partes.push(e.data);
-  mr.onstop = async () => { clearInterval(copia); clearTimeout(limite); S.gravando = null; render();
-    const b = new Blob(partes, { type: (tipo || "video/webm").split(";")[0] }); if (b.size) { await guardaNoDiario(b, c); S.fotosDiario = await lerDiario(); if (S.camSel === c.id) render();
+  mr.onstop = async () => { clearInterval(copia); clearTimeout(limite); S.gravando = null; mostraGravando();
+    const b = new Blob(partes, { type: (tipo || "video/webm").split(";")[0] }); if (b.size) { await guardaNoDiario(b, c); S.fotosDiario = await lerDiario(); if (S.camSel === c.id) mostraGravando(true);
       // o filme vai para a carteira de Registros (na Maleta, embaixo das câmeras); no celular não há miniatura, então avisa onde ficou
       avisoReacao("🎞️ Filme guardado nos Registros, na Maleta, embaixo das câmeras."); }
     else avisoReacao("Não consegui gravar o filme neste celular."); };
   const limite = setTimeout(() => mr.state === "recording" && mr.stop(), 60000);
-  S.gravando = mr; S.gravouEm = Date.now(); mr.start(500); cliqueSom(); render();
+  S.gravando = mr; S.gravouEm = Date.now(); mr.start(500); cliqueSom(); mostraGravando();
+}
+// começar e parar de filmar muda só o que precisa (REC, textos, botão e a miniatura), sem redesenhar a tela: nada pisca
+function mostraGravando(novoFilme) {
+  const g = !!S.gravando;
+  document.querySelector(".cfcorpo")?.classList.toggle("gravando", g);
+  const lg = document.querySelector(".cfdicafilme .longa"), ct = document.querySelector(".cfdicafilme .curta");
+  if (lg) lg.textContent = g ? "Solte ou toque para parar · até 1 min" : "Segure para filmar · ou toque para começar e parar";
+  if (ct) ct.textContent = g ? "Solte para parar" : "Segure para filmar";
+  const bf = document.querySelector(".celfilmar");
+  if (bf) { bf.classList.toggle("gravando", g); bf.textContent = g ? "■ Parar" : "● Filmar"; bf.setAttribute("aria-label", g ? "Parar de filmar" : "Filmar"); }
+  const dc = document.querySelector(".celdica");
+  if (dc) dc.textContent = g ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure ● Filmar, ou toque uma vez para começar e outra para parar.";
+  if (novoFilme) {
+    const ult = (S.fotosDiario || [])[0], mini = document.querySelector(".cfmini");
+    if (mini && ult) mini.replaceChildren(miniMidia(ult));
+    if (dc && !document.querySelector(".celregistros")) dc.before(h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros (fotos e filmes)")));
+  }
 }
 function piscaVisor() { const j = document.querySelector(".cfjanela"); if (!j) return; j.classList.remove("pisca"); void j.offsetWidth; j.classList.add("pisca"); }
 // revela a foto com o filtro e a moldura da câmera, carimba a marca da Caravana e guarda no Diário de Viajante
@@ -5783,7 +5800,7 @@ function vFotos() {
           h("button", { class: "btn ghost celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "■ Parar" : "● Filmar"),
           h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, iconeFototeca(), "Fototeca"))
         : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [], filtro: "original", intens: 1, thumbSrc: null }; render(); } }, "📸 Nova foto")),
-        F.vivo && !S.gravando && (S.fotosDiario || []).length ? h("div", { class: "actions", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros (fotos e filmes)")) : null,
+        F.vivo && (S.fotosDiario || []).length ? h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros (fotos e filmes)")) : null,
         F.vivo ? h("p", { class: "celdica", text: S.gravando ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure ● Filmar, ou toque uma vez para começar e outra para parar." }) : null,
         barraSel, tiraFiltros(F, id => set("filtro", id)), barraIntensidade),
       h("div", { class: "fcontrols" },
