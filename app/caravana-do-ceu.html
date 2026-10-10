@@ -1086,6 +1086,11 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .vidmini{position:relative;display:block;width:100%;height:100%}
 .vidmini video{width:100%;height:100%;object-fit:cover;display:block}
 .vidplay{position:absolute;left:50%;top:50%;width:34%;max-width:40px;min-width:18px;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
+.cfvoltaseta{display:none}
+.cfvolta.topo{flex-direction:row;gap:6px;margin:0;padding:7px 14px 7px 10px;border-radius:999px;font-size:11px;align-self:center;flex:0 0 auto;position:relative;z-index:5}
+.cfvolta.topo .cfvoltaseta{display:inline;font:700 18px/1 Poppins,sans-serif;margin:-2px -1px 0 0}
+.cfvolta.topo .cfvoltaic{display:flex}
+.cfbaixo .cfmini{margin-left:14px!important}
 /* a fileira sempre para com uma câmera inteira encostada no fio dourado, nunca cortada pela metade */
 .cfbaixo .cffita{scroll-snap-type:x mandatory;scroll-padding-left:18px}.cfbaixo .cfitem{flex:0 0 calc((100% - 12px) / 3);min-width:0;scroll-snap-align:start}
 .cftopovazio{width:40px;flex:0 0 40px}
@@ -5159,6 +5164,13 @@ function faixaCota(esgotou) {
 window.addEventListener("caravana-cota", e => faixaCota(e.detail));
 // deixa as fotos de todas as câmeras prontas na memória, para a troca não mostrar fundo preto enquanto a imagem chega
 function preparaCameras() { if (S.camPrep) return; S.camPrep = []; for (const c of CAMERAS_C) { const i = new Image(); i.src = "img/cameras/" + c.id + "-corpo.jpg"; i.decode?.().catch(() => {}); S.camPrep.push(i); } }
+// botão claro de voltar para a maleta (no alto da câmera, onde a pessoa procura o "voltar")
+function voltaMaleta(onde) {
+  const b = h("button", { type: "button", class: "cfvolta" + (onde ? " " + onde : ""), "aria-label": "Voltar para a maleta", onclick: voltaEstante },
+    h("span", { class: "cfvoltaseta", "aria-hidden": "true", text: "‹" }), h("span", { class: "cfvoltaic" }), h("span", { text: "Maleta" }));
+  b.children[1].innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V5.5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 5.5v2M3 12.5h18M10.5 12.5v2h3v-2"/></svg>';
+  return b;
+}
 function escolheCamera(id) {
   preparaCameras(); S.quadroAnterior = S.camEst && S.camEst.frame;
   fechaVivo(); const c = CAMERAS_C.find(x => x.id === id);
@@ -5260,7 +5272,7 @@ function vCameraFisica(c) {
     c.rajadas && !fotoCorpo ? h("div", { class: "cfluzes", "aria-hidden": "true" }, [1, 2, 3, 4].map(n => h("span", { class: "cfluz" }, String(n)))) : null,
     h("div", { class: "cfgravado", "aria-hidden": "true", text: { quatro: "CARAVANA", rajastao: "35", descartavel: "BAZAR", instantanea: "KASHI", super8: "8" }[c.id] || "" }),
     h("div", { class: "cftopo" },
-      h("span", { class: "cftopovazio" }),
+      voltaMaleta("topo"),
       h("span", { class: "cfmarca" }, h("img", { src: "img/simbolo-dourado.png", alt: "" }), h("span", null, h("b", { text: c.nome }), h("small", { text: FILME_CAM[c.id] || "" }))),
       h("span", { class: "cftopovazio" })),
     fotoCorpo ? h("div", { class: "cfvisor" }) : visor,
@@ -5282,11 +5294,8 @@ function vCameraFisica(c) {
   const pecas = { rajastao: ["cfrebob", "cfvelo", "cfalca e", "cfalca d"], descartavel: ["cfroda"], instantanea: [], super8: ["cfalca e", "cfalca d"], quatro: ["cfalca e"] }[c.id] || [];
   const caixa = h("div", { class: "cfcaixa cx-" + c.id + (fotoCorpo ? " comfoto" : "") }, pecas.map(k => h("span", { class: k, "aria-hidden": "true" })), corpo);
   // a última foto fica no começo da faixa de baixo, fora da câmera, para não atrapalhar o visor
-  const volta = h("button", { type: "button", class: "cfvolta", "aria-label": "Voltar para a maleta", onclick: voltaEstante },
-    h("span", { class: "cfvoltaic" }), h("span", { text: "Maleta" }));
-  volta.firstChild.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V5.5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 5.5v2M3 12.5h18M10.5 12.5v2h3v-2"/></svg>';
   preparaCameras();
-  return h("section", { class: "camfull" }, caixa, h("div", { class: "cfbaixo" }, volta, miniatura, fita));
+  return h("section", { class: "camfull" }, caixa, h("div", { class: "cfbaixo" }, miniatura, fita));
 }
 // filmar funciona dos dois jeitos: segurando o botão (para quando solta) ou tocando uma vez para começar e outra para parar
 function apertaFilmar(e, c, F) {
