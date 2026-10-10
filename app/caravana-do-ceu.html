@@ -4242,8 +4242,8 @@ function aplicaFiltro(ctx, w, hh, f, graoEsc, modo) {
   if (!f.m && !f.con && !f.sat && !f.duo && !f.split && !f.arco && !f.holi && !gF && !f.leak) return;
   if (modo === "efeitos") { efeitosRapidos(ctx, w, hh, f.vin || 0, g); efeitosFiltro(ctx, w, hh, f); return; }
   const d = ctx.getImageData(0, 0, w, hh), p = d.data, m = f.m, con = f.con || 1, add = f.add || [0, 0, 0], sat = f.sat || 1, lift = f.lift || 0;
-  const cx = w / 2, cy = hh / 2, rmax = Math.hypot(cx, cy), vin = modo === "cor" ? 0 : (f.vin || 0);
-  const forca = f.forca || 1.3; // todos os filtros 30% mais fortes (mais perto das referências)
+  const cx = w / 2, cy = hh / 2, rmax = Math.hypot(cx, cy), vin = modo === "cor" ? 0 : Math.min(.85, (f.vin || 0) * 1.6), grosso = Math.max(w, hh) > 500;
+  const forca = f.forca || 1.5; // filtros bem puxados na foto de verdade (a pessoa diminui na Intensidade se quiser)
   for (let y = 0, i = 0; y < hh; y++) for (let x = 0; x < w; x++, i += 4) {
     let R = p[i], G = p[i + 1], B = p[i + 2]; const R0 = R, G0 = G, B0 = B;
     if (m) { const r = R, gg = G, b = B; R = r * m[0] + gg * m[1] + b * m[2]; G = r * m[3] + gg * m[4] + b * m[5]; B = r * m[6] + gg * m[7] + b * m[8]; }
@@ -4259,18 +4259,21 @@ function aplicaFiltro(ctx, w, hh, f, graoEsc, modo) {
     if (lift) { R = lift + R * (1 - lift / 255); G = lift + G * (1 - lift / 255); B = lift + B * (1 - lift / 255); }
     if (vin) { const k = 1 - vin * Math.pow(Math.hypot(x - cx, y - cy) / rmax, 2.2); R *= k; G *= k; B *= k; }
     if (forca !== 1) { R = R0 + (R - R0) * forca; G = G0 + (G - G0) * forca; B = B0 + (B - B0) * forca; }
-    if (g) { const n = (Math.random() - .5) * g; R += n; G += n; B += n; }
+    if (g && !grosso) { const n = (Math.random() - .5) * g; R += n; G += n; B += n; }
     p[i] = R; p[i + 1] = G; p[i + 2] = B;
   }
   ctx.putImageData(d, 0, 0);
+  // na foto grande o grão vai por cima em pontinhos maiores, para aparecer como na miniatura
+  if (g && grosso) { const e = Math.max(w, hh) / 520, n = ruido(Math.ceil(w / e), Math.ceil(hh / e), "g"); ctx.save(); ctx.imageSmoothingEnabled = true; ctx.globalCompositeOperation = "overlay"; ctx.globalAlpha = Math.min(1, g / 32); ctx.drawImage(n, 0, 0, w, hh); ctx.restore(); }
   if (modo !== "cor") efeitosFiltro(ctx, w, hh, f);
 }
 // vinheta e grão desenhados por cima (rápido, para a câmera ao vivo)
 function efeitosRapidos(ctx, w, hh, vin, g) {
+  vin = Math.min(.85, (vin || 0) * 1.6);
   if (vin) { const cx = w / 2, cy = hh / 2, R = Math.hypot(cx, cy), gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
     for (const t of [0, .3, .5, .7, .85, 1]) gr.addColorStop(t, `rgba(0,0,0,${Math.min(1, vin * Math.pow(t, 2.2))})`);
     ctx.save(); ctx.fillStyle = gr; ctx.fillRect(0, 0, w, hh); ctx.restore(); }
-  if (g) { const n = ruido(w, hh, "g"); ctx.save(); ctx.globalCompositeOperation = "overlay"; ctx.globalAlpha = Math.min(1, g / 40); ctx.drawImage(n, 0, 0, w, hh); ctx.restore(); }
+  if (g) { const e = Math.max(1, Math.max(w, hh) / 520), n = ruido(Math.ceil(w / e), Math.ceil(hh / e), "g"); ctx.save(); ctx.globalCompositeOperation = "overlay"; ctx.globalAlpha = Math.min(1, g / 32); ctx.drawImage(n, 0, 0, w, hh); ctx.restore(); }
 }
 // textura de ruído guardada por tamanho (não precisa sortear de novo a cada foto)
 const ruidoCache = {};
@@ -4314,7 +4317,7 @@ function super8Luz(ctx, w, hh) {
 // grão de película: grosso, colorido e irregular, como Super 8 revelado
 // Kashi: grão, poeirinha e brilho tingidos de rosa por cima da foto, sem lavar os pretos
 function graoRosa(ctx, w, hh) {
-  const esc = Math.max(1, Math.max(w, hh) / 1500), gw = Math.ceil(w / esc), gh = Math.ceil(hh / esc), ck = "rosa" + gw + "x" + gh;
+  const esc = Math.max(1, Math.max(w, hh) / 480), gw = Math.ceil(w / esc), gh = Math.ceil(hh / esc), ck = "rosa" + gw + "x" + gh;
   let n = ruidoCache[ck];
   if (!n) { limpaRuido(); n = ruidoCache[ck] = document.createElement("canvas"); n.width = gw; n.height = gh;
     const nc = n.getContext("2d"), d = nc.createImageData(gw, gh), q = d.data;
@@ -4332,7 +4335,7 @@ function graoRosa(ctx, w, hh) {
 }
 function pelicula(ctx, w, hh) {
   // grão fino de película: do tamanho de um pontinho na foto final, quase sem cor, mais presente nos meios-tons
-  const esc = Math.max(1, Math.max(w, hh) / 1500), gw = Math.ceil(w / esc), gh = Math.ceil(hh / esc), ck = "pel" + gw + "x" + gh;
+  const esc = Math.max(1, Math.max(w, hh) / 520), gw = Math.ceil(w / esc), gh = Math.ceil(hh / esc), ck = "pel" + gw + "x" + gh;
   let n = ruidoCache[ck];
   if (!n) { limpaRuido(); n = ruidoCache[ck] = document.createElement("canvas"); n.width = gw; n.height = gh;
     const nc = n.getContext("2d"), d = nc.createImageData(gw, gh), q = d.data;
@@ -5759,7 +5762,11 @@ function quadroCam() {
   if (v.videoWidth && !C.ocupado) {
     const f = FILTROS.find(y => y.id === F.filtro) || FILTROS[0], G = !(f.arco || f.holi) && glVivo(C);
     const lado = G ? 1280 : 800, k = lado / Math.max(v.videoWidth, v.videoHeight), w = Math.round(v.videoWidth * k), hh = Math.round(v.videoHeight * k);
-    if (C.frame.width !== w || C.frame.height !== hh) { C.frame.width = w; C.frame.height = hh; }
+    // o visor já recorta no formato da foto (ex.: 9:16) antes dos efeitos, para a vinheta e as luzes caírem nas bordas certas, como na foto final
+    let sx = 0, sy = 0, sw = w, sh = hh; const rec = F.recorte;
+    if (rec) { if (w / hh > rec) { sw = hh * rec; sx = (w - sw) / 2; } else { sh = w / rec; sy = (hh - sh) / 2; } }
+    const fw = Math.round(sw), fh = Math.round(sh);
+    if (C.frame.width !== fw || C.frame.height !== fh) { C.frame.width = fw; C.frame.height = fh; }
     const fx = C.frame.getContext("2d");
     C.filtrado = false;
     if (G) { try {
@@ -5768,17 +5775,17 @@ function quadroCam() {
       gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, G.tv); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, v); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       const intens = F.intens == null ? 1 : F.intens;
       // filtro inteiro (cor + vinheta, grão e luzes) numa tela à parte; a intensidade mistura com a câmera crua, como na foto final
-      const fl = C.filt || (C.filt = document.createElement("canvas")); if (fl.width !== w || fl.height !== hh) { fl.width = w; fl.height = hh; }
-      const flx = fl.getContext("2d"); flx.globalAlpha = 1; flx.globalCompositeOperation = "source-over"; flx.drawImage(G.c, 0, 0, w, hh);
+      const fl = C.filt || (C.filt = document.createElement("canvas")); if (fl.width !== fw || fl.height !== fh) { fl.width = fw; fl.height = fh; }
+      const flx = fl.getContext("2d"); flx.globalAlpha = 1; flx.globalCompositeOperation = "source-over"; flx.drawImage(G.c, sx, sy, sw, sh, 0, 0, fw, fh);
       const rnd0 = Math.random; let s0 = 7; Math.random = () => { s0 = (s0 * 16807) % 2147483647; return s0 / 2147483647; };
-      try { aplicaFiltro(flx, w, hh, f, F.grao || "auto", "efeitos"); } finally { Math.random = rnd0; }
-      fx.globalAlpha = 1; if (intens < .999) fx.drawImage(v, 0, 0, w, hh); fx.globalAlpha = intens; fx.drawImage(fl, 0, 0); fx.globalAlpha = 1;
+      try { aplicaFiltro(flx, fw, fh, f, F.grao || "auto", "efeitos"); } finally { Math.random = rnd0; }
+      fx.globalAlpha = 1; if (intens < .999) fx.drawImage(v, sx / k, sy / k, sw / k, sh / k, 0, 0, fw, fh); fx.globalAlpha = intens; fx.drawImage(fl, 0, 0); fx.globalAlpha = 1;
       // miniaturas dos filtros: tiradas da câmera crua, depois de a luz assentar (~meio segundo)
       C.n = (C.n || 0) + 1;
       if (C.n === 15) { const cr = document.createElement("canvas"); cr.width = w; cr.height = hh; cr.getContext("2d").drawImage(v, 0, 0, w, hh); S.foto = { ...S.foto, thumbSrc: cr }; S.fotoThumbsDe = null; if (!S.camSel) render(); } // nas câmeras da maleta não redesenha a tela (não pisca)
       C.filtrado = true;
     } catch (e) { C.gl = null; } }
-    if (!C.filtrado) fx.drawImage(v, 0, 0, w, hh);
+    if (!C.filtrado) fx.drawImage(v, sx / k, sy / k, sw / k, sh / k, 0, 0, fw, fh);
     montaFoto.img = null; C.ocupado = true;
     // o sorteio do filtro (luz, grão) é sempre o mesmo, para a imagem não piscar
     const rnd = Math.random; let sem = 7; Math.random = () => { sem = (sem * 16807) % 2147483647; return sem / 2147483647; };
@@ -5872,9 +5879,7 @@ function vFotos() {
         F.formato === "reels" ? null : h("p", { class: "lab", text: "Moldura" }),
         F.formato === "reels" ? null : h("div", { class: "opts" }, MOLDURAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: () => set("moldura", id) }, n))),
         painelAdesivos,
-        // o grão fica por último na mesa de revelação
-        h("p", { class: "lab", text: "Grão de filme" }),
-        h("div", { class: "opts" }, GRAOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.grao || "auto") === id), onclick: () => set("grao", id) }, n))),
+        // sem "Grão de filme" aqui: os filtros já trazem o grão de cada um
         // volta tudo ao começo (filtro, grão, formato, patch, moldura e adesivos) sem trocar a foto
         h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn", type: "button", onclick: () => { S.fotoSel = null; S.foto = { ...S.foto, filtro: "original", intens: 1, grao: "auto", formato: "original", patch: "nenhum", moldura: "nenhuma", adesivos: [] }; render(); } }, "Remover tudo")),
         F.vivo ? null :
