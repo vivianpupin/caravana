@@ -650,7 +650,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .brand span{color:#C9A56A;letter-spacing:.24em}
 .me:not(.bubble){background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.35);box-shadow:none}
 .me:not(.bubble) b{color:#E2BE78}
-nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(11,minmax(68px,1fr));column-gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(11,minmax(62px,1fr));overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
 
 /* ---------- Jogo: Moksha Patam ---------- */
@@ -1666,6 +1666,8 @@ nav.tabs button{position:relative}
 .cchead{display:flex;align-items:center;gap:12px}.cchead h2{margin:0;font-size:22px}
 .pombomini{width:56px;height:auto;flex:none}
 .envs{display:flex;flex-direction:column;gap:8px}
+.envlinha{position:relative}.envlinha>.envelope{width:100%}
+.envapaga{position:absolute;top:8px;right:8px;z-index:3;width:38px;height:38px;border-radius:50%;border:1px solid #D9BE8C;background:#FBF1DA;font-size:17px;cursor:pointer;box-shadow:0 2px 6px rgba(40,24,10,.2)}
 .envelope{display:flex;align-items:center;gap:12px;background:#FBF1DA;border:1px solid #D9BE8C;border-radius:12px;padding:10px 12px;text-align:left}
 .envelope.fut{background:#fff8ea;border-style:dashed}
 .rolinho{position:relative;width:38px;height:46px;flex:none;border-radius:2px;background:url(img/papiro.webp) center/cover;box-shadow:0 2px 5px rgba(0,0,0,.25)}
@@ -8013,10 +8015,15 @@ function editarCarta(c) {
       h("button", { class: "btn ghost", type: "button", onclick: () => grava("rascunho") }, "Guardar rascunho")),
     st,
     h("div", { class: "foot2" },
-      c.id ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (confirm("Apagar esta carta?")) S.db.doc((c.para ? "cartasPessoais/" : "cartas/") + c.id).delete().then(closeSheets, () => {}); } }, "Apagar carta") : h("span"),
+      c.id ? h("button", { class: "btn ghost", type: "button", onclick: () => apagarCarta(c, closeSheets) }, "Apagar carta") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
+}
+// líder apaga uma carta (geral ou pessoal) direto da lista
+function apagarCarta(c, depois) {
+  if (!confirm("Apagar a carta \"" + (c.titulo || "sem título") + "\"" + (c.para ? " para " + nomeDe(c.para).split(" ")[0] : "") + "? Ela some do app.")) return;
+  S.db.doc((c.para ? "cartasPessoais/" : "cartas/") + c.id).delete().then(() => { if (depois) depois(); }, () => alert("Não consegui apagar a carta. Confira a internet e tente de novo."));
 }
 function vCorrespondencia() {
   const abertas = cartasAbertas().slice().reverse();
@@ -8026,7 +8033,9 @@ function vCorrespondencia() {
   if (!abertas.length && !S.isOwner) return h("section", { class: "correio" },
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: "Cartas da travessia" }))),
     h("p", { class: "small", text: "Quando a líder mandar uma carta, o pombo-correio traz até aqui." }));
-  const env = (c, fut) => h("button", { type: "button", class: "envelope" + (fut ? " fut" : ""), onclick: () => fut ? editarCarta(c) : abrirCarta(c) },
+  const env = (c, fut) => !S.isOwner || c.id === "final" ? env1(c, fut) : h("div", { class: "envlinha" }, env1(c, fut),
+    h("button", { type: "button", class: "envapaga", "aria-label": "Apagar carta", title: "Apagar carta", onclick: () => apagarCarta(c) }, "🗑"));
+  const env1 = (c, fut) => h("button", { type: "button", class: "envelope" + (fut ? " fut" : ""), onclick: () => fut ? editarCarta(c) : abrirCarta(c) },
     h("span", { class: "rolinho", "aria-hidden": "true" }, h("i")),
     h("span", { class: "ctx" }, h("b", { text: (c.para || c.pessoal ? "💌 " : "") + (c.titulo || "Carta da líder") }),
       h("span", { text: (c.para && S.isOwner ? "Só para " + nomeDe(c.para).split(" ")[0] + " · " : c.pessoal ? "Só para você · " : "") + (fut ? (c.rascunho ? "Rascunho · ninguém vê ainda" : `Programada · ${dataCarta(c.envio)}, ${horaCarta(c.envio)} na Índia`) : (c.local ? c.local + " · " : "") + dataCarta(c.envio)) })));
