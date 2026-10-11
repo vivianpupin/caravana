@@ -584,6 +584,8 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .orcel.on .orcsim{filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
 .oraltar.orbitas{display:block;position:relative;aspect-ratio:1;width:min(340px,100%);margin:6px auto 0;transition:opacity .45s ease}
 .oraltar.orbitas.carregando{opacity:0}
+.orfundo{position:sticky;top:-18px;flex:0 0 auto;width:calc(100% + 32px);margin:-18px -16px 0;pointer-events:none;z-index:0;display:block}
+.oraculo>:not(.orfundo){position:relative;z-index:1}
 .orlinhas{position:absolute;inset:0}
 .orbitas .orcel{position:absolute;z-index:2;transform:translate(-50%,-50%) scale(var(--s,1));aspect-ratio:auto;background:none;box-shadow:none;border-radius:50%;padding:0;gap:1px}
 .orbitas .orcsim{width:100%}
@@ -2723,6 +2725,41 @@ function leituraOraculo(L) {
     h("p", { class: "orleye", text: "Mantra de " + G.nome }), h("p", { class: "orlmantra", text: G.mantra }),
     h("p", { class: "orlsmall", text: "Cante 9 vezes e entregue a sua pergunta ao céu." }));
 }
+function ceuFundo(cv, box) {
+  const x = cv.getContext("2d"), dpr = Math.min(2, window.devicePixelRatio || 1), quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W = 0, H = 0, est = [], voando = [], prox = 1.2, ult = performance.now();
+  const ajusta = () => { W = box.clientWidth; H = box.clientHeight; if (!W) return; cv.style.height = H + "px"; cv.style.marginBottom = -(H - 18 + 10) + "px"; cv.width = W * dpr; cv.height = H * dpr; x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // estrelas: poucas, de tamanhos e focos diferentes; as maiores ficam desfocadas, como se estivessem perto, e as pequenas, longe
+    est = Array.from({ length: 34 }, () => { const b = Math.random(), perto = Math.random() < .35; return { x: Math.random() * W, y: Math.random() * H, r: perto ? 3 + b * 7 : .5 + b * 1.1, a: perto ? .06 + b * .1 : .25 + b * .5, perto, f: .3 + Math.random() * 1.2, ph: Math.random() * 7, v: perto ? 4 + b * 4 : 1 + b * 1.5, c: Math.random() < .65 ? "255,244,226" : Math.random() < .5 ? "200,220,255" : "255,214,170" }; }); };
+  const quadro = agora => {
+    if (W && !box.isConnected) return;
+    if (!W || box.clientWidth !== W || Math.abs(box.clientHeight - H) > 40) ajusta();
+    if (!W) return requestAnimationFrame(quadro);
+    const dt = Math.min(.05, (agora - ult) / 1000), t = agora / 1000; ult = agora;
+    x.clearRect(0, 0, W, H);
+    for (const e of est) {
+      if (!quieto) { e.y -= e.v * dt; if (e.y < -e.r * 3) { e.y = H + e.r * 3; e.x = Math.random() * W; } }
+      const br = e.a * (.6 + .4 * Math.sin(t * e.f + e.ph));
+      const g = x.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.perto ? e.r : e.r * 3.5);
+      g.addColorStop(0, `rgba(${e.c},${br})`); g.addColorStop(e.perto ? .55 : .3, `rgba(${e.c},${br * (e.perto ? .6 : .35)})`); g.addColorStop(1, `rgba(${e.c},0)`);
+      x.fillStyle = g; x.beginPath(); x.arc(e.x, e.y, e.perto ? e.r : e.r * 3.5, 0, 7); x.fill();
+    }
+    if (!quieto) {
+      prox -= dt;
+      if (prox <= 0) { prox = 2.5 + Math.random() * 4; const ang = (20 + Math.random() * 30) * Math.PI / 180, vel = 300 + Math.random() * 220;
+        voando.push({ x: Math.random() * W * .7 - 30, y: Math.random() * H * .45, vx: Math.cos(ang) * vel, vy: Math.sin(ang) * vel, vida: 0, dur: 1.1 + Math.random() * .7, cauda: 90 + Math.random() * 90 }); }
+      voando = voando.filter(c => (c.vida += dt) < c.dur);
+      for (const c of voando) {
+        c.x += c.vx * dt; c.y += c.vy * dt; const k = Math.sin(Math.PI * Math.min(1, c.vida / c.dur)), n = Math.hypot(c.vx, c.vy), tx = c.x - c.vx / n * c.cauda, ty = c.y - c.vy / n * c.cauda;
+        const g = x.createLinearGradient(c.x, c.y, tx, ty); g.addColorStop(0, `rgba(255,252,240,${.95 * k})`); g.addColorStop(.25, `rgba(255,226,170,${.45 * k})`); g.addColorStop(1, "rgba(255,200,140,0)");
+        x.strokeStyle = g; x.lineWidth = 1.6; x.lineCap = "round"; x.beginPath(); x.moveTo(c.x, c.y); x.lineTo(tx, ty); x.stroke();
+        const h0 = x.createRadialGradient(c.x, c.y, 0, c.x, c.y, 5); h0.addColorStop(0, `rgba(255,255,245,${k})`); h0.addColorStop(1, "rgba(255,240,200,0)"); x.fillStyle = h0; x.beginPath(); x.arc(c.x, c.y, 5, 0, 7); x.fill();
+      }
+    }
+    requestAnimationFrame(quadro);
+  };
+  requestAnimationFrame(quadro);
+}
 function abrirOraculo() {
   closeSheets(); destravaSom();
   const L0 = lerOraculo();
@@ -2778,8 +2815,11 @@ function abrirOraculo() {
     if (L0 && GRAHAS.some(x => x.id === L0.g)) saida.append(h("p", { class: "orvolta", text: "Sua última leitura" }), leituraOraculo(L0));
     box.append(topo, altar, barra, h("div", { class: "actions", style: "justify-content:center" }, bt), saida, h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: fechar }, "Fechar")));
   }
+  // fundo do oráculo: poucas estrelas desfocadas (sensação de espaço infinito) e estrelas cadentes de vez em quando
+  const fundo = h("canvas", { class: "orfundo", "aria-hidden": "true" }); box.prepend(fundo);
   const sheet = h("div", { class: "sheet pombosheet", onclick: e => { if (e.target === sheet) fechar(); } }, box);
   document.body.append(sheet);
+  ceuFundo(fundo, box);
 }
 function vSaberes() {
   const e = S.ens.find(x => x.id === S.ensSel);
