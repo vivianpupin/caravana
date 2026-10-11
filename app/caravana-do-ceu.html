@@ -2665,6 +2665,17 @@ function vibrar(ms) {
   } catch (e) {}
   return false;
 }
+// o iPhone só libera o som dentro de um toque "completo" (soltar o dedo): o oráculo destrava o áudio ao abrir e a cada toque
+function destravaSom() {
+  try {
+    // no iPhone, toca mesmo com a chavinha do silencioso (só enquanto o oráculo está aberto)
+    if (navigator.audioSession) navigator.audioSession.type = "playback";
+    const A = window.AudioContext || window.webkitAudioContext; if (!A) return;
+    const ctx = S.audio || (S.audio = new A());
+    if (ctx.state !== "running") ctx.resume();
+    const b = ctx.createBufferSource(); b.buffer = ctx.createBuffer(1, 1, 22050); b.connect(ctx.destination); b.start(0);
+  } catch (e) {}
+}
 // som do oráculo: um "tim" de cristal a cada planeta que acende (junto com a vibração, ou no lugar dela)
 function tique(forte) {
   try {
@@ -2709,10 +2720,10 @@ function leituraOraculo(L) {
     h("p", { class: "orlsmall", text: "Cante 9 vezes e entregue a sua pergunta ao céu." }));
 }
 function abrirOraculo() {
-  closeSheets();
+  closeSheets(); destravaSom();
   const L0 = lerOraculo();
   const box = h("div", { role: "dialog", "aria-label": "Oráculo dos Planetas", class: "oraculo" });
-  const fechar = () => { clearInterval(box._t); closeSheets(); render(); };
+  const fechar = () => { clearInterval(box._t); try { if (navigator.audioSession) navigator.audioSession.type = "auto"; } catch (e) {} closeSheets(); render(); };
   // o altar como o sistema solar: Surya no centro, os planetas nas órbitas na ordem real; Rahu e Ketu, opostos, na órbita da Lua (onde acontecem os eclipses)
   const celulas = GRAHAS.map(x => h("div", { class: "orcel", style: `--c:${x.cor};` + posOrb(x.id) }, planetaEl(x.id, "orcsim"), h("span", { class: "orcnome", text: x.nome })));
   const altar = h("div", { class: "oraltar orbitas carregando" }, orbitasSvg(), celulas);
@@ -2756,7 +2767,7 @@ function abrirOraculo() {
         bt.remove(); barra.remove();
         setTimeout(() => { saida.replaceChildren(leituraOraculo(L), h("div", { class: "actions", style: "justify-content:center;margin-top:10px" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirOraculo() }, "Consultar de novo"))); saida.scrollIntoView({ behavior: "smooth", block: "start" }); }, 600); };
       anda(); };
-    bt.addEventListener("pointerdown", comeca); bt.addEventListener("pointerup", solta); bt.addEventListener("pointerleave", solta); bt.addEventListener("pointercancel", solta);
+    bt.addEventListener("pointerdown", comeca); ["touchstart", "touchend", "click"].forEach(ev => bt.addEventListener(ev, destravaSom, { passive: true })); bt.addEventListener("pointerup", solta); bt.addEventListener("pointerleave", solta); bt.addEventListener("pointercancel", solta);
     bt.addEventListener("contextmenu", e => e.preventDefault());
     // a última leitura fica guardada para reler, até a próxima consulta
     if (L0 && GRAHAS.some(x => x.id === L0.g)) saida.append(h("p", { class: "orvolta", text: "Sua última leitura" }), leituraOraculo(L0));
