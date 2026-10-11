@@ -232,7 +232,9 @@ body{min-height:100vh;min-height:100dvh;justify-content:space-between;gap:10px}
     f.className = "furo"; f.style.left = (ca.offsetWidth - 74) + "px"; f.style.top = "34px"; ca.append(f);
     bl.classList.add("picotado"); document.getElementById("embarcar").classList.add("aperta"); if (navigator.vibrate) navigator.vibrate(30);
     setTimeout(() => document.body.classList.add("saindo"), 450);
-    setTimeout(() => { location.href = "/"; }, 950);
+    // o guardião vai junto para o app (missão "Conhecer o seu guardião")
+    try { localStorage.setItem("cdi-guardiao", g[0]); } catch (e) {}
+    setTimeout(() => { location.href = "/?g=" + g[0]; }, 950);
   });
 })();
 function raspadinha(palavra) {
