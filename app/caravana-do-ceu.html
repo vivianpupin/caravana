@@ -2719,7 +2719,7 @@ function vibrar(ms) {
   try {
     const lb = document.createElement("label"); lb.setAttribute("aria-hidden", "true"); lb.style.display = "none";
     const ck = document.createElement("input"); ck.type = "checkbox"; ck.setAttribute("switch", ""); lb.append(ck);
-    document.head.append(lb); lb.click(); lb.remove();
+    lb.addEventListener("click", e => e.stopPropagation()); document.head.append(lb); lb.click(); lb.remove();
   } catch (e) {}
   return false;
 }
@@ -2804,7 +2804,7 @@ function ceuEstrelado(cv, cad, dono) {
     via = fazVia(); };
   addEventListener("resize", ajusta);
   const quadro = agora => {
-    if (W && !dono.isConnected) { removeEventListener("resize", ajusta); return; }
+    if (W && !dono.isConnected) { removeEventListener("resize", ajusta); try { if (navigator.audioSession) navigator.audioSession.type = "auto"; } catch (e) {} return; }
     if (!W || cv.clientWidth !== W) ajusta();
     if (!W) return requestAnimationFrame(quadro);
     const dt = Math.min(.05, (agora - ult) / 1000), t = agora / 1000; ult = agora;
@@ -2850,7 +2850,7 @@ function abrirOraculo() {
     const a = graus * Math.PI / 180;
     c.style.setProperty("--lx", (50 - Math.cos(a) * 34).toFixed(1) + "%"); c.style.setProperty("--ly", (50 - Math.sin(a) * 34).toFixed(1) + "%"); };
   const COM_SOMBRA = { budha: 1, shukra: 1, chandra: 1, mangala: 1, guru: 1, shani: 1 };
-  const celulas = GRAHAS.map(x => { const c = h("div", { class: "orcel" + (x.id === "surya" ? " orsol" : ""), style: `--c:${x.cor};width:${ORB[x.id][2]}%` }, h("span", { class: "orcorpo" }, planetaEl(x.id, "orcsim"), COM_SOMBRA[x.id] ? h("i", { class: "orsombra" + (x.id === "shani" ? " anel" : "") }) : null), h("span", { class: "orcnome", text: x.nome })); poe(c, x.id, ORB[x.id][1]); return c; });
+  const celulas = GRAHAS.map(x => { const c = h("div", { class: "orcel" + (x.id === "surya" ? " orsol" : ""), style: `--c:${x.cor};width:${ORB[x.id][2]}%` }, h("span", { class: "orcorpo" }, planetaEl(x.id, "orcsim"), null), h("span", { class: "orcnome", text: x.nome })); poe(c, x.id, ORB[x.id][1]); return c; });
   const altar = h("div", { class: "oraltar orbitas carregando" }, orbitasSvg(), celulas, h("div", { class: "orsolaura", "aria-hidden": "true" }));
   // o altar aparece inteiro, com um esmaecer suave, quando as imagens dos planetas estão prontas
   Promise.race([Promise.all(preCarregaPlanetas().concat(celulas.map(c => { const i = c.querySelector("img"); return i && i.decode ? i.decode().catch(() => {}) : null; }))), new Promise(r => setTimeout(r, 2500))])
