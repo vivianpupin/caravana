@@ -585,11 +585,13 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .oraltar.orbitas{display:block;position:relative;aspect-ratio:1;width:min(340px,100%);margin:6px auto 0;transition:opacity .45s ease}
 .oraltar.orbitas.carregando{opacity:0}
 .orlinhas{position:absolute;inset:0}
-.orlinhas .orgira{transform-box:view-box;transform-origin:50px 50px;animation:orgira linear infinite}
-.orlinhas .orpisca{animation:orpisca 3.3s ease-in-out infinite alternate}
-@keyframes orgira{to{transform:rotate(360deg)}}
-@keyframes orpisca{0%{opacity:.25}100%{opacity:1}}
-@media (prefers-reduced-motion:reduce){.orlinhas .orgira,.orlinhas .orpisca{animation:none}}
+.orlinhas .orceu,.orlinhas .orbrilhos{position:absolute;inset:0;width:100%;height:100%}
+.orlinhas .orceu{inset:-12%;width:124%;height:124%;-webkit-mask-image:radial-gradient(circle,#000 45%,transparent 70%);mask-image:radial-gradient(circle,#000 45%,transparent 70%)}
+.orlinhas .orcorre{animation:orcorre linear infinite}
+.orlinhas .orpisca{animation:orpisca 2.6s ease-in-out infinite alternate}
+@keyframes orcorre{to{stroke-dashoffset:-100}}
+@keyframes orpisca{0%{opacity:.15}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.orlinhas .orcorre,.orlinhas .orpisca{animation:none}}
 .orbitas .orcel{position:absolute;transform:translate(-50%,-50%);aspect-ratio:auto;background:none;box-shadow:none;border-radius:50%;padding:0;gap:1px}
 .orbitas .orcsim{width:100%}
 .orbitas .orcnome{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:1px;font-size:9px;letter-spacing:.04em;white-space:nowrap}
@@ -2658,23 +2660,38 @@ const planetaEl = (id, cls) => h("img", { class: cls || "planeta", src: "img/pla
 const hojeLocal = () => new Date().toLocaleDateString("en-CA");
 function lerOraculo() { try { return JSON.parse(localStorage.getItem("cdi-oraculo") || "null"); } catch (e) { return null; } }
 const ORB = { surya: [0, 0, 20], budha: [.34, 145, 10.5], shukra: [.45, 20, 12], chandra: [.57, 205, 11], rahu: [.57, 115, 12], ketu: [.57, 295, 14], mangala: [.68, 340, 11.5], guru: [.8, 160, 15], shani: [.9, 62, 21] };
-// órbitas vivas: cada órbita é um rio de estrelinhas que pulsam e caminham devagar, como a Via Láctea
+// órbitas vivas: fundo de céu com a Via Láctea atravessando, órbitas finas de luz (douradas e azuladas) e pontos de luz que correm por elas
 const orbitasSvg = () => {
   const o = h("div", { class: "orlinhas", "aria-hidden": "true" });
-  let semente = 7; const rnd = () => (semente = (semente * 16807) % 2147483647) / 2147483647;
-  const CORES = ["#FFF4D6", "#F3D58A", "#E8C9FF", "#BFE6FF", "#FFD2B0"];
+  let semente = 11; const rnd = () => (semente = (semente * 16807) % 2147483647) / 2147483647;
+  const gauss = () => (rnd() + rnd() + rnd() - 1.5) / 1.5;
+  // céu: estrelas soltas e a faixa da Via Láctea na diagonal, com nuvens de poeira
+  const TAM = 720, cv = document.createElement("canvas"); cv.width = cv.height = TAM; cv.className = "orceu";
+  const x = cv.getContext("2d"); x.globalCompositeOperation = "lighter";
+  const faixa = t => { const u = t * 1.5 - .25; return [u * TAM, (1 - u) * TAM * .78 + TAM * .08]; }; // centro da faixa, de baixo à esquerda para cima à direita
+  for (let k = 0; k < 40; k++) { const [cx, cy] = faixa(rnd()), off = gauss() * 70, px = cx + off * .7, py = cy + off * .7, raio = 40 + rnd() * 90, cor = [[150, 120, 210], [90, 150, 210], [230, 180, 130], [200, 140, 190]][k % 4];
+    const g = x.createRadialGradient(px, py, 0, px, py, raio); g.addColorStop(0, `rgba(${cor},${.035 + rnd() * .045})`); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.beginPath(); x.arc(px, py, raio, 0, 7); x.fill(); }
+  for (let k = 0; k < 3600; k++) { const [cx, cy] = faixa(rnd()), off = gauss() * 85, t = rnd();
+    x.fillStyle = `rgba(${240 + rnd() * 15 | 0},${232 + rnd() * 20 | 0},${220 + rnd() * 35 | 0},${.12 + t * .45})`; x.beginPath(); x.arc(cx + off * .7, cy + off * .7, .35 + t * t * .9, 0, 7); x.fill(); }
+  for (let k = 0; k < 260; k++) { const t = rnd(); x.fillStyle = `rgba(255,248,235,${.15 + t * .55})`; x.beginPath(); x.arc(rnd() * TAM, rnd() * TAM, .4 + t * t * 1.2, 0, 7); x.fill(); }
+  o.append(cv);
+  // órbitas de luz e os pontos de luz que correm nelas
   const aneis = [.34, .45, .57, .68, .8, .9].map((r, n) => {
-    const R = r * 50, qtd = Math.round(R * 1.7), grupos = ["", "", ""];
-    for (let k = 0; k < qtd; k++) {
-      const a = k / qtd * Math.PI * 2 + rnd() * .12, d = (rnd() - .5) * 1.6, x = 50 + Math.cos(a) * (R + d), y = 50 + Math.sin(a) * (R + d);
-      grupos[k % 3] += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${(.12 + rnd() * .32).toFixed(2)}" fill="${CORES[Math.floor(rnd() * CORES.length)]}"/>`;
-    }
-    const dur = 140 + n * 40, dir = n % 2 ? "reverse" : "normal";
-    return `<circle cx="50" cy="50" r="${R}" fill="none" stroke="url(#orvia)" stroke-width="2.2" filter="url(#orbru)" opacity=".5"/>
-      <g class="orgira" style="animation-duration:${dur}s;animation-direction:${dir}">${grupos.map((g, q) => `<g class="orpisca" style="animation-delay:${-(q * 1.1 + n * .37).toFixed(2)}s">${g}</g>`).join("")}</g>`;
+    const R = r * 50, ouro = n % 2 === 0, cor = ouro ? "url(#orouro)" : "url(#orazul)", luz = ouro ? "#FFE3A3" : "#E4F0FF";
+    const dur = (7 + n * 2.2 + rnd() * 3).toFixed(1), ini = -(rnd() * 20).toFixed(1), rot = (rnd() * 360).toFixed(0);
+    return `<g transform="rotate(${rot} 50 50)"><circle cx="50" cy="50" r="${R}" fill="none" stroke="${cor}" stroke-width=".5" opacity=".35" filter="url(#orglow)"/>
+      <circle cx="50" cy="50" r="${R}" fill="none" stroke="${cor}" stroke-width=".18" opacity=".75"/>
+      <circle class="orcorre" cx="50" cy="50" r="${R}" fill="none" stroke="${luz}" stroke-width=".55" stroke-linecap="round" pathLength="100" stroke-dasharray="5 95" filter="url(#orglow)" style="animation-duration:${dur}s;animation-delay:${ini}s;animation-direction:${n % 2 ? "reverse" : "normal"}"/></g>`;
   }).join("");
-  o.innerHTML = `<svg viewBox="0 0 100 100" width="100%" height="100%"><defs><filter id="orbru" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".9"/></filter>
-    <linearGradient id="orvia" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8E7BD6" stop-opacity=".35"/><stop offset=".5" stop-color="#E2C08A" stop-opacity=".22"/><stop offset="1" stop-color="#6FB5D9" stop-opacity=".3"/></linearGradient></defs>${aneis}</svg>`;
+  const bril = ["", "", ""];
+  for (let k = 0; k < 24; k++) bril[k % 3] += `<circle cx="${(4 + rnd() * 92).toFixed(1)}" cy="${(4 + rnd() * 92).toFixed(1)}" r="${(.25 + rnd() * .3).toFixed(2)}" fill="${rnd() < .6 ? "#FFF3D8" : "#D9E8FF"}" filter="url(#orglow)"/>`;
+  const svg = document.createElement("div"); svg.className = "orbrilhos";
+  svg.innerHTML = `<svg viewBox="0 0 100 100" width="100%" height="100%"><defs>
+    <filter id="orglow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation=".7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <linearGradient id="orouro" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F5B654" stop-opacity=".9"/><stop offset=".45" stop-color="#FFD98A" stop-opacity=".35"/><stop offset="1" stop-color="#E89B3C" stop-opacity=".85"/></linearGradient>
+    <linearGradient id="orazul" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFD9FF" stop-opacity=".85"/><stop offset=".5" stop-color="#E8F1FF" stop-opacity=".3"/><stop offset="1" stop-color="#9DC2F0" stop-opacity=".8"/></linearGradient></defs>
+    ${bril.map((g, q) => `<g class="orpisca" style="animation-delay:${-q * 1.3}s">${g}</g>`).join("")}${aneis}</svg>`;
+  o.append(svg);
   return o;
 };
 const posOrb = (id, k = 1, kr = 1) => { const [r, a, w] = ORB[id], rad = a * Math.PI / 180; return `left:${50 + Math.cos(rad) * r * kr * 50}%;top:${50 + Math.sin(rad) * r * kr * 50}%;width:${w * k}%`; };
