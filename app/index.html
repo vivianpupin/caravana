@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 18:40";</script>
+<script>window.__VERSAO = "11/10 · 18:58";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -592,8 +592,8 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .quizdeus{display:block;width:170px;max-width:60%;margin:10px auto 4px;border-radius:14px;box-shadow:0 10px 24px rgba(40,24,10,.25)}
 .oraculocard{display:flex;align-items:center;gap:14px;width:100%;margin:14px 0 18px;padding:14px;border:0;border-radius:18px;text-align:left;cursor:pointer;font:inherit;color:#F1E2BC;box-shadow:var(--shadow);background:radial-gradient(ellipse at 20% 0%,#3B3550,#1B1A2A 70%)}
 .orcgrade{flex:0 0 84px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
-.orcgrade{width:84px;min-width:84px;overflow:hidden;padding:6px;border-radius:12px;background:linear-gradient(180deg,#CFE3E3,#A9CBCF)}
-.orcmini{display:block;width:100%;aspect-ratio:64/84;overflow:hidden}
+.orcgrade{width:84px;min-width:84px;overflow:hidden}
+.orcmini{display:block;width:100%;aspect-ratio:1;overflow:visible}
 .orcmini svg,.orcsim svg,.orlsim svg{display:block;width:100%;height:100%}
 .orctx{display:flex;flex-direction:column;gap:3px}
 .orctx small{font:600 11px Poppins,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#E2C08A}
@@ -605,11 +605,11 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .ortopo .eyebrow{color:#E2C08A;margin:0}
 .ortopo h2{font-family:var(--display);font-size:24px;margin:4px 0;color:#F6EDDA}
 .orintro{font-size:14px;line-height:1.5;opacity:.85;margin:4px 0 0}
-.oraltar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px auto 0;width:min(310px,100%);padding:12px;border-radius:18px;background:linear-gradient(180deg,#D6E8E8,#A9CBCF);box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),0 8px 20px rgba(0,0,0,.4)}
-.orcel{aspect-ratio:1;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:rgba(255,255,255,.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);transition:background .12s,box-shadow .12s,transform .12s}
-.orcsim{display:block;width:70%;aspect-ratio:64/84}
-.orcnome{font:700 10.5px Poppins,sans-serif;letter-spacing:.08em;color:#2A2826;background:rgba(247,243,232,.85);border-radius:6px;padding:1px 6px}
-.orcel.on{background:rgba(255,214,130,.75);box-shadow:0 0 20px #FFC94A,inset 0 0 0 2px #FFE7A8;transform:scale(1.06)}
+.oraltar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px auto 0;width:min(310px,100%)}
+.orcel{aspect-ratio:1;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);transition:background .12s,box-shadow .12s,transform .12s}
+.orcsim{display:block;width:72%;aspect-ratio:1}
+.orcnome{font:600 11px Poppins,sans-serif;letter-spacing:.08em;opacity:.8}
+.orcel.on{background:rgba(255,214,130,.16);box-shadow:0 0 22px rgba(255,201,74,.55),inset 0 0 0 1.5px #FFE7A8;transform:scale(1.06)}
 .orcel.on .orcsim{filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
 .orcel.escolhido{animation:escolhido 1.2s ease-in-out infinite alternate}
 @keyframes escolhido{from{box-shadow:0 0 10px #FFC94A}to{box-shadow:0 0 34px #FFB51F}}
@@ -621,7 +621,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .orvolta{text-align:center;font-size:13px;opacity:.8;margin:6px 0 0}
 .orleitura{background:#FBF6EC;color:#282722;border-radius:18px;padding:18px 16px;margin-top:8px}
 .orltopo{display:flex;gap:14px;align-items:center;margin-bottom:6px}
-.orlsim{flex:0 0 56px;height:74px}
+.orlsim{flex:0 0 72px;height:72px;border-radius:50%;background:radial-gradient(circle,#2E2B44,#1B1A2A);padding:2px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 .orltopo h2{font-family:var(--display);font-size:26px;margin:0}
 .orlsub{margin:0;font-size:13px;color:#8A3F32;letter-spacing:.04em}
 .orlnak{margin:2px 0 0;font:italic 14px Lora,Georgia,serif;color:#5B4A38}
@@ -2620,21 +2620,46 @@ const GRAHA_MAIS = {
 };
 // como cada mansão da Lua colore o planeta que cai nela
 const NAK_TEMA = ["um começo rápido, que cura", "uma gestação que pede paciência", "um fogo que corta o que sobra", "um cultivo fértil", "uma busca curiosa", "uma chuva que limpa", "um recomeço", "um cuidado que nutre", "um olhar para o que está escondido", "uma honra aos que vieram antes", "um descanso que restaura", "um compromisso cumprido", "um trabalho feito com as próprias mãos", "uma forma bonita", "um movimento livre", "um foco num único alvo", "uma amizade fiel", "uma responsabilidade assumida", "um mergulho até a raiz", "uma persistência suave", "uma vitória que permanece", "uma escuta atenta", "um ritmo próprio", "um recolhimento que cura", "uma decisão que transforma", "uma calma profunda", "uma travessia protegida"];
-// os planetas como no altar dos Navagrahas dos templos de Varanasi: bolas pintadas à mão sobre pilares de pedra preta, com o nome em hindi
-const PLANETA_COR = { surya: ["#E9893A", "सूर्य"], chandra: ["#F2EEE3", "चंद्र"], mangala: ["#C93A24", "मंगल"], budha: ["#2F8A4E", "बुध"], guru: ["#F0C531", "गुरु"],
-  shukra: ["#AFC6D3", "शुक्र"], shani: ["#26252B", "शनि"], rahu: ["#55607A", "राहु"], ketu: ["#8A6446", "केतु"] };
+// os planetas desenhados como são no céu, com as cores do altar dos Navagrahas de Varanasi
+// (Rahu e Ketu, que são os pontos dos eclipses, viram um eclipse e um cometa)
 function planetaSvg(id) {
-  const [cor, hi] = PLANETA_COR[id] || ["#999", ""], escuro = id === "shani";
-  return `<svg viewBox="0 0 64 84" width="100%" height="100%" aria-hidden="true"><defs>
-<radialGradient id="pg-${id}" cx="36%" cy="30%" r="75%"><stop offset="0" stop-color="#fff" stop-opacity="${escuro ? .28 : .45}"/><stop offset=".35" stop-color="${cor}" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".38"/></radialGradient>
-<linearGradient id="pp-${id}" x1="0" x2="1"><stop offset="0" stop-color="#3A3836"/><stop offset=".45" stop-color="#1A1918"/><stop offset="1" stop-color="#0E0D0C"/></linearGradient></defs>
-<rect x="25" y="50" width="14" height="28" rx="2" fill="url(#pp-${id})"/><rect x="20" y="76" width="24" height="6" rx="1.5" fill="#1C1B1A"/>
-<ellipse cx="32" cy="50" rx="11" ry="3" fill="#2A2826"/>
-<circle cx="32" cy="32" r="24" fill="${cor}"/><circle cx="32" cy="32" r="24" fill="url(#pg-${id})"/>
-<ellipse cx="20" cy="42" rx="2.4" ry="1.4" fill="#000" opacity=".12"/><ellipse cx="43" cy="24" rx="1.6" ry="1" fill="#000" opacity=".1"/><ellipse cx="37" cy="44" rx="3" ry="1.2" fill="#fff" opacity=".1"/>
-<rect x="19" y="27" width="26" height="11" rx="1.4" fill="#F7F3E8" stroke="#2A2826" stroke-width=".6" transform="rotate(-6 32 32)"/>
-<text x="32" y="35.6" text-anchor="middle" font-size="8" font-family="'Noto Sans Devanagari','Kohinoor Devanagari','Mangal',sans-serif" font-weight="700" fill="#2A2826" transform="rotate(-6 32 32)">${hi}</text>
-<path d="M29 8.5 q3 -6 6 0 z" fill="#D9A93A"/><circle cx="32" cy="3.5" r="1.6" fill="#D9A93A"/></svg>`;
+  const u = id + Math.random().toString(36).slice(2, 6);
+  // luz de cima à esquerda e sombra embaixo à direita: dá volume de esfera
+  const volume = (r, cx = 32, cy = 32) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#lz${u})"/>`;
+  const defsVol = `<radialGradient id="lz${u}" cx="34%" cy="30%" r="78%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".28" stop-color="#fff" stop-opacity=".08"/><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient>`;
+  const brilho = (cor, r = 30) => `<radialGradient id="gl${u}"><stop offset=".5" stop-color="${cor}" stop-opacity=".55"/><stop offset="1" stop-color="${cor}" stop-opacity="0"/></radialGradient>`;
+  const svg = (defs, corpo) => `<svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true"><defs>${defsVol}${defs}<clipPath id="cp${u}"><circle cx="32" cy="32" r="21"/></clipPath></defs>${corpo}</svg>`;
+  const halo = `<circle cx="32" cy="32" r="31" fill="url(#gl${u})"/>`;
+  switch (id) {
+    case "surya": return svg(brilho("#FFB347") + `<radialGradient id="b${u}" cx="40%" cy="38%"><stop offset="0" stop-color="#FFF3C4"/><stop offset=".45" stop-color="#FFB040"/><stop offset="1" stop-color="#E0581F"/></radialGradient>`,
+      halo + Array.from({ length: 12 }, (_, k) => { const a = k * Math.PI / 6, x1 = 32 + Math.cos(a) * 24, y1 = 32 + Math.sin(a) * 24, x2 = 32 + Math.cos(a) * 29, y2 = 32 + Math.sin(a) * 29; return `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="#FFC24D" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>`; }).join("") +
+      `<circle cx="32" cy="32" r="20" fill="url(#b${u})"/><g clip-path="url(#cp${u})" opacity=".35"><circle cx="25" cy="27" r="3" fill="#E8792A"/><circle cx="38" cy="36" r="2.4" fill="#E8792A"/><circle cx="30" cy="41" r="1.8" fill="#E8792A"/><circle cx="41" cy="25" r="1.6" fill="#E8792A"/></g>`);
+    case "chandra": return svg(brilho("#FFFFFF"), halo + `<circle cx="32" cy="32" r="21" fill="#F4F0E6"/><g clip-path="url(#cp${u})"><path d="M14 30 q8 -10 18 -6 q6 4 4 10 q-8 8 -20 2 z" fill="#DCD6C8" opacity=".7"/>` +
+      `<circle cx="38" cy="38" r="5" fill="#D3CCBC"/><circle cx="38.6" cy="38.6" r="4" fill="#E6E0D3"/><circle cx="24" cy="40" r="3" fill="#D3CCBC"/><circle cx="24.5" cy="40.5" r="2.3" fill="#E6E0D3"/><circle cx="42" cy="24" r="2.4" fill="#D3CCBC"/><circle cx="29" cy="22" r="1.6" fill="#D3CCBC"/></g>` + volume(21));
+    case "mangala": return svg(brilho("#E0603A", 30), halo + `<circle cx="32" cy="32" r="21" fill="#C93A24"/><g clip-path="url(#cp${u})"><path d="M8 30 q10 -6 18 0 t20 -2 t14 4 v8 q-12 -6 -22 0 t-18 -2 t-12 2 z" fill="#9E2716" opacity=".6"/>` +
+      `<path d="M12 42 q10 -4 18 1 t18 -1" stroke="#E2683F" stroke-width="2" fill="none" opacity=".6"/><ellipse cx="32" cy="12.5" rx="8" ry="3" fill="#FBEDE6" opacity=".9"/></g>` + volume(21));
+    case "budha": return svg(brilho("#5FC27E"), halo + `<circle cx="32" cy="32" r="21" fill="#2F8A4E"/><g clip-path="url(#cp${u})"><circle cx="25" cy="27" r="4" fill="#25703F"/><circle cx="25.6" cy="27.6" r="3" fill="#3A9C5C"/>` +
+      `<circle cx="39" cy="39" r="5" fill="#25703F"/><circle cx="39.7" cy="39.7" r="3.8" fill="#3A9C5C"/><circle cx="40" cy="24" r="2.2" fill="#25703F"/><circle cx="27" cy="42" r="2" fill="#25703F"/></g>` + volume(21));
+    case "guru": return svg(brilho("#FFD84A"), halo + `<circle cx="32" cy="32" r="21" fill="#F0C531"/><g clip-path="url(#cp${u})">` +
+      `<path d="M8 19 q24 -3 48 0 v4 q-24 3 -48 0 z" fill="#D49A1E" opacity=".75"/><path d="M8 27 q24 3 48 0 v3 q-24 -2 -48 0 z" fill="#FBE59A"/>` +
+      `<path d="M8 34 q24 -3 48 0 v5 q-24 3 -48 0 z" fill="#C98516" opacity=".8"/><path d="M8 44 q24 2 48 0 v3 q-24 -2 -48 0 z" fill="#E0A82A" opacity=".8"/>` +
+      `<ellipse cx="39" cy="37" rx="5" ry="2.8" fill="#B4462E"/><ellipse cx="39" cy="37" rx="3" ry="1.5" fill="#D06A45"/></g>` + volume(21));
+    case "shukra": return svg(brilho("#CFE6F2"), halo + `<circle cx="32" cy="32" r="21" fill="#AFC6D3"/><g clip-path="url(#cp${u})" fill="none" stroke-linecap="round">` +
+      `<path d="M10 24 q12 -6 22 0 t24 -2" stroke="#E4EEF3" stroke-width="3" opacity=".75"/><path d="M8 33 q14 5 26 -1 t24 2" stroke="#D3E2EA" stroke-width="2.5" opacity=".7"/><path d="M12 42 q12 -5 22 1 t20 -1" stroke="#E4EEF3" stroke-width="2.5" opacity=".6"/></g>` + volume(21));
+    case "shani": return svg(`<radialGradient id="gl${u}"><stop offset=".55" stop-color="#E8CC98" stop-opacity=".35"/><stop offset="1" stop-color="#E8CC98" stop-opacity="0"/></radialGradient><linearGradient id="an${u}" x1="0" x2="1"><stop offset="0" stop-color="#8E6A38"/><stop offset=".5" stop-color="#F1D9A0"/><stop offset="1" stop-color="#8E6A38"/></linearGradient>` +
+      `<clipPath id="ct${u}"><rect x="0" y="0" width="64" height="32"/></clipPath>`, halo +
+      `<g transform="rotate(-18 32 32)"><ellipse cx="32" cy="32" rx="30" ry="8.5" fill="none" stroke="url(#an${u})" stroke-width="3.2" clip-path="url(#ct${u})"/><ellipse cx="32" cy="32" rx="25" ry="6.6" fill="none" stroke="#C9A062" stroke-width="1.2" opacity=".8" clip-path="url(#ct${u})"/></g>` +
+      `<circle cx="32" cy="32" r="16" fill="#2A2830"/><g clip-path="url(#cp${u})"><path d="M14 26 h36 M14 31 h36 M14 37 h36" stroke="#4A4652" stroke-width="2" opacity=".7"/></g>` +
+      volume(16) + `<g transform="rotate(-18 32 32)"><ellipse cx="32" cy="32" rx="30" ry="8.5" fill="none" stroke="url(#an${u})" stroke-width="3.2" clip-path="url(#cb${u})"/><ellipse cx="32" cy="32" rx="25" ry="6.6" fill="none" stroke="#C9A062" stroke-width="1.2" opacity=".8" clip-path="url(#cb${u})"/></g>` +
+      `<defs><clipPath id="cb${u}"><rect x="0" y="32" width="64" height="32"/></clipPath></defs>`);
+    case "rahu": return svg(`<radialGradient id="gl${u}"><stop offset=".55" stop-color="#9FB2D8" stop-opacity=".95"/><stop offset=".7" stop-color="#55607A" stop-opacity=".5"/><stop offset="1" stop-color="#55607A" stop-opacity="0"/></radialGradient>`,
+      halo + `<circle cx="32" cy="32" r="19" fill="#141420"/><circle cx="32" cy="32" r="19" fill="none" stroke="#E8EEFF" stroke-width="1.6" opacity=".9"/><circle cx="24" cy="21" r="2" fill="#fff" opacity=".9"/>`);
+    case "ketu": return svg(`<linearGradient id="gl${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E8C9A0" stop-opacity="0"/><stop offset="1" stop-color="#E8C9A0" stop-opacity=".9"/></linearGradient>` +
+      `<radialGradient id="kc${u}" cx="40%" cy="38%"><stop offset="0" stop-color="#FFF1D6"/><stop offset=".5" stop-color="#C79260"/><stop offset="1" stop-color="#6E4A2C"/></radialGradient>`,
+      `<path d="M2 4 Q22 16 40 33 L33 41 Q16 22 2 4 Z" fill="url(#gl${u})"/><path d="M8 3 Q26 18 42 31" stroke="#F6E2C2" stroke-width="1.2" fill="none" opacity=".6"/><path d="M3 12 Q20 24 36 38" stroke="#F6E2C2" stroke-width="1" fill="none" opacity=".45"/>` +
+      `<circle cx="40" cy="39" r="11" fill="url(#kc${u})"/>` + volume(11, 40, 39));
+  }
+  return svg("", "");
 }
 const planetaEl = (id, cls) => { const e = h("span", { class: cls || "planeta", "aria-hidden": "true" }); e.innerHTML = planetaSvg(id); return e; };
 const hojeLocal = () => new Date().toLocaleDateString("en-CA");
@@ -2643,7 +2668,7 @@ function vOraculoCard() {
   const L = lerOraculo(), G = L && GRAHAS.find(x => x.id === L.g);
   return h("button", { type: "button", class: "oraculocard", onclick: () => abrirOraculo() },
     h("div", { class: "orcgrade", "aria-hidden": "true" }, GRAHAS.map(x => planetaEl(x.id, "orcmini"))),
-    h("span", { class: "orctx" }, h("small", { text: "Oráculo dos Planetas" }), h("b", { text: "Os nove planetas respondem" }),
+    h("span", { class: "orctx" }, h("b", { text: "Oráculo dos Planetas" }),
       h("span", { text: G ? "Sua última leitura: " + G.nome + ". Toque para consultar de novo." : "Pense numa pergunta, segure o botão e concentre-se." })));
 }
 function leituraOraculo(L) {
@@ -2672,7 +2697,7 @@ function abrirOraculo() {
   const altar = h("div", { class: "oraltar" }, celulas);
   const barra = h("div", { class: "orbarra", "aria-hidden": "true" }, h("i"));
   const saida = h("div", { class: "orsaida" });
-  const topo = h("div", { class: "ortopo" }, h("p", { class: "eyebrow", text: "Oráculo dos Planetas" }), h("h2", { text: "Os nove planetas respondem" }),
+  const topo = h("div", { class: "ortopo" }, h("h2", { text: "Oráculo dos Planetas" }),
     h("p", { class: "orintro", text: "Na astrologia védica, os nove planetas (os navagrahas) são as forças que movem a vida. Pense numa pergunta, segure o botão enquanto se concentra e solte quando sentir que é a hora." }));
   const acende = i => celulas.forEach((c, k) => c.classList.toggle("on", k === i));
   {
