@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 19:02";</script>
+<script>window.__VERSAO = "11/10 · 19:05";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -593,8 +593,8 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .oraculocard{display:flex;align-items:center;gap:14px;width:100%;margin:14px 0 18px;padding:14px;border:0;border-radius:18px;text-align:left;cursor:pointer;font:inherit;color:#F1E2BC;box-shadow:var(--shadow);background:radial-gradient(ellipse at 20% 0%,#3B3550,#1B1A2A 70%)}
 .orcgrade{flex:0 0 84px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
 .orcgrade{width:84px;min-width:84px;overflow:hidden}
-.orcmini{display:block;width:100%;aspect-ratio:1;overflow:visible}
-.orcmini svg,.orcsim svg,.orlsim svg{display:block;width:100%;height:100%}
+.orcmini{display:block;width:100%;aspect-ratio:1;object-fit:contain;overflow:visible}
+.orcmini svg,.orcsim svg,.orlsim svg,.orcmini,.orcsim,.orlsim{display:block;width:100%;height:auto;-webkit-user-drag:none;user-select:none}
 .orctx{display:flex;flex-direction:column;gap:3px}
 .orctx small{font:600 11px Poppins,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#E2C08A}
 .orctx b{font:600 18px/1.25 Lora,Georgia,serif}
@@ -607,7 +607,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .orintro{font-size:14px;line-height:1.5;opacity:.85;margin:4px 0 0}
 .oraltar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px auto 0;width:min(310px,100%)}
 .orcel{aspect-ratio:1;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);transition:background .12s,box-shadow .12s,transform .12s}
-.orcsim{display:block;width:72%;aspect-ratio:1}
+.orcsim{display:block;width:72%}
 .orcnome{font:600 11px Poppins,sans-serif;letter-spacing:.08em;opacity:.8}
 .orcel.on{background:rgba(255,214,130,.16);box-shadow:0 0 22px rgba(255,201,74,.55),inset 0 0 0 1.5px #FFE7A8;transform:scale(1.06)}
 .orcel.on .orcsim{filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
@@ -630,7 +630,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .orvolta{text-align:center;font-size:13px;opacity:.8;margin:6px 0 0}
 .orleitura{background:#FBF6EC;color:#282722;border-radius:18px;padding:18px 16px;margin-top:8px}
 .orltopo{display:flex;gap:14px;align-items:center;margin-bottom:6px}
-.orlsim{flex:0 0 72px;height:72px;border-radius:50%;background:radial-gradient(circle,#2E2B44,#1B1A2A);padding:2px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.orlsim{flex:0 0 72px;width:72px!important;height:72px!important;border-radius:50%;background:radial-gradient(circle,#2E2B44,#1B1A2A);padding:4px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 .orltopo h2{font-family:var(--display);font-size:26px;margin:0}
 .orlsub{margin:0;font-size:13px;color:#8A3F32;letter-spacing:.04em}
 .orlnak{margin:2px 0 0;font:italic 14px Lora,Georgia,serif;color:#5B4A38}
@@ -2671,7 +2671,8 @@ function planetaSvg(id) {
   }
   return svg("", "");
 }
-const planetaEl = (id, cls) => { const e = h("span", { class: cls || "planeta", "aria-hidden": "true" }); e.innerHTML = planetaSvg(id); return e; };
+// as imagens realistas de cada planeta (o desenho em SVG acima fica de reserva)
+const planetaEl = (id, cls) => h("img", { class: cls || "planeta", src: "img/planetas/" + id + ".webp", alt: "", "aria-hidden": "true", draggable: "false" });
 const hojeLocal = () => new Date().toLocaleDateString("en-CA");
 function lerOraculo() { try { return JSON.parse(localStorage.getItem("cdi-oraculo") || "null"); } catch (e) { return null; } }
 function vOraculoCard() {
@@ -2704,7 +2705,7 @@ function abrirOraculo() {
   const box = h("div", { role: "dialog", "aria-label": "Oráculo dos Planetas", class: "oraculo" });
   const fechar = () => { clearInterval(box._t); closeSheets(); render(); };
   // o altar como o sistema solar: Surya no centro, os planetas nas órbitas na ordem real; Rahu e Ketu, opostos, na órbita da Lua (onde acontecem os eclipses)
-  const ORB = { surya: [0, 0, 21], budha: [.34, 75, 11], shukra: [.45, 20, 12.5], chandra: [.57, 205, 11.5], rahu: [.57, 115, 11], ketu: [.57, 295, 11], mangala: [.68, 340, 12], guru: [.8, 160, 16], shani: [.9, 62, 19] };
+  const ORB = { surya: [0, 0, 20], budha: [.34, 145, 10.5], shukra: [.45, 20, 12], chandra: [.57, 205, 11], rahu: [.57, 115, 12], ketu: [.57, 295, 14], mangala: [.68, 340, 11.5], guru: [.8, 160, 15], shani: [.9, 62, 21] };
   const celulas = GRAHAS.map(x => { const [r, a, w] = ORB[x.id], rad = a * Math.PI / 180;
     return h("div", { class: "orcel", style: `--c:${x.cor};left:${50 + Math.cos(rad) * r * 50}%;top:${50 + Math.sin(rad) * r * 50}%;width:${w}%` }, planetaEl(x.id, "orcsim"), h("span", { class: "orcnome", text: x.nome })); });
   const orbitas = h("div", { class: "orlinhas", "aria-hidden": "true" }); orbitas.innerHTML = `<svg viewBox="0 0 100 100" width="100%" height="100%">${[.34, .45, .57, .68, .8, .9].map(r => `<circle cx="50" cy="50" r="${r * 50}" fill="none" stroke="rgba(232,204,152,.22)" stroke-width=".35" ${r === .57 ? 'stroke-dasharray="1.2 1.2"' : ""}/>`).join("")}</svg>`;
