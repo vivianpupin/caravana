@@ -2789,9 +2789,9 @@ function ceuEstrelado(cv, cad, dono) {
     const g0 = v.createLinearGradient(0, -T * .16, 0, T * .16); g0.addColorStop(0, "rgba(0,0,0,0)"); g0.addColorStop(.5, "rgba(255,226,190,.10)"); g0.addColorStop(1, "rgba(0,0,0,0)"); v.fillStyle = g0; v.fillRect(-m, -T * .16, T, T * .32);
     for (let k = 0; k < 90; k++) { const px = (Math.random() - .5) * T, py = (Math.random() + Math.random() - 1) * T * .07, raio = T * (.03 + Math.random() * .07);
       const cor = [[255, 214, 160], [170, 140, 230], [110, 160, 230], [235, 160, 200], [255, 236, 210]][k % 5];
-      const g = v.createRadialGradient(px, py, 0, px, py, raio); g.addColorStop(0, `rgba(${cor},${.05 + Math.random() * .08})`); g.addColorStop(1, "rgba(0,0,0,0)"); v.fillStyle = g; v.beginPath(); v.arc(px, py, raio, 0, 7); v.fill(); }
-    for (let k = 0; k < T * 14; k++) { const px = (Math.random() - .5) * T, gs = (Math.random() + Math.random() + Math.random() - 1.5), py = gs * (.4 + Math.abs(gs) * .6) * T * .11, b = Math.random();
-      v.fillStyle = `rgba(255,${238 + Math.random() * 17 | 0},${222 + Math.random() * 33 | 0},${.12 + b * .6})`; v.beginPath(); v.arc(px, py, .35 + b * b * .9, 0, 7); v.fill(); }
+      const g = v.createRadialGradient(px, py, 0, px, py, raio); g.addColorStop(0, `rgba(${cor},${.06 + Math.random() * .09})`); g.addColorStop(1, "rgba(0,0,0,0)"); v.fillStyle = g; v.beginPath(); v.arc(px, py, raio, 0, 7); v.fill(); }
+    for (let k = 0; k < T * 5; k++) { const px = (Math.random() - .5) * T, gs = (Math.random() + Math.random() + Math.random() - 1.5), py = gs * (.4 + Math.abs(gs) * .6) * T * .11, b = Math.random();
+      v.fillStyle = `rgba(255,${238 + Math.random() * 17 | 0},${222 + Math.random() * 33 | 0},${.08 + b * .4})`; v.beginPath(); v.arc(px, py, .3 + b * b * .7, 0, 7); v.fill(); }
     v.globalCompositeOperation = "destination-out";
     for (let k = 0; k < 70; k++) { const px = (Math.random() - .5) * T, py = (Math.random() - .5) * T * .05, raio = T * (.01 + Math.random() * .035);
       const g = v.createRadialGradient(px, py, 0, px, py, raio); g.addColorStop(0, `rgba(0,0,0,${.3 + Math.random() * .4})`); g.addColorStop(1, "rgba(0,0,0,0)"); v.fillStyle = g; v.beginPath(); v.arc(px, py, raio, 0, 7); v.fill(); }
@@ -2799,8 +2799,8 @@ function ceuEstrelado(cv, cad, dono) {
   };
   const ajusta = () => { W = cv.clientWidth; H = cv.clientHeight; if (!W) return; D = Math.hypot(W, H);
     for (const [c, k] of [[cv, x], [cad, y]]) { c.width = W * dpr; c.height = H * dpr; k.setTransform(dpr, 0, 0, dpr, 0, 0); }
-    const n = Math.round(D * D / 1700);
-    est = Array.from({ length: n }, () => { const b = Math.random(); return { r0: Math.sqrt(Math.random()) * D / 2, a0: Math.random() * 7, r: .3 + b * b * 1.6, a: .25 + b * .65, f: .6 + Math.random() * 2.4, ph: Math.random() * 7, c: Math.random() < .7 ? "255,246,228" : Math.random() < .5 ? "205,225,255" : "255,215,170" }; });
+    const n = Math.round(D * D / 5200);
+    est = Array.from({ length: n }, () => { const b = Math.random(); return { r0: Math.sqrt(Math.random()) * D / 2, a0: Math.random() * 7, r: .3 + b * b * 1.4, a: .2 + b * .7, f: .6 + Math.random() * 2.4, ph: Math.random() * 7, c: Math.random() < .7 ? "255,246,228" : Math.random() < .5 ? "205,225,255" : "255,215,170" }; });
     via = fazVia(); };
   addEventListener("resize", ajusta);
   const quadro = agora => {
