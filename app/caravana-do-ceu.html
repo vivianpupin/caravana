@@ -561,8 +561,9 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .quizdeus{display:block;width:170px;max-width:60%;margin:10px auto 4px;border-radius:14px;box-shadow:0 10px 24px rgba(40,24,10,.25)}
 .oraculocard{display:flex;align-items:center;gap:14px;width:100%;margin:14px 0 18px;padding:14px;border:0;border-radius:18px;text-align:left;cursor:pointer;font:inherit;color:#F1E2BC;box-shadow:var(--shadow);background:radial-gradient(ellipse at 20% 0%,#3B3550,#1B1A2A 70%)}
 .orcgrade{flex:0 0 84px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
-.orcgrade{width:84px;min-width:84px;overflow:hidden}
-.orcmini{display:block;width:100%;aspect-ratio:1;object-fit:contain;overflow:visible}
+.orcmapa{position:relative;flex:0 0 96px;width:96px;aspect-ratio:1}
+.orcmapa .orcmini{position:absolute;transform:translate(-50%,-50%);height:auto}
+.orcmini{display:block}
 .orcmini svg,.orcsim svg,.orlsim svg,.orcmini,.orcsim,.orlsim{display:block;width:100%;height:auto;-webkit-user-drag:none;user-select:none}
 .orctx{display:flex;flex-direction:column;gap:3px}
 .orctx small{font:600 11px Poppins,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#E2C08A}
@@ -2644,10 +2645,14 @@ function planetaSvg(id) {
 const planetaEl = (id, cls) => h("img", { class: cls || "planeta", src: "img/planetas/" + id + ".webp", alt: "", "aria-hidden": "true", draggable: "false" });
 const hojeLocal = () => new Date().toLocaleDateString("en-CA");
 function lerOraculo() { try { return JSON.parse(localStorage.getItem("cdi-oraculo") || "null"); } catch (e) { return null; } }
+const ORB = { surya: [0, 0, 20], budha: [.34, 145, 10.5], shukra: [.45, 20, 12], chandra: [.57, 205, 11], rahu: [.57, 115, 12], ketu: [.57, 295, 14], mangala: [.68, 340, 11.5], guru: [.8, 160, 15], shani: [.9, 62, 21] };
+const orbitasSvg = () => { const o = h("div", { class: "orlinhas", "aria-hidden": "true" }); o.innerHTML = `<svg viewBox="0 0 100 100" width="100%" height="100%">${[.34, .45, .57, .68, .8, .9].map(r => `<circle cx="50" cy="50" r="${r * 50}" fill="none" stroke="rgba(232,204,152,.22)" stroke-width=".35" ${r === .57 ? 'stroke-dasharray="1.2 1.2"' : ""}/>`).join("")}</svg>`; return o; };
+const posOrb = id => { const [r, a, w] = ORB[id], rad = a * Math.PI / 180; return `left:${50 + Math.cos(rad) * r * 50}%;top:${50 + Math.sin(rad) * r * 50}%;width:${w}%`; };
 function vOraculoCard() {
   const L = lerOraculo(), G = L && GRAHAS.find(x => x.id === L.g);
   return h("button", { type: "button", class: "oraculocard", onclick: () => abrirOraculo() },
-    h("div", { class: "orcgrade", "aria-hidden": "true" }, GRAHAS.map(x => planetaEl(x.id, "orcmini"))),
+    // o mesmo sistema solar do altar, em miniatura
+    h("div", { class: "orcmapa", "aria-hidden": "true" }, orbitasSvg(), GRAHAS.map(x => { const e = planetaEl(x.id, "orcmini"); e.style.cssText = posOrb(x.id); return e; })),
     h("span", { class: "orctx" }, h("b", { text: "Oráculo dos Planetas" }),
       h("span", { text: G ? "Sua última leitura: " + G.nome + ". Toque para consultar de novo." : "Pense numa pergunta, segure o botão e concentre-se." })));
 }
@@ -2674,11 +2679,20 @@ function abrirOraculo() {
   const box = h("div", { role: "dialog", "aria-label": "Oráculo dos Planetas", class: "oraculo" });
   const fechar = () => { clearInterval(box._t); closeSheets(); render(); };
   // o altar como o sistema solar: Surya no centro, os planetas nas órbitas na ordem real; Rahu e Ketu, opostos, na órbita da Lua (onde acontecem os eclipses)
-  const ORB = { surya: [0, 0, 20], budha: [.34, 145, 10.5], shukra: [.45, 20, 12], chandra: [.57, 205, 11], rahu: [.57, 115, 12], ketu: [.57, 295, 14], mangala: [.68, 340, 11.5], guru: [.8, 160, 15], shani: [.9, 62, 21] };
-  const celulas = GRAHAS.map(x => { const [r, a, w] = ORB[x.id], rad = a * Math.PI / 180;
-    return h("div", { class: "orcel", style: `--c:${x.cor};left:${50 + Math.cos(rad) * r * 50}%;top:${50 + Math.sin(rad) * r * 50}%;width:${w}%` }, planetaEl(x.id, "orcsim"), h("span", { class: "orcnome", text: x.nome })); });
-  const orbitas = h("div", { class: "orlinhas", "aria-hidden": "true" }); orbitas.innerHTML = `<svg viewBox="0 0 100 100" width="100%" height="100%">${[.34, .45, .57, .68, .8, .9].map(r => `<circle cx="50" cy="50" r="${r * 50}" fill="none" stroke="rgba(232,204,152,.22)" stroke-width=".35" ${r === .57 ? 'stroke-dasharray="1.2 1.2"' : ""}/>`).join("")}</svg>`;
-  const altar = h("div", { class: "oraltar orbitas" }, orbitas, celulas);
+  const celulas = GRAHAS.map(x => h("div", { class: "orcel", style: `--c:${x.cor};` + posOrb(x.id) }, planetaEl(x.id, "orcsim"), h("span", { class: "orcnome", text: x.nome })));
+  const altar = h("div", { class: "oraltar orbitas" }, orbitasSvg(), celulas);
+  // os planetas giram nas órbitas enquanto o oráculo está aberto, todos juntos como uma mandala (assim nenhum passa por cima do outro); acelera enquanto a pessoa segura o botão
+  const VEL = { surya: 0, budha: 5, shukra: 5, chandra: 5, rahu: 5, ketu: 5, mangala: 5, guru: 5, shani: 5 };
+  const ang = Object.fromEntries(GRAHAS.map(x => [x.id, ORB[x.id][1]]));
+  let ultimo = performance.now(), acelera = 1;
+  const gira = agora => {
+    if (!box.isConnected) return;
+    const dt = Math.min(.1, (agora - ultimo) / 1000); ultimo = agora;
+    GRAHAS.forEach((x, k) => { if (!VEL[x.id]) return; ang[x.id] += VEL[x.id] * dt * acelera; const [r] = ORB[x.id], rad = ang[x.id] * Math.PI / 180;
+      celulas[k].style.left = (50 + Math.cos(rad) * r * 50) + "%"; celulas[k].style.top = (50 + Math.sin(rad) * r * 50) + "%"; });
+    requestAnimationFrame(gira);
+  };
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) requestAnimationFrame(t => { ultimo = t; requestAnimationFrame(gira); });
   const barra = h("div", { class: "orbarra", "aria-hidden": "true" }, h("i"));
   const saida = h("div", { class: "orsaida" });
   const topo = h("div", { class: "ortopo" }, h("h2", { text: "Oráculo dos Planetas" }),
@@ -2688,11 +2702,11 @@ function abrirOraculo() {
     let segurando = false, inicio = 0, pos = 4, vel = 0, raf = 0;
     const bt = h("button", { type: "button", class: "orbotao" }, "Segure para concentrar");
     const gira = () => { if (!segurando) return; const t = (performance.now() - inicio) / 1000, f = Math.min(1, t / 3);
-      barra.firstChild.style.width = (f * 100) + "%"; vel += 16 + f * 40;
+      barra.firstChild.style.width = (f * 100) + "%"; vel += 16 + f * 40; acelera = 1 + f * 5;
       if (vel > 160 - f * 120) { vel = 0; pos = (pos + 1 + Math.floor(Math.random() * 3)) % 9; acende(pos); try { navigator.vibrate && navigator.vibrate(4); } catch (e) {} }
       raf = requestAnimationFrame(gira); };
     const comeca = e => { e.preventDefault(); if (segurando || bt.disabled) return; segurando = true; inicio = performance.now(); bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(gira); };
-    const solta = () => { if (!segurando) return; segurando = false; cancelAnimationFrame(raf); bt.disabled = true; bt.classList.remove("vivo");
+    const solta = () => { if (!segurando) return; segurando = false; cancelAnimationFrame(raf); bt.disabled = true; bt.classList.remove("vivo"); acelera = 1;
       if (performance.now() - inicio < 600) { bt.disabled = false; bt.textContent = "Segure um pouco mais"; barra.firstChild.style.width = "0"; return; }
       // a luz desacelera e para num planeta
       const fim = Math.floor(Math.random() * 9), L = { dia: hojeLocal(), g: GRAHAS[fim].id, n: Math.floor(Math.random() * 27), p: Math.floor(Math.random() * 3) };
