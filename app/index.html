@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "10/10 · 18:08";</script>
+<script>window.__VERSAO = "11/10 · 08:01";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3027,7 +3027,7 @@ const BONECO = {
   chapeu: [["fedora", "Chapéu de viajante"], ["safari", "Safári"], ["lenco", "Lenço"], ["turbante", "Turbante"], ["flores", "Coroa de flores"], ["sem", "Sem chapéu"]],
   roupa: [["basico", "Sem roupa"], ["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["sari2", "Sari de bolinhas"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
   roupaCor: ["#8B6B43", "#C2A878", "#5F6B45", "#8A3F32", "#D9822B", "#B83A6B", "#2F5D7C", "#E8E0CF", "#2B2622"],
-  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["violao", "Violão"], ["tambor", "Djembê"], ["manjira", "Manjira"], ["flautim", "Flauta"], ["sitar", "Sitar"], ["harmonium", "Harmonium"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["tridente", "Tridente"], ["nenhum", "Nada"]],
+  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["violao", "Violão"], ["tambor", "Djembê"], ["ghungroo", "Ghungroo"], ["flautim", "Flauta"], ["sitar", "Sitar"], ["harmonium", "Harmonium"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["nenhum", "Nada"]],
   colar: [["nenhum", "Nenhum"], ["guirlanda", "Guirlanda de flores"], ["rudraksha", "Rudraksha"], ["tulsi", "Contas de tulsi"], ["contas", "Contas coloridas"], ["ouro", "Colar de ouro"], ["moedas", "Colar de moedas"], ["om", "Pingente Om"]],
   testa: [["nada", "Nada"], ["bindi", "Bindi"], ["tilak", "Tilak"], ["cinzas", "Shivaísta · tripundra"], ["vaishnava", "Vaishnava · urdhva pundra"]],
   nariz: [["nenhum", "Sem piercing"], ["argola", "Argola no nariz"], ["ponto", "Brilhante no nariz"]],
@@ -3321,8 +3321,8 @@ function desenhaBoneco(b) {
   if (oc === "sol") g.append(h("rect", { x: 22.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), h("rect", { x: 30.8, y: 20.3, width: 6.4, height: 4.4, rx: 1.6, fill: "#1E1A16" }), h("line", { x1: 29.2, y1: 21.5, x2: 30.8, y2: 21.5, stroke: "#1E1A16", "stroke-width": 1 }));
   if (oc === "grau") g.append(h("rect", { x: 23, y: 20.6, width: 6.2, height: 4, rx: .8, fill: "rgba(255,255,255,.18)", stroke: "#5A3A22", "stroke-width": .9 }), h("rect", { x: 30.8, y: 20.6, width: 6.2, height: 4, rx: .8, fill: "rgba(255,255,255,.18)", stroke: "#5A3A22", "stroke-width": .9 }), h("line", { x1: 29.2, y1: 22, x2: 30.8, y2: 22, stroke: "#5A3A22", "stroke-width": .8 }));
   // o que leva nas mãos: instrumento na mão esquerda; o objeto vai na direita, espelhado
-  // maracá virou manjira e chicote virou tridente: quem já tinha escolhido vê o novo
-  const troca = a => ({ maraca: "manjira", chicote: "tridente" })[a] || a;
+  // maracá virou ghungroo e o chicote saiu: quem já tinha escolhido vê o novo
+  const troca = a => ({ maraca: "ghungroo", manjira: "ghungroo", chicote: "nenhum" })[a] || a;
   for (const [A, T] of [[troca(b.acessorio), g], [troca(b.acessorio2), b.acessorio2 && b.acessorio2 !== "nenhum" ? g.appendChild(h("g", { transform: "translate(60 0) scale(-1 1)" })) : null]]) {
     if (!A || !T) continue;
   if (A === "japamala") { for (let i = 0; i < 14; i++) { const t = i / 14 * Math.PI * 2; T.append(h("circle", { cx: 48 + Math.cos(t) * 4.5, cy: 66 + Math.sin(t) * 6, r: 1.15, fill: "#7A4A2B" })); } T.append(h("rect", { x: 47, y: 72, width: 2, height: 5, fill: "#A3231A" })); }
@@ -3332,11 +3332,10 @@ function desenhaBoneco(b) {
       P("M44.5 53.5 L46.5 60 L48.5 53.5 L50 60 L51.5 53.5 L53.5 60 L55.5 53.5", "none", { stroke: "#F1E2BC", "stroke-width": .6 }),
       h("rect", { x: 43.2, y: 52.2, width: 13.6, height: 1.4, rx: .6, fill: "#5E3514" }), h("rect", { x: 46.3, y: 70.6, width: 7.4, height: 1.4, rx: .6, fill: "#5E3514" }),
       h("ellipse", { cx: 50, cy: 51, rx: 6.5, ry: 1.7, fill: "#E9D7B0", stroke: "#8A6B43", "stroke-width": .5 }));
-    // manjira: os dois pratinhos de bronze dos kirtans, presos por um cordão vermelho
-    if (A === "manjira") T.append(P("M47.5 60.5 Q50 55 53.5 51.5", "none", { stroke: "#A3231A", "stroke-width": .9, "stroke-linecap": "round" }),
-      h("g", { transform: "rotate(-18 47 61)" }, h("ellipse", { cx: 47, cy: 61, rx: 4.6, ry: 1.9, fill: "#C99A3A", stroke: "#7A5A1E", "stroke-width": .5 }), h("ellipse", { cx: 47, cy: 60.3, rx: 1.6, ry: .8, fill: "#E8C873", stroke: "#7A5A1E", "stroke-width": .4 }), h("path", { d: "M43.2 61.3 Q47 62.6 50.8 61.3", fill: "none", stroke: "#F2DC9A", "stroke-width": .5 })),
-      h("g", { transform: "rotate(24 54 51)" }, h("ellipse", { cx: 54, cy: 51, rx: 4.6, ry: 1.9, fill: "#C99A3A", stroke: "#7A5A1E", "stroke-width": .5 }), h("ellipse", { cx: 54, cy: 50.3, rx: 1.6, ry: .8, fill: "#E8C873", stroke: "#7A5A1E", "stroke-width": .4 }), h("path", { d: "M50.2 51.3 Q54 52.6 57.8 51.3", fill: "none", stroke: "#F2DC9A", "stroke-width": .5 })),
-      P("M57.5 46 Q59 47.5 58.5 49.5 M59.8 44.8 Q62 47.3 61.2 50.4", "none", { stroke: "rgba(90,63,34,.55)", "stroke-width": .6, "stroke-linecap": "round" }));
+    // ghungroo: o cordão de guizos de bronze das danças e dos kirtans, balançando na mão
+    if (A === "ghungroo") T.append(P("M47.5 59 Q50.5 50 55.5 47", "none", { stroke: "#A3231A", "stroke-width": 1.3, "stroke-linecap": "round" }),
+      ...[[48.3, 57.4], [49.2, 55], [50.3, 52.8], [51.7, 50.9], [53.2, 49.4], [54.8, 48.2]].map(([x, y]) => h("g", null, h("circle", { cx: x + .9, cy: y + 1.1, r: 1.35, fill: "#C99A3A", stroke: "#7A5A1E", "stroke-width": .4 }), h("circle", { cx: x + .5, cy: y + .7, r: .35, fill: "#F2DC9A" }), h("line", { x1: x + .3, y1: y + 1.6, x2: x + 1.5, y2: y + 1.6, stroke: "#5A3F14", "stroke-width": .35 }))),
+      P("M57.5 43.5 Q59 45 58.5 47 M59.8 42.3 Q62 44.8 61.2 47.9", "none", { stroke: "rgba(90,63,34,.55)", "stroke-width": .6, "stroke-linecap": "round" }));
     if (A === "flautim") T.append(h("line", { x1: 44.5, y1: 67, x2: 53.5, y2: 45, stroke: "#C9A063", "stroke-width": 2.2, "stroke-linecap": "round" }),
       ...[.25, .38, .5, .62].map(t => h("circle", { cx: 44.5 + 9 * t, cy: 67 - 22 * t, r: .45, fill: "#5A3A22" })),
       ...[.08, .88].map(t => h("line", { x1: 43.4 + 9 * t, y1: 66.6 - 22 * t, x2: 45.6 + 9 * t, y2: 67.4 - 22 * t, stroke: "#A3231A", "stroke-width": .9 })));
@@ -3366,10 +3365,6 @@ function desenhaBoneco(b) {
     if (A === "lotus") T.append(...[-40, -15, 15, 40].map(a => h("ellipse", { cx: 48 + Math.sin(a * Math.PI / 180) * 4, cy: 54 - Math.cos(a * Math.PI / 180) * 2, rx: 2, ry: 4.5, fill: "#E7849E", transform: `rotate(${a} ${48 + Math.sin(a * Math.PI / 180) * 4} ${54 - Math.cos(a * Math.PI / 180) * 2})` })), h("ellipse", { cx: 48, cy: 56, rx: 5.5, ry: 2, fill: "#5F8A4A" }), h("circle", { cx: 48, cy: 54, r: 1.4, fill: "#F2C94C" }));
     if (A === "sino") T.append(P("M44 62 Q44 55 48 55 Q52 55 52 62 L53.5 64 L42.5 64 Z", ouro), h("circle", { cx: 48, cy: 65, r: 1.2, fill: "#8A6B2A" }), h("rect", { x: 47, y: 52, width: 2, height: 3.5, fill: "#8A6B2A" }));
     if (A === "bolsa") T.append(h("line", { x1: 20, y1: 36, x2: 41, y2: 55, stroke: couro, "stroke-width": 1.8 }), h("rect", { x: 37, y: 51, width: 10, height: 9, rx: 2, fill: "#7A5431" }), h("rect", { x: 37, y: 51, width: 10, height: 3.5, rx: 1.5, fill: "#5E3F24" }));
-    // trishula, o tridente de Shiva
-    if (A === "tridente") T.append(h("line", { x1: 48, y1: 40, x2: 48, y2: 84, stroke: "#6B4A2A", "stroke-width": 1.6, "stroke-linecap": "round" }),
-      P("M43 44 Q43 38 44 36 M48 44 L48 34 M53 44 Q53 38 52 36", "none", { stroke: "#C9CDD2", "stroke-width": 1.8, "stroke-linecap": "round" }), P("M43 44 L53 44", "none", { stroke: "#C9CDD2", "stroke-width": 1.8 }),
-      h("rect", { x: 46.6, y: 45.2, width: 2.8, height: 1.6, rx: .5, fill: "#C9A063" }));
     if (A === "lanterna") T.append(h("circle", { cx: 48, cy: 67, r: 7, fill: "rgba(255,196,90,.35)" }), h("rect", { x: 45.5, y: 62, width: 5, height: 8, rx: 1, fill: "#C9A063" }), h("rect", { x: 46.5, y: 63.5, width: 3, height: 5, fill: "#FFD27A" }), h("line", { x1: 48, y1: 62, x2: 48, y2: 59, stroke: couro, "stroke-width": 1 }));
     if (A === "mapa") T.append(h("g", { transform: "rotate(-10 50 60)" },
       h("path", { d: "M40 52 L46 53.5 L52 52 L58 53.5 L58 67 L52 65.5 L46 67 L40 65.5 Z", fill: "#EAD6A8", stroke: "#8A6B43", "stroke-width": .7, "stroke-linejoin": "round" }),
@@ -3382,10 +3377,10 @@ function desenhaBoneco(b) {
   if (exprG) g.append(...exprG);
   return g;
 }
-const INSTRUMENTOS = ["violao", "tambor", "manjira", "flautim", "sitar", "harmonium", "sino"];
+const INSTRUMENTOS = ["violao", "tambor", "ghungroo", "flautim", "sitar", "harmonium", "sino"];
 // bonecos antigos guardavam o objeto no mesmo campo do instrumento: o objeto passa para a mão direita
 function maosSeparadas(b) {
-  if (b && (b.acessorio === "maraca" || b.acessorio === "chicote" || b.acessorio2 === "chicote")) b = { ...b, acessorio: b.acessorio === "maraca" ? "manjira" : b.acessorio === "chicote" ? "tridente" : b.acessorio, acessorio2: b.acessorio2 === "chicote" ? "tridente" : b.acessorio2 };
+  if (b && !b.deus && (["maraca", "manjira", "chicote"].includes(b.acessorio) || ["chicote", "tridente"].includes(b.acessorio2))) b = { ...b, acessorio: ["maraca", "manjira"].includes(b.acessorio) ? "ghungroo" : b.acessorio === "chicote" ? "nenhum" : b.acessorio, acessorio2: ["chicote", "tridente"].includes(b.acessorio2) ? "nenhum" : b.acessorio2 };
   if (!b || !b.acessorio || b.acessorio === "nenhum" || INSTRUMENTOS.includes(b.acessorio) || (b.acessorio2 && b.acessorio2 !== "nenhum")) return b;
   return { ...b, acessorio2: b.acessorio, acessorio: "nenhum" };
 }
