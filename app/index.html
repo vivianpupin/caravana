@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 17:37";</script>
+<script>window.__VERSAO = "11/10 · 17:53";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -499,6 +499,36 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .welcome h1{font-size:clamp(28px,7vw,36px)}
 .welcome form{display:flex;flex-direction:column;gap:12px;text-align:left}
 .welcome label,.sheet label{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:500;color:var(--soft)}
+.missoes{background:linear-gradient(180deg,rgba(199,180,147,.22),rgba(199,180,147,.08));border:1px solid rgba(138,63,50,.22);border-radius:18px;padding:16px 14px 10px;margin:18px 0}
+.missoestopo{display:flex;gap:14px;align-items:center}
+.missoestopo h3{margin:2px 0 4px;font-size:19px}
+.missoestopo .small{margin:0}
+.missoesselo{flex:0 0 74px;border:0;background:none;padding:0;cursor:pointer}
+.missoesselo img{width:74px;display:block;filter:drop-shadow(0 4px 6px rgba(40,24,10,.35))}
+.missoesselo.off img{filter:grayscale(1) opacity(.55)}
+.missoesbarra{height:6px;border-radius:9px;background:rgba(40,39,34,.12);margin:12px 0 6px;overflow:hidden}
+.missoesbarra i{display:block;height:100%;background:linear-gradient(90deg,#8A3F32,#C9A062);border-radius:9px;transition:width .6s}
+.missoeslista{list-style:none;margin:0;padding:0}
+.missoeslista li button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:0;border-bottom:1px dashed rgba(40,28,15,.18);padding:10px 2px;cursor:pointer;color:inherit;font:inherit}
+.missoeslista li:last-child button{border-bottom:0}
+.missaock{flex:0 0 24px;height:24px;border-radius:50%;border:1.5px solid rgba(138,63,50,.5);display:grid;place-items:center;font-size:14px;color:#F6EDDA}
+.missoeslista li.ok .missaock{background:#3F4938;border-color:#3F4938}
+.missaotx{flex:1;display:flex;flex-direction:column;gap:2px}
+.missaotx b{font-weight:600;font-size:15px}
+.missaotx small{font-size:12.5px;opacity:.75;line-height:1.35}
+.missoeslista li.ok .missaotx b{text-decoration:line-through;text-decoration-color:rgba(63,73,56,.5);opacity:.75}
+.missaoir{font-size:22px;opacity:.45}
+.intencao textarea{width:100%;min-height:150px;border-radius:12px;border:1px solid rgba(138,63,50,.3);padding:12px;font:16px/1.5 Lora,Georgia,serif;background:#FBF6EC;color:#282722}
+.envelope{margin:10px auto 12px;max-width:340px;aspect-ratio:1.45;border-radius:10px;background:linear-gradient(160deg,#EADBBE,#D9C49B);box-shadow:0 10px 26px rgba(40,24,10,.25),inset 0 0 0 1px rgba(120,80,40,.25);position:relative;display:grid;place-items:center;overflow:hidden}
+.envelope::before{content:"";position:absolute;left:0;right:0;top:0;height:56%;background:linear-gradient(180deg,#E2CFA9,#D3BC90);clip-path:polygon(0 0,100% 0,50% 100%);box-shadow:0 2px 0 rgba(0,0,0,.05)}
+.envlacre{width:120px;position:relative;z-index:1;filter:drop-shadow(0 4px 6px rgba(40,20,8,.45));margin-top:24px}
+.envelope.aberta{aspect-ratio:auto;max-width:none;background:#FBF6EC;display:block;padding:18px 18px 8px}
+.envelope.aberta::before{display:none}
+.envcarta p{font:17px/1.6 Lora,Georgia,serif;color:#282722;margin:0 0 12px;white-space:pre-wrap}
+.quizops{display:flex;flex-direction:column;gap:10px;margin:14px 0 6px}
+.quizop{border:1px solid rgba(138,63,50,.3);background:#FBF6EC;border-radius:14px;padding:14px 16px;font:15px/1.4 Poppins,system-ui,sans-serif;text-align:left;color:#282722;cursor:pointer}
+.quizop:active{background:#EFE3CB}
+.quizdeus{display:block;width:170px;max-width:60%;margin:10px auto 4px;border-radius:14px;box-shadow:0 10px 24px rgba(40,24,10,.25)}
 .sheet{position:fixed;inset:0;background:rgba(40,39,34,.35);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
 @media (min-width:700px){.sheet{align-items:center}}
 .sheet>div,.sheet form{background:var(--panel);border-radius:24px;box-shadow:0 20px 60px rgba(40,39,34,.25);padding:24px 20px;width:100%;max-width:500px;max-height:90%;overflow:auto;display:flex;flex-direction:column;gap:12px}
@@ -1787,6 +1817,9 @@ const ajustaSaberes = arr => arr.filter(x => !SABERES_REMOVIDOS.includes(x.id)).
 // ajustes em saberes que já estão no banco: Hanuman passa a ser o saber do selo de Sankat Mochan
 const SABERES_AJUSTES = { "senhor-sentidos": x => ({ ...x, texto: "O nome vem de Hrishikesha, um dos nomes de Vishnu: hrishika são os sentidos, isha é o senhor. A tradição local conta que Vishnu apareceu aqui ao sábio Raibhya, depois de sua longa penitência.\n\nRishi quer dizer “aquele que vê”. São os sábios antigos que receberam os hinos dos Vedas em meditação. Por séculos, eles se retiraram nas margens desta curva do Ganges, ao pé do Himalaia.\n\nOs sete mais lembrados, os Saptarishis, moram também no céu: são as sete estrelas da Ursa Maior. Um deles, Vasishtha, meditou numa caverna aqui perto, onde também vamos meditar.\n\nBem junto da estrela de Vasishtha brilha uma estrelinha menor: Arundhati, sua esposa. Nos casamentos hindus, os noivos são levados a olhar para ela, para que a união seja firme como a desse casal.\n\nRishikesh é uma cidade sagrada: não se vende carne nem álcool. O ritmo é de prática, de rio e de silêncio.", fonte: "Tradição local de Rishikesh; Skanda Purana (Kedar Khanda); tradição védica dos Saptarishis; ritos de casamento dos Grihya Sutras." }), hanuman: x => ({ ...x, localId: "sankat-mochan", texto: String(x.texto || "").replace(/^Os macacos de Galta Ji[^\n]*\n\n/, "Em Varanasi, o templo de Sankat Mochan é dedicado a Hanuman. O nome quer dizer aquele que livra das aflições.\n\n") }) };
 const EXTRAS = [
+  // o primeiro carimbo: cada pessoa ganha o seu ao completar as missões de preparação, antes de viajar
+  { id: "embarque", nome: "Embarque", insignia: "embarque", cidadeId: "", dia: 0, ordem: 0, aberto: false, preparo: true,
+    descricao: "O primeiro carimbo do passaporte, de quem se preparou para a travessia: passaporte emitido, explorador montado, intenção lacrada e lugar garantido no trem da Caravana.", dica: "Complete as missões de preparação, na tela inicial, para ganhar este carimbo." },
   { id: "sankat-mochan", nome: "Sankat Mochan", insignia: "sankat-mochan", cidadeId: "varanasi", dia: 7, ordem: 7.6, codigo: "hanuman", lat: 25.2826, lng: 82.9987, busca: "Sankat Mochan Hanuman Temple Varanasi", aberto: false,
     descricao: "O templo de Hanuman em Varanasi, aquele que livra das dificuldades.", dica: "O devoto que carregou uma montanha espera entre as árvores." },
   { id: "ganesha", nome: "Moti Dungri · Ganesha", insignia: "ganesha", cidadeId: "jaipur", dia: 4, ordem: 3.9, codigo: "ganapati", lat: 26.8950, lng: 75.8176, busca: "Moti Dungri Ganesh Temple Jaipur", aberto: false,
@@ -2099,6 +2132,7 @@ function vTravessia() {
             : h("div", null, h("b", { text: String(dias.length) }), h("span", { text: "dias de travessia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "Asia/Kolkata", text: horaEm("Asia/Kolkata") }), h("span", { text: "Agora na Índia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +8h30" }))),
+    vMissoes(),
     vOnlineLider(),
     vTempo(),
     S.isOwner ? null : vCorrespondencia(),
@@ -2116,6 +2150,137 @@ function vTravessia() {
       h("q", { text: "Explorando nossa origem nos damos conta de que somos infinitos." }),
       h("p", { class: "eyebrow", style: "text-align:center;line-height:1.8" }, "Caravana do Céu", h("br"), "a travessia te espera"),
       window.__VERSAO ? h("p", { class: "small", style: "text-align:center;opacity:.6;margin-top:6px", text: "versão " + window.__VERSAO }) : null));
+}
+// ---------- Antes de embarcar: missões de preparação, a intenção lacrada e a divindade da travessia ----------
+// cada missão cumprida fica guardada no passaporte da pessoa; com todas, ela ganha o carimbo do Embarque
+const MISSOES = [
+  ["passaporte", "Emitir o passaporte", "Seu número de viajante e a página dos carimbos.", v => !!v, () => go("passaporte")],
+  ["explorador", "Montar o explorador", "O bonequinho que anda com você pelo mapa.", v => !!(v && v.boneco), () => go("explorador")],
+  ["divindade", "Descobrir a divindade que te acompanha", "Cinco perguntas e uma das divindades da Índia vem andar com você.", v => !!minhaDivindade(), () => abrirQuiz()],
+  ["intencao", "Lacrar a sua intenção", "Uma carta para você mesma(o), que só se abre no último dia.", v => !!lerIntencao(), () => abrirIntencao()],
+  ["retrato", "Embarcar no trem da Caravana", "Monte o Retrato do Embarque com a turma.", v => false, () => { go("explorador"); requestAnimationFrame(() => document.querySelector(".retprev")?.closest(".carvbon")?.scrollIntoView({ block: "start", behavior: "smooth" })); }],
+  ["camera", "Testar uma câmera da maleta", "Tire uma foto com uma das câmeras antigas.", v => false, () => go("fotos")],
+  ["pombo", "Mandar um pombo-correio", "Uma cartinha para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")]
+];
+// guarda também no celular: a missão aparece cumprida na hora, mesmo sem sinal
+const missoesLocais = () => { try { return JSON.parse(localStorage.getItem("cdi-missoes") || "{}"); } catch (e) { return {}; } };
+const missaoFeita = ([id, , , auto]) => { const v = eu(); return !!((v && (v.missoes || {})[id]) || missoesLocais()[id] || auto(v)); };
+function marcaMissao(id) {
+  const v = eu(); if (!v) return;
+  if (!missoesLocais()[id]) { try { localStorage.setItem("cdi-missoes", JSON.stringify({ ...missoesLocais(), [id]: Date.now() })); } catch (e) {} }
+  if (S.db && !(v.missoes || {})[id]) S.db.doc("viajantes/" + S.uid).update({ missoes: { [id]: Date.now() } }).catch(() => {});
+}
+const minhaDivindade = () => { const v = eu(); let d = v && v.divindade; if (!d) try { d = localStorage.getItem("cdi-divindade"); } catch (e) {} return DIVINDADES[d] ? d : null; };
+// todas cumpridas: carimba o Embarque no passaporte (uma vez só)
+function confereEmbarque() {
+  const v = eu(), l = localDe("embarque"); if (!v || !l || minhas().embarque || S.carimbandoEmbarque) return;
+  if (!MISSOES.every(missaoFeita)) return;
+  S.carimbandoEmbarque = true; const ts = Date.now();
+  S.local = { ...S.local, embarque: ts }; try { localStorage.setItem("cdi-ins", JSON.stringify(S.local)); } catch (e) {}
+  S.db.doc("viajantes/" + S.uid).update({ insignias: { embarque: ts } }).catch(() => {});
+  setTimeout(() => { S.novoSelo = "embarque"; celebraSelo(l); }, 400);
+}
+function vMissoes() {
+  const v = eu(), l = localDe("embarque"); if (!l) return null;
+  const feitas = MISSOES.filter(missaoFeita).length, tudo = feitas === MISSOES.length;
+  // depois que a viagem começa, o cartão some para quem já completou
+  if (tudo && minhas().embarque && hojeIso() >= "2026-11-04") return null;
+  setTimeout(confereEmbarque, 0);
+  return h("div", { class: "missoes" },
+    h("div", { class: "missoestopo" },
+      h("button", { type: "button", class: "missoesselo" + (minhas().embarque ? "" : " off"), "aria-label": "Carimbo do Embarque", onclick: () => abrirSelo(l) }, h("img", { src: badgeSrc(l), alt: "" })),
+      h("div", null, h("p", { class: "eyebrow", text: "Antes de embarcar" }),
+        h("h3", { text: minhas().embarque ? "Carimbo do Embarque conquistado" : "Missões de preparação" }),
+        h("p", { class: "small", text: minhas().embarque ? "Você está pronta(o) para a travessia." : `${feitas} de ${MISSOES.length}. Complete todas e ganhe o primeiro carimbo do passaporte.` }))),
+    h("div", { class: "missoesbarra", "aria-hidden": "true" }, h("i", { style: `width:${feitas / MISSOES.length * 100}%` })),
+    h("ol", { class: "missoeslista" }, MISSOES.map(m => { const ok = missaoFeita(m);
+      return h("li", { class: ok ? "ok" : "" }, h("button", { type: "button", onclick: m[4] },
+        h("span", { class: "missaock", "aria-hidden": "true", text: ok ? "✓" : "" }),
+        h("span", { class: "missaotx" }, h("b", { text: m[1] }), h("small", { text: ok && m[0] === "divindade" && minhaDivindade() ? "Quem te acompanha: " + DIVINDADES[minhaDivindade()].nome : m[2] })),
+        h("span", { class: "missaoir", "aria-hidden": "true", text: "›" }))); })));
+}
+// ---------- intenção lacrada: fica guardada só neste celular e se abre no último dia ----------
+const ABRE_INTENCAO = "2026-11-16";
+function lerIntencao() { try { return JSON.parse(localStorage.getItem("cdi-intencao") || "null"); } catch (e) { return null; } }
+function abrirIntencao() {
+  closeSheets();
+  const I = lerIntencao(), pode = hojeIso() >= ABRE_INTENCAO;
+  const box = h("div", { role: "dialog", "aria-label": "Sua intenção", class: "intencao" });
+  const fecha = h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar"));
+  if (!I) {
+    const ta = h("textarea", { id: "intencao-tx", rows: "7", maxlength: "1500", placeholder: "O que você leva para a Índia? O que pede, o que entrega, o que quer deixar no caminho…" });
+    const msg = h("p", { class: "msg", role: "status" });
+    box.append(h("p", { class: "eyebrow", style: "text-align:center", text: "Antes de embarcar" }), h("h2", { text: "Sua intenção para a travessia" }),
+      h("p", { class: "lede", style: "text-align:center", text: "Escreva para você mesma(o). Ao lacrar, a carta se fecha com o selo da Caravana e só se abre no último dia da viagem, 16 de novembro." }),
+      h("p", { class: "small", style: "text-align:center", text: "Ninguém mais lê: ela fica guardada só neste celular." }),
+      ta, msg,
+      h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => {
+        const t = ta.value.trim(); if (t.length < 3) { msg.textContent = "Escreva a sua intenção antes de lacrar."; msg.className = "msg err"; return; }
+        try { localStorage.setItem("cdi-intencao", JSON.stringify({ texto: t, ts: Date.now() })); } catch (e) { msg.textContent = "Não consegui guardar neste celular."; msg.className = "msg err"; return; }
+        marcaMissao("intencao"); try { navigator.vibrate && navigator.vibrate([20, 50, 60]); } catch (e) {}
+        abrirIntencao(); render(); } }, "Lacrar a carta")), fecha);
+  } else {
+    const d = new Date(I.ts);
+    box.append(h("p", { class: "eyebrow", style: "text-align:center", text: "Sua intenção" }),
+      h("div", { class: "envelope" + (pode ? " aberta" : "") },
+        pode ? h("div", { class: "envcarta" }, String(I.texto).split(/\n\s*\n/).map(p => h("p", { text: p.trim() })))
+             : h("img", { class: "envlacre", src: "img/lacre-escuro.webp", alt: "Lacre da Caravana" })),
+      h("p", { class: "small", style: "text-align:center", text: (pode ? "Escrita em " : "Lacrada em ") + d.getDate() + " " + MES[d.getMonth()].toLowerCase() + (pode ? ". Leia devagar." : ". Ela se abre no último dia da travessia, 16 de novembro.") }), fecha);
+  }
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  document.body.append(sheet);
+}
+// ---------- qual divindade te acompanha: cinco perguntas ----------
+const DIVINDADES = {
+  ganesha: { nome: "Ganesha", img: "deuses/ganesha.webp", txt: "O senhor dos começos, que remove os obstáculos do caminho. Os hindus o chamam antes de toda viagem, todo rito e todo projeto. Quem anda com ele sabe abrir passagem." },
+  hanuman: { nome: "Hanuman", img: "deuses/hanuman.webp", txt: "O devoto de Rama que atravessou o mar num salto e trouxe uma montanha inteira para salvar um amigo. Força posta a serviço, lealdade sem medida." },
+  lakshmi: { nome: "Lakshmi", img: "deuses/lakshmi.webp", txt: "A deusa da prosperidade e da beleza, sentada sobre o lótus, a flor que nasce limpa da lama. É ela que se recebe com lamparinas acesas no Diwali." },
+  shiva: { nome: "Shiva", img: "deuses/shiva.webp", txt: "O asceta do Himalaia, que medita em silêncio e dança o fim e o recomeço do mundo. Varanasi, dizem, repousa sobre o seu tridente." },
+  durga: { nome: "Durga", img: "deuses/durga.webp", txt: "A deusa que monta o leão e venceu Mahishasura quando nenhum outro deus conseguiu. Coragem que protege quem está ao lado." },
+  saraswati: { nome: "Saraswati", img: "deuses/saraswati.webp", txt: "A deusa do saber, da música e da palavra, com a vina nas mãos e o cisne branco ao lado. Estudantes e artistas pedem a ela clareza." },
+  krishna: { nome: "Krishna", img: "deuses/krishna.webp", txt: "O pastor da flauta, que dançava com as gopis em Vrindavan e ensinou a Arjuna o Bhagavad Gita no campo de batalha. Alegria e sabedoria na mesma pessoa." },
+  ganga: { nome: "Ganga", img: "deuses/ganga.webp", txt: "O rio sagrado que desceu do céu pelos cabelos de Shiva. Nele a Índia se banha, faz oferendas e se despede. Fluir, acolher, renovar." }
+};
+const QUIZ = [
+  ["Numa viagem em grupo, você costuma ser quem…", [["abre caminho e resolve o imprevisto", { ganesha: 2, hanuman: 1 }], ["cuida para que todos estejam bem", { hanuman: 2, ganga: 1 }], ["se afasta um pouco para contemplar", { shiva: 2, saraswati: 1 }], ["puxa a música e a alegria da roda", { krishna: 2, lakshmi: 1 }]]],
+  ["O que você mais quer trazer de volta da Índia?", [["clareza para começar algo novo", { ganesha: 2, durga: 1 }], ["coragem", { durga: 2, hanuman: 1 }], ["silêncio por dentro", { shiva: 2, ganga: 1 }], ["gratidão pelo que já tem", { lakshmi: 2, krishna: 1 }]]],
+  ["Qual destes lugares te chama mais?", [["o Ganges ao amanhecer", { ganga: 2, shiva: 1 }], ["um templo cheio de cânticos", { krishna: 2, saraswati: 1 }], ["uma roda de conversa com um sábio", { saraswati: 2, ganesha: 1 }], ["um mercado de flores e tecidos", { lakshmi: 2, krishna: 1 }]]],
+  ["Quando algo dá errado no caminho, você…", [["encara de frente", { durga: 2, hanuman: 1 }], ["procura entender antes de agir", { saraswati: 2, ganesha: 1 }], ["respira e deixa fluir", { ganga: 2, shiva: 1 }], ["arregaça as mangas e ajuda quem está perto", { hanuman: 2, lakshmi: 1 }]]],
+  ["Escolha uma oferenda", [["um doce de arroz, o modak", { ganesha: 2, krishna: 1 }], ["uma flor de lótus", { lakshmi: 2, saraswati: 1 }], ["uma lamparina acesa", { durga: 2, lakshmi: 1 }], ["água do rio nas mãos", { ganga: 2, shiva: 1 }]]]
+];
+function abrirQuiz(passo, pontos) {
+  closeSheets(); passo = passo || 0; pontos = pontos || {};
+  const box = h("div", { role: "dialog", "aria-label": "Qual divindade te acompanha", class: "quiz" });
+  const fecha = h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar"));
+  const v = eu();
+  if (passo === 0 && minhaDivindade() && !abrirQuiz.refazer) return mostraDivindade(minhaDivindade());
+  abrirQuiz.refazer = false;
+  if (passo < QUIZ.length) {
+    const [perg, ops] = QUIZ[passo];
+    box.append(h("p", { class: "eyebrow", style: "text-align:center", text: `Qual divindade te acompanha · ${passo + 1} de ${QUIZ.length}` }), h("h2", { text: perg }),
+      h("div", { class: "quizops" }, ops.map(([t, soma]) => h("button", { type: "button", class: "quizop", onclick: () => {
+        const np = { ...pontos }; for (const [k, n] of Object.entries(soma)) np[k] = (np[k] || 0) + n; abrirQuiz(passo + 1, np); } }, t))), fecha);
+  } else {
+    const ordem = Object.keys(DIVINDADES), vence = ordem.reduce((a, k) => (pontos[k] || 0) > (pontos[a] || 0) ? k : a, ordem[0]);
+    try { localStorage.setItem("cdi-divindade", vence); } catch (e) {}
+    marcaMissao("divindade"); if (S.db && v) S.db.doc("viajantes/" + S.uid).update({ divindade: vence }).catch(() => {});
+    return mostraDivindade(vence, true);
+  }
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  document.body.append(sheet);
+}
+function mostraDivindade(id, nova) {
+  closeSheets(); const D = DIVINDADES[id];
+  const box = h("div", { role: "dialog", "aria-label": D.nome, class: "quiz" },
+    h("p", { class: "eyebrow", style: "text-align:center", text: nova ? "Quem te acompanha na travessia" : "A divindade que te acompanha" }),
+    h("img", { class: "quizdeus", src: D.img, alt: D.nome }),
+    h("h2", { style: "text-align:center", text: D.nome }),
+    h("p", { class: "lede", style: "text-align:center;margin:0 auto", text: D.txt }),
+    h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn ghost", type: "button", onclick: () => { abrirQuiz.refazer = true; abrirQuiz(0); } }, "Refazer as perguntas")),
+    h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: () => { closeSheets(); render(); } }, "Fechar")));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) { closeSheets(); render(); } } }, box);
+  document.body.append(sheet);
+  if (nova) { try { navigator.vibrate && navigator.vibrate([20, 50, 60]); } catch (e) {} }
 }
 function vDia(d, open, isToday, abrir) {
   const ls = (d.pins || []).map(localDe).filter(Boolean);
@@ -2970,12 +3135,13 @@ function conteudoInsignia(l) {
     h("h2", { text: l.nome }),
     h("p", { class: "lede", style: "text-align:center;margin:0 auto", text: on ? (l.descricao || "") : (l.dica || "") }),
     // os selos são carimbados pela líder para todos quando a caravana passa pelo lugar (não há palavra para digitar)
-    !on && !S.isOwner ? h("p", { class: "small", style: "text-align:center", text: "Este carimbo se abre quando a caravana passar por aqui." }) : null,
+    !on && !S.isOwner ? h("p", { class: "small", style: "text-align:center", text: l.preparo ? "Complete as missões de preparação, na tela inicial, para ganhar este carimbo." : "Este carimbo se abre quando a caravana passar por aqui." }) : null,
+    !on && l.preparo ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => { closeSheets(); go("travessia"); requestAnimationFrame(() => document.querySelector(".missoes")?.scrollIntoView({ block: "start", behavior: "smooth" })); } }, "Ver as missões")) : null,
     S.unlockMsg ? h("p", { class: "msg " + (S.unlockMsg.ok ? "ok" : "err"), style: "text-align:center", role: "status", text: S.unlockMsg.text }) : null,
     on && S.unlockMsg && S.unlockMsg.ok ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirLivro(paginaDoSelo(l.id)) }, "Folhear meu passaporte")) : null,
     on ? saberes.map(e => h("div", { class: "saber" }, h("p", { class: "eyebrow", text: "O saber deste carimbo" }), h("h3", { text: e.titulo }),
       String(e.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })), e.fonte ? h("p", { class: "src", text: "Fontes: " + e.fonte }) : null)) : null,
-    h("div", { class: "actions", style: "justify-content:center" },
+    l.preparo ? null : h("div", { class: "actions", style: "justify-content:center" },
       h("a", { class: "btn", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(l.busca || l.nome), target: "_blank", rel: "noopener" }, "Google Maps"),
       h("button", { class: "btn ghost", type: "button", onclick: () => { closeSheets(); S.pertoCentro = { lat: +l.lat, lng: +l.lng }; S.pertoKm = .4; go("mapa"); } }, "Ver no mapa")),
     S.isOwner ? h("div", { class: "secret" },
@@ -3772,7 +3938,7 @@ function vRetrato() {
         if (S.montandoRetrato) return; S.montandoRetrato = true;
         msg.textContent = "Montando o retrato…"; msg.className = "msg"; prev.textContent = "";
         try {
-          const cv = await retratoCaravana(cen, pose);
+          const cv = await retratoCaravana(cen, pose); if (cen === "embarque") marcaMissao("retrato");
           S.retratoPrev = { cen, cv, url: cv.toDataURL("image/jpeg", .9) }; mostra();
           msg.textContent = "";
         } catch (e) { msg.textContent = "Não consegui montar o retrato. Tente de novo."; msg.className = "msg err"; }
@@ -4312,7 +4478,7 @@ const FILTROS = [
 const GRAOS = [["auto", "Do filtro"], ["nenhum", "Sem grão"], ["leve", "Leve"], ["medio", "Médio"], ["forte", "Forte"], ["super8", "Super 8"]];
 const FORMATOS = [["original", "Original"], ["reels", "Reels 9:16"]];
 const PATCHES = [["caravana", "Caravana"], ["india", "Índia + Caravana"], ["colecao", "Coleção"], ["nenhum", "Sem patch"]];
-const SELOS_COLECAO = ["india", "taj-mahal", "ganesha", "jaipur", "govind-dev-ji", "varanasi", "diwali", "ganga-aarti", "manikarnika", "durga-kund", "sankat-mochan", "batismo", "rishikesh", "kunjapuri", "caverna", "travessia"];
+const SELOS_COLECAO = ["embarque", "india", "taj-mahal", "ganesha", "jaipur", "govind-dev-ji", "varanasi", "diwali", "ganga-aarti", "manikarnika", "durga-kund", "sankat-mochan", "batismo", "rishikesh", "kunjapuri", "caverna", "travessia"];
 const seloLiberado = id => S.isOwner || aberto(localDe(id));
 const PATCH_CIDADE = { Delhi: "india", Agra: "taj-mahal", Jaipur: "jaipur", Varanasi: "varanasi", Rishikesh: "rishikesh" };
 const MOLDURAS = [["polaroid", "Polaroid"], ["postal", "Cartão-postal"], ["ingresso", "Ingresso"], ["arco", "Janela de palácio"], ["guirlanda", "Guirlanda de flores"], ["bandeirinhas", "Bandeirinhas de oração"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
@@ -5686,6 +5852,7 @@ function bancoDiario() { return S.bdDiario ||= new Promise((ok, no) => { const q
 async function guardaNoDiario(blob, c, extra) {
   try { const db = await bancoDiario(), item = { id: Date.now() + "-" + Math.random().toString(36).slice(2, 6), ts: Date.now(), camera: c.nome, cidade: cidadeHoje(), blob, ...(extra || {}) };
     await new Promise((ok, no) => { const t = db.transaction("fotos", "readwrite"); t.objectStore("fotos").put(item); t.oncomplete = ok; t.onerror = () => no(t.error); });
+    if (c && c.id !== "celular") marcaMissao("camera");
     S.diarioAnt = S.fotosDiario; S.fotosDiario = null; } catch (e) {}
 }
 async function lerDiario() {
@@ -6403,7 +6570,7 @@ function vConversa() {
   };
   ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); enviar(); } });
   const minha = S.posicoes.find(p => p.id === S.uid && Date.now() - p.ts < FRESCO);
-  const lugares = S.locais.slice().sort((a, b) => (cidadeDe(a.cidadeId)?.ordem ?? 9) - (cidadeDe(b.cidadeId)?.ordem ?? 9) || byOrdem(a, b));
+  const lugares = S.locais.filter(l => isFinite(+l.lat)).sort((a, b) => (cidadeDe(a.cidadeId)?.ordem ?? 9) - (cidadeDe(b.cidadeId)?.ordem ?? 9) || byOrdem(a, b));
   const pSel = h("select", { id: "ponto-sel", "aria-label": "Ponto de encontro" }, minha ? h("option", { value: "@eu", text: "Onde eu estou agora" }) : null,
     lugares.map(l => h("option", { value: l.id, text: `${l.nome} · ${cidadeDe(l.cidadeId)?.nome || ""}` })));
   const pNota = h("input", { type: "text", id: "ponto-nota", maxlength: "200", placeholder: "Recado (ex.: às 18h, na escadaria)" });
@@ -6503,7 +6670,7 @@ function erroFoto(e) {
 function editar(tipo, item) {
   item = item || {};
   const cids = S.cidades.slice().sort(byOrdem), locs = S.locais.slice().sort(byOrdem);
-  const INS = ["", "india", "taj-mahal", "ganesha", "jaipur", "govind-dev-ji", "varanasi", "diwali", "ganga-aarti", "manikarnika", "durga-kund", "sankat-mochan", "batismo", "rishikesh", "travessia", "kunjapuri", "caverna"];
+  const INS = ["", "embarque", "india", "taj-mahal", "ganesha", "jaipur", "govind-dev-ji", "varanasi", "diwali", "ganga-aarti", "manikarnika", "durga-kund", "sankat-mochan", "batismo", "rishikesh", "travessia", "kunjapuri", "caverna"];
   const F = {
     dia: { col: "dias", t: "dia", campos: [["n", "Número do dia", "num"], ["iso", "Data (AAAA-MM-DD)"], ["data", "Data por extenso (ex.: Quarta · 4 nov)"], ["cidade", "Cidade(s)"], ["titulo", "Título"],
       ["itens", "Programação (uma linha por item: 18:00 | Ganga Aarti)", "linhas"], ["nota", "Nota", "area"], ["ordem", "Ordem", "num"]], obrig: "titulo" },
@@ -6921,7 +7088,7 @@ function vDiario(d, liberado) {
     d.n === 13 && leituraAberta() ? h("button", { class: "btn gold", type: "button", onclick: () => abrirLeitura() }, "Abrir a mensagem do meu diário") : null);
 }
 // Correspondência: cartas da líder, em pergaminho, por pombo-correio
-const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nDezesseis carimbos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
+const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nDezessete carimbos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
 const ASSINATURA = "Vanessa & Vivian";
 // cartas antigas vinham assinadas só por Vivian ou pela Caravana: agora quem assina são as duas, com Caravana do Céu embaixo
 const assinaturaDe = c => { const a = String(c.assinatura || "").replace(/\s*·\s*Caravana do Céu\s*$/i, "").trim(); return !a || /^(Vivian|Caravana do Céu)$/i.test(a) ? ASSINATURA : a; };
@@ -8063,7 +8230,7 @@ render();
     setTimeout(checaCorreio, 1200);
     // a carta final foi escrita quando eram doze selos; agora são quinze (a líder corrige uma vez só)
     const f = S.isOwner && S.cartas.find(c => c.id === "final");
-    if (f && /(Doze|Treze|Catorze|Quinze|Dezesseis) selos/.test(f.texto || "")) S.db.doc("cartas/final").update({ texto: f.texto.replace(/(Doze|Treze|Catorze|Quinze|Dezesseis) selos/, "Dezesseis carimbos") }).catch(() => {});
+    if (f && /(Doze|Treze|Catorze|Quinze|Dezesseis) (selos|carimbos)/.test(f.texto || "")) S.db.doc("cartas/final").update({ texto: f.texto.replace(/(Doze|Treze|Catorze|Quinze|Dezesseis) (selos|carimbos)/, "Dezessete carimbos") }).catch(() => {});
   });
   // cartas só para uma pessoa: cada viajante lê só as suas; a líder vê todas
   // pombo-correio: só as cartinhas que chegaram para mim e as que eu mandei
