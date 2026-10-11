@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 19:42";</script>
+<script>window.__VERSAO = "11/10 · 19:56";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -616,15 +616,34 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .oraltar.orbitas{display:block;position:relative;aspect-ratio:1;width:min(340px,100%);margin:6px auto 0;transition:opacity .45s ease}
 .oraltar.orbitas.carregando{opacity:0}
 .orlinhas{position:absolute;inset:0}
-.orbitas .orcel{position:absolute;transform:translate(-50%,-50%);aspect-ratio:auto;background:none;box-shadow:none;border-radius:50%;padding:0;gap:1px}
+.orlinhas .orceu,.orlinhas .orbrilhos{position:absolute;inset:0;width:100%;height:100%}
+.orlinhas .orceu{inset:-14%;width:128%;height:128%;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 55%,transparent 100%);animation:orderiva 90s ease-in-out infinite alternate}
+@keyframes orderiva{0%{transform:translate(-3%,1.5%) rotate(-2deg) scale(1.02);filter:brightness(.9)}50%{filter:brightness(1.15)}100%{transform:translate(3%,-1.5%) rotate(2deg) scale(1.06);filter:brightness(.95)}}
+.orbitas .orcorpo{position:relative;display:block;width:100%}
+.orbitas .orsombra{position:absolute;inset:0;border-radius:50%;pointer-events:none;background:radial-gradient(circle at var(--lx,40%) var(--ly,40%),rgba(255,240,210,.18) 0,transparent 32%,rgba(4,3,10,.22) 55%,rgba(4,3,10,.62) 82%)}
+.orbitas .orsombra.anel{left:28.5%;width:48%;right:auto;top:4%;bottom:auto;aspect-ratio:1}
+.orsolbrilho{position:absolute;left:50%;top:50%;width:60%;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;z-index:1;
+  background:radial-gradient(circle,rgba(255,236,180,.95) 0,rgba(255,196,90,.6) 12%,rgba(255,150,40,.22) 26%,rgba(255,130,30,.07) 42%,transparent 62%)}
+.orsolbrilho i{position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(from 2deg,rgba(255,226,160,.42) 0 .7deg,transparent .7deg 6.5deg),repeating-conic-gradient(from 5deg,rgba(255,200,120,.3) 0 1.4deg,transparent 1.4deg 17deg);filter:blur(.8px);-webkit-mask-image:radial-gradient(circle,#000 10%,rgba(0,0,0,.4) 30%,transparent 55%);mask-image:radial-gradient(circle,#000 10%,rgba(0,0,0,.4) 30%,transparent 55%);animation:orgira 120s linear infinite;mix-blend-mode:screen}
+.orbitas .orcel.orsol{z-index:2}
+.orbitas .orcel.orsol:not(.on):not(.escolhido) .orcsim{animation:orsolpulsa 4s ease-in-out infinite alternate}
+@keyframes orsolpulsa{from{filter:drop-shadow(0 0 6px rgba(255,190,80,.85)) drop-shadow(0 0 18px rgba(255,140,40,.45))}to{filter:drop-shadow(0 0 10px rgba(255,210,110,.95)) drop-shadow(0 0 32px rgba(255,150,50,.6))}}
+@keyframes orgira{to{transform:rotate(360deg)}}
+.orlinhas .orcorre{animation:orcorre linear infinite}
+.orlinhas .orpisca{animation:orpisca 2.6s ease-in-out infinite alternate}
+@keyframes orcorre{to{stroke-dashoffset:-100}}
+@keyframes orpisca{0%{opacity:.15}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.orlinhas .orcorre,.orlinhas .orpisca,.orlinhas .orceu,.orsolbrilho i{animation:none}}
+.orbitas .orcel{position:absolute;z-index:2;transform:translate(-50%,-50%) scale(var(--s,1));aspect-ratio:auto;background:none;box-shadow:none;border-radius:50%;padding:0;gap:1px}
 .orbitas .orcsim{width:100%}
-.orbitas .orcnome{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:1px;font-size:9px;letter-spacing:.04em;white-space:nowrap}
-.orbitas .orcel.on{background:none;box-shadow:none;transform:translate(-50%,-50%) scale(1.18)}
+.orbitas .orcnome{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:1px;font-size:9px;letter-spacing:.04em;white-space:nowrap;text-shadow:0 1px 3px #000}
+.orbitas .orcel.on{background:none;box-shadow:none;transform:translate(-50%,-50%) scale(calc(var(--s,1) * 1.18))}
 .orbitas .orcel.on .orcsim{filter:drop-shadow(0 0 8px #FFD27A) drop-shadow(0 0 3px #fff)}
-.orbitas .orcel.escolhido .orcsim{animation:escolhidoP 1.2s ease-in-out infinite alternate}
-@keyframes escolhidoP{from{filter:drop-shadow(0 0 4px #FFC94A)}to{filter:drop-shadow(0 0 16px #FFB51F)}}
+.orbitas .orcel.escolhido .orcsim{animation:escolhidoP 1.6s ease-in-out infinite alternate}
+@keyframes escolhidoP{from{filter:drop-shadow(0 0 2px rgba(255,214,140,.7)) drop-shadow(0 0 6px rgba(255,190,90,.35));transform:scale(1)}to{filter:drop-shadow(0 0 5px rgba(255,236,190,.95)) drop-shadow(0 0 18px rgba(255,190,90,.75));transform:scale(1.05)}}
 .orcel.escolhido{animation:escolhido 1.2s ease-in-out infinite alternate}
 @keyframes escolhido{from{box-shadow:0 0 10px #FFC94A}to{box-shadow:0 0 34px #FFB51F}}
+.orbitas .orcel.escolhido{animation:none;box-shadow:none;background:none}
 .orbarra{height:8px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden;width:min(300px,100%);margin:6px auto 0}
 .orbarra i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8A3F32,#E2B33C,#F6EDDA)}
 .orbotao{border:0;border-radius:999px;padding:16px 26px;font:600 15px Poppins,sans-serif;color:#2A1C10;background:linear-gradient(180deg,#E8CC98,#B48A4C);box-shadow:0 6px 18px rgba(0,0,0,.4);cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
@@ -2550,39 +2569,39 @@ const GRAHAS = [
   { id: "ketu", nome: "Ketu", sub: "nodo sul da Lua · o desapego", sim: "☋", cor: "#8A6A4A", mantra: "Om Ketave Namaha", dia: "", tom: "cinza-fumaça",
     img: "Ketu é o corpo do demônio que bebeu o néctar da imortalidade, separado da cabeça pelo disco de Vishnu. Não tem olhos, mas sente tudo. É a cauda do dragão, o ponto onde o caminho da Lua cruza o caminho do Sol.",
     msg: ["Ketu fala de desapego, intuição e libertação. A sua pergunta pode estar pedindo menos do que você imagina: talvez a resposta seja soltar. O que você segura com tanta força já cumpriu a sua função, e a mão fechada não recebe nada novo.", "Ketu traz perdas que abrem espaço e uma sabedoria que não vem dos livros. Confie no que você sabe sem saber explicar. Na tradição indiana, ele é o planeta de quem busca o espiritual: a sua pergunta tem uma camada mais funda do que a superfície mostra."],
-    hoje: ["Doe ou deixe para trás um objeto que você trouxe e não precisa.", "Medite cinco minutos de olhos fechados, só ouvindo os sons ao redor.", "Siga uma intuição pequena hoje, sem pedir explicação para ela."] },
+    hoje: ["Num templo, deixe uma flor ou uma moeda e, junto com ela, entregue algo que você não quer levar de volta para casa.", "Sente-se cinco minutos num lugar sagrado só ouvindo: os sinos, os mantras, os pássaros, o rio. Tire a foto só depois.", "Siga uma intuição pequena hoje: uma rua, um chai, uma conversa. Veja aonde ela te leva."] },
   { id: "guru", nome: "Guru", sub: "Júpiter · a sabedoria", sim: "♃", cor: "#E2B33C", mantra: "Om Gurave Namaha", dia: "quinta-feira", tom: "amarelo",
     img: "Júpiter é Brihaspati, o mestre dos deuses. É o maior dos planetas, e a tradição o vê como o grande protetor: o guru que orienta, abençoa e faz crescer tudo o que toca.",
     msg: ["Guru é sabedoria, expansão e graça. A sua pergunta está sendo olhada com generosidade. Há um mestre perto de você, e ele pode ter a forma de uma pessoa, de um livro ou de uma situação difícil que ensina mais do que qualquer aula.", "Júpiter também pede humildade: quem acha que já sabe não aprende. A expansão que ele traz não é acumular mais, é enxergar mais longe. Confie no caminho, mas confie com os olhos abertos."],
-    hoje: ["Agradeça, por mensagem, a alguém que te ensinou algo importante.", "Leia com calma, até o fim, um dos saberes desta aba.", "Ofereça ajuda a alguém da caravana antes que peçam."] },
+    hoje: ["Pergunte a um guia, a um sacerdote ou a alguém do lugar o significado de algo que você viu hoje, e escute a resposta inteira.", "Escreva no seu diário um ensinamento que a Índia já te deu nesta travessia.", "Ofereça ajuda a alguém da caravana antes que peçam."] },
   { id: "budha", nome: "Budha", sub: "Mercúrio · a palavra", sim: "☿", cor: "#3F7A4A", mantra: "Om Budhaya Namaha", dia: "quarta-feira", tom: "verde",
     img: "Mercúrio é o mais rápido dos planetas e o mais próximo do Sol. É o mensageiro, o comerciante, o estudante que faz perguntas demais.",
     msg: ["Budha governa a palavra, o raciocínio e as trocas. A resposta para a sua pergunta pode estar numa conversa, num texto, num detalhe que alguém disse de passagem. Fique atenta(o) aos sinais pequenos: eles chegam rápido e vão embora rápido.", "O risco de Mercúrio é a mente acelerada que analisa tudo e não decide nada. Escolha bem as palavras, porque elas criam aquilo que nomeiam. E lembre que ouvir também é uma forma de inteligência."],
-    hoje: ["Pergunte a alguém da caravana algo sobre a vida dela e apenas escute.", "Aprenda uma palavra em hindi e use com alguém hoje.", "Escreva a sua pergunta num papel, numa frase só, a mais simples possível."] },
+    hoje: ["Aprenda uma palavra em hindi e use com alguém hoje. Comece por dhanyavaad, que quer dizer obrigado.", "Conte a alguém da caravana o que mais te tocou até agora e depois ouça o que mais tocou essa pessoa.", "Escreva a sua pergunta num papel, numa frase só, e leve no bolso o dia todo."] },
   { id: "shani", nome: "Shani", sub: "Saturno · o tempo", sim: "♄", cor: "#2F3E66", mantra: "Om Shanaye Namaha", dia: "sábado", tom: "azul-escuro",
     img: "Saturno é o mais lento dos planetas que se veem a olho nu: leva quase trinta anos para dar a volta no Sol. Shani, filho do Sol com Chhaya, a sombra, anda devagar e não esquece nada.",
     msg: ["Shani é tempo, disciplina e verdade. A sua pergunta não tem atalho. O que parece demora é amadurecimento, e o que parece obstáculo é a estrutura sendo testada para aguentar o que vem depois.", "Saturno é temido, mas é justo: devolve exatamente o que foi plantado. Se você fizer a sua parte com paciência e honestidade, ele é o planeta que mais recompensa. Simplifique, assuma o que é seu e siga um passo de cada vez."],
-    hoje: ["Termine algo pequeno que ficou pela metade.", "Fique dez minutos sentada(o) em silêncio, sem celular.", "Seja pontual em tudo hoje, de propósito."] },
+    hoje: ["Quando algo atrasar hoje (e na Índia sempre atrasa), respire e repare no que a espera desperta em você.", "Fique dez minutos em silêncio, sem celular: num banco do templo, num ghat ou na janela do ônibus.", "Dê atenção a quem quase ninguém vê: quem limpa o templo, quem carrega as malas, quem serve o chai. Um olhar e um namaste."] },
   { id: "surya", nome: "Surya", sub: "o Sol · a luz própria", sim: "☉", cor: "#E3571A", mantra: "Om Suryaya Namaha", dia: "domingo", tom: "laranja e vermelho",
     img: "O Sol sobe no seu carro de sete cavalos e não pede licença para nascer. Ilumina do mesmo jeito o templo e a rua, o santo e o ladrão.",
     msg: ["Surya fala da sua luz própria: aquilo que você é quando não está tentando agradar ninguém. A sua pergunta pede presença, não esconderijo. Talvez você esteja esperando que alguém autorize um passo que só você pode dar.", "Há também um aviso no calor do Sol: luz demais cega. Brilhar não é ocupar todo o espaço. O Sol é generoso porque ilumina sem escolher, e é firme porque volta todos os dias, com plateia ou sem."],
-    hoje: ["Veja o primeiro sol que encontrar e ofereça a ele um minuto de silêncio.", "Diga em voz alta, uma vez, algo que você pensa e costuma guardar.", "Escolha uma tarefa que vem adiando e faça a primeira parte antes do meio-dia."] },
+    hoje: ["Veja o sol nascer ou se pôr hoje e ofereça a ele um minuto de silêncio, como fazem os indianos à beira do rio.", "Diga em voz alta, para alguém da caravana, algo que você pensa e costuma guardar.", "Faça hoje uma coisa que pede coragem e que você faria só se ninguém estivesse olhando."] },
   { id: "shukra", nome: "Shukra", sub: "Vênus · a beleza", sim: "♀", cor: "#D9A7B8", mantra: "Om Shukraya Namaha", dia: "sexta-feira", tom: "branco e rosa",
     img: "Vênus é a estrela da manhã e da tarde, o astro mais brilhante do céu depois da Lua. Shukra é também o mestre dos asuras, que conhecia o segredo de devolver a vida aos que caíam.",
     msg: ["Shukra fala de beleza, prazer, afeto e arte. A sua pergunta pede leveza: talvez você esteja tratando com dureza algo que precisa de carinho. Aquilo que te encanta também te orienta.", "Vênus lembra que o prazer é sagrado quando não aprisiona. Desfrute sem se agarrar. Há uma beleza esperando para ser vista hoje, e ela costuma aparecer quando a gente desacelera."],
-    hoje: ["Enfeite alguma coisa: o cabelo com uma flor, a mesa, a mala.", "Escute uma música inteira de olhos fechados.", "Diga a alguém da caravana o que você acha bonito nela."] },
+    hoje: ["Use uma flor no cabelo ou uma guirlanda, como as indianas fazem para ir ao templo.", "Num mercado, pare e sinta os cheiros: especiarias, incenso, flores. Escolha um deles para lembrar desta viagem.", "Diga a alguém da caravana o que você acha bonito nessa pessoa."] },
   { id: "rahu", nome: "Rahu", sub: "nodo norte da Lua · o desejo", sim: "☊", cor: "#5A5A6E", mantra: "Om Rahave Namaha", dia: "", tom: "fumaça escura",
     img: "Rahu é a cabeça do demônio que bebeu o néctar da imortalidade. Vishnu cortou o seu corpo, mas a cabeça ficou viva, e de tempos em tempos engole o Sol e a Lua: são os eclipses.",
     msg: ["Rahu é desejo, fome e tudo o que é novo e estrangeiro. A sua pergunta tem algo de um querer que não se sacia. Ele traz oportunidades inesperadas e mundos desconhecidos, como esta viagem.", "Mas Rahu é cabeça sem corpo: deseja sem digerir. Observe se você está correndo atrás de algo por você ou pelo que os outros vão ver. Use a fome dele para explorar, não para se perder."],
-    hoje: ["Prove uma comida que você nunca provou.", "Antes de comprar qualquer coisa hoje, espere uma hora.", "Pergunte a si: o que eu quero de verdade, quando ninguém está olhando?"] },
+    hoje: ["Prove uma comida que você nunca provou (de preferência quente e feita na hora).", "Antes de comprar qualquer coisa hoje, espere uma hora e veja se a vontade continua.", "Repare em algo da Índia que te incomodou ou te chocou hoje e pergunte a si: o que isso mostra sobre mim?"] },
   { id: "mangala", nome: "Mangala", sub: "Marte · a coragem", sim: "♂", cor: "#B83A2B", mantra: "Om Mangalaya Namaha", dia: "terça-feira", tom: "vermelho",
     img: "Marte é o guerreiro de vermelho, filho da Terra. Carrega uma lança, e a ponta dela aponta sempre para a frente.",
     msg: ["Mangala traz coragem e fogo. A sua pergunta pede ação: menos pensar, mais fazer. Há uma energia parada em você que quer movimento, e, se não encontrar caminho, pode virar irritação.", "Mas o fogo de Marte precisa de direção. Coragem não é atropelar, é escolher a batalha certa. Antes de agir, pergunte: isso que eu quero defender é mesmo meu? Se for, vá. Se for orgulho, solte."],
-    hoje: ["Caminhe rápido por dez minutos, sentindo os pés na terra.", "Tenha hoje uma conversa que você está evitando, com calma e verdade.", "Quando sentir raiva, respire fundo três vezes antes de responder."] },
+    hoje: ["Suba os degraus de um templo ou caminhe até um mirante sentindo cada passo, sem pressa de chegar.", "Faça algo que te dá um pouco de medo: pechinchar no mercado, molhar os pés no Ganges, cantar alto no kirtan.", "Quando sentir irritação com o trânsito, o barulho ou o calor, respire fundo três vezes antes de responder."] },
   { id: "chandra", nome: "Chandra", sub: "a Lua · as emoções", sim: "☽", cor: "#CFC6B2", mantra: "Om Chandraya Namaha", dia: "segunda-feira", tom: "branco e prata",
     img: "A Lua não tem luz própria e, mesmo assim, é ela que move as marés. Cresce, míngua, some e volta, sem nunca deixar de ser a mesma.",
     msg: ["Chandra é a mente e o coração que sente. A sua pergunta tem mais emoção do que parece, e merece ser ouvida antes de ser resolvida. O que você está sentindo não é um problema a corrigir: é uma informação.", "A Lua lembra que tudo tem fases. Se agora é minguante, não force a cheia. Há momentos de recolher, de dormir mais, de pedir colo. A clareza volta, como volta a Lua, no tempo dela."],
-    hoje: ["Tome um copo d'água bem devagar, prestando atenção em cada gole.", "Escreva três linhas sobre o que está sentindo, sem tentar explicar.", "À noite, procure a Lua no céu e veja em que fase ela está."] }
+    hoje: ["Toque a água do Ganges e entregue a ela algo que você está sentindo.", "Escreva três linhas no seu diário sobre o que está sentindo, sem tentar explicar.", "À noite, procure a Lua no céu da Índia e pense em quem você ama e ficou no Brasil."] }
 ];
 const NAKSHATRAS = [
   ["Ashwini", "cabeça de cavalo", "os Ashvins, gêmeos curadores", "Começo veloz e cura. O que você perguntou pode andar mais depressa do que imagina, se você der o primeiro passo."],
@@ -2683,7 +2702,53 @@ const planetaEl = (id, cls) => h("img", { class: cls || "planeta", src: "img/pla
 const hojeLocal = () => new Date().toLocaleDateString("en-CA");
 function lerOraculo() { try { return JSON.parse(localStorage.getItem("cdi-oraculo") || "null"); } catch (e) { return null; } }
 const ORB = { surya: [0, 0, 20], budha: [.34, 145, 10.5], shukra: [.45, 20, 12], chandra: [.57, 205, 11], rahu: [.57, 115, 12], ketu: [.57, 295, 14], mangala: [.68, 340, 11.5], guru: [.8, 160, 15], shani: [.9, 62, 21] };
-const orbitasSvg = () => { const o = h("div", { class: "orlinhas", "aria-hidden": "true" }); o.innerHTML = `<svg viewBox="0 0 100 100" width="100%" height="100%">${[.34, .45, .57, .68, .8, .9].map(r => `<circle cx="50" cy="50" r="${r * 50}" fill="none" stroke="rgba(232,204,152,.22)" stroke-width=".35" ${r === .57 ? 'stroke-dasharray="1.2 1.2"' : ""}/>`).join("")}</svg>`; return o; };
+// o altar visto de lado, como na foto do sistema solar: as órbitas viram elipses (INCL), a Via Láctea atravessa o céu ao fundo
+const INCL = 1, ALT = 1; // achatamento das órbitas e altura do altar em relação à largura
+const posAltar = (r, graus) => { const a = graus * Math.PI / 180, sy = Math.sin(a); return { x: 50 + Math.cos(a) * r * 50, y: 50 + sy * r * 50 * INCL / ALT, prof: sy }; };
+const orbitasSvg = () => {
+  const o = h("div", { class: "orlinhas", "aria-hidden": "true" });
+  let semente = 11; const rnd = () => (semente = (semente * 16807) % 2147483647) / 2147483647;
+  const gauss = () => (rnd() + rnd() + rnd() - 1.5) / 1.5;
+  // céu: Via Láctea bem contrastada (núcleo claro, poeira escura, nuvens de cor) e estrelas soltas
+  const W = 900, H = 900, cv = document.createElement("canvas"); cv.width = W; cv.height = H; cv.className = "orceu";
+  const x = cv.getContext("2d");
+  const eixo = t => [t * W, H * .92 - t * H * .84]; // faixa na diagonal, de baixo à esquerda para cima à direita
+  const nx = .68, ny = .73; // direção perpendicular à faixa
+  x.globalCompositeOperation = "lighter";
+  for (let k = 0; k < 70; k++) { const t = rnd(), [cx, cy] = eixo(t), off = gauss() * 70, px = cx + off * nx, py = cy + off * ny, raio = 50 + rnd() * 110;
+    const cor = [[255, 214, 160], [170, 140, 230], [110, 160, 230], [235, 160, 200], [255, 236, 210]][k % 5], forca = .07 + rnd() * .1;
+    const g = x.createRadialGradient(px, py, 0, px, py, raio); g.addColorStop(0, `rgba(${cor},${forca})`); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.beginPath(); x.arc(px, py, raio, 0, 7); x.fill(); }
+  for (let k = 0; k < 9000; k++) { const t = rnd(), [cx, cy] = eixo(t), off = gauss() * gauss() * 120, b = rnd();
+    x.fillStyle = `rgba(${245 + rnd() * 10 | 0},${235 + rnd() * 20 | 0},${225 + rnd() * 30 | 0},${.16 + b * .65})`; x.beginPath(); x.arc(cx + off * nx, cy + off * ny, .35 + b * b * .9, 0, 7); x.fill(); }
+  // poeira escura no meio da faixa, como as nuvens de pó da Via Láctea
+  x.globalCompositeOperation = "destination-out";
+  for (let k = 0; k < 55; k++) { const t = rnd(), [cx, cy] = eixo(t), off = gauss() * 22, px = cx + off * nx, py = cy + off * ny, raio = 10 + rnd() * 30;
+    const g = x.createRadialGradient(px, py, 0, px, py, raio); g.addColorStop(0, `rgba(0,0,0,${.35 + rnd() * .35})`); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.beginPath(); x.arc(px, py, raio, 0, 7); x.fill(); }
+  x.globalCompositeOperation = "lighter";
+  for (let k = 0; k < 420; k++) { const b = rnd(); x.fillStyle = `rgba(255,248,235,${.15 + b * .6})`; x.beginPath(); x.arc(rnd() * W, rnd() * H, .4 + b * b * 1.3, 0, 7); x.fill(); }
+  o.append(cv);
+  // órbitas de luz (elipses) com um ponto de luz correndo em cada uma
+  const VH = 100 * ALT, CY = VH / 2;
+  const aneis = [.34, .45, .57, .68, .8, .9].map((r, n) => {
+    const R = r * 50, ry = R * INCL, ouro = n % 2 === 0, cor = ouro ? "url(#orouro)" : "url(#orazul)", luz = ouro ? "#FFE3A3" : "#E4F0FF";
+    const dur = (8 + n * 2.4 + rnd() * 3).toFixed(1), ini = -(rnd() * 20).toFixed(1);
+    return `<ellipse cx="50" cy="${CY}" rx="${R}" ry="${ry}" fill="none" stroke="${cor}" stroke-width=".5" opacity=".35" filter="url(#orglow)"/>
+      <ellipse cx="50" cy="${CY}" rx="${R}" ry="${ry}" fill="none" stroke="${cor}" stroke-width=".18" opacity=".8"/>
+      <ellipse class="orcorre" cx="50" cy="${CY}" rx="${R}" ry="${ry}" fill="none" stroke="${luz}" stroke-width=".55" stroke-linecap="round" pathLength="100" stroke-dasharray="4 96" filter="url(#orglow)" style="animation-duration:${dur}s;animation-delay:${ini}s"/>`;
+  }).join("");
+  const bril = ["", "", ""];
+  for (let k = 0; k < 26; k++) bril[k % 3] += `<circle cx="${(3 + rnd() * 94).toFixed(1)}" cy="${(3 + rnd() * (VH - 6)).toFixed(1)}" r="${(.22 + rnd() * .3).toFixed(2)}" fill="${rnd() < .6 ? "#FFF3D8" : "#D9E8FF"}" filter="url(#orglow)"/>`;
+  const svg = document.createElement("div"); svg.className = "orbrilhos";
+  svg.innerHTML = `<svg viewBox="0 0 100 ${VH}" width="100%" height="100%" preserveAspectRatio="none"><defs>
+    <filter id="orglow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation=".6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <linearGradient id="orouro" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F5B654" stop-opacity=".95"/><stop offset=".45" stop-color="#FFD98A" stop-opacity=".35"/><stop offset="1" stop-color="#E89B3C" stop-opacity=".9"/></linearGradient>
+    <linearGradient id="orazul" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFD9FF" stop-opacity=".9"/><stop offset=".5" stop-color="#E8F1FF" stop-opacity=".3"/><stop offset="1" stop-color="#9DC2F0" stop-opacity=".85"/></linearGradient></defs>
+    ${bril.map((g, q) => `<g class="orpisca" style="animation-delay:${-q * 1.3}s">${g}</g>`).join("")}${aneis}</svg>`;
+  o.append(svg);
+  // o Sol: um brilho grande com raios que giram devagar, atrás da imagem
+  o.append(h("div", { class: "orsolbrilho" }, h("i")));
+  return o;
+};
 const posOrb = (id, k = 1, kr = 1) => { const [r, a, w] = ORB[id], rad = a * Math.PI / 180; return `left:${50 + Math.cos(rad) * r * kr * 50}%;top:${50 + Math.sin(rad) * r * kr * 50}%;width:${w * k}%`; };
 // vibração: no Android usa a vibração normal; no iPhone (que não tem essa função no navegador) usa o "toque" do interruptor do iOS 18+
 function vibrar(ms) {
@@ -2695,6 +2760,17 @@ function vibrar(ms) {
     document.head.append(lb); lb.click(); lb.remove();
   } catch (e) {}
   return false;
+}
+// o iPhone só libera o som dentro de um toque "completo" (soltar o dedo): o oráculo destrava o áudio ao abrir e a cada toque
+function destravaSom() {
+  try {
+    // no iPhone, toca mesmo com a chavinha do silencioso (só enquanto o oráculo está aberto)
+    if (navigator.audioSession) navigator.audioSession.type = "playback";
+    const A = window.AudioContext || window.webkitAudioContext; if (!A) return;
+    const ctx = S.audio || (S.audio = new A());
+    if (ctx.state !== "running") ctx.resume();
+    const b = ctx.createBufferSource(); b.buffer = ctx.createBuffer(1, 1, 22050); b.connect(ctx.destination); b.start(0);
+  } catch (e) {}
 }
 // som do oráculo: um "tim" de cristal a cada planeta que acende (junto com a vibração, ou no lugar dela)
 function tique(forte) {
@@ -2740,12 +2816,18 @@ function leituraOraculo(L) {
     h("p", { class: "orlsmall", text: "Cante 9 vezes e entregue a sua pergunta ao céu." }));
 }
 function abrirOraculo() {
-  closeSheets();
+  closeSheets(); destravaSom();
   const L0 = lerOraculo();
   const box = h("div", { role: "dialog", "aria-label": "Oráculo dos Planetas", class: "oraculo" });
-  const fechar = () => { clearInterval(box._t); closeSheets(); render(); };
+  const fechar = () => { clearInterval(box._t); try { if (navigator.audioSession) navigator.audioSession.type = "auto"; } catch (e) {} closeSheets(); render(); };
   // o altar como o sistema solar: Surya no centro, os planetas nas órbitas na ordem real; Rahu e Ketu, opostos, na órbita da Lua (onde acontecem os eclipses)
-  const celulas = GRAHAS.map(x => h("div", { class: "orcel", style: `--c:${x.cor};` + posOrb(x.id) }, planetaEl(x.id, "orcsim"), h("span", { class: "orcnome", text: x.nome })));
+  // luz do Sol: o lado de cada planeta voltado para o Sol fica iluminado e o outro lado cai na sombra; a sombra gira junto com a órbita
+  const poe = (c, id, graus) => { const p = posAltar(ORB[id][0], graus); c.style.left = p.x + "%"; c.style.top = p.y + "%";
+    if (id === "surya") return;
+    const a = graus * Math.PI / 180;
+    c.style.setProperty("--lx", (50 - Math.cos(a) * 34).toFixed(1) + "%"); c.style.setProperty("--ly", (50 - Math.sin(a) * 34).toFixed(1) + "%"); };
+  const COM_SOMBRA = { budha: 1, shukra: 1, chandra: 1, mangala: 1, guru: 1, shani: 1 };
+  const celulas = GRAHAS.map(x => { const c = h("div", { class: "orcel" + (x.id === "surya" ? " orsol" : ""), style: `--c:${x.cor};width:${ORB[x.id][2]}%` }, h("span", { class: "orcorpo" }, planetaEl(x.id, "orcsim"), COM_SOMBRA[x.id] ? h("i", { class: "orsombra" + (x.id === "shani" ? " anel" : "") }) : null), h("span", { class: "orcnome", text: x.nome })); poe(c, x.id, ORB[x.id][1]); return c; });
   const altar = h("div", { class: "oraltar orbitas carregando" }, orbitasSvg(), celulas);
   // o altar aparece inteiro, com um esmaecer suave, quando as imagens dos planetas estão prontas
   Promise.race([Promise.all(preCarregaPlanetas().concat(celulas.map(c => { const i = c.querySelector("img"); return i && i.decode ? i.decode().catch(() => {}) : null; }))), new Promise(r => setTimeout(r, 2500))])
@@ -2757,8 +2839,7 @@ function abrirOraculo() {
   const gira = agora => {
     if (!box.isConnected) return;
     const dt = Math.min(.1, (agora - ultimo) / 1000); ultimo = agora;
-    GRAHAS.forEach((x, k) => { if (!VEL[x.id]) return; ang[x.id] += VEL[x.id] * dt * acelera; const [r] = ORB[x.id], rad = ang[x.id] * Math.PI / 180;
-      celulas[k].style.left = (50 + Math.cos(rad) * r * 50) + "%"; celulas[k].style.top = (50 + Math.sin(rad) * r * 50) + "%"; });
+    GRAHAS.forEach((x, k) => { if (!VEL[x.id]) return; ang[x.id] += VEL[x.id] * dt * acelera; poe(celulas[k], x.id, ang[x.id]); });
     requestAnimationFrame(gira);
   };
   if (!matchMedia("(prefers-reduced-motion: reduce)").matches) requestAnimationFrame(t => { ultimo = t; requestAnimationFrame(gira); });
@@ -2787,7 +2868,7 @@ function abrirOraculo() {
         bt.remove(); barra.remove();
         setTimeout(() => { saida.replaceChildren(leituraOraculo(L), h("div", { class: "actions", style: "justify-content:center;margin-top:10px" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirOraculo() }, "Consultar de novo"))); saida.scrollIntoView({ behavior: "smooth", block: "start" }); }, 600); };
       anda(); };
-    bt.addEventListener("pointerdown", comeca); bt.addEventListener("pointerup", solta); bt.addEventListener("pointerleave", solta); bt.addEventListener("pointercancel", solta);
+    bt.addEventListener("pointerdown", comeca); ["touchstart", "touchend", "click"].forEach(ev => bt.addEventListener(ev, destravaSom, { passive: true })); bt.addEventListener("pointerup", solta); bt.addEventListener("pointerleave", solta); bt.addEventListener("pointercancel", solta);
     bt.addEventListener("contextmenu", e => e.preventDefault());
     // a última leitura fica guardada para reler, até a próxima consulta
     if (L0 && GRAHAS.some(x => x.id === L0.g)) saida.append(h("p", { class: "orvolta", text: "Sua última leitura" }), leituraOraculo(L0));
