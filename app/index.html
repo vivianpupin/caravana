@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 18:21";</script>
+<script>window.__VERSAO = "11/10 · 18:25";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -557,6 +557,12 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .quizops{display:flex;flex-direction:column;gap:10px;margin:14px 0 6px}
 .quizop{border:1px solid rgba(138,63,50,.3);background:#FBF6EC;border-radius:14px;padding:14px 16px;font:15px/1.4 Poppins,system-ui,sans-serif;text-align:left;color:#282722;cursor:pointer}
 .quizop:active{background:#EFE3CB}
+.passlista{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.passitem{border:1px solid var(--line2);border-radius:12px;padding:10px 12px;background:var(--panel)}
+.passitem b{font-family:var(--display);font-size:15px}
+.passitem pre{white-space:pre-wrap;word-break:break-all;margin:6px 0 8px;font:13px/1.5 Poppins,sans-serif;color:var(--soft)}
+.passitem .actions{gap:6px;flex-wrap:wrap}
+.passitem .ok{color:#3F4938;font-size:12px}
 .guardlider{list-style:none;margin:12px 0 4px;padding:0;display:flex;flex-direction:column;gap:6px}
 .guardlider li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed rgba(40,28,15,.15)}
 .guardlider li.falta span{color:#8A3F32;font-weight:600}
@@ -3220,7 +3226,7 @@ const normNome = t => String(t || "").toLowerCase().normalize("NFD").replace(/[�
 function lerPassagens(txt) {
   return String(txt || "").split("\n").map(l => l.split(",").map(x => x.trim())).filter(([nome]) => nome).map(([nome, num, g]) => {
     const pedido = normNome(g).replace(/ /g, ""), n = String(num || "").replace(/\D/g, "");
-    return { nome, g: GUARDIOES[pedido] ? pedido : G_SORTEIO[(+n || 0) % 8] };
+    return { nome, num: n, pedido: normNome(g).replace(/ /g, ""), g: GUARDIOES[pedido] ? pedido : G_SORTEIO[(+n || 0) % 8] };
   });
 }
 // procura o viajante na lista: nome completo igual, depois primeiro + último nome, depois só o primeiro nome (se não houver dois iguais)
@@ -3236,27 +3242,54 @@ function aplicaGuardioes() {
   const lista = lerPassagens(S.passagensLista);
   for (const v of S.viajantes) { if (v.lider || v.guardiao) continue; const g = guardiaoNaLista(v, lista); if (g) S.db.doc("viajantes/" + v.id).update({ guardiao: g }).catch(() => {}); }
 }
+// as passagens agora nascem dentro do app: a lista fica guardada (privado/passagens) e o guardião de cada um entra sozinho no passaporte
 function vGuardioesLider() {
   if (!S.isOwner || !noSite() || !S.db) return null;
-  if (S.passagensLista === undefined) { S.passagensLista = null; S.db.doc("privado/passagens").get().then(d => { S.passagensLista = d.exists ? String(d.data().lista || "") : ""; if (!S.passagensLista) try { S.passagensLista = localStorage.getItem("cdi-passagens") || ""; } catch (e) {} aplicaGuardioes(); const ta = document.getElementById("lista-passagens"); if (ta && !ta.value) ta.value = S.passagensLista; }).catch(() => {}); }
+  if (S.passagensLista === undefined) { S.passagensLista = null; S.db.doc("privado/passagens").get().then(d => { S.passagensLista = d.exists ? String(d.data().lista || "") : ""; if (!S.passagensLista) try { S.passagensLista = localStorage.getItem("cdi-passagens") || ""; } catch (e) {} aplicaGuardioes(); const ta = document.getElementById("lista-passagens"); if (ta && !ta.value) { ta.value = S.passagensLista; ta.dispatchEvent(new Event("input")); } }).catch(() => {}); }
+  if (S.palavraAtual === undefined) vPalavraLider();
   const ta = h("textarea", { id: "lista-passagens", rows: "6", placeholder: "Ana Paula, 7\nJoão Pedro, 3, Hanuman\nMariana, 12" }); ta.value = S.passagensLista || "";
-  const msg = h("p", { class: "msg", role: "status" });
-  const salvar = async () => {
-    try { await S.db.doc("privado/passagens").set({ lista: ta.value, ts: Date.now() }); S.passagensLista = ta.value; aplicaGuardioes(); msg.textContent = "Pronto. Os guardiões foram ligados aos passaportes."; msg.className = "msg ok"; setTimeout(render, 1200); }
-    catch (e) { msg.textContent = "Não consegui salvar. Tente de novo."; msg.className = "msg err"; }
+  const msg = h("p", { class: "msg", role: "status" }), lista = h("div", { class: "passlista" });
+  const esconde = w => btoa(unescape(encodeURIComponent(String(w).trim().toLowerCase()))).replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
+  const slug = n => n.trim().toLowerCase().replace(/\s+/g, "-").replace(/[\/?#%&]/g, "");
+  const copia = async (txt, el) => { try { await navigator.clipboard.writeText(txt); } catch (e) { const t = document.createElement("textarea"); t.value = txt; document.body.append(t); t.select(); document.execCommand("copy"); t.remove(); }
+    const ok = h("span", { class: "ok", text: " copiado" }); el.after(ok); setTimeout(() => ok.remove(), 1500); };
+  const salva = async () => { S.passagensLista = ta.value; try { localStorage.setItem("cdi-passagens", ta.value); } catch (e) {} await S.db.doc("privado/passagens").set({ lista: ta.value, ts: Date.now() }); aplicaGuardioes(); };
+  const desenha = () => {
+    const pal = S.palavraAtual || "", linhas = ta.value.split("\n");
+    lista.replaceChildren(...linhas.map((linha, i) => { const [x] = lerPassagens(linha); if (!x) return null;
+      const link = location.origin + "/embarque/" + slug(x.nome) + (x.num ? "/" + x.num.padStart(2, "0") : "") + (x.pedido ? "/" + x.pedido : "") + (pal ? "#k=" + esconde(pal) : "");
+      const texto = x.nome.split(" ")[0] + ", sua passagem para a Índia chegou ✈️\n" + link;
+      const b1 = h("button", { type: "button", class: "btn gold", onclick: e => copia(texto, e.currentTarget) }, "Copiar mensagem");
+      return h("div", { class: "passitem" }, h("b", { text: x.nome + (x.num ? " · Nº " + x.num.padStart(2, "0") : "") + " · " + GUARDIOES[x.g].nome }), h("pre", { text: texto }),
+        h("div", { class: "actions" }, b1,
+          h("a", { class: "btn", href: "https://wa.me/?text=" + encodeURIComponent(texto), target: "_blank", rel: "noopener" }, "WhatsApp"),
+          h("a", { class: "btn ghost", href: link, target: "_blank", rel: "noopener" }, "Ver"),
+          h("button", { type: "button", class: "btn ghost", onclick: async () => { if (!confirm("Apagar a passagem de " + x.nome + " desta lista?")) return; const l = ta.value.split("\n"); l.splice(i, 1); ta.value = l.join("\n"); desenha(); try { await salva(); } catch (e) {} } }, "Apagar")));
+    }).filter(Boolean));
   };
+  ta.addEventListener("input", () => { if (!ta.value.trim()) lista.replaceChildren(); });
+  const gerar = async () => {
+    // a palavra-chave entra escondida no link (raspadinha): busca antes de montar, se ainda não chegou
+    if (!S.palavraAtual) { try { const d = await S.db.doc("privado/acesso").get(); S.palavraAtual = d.exists ? String(d.data().palavra || "") : ""; } catch (e) {} }
+    if (!S.palavraAtual) { msg.textContent = "Não encontrei a palavra-chave. Crie a palavra no cartão acima e gere de novo."; msg.className = "msg err"; }
+    desenha();
+    try { await salva(); msg.textContent = "Passagens prontas. Os guardiões entram sozinhos nos passaportes."; msg.className = "msg ok"; setTimeout(() => { msg.textContent = ""; }, 4000); }
+    catch (e) { msg.textContent = "Não consegui guardar a lista. Tente de novo."; msg.className = "msg err"; }
+  };
+  if (ta.value.trim()) setTimeout(desenha, 0);
   const gente = S.viajantes.filter(v => !v.lider).slice().sort((a, b) => normNome(a.nome) < normNome(b.nome) ? -1 : 1);
   const opcoes = [["", "—"], ...Object.entries(GUARDIOES).map(([id, G]) => [id, G.nome])];
   return h("div", { class: "panel" },
-    h("p", { class: "eyebrow", text: "Só você vê · guardiões das passagens" }),
-    h("h2", { text: "Guardiões das passagens" }),
-    h("p", { class: "small", text: "Cole aqui a mesma lista da página Passagens (uma pessoa por linha: nome, número e, se quiser, o guardião). O app liga cada nome ao passaporte da pessoa, e ela já encontra o seu guardião na missão Conhecer o seu guardião." }),
-    ta, h("div", { class: "actions" }, h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar e ligar")), msg,
-    gente.length ? h("ul", { class: "guardlider" }, gente.map(v => {
-      const sel = h("select", { "aria-label": "Guardião de " + v.nome, onchange: e => S.db.doc("viajantes/" + v.id).update({ guardiao: e.target.value }).catch(() => {}) }, opcoes.map(([id, n]) => h("option", { value: id, selected: (v.guardiao || "") === id ? "" : null }, n)));
-      return h("li", { class: v.guardiao ? "" : "falta" }, h("span", { text: v.nome || "(sem nome)" }), sel);
-    })) : null,
-    gente.some(v => !v.guardiao) ? h("p", { class: "small", text: "Os nomes em vermelho não foram encontrados na lista: escolha o guardião deles aqui ao lado." }) : null);
+    h("p", { class: "eyebrow", text: "Só você vê · passagens" }),
+    h("h2", { text: "Passagens de embarque" }),
+    h("p", { class: "small", text: "Uma pessoa por linha: nome e número da passagem. Se quiser escolher o guardião, escreva o nome dele depois (ex.: João Pedro, 3, Hanuman). Sem guardião, ele é sorteado pelo número. A palavra-chave entra sozinha no link." }),
+    ta, h("div", { class: "actions" }, h("button", { class: "btn gold", type: "button", onclick: gerar }, "Gerar passagens")), msg, lista,
+    gente.length ? h("div", null, h("p", { class: "eyebrow", style: "margin-top:14px", text: "O guardião de cada viajante" }),
+      h("ul", { class: "guardlider" }, gente.map(v => {
+        const sel = h("select", { "aria-label": "Guardião de " + v.nome, onchange: e => S.db.doc("viajantes/" + v.id).update({ guardiao: e.target.value }).catch(() => {}) }, opcoes.map(([id, n]) => h("option", { value: id, selected: (v.guardiao || "") === id ? "" : null }, n)));
+        return h("li", { class: v.guardiao ? "" : "falta" }, h("span", { text: v.nome || "(sem nome)" }), sel);
+      })),
+      gente.some(v => !v.guardiao) ? h("p", { class: "small", text: "Em vermelho: quem ainda não foi encontrado na lista (o nome no passaporte está diferente). Escolha o guardião ao lado." }) : null) : null);
 }
 function vPalavraLider() {
   if (!S.isOwner || !noSite() || !S.db) return null;
@@ -3275,9 +3308,9 @@ function vPalavraLider() {
   return h("div", { class: "panel" },
     h("p", { class: "eyebrow", text: "Só você vê · palavra-chave" }),
     h("h2", null, "Palavra-chave: ", atual),
-    h("p", { class: "small", text: "É a palavra que cada pessoa digita para entrar no app. Use a mesma na página Passagens, para ela aparecer na raspadinha." }),
+    h("p", { class: "small", text: "É a palavra que cada pessoa digita para entrar no app. Ela vai escondida na raspadinha de cada passagem." }),
     h("div", { class: "unlock" }, campo, h("button", { class: "btn gold", type: "button", onclick: troca }, "Trocar")), msg,
-    h("p", { class: "small" }, h("a", { href: "passagens.html", target: "_blank" }, "Abrir a página Passagens →")));
+    h("p", { class: "small", text: "As passagens de cada viajante ficam no cartão logo abaixo." }));
 }
 // Só a líder: todo mundo da caravana numa tabela só (entrou no app, passaporte, instalado, avisos, localização) e opção de remover
 function vGenteLider() {
