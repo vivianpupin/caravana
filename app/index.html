@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 17:31";</script>
+<script>window.__VERSAO = "11/10 · 17:33";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2970,7 +2970,7 @@ function conteudoInsignia(l) {
     h("h2", { text: l.nome }),
     h("p", { class: "lede", style: "text-align:center;margin:0 auto", text: on ? (l.descricao || "") : (l.dica || "") }),
     // os selos são carimbados pela líder para todos quando a caravana passa pelo lugar (não há palavra para digitar)
-    !on && !S.isOwner ? h("p", { class: "small", style: "text-align:center", text: "A líder carimba este selo no passaporte de todos quando a caravana passar por aqui" + (d ? ` (dia ${d.n}, ${d.data}).` : ".") }) : null,
+    !on && !S.isOwner ? h("p", { class: "small", style: "text-align:center", text: "Este selo se abre quando a caravana passar por aqui." }) : null,
     S.unlockMsg ? h("p", { class: "msg " + (S.unlockMsg.ok ? "ok" : "err"), style: "text-align:center", role: "status", text: S.unlockMsg.text }) : null,
     on && S.unlockMsg && S.unlockMsg.ok ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirLivro(paginaDoSelo(l.id)) }, "Folhear meu passaporte")) : null,
     on ? saberes.map(e => h("div", { class: "saber" }, h("p", { class: "eyebrow", text: "O saber deste selo" }), h("h3", { text: e.titulo }),
