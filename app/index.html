@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 18:02";</script>
+<script>window.__VERSAO = "11/10 · 18:09";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -518,6 +518,28 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .missaotx small{font-size:12.5px;opacity:.75;line-height:1.35}
 .missoeslista li.ok .missaotx b{text-decoration:line-through;text-decoration-color:rgba(63,73,56,.5);opacity:.75}
 .missaoir{font-size:22px;opacity:.45}
+.garrafahead{position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 14px 16px;border-radius:18px;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 120%,#F6D9A0 0,#F3C98A 22%,rgba(243,201,138,0) 55%),linear-gradient(180deg,#8FB6CF 0,#BFD6DE 45%,#F2E3C6 100%)}
+.garrafahead h2{font-family:var(--display);font-size:22px;margin:0;color:#2E2A22}
+.garrafahead .eyebrow{color:#5B3A2A;margin:0}
+.garrafahead .lede{max-width:40ch;margin:0;color:#3B342A;font-size:15px}
+.garrafacarta{padding:14px 16px}
+.garrafacarta p{font:17px/1.6 Lora,Georgia,serif;margin:0 0 12px;white-space:pre-wrap}
+.garrafa{width:100%;max-width:320px;margin:0 auto -4px}
+.partida.garrafaparte{background:linear-gradient(180deg,#BFD6DE,#F2E3C6)}
+.garrafaparte .garrafa{max-width:300px}
+@media (prefers-reduced-motion:no-preference){
+  .partida.garrafaparte .boia{animation:boia 1.6s ease-in-out 2,correnteza 2.2s cubic-bezier(.5,0,.7,1) 1.1s forwards}
+  @keyframes correnteza{0%{transform:translate(0,0) rotate(0)}30%{transform:translate(-8px,4px) rotate(-4deg)}100%{transform:translate(260px,14px) rotate(14deg);opacity:0}}
+}
+.garrafa .boia{animation:boia 3.2s ease-in-out infinite;transform-origin:130px 90px}
+.garrafa .onda1{animation:onda 4s linear infinite}
+.garrafa .onda2{animation:onda 6s linear infinite reverse}
+.garrafa.lanca .boia{animation:lanca 1.6s ease-in forwards}
+@keyframes boia{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(5px) rotate(3deg)}}
+@keyframes onda{from{transform:translateX(0)}to{transform:translateX(-40px)}}
+@keyframes lanca{0%{transform:translate(0,0) rotate(0)}40%{transform:translate(20px,4px) rotate(4deg)}100%{transform:translate(300px,10px) rotate(10deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){.garrafa .boia,.garrafa .onda1,.garrafa .onda2{animation:none}}
 .intencao textarea{width:100%;min-height:150px;border-radius:12px;border:1px solid rgba(138,63,50,.3);padding:12px;font:16px/1.5 Lora,Georgia,serif;background:#FBF6EC;color:#282722}
 .envelope{margin:10px auto 12px;max-width:340px;aspect-ratio:1.45;border-radius:10px;background:linear-gradient(160deg,#EADBBE,#D9C49B);box-shadow:0 10px 26px rgba(40,24,10,.25),inset 0 0 0 1px rgba(120,80,40,.25);position:relative;display:grid;place-items:center;overflow:hidden}
 .envelope::before{content:"";position:absolute;left:0;right:0;top:0;height:56%;background:linear-gradient(180deg,#E2CFA9,#D3BC90);clip-path:polygon(0 0,100% 0,50% 100%);box-shadow:0 2px 0 rgba(0,0,0,.05)}
@@ -528,6 +550,21 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .quizops{display:flex;flex-direction:column;gap:10px;margin:14px 0 6px}
 .quizop{border:1px solid rgba(138,63,50,.3);background:#FBF6EC;border-radius:14px;padding:14px 16px;font:15px/1.4 Poppins,system-ui,sans-serif;text-align:left;color:#282722;cursor:pointer}
 .quizop:active{background:#EFE3CB}
+.guardlider{list-style:none;margin:12px 0 4px;padding:0;display:flex;flex-direction:column;gap:6px}
+.guardlider li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed rgba(40,28,15,.15)}
+.guardlider li.falta span{color:#8A3F32;font-weight:600}
+.guardlider select{min-width:130px}
+.guardcartas{display:flex;flex-direction:column;gap:10px;margin:10px 0}
+.guardcarta{display:flex;gap:12px;align-items:flex-start;text-align:left;border:1px solid rgba(138,63,50,.28);border-radius:16px;padding:14px;background:linear-gradient(135deg,#F3E3C3,#E9D3A8);cursor:pointer;color:#282722;font:inherit;box-shadow:0 3px 8px rgba(40,24,10,.12);transition:background .3s}
+.guardcarta.aberta{background:#FBF6EC;cursor:default}
+.gcic{font-size:28px;line-height:1;flex:0 0 34px;text-align:center}
+.gctx{display:flex;flex-direction:column;gap:4px}
+.gctx b{font:600 16px/1.3 Lora,Georgia,serif}
+.gcfecho{font-size:12.5px;color:#8A3F32;letter-spacing:.04em}
+.gcabre{display:none;font-size:14.5px;line-height:1.55}
+.guardcarta.aberta .gcfecho{display:none}
+.guardcarta.aberta .gcabre{display:block;animation:gcabre .45s ease both}
+@keyframes gcabre{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .guardhist{font:16px/1.6 Lora,Georgia,serif;margin:14px 2px 4px}
 .guardperg{margin:14px 0 2px;font-size:17px}
 .quizop.certa{background:#3F4938;color:#F6EDDA;border-color:#3F4938}
@@ -1829,7 +1866,7 @@ const SABERES_AJUSTES = { "senhor-sentidos": x => ({ ...x, texto: "O nome vem de
 const EXTRAS = [
   // o primeiro carimbo: cada pessoa ganha o seu ao completar as missões de preparação, antes de viajar
   { id: "embarque", nome: "Embarque", insignia: "embarque", cidadeId: "", dia: 0, ordem: 0, aberto: false, preparo: true,
-    descricao: "O primeiro carimbo do passaporte, de quem se preparou para a travessia: passaporte emitido, explorador montado, intenção guardada e lugar garantido no trem da Caravana.", dica: "Complete as missões de preparação, na tela inicial, para ganhar este carimbo." },
+    descricao: "O primeiro carimbo do passaporte, de quem se preparou para a travessia: passaporte emitido, explorador montado, mensagem lançada na garrafa e lugar garantido no trem da Caravana.", dica: "Complete as missões de preparação, na tela inicial, para ganhar este carimbo." },
   { id: "sankat-mochan", nome: "Sankat Mochan", insignia: "sankat-mochan", cidadeId: "varanasi", dia: 7, ordem: 7.6, codigo: "hanuman", lat: 25.2826, lng: 82.9987, busca: "Sankat Mochan Hanuman Temple Varanasi", aberto: false,
     descricao: "O templo de Hanuman em Varanasi, aquele que livra das dificuldades.", dica: "O devoto que carregou uma montanha espera entre as árvores." },
   { id: "ganesha", nome: "Moti Dungri · Ganesha", insignia: "ganesha", cidadeId: "jaipur", dia: 4, ordem: 3.9, codigo: "ganapati", lat: 26.8950, lng: 75.8176, busca: "Moti Dungri Ganesh Temple Jaipur", aberto: false,
@@ -2167,7 +2204,7 @@ const MISSOES = [
   ["passaporte", "Emitir o passaporte", "Seu número de viajante e a página dos carimbos.", v => !!v, () => go("passaporte")],
   ["explorador", "Montar o explorador", "O bonequinho que anda com você pelo mapa.", v => !!(v && v.boneco), () => go("explorador")],
   ["guardiao", "Conhecer o seu guardião", "A história do guardião da sua passagem, onde vocês se encontram na viagem e o mantra dele.", v => false, () => abrirGuardiao(0)],
-  ["intencao", "Guardar a sua intenção", "Uma carta para você mesma(o), que só se abre no último dia.", v => !!lerIntencao(), () => abrirIntencao()],
+  ["intencao", "Mensagem na garrafa", "Quem serei eu ao final dessa travessia? Escreva e lance a garrafa: ela volta no último dia.", v => !!lerIntencao(), () => abrirIntencao()],
   ["retrato", "Embarcar no trem da Caravana", "Monte o Retrato do Embarque com a turma.", v => false, () => { go("explorador"); requestAnimationFrame(() => document.querySelector(".retprev")?.closest(".carvbon")?.scrollIntoView({ block: "start", behavior: "smooth" })); }],
   ["camera", "Testar uma câmera da maleta", "Tire uma foto com uma das câmeras antigas.", v => false, () => go("fotos")],
   ["pombo", "Mandar um pombo-correio", "Uma cartinha para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")]
@@ -2208,124 +2245,132 @@ function vMissoes() {
         h("span", { class: "missaotx" }, h("b", { text: m[1] }), h("small", { text: ok && m[0] === "guardiao" && meuGuardiao() ? "Seu guardião: " + GUARDIOES[meuGuardiao()].nome : m[2] })),
         h("span", { class: "missaoir", "aria-hidden": "true", text: "›" }))); })));
 }
-// ---------- intenção lacrada: fica guardada só neste celular e se abre no último dia ----------
+// ---------- mensagem na garrafa: fica guardada só neste celular e volta no último dia ----------
 const ABRE_INTENCAO = "2026-11-16";
 function lerIntencao() { try { return JSON.parse(localStorage.getItem("cdi-intencao") || "null"); } catch (e) { return null; } }
+// a garrafa desenhada no mesmo traço do pombo-correio: vidro, rolha, a cartinha com a fita vermelha e o rio balançando
+function garrafaSvg(cheia) {
+  const w = h("div", { class: "garrafa" + (cheia ? " cheia" : ""), "aria-hidden": "true" });
+  // garrafa quase em pé, inclinada, metade dentro d'água: corpo, ombro, gargalo e rolha bem visíveis
+  w.innerHTML = `<svg viewBox="0 -16 260 166" width="100%">
+<g class="boia"><g transform="translate(112 18) rotate(22 30 70)">
+<path d="M6 62 q0 -10 8 -16 l10 -8 v-24 h12 v24 l10 8 q8 6 8 16 v62 q0 14 -14 14 h-20 q-14 0 -14 -14 z" fill="#B9D0C8"/>
+<rect x="21" y="0" width="18" height="16" rx="3" fill="#B07A4A"/><path d="M26 2 v12 M33 2 v12" stroke="#8A5A32" stroke-width="1.3"/>
+<rect x="22" y="14" width="16" height="4" rx="1.5" fill="#9DBDB2"/>
+${cheia ? `<rect x="16" y="58" width="28" height="64" rx="12" fill="#EBD6A6"/><path d="M17 68 h26 M17 112 h26" stroke="#D6BE8A" stroke-width="1.5"/><rect x="16" y="86" width="28" height="7" fill="#8A2A1F"/>` : ""}
+<path d="M14 66 q-2 30 2 58" stroke="#fff" stroke-opacity=".75" stroke-width="4" fill="none" stroke-linecap="round"/>
+<path d="M27 20 v16" stroke="#fff" stroke-opacity=".6" stroke-width="2.5" stroke-linecap="round"/></g></g>
+<path class="onda1" d="M0 112 q20 -9 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 v40 h-280 z" fill="#6F97AA" opacity=".92"/>
+<path class="onda2" d="M0 124 q20 -7 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 v30 h-280 z" fill="#5B8296"/>
+<path class="onda1" d="M10 118 q10 -3 20 0 M90 120 q10 -3 20 0 M190 117 q10 -3 20 0" stroke="#D9E6E6" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/></svg>`;
+  return w;
+}
 function abrirIntencao() {
   closeSheets();
   const I = lerIntencao(), pode = hojeIso() >= ABRE_INTENCAO;
-  const box = h("div", { role: "dialog", "aria-label": "Sua intenção", class: "intencao" });
-  const fecha = h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar"));
+  const fechar = () => { closeSheets(); render(); };
+  const box = h("div", { role: "dialog", "aria-label": "Mensagem na garrafa", class: "pombobox garrafabox" + (I && pode ? " chegou" : "") });
+  const ceu = (titulo, texto, cheia) => h("div", { class: "garrafahead" }, garrafaSvg(cheia), h("p", { class: "eyebrow", text: "Mensagem na garrafa" }), h("h2", { text: titulo }), texto ? h("p", { class: "lede", text: texto }) : null);
   if (!I) {
-    const ta = h("textarea", { id: "intencao-tx", rows: "7", maxlength: "1500", placeholder: "O que você leva para a Índia? O que pede, o que entrega, o que quer deixar no caminho…" });
+    const ta = h("textarea", { id: "intencao-tx", rows: "7", maxlength: "1500", placeholder: "Ao final dessa travessia, eu…" });
     const msg = h("p", { class: "msg", role: "status" });
-    box.append(h("p", { class: "eyebrow", style: "text-align:center", text: "Antes de embarcar" }), h("h2", { text: "Sua intenção para a travessia" }),
-      h("p", { class: "lede", style: "text-align:center", text: "Escreva para você mesma(o). Ao guardar, a carta se fecha com o selo da Caravana e só se abre no último dia da viagem, 16 de novembro." }),
-      h("p", { class: "small", style: "text-align:center", text: "Ninguém mais lê: ela fica guardada só neste celular." }),
-      ta, msg,
-      h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => {
-        const t = ta.value.trim(); if (t.length < 3) { msg.textContent = "Escreva a sua intenção antes de guardar."; msg.className = "msg err"; return; }
-        try { localStorage.setItem("cdi-intencao", JSON.stringify({ texto: t, ts: Date.now() })); } catch (e) { msg.textContent = "Não consegui guardar neste celular."; msg.className = "msg err"; return; }
-        marcaMissao("intencao"); try { navigator.vibrate && navigator.vibrate([20, 50, 60]); } catch (e) {}
-        abrirIntencao(); render(); } }, "Guardar até o último dia")), fecha);
+    const lancar = () => {
+      const t = ta.value.trim(); if (t.length < 3) { msg.textContent = "Escreva a sua mensagem antes de lançar a garrafa."; msg.className = "msg err"; return; }
+      try { localStorage.setItem("cdi-intencao", JSON.stringify({ texto: t, ts: Date.now() })); } catch (e) { msg.textContent = "Não consegui guardar neste celular."; msg.className = "msg err"; return; }
+      marcaMissao("intencao"); try { navigator.vibrate && navigator.vibrate([20, 50, 60]); } catch (e) {}
+      // como o pombo: a garrafa aparece com a mensagem dentro e vai embora boiando com a correnteza
+      box.scrollTop = 0; box.style.overflow = "hidden";
+      box.append(h("div", { class: "partida garrafaparte" }, garrafaSvg(true), h("p", { text: "Sua garrafa seguiu com a correnteza. Ela volta para você no dia 16 de novembro." })));
+      setTimeout(() => { closeSheets(); render(); }, 3400);
+    };
+    box.append(ceu("Quem serei eu ao final dessa travessia?", "Escreva em primeira pessoa, como você se vê no fim da viagem. Depois lance a garrafa: a correnteza traz de volta no último dia, 16 de novembro.", false),
+      h("p", { class: "pbpasso", text: "Como eu me vejo ao final dessa travessia" }), h("div", { class: "pbpapel" }, ta),
+      h("p", { class: "small", style: "text-align:center", text: "Ninguém mais lê: ela fica guardada só neste celular." }), msg,
+      h("div", { class: "foot2" }, h("button", { class: "btn ghost", type: "button", onclick: fechar }, "Agora não"), h("button", { class: "btn gold", type: "button", onclick: lancar }, "🌊 Lançar a garrafa")));
   } else {
-    const d = new Date(I.ts);
-    box.append(h("p", { class: "eyebrow", style: "text-align:center", text: "Sua intenção" }),
-      h("div", { class: "envelope" + (pode ? " aberta" : "") },
-        pode ? h("div", { class: "envcarta" }, String(I.texto).split(/\n\s*\n/).map(p => h("p", { text: p.trim() })))
-             : h("img", { class: "envlacre", src: "img/lacre-escuro.webp", alt: "Lacre da Caravana" })),
-      h("p", { class: "small", style: "text-align:center", text: (pode ? "Escrita em " : "Guardada em ") + d.getDate() + " " + MES[d.getMonth()].toLowerCase() + (pode ? ". Leia devagar." : ". Ela se abre no último dia da travessia, 16 de novembro.") }), fecha);
+    const d = new Date(I.ts), quando = d.getDate() + " " + MES[d.getMonth()].toLowerCase();
+    if (pode) box.append(ceu("Olha o que a correnteza trouxe de volta…", "", true),
+      h("div", { class: "pbpapel garrafacarta" }, String(I.texto).split(/\n\s*\n/).map(p => h("p", { text: p.trim() }))),
+      h("p", { class: "small", style: "text-align:center", text: "Você escreveu esta mensagem em " + quando + ", antes de embarcar." }),
+      h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: fechar }, "Fechar")));
+    else box.append(ceu("A garrafa está no rio", "Lançada em " + quando + ". A correnteza traz de volta no último dia da travessia, 16 de novembro.", true),
+      h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: fechar }, "Fechar")));
   }
-  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
+  const sheet = h("div", { class: "sheet pombosheet", onclick: e => { if (e.target === sheet) fechar(); } }, box);
   document.body.append(sheet);
 }
 // ---------- o guardião da passagem: história, perguntas, onde encontrá-lo na viagem e o mantra ----------
 // o guardião vem da passagem (link /embarque/...), que o deixa guardado ao tocar em EMBARCAR; se não vier, a pessoa escolhe
 const GUARDIOES = {
-  ganesha: { nome: "Ganesha", frase: "abre os caminhos",
-    h1: "Parvati moldou um menino com a argila do próprio corpo e o pôs para guardar a porta enquanto se banhava. Shiva chegou, o menino não o deixou entrar, e Shiva, sem saber quem ele era, cortou-lhe a cabeça. Para consolar Parvati, prometeu devolver a vida ao filho com a cabeça do primeiro ser que encontrassem: um elefante.",
-    p1: ["Por que Ganesha tem cabeça de elefante?", ["Shiva lhe deu a cabeça do primeiro ser que encontrou", "Nasceu assim, como presente de Indra", "Trocou de cabeça para ganhar sabedoria"], "Depois de cortar a cabeça do menino sem saber que era filho de Parvati, Shiva o trouxe de volta com a cabeça de um elefante."],
-    h2: "Desde então, Ganesha é chamado antes de qualquer começo: de um ritual, de um casamento, de uma viagem, de um livro. Diz a tradição que foi ele quem escreveu o Mahabharata enquanto o sábio Vyasa ditava, e que, quando a pena quebrou, ele quebrou a própria presa para continuar escrevendo.",
-    p2: ["Quando os hindus chamam Ganesha?", ["Antes de começar qualquer coisa", "Só no fim do ano", "Apenas nos funerais"], "Ele é o senhor dos começos e o removedor de obstáculos. Por isso o seu nome vem primeiro."],
+  ganesha: { nome: "Ganesha", frase: "abre os caminhos", intro: "Você vai atravessar a Índia com o deus mais querido do país. Ganesha é chamado antes de todo começo: casamento, casa nova, viagem. Ninguém começa nada sem ele.",
+    cartas: [["🐘", "Por que a cabeça de elefante?", "Parvati moldou um menino com argila e o pôs para guardar a porta enquanto se banhava. Shiva chegou, não foi reconhecido e, num impulso, cortou a cabeça do menino. Arrependido, devolveu a vida ao filho com a cabeça do primeiro ser que encontrou: um elefante."],
+      ["🐭", "Um ratinho como montaria", "O maior dos deuses anda montado num ratinho, o Mushika. O rato entra em qualquer fresta, e Ganesha também: não existe obstáculo pequeno ou apertado demais para ele."],
+      ["🍬", "O doce preferido", "Ganesha adora modak, um docinho de arroz recheado de coco e açúcar. Em muitas imagens ele aparece com um na mão, e é o que se oferece a ele nos templos."]],
     onde: "No templo de Moti Dungri, em Jaipur, no dia 4 da travessia.", mantra: "Om Gam Ganapataye Namaha", trad: "Om, saudações a Ganapati, o senhor dos começos." },
-  hanuman: { nome: "Hanuman", frase: "a coragem e a devoção",
-    h1: "Filho do deus do vento, Hanuman é o grande devoto de Rama no Ramayana. Quando Sita foi raptada e levada para a ilha de Lanka, ele atravessou o mar num único salto para encontrá-la.",
-    p1: ["Como Hanuman chegou a Lanka?", ["Num salto sobre o mar", "De barco", "Montado numa águia"], "Filho do vento, ele saltou o oceano inteiro para levar a Sita o anel de Rama."],
-    h2: "Na batalha, Lakshmana, irmão de Rama, caiu ferido. Só uma erva do Himalaia, a sanjivani, podia salvá-lo antes do amanhecer. Hanuman voou até a montanha, mas não soube reconhecer a planta.",
-    p2: ["O que Hanuman fez quando não reconheceu a erva?", ["Trouxe a montanha inteira", "Voltou para perguntar", "Desistiu e rezou"], "Ele arrancou a montanha e voou com ela de volta. Por isso aparece tantas vezes com uma montanha na mão."],
+  hanuman: { nome: "Hanuman", frase: "a coragem e a devoção", intro: "O seu guardião é o herói mais amado do Ramayana! Hanuman é força, coragem e lealdade, e tudo isso a serviço de quem ele ama.",
+    cartas: [["🌊", "Um salto sobre o mar", "Quando Sita foi raptada e levada para a ilha de Lanka, Hanuman, filho do deus do vento, atravessou o oceano num único salto para encontrá-la."],
+      ["⛰️", "A montanha nas mãos", "Lakshmana, irmão de Rama, caiu ferido, e só uma erva do Himalaia podia salvá-lo. Hanuman voou até lá, não soube reconhecer a planta e trouxe a montanha inteira. Por isso aparece segurando uma montanha."],
+      ["❤️", "Rama no coração", "Numa das histórias mais lindas, Hanuman abre o próprio peito para mostrar que Rama e Sita moram dentro do seu coração."]],
     onde: "No templo de Sankat Mochan, em Varanasi, no dia 7 da travessia.", mantra: "Om Hanumate Namaha", trad: "Om, saudações a Hanuman." },
-  lakshmi: { nome: "Lakshmi", frase: "a abundância e a graça",
-    h1: "Quando deuses e demônios agitaram o oceano de leite em busca do néctar da imortalidade, muitos tesouros surgiram das ondas. Um deles foi Lakshmi, que escolheu Vishnu como companheiro.",
-    p1: ["De onde surgiu Lakshmi?", ["Do oceano de leite", "De uma flor do Himalaia", "Do fogo de um ritual"], "Ela nasceu da agitação do oceano cósmico, o Samudra Manthan, junto com outros tesouros."],
-    h2: "Lakshmi aparece sobre um lótus, a flor que nasce na lama e se abre limpa. No Diwali, a festa das luzes, as casas se enchem de lamparinas para recebê-la.",
-    p2: ["Em que festa as casas acendem lamparinas para receber Lakshmi?", ["Diwali", "Holi", "Kumbh Mela"], "No Diwali, as portas ficam abertas e iluminadas para que a deusa entre."],
+  lakshmi: { nome: "Lakshmi", frase: "a abundância e a graça", intro: "A deusa da prosperidade e da beleza vai com você! Lakshmi é abundância no sentido mais largo: comida na mesa, saúde, amor, alegria partilhada.",
+    cartas: [["🌊", "Nascida do oceano de leite", "Deuses e demônios agitaram o oceano cósmico em busca do néctar da imortalidade. Das ondas surgiram muitos tesouros, e um deles foi Lakshmi."],
+      ["🪷", "Sempre sobre um lótus", "O lótus nasce na lama e se abre limpo e perfeito. Por isso Lakshmi aparece sentada ou de pé sobre ele: a beleza que nasce de qualquer lugar."],
+      ["🪔", "A noite em que ela visita as casas", "No Diwali, as famílias acendem lamparinas e deixam portas e janelas iluminadas para receber Lakshmi. E você vai estar na Índia exatamente nessa festa!"]],
     onde: "No Diwali, em Varanasi, no dia 5 da travessia.", mantra: "Om Shreem Mahalakshmyai Namaha", trad: "Om, saudações à grande Lakshmi." },
-  shiva: { nome: "Shiva", frase: "a transformação",
-    h1: "Shiva é o asceta que medita no monte Kailash, no Himalaia. Tem um terceiro olho na testa, a lua crescente nos cabelos e o rio Ganga preso entre os cachos emaranhados.",
-    p1: ["Onde Shiva medita, segundo a tradição?", ["No monte Kailash, no Himalaia", "No fundo do oceano", "No deserto do Rajastão"], "Kailash é a sua morada. Os peregrinos dão a volta na montanha a pé, sem nunca subir nela."],
-    h2: "Como Nataraja, o rei da dança, Shiva dança o fim de um ciclo do mundo para que outro comece. Varanasi, a sua cidade, também se chama Kashi, a cidade da luz.",
-    p2: ["Como se chama a dança com que Shiva encerra e recomeça os ciclos?", ["Tandava", "Kathak", "Bharatanatyam"], "O Tandava é a dança cósmica de Nataraja: destruir para que algo novo possa nascer."],
+  shiva: { nome: "Shiva", frase: "a transformação", intro: "O seu guardião é Shiva, o grande yogi do Himalaia! Ele é silêncio profundo e, ao mesmo tempo, a força que transforma tudo.",
+    cartas: [["🏔️", "A casa no Himalaia", "Shiva medita no monte Kailash, no alto do Himalaia. Os peregrinos dão a volta na montanha a pé, sem nunca subir nela, por respeito."],
+      ["👁️", "O terceiro olho", "Na testa ele tem um terceiro olho, que enxerga além das aparências. Nos cabelos, uma lua crescente e o rio Ganga, que ele segurou quando ela desceu do céu."],
+      ["💃", "O rei da dança", "Como Nataraja, Shiva dança dentro de um círculo de fogo. É a dança que encerra um ciclo do mundo para que outro possa começar."]],
     onde: "Em Varanasi, a cidade de Shiva, do dia 5 ao dia 7 da travessia.", mantra: "Om Namah Shivaya", trad: "Om, eu me curvo a Shiva." },
-  durga: { nome: "Durga", frase: "a força que protege",
-    h1: "O demônio-búfalo Mahishasura não podia ser vencido por nenhum deus. Então os deuses uniram as suas forças, e dessa luz nasceu Durga. Cada um lhe deu uma arma.",
-    p1: ["Como Durga nasceu?", ["Da união das forças de todos os deuses", "De uma pedra do rio", "De um lótus no umbigo de Vishnu"], "Ela é a força de todos reunida numa só deusa, com muitos braços para carregar as armas que recebeu."],
-    h2: "Montada num leão, Durga lutou por nove noites e venceu no décimo dia. Essa vitória é celebrada todo ano no Navaratri e no Dussehra.",
-    p2: ["Qual animal Durga monta?", ["Um leão", "Um pavão", "Um rato"], "O leão é a coragem sob controle: força que protege, sem perder o rumo."],
+  durga: { nome: "Durga", frase: "a força que protege", intro: "Que guardiã! Durga é a Deusa guerreira, a força que protege quem está ao lado. Com ela, ninguém atravessa sozinho.",
+    cartas: [["✨", "Nascida da luz de todos", "Um demônio que nenhum deus conseguia vencer ameaçava o mundo. Os deuses uniram as suas forças, e dessa luz nasceu Durga. Cada um lhe deu uma arma."],
+      ["🦁", "Montada num leão", "Durga monta um leão: coragem com rumo, força que não perde a calma."],
+      ["🪔", "Nove noites de festa", "A vitória de Durga é celebrada todo ano no Navaratri, nove noites de música e dança, e no Dussehra, o dia da vitória."]],
     onde: "No templo de Durga Kund, em Varanasi, no dia 7 da travessia.", mantra: "Om Dum Durgayei Namaha", trad: "Om, saudações a Durga." },
-  saraswati: { nome: "Saraswati", frase: "a sabedoria e as artes",
-    h1: "Saraswati é a deusa do saber, da música e da palavra. Veste branco, toca a vina e tem ao lado um cisne que, diz a tradição, sabe separar o leite da água.",
-    p1: ["O que o cisne de Saraswati sabe fazer, segundo a tradição?", ["Separar o leite da água", "Cantar os Vedas", "Voar até a lua"], "É a imagem do discernimento: saber separar o essencial do resto."],
-    h2: "O seu nome também é o de um rio sagrado citado nos Vedas, que hoje não corre mais à vista. Estudantes pedem a ela clareza antes das provas, e músicos a saúdam antes de tocar.",
-    p2: ["Que instrumento Saraswati toca?", ["A vina", "A flauta", "O tambor"], "A vina é um instrumento de cordas, e o som dela representa a harmonia do conhecimento."],
+  saraswati: { nome: "Saraswati", frase: "a sabedoria e as artes", intro: "A sua guardiã é Saraswati, a deusa do saber, da música e da palavra! Quem ama aprender, criar e cantar está em boa companhia.",
+    cartas: [["🎶", "A vina nas mãos", "Saraswati toca a vina, um instrumento de cordas indiano. O som dela representa a harmonia entre o que se sabe e o que se sente."],
+      ["🦢", "O cisne que escolhe", "Ao lado dela vem um cisne branco que, diz a tradição, sabe separar o leite da água: é a imagem do discernimento."],
+      ["🤍", "Sempre de branco", "Ela veste branco, a cor da clareza. Estudantes pedem a ela inspiração antes das provas, e músicos a saúdam antes de tocar."]],
     onde: "Nos templos e escolas por onde a caravana passar, procure a deusa de branco com a vina.", mantra: "Om Aim Saraswatyai Namaha", trad: "Om, saudações a Saraswati." },
-  krishna: { nome: "Krishna", frase: "o amor e a alegria",
-    h1: "Krishna é uma das encarnações de Vishnu. Cresceu entre pastores em Vrindavan, roubando manteiga e tocando flauta para as gopis, que largavam tudo para ouvi-lo.",
-    p1: ["Krishna é uma encarnação de qual deus?", ["Vishnu", "Shiva", "Brahma"], "Vishnu desce ao mundo em várias formas, os avatares. Krishna é um dos mais amados."],
-    h2: "No Bhagavad Gita, antes da grande batalha de Kurukshetra, Krishna é o cocheiro de Arjuna e o ensina a agir sem se prender ao fruto da ação.",
-    p2: ["No Bhagavad Gita, Krishna conversa com qual guerreiro?", ["Arjuna", "Rama", "Bhima"], "A conversa entre os dois, no meio do campo de batalha, é um dos textos mais lidos da Índia."],
+  krishna: { nome: "Krishna", frase: "o amor e a alegria", intro: "O seu guardião é Krishna, o deus da flauta! Ele é alegria, amor e sabedoria na mesma pessoa, e é impossível não se encantar com ele.",
+    cartas: [["🧈", "O menino que roubava manteiga", "Krishna cresceu entre pastores em Vrindavan e, pequeno, vivia roubando manteiga das vizinhas. As histórias dessa infância são contadas com carinho até hoje."],
+      ["🪈", "A flauta e o pavão", "Quando ele tocava a flauta, as gopis largavam tudo para ouvir. Na cabeça, usa uma pena de pavão."],
+      ["📜", "O conselho mais famoso da Índia", "No Bhagavad Gita, antes de uma grande batalha, Krishna ensina o guerreiro Arjuna a agir de coração inteiro, sem se prender ao resultado."]],
     onde: "No darshan de Krishna, no templo Govind Dev Ji, em Jaipur, no dia 3 da travessia.", mantra: "Om Namo Bhagavate Vasudevaya", trad: "Om, eu me curvo a Vasudeva, o divino que habita em tudo." },
-  ganga: { nome: "Ganga", frase: "a purificação",
-    h1: "Ganga vivia no céu. O rei Bhagiratha fez penitência por anos para que ela descesse e purificasse as cinzas dos seus antepassados. Para que a força da queda não destruísse a Terra, Shiva a recebeu nos cabelos.",
-    p1: ["Quem amorteceu a descida de Ganga do céu?", ["Shiva, com os cabelos", "Vishnu, com as mãos", "Hanuman, com o corpo"], "Por isso Shiva aparece com um fio de água saindo do alto da cabeça."],
-    h2: "Para os hindus, banhar-se no Ganges purifica, e as cinzas entregues ao rio levam a alma adiante. Ganga é rio e deusa ao mesmo tempo, representada sobre um makara, uma criatura das águas.",
-    p2: ["Sobre qual criatura Ganga é representada?", ["Um makara, criatura das águas", "Um cavalo branco", "Um elefante"], "O makara mistura peixe e crocodilo, e é o veículo da deusa do rio."],
+  ganga: { nome: "Ganga", frase: "a purificação", intro: "A sua guardiã é Ganga, o rio sagrado em forma de deusa! Para a Índia, ela é mãe: lava, acolhe e renova.",
+    cartas: [["☁️", "Ela morava no céu", "Ganga vivia no céu até que o rei Bhagiratha pediu, por anos, que ela descesse à Terra. Para que a queda não destruísse o mundo, Shiva a recebeu nos cabelos."],
+      ["🐊", "Montada num makara", "Ganga é representada sobre um makara, uma criatura das águas que mistura peixe e crocodilo."],
+      ["🔥", "Fogo sobre a água", "Toda noite, em Varanasi, sacerdotes oferecem ao rio grandes lamparinas acesas, ao som de sinos e cânticos. É o Ganga Aarti, e você vai estar lá."]],
     onde: "No Ganga Aarti, em Varanasi, no dia 6, e no batismo em Rishikesh, no dia 10.", mantra: "Har Har Gange", trad: "O canto que se ouve nos ghats, saudando o rio." },
-  parvati: { nome: "Parvati", frase: "a devoção e o amor",
-    h1: "Filha do Himalaia, Parvati é a esposa de Shiva e a mãe de Ganesha. Para conquistar Shiva, que vivia mergulhado em meditação, ela fez anos de penitência nas montanhas.",
-    p1: ["Quem é o filho de Parvati com cabeça de elefante?", ["Ganesha", "Hanuman", "Krishna"], "Foi ela quem moldou Ganesha com a argila do próprio corpo."],
-    h2: "Parvati é a reencarnação de Sati, a primeira esposa de Shiva. Onde partes do corpo de Sati caíram sobre a Terra nasceram os Shakti Peethas, templos da Deusa, como Kunjapuri.",
-    p2: ["Parvati é a reencarnação de quem?", ["Sati", "Sita", "Radha"], "Sati e Parvati são a mesma Deusa em duas vidas, sempre ligada a Shiva."],
-    onde: "No templo de Kunjapuri, um Shakti Peetha perto de Rishikesh, no dia 10 da travessia.", mantra: "Om Parvatyai Namaha", trad: "Om, saudações a Parvati." },
-  vishnu: { nome: "Vishnu", frase: "a preservação e o equilíbrio",
-    h1: "Vishnu é quem preserva o mundo. Repousa sobre a serpente Shesha no oceano cósmico, e do seu umbigo nasce o lótus onde Brahma aparece para criar.",
-    p1: ["Sobre o que Vishnu repousa no oceano cósmico?", ["A serpente Shesha", "Um lótus gigante", "Uma tartaruga"], "Shesha, a serpente de muitas cabeças, é o leito de Vishnu entre um ciclo e outro do mundo."],
-    h2: "Sempre que a ordem do mundo se perde, Vishnu desce em forma de avatar para restaurá-la. Rama e Krishna são dois deles.",
-    p2: ["Quais destes são avatares de Vishnu?", ["Rama e Krishna", "Ganesha e Hanuman", "Shiva e Brahma"], "Rama, do Ramayana, e Krishna, do Bhagavad Gita, são as duas encarnações mais conhecidas."],
+  parvati: { nome: "Parvati", frase: "a devoção e o amor", intro: "A sua guardiã é Parvati, a deusa das montanhas! Doce e firme ao mesmo tempo, ela é o amor que não desiste.",
+    cartas: [["🏔️", "Filha do Himalaia", "Parvati é filha do rei das montanhas. O nome dela quer dizer, justamente, a da montanha."],
+      ["🐘", "A mãe de Ganesha", "Foi ela quem moldou Ganesha com argila. Com Shiva, forma a família divina mais amada da Índia."],
+      ["🕉️", "Uma deusa em duas vidas", "Parvati é a reencarnação de Sati, a primeira esposa de Shiva. Onde partes do corpo de Sati caíram nasceram templos da Deusa, como Kunjapuri."]],
+    onde: "No templo de Kunjapuri, perto de Rishikesh, no dia 10 da travessia.", mantra: "Om Parvatyai Namaha", trad: "Om, saudações a Parvati." },
+  vishnu: { nome: "Vishnu", frase: "a preservação e o equilíbrio", intro: "O seu guardião é Vishnu, aquele que cuida para que o mundo continue em equilíbrio! Calmo, firme e sempre presente.",
+    cartas: [["🐍", "Descansando sobre uma serpente", "Entre um ciclo do mundo e outro, Vishnu repousa sobre a serpente Shesha, boiando no oceano cósmico."],
+      ["🪷", "O lótus do umbigo", "Do umbigo de Vishnu nasce um lótus, e dele aparece Brahma, o criador."],
+      ["✨", "Muitas formas", "Sempre que o mundo perde o rumo, Vishnu desce em outra forma, um avatar. Rama e Krishna são dois deles."]],
     onde: "Rishikesh leva o nome dele: Hrishikesha, o senhor dos sentidos. Dia 8 da travessia.", mantra: "Om Namo Narayanaya", trad: "Om, eu me curvo a Narayana, Vishnu." },
-  surya: { nome: "Surya", frase: "a luz e a vitalidade",
-    h1: "Surya é o Sol, que atravessa o céu num carro puxado por sete cavalos, um para cada dia da semana.",
-    p1: ["Quantos cavalos puxam o carro de Surya?", ["Sete", "Dois", "Doze"], "Os sete cavalos também são lidos como as sete cores da luz."],
-    h2: "Toda manhã, na Índia, muita gente oferece água ao sol nascente com as mãos em concha. A saudação ao sol do yoga, Surya Namaskar, também é dedicada a ele.",
-    p2: ["Como se chama a saudação ao sol do yoga?", ["Surya Namaskar", "Pranayama", "Shavasana"], "Namaskar quer dizer saudação: é o corpo inteiro cumprimentando o sol."],
+  surya: { nome: "Surya", frase: "a luz e a vitalidade", intro: "O seu guardião é Surya, o próprio Sol! Luz, calor e energia para cada dia da travessia.",
+    cartas: [["🐎", "Sete cavalos", "Surya atravessa o céu num carro dourado puxado por sete cavalos, um para cada dia da semana."],
+      ["💧", "Água para o sol", "Toda manhã, muita gente na Índia oferece água ao sol nascente com as mãos em concha."],
+      ["🧘", "A saudação ao sol", "O Surya Namaskar, a saudação ao sol do yoga, é dedicado a ele: o corpo inteiro cumprimentando o dia."]],
     onde: "No amanhecer de Kunjapuri, quando o sol nasce atrás dos picos do Himalaia, no dia 10.", mantra: "Om Suryaya Namaha", trad: "Om, saudações ao Sol." },
-  kali: { nome: "Kali", frase: "o tempo que liberta",
-    h1: "Kali é a face mais feroz da Deusa. Na batalha contra o demônio Raktabija, de cada gota do sangue dele que caía no chão nascia outro demônio. Kali bebeu o sangue antes que tocasse a terra e assim o venceu.",
-    p1: ["Como Kali venceu Raktabija?", ["Bebendo o sangue antes que tocasse o chão", "Prendendo-o numa montanha", "Com uma flecha de fogo"], "Ela não deixou nenhuma gota cair, e o demônio não pôde se multiplicar."],
-    h2: "O nome Kali vem de kala, o tempo. Ela é o tempo que tudo consome e, por isso, também o que liberta do medo da morte. É escura como o céu antes da criação.",
-    p2: ["De que palavra vem o nome Kali?", ["Kala, o tempo", "Kamala, o lótus", "Kailash, a montanha"], "Kali é o tempo em forma de Deusa: tudo passa por ela."],
+  kali: { nome: "Kali", frase: "o tempo que liberta", intro: "A sua guardiã é Kali, a face mais intensa da Deusa! Ela assusta à primeira vista, mas é proteção feroz e liberdade.",
+    cartas: [["⏳", "O nome dela é tempo", "Kali vem de kala, o tempo. Ela é o tempo que tudo transforma e, por isso, liberta do medo."],
+      ["🌑", "Escura como a noite", "A pele escura é o céu antes da criação, onde tudo cabe."],
+      ["🛡️", "A guerreira que não deixa cair uma gota", "Contra um demônio que se multiplicava a cada gota de sangue derramada, Kali não deixou nenhuma tocar o chão e o venceu."]],
     onde: "Em Varanasi, a cidade onde a morte é vista como passagem, do dia 5 ao dia 7.", mantra: "Om Krim Kalikayai Namaha", trad: "Om, saudações a Kali." },
-  brahma: { nome: "Brahma", frase: "a criação",
-    h1: "Brahma é o criador. Nasceu no lótus que brota do umbigo de Vishnu e dali criou o mundo. Tem quatro cabeças, uma para cada direção, e das suas bocas teriam saído os quatro Vedas.",
-    p1: ["Quantas cabeças tem Brahma?", ["Quatro", "Uma", "Mil"], "Uma para cada direção: ele vê o mundo inteiro que criou."],
-    h2: "Apesar de ser o criador, Brahma quase não tem templos. O mais famoso fica em Pushkar, no Rajastão, à beira de um lago sagrado.",
-    p2: ["Onde fica o templo mais famoso de Brahma?", ["Pushkar, no Rajastão", "Varanasi", "Delhi"], "Pushkar é um dos raríssimos lugares da Índia dedicados a ele."],
+  brahma: { nome: "Brahma", frase: "a criação", intro: "O seu guardião é Brahma, o criador do mundo! Ele combina com quem gosta de começar coisas novas.",
+    cartas: [["🪷", "Nascido de um lótus", "Brahma nasceu no lótus que brota do umbigo de Vishnu, e dali criou o mundo."],
+      ["👀", "Quatro cabeças", "Ele tem quatro cabeças, uma para cada direção, e das suas bocas teriam saído os quatro Vedas, os textos mais antigos da Índia."],
+      ["🏛️", "Um deus quase sem templos", "Apesar de ser o criador, Brahma tem pouquíssimos templos. O mais famoso fica em Pushkar, no Rajastão."]],
     onde: "O roteiro não passa por Pushkar, mas Brahma aparece nas paredes de muitos templos, com as suas quatro faces.", mantra: "Om Brahmaye Namaha", trad: "Om, saudações a Brahma." }
 };
 // o link da passagem pode trazer o guardião (?g=ganesha)
 try { const g0 = new URLSearchParams(location.search).get("g"); if (g0 && GUARDIOES[g0]) localStorage.setItem("cdi-guardiao", g0); } catch (e) {}
 const meuGuardiao = () => { const v = eu(); let g = v && v.guardiao; if (!GUARDIOES[g]) try { g = localStorage.getItem("cdi-guardiao"); } catch (e) {} return GUARDIOES[g] ? g : null; };
-// as opções aparecem embaralhadas (sempre na mesma ordem para a mesma pergunta)
-const embaralha = (arr, semente) => arr.map((x, i) => [x, Math.sin((i + 1) * 99.7 + semente.length * 7.3) * 1e4 % 1]).sort((a, b) => a[1] - b[1]).map(x => x[0]);
 function abrirGuardiao(passo) {
   closeSheets(); passo = passo || 0;
   const g = meuGuardiao(), box = h("div", { role: "dialog", "aria-label": "Conhecer o seu guardião", class: "quiz" });
@@ -2343,30 +2388,29 @@ function abrirGuardiao(passo) {
   }
   const G = GUARDIOES[g];
   if (S.db && eu() && eu().guardiao !== g) S.db.doc("viajantes/" + S.uid).update({ guardiao: g }).catch(() => {});
-  const passos = 4, topo = h("p", { class: "eyebrow", style: "text-align:center", text: `O seu guardião · ${passo + 1} de ${passos}` });
-  const pergunta = (P, prox) => {
-    const [perg, ops, porque] = P, certa = ops[0], res = h("div", { class: "guardres", role: "status" });
-    const lista = h("div", { class: "quizops" }, embaralha(ops, perg).map(t => h("button", { type: "button", class: "quizop", onclick: e => {
-      lista.querySelectorAll(".quizop").forEach(b => { b.disabled = true; if (b.textContent === certa) b.classList.add("certa"); });
-      if (t !== certa) e.currentTarget.classList.add("errada");
-      res.replaceChildren(h("p", { class: "guardporque" }, h("b", { text: t === certa ? "Isso. " : "Quase. " }), porque),
-        h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: prox }, "Continuar")));
-    } }, t)));
-    return [h("h3", { class: "guardperg", text: perg }), lista, res];
-  };
+  const topo = h("p", { class: "eyebrow", style: "text-align:center", text: `O seu guardião · ${passo + 1} de 4` });
   if (passo === 0) box.append(topo, h("img", { class: "quizdeus", src: "deuses/" + g + ".webp", alt: G.nome }), h("h2", { style: "text-align:center", text: G.nome }),
-    h("p", { class: "lede", style: "text-align:center;margin:0 auto", text: "Guardião da sua travessia: " + G.frase + "." }),
-    h("p", { class: "guardhist", text: G.h1 }), ...pergunta(G.p1, () => abrirGuardiao(1)), fecha);
-  else if (passo === 1) box.append(topo, h("h2", { style: "text-align:center", text: G.nome }), h("p", { class: "guardhist", text: G.h2 }), ...pergunta(G.p2, () => abrirGuardiao(2)), fecha);
-  else if (passo === 2) box.append(topo, h("p", { class: "eyebrow", style: "text-align:center;margin-top:6px", text: "Onde vocês se encontram" }), h("h2", { style: "text-align:center", text: G.nome + " na travessia" }),
+    h("p", { class: "lede", style: "text-align:center;margin:0 auto", text: G.frase.charAt(0).toUpperCase() + G.frase.slice(1) }),
+    h("p", { class: "guardhist", text: G.intro }),
+    h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirGuardiao(1) }, "Conhecer " + G.nome)), fecha);
+  else if (passo === 1) {
+    // três cartas fechadas: cada toque revela uma curiosidade; com as três abertas, a jornada continua
+    const seguir = h("div", { class: "actions", style: "justify-content:center", hidden: "" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirGuardiao(2) }, "Continuar"));
+    const cartas = G.cartas.map(([ic, tit, txt]) => h("button", { type: "button", class: "guardcarta", onclick: e => {
+      const c = e.currentTarget; if (c.classList.contains("aberta")) return; c.classList.add("aberta"); c.setAttribute("aria-expanded", "true");
+      try { navigator.vibrate && navigator.vibrate(12); } catch (x) {}
+      if (box.querySelectorAll(".guardcarta.aberta").length === G.cartas.length) seguir.hidden = false; }, "aria-expanded": "false" },
+      h("span", { class: "gcic", "aria-hidden": "true", text: ic }), h("span", { class: "gctx" }, h("b", { text: tit }), h("small", { class: "gcfecho", text: "Toque para descobrir" }), h("span", { class: "gcabre", text: txt }))));
+    box.append(topo, h("h2", { style: "text-align:center", text: "Descubra " + G.nome }), h("p", { class: "small", style: "text-align:center", text: "Toque em cada carta." }), h("div", { class: "guardcartas" }, cartas), seguir, fecha);
+  } else if (passo === 2) box.append(topo, h("p", { class: "eyebrow", style: "text-align:center;margin-top:6px", text: "Onde vocês se encontram" }), h("h2", { style: "text-align:center", text: G.nome + " na travessia" }),
+    h("img", { class: "quizdeus", style: "width:110px", src: "deuses/" + g + ".webp", alt: "" }),
     h("p", { class: "lede", style: "text-align:center;margin:0 auto", text: G.onde }),
     h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirGuardiao(3) }, "Aprender o mantra")), fecha);
   else {
     marcaMissao("guardiao");
     box.append(topo, h("p", { class: "eyebrow", style: "text-align:center;margin-top:6px", text: "O mantra de " + G.nome }),
-      h("img", { class: "quizdeus", style: "width:120px", src: "deuses/" + g + ".webp", alt: "" }),
       h("p", { class: "guardmantra", text: G.mantra }), h("p", { class: "small", style: "text-align:center", text: G.trad }),
-      h("p", { class: "small", style: "text-align:center", text: "Repita três vezes, devagar. Ele vai com você na travessia." }),
+      h("p", { class: "guardhist", style: "text-align:center", text: "Repita três vezes, devagar. Ele vai com você em toda a travessia." }),
       h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn ghost", type: "button", onclick: () => abrirGuardiao(0) }, "Ver de novo"),
         h("button", { class: "btn ghost", type: "button", onclick: () => abrirGuardiao("escolher") }, "Não é este o meu guardião")), fecha);
   }
@@ -2951,7 +2995,7 @@ function vPassaporte() {
         h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : tituloViajante(g), totalViagens(g) > 1 ? totalViagens(g) + " viagens" : "", g.cidade].filter(Boolean).join(" · ") }), medalhasDe(g, 24)),
         h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null,
     vMinhasHabilidades(), vHabilidadesLider(),
-    vPalavraLider(),
+    vPalavraLider(), vGuardioesLider(),
     vGenteLider(),
     S.isOwner || aberto(localDe("travessia")) ? h("button", { class: "folhear video", type: "button", onclick: abrirVideoPassaporte },
       h("span", { class: "vidico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("path", { d: "M8 5.5v13l11-6.5z", fill: "#3B2A1C" }))),
@@ -3151,6 +3195,51 @@ function vHabilidadesLider() {
     })));
 }
 // Só a líder: ver e trocar a palavra-chave que abre o app (fica guardada no Firebase, em privado/acesso)
+// ---------- Só a líder: liga o guardião de cada passagem ao passaporte de cada viajante ----------
+// a lista é a mesma da página Passagens ("Nome, número[, guardião]"); sem guardião escrito, vale o sorteio da passagem (número % 8)
+const G_SORTEIO = ["ganesha", "hanuman", "lakshmi", "shiva", "durga", "saraswati", "krishna", "ganga"];
+const normNome = t => String(t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z ]/g, " ").replace(/\s+/g, " ").trim();
+function lerPassagens(txt) {
+  return String(txt || "").split("\n").map(l => l.split(",").map(x => x.trim())).filter(([nome]) => nome).map(([nome, num, g]) => {
+    const pedido = normNome(g).replace(/ /g, ""), n = String(num || "").replace(/\D/g, "");
+    return { nome, g: GUARDIOES[pedido] ? pedido : G_SORTEIO[(+n || 0) % 8] };
+  });
+}
+// procura o viajante na lista: nome completo igual, depois primeiro + último nome, depois só o primeiro nome (se não houver dois iguais)
+function guardiaoNaLista(v, lista) {
+  const n = normNome(v.nome); if (!n) return null; const p = n.split(" ");
+  const iguais = lista.filter(x => normNome(x.nome) === n); if (iguais.length) return iguais[0].g;
+  const pu = lista.filter(x => { const q = normNome(x.nome).split(" "); return p.length > 1 && q[0] === p[0] && q[q.length - 1] === p[p.length - 1]; }); if (pu.length === 1) return pu[0].g;
+  const pr = lista.filter(x => normNome(x.nome).split(" ")[0] === p[0]); return pr.length === 1 ? pr[0].g : null;
+}
+// grava nos passaportes quem ainda não tem guardião (roda quando a líder abre o app e quando chega gente nova)
+function aplicaGuardioes() {
+  if (!S.isOwner || !S.db || !S.passagensLista) return;
+  const lista = lerPassagens(S.passagensLista);
+  for (const v of S.viajantes) { if (v.lider || v.guardiao) continue; const g = guardiaoNaLista(v, lista); if (g) S.db.doc("viajantes/" + v.id).update({ guardiao: g }).catch(() => {}); }
+}
+function vGuardioesLider() {
+  if (!S.isOwner || !noSite() || !S.db) return null;
+  if (S.passagensLista === undefined) { S.passagensLista = null; S.db.doc("privado/passagens").get().then(d => { S.passagensLista = d.exists ? String(d.data().lista || "") : ""; if (!S.passagensLista) try { S.passagensLista = localStorage.getItem("cdi-passagens") || ""; } catch (e) {} aplicaGuardioes(); const ta = document.getElementById("lista-passagens"); if (ta && !ta.value) ta.value = S.passagensLista; }).catch(() => {}); }
+  const ta = h("textarea", { id: "lista-passagens", rows: "6", placeholder: "Ana Paula, 7\nJoão Pedro, 3, Hanuman\nMariana, 12" }); ta.value = S.passagensLista || "";
+  const msg = h("p", { class: "msg", role: "status" });
+  const salvar = async () => {
+    try { await S.db.doc("privado/passagens").set({ lista: ta.value, ts: Date.now() }); S.passagensLista = ta.value; aplicaGuardioes(); msg.textContent = "Pronto. Os guardiões foram ligados aos passaportes."; msg.className = "msg ok"; setTimeout(render, 1200); }
+    catch (e) { msg.textContent = "Não consegui salvar. Tente de novo."; msg.className = "msg err"; }
+  };
+  const gente = S.viajantes.filter(v => !v.lider).slice().sort((a, b) => normNome(a.nome) < normNome(b.nome) ? -1 : 1);
+  const opcoes = [["", "—"], ...Object.entries(GUARDIOES).map(([id, G]) => [id, G.nome])];
+  return h("div", { class: "panel" },
+    h("p", { class: "eyebrow", text: "Só você vê · guardiões das passagens" }),
+    h("h2", { text: "Guardiões das passagens" }),
+    h("p", { class: "small", text: "Cole aqui a mesma lista da página Passagens (uma pessoa por linha: nome, número e, se quiser, o guardião). O app liga cada nome ao passaporte da pessoa, e ela já encontra o seu guardião na missão Conhecer o seu guardião." }),
+    ta, h("div", { class: "actions" }, h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar e ligar")), msg,
+    gente.length ? h("ul", { class: "guardlider" }, gente.map(v => {
+      const sel = h("select", { "aria-label": "Guardião de " + v.nome, onchange: e => S.db.doc("viajantes/" + v.id).update({ guardiao: e.target.value }).catch(() => {}) }, opcoes.map(([id, n]) => h("option", { value: id, selected: (v.guardiao || "") === id ? "" : null }, n)));
+      return h("li", { class: v.guardiao ? "" : "falta" }, h("span", { text: v.nome || "(sem nome)" }), sel);
+    })) : null,
+    gente.some(v => !v.guardiao) ? h("p", { class: "small", text: "Os nomes em vermelho não foram encontrados na lista: escolha o guardião deles aqui ao lado." }) : null);
+}
 function vPalavraLider() {
   if (!S.isOwner || !noSite() || !S.db) return null;
   const atual = h("b", { class: "palavraatual", text: S.palavraAtual == null ? "…" : (S.palavraAtual || "(nenhuma)") });
@@ -8313,6 +8402,8 @@ render();
     if (window.__SITE && eu()) autoGps();
     // quem virou líder depois de já ter passaporte (ex.: Vanessa) passa a aparecer como Líder
     const v = eu(); if (S.isOwner && v && !v.lider && !S.virandoLider) { S.virandoLider = true; S.db.doc("viajantes/" + S.uid).update({ lider: true }).catch(() => { S.virandoLider = false; }); }
+    // quem se cadastrou depois ganha o guardião da passagem assim que a líder abre o app
+    if (S.isOwner) { if (S.passagensLista === undefined) vGuardioesLider(); else aplicaGuardioes(); }
   });
   listen("chat", "chat", db.collection("chat").orderBy("ts", "desc").limit(800));
   listen("posicoes", "posicoes");
