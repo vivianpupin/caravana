@@ -559,9 +559,10 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .guardgrade button{border:1px solid rgba(138,63,50,.25);background:#FBF6EC;border-radius:12px;padding:6px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font:600 12.5px Poppins,sans-serif;color:#282722}
 .guardgrade img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px}
 .quizdeus{display:block;width:170px;max-width:60%;margin:10px auto 4px;border-radius:14px;box-shadow:0 10px 24px rgba(40,24,10,.25)}
-.oraculocard{display:flex;align-items:center;gap:14px;width:100%;margin:14px 0 18px;padding:14px;border:0;border-radius:18px;text-align:left;cursor:pointer;font:inherit;color:#F1E2BC;box-shadow:var(--shadow);background:radial-gradient(ellipse at 20% 0%,#3B3550,#1B1A2A 70%)}
+.oraculocard{display:flex;align-items:center;gap:14px;width:100%;margin:14px 0 18px;padding:14px;border:0;border-radius:18px;text-align:left;cursor:pointer;font:inherit;color:#F1E2BC;box-shadow:var(--shadow);background:radial-gradient(1px 1px at 20% 30%,#fff8 50%,transparent),radial-gradient(1px 1px at 70% 20%,#fff6 50%,transparent),radial-gradient(1px 1px at 85% 70%,#fff5 50%,transparent),radial-gradient(1.4px 1.4px at 45% 80%,#fff7 50%,transparent),radial-gradient(1px 1px at 60% 50%,#fff4 50%,transparent),radial-gradient(ellipse at 20% 0%,#2A2430,#141116 70%);padding:18px}
 .orcgrade{flex:0 0 84px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
 .orcmapa{position:relative;flex:0 0 96px;width:96px;aspect-ratio:1}
+.orcroda{flex:0 0 92px;width:92px;height:92px}.orcroda svg{display:block;width:100%;height:100%}
 .orcmapa .orcmini{position:absolute;transform:translate(-50%,-50%);height:auto}
 .orcmini{display:block}
 .orcmini svg,.orcsim svg,.orlsim svg,.orcmini,.orcsim,.orlsim{display:block;width:100%;height:auto;-webkit-user-drag:none;user-select:none}
@@ -2650,10 +2651,10 @@ const posOrb = (id, k = 1, kr = 1) => { const [r, a, w] = ORB[id], rad = a * Mat
 function vOraculoCard() {
   const L = lerOraculo(), G = L && GRAHAS.find(x => x.id === L.g);
   return h("button", { type: "button", class: "oraculocard", onclick: () => abrirOraculo() },
-    // o mesmo sistema solar do altar, em miniatura
-    h("div", { class: "orcmapa", "aria-hidden": "true" }, GRAHAS.map(x => { const e = planetaEl(x.id, "orcmini"); e.style.cssText = posOrb(x.id, 1.6, .9); return e; })),
+    // roda dourada com os símbolos dos nove planetas
+    (() => { const d = h("div", { class: "orcroda", "aria-hidden": "true" }); d.innerHTML = `<svg viewBox="0 0 100 100"><g fill="none" stroke="#C9A35F" stroke-width=".8"><circle cx="50" cy="50" r="46"/><circle cx="50" cy="50" r="38" stroke-dasharray="1.5 2"/><circle cx="50" cy="50" r="13"/></g><g fill="#E2C08A" font-family="Georgia,serif" font-size="11" text-anchor="middle" dominant-baseline="central"><text x="50" y="50" font-size="15">☉</text><text x="50" y="22">☽</text><text x="70" y="30">♂</text><text x="78" y="50">☿</text><text x="70" y="70">♃</text><text x="50" y="78">♀</text><text x="30" y="70">♄</text><text x="22" y="50">☊</text><text x="30" y="30">☋</text></g></svg>`; return d; })(),
     h("span", { class: "orctx" }, h("b", { text: "Oráculo dos Planetas" }),
-      h("span", { text: G ? "Sua última leitura: " + G.nome + ". Toque para consultar de novo." : "Pense numa pergunta, segure o botão e concentre‑se." })));
+      h("span", { text: G ? "Sua última leitura: " + G.nome + ". Toque para consultar de novo." : "Faça uma pergunta ao céu. Um dos nove planetas vem até você." })));
 }
 function leituraOraculo(L) {
   const G = GRAHAS.find(x => x.id === L.g), M = GRAHA_MAIS[G.id], N = NAKSHATRAS[L.n];
