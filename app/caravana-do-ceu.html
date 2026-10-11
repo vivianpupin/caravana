@@ -2664,6 +2664,17 @@ function vibrar(ms) {
   } catch (e) {}
   return false;
 }
+// som do oráculo: um "tim" de cristal a cada planeta que acende (junto com a vibração, ou no lugar dela)
+function tique(forte) {
+  try {
+    const A = window.AudioContext || window.webkitAudioContext; if (!A) return;
+    const ctx = S.audio || (S.audio = new A()); if (ctx.state === "suspended") ctx.resume();
+    const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine"; o.frequency.value = forte ? 1318 : 1760 + Math.random() * 220;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(forte ? .12 : .06, t + .005); g.gain.exponentialRampToValueAtTime(.0001, t + (forte ? .35 : .14));
+    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + .4);
+  } catch (e) {}
+}
 // as imagens dos planetas já vêm carregadas antes de abrir o oráculo (assim elas não aparecem do nada)
 const PLANETAS_PRE = [];
 function preCarregaPlanetas() {
@@ -2729,17 +2740,17 @@ function abrirOraculo() {
     const bt = h("button", { type: "button", class: "orbotao" }, "Segure para concentrar");
     const gira = () => { if (!segurando) return; const t = (performance.now() - inicio) / 1000, f = Math.min(1, t / 3);
       barra.firstChild.style.width = (f * 100) + "%"; vel += 16 + f * 40; acelera = 1 + f * 5;
-      if (vel > 160 - f * 120) { vel = 0; pos = (pos + 1 + Math.floor(Math.random() * 3)) % 9; acende(pos); vibrar(15); }
+      if (vel > 160 - f * 120) { vel = 0; pos = (pos + 1 + Math.floor(Math.random() * 3)) % 9; acende(pos); vibrar(15); tique(); }
       raf = requestAnimationFrame(gira); };
-    const comeca = e => { e.preventDefault(); if (segurando || bt.disabled) return; segurando = true; inicio = performance.now(); vibrar(20); bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(gira); };
+    const comeca = e => { e.preventDefault(); if (segurando || bt.disabled) return; segurando = true; inicio = performance.now(); vibrar(20); tique(true); bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(gira); };
     const solta = () => { if (!segurando) return; segurando = false; vibrar(30); cancelAnimationFrame(raf); bt.disabled = true; bt.classList.remove("vivo"); acelera = 1;
       if (performance.now() - inicio < 600) { bt.disabled = false; bt.textContent = "Segure um pouco mais"; barra.firstChild.style.width = "0"; return; }
       // a luz desacelera e para num planeta
       const fim = Math.floor(Math.random() * 9), L = { dia: hojeLocal(), g: GRAHAS[fim].id, n: Math.floor(Math.random() * 27), p: Math.floor(Math.random() * 3) };
       let passos = 9 + ((fim - pos + 9) % 9), d = 70;
-      const anda = () => { pos = (pos + 1) % 9; acende(pos); vibrar(18); passos--;
+      const anda = () => { pos = (pos + 1) % 9; acende(pos); vibrar(18); tique(); passos--;
         if (passos > 0) { d *= 1.13; setTimeout(anda, d); return; }
-        celulas[fim].classList.add("escolhido"); if (!vibrar([40, 60, 120])) { setTimeout(() => vibrar(1), 120); setTimeout(() => vibrar(1), 260); }
+        celulas[fim].classList.add("escolhido"); sino(); if (!vibrar([40, 60, 120])) { setTimeout(() => vibrar(1), 120); setTimeout(() => vibrar(1), 260); }
         try { localStorage.setItem("cdi-oraculo", JSON.stringify(L)); } catch (e) {}
         bt.remove(); barra.remove();
         setTimeout(() => { saida.replaceChildren(leituraOraculo(L), h("div", { class: "actions", style: "justify-content:center;margin-top:10px" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirOraculo() }, "Consultar de novo"))); saida.scrollIntoView({ behavior: "smooth", block: "start" }); }, 600); };
