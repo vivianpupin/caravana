@@ -561,8 +561,8 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .quizdeus{display:block;width:170px;max-width:60%;margin:10px auto 4px;border-radius:14px;box-shadow:0 10px 24px rgba(40,24,10,.25)}
 .oraculocard{display:flex;align-items:center;gap:14px;width:100%;margin:14px 0 18px;padding:14px;border:0;border-radius:18px;text-align:left;cursor:pointer;font:inherit;color:#F1E2BC;box-shadow:var(--shadow);background:radial-gradient(ellipse at 20% 0%,#3B3550,#1B1A2A 70%)}
 .orcgrade{flex:0 0 84px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
-.orcgrade{width:84px;min-width:84px;overflow:hidden}
-.orcmini{display:block;width:100%;aspect-ratio:1;overflow:hidden}
+.orcgrade{width:84px;min-width:84px;overflow:hidden;padding:6px;border-radius:12px;background:linear-gradient(180deg,#CFE3E3,#A9CBCF)}
+.orcmini{display:block;width:100%;aspect-ratio:64/84;overflow:hidden}
 .orcmini svg,.orcsim svg,.orlsim svg{display:block;width:100%;height:100%}
 .orctx{display:flex;flex-direction:column;gap:3px}
 .orctx small{font:600 11px Poppins,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#E2C08A}
@@ -574,14 +574,14 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .ortopo .eyebrow{color:#E2C08A;margin:0}
 .ortopo h2{font-family:var(--display);font-size:24px;margin:4px 0;color:#F6EDDA}
 .orintro{font-size:14px;line-height:1.5;opacity:.85;margin:4px 0 0}
-.oraltar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px auto 0;width:min(300px,100%)}
-.orcel{aspect-ratio:1;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);transition:background .12s,box-shadow .12s,transform .12s}
-.orcsim{display:block;width:62%;aspect-ratio:1}
-.orcnome{font:600 11px Poppins,sans-serif;letter-spacing:.08em;opacity:.75}
-.orcel.on{background:color-mix(in srgb,var(--c) 45%,transparent);box-shadow:0 0 18px var(--c),inset 0 0 0 1px rgba(255,255,255,.5);transform:scale(1.05)}
+.oraltar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px auto 0;width:min(310px,100%);padding:12px;border-radius:18px;background:linear-gradient(180deg,#D6E8E8,#A9CBCF);box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),0 8px 20px rgba(0,0,0,.4)}
+.orcel{aspect-ratio:1;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:rgba(255,255,255,.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);transition:background .12s,box-shadow .12s,transform .12s}
+.orcsim{display:block;width:70%;aspect-ratio:64/84}
+.orcnome{font:700 10.5px Poppins,sans-serif;letter-spacing:.08em;color:#2A2826;background:rgba(247,243,232,.85);border-radius:6px;padding:1px 6px}
+.orcel.on{background:rgba(255,214,130,.75);box-shadow:0 0 20px #FFC94A,inset 0 0 0 2px #FFE7A8;transform:scale(1.06)}
 .orcel.on .orcsim{filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
 .orcel.escolhido{animation:escolhido 1.2s ease-in-out infinite alternate}
-@keyframes escolhido{from{box-shadow:0 0 12px var(--c)}to{box-shadow:0 0 34px var(--c)}}
+@keyframes escolhido{from{box-shadow:0 0 10px #FFC94A}to{box-shadow:0 0 34px #FFB51F}}
 .orbarra{height:8px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden;width:min(300px,100%);margin:6px auto 0}
 .orbarra i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8A3F32,#E2B33C,#F6EDDA)}
 .orbotao{border:0;border-radius:999px;padding:16px 26px;font:600 15px Poppins,sans-serif;color:#2A1C10;background:linear-gradient(180deg,#E8CC98,#B48A4C);box-shadow:0 6px 18px rgba(0,0,0,.4);cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
@@ -590,7 +590,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .orvolta{text-align:center;font-size:13px;opacity:.8;margin:6px 0 0}
 .orleitura{background:#FBF6EC;color:#282722;border-radius:18px;padding:18px 16px;margin-top:8px}
 .orltopo{display:flex;gap:14px;align-items:center;margin-bottom:6px}
-.orlsim{flex:0 0 70px;height:70px;border-radius:50%;background:radial-gradient(circle,#2A2840,#1B1A2A);padding:4px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.orlsim{flex:0 0 56px;height:74px}
 .orltopo h2{font-family:var(--display);font-size:26px;margin:0}
 .orlsub{margin:0;font-size:13px;color:#8A3F32;letter-spacing:.04em}
 .orlnak{margin:2px 0 0;font:italic 14px Lora,Georgia,serif;color:#5B4A38}
@@ -2589,23 +2589,21 @@ const GRAHA_MAIS = {
 };
 // como cada mansão da Lua colore o planeta que cai nela
 const NAK_TEMA = ["um começo rápido, que cura", "uma gestação que pede paciência", "um fogo que corta o que sobra", "um cultivo fértil", "uma busca curiosa", "uma chuva que limpa", "um recomeço", "um cuidado que nutre", "um olhar para o que está escondido", "uma honra aos que vieram antes", "um descanso que restaura", "um compromisso cumprido", "um trabalho feito com as próprias mãos", "uma forma bonita", "um movimento livre", "um foco num único alvo", "uma amizade fiel", "uma responsabilidade assumida", "um mergulho até a raiz", "uma persistência suave", "uma vitória que permanece", "uma escuta atenta", "um ritmo próprio", "um recolhimento que cura", "uma decisão que transforma", "uma calma profunda", "uma travessia protegida"];
-// os planetinhas desenhados como são no céu (Rahu e Ketu, que são os pontos dos eclipses, viram um eclipse e um cometa)
+// os planetas como no altar dos Navagrahas dos templos de Varanasi: bolas pintadas à mão sobre pilares de pedra preta, com o nome em hindi
+const PLANETA_COR = { surya: ["#E9893A", "सूर्य"], chandra: ["#F2EEE3", "चंद्र"], mangala: ["#C93A24", "मंगल"], budha: ["#2F8A4E", "बुध"], guru: ["#F0C531", "गुरु"],
+  shukra: ["#AFC6D3", "शुक्र"], shani: ["#26252B", "शनि"], rahu: ["#55607A", "राहु"], ketu: ["#8A6446", "केतु"] };
 function planetaSvg(id) {
-  const g = (a, b, c) => `<radialGradient id="pg-${id}" cx="35%" cy="32%" r="70%"><stop offset="0" stop-color="${a}"/><stop offset=".6" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></radialGradient>`;
-  const bola = `<circle cx="32" cy="32" r="20" fill="url(#pg-${id})"/>`;
-  const svg = (defs, corpo) => `<svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true"><defs>${defs}</defs>${corpo}</svg>`;
-  switch (id) {
-    case "surya": return svg(g("#FFF6C8", "#FFB51F", "#E3571A") + `<radialGradient id="pk-surya"><stop offset=".55" stop-color="#FFC94A" stop-opacity=".7"/><stop offset="1" stop-color="#FFC94A" stop-opacity="0"/></radialGradient>`, `<circle cx="32" cy="32" r="30" fill="url(#pk-surya)"/>` + bola);
-    case "chandra": return svg(g("#FFFFFF", "#DAD6CC", "#9E988A"), bola + `<circle cx="25" cy="27" r="4" fill="#B9B3A5" opacity=".7"/><circle cx="38" cy="36" r="5.5" fill="#B9B3A5" opacity=".6"/><circle cx="29" cy="41" r="2.6" fill="#B9B3A5" opacity=".7"/><circle cx="40" cy="24" r="2" fill="#B9B3A5" opacity=".6"/>`);
-    case "mangala": return svg(g("#F2A07A", "#C9502C", "#7A2414"), bola + `<path d="M17 30 q8 -3 14 1 t14 -1" stroke="#8E3018" stroke-width="2.5" fill="none" opacity=".5"/><ellipse cx="32" cy="14" rx="6" ry="2" fill="#fff" opacity=".6"/>`);
-    case "budha": return svg(g("#D9D2C8", "#9C9086", "#5E544C"), bola + `<circle cx="26" cy="30" r="3" fill="#7E736A" opacity=".6"/><circle cx="37" cy="38" r="4" fill="#7E736A" opacity=".5"/><circle cx="38" cy="25" r="2" fill="#7E736A" opacity=".6"/>`);
-    case "guru": return svg(g("#F7E7C8", "#D9A86B", "#8E5F33") + `<clipPath id="pc-guru"><circle cx="32" cy="32" r="20"/></clipPath>`, bola + `<g clip-path="url(#pc-guru)" opacity=".75"><rect x="10" y="22" width="44" height="3.5" fill="#B9773D"/><rect x="10" y="29" width="44" height="2.5" fill="#EAD2A8"/><rect x="10" y="35" width="44" height="4" fill="#A9693A"/><rect x="10" y="43" width="44" height="2.5" fill="#C98F55"/><ellipse cx="38" cy="38" rx="4" ry="2.4" fill="#B4462E"/></g>`);
-    case "shukra": return svg(g("#FFFBEA", "#F1DCA6", "#C9A35E"), bola + `<path d="M15 28 q17 -6 34 2 M16 37 q16 -5 32 3" stroke="#E2C485" stroke-width="2.5" fill="none" opacity=".6"/>`);
-    case "shani": return svg(g("#FBE9C2", "#E0B86E", "#9C7434"), `<ellipse cx="32" cy="34" rx="30" ry="8" fill="none" stroke="#C9A062" stroke-width="3" opacity=".8" transform="rotate(-18 32 32)"/><circle cx="32" cy="32" r="16" fill="url(#pg-${id})"/><path d="M5 40 A30 8 -18 0 0 59 26" fill="none" stroke="#E8CC98" stroke-width="3" transform="rotate(0 32 32)" opacity=".95"/><path d="M18 30 h28 M17 36 h30" stroke="#C99A55" stroke-width="2" opacity=".5"/>`);
-    case "rahu": return svg(`<radialGradient id="pk-rahu"><stop offset=".6" stop-color="#FFD27A" stop-opacity=".9"/><stop offset="1" stop-color="#FF9A3A" stop-opacity="0"/></radialGradient>`, `<circle cx="32" cy="32" r="28" fill="url(#pk-rahu)"/><circle cx="32" cy="32" r="19" fill="#1B1A2A"/><circle cx="32" cy="32" r="19" fill="none" stroke="#FFE7A8" stroke-width="1.5" opacity=".9"/>`);
-    case "ketu": return svg(`<linearGradient id="pk-ketu" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C9D6F2" stop-opacity="0"/><stop offset="1" stop-color="#E6EEFF" stop-opacity=".95"/></linearGradient>` + g("#FFFFFF", "#BFD0F0", "#6E84B8"), `<path d="M4 6 L40 34 L32 42 Z" fill="url(#pk-ketu)"/><path d="M10 4 L42 32" stroke="#E6EEFF" stroke-width="1.5" opacity=".6"/><circle cx="40" cy="38" r="9" fill="url(#pg-${id})"/>`);
-  }
-  return svg("", "");
+  const [cor, hi] = PLANETA_COR[id] || ["#999", ""], escuro = id === "shani";
+  return `<svg viewBox="0 0 64 84" width="100%" height="100%" aria-hidden="true"><defs>
+<radialGradient id="pg-${id}" cx="36%" cy="30%" r="75%"><stop offset="0" stop-color="#fff" stop-opacity="${escuro ? .28 : .45}"/><stop offset=".35" stop-color="${cor}" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".38"/></radialGradient>
+<linearGradient id="pp-${id}" x1="0" x2="1"><stop offset="0" stop-color="#3A3836"/><stop offset=".45" stop-color="#1A1918"/><stop offset="1" stop-color="#0E0D0C"/></linearGradient></defs>
+<rect x="25" y="50" width="14" height="28" rx="2" fill="url(#pp-${id})"/><rect x="20" y="76" width="24" height="6" rx="1.5" fill="#1C1B1A"/>
+<ellipse cx="32" cy="50" rx="11" ry="3" fill="#2A2826"/>
+<circle cx="32" cy="32" r="24" fill="${cor}"/><circle cx="32" cy="32" r="24" fill="url(#pg-${id})"/>
+<ellipse cx="20" cy="42" rx="2.4" ry="1.4" fill="#000" opacity=".12"/><ellipse cx="43" cy="24" rx="1.6" ry="1" fill="#000" opacity=".1"/><ellipse cx="37" cy="44" rx="3" ry="1.2" fill="#fff" opacity=".1"/>
+<rect x="19" y="27" width="26" height="11" rx="1.4" fill="#F7F3E8" stroke="#2A2826" stroke-width=".6" transform="rotate(-6 32 32)"/>
+<text x="32" y="35.6" text-anchor="middle" font-size="8" font-family="'Noto Sans Devanagari','Kohinoor Devanagari','Mangal',sans-serif" font-weight="700" fill="#2A2826" transform="rotate(-6 32 32)">${hi}</text>
+<path d="M29 8.5 q3 -6 6 0 z" fill="#D9A93A"/><circle cx="32" cy="3.5" r="1.6" fill="#D9A93A"/></svg>`;
 }
 const planetaEl = (id, cls) => { const e = h("span", { class: cls || "planeta", "aria-hidden": "true" }); e.innerHTML = planetaSvg(id); return e; };
 const hojeLocal = () => new Date().toLocaleDateString("en-CA");
