@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 19:18";</script>
+<script>window.__VERSAO = "11/10 · 19:30";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -590,9 +590,10 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .guardgrade button{border:1px solid rgba(138,63,50,.25);background:#FBF6EC;border-radius:12px;padding:6px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font:600 12.5px Poppins,sans-serif;color:#282722}
 .guardgrade img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px}
 .quizdeus{display:block;width:170px;max-width:60%;margin:10px auto 4px;border-radius:14px;box-shadow:0 10px 24px rgba(40,24,10,.25)}
-.oraculocard{display:flex;align-items:center;gap:14px;width:100%;margin:14px 0 18px;padding:14px;border:0;border-radius:18px;text-align:left;cursor:pointer;font:inherit;color:#F1E2BC;box-shadow:var(--shadow);background:radial-gradient(ellipse at 20% 0%,#3B3550,#1B1A2A 70%)}
+.oraculocard{display:flex;align-items:center;gap:14px;width:100%;margin:14px 0 18px;padding:14px;border:0;border-radius:18px;text-align:left;cursor:pointer;font:inherit;color:#F1E2BC;box-shadow:var(--shadow);background:radial-gradient(1px 1px at 20% 30%,#fff8 50%,transparent),radial-gradient(1px 1px at 70% 20%,#fff6 50%,transparent),radial-gradient(1px 1px at 85% 70%,#fff5 50%,transparent),radial-gradient(1.4px 1.4px at 45% 80%,#fff7 50%,transparent),radial-gradient(1px 1px at 60% 50%,#fff4 50%,transparent),radial-gradient(ellipse at 20% 0%,#2A2430,#141116 70%);padding:18px}
 .orcgrade{flex:0 0 84px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
 .orcmapa{position:relative;flex:0 0 96px;width:96px;aspect-ratio:1}
+.orcroda{flex:0 0 92px;width:92px;height:92px}.orcroda svg{display:block;width:100%;height:100%}
 .orcmapa .orcmini{position:absolute;transform:translate(-50%,-50%);height:auto}
 .orcmini{display:block}
 .orcmini svg,.orcsim svg,.orlsim svg,.orcmini,.orcsim,.orlsim{display:block;width:100%;height:auto;-webkit-user-drag:none;user-select:none}
@@ -680,7 +681,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .brand span{color:#C9A56A;letter-spacing:.24em}
 .me:not(.bubble){background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.35);box-shadow:none}
 .me:not(.bubble) b{color:#E2BE78}
-nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(11,minmax(52px,1fr));overflow-x:auto;scrollbar-width:none}
+nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(11,minmax(68px,1fr));column-gap:4px;overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
 
 /* ---------- Jogo: Moksha Patam ---------- */
@@ -2274,7 +2275,7 @@ const MISSOES = [
   ["passaporte", "Emitir o passaporte", "Seu número de viajante e a página dos carimbos.", v => !!v, () => go("passaporte")],
   ["explorador", "Montar o explorador", "O bonequinho que anda com você pelo mapa.", v => !!(v && v.boneco), () => go("explorador")],
   ["guardiao", "Conhecer o seu guardião", "A história do guardião da sua passagem, onde vocês se encontram na viagem e o mantra dele.", v => false, () => abrirGuardiao(0)],
-  ["intencao", "Mensagem na garrafa", "Quem sou eu ao final desta travessia? Escreva e lance a garrafa no rio.", v => !!lerIntencao(), () => abrirIntencao()],
+  ["intencao", "Mensagem na garrafa", "Escreva e lance a garrafa no rio.", v => !!lerIntencao(), () => abrirIntencao()],
   ["retrato", "Embarcar no trem da Caravana", "Monte o Retrato do Embarque com a turma.", v => false, () => { go("explorador"); requestAnimationFrame(() => document.querySelector(".retprev")?.closest(".carvbon")?.scrollIntoView({ block: "start", behavior: "smooth" })); }],
   ["camera", "Testar uma câmera da maleta", "Tire uma foto com uma das câmeras antigas.", v => false, () => go("fotos")],
   ["pombo", "Mandar um pombo-correio", "Uma cartinha para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")]
@@ -2490,8 +2491,7 @@ function abrirGuardiao(passo) {
     box.append(topo, h("p", { class: "eyebrow", style: "text-align:center;margin-top:6px", text: "O mantra de " + G.nome }),
       h("p", { class: "guardmantra", text: G.mantra }), h("p", { class: "small", style: "text-align:center", text: G.trad }),
       h("p", { class: "guardhist", style: "text-align:center" }, "Repita três vezes, devagar.", h("br"), "Essa força te acompanha durante toda a travessia!"),
-      h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn ghost", type: "button", onclick: () => abrirGuardiao(0) }, "Ver de novo"),
-        h("button", { class: "btn ghost", type: "button", onclick: () => abrirGuardiao("escolher") }, "Não é este o meu guardião")), fecha);
+      h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirGuardiao(0) }, "↺ Ver de novo")), fecha);
   }
   abre();
 }
@@ -2682,10 +2682,10 @@ const posOrb = (id, k = 1, kr = 1) => { const [r, a, w] = ORB[id], rad = a * Mat
 function vOraculoCard() {
   const L = lerOraculo(), G = L && GRAHAS.find(x => x.id === L.g);
   return h("button", { type: "button", class: "oraculocard", onclick: () => abrirOraculo() },
-    // o mesmo sistema solar do altar, em miniatura
-    h("div", { class: "orcmapa", "aria-hidden": "true" }, GRAHAS.map(x => { const e = planetaEl(x.id, "orcmini"); e.style.cssText = posOrb(x.id, 1.6, .9); return e; })),
+    // roda dourada com os símbolos dos nove planetas
+    (() => { const d = h("div", { class: "orcroda", "aria-hidden": "true" }); d.innerHTML = `<svg viewBox="0 0 100 100"><g fill="none" stroke="#C9A35F" stroke-width=".8"><circle cx="50" cy="50" r="46"/><circle cx="50" cy="50" r="38" stroke-dasharray="1.5 2"/><circle cx="50" cy="50" r="13"/></g><g fill="#E2C08A" font-family="Georgia,serif" font-size="11" text-anchor="middle" dominant-baseline="central"><text x="50" y="50" font-size="15">☉</text><text x="50" y="22">☽</text><text x="70" y="30">♂</text><text x="78" y="50">☿</text><text x="70" y="70">♃</text><text x="50" y="78">♀</text><text x="30" y="70">♄</text><text x="22" y="50">☊</text><text x="30" y="30">☋</text></g></svg>`; return d; })(),
     h("span", { class: "orctx" }, h("b", { text: "Oráculo dos Planetas" }),
-      h("span", { text: G ? "Sua última leitura: " + G.nome + ". Toque para consultar de novo." : "Pense numa pergunta, segure o botão e concentre‑se." })));
+      h("span", { text: G ? "Sua última leitura: " + G.nome + ". Toque para consultar de novo." : "Faça uma pergunta ao céu." })));
 }
 function leituraOraculo(L) {
   const G = GRAHAS.find(x => x.id === L.g), M = GRAHA_MAIS[G.id], N = NAKSHATRAS[L.n];
@@ -2701,8 +2701,7 @@ function leituraOraculo(L) {
     h("div", { class: "orldevolve" }, h("p", { class: "orleye", style: "margin-top:0", text: "A pergunta que " + G.nome + " te devolve" }), h("p", { text: M.devolve })),
     h("p", { class: "orleye", text: "Para hoje" }), h("p", { class: "orltxt", text: G.hoje[L.p] }),
     h("p", { class: "orleye", text: "Mantra de " + G.nome }), h("p", { class: "orlmantra", text: G.mantra }),
-    h("p", { class: "orlsmall", text: "Cante 9 ou 108 vezes, devagar, de preferência ao amanhecer" + (G.dia ? " e no dia de " + G.nome + ", " + G.dia : "") + ". Cor: " + G.tom + "." }),
-    h("p", { class: "orlnota", text: "O oráculo é um espelho: ele mostra, e a escolha é sua." }));
+    h("p", { class: "orlsmall", text: "Cante 9 ou 108 vezes, devagar, de preferência ao amanhecer" + (G.dia ? " e no dia de " + G.nome + ", " + G.dia : "") + "." }));
 }
 function abrirOraculo() {
   closeSheets();
