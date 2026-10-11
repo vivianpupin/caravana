@@ -26,6 +26,10 @@ button.claro{background:transparent;color:#E2C08A;box-shadow:inset 0 0 0 1px rgb
 .item pre{white-space:pre-wrap;word-break:break-all;margin:8px 0 10px;font:13px/1.5 Poppins,sans-serif;color:#E8D6B0}
 .item .acoes{display:flex;flex-wrap:wrap;gap:8px}
 .ok{color:#9FD39A;font-size:12px;margin-left:6px}
+button.apaga{background:transparent;color:#D98A7A;box-shadow:inset 0 0 0 1px rgba(217,138,122,.55)}
+.topo{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px}
+.topo[hidden]{display:none}
+.topo span{font-size:12px;color:#9E8763}
 </style>
 </head><body><main>
 <h1>Passagens da Caravana</h1>
@@ -37,6 +41,7 @@ button.claro{background:transparent;color:#E2C08A;box-shadow:inset 0 0 0 1px rgb
 <textarea id="nomes" placeholder="Ana Paula, 7&#10;João Pedro, 3, Hanuman&#10;Mariana, 12"></textarea>
 <p class="dica">Exemplo: “João Pedro, 3, Hanuman” gera a passagem Nº 03 com Hanuman de guardião.</p>
 <button id="gerar" type="button">Gerar passagens</button>
+<div class="topo" id="topo" hidden><span id="conta"></span><button type="button" class="apaga" id="apagaTodas">Apagar todas</button></div>
 <div class="lista" id="lista"></div>
 </main>
 <script>
@@ -51,7 +56,8 @@ const copia = async (txt, el) => { try { await navigator.clipboard.writeText(txt
 function gera() {
   try { localStorage.setItem("cdi-passagens", campo.value); localStorage.setItem("cdi-pal", pal.value); } catch (e) {}
   lista.textContent = "";
-  for (const linha of campo.value.split("\n")) {
+  const linhas = campo.value.split("\n"); let total = 0;
+  for (const [i, linha] of linhas.entries()) {
     const [nome, num, ass] = linha.split(",").map(x => (x || "").trim()); if (!nome) continue;
     const n = (num || "").replace(/\D/g, ""), a = (ass || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, "");
     const link = BASE + "/embarque/" + slug(nome).replace(/[\/?#%&]/g, "") + (n ? "/" + n.padStart(2, "0") : "") + (a ? "/" + a : "") + (pal.value.trim() ? "#k=" + esconde(pal.value) : "");
@@ -63,9 +69,15 @@ function gera() {
     const b1 = document.createElement("button"); b1.type = "button"; b1.textContent = "Copiar mensagem"; b1.onclick = () => copia(msg, b1);
     const b2 = document.createElement("button"); b2.type = "button"; b2.className = "claro"; b2.textContent = "Mandar no WhatsApp"; b2.onclick = () => window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
     const b3 = document.createElement("button"); b3.type = "button"; b3.className = "claro"; b3.textContent = "Ver passagem"; b3.onclick = () => window.open(link, "_blank");
-    ac.append(b1, b2, b3); it.append(t, pre, ac); lista.append(it);
+    // apagar: tira a pessoa da lista (a passagem que já foi mandada continua funcionando para ela)
+    const b4 = document.createElement("button"); b4.type = "button"; b4.className = "apaga"; b4.textContent = "Apagar";
+    b4.onclick = () => { if (!confirm("Apagar a passagem de " + nome + " desta lista?")) return; const l = campo.value.split("\n"); l.splice(i, 1); campo.value = l.join("\n"); gera(); };
+    ac.append(b1, b2, b3, b4); it.append(t, pre, ac); lista.append(it); total++;
   }
+  document.getElementById("topo").hidden = !total;
+  document.getElementById("conta").textContent = total + (total === 1 ? " passagem" : " passagens");
 }
+document.getElementById("apagaTodas").onclick = () => { if (!confirm("Apagar todas as passagens desta lista?")) return; campo.value = ""; gera(); };
 document.getElementById("gerar").onclick = gera;
 if (campo.value.trim()) gera();
 </script>
