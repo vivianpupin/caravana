@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 08:02";</script>
+<script>window.__VERSAO = "11/10 · 15:24";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -4706,7 +4706,7 @@ function molduraArco(c, W, H, u, ox, oy, w, hh, tmp) {
 const ADESIVOS = {
   // os selos (pins) da travessia, os mesmos do passaporte
   "Selos": [["india", "Índia"], ["taj-mahal", "Taj Mahal"], ["ganesha", "Ganesha"], ["jaipur", "Jaipur"], ["govind-dev-ji", "Govind Dev Ji"], ["varanasi", "Varanasi"], ["diwali", "Diwali"], ["ganga-aarti", "Ganga Aarti"],
-    ["manikarnika", "Manikarnika"], ["durga-kund", "Durga Kund"], ["sankat-mochan", "Sankat Mochan"], ["batismo", "Batismo no Ganges"], ["rishikesh", "Rishikesh"], ["kunjapuri", "Kunjapuri"], ["caverna", "Caverna"], ["travessia", "Travessia"]].map(([id, n]) => ["img:insignias/" + id + ".webp", n]),
+    ["durga-kund", "Durga Kund"], ["sankat-mochan", "Sankat Mochan"], ["batismo", "Batismo no Ganges"], ["rishikesh", "Rishikesh"], ["kunjapuri", "Kunjapuri"], ["caverna", "Caverna"], ["travessia", "Travessia"]].map(([id, n]) => ["img:insignias/" + id + ".webp", n]),
   // os enfeites que aparecem na Cabine de fotos, soltos para colar na foto
   "Caravana": [["img:img/simbolo-dourado.png", "Símbolo dourado"], ["img:img/simbolo-marrom.png", "Símbolo"], ["patch", "Patch bordado"], ["carimbo", "Carimbo"],
     ["postmark", "Carimbo do correio"], ["seloPostal", "Selo postal"], ["data", "Data da câmera"], ["linha", "Caravana do Céu · Índia 2026"], ["fita", "Fita adesiva"],
@@ -5039,7 +5039,8 @@ async function colaPatches(c, F, ox, oy, w, hh) {
   const lugar = PATCH_CIDADE[F.cidade] || "india";
   // Do lugar: só o selo da cidade, grande. Coleção: os selos que a pessoa já ganhou, espalhados como um álbum
   // (selo só aparece depois de liberado no passaporte; antes disso entra o patch da Caravana)
-  const ganhos = (tipo === "lugar" ? [lugar] : SELOS_COLECAO).filter(seloLiberado);
+  // o selo de Manikarnika (o ghat das cremações) fica só no passaporte, não entra nas fotos
+  const ganhos = (tipo === "lugar" ? [lugar] : SELOS_COLECAO.filter(id => id !== "manikarnika")).filter(seloLiberado);
   if ((tipo === "lugar" || tipo === "colecao") && ganhos.length) {
     const ids = ganhos.slice(-7);
     const n = ids.length, alt = tipo === "lugar" ? base * 1.3 : Math.min(base, (w - pad * 2) / Math.max(2.2, n * .78));
