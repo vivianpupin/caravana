@@ -3596,7 +3596,7 @@ function verExplorador(id) {
 const SELO_CENARIO = { agra: "taj-mahal", varanasi: "varanasi", rishikesh: "rishikesh", jaipur: "jaipur", delhi: "india" };
 const POSES = { embarque: "turma", agra: "turma", varanasi: "pulando", jaipur: "abraco", rishikesh: "fogueira", delhi: "fila" };
 // Embarque: aberto desde já, para a turma fazer o retrato antes de viajar (aparece quando a imagem img/abertura-embarque.webp estiver no app)
-const TEM_EMBARQUE = false;
+const TEM_EMBARQUE = true;
 const CENARIOS = [["embarque", "Embarque"], ["agra", "Taj Mahal"], ["varanasi", "Varanasi"], ["rishikesh", "Rishikesh"], ["jaipur", "Jaipur"], ["delhi", "Delhi"]];
 async function retratoCaravana(cen, pose) {
   const W = 1080, H = 1920, cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
@@ -3604,9 +3604,12 @@ async function retratoCaravana(cen, pose) {
   x.drawImage(fundo, (W - fundo.width * k) / 2, (H - fundo.height * k) / 2, fundo.width * k, fundo.height * k);
   // título no céu escuro do alto
   const simb = await carregaImg("img/simbolo-dourado.png").catch(() => null);
+  // no Embarque a placa da estação ocupa o alto: o nome da travessia vai pequeno no chão da plataforma
+  if (cen === "embarque") { x.textAlign = "center"; x.font = '400 30px Poppins, sans-serif'; x.fillStyle = "rgba(241,226,188,.85)"; x.fillText("CARAVANA DO CÉU · TRAVESSIA DA ÍNDIA SAGRADA · 2026", W / 2, H - 22); }
+  else {
   if (simb) { const sw = 110, sh = sw * simb.height / simb.width; x.drawImage(simb, W / 2 - sw / 2, 110, sw, sh); }
   x.textAlign = "center"; x.fillStyle = "#F1E2BC"; x.font = '600 74px Cinzel, Georgia, serif'; x.fillText("CARAVANA DO CÉU", W / 2, 330);
-  x.font = '400 34px Poppins, sans-serif'; x.fillStyle = "#E8C07A"; x.fillText("TRAVESSIA DA ÍNDIA SAGRADA · 2026", W / 2, 390);
+  x.font = '400 34px Poppins, sans-serif'; x.fillStyle = "#E8C07A"; x.fillText("TRAVESSIA DA ÍNDIA SAGRADA · 2026", W / 2, 390); }
   const lista = comBoneco(), n = lista.length; if (!n) return cv;
   // cada cidade tem a sua pose
   const pulo = pose === "pulando", abraco = pose === "abraco", bananeira = pose === "bananeira", fila = pose === "fila", fogueira = pose === "fogueira";
