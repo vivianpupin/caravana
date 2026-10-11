@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 19:39";</script>
+<script>window.__VERSAO = "11/10 · 19:42";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1384,6 +1384,7 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .cfcorpo.comfoto>* button,.cfcorpo.comfoto>* a,.cfcorpo.comfoto .cfdepois,.cfcorpo.comfoto .cfdepois *{pointer-events:auto}
 .cfbotaofoto{z-index:5}
 body:has(.camfull) nav.tabs,body:has(.camfull) .navmais{display:none!important}
+body:has(.sheet) .navmais{display:none!important}
 .cfluzfoto{position:absolute;width:6.4%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;font-size:0;pointer-events:none;transition:background .1s,box-shadow .1s}
 .cfluzfoto.on{background:radial-gradient(circle,#FFE08A,#F2A63A 55%,rgba(242,166,58,0) 72%);box-shadow:0 0 18px 6px rgba(242,180,70,.7)}
 .cfbotaofoto{position:absolute;aspect-ratio:1;border-radius:50%;border:0;background:transparent;cursor:pointer}
@@ -2685,14 +2686,26 @@ const ORB = { surya: [0, 0, 20], budha: [.34, 145, 10.5], shukra: [.45, 20, 12],
 const orbitasSvg = () => { const o = h("div", { class: "orlinhas", "aria-hidden": "true" }); o.innerHTML = `<svg viewBox="0 0 100 100" width="100%" height="100%">${[.34, .45, .57, .68, .8, .9].map(r => `<circle cx="50" cy="50" r="${r * 50}" fill="none" stroke="rgba(232,204,152,.22)" stroke-width=".35" ${r === .57 ? 'stroke-dasharray="1.2 1.2"' : ""}/>`).join("")}</svg>`; return o; };
 const posOrb = (id, k = 1, kr = 1) => { const [r, a, w] = ORB[id], rad = a * Math.PI / 180; return `left:${50 + Math.cos(rad) * r * kr * 50}%;top:${50 + Math.sin(rad) * r * kr * 50}%;width:${w * k}%`; };
 // vibração: no Android usa a vibração normal; no iPhone (que não tem essa função no navegador) usa o "toque" do interruptor do iOS 18+
-let _hapt = null;
 function vibrar(ms) {
+  try { if (navigator.vibrate && navigator.vibrate(ms)) return true; } catch (e) {}
+  // iPhone: tocar num interruptor (input switch) faz o iOS 18+ dar um toque de vibração
   try {
-    if (navigator.vibrate && navigator.vibrate(ms)) return true;
-    if (!_hapt) { const ck = h("input", { type: "checkbox", switch: "", "aria-hidden": "true", tabindex: "-1" }); _hapt = h("label", { "aria-hidden": "true", style: "position:fixed;left:-99px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none" }, ck); document.body.append(_hapt); }
-    _hapt.click();
+    const lb = document.createElement("label"); lb.setAttribute("aria-hidden", "true"); lb.style.display = "none";
+    const ck = document.createElement("input"); ck.type = "checkbox"; ck.setAttribute("switch", ""); lb.append(ck);
+    document.head.append(lb); lb.click(); lb.remove();
   } catch (e) {}
   return false;
+}
+// som do oráculo: um "tim" de cristal a cada planeta que acende (junto com a vibração, ou no lugar dela)
+function tique(forte) {
+  try {
+    const A = window.AudioContext || window.webkitAudioContext; if (!A) return;
+    const ctx = S.audio || (S.audio = new A()); if (ctx.state === "suspended") ctx.resume();
+    const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine"; o.frequency.value = forte ? 1318 : 1760 + Math.random() * 220;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(forte ? .12 : .06, t + .005); g.gain.exponentialRampToValueAtTime(.0001, t + (forte ? .35 : .14));
+    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + .4);
+  } catch (e) {}
 }
 // as imagens dos planetas já vêm carregadas antes de abrir o oráculo (assim elas não aparecem do nada)
 const PLANETAS_PRE = [];
@@ -2759,17 +2772,17 @@ function abrirOraculo() {
     const bt = h("button", { type: "button", class: "orbotao" }, "Segure para concentrar");
     const gira = () => { if (!segurando) return; const t = (performance.now() - inicio) / 1000, f = Math.min(1, t / 3);
       barra.firstChild.style.width = (f * 100) + "%"; vel += 16 + f * 40; acelera = 1 + f * 5;
-      if (vel > 160 - f * 120) { vel = 0; pos = (pos + 1 + Math.floor(Math.random() * 3)) % 9; acende(pos); vibrar(15); }
+      if (vel > 160 - f * 120) { vel = 0; pos = (pos + 1 + Math.floor(Math.random() * 3)) % 9; acende(pos); vibrar(15); tique(); }
       raf = requestAnimationFrame(gira); };
-    const comeca = e => { e.preventDefault(); if (segurando || bt.disabled) return; segurando = true; inicio = performance.now(); bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(gira); };
-    const solta = () => { if (!segurando) return; segurando = false; cancelAnimationFrame(raf); bt.disabled = true; bt.classList.remove("vivo"); acelera = 1;
+    const comeca = e => { e.preventDefault(); if (segurando || bt.disabled) return; segurando = true; inicio = performance.now(); vibrar(20); tique(true); bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(gira); };
+    const solta = () => { if (!segurando) return; segurando = false; vibrar(30); cancelAnimationFrame(raf); bt.disabled = true; bt.classList.remove("vivo"); acelera = 1;
       if (performance.now() - inicio < 600) { bt.disabled = false; bt.textContent = "Segure um pouco mais"; barra.firstChild.style.width = "0"; return; }
       // a luz desacelera e para num planeta
       const fim = Math.floor(Math.random() * 9), L = { dia: hojeLocal(), g: GRAHAS[fim].id, n: Math.floor(Math.random() * 27), p: Math.floor(Math.random() * 3) };
       let passos = 9 + ((fim - pos + 9) % 9), d = 70;
-      const anda = () => { pos = (pos + 1) % 9; acende(pos); vibrar(18); passos--;
+      const anda = () => { pos = (pos + 1) % 9; acende(pos); vibrar(18); tique(); passos--;
         if (passos > 0) { d *= 1.13; setTimeout(anda, d); return; }
-        celulas[fim].classList.add("escolhido"); if (!vibrar([40, 60, 120])) { setTimeout(() => vibrar(1), 120); setTimeout(() => vibrar(1), 260); }
+        celulas[fim].classList.add("escolhido"); sino(); if (!vibrar([40, 60, 120])) { setTimeout(() => vibrar(1), 120); setTimeout(() => vibrar(1), 260); }
         try { localStorage.setItem("cdi-oraculo", JSON.stringify(L)); } catch (e) {}
         bt.remove(); barra.remove();
         setTimeout(() => { saida.replaceChildren(leituraOraculo(L), h("div", { class: "actions", style: "justify-content:center;margin-top:10px" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirOraculo() }, "Consultar de novo"))); saida.scrollIntoView({ behavior: "smooth", block: "start" }); }, 600); };
