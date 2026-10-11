@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 19:01";</script>
+<script>window.__VERSAO = "11/10 · 19:02";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2704,7 +2704,7 @@ function abrirOraculo() {
   const box = h("div", { role: "dialog", "aria-label": "Oráculo dos Planetas", class: "oraculo" });
   const fechar = () => { clearInterval(box._t); closeSheets(); render(); };
   // o altar como o sistema solar: Surya no centro, os planetas nas órbitas na ordem real; Rahu e Ketu, opostos, na órbita da Lua (onde acontecem os eclipses)
-  const ORB = { surya: [0, 0, 21], budha: [.34, 140, 11], shukra: [.45, 20, 12.5], chandra: [.57, 205, 11.5], rahu: [.57, 115, 11], ketu: [.57, 295, 11], mangala: [.68, 340, 12], guru: [.8, 160, 16], shani: [.9, 62, 19] };
+  const ORB = { surya: [0, 0, 21], budha: [.34, 75, 11], shukra: [.45, 20, 12.5], chandra: [.57, 205, 11.5], rahu: [.57, 115, 11], ketu: [.57, 295, 11], mangala: [.68, 340, 12], guru: [.8, 160, 16], shani: [.9, 62, 19] };
   const celulas = GRAHAS.map(x => { const [r, a, w] = ORB[x.id], rad = a * Math.PI / 180;
     return h("div", { class: "orcel", style: `--c:${x.cor};left:${50 + Math.cos(rad) * r * 50}%;top:${50 + Math.sin(rad) * r * 50}%;width:${w}%` }, planetaEl(x.id, "orcsim"), h("span", { class: "orcnome", text: x.nome })); });
   const orbitas = h("div", { class: "orlinhas", "aria-hidden": "true" }); orbitas.innerHTML = `<svg viewBox="0 0 100 100" width="100%" height="100%">${[.34, .45, .57, .68, .8, .9].map(r => `<circle cx="50" cy="50" r="${r * 50}" fill="none" stroke="rgba(232,204,152,.22)" stroke-width=".35" ${r === .57 ? 'stroke-dasharray="1.2 1.2"' : ""}/>`).join("")}</svg>`;
