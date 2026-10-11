@@ -2654,12 +2654,13 @@ const ORB = { surya: [0, 0, 20], budha: [.34, 145, 10.5], shukra: [.45, 20, 12],
 const orbitasSvg = () => { const o = h("div", { class: "orlinhas", "aria-hidden": "true" }); o.innerHTML = `<svg viewBox="0 0 100 100" width="100%" height="100%">${[.34, .45, .57, .68, .8, .9].map(r => `<circle cx="50" cy="50" r="${r * 50}" fill="none" stroke="rgba(232,204,152,.22)" stroke-width=".35" ${r === .57 ? 'stroke-dasharray="1.2 1.2"' : ""}/>`).join("")}</svg>`; return o; };
 const posOrb = (id, k = 1, kr = 1) => { const [r, a, w] = ORB[id], rad = a * Math.PI / 180; return `left:${50 + Math.cos(rad) * r * kr * 50}%;top:${50 + Math.sin(rad) * r * kr * 50}%;width:${w * k}%`; };
 // vibração: no Android usa a vibração normal; no iPhone (que não tem essa função no navegador) usa o "toque" do interruptor do iOS 18+
-let _hapt = null;
 function vibrar(ms) {
+  try { if (navigator.vibrate && navigator.vibrate(ms)) return true; } catch (e) {}
+  // iPhone: tocar num interruptor (input switch) faz o iOS 18+ dar um toque de vibração
   try {
-    if (navigator.vibrate && navigator.vibrate(ms)) return true;
-    if (!_hapt) { const ck = h("input", { type: "checkbox", switch: "", "aria-hidden": "true", tabindex: "-1" }); _hapt = h("label", { "aria-hidden": "true", style: "position:fixed;left:-99px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none" }, ck); document.body.append(_hapt); }
-    _hapt.click();
+    const lb = document.createElement("label"); lb.setAttribute("aria-hidden", "true"); lb.style.display = "none";
+    const ck = document.createElement("input"); ck.type = "checkbox"; ck.setAttribute("switch", ""); lb.append(ck);
+    document.head.append(lb); lb.click(); lb.remove();
   } catch (e) {}
   return false;
 }
@@ -2730,8 +2731,8 @@ function abrirOraculo() {
       barra.firstChild.style.width = (f * 100) + "%"; vel += 16 + f * 40; acelera = 1 + f * 5;
       if (vel > 160 - f * 120) { vel = 0; pos = (pos + 1 + Math.floor(Math.random() * 3)) % 9; acende(pos); vibrar(15); }
       raf = requestAnimationFrame(gira); };
-    const comeca = e => { e.preventDefault(); if (segurando || bt.disabled) return; segurando = true; inicio = performance.now(); bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(gira); };
-    const solta = () => { if (!segurando) return; segurando = false; cancelAnimationFrame(raf); bt.disabled = true; bt.classList.remove("vivo"); acelera = 1;
+    const comeca = e => { e.preventDefault(); if (segurando || bt.disabled) return; segurando = true; inicio = performance.now(); vibrar(20); bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(gira); };
+    const solta = () => { if (!segurando) return; segurando = false; vibrar(30); cancelAnimationFrame(raf); bt.disabled = true; bt.classList.remove("vivo"); acelera = 1;
       if (performance.now() - inicio < 600) { bt.disabled = false; bt.textContent = "Segure um pouco mais"; barra.firstChild.style.width = "0"; return; }
       // a luz desacelera e para num planeta
       const fim = Math.floor(Math.random() * 9), L = { dia: hojeLocal(), g: GRAHAS[fim].id, n: Math.floor(Math.random() * 27), p: Math.floor(Math.random() * 3) };
