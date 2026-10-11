@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 18:15";</script>
+<script>window.__VERSAO = "11/10 · 18:18";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -524,6 +524,12 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .garrafahead .eyebrow{color:#5B3A2A;margin:0}
 .garrafahead .lede{max-width:40ch;margin:0;color:#3B342A;font-size:15px}
 .garrafacarta{padding:14px 16px}
+.garrafavolta{display:flex;align-items:center;gap:12px;width:100%;margin:14px 0;padding:10px 14px;border:0;border-radius:18px;text-align:left;cursor:pointer;color:#2E2A22;font:inherit;box-shadow:var(--shadow);
+  background:radial-gradient(ellipse at 50% 120%,#F6D9A0 0,#F3C98A 22%,rgba(243,201,138,0) 55%),linear-gradient(180deg,#8FB6CF 0,#BFD6DE 45%,#F2E3C6 100%)}
+.garrafavolta .garrafa{flex:0 0 120px;margin:0}
+.garrafavolta span{display:flex;flex-direction:column;gap:4px}
+.garrafavolta b{font:600 18px/1.3 Lora,Georgia,serif}
+.garrafavolta small{font-size:13px;color:#5B3A2A}
 .garrafaperg{font:600 21px/1.3 Lora,Georgia,serif;text-align:center;color:#2E2A22;margin:10px 0 0}
 .garrafacarta p{font:17px/1.6 Lora,Georgia,serif;margin:0 0 12px;white-space:pre-wrap}
 .garrafa{width:100%;max-width:320px;margin:0 auto -4px}
@@ -2181,6 +2187,7 @@ function vTravessia() {
             : h("div", null, h("b", { text: String(dias.length) }), h("span", { text: "dias de travessia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "Asia/Kolkata", text: horaEm("Asia/Kolkata") }), h("span", { text: "Agora na Índia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +8h30" }))),
+    vGarrafaVolta(),
     vMissoes(),
     vOnlineLider(),
     vTempo(),
@@ -2231,8 +2238,8 @@ function confereEmbarque() {
 function vMissoes() {
   const v = eu(), l = localDe("embarque"); if (!l) return null;
   const feitas = MISSOES.filter(missaoFeita).length, tudo = feitas === MISSOES.length;
-  // depois que a viagem começa, o cartão some para quem já completou
-  if (tudo && minhas().embarque && hojeIso() >= "2026-11-04") return null;
+  // as missões são de antes de embarcar: o cartão some quando a viagem começa
+  if (hojeIso() >= "2026-11-04") return null;
   setTimeout(confereEmbarque, 0);
   return h("div", { class: "missoes" },
     h("div", { class: "missoestopo" },
@@ -2256,16 +2263,24 @@ function garrafaSvg(cheia) {
   // garrafa quase em pé, inclinada, metade dentro d'água: corpo, ombro, gargalo e rolha bem visíveis
   w.innerHTML = `<svg viewBox="0 -16 260 166" width="100%">
 <g class="boia"><g transform="translate(112 18) rotate(22 30 70)">
-<path d="M6 62 q0 -10 8 -16 l10 -8 v-24 h12 v24 l10 8 q8 6 8 16 v62 q0 14 -14 14 h-20 q-14 0 -14 -14 z" fill="#B9D0C8"/>
-<rect x="21" y="0" width="18" height="16" rx="3" fill="#B07A4A"/><path d="M26 2 v12 M33 2 v12" stroke="#8A5A32" stroke-width="1.3"/>
-<rect x="22" y="14" width="16" height="4" rx="1.5" fill="#9DBDB2"/>
-${cheia ? `<rect x="16" y="58" width="28" height="64" rx="12" fill="#EBD6A6"/><path d="M17 68 h26 M17 112 h26" stroke="#D6BE8A" stroke-width="1.5"/><rect x="16" y="86" width="28" height="7" fill="#8A2A1F"/>` : ""}
-<path d="M14 66 q-2 30 2 58" stroke="#fff" stroke-opacity=".75" stroke-width="4" fill="none" stroke-linecap="round"/>
+<path d="M6 62 q0 -10 8 -16 l10 -8 v-24 h12 v24 l10 8 q8 6 8 16 v62 q0 14 -14 14 h-20 q-14 0 -14 -14 z" fill="#6E9E80" stroke="#2F5A40" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M40 52 l6 5 q6 5 6 13 v54 q0 10 -10 10 h-4 z" fill="#4F7F62" opacity=".55"/>
+<rect x="21" y="0" width="18" height="16" rx="3" fill="#A86B3A" stroke="#6B4022" stroke-width="1.5"/><path d="M26 2 v12 M33 2 v12" stroke="#8A5A32" stroke-width="1.3"/>
+<rect x="22" y="14" width="16" height="4" rx="1.5" fill="#4F7F62"/>
+${cheia ? `<rect x="16" y="58" width="28" height="64" rx="12" fill="#F1DFB3" stroke="#B89A5E" stroke-width="1.2"/><path d="M17 68 h26 M17 112 h26" stroke="#D6BE8A" stroke-width="1.5"/><rect x="16" y="86" width="28" height="7" fill="#8A2A1F"/>` : ""}
+<path d="M14 66 q-2 30 2 58" stroke="#fff" stroke-opacity=".85" stroke-width="4" fill="none" stroke-linecap="round"/>
 <path d="M27 20 v16" stroke="#fff" stroke-opacity=".6" stroke-width="2.5" stroke-linecap="round"/></g></g>
 <path class="onda1" d="M0 112 q20 -9 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 v40 h-280 z" fill="#6F97AA" opacity=".92"/>
 <path class="onda2" d="M0 124 q20 -7 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 v30 h-280 z" fill="#5B8296"/>
 <path class="onda1" d="M10 118 q10 -3 20 0 M90 120 q10 -3 20 0 M190 117 q10 -3 20 0" stroke="#D9E6E6" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/></svg>`;
   return w;
+}
+// no último dia, a garrafa aparece de surpresa no topo da tela inicial
+function vGarrafaVolta() {
+  const I = lerIntencao(); if (!I || hojeIso() < ABRE_INTENCAO) return null;
+  let lida = false; try { lida = !!localStorage.getItem("cdi-intencao-lida"); } catch (e) {}
+  return h("button", { type: "button", class: "garrafavolta" + (lida ? " lida" : ""), onclick: () => { try { localStorage.setItem("cdi-intencao-lida", "1"); } catch (e) {} abrirIntencao(); } },
+    garrafaSvg(true), h("span", null, h("b", { text: lida ? "A sua mensagem na garrafa" : "Uma garrafa chegou na margem…" }), h("small", { text: lida ? "Toque para ler de novo." : "Toque para abrir." })));
 }
 function abrirIntencao() {
   closeSheets();
