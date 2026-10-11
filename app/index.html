@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 15:26";</script>
+<script>window.__VERSAO = "11/10 · 17:14";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3641,8 +3641,9 @@ async function retratoCaravana(cen, pose) {
   const pulo = pose === "pulando", abraco = pose === "abraco", bananeira = pose === "bananeira", fila = pose === "fila", fogueira = pose === "fogueira";
   const sorte = i => { const v = Math.sin(i * 12.9898 + 4.1) * 43758.5453; return v - Math.floor(v); };
   // fileiras: atrás mais gente, na frente menos (como foto de turma)
-  const filas = n <= 5 ? 1 : n <= 11 ? 2 : 3, tam = [];
-  { let resta = n; for (let f = 0; f < filas; f++) { const q = Math.round(resta / (filas - f) + (filas - 1 - f) * (filas > 1 ? .7 : 0)); tam.push(Math.min(resta, Math.max(1, q))); resta -= tam[f]; } }
+  // no máximo 7 por fileira, para ninguém ficar espremido nem sair da foto; as de trás levam um a mais
+  const filas = Math.max(1, Math.ceil(n / 7)), tam = [];
+  { let resta = n; for (let f = 0; f < filas; f++) { const q = Math.ceil(resta / (filas - f)); tam.push(Math.min(resta, Math.max(1, q))); resta -= tam[f]; } }
   // a líder fica no meio da fileira da frente (na fila indiana, vai puxando a fila)
   const li = lista.findIndex(v => v.lider);
   if (li >= 0) { const [l] = lista.splice(li, 1); lista.splice(fila ? 0 : n - tam[filas - 1] + Math.floor(tam[filas - 1] / 2), 0, l); }
@@ -3653,10 +3654,10 @@ async function retratoCaravana(cen, pose) {
   const coracao = (cx, cy, r, cor) => { x.fillStyle = cor; x.beginPath(); x.moveTo(cx, cy + r * .9); x.bezierCurveTo(cx - r * 1.6, cy - r * .2, cx - r * .6, cy - r * 1.3, cx, cy - r * .4); x.bezierCurveTo(cx + r * .6, cy - r * 1.3, cx + r * 1.6, cy - r * .2, cx, cy + r * .9); x.fill(); };
   if (fogueira) {
     // Rishikesh: roda sentada em volta da fogueira, aberta na frente para o fogo aparecer
-    const cx0 = W / 2, cy0 = H - 470, rx = 420, ry = 200, abre = 70 * Math.PI / 180, ini = Math.PI / 2 + abre / 2, vao = Math.PI * 2 - abre;
+    const cx0 = W / 2, cy0 = H - 470, rx = n > 14 ? 455 : 420, ry = n > 14 ? 225 : 200, red = Math.min(1, Math.sqrt(14 / n)), abre = 70 * Math.PI / 180, ini = Math.PI / 2 + abre / 2, vao = Math.PI * 2 - abre;
     const lugares = imgs.map((im, k) => { const a = ini + vao * (n > 1 ? k / (n - 1) : .5); return { im, a, X: cx0 + Math.cos(a) * rx, Y: cy0 + Math.sin(a) * ry }; }).sort((p, q) => p.Y - q.Y);
     const senta = ({ im, X, Y }) => {
-      const prof = (Y - (cy0 - ry)) / (ry * 2), hh = 250 * (.62 + .45 * prof) * ALT, w = hh * im.width / im.height, corte = .7, wc = hh / ALT;
+      const prof = (Y - (cy0 - ry)) / (ry * 2), hh = 250 * red * (.62 + .45 * prof) * ALT, w = hh * im.width / im.height, corte = .7, wc = hh / ALT;
       x.fillStyle = "rgba(20,12,6,.4)"; x.beginPath(); x.ellipse(X, Y, wc * .32, wc * .06, 0, 0, 7); x.fill();
       // sentado: só do quadril para cima, sobre uma almofada
       x.drawImage(im, 0, 0, im.width, im.height * corte, X - w / 2, Y - hh * corte + wc * .05, w, hh * corte);
@@ -3678,20 +3679,25 @@ async function retratoCaravana(cen, pose) {
   }
   if (fila) {
     // Delhi: a caravana em fila indiana, serpenteando do fundo até a frente, todos marchando
-    const larg0 = 300;
+    const larg0 = Math.min(250, 3600 / Math.max(n, 12));
     for (let k = n - 1; k >= 0; k--) {
-      const t = n > 1 ? k / (n - 1) : 0, e = 1 - t * .62, im = imgs[k], hh = larg0 * e * ALT, w = hh * im.width / im.height;
-      const cx = W / 2 + Math.sin(t * Math.PI * 1.6 + .4) * 340 * (1 - t * .3), chao = H - 70 - t * 1000 - (k % 2 ? 14 : 0) * e;
+      const t = n > 1 ? k / (n - 1) : 0, e = 1 - t * .55, im = imgs[k], hh = larg0 * e * ALT, w = hh * im.width / im.height;
+      // a fila serpenteia de um lado ao outro sem encostar nas bordas
+      const amp = (W / 2 - w / 2 - 30) * .9, cx = W / 2 + Math.sin(t * Math.PI * 2.4 + .5) * amp, chao = H - 70 - t * 1050;
       sombra(cx, chao - 4, hh / ALT, 1);
       x.save(); x.translate(cx, chao); x.rotate(.1); x.drawImage(im, -w / 2, -hh, w, hh); x.restore();
     }
     return cv;
   }
-  const maxFila = Math.max(...tam), larg0 = Math.min(330, (W - 30) / maxFila * (abraco ? 1.6 : 1.4));
+  const maxFila = Math.max(...tam), razao = (r => r[Math.floor(r.length / 2)])(imgs.map(im => im.width / im.height).sort((a, b) => a - b));
+  // largura de cada boneco para a fileira mais cheia caber inteira (com folga nas bordas)
+  const juntos = abraco ? .6 : .7, wMax = (W - 60) / (juntos * (maxFila - 1) + 1), larg0 = Math.min(330, wMax / razao / ALT);
+  // cada fileira de trás sobe o bastante para os rostos aparecerem por cima das cabeças da frente
+  const sobeFila = larg0 * ALT * (pulo || bananeira ? .62 : .5);
   let k0 = 0;
   for (let f = 0; f < filas; f++) {
-    const m = tam[f], atras = filas - 1 - f, esc = 1 - atras * .13, larg = larg0 * esc, base = H - 70 - atras * larg0 * (pulo || bananeira ? 1.05 : .95);
-    const passo = Math.min(larg * (abraco ? .58 : .78), (W - 30 - larg * .55) / Math.max(1, m - 1));
+    const m = tam[f], atras = filas - 1 - f, esc = 1 - atras * .08, larg = larg0 * esc, base = H - 70 - sobeFila * (atras ? atras - (atras - 1) * atras * .02 : 0);
+    const passo = larg * ALT * razao * juntos;
     for (let i = 0; i < m; i++) {
       const k = k0 + i, im = imgs[k], t = m > 1 ? (i - (m - 1) / 2) / ((m - 1) / 2) : 0, sr = sorte(k);
       const e = esc * (1 - .08 * t * t), hh = larg0 * e * ALT, w = hh * im.width / im.height;
@@ -3705,7 +3711,8 @@ async function retratoCaravana(cen, pose) {
       if (ponta) { x.translate(cx, chao - hh); x.rotate(Math.PI + ang); x.drawImage(im, -w / 2, -hh, w, hh); }
       else { x.translate(cx, chao - sobe); x.rotate(ang); x.drawImage(im, -w / 2, -hh, w, hh); }
       x.restore();
-      if (abraco && i % 2 === 1) coracao(cx - passo / 2, chao - hh - 30 * e, 30 * e, "#E24A7A");
+      // corações só na fileira de trás (nas outras eles tapavam o rosto de quem está atrás)
+      if (abraco && i % 2 === 1 && f === 0) coracao(cx - passo / 2, chao - hh - 30 * e, 30 * e, "#E24A7A");
     }
     k0 += m;
   }
