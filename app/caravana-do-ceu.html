@@ -764,7 +764,8 @@ nav.tabs::-webkit-scrollbar{display:none}
 .pombosheet{align-items:center}
 .orsheet{background:radial-gradient(ellipse at 50% 30%,#1A1626,#08070C 70%)!important;backdrop-filter:none}
 .orceufundo{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.orsheet>.oraculo{z-index:1;background:linear-gradient(180deg,rgba(16,13,24,.25),rgba(10,9,14,.45))!important;box-shadow:0 0 0 1px rgba(226,192,138,.12),0 20px 60px rgba(0,0,0,.6)}
+.orcadentes{z-index:2}
+.orsheet>.oraculo{z-index:1;background:linear-gradient(180deg,rgba(16,13,24,.12),rgba(10,9,14,.3))!important;box-shadow:0 0 0 1px rgba(226,192,138,.12),0 20px 60px rgba(0,0,0,.6)}
 .pombobox{position:relative;background:#FFF9EE;border-radius:24px;padding:18px 16px 16px;width:min(560px,100%);max-height:92vh;overflow-y:auto;display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
 .pombobox>*{flex-shrink:0}
 .pbpresente,.pbpessoa{-webkit-tap-highlight-color:transparent}
@@ -2684,32 +2685,13 @@ const orbitasSvg = () => {
   const o = h("div", { class: "orlinhas", "aria-hidden": "true" });
   let semente = 11; const rnd = () => (semente = (semente * 16807) % 2147483647) / 2147483647;
   const gauss = () => (rnd() + rnd() + rnd() - 1.5) / 1.5;
-  // céu: Via Láctea bem contrastada (núcleo claro, poeira escura, nuvens de cor) e estrelas soltas
-  const W = 900, H = 900, cv = document.createElement("canvas"); cv.width = W; cv.height = H; cv.className = "orceu";
-  const x = cv.getContext("2d");
-  const eixo = t => [t * W, H * .92 - t * H * .84]; // faixa na diagonal, de baixo à esquerda para cima à direita
-  const nx = .68, ny = .73; // direção perpendicular à faixa
-  x.globalCompositeOperation = "lighter";
-  for (let k = 0; k < 70; k++) { const t = rnd(), [cx, cy] = eixo(t), off = gauss() * 70, px = cx + off * nx, py = cy + off * ny, raio = 50 + rnd() * 110;
-    const cor = [[255, 214, 160], [170, 140, 230], [110, 160, 230], [235, 160, 200], [255, 236, 210]][k % 5], forca = .07 + rnd() * .1;
-    const g = x.createRadialGradient(px, py, 0, px, py, raio); g.addColorStop(0, `rgba(${cor},${forca})`); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.beginPath(); x.arc(px, py, raio, 0, 7); x.fill(); }
-  for (let k = 0; k < 9000; k++) { const t = rnd(), [cx, cy] = eixo(t), off = gauss() * gauss() * 120, b = rnd();
-    x.fillStyle = `rgba(${245 + rnd() * 10 | 0},${235 + rnd() * 20 | 0},${225 + rnd() * 30 | 0},${.16 + b * .65})`; x.beginPath(); x.arc(cx + off * nx, cy + off * ny, .35 + b * b * .9, 0, 7); x.fill(); }
-  // poeira escura no meio da faixa, como as nuvens de pó da Via Láctea
-  x.globalCompositeOperation = "destination-out";
-  for (let k = 0; k < 55; k++) { const t = rnd(), [cx, cy] = eixo(t), off = gauss() * 22, px = cx + off * nx, py = cy + off * ny, raio = 10 + rnd() * 30;
-    const g = x.createRadialGradient(px, py, 0, px, py, raio); g.addColorStop(0, `rgba(0,0,0,${.35 + rnd() * .35})`); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.beginPath(); x.arc(px, py, raio, 0, 7); x.fill(); }
-  x.globalCompositeOperation = "lighter";
-  for (let k = 0; k < 420; k++) { const b = rnd(); x.fillStyle = `rgba(255,248,235,${.15 + b * .6})`; x.beginPath(); x.arc(rnd() * W, rnd() * H, .4 + b * b * 1.3, 0, 7); x.fill(); }
-  o.append(cv);
   // órbitas de luz (elipses) com um ponto de luz correndo em cada uma
   const VH = 100 * ALT, CY = VH / 2;
   const aneis = [.34, .45, .57, .68, .8, .9].map((r, n) => {
     const R = r * 50, ry = R * INCL, ouro = n % 2 === 0, cor = ouro ? "url(#orouro)" : "url(#orazul)", luz = ouro ? "#FFE3A3" : "#E4F0FF";
     const dur = (8 + n * 2.4 + rnd() * 3).toFixed(1), ini = -(rnd() * 20).toFixed(1);
     return `<ellipse cx="50" cy="${CY}" rx="${R}" ry="${ry}" fill="none" stroke="${cor}" stroke-width=".5" opacity=".35" filter="url(#orglow)"/>
-      <ellipse cx="50" cy="${CY}" rx="${R}" ry="${ry}" fill="none" stroke="${cor}" stroke-width=".18" opacity=".8"/>
-      <ellipse class="orcorre" cx="50" cy="${CY}" rx="${R}" ry="${ry}" fill="none" stroke="${luz}" stroke-width=".55" stroke-linecap="round" pathLength="100" stroke-dasharray="4 96" filter="url(#orglow)" style="animation-duration:${dur}s;animation-delay:${ini}s"/>`;
+      <ellipse cx="50" cy="${CY}" rx="${R}" ry="${ry}" fill="none" stroke="${cor}" stroke-width=".18" opacity=".8"/>`;
   }).join("");
   const bril = ["", "", ""];
   for (let k = 0; k < 26; k++) bril[k % 3] += `<circle cx="${(3 + rnd() * 94).toFixed(1)}" cy="${(3 + rnd() * (VH - 6)).toFixed(1)}" r="${(.22 + rnd() * .3).toFixed(2)}" fill="${rnd() < .6 ? "#FFF3D8" : "#D9E8FF"}" filter="url(#orglow)"/>`;
@@ -2795,34 +2777,61 @@ function leituraOraculo(L) {
     h("p", { class: "orleye", text: "Mantra de " + G.nome }), h("p", { class: "orlmantra", text: G.mantra }),
     h("p", { class: "orlsmall", text: "Cante 9 vezes e entregue a sua pergunta ao céu." }));
 }
-// céu do oráculo: a tela inteira vira céu, com estrelas que cintilam e derivam devagar e estrelas cadentes cruzando de vez em quando
-function ceuEstrelado(cv, dono) {
-  const x = cv.getContext("2d"), dpr = Math.min(2, window.devicePixelRatio || 1), quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let W = 0, H = 0, est = [], cad = [], prox = 1.5, ult = performance.now();
-  const ajusta = () => { W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; x.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const n = Math.round(W * H / 1500); est = Array.from({ length: n }, () => { const b = Math.random(); return { x: Math.random() * W, y: Math.random() * H, r: .3 + b * b * 1.5, a: .25 + b * .6, f: .6 + Math.random() * 2.2, ph: Math.random() * 7, v: .6 + b * 2.2, c: Math.random() < .7 ? "255,246,228" : Math.random() < .5 ? "205,225,255" : "255,215,170" }; }); };
-  ajusta(); addEventListener("resize", ajusta);
+// céu do oráculo, como num planetário: a tela inteira vira céu, com a Via Láctea e as estrelas girando devagar em volta de um polo,
+// estrelas que cintilam e, por cima de tudo, estrelas cadentes cruzando a tela de vez em quando
+function ceuEstrelado(cv, cad, dono) {
+  const x = cv.getContext("2d"), y = cad.getContext("2d"), dpr = Math.min(2, window.devicePixelRatio || 1), quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W = 0, H = 0, D = 0, est = [], via = null, voando = [], prox = 1, ult = performance.now(), giro = 0;
+  const VEL = Math.PI * 2 / 240; // uma volta a cada 4 minutos
+  const fazVia = () => { // a Via Láctea pintada uma vez numa tela do tamanho da diagonal; depois só gira
+    const T = Math.ceil(D), c = document.createElement("canvas"); c.width = c.height = T; const v = c.getContext("2d"), m = T / 2;
+    v.translate(m, m); v.rotate(-.55); v.globalCompositeOperation = "lighter";
+    const g0 = v.createLinearGradient(0, -T * .16, 0, T * .16); g0.addColorStop(0, "rgba(0,0,0,0)"); g0.addColorStop(.5, "rgba(255,226,190,.10)"); g0.addColorStop(1, "rgba(0,0,0,0)"); v.fillStyle = g0; v.fillRect(-m, -T * .16, T, T * .32);
+    for (let k = 0; k < 90; k++) { const px = (Math.random() - .5) * T, py = (Math.random() + Math.random() - 1) * T * .07, raio = T * (.03 + Math.random() * .07);
+      const cor = [[255, 214, 160], [170, 140, 230], [110, 160, 230], [235, 160, 200], [255, 236, 210]][k % 5];
+      const g = v.createRadialGradient(px, py, 0, px, py, raio); g.addColorStop(0, `rgba(${cor},${.05 + Math.random() * .08})`); g.addColorStop(1, "rgba(0,0,0,0)"); v.fillStyle = g; v.beginPath(); v.arc(px, py, raio, 0, 7); v.fill(); }
+    for (let k = 0; k < T * 14; k++) { const px = (Math.random() - .5) * T, gs = (Math.random() + Math.random() + Math.random() - 1.5), py = gs * (.4 + Math.abs(gs) * .6) * T * .11, b = Math.random();
+      v.fillStyle = `rgba(255,${238 + Math.random() * 17 | 0},${222 + Math.random() * 33 | 0},${.12 + b * .6})`; v.beginPath(); v.arc(px, py, .35 + b * b * .9, 0, 7); v.fill(); }
+    v.globalCompositeOperation = "destination-out";
+    for (let k = 0; k < 70; k++) { const px = (Math.random() - .5) * T, py = (Math.random() - .5) * T * .05, raio = T * (.01 + Math.random() * .035);
+      const g = v.createRadialGradient(px, py, 0, px, py, raio); g.addColorStop(0, `rgba(0,0,0,${.3 + Math.random() * .4})`); g.addColorStop(1, "rgba(0,0,0,0)"); v.fillStyle = g; v.beginPath(); v.arc(px, py, raio, 0, 7); v.fill(); }
+    return c;
+  };
+  const ajusta = () => { W = cv.clientWidth; H = cv.clientHeight; if (!W) return; D = Math.hypot(W, H);
+    for (const [c, k] of [[cv, x], [cad, y]]) { c.width = W * dpr; c.height = H * dpr; k.setTransform(dpr, 0, 0, dpr, 0, 0); }
+    const n = Math.round(D * D / 1700);
+    est = Array.from({ length: n }, () => { const b = Math.random(); return { r0: Math.sqrt(Math.random()) * D / 2, a0: Math.random() * 7, r: .3 + b * b * 1.6, a: .25 + b * .65, f: .6 + Math.random() * 2.4, ph: Math.random() * 7, c: Math.random() < .7 ? "255,246,228" : Math.random() < .5 ? "205,225,255" : "255,215,170" }; });
+    via = fazVia(); };
+  addEventListener("resize", ajusta);
   const quadro = agora => {
-    if (!dono.isConnected && W) { removeEventListener("resize", ajusta); return; }
+    if (W && !dono.isConnected) { removeEventListener("resize", ajusta); return; }
     if (!W || cv.clientWidth !== W) ajusta();
+    if (!W) return requestAnimationFrame(quadro);
     const dt = Math.min(.05, (agora - ult) / 1000), t = agora / 1000; ult = agora;
+    if (!quieto) giro += VEL * dt;
+    const cx = W / 2, cy = H * .42;
     x.clearRect(0, 0, W, H);
+    x.save(); x.translate(cx, cy); x.rotate(giro); x.drawImage(via, -via.width / 2, -via.height / 2); x.restore();
+    const cs = Math.cos(giro), sn = Math.sin(giro);
     for (const e of est) {
-      if (!quieto) { e.x += e.v * dt * 2.2; e.y -= e.v * dt * .9; if (e.x > W + 2) e.x = -2; if (e.y < -2) e.y = H + 2; }
-      const br = e.a * (.55 + .45 * Math.sin(t * e.f + e.ph));
-      x.fillStyle = `rgba(${e.c},${br})`; x.beginPath(); x.arc(e.x, e.y, e.r, 0, 7); x.fill();
-      if (e.r > 1.25) { const g = x.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 5); g.addColorStop(0, `rgba(${e.c},${br * .35})`); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.beginPath(); x.arc(e.x, e.y, e.r * 5, 0, 7); x.fill(); }
+      const ex = cx + Math.cos(e.a0) * e.r0, ey = cy + Math.sin(e.a0) * e.r0, px = cx + (ex - cx) * cs - (ey - cy) * sn, py = cy + (ex - cx) * sn + (ey - cy) * cs;
+      if (px < -4 || py < -4 || px > W + 4 || py > H + 4) continue;
+      const br = e.a * (.5 + .5 * Math.sin(t * e.f + e.ph));
+      x.fillStyle = `rgba(${e.c},${br})`; x.beginPath(); x.arc(px, py, e.r, 0, 7); x.fill();
+      if (e.r > 1.3) { const g = x.createRadialGradient(px, py, 0, px, py, e.r * 5); g.addColorStop(0, `rgba(${e.c},${br * .35})`); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.beginPath(); x.arc(px, py, e.r * 5, 0, 7); x.fill(); }
     }
+    // estrelas cadentes, por cima de tudo
+    y.clearRect(0, 0, W, H);
     if (!quieto) {
       prox -= dt;
-      if (prox <= 0) { prox = 2 + Math.random() * 4; const ang = (20 + Math.random() * 25) * Math.PI / 180, vel = 520 + Math.random() * 420;
-        cad.push({ x: Math.random() * W * .8, y: Math.random() * H * .45, vx: Math.cos(ang) * vel, vy: Math.sin(ang) * vel, vida: 0, dur: .7 + Math.random() * .6, cauda: 70 + Math.random() * 90 }); }
-      cad = cad.filter(c => (c.vida += dt) < c.dur);
-      for (const c of cad) {
-        c.x += c.vx * dt; c.y += c.vy * dt; const k = Math.sin(Math.PI * c.vida / c.dur), n = Math.hypot(c.vx, c.vy), tx = c.x - c.vx / n * c.cauda, ty = c.y - c.vy / n * c.cauda;
-        const g = x.createLinearGradient(c.x, c.y, tx, ty); g.addColorStop(0, `rgba(255,250,235,${.95 * k})`); g.addColorStop(.25, `rgba(255,220,160,${.45 * k})`); g.addColorStop(1, "rgba(255,200,140,0)");
-        x.strokeStyle = g; x.lineWidth = 1.6; x.lineCap = "round"; x.beginPath(); x.moveTo(c.x, c.y); x.lineTo(tx, ty); x.stroke();
-        x.fillStyle = `rgba(255,252,240,${k})`; x.beginPath(); x.arc(c.x, c.y, 1.4, 0, 7); x.fill();
+      if (prox <= 0) { prox = 1.8 + Math.random() * 3; const ang = (18 + Math.random() * 30) * Math.PI / 180, vel = 380 + Math.random() * 260, esq = Math.random() < .5;
+        voando.push({ x: esq ? -20 : W * (.2 + Math.random() * .6), y: esq ? Math.random() * H * .5 : -20, vx: Math.cos(ang) * vel, vy: Math.sin(ang) * vel, vida: 0, dur: 1.3 + Math.random() * .8, cauda: 130 + Math.random() * 120 }); }
+      voando = voando.filter(c => (c.vida += dt) < c.dur);
+      for (const c of voando) {
+        c.x += c.vx * dt; c.y += c.vy * dt; const k = Math.sin(Math.PI * Math.min(1, c.vida / c.dur)), n = Math.hypot(c.vx, c.vy), tx = c.x - c.vx / n * c.cauda, ty = c.y - c.vy / n * c.cauda;
+        const g = y.createLinearGradient(c.x, c.y, tx, ty); g.addColorStop(0, `rgba(255,252,240,${k})`); g.addColorStop(.2, `rgba(255,226,170,${.55 * k})`); g.addColorStop(1, "rgba(255,200,140,0)");
+        y.strokeStyle = g; y.lineWidth = 2.2; y.lineCap = "round"; y.beginPath(); y.moveTo(c.x, c.y); y.lineTo(tx, ty); y.stroke();
+        const h0 = y.createRadialGradient(c.x, c.y, 0, c.x, c.y, 7); h0.addColorStop(0, `rgba(255,255,245,${k})`); h0.addColorStop(1, "rgba(255,240,200,0)"); y.fillStyle = h0; y.beginPath(); y.arc(c.x, c.y, 7, 0, 7); y.fill();
       }
     }
     requestAnimationFrame(quadro);
@@ -2888,9 +2897,9 @@ function abrirOraculo() {
     if (L0 && GRAHAS.some(x => x.id === L0.g)) saida.append(h("p", { class: "orvolta", text: "Sua última leitura" }), leituraOraculo(L0));
     box.append(topo, altar, barra, h("div", { class: "actions", style: "justify-content:center" }, bt), saida, h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: fechar }, "Fechar")));
   }
-  const ceu = h("canvas", { class: "orceufundo", "aria-hidden": "true" });
-  const sheet = h("div", { class: "sheet pombosheet orsheet", onclick: e => { if (e.target === sheet) fechar(); } }, ceu, box);
-  ceuEstrelado(ceu, box);
+  const ceu = h("canvas", { class: "orceufundo", "aria-hidden": "true" }), cadentes = h("canvas", { class: "orceufundo orcadentes", "aria-hidden": "true" });
+  const sheet = h("div", { class: "sheet pombosheet orsheet", onclick: e => { if (e.target === sheet) fechar(); } }, ceu, box, cadentes);
+  ceuEstrelado(ceu, cadentes, box);
   document.body.append(sheet);
 }
 function vSaberes() {
