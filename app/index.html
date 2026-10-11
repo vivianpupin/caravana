@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 18:25";</script>
+<script>window.__VERSAO = "11/10 · 18:29";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -590,6 +590,45 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .guardgrade button{border:1px solid rgba(138,63,50,.25);background:#FBF6EC;border-radius:12px;padding:6px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font:600 12.5px Poppins,sans-serif;color:#282722}
 .guardgrade img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px}
 .quizdeus{display:block;width:170px;max-width:60%;margin:10px auto 4px;border-radius:14px;box-shadow:0 10px 24px rgba(40,24,10,.25)}
+.oraculocard{display:flex;align-items:center;gap:14px;width:100%;margin:14px 0 18px;padding:14px;border:0;border-radius:18px;text-align:left;cursor:pointer;font:inherit;color:#F1E2BC;box-shadow:var(--shadow);background:radial-gradient(ellipse at 20% 0%,#3B3550,#1B1A2A 70%)}
+.orcgrade{flex:0 0 84px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.orcgrade span{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:13px;color:#F6EDDA;background:color-mix(in srgb,var(--c) 55%,#1B1A2A);box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+.orcgrade span.on{background:var(--c);box-shadow:0 0 10px var(--c)}
+.orctx{display:flex;flex-direction:column;gap:3px}
+.orctx small{font:600 11px Poppins,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#E2C08A}
+.orctx b{font:600 18px/1.25 Lora,Georgia,serif}
+.orctx span{font-size:13px;opacity:.8}
+.sheet>.oraculo,.oraculo{position:relative;background:radial-gradient(ellipse at 50% 0%,#3B3550,#1B1A2A 60%,#121220);color:#F1E2BC;border-radius:24px;padding:18px 16px 16px;width:min(560px,100%);max-height:92vh;overflow-y:auto;display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.oraculo>*{flex-shrink:0}
+.ortopo{text-align:center}
+.ortopo .eyebrow{color:#E2C08A;margin:0}
+.ortopo h2{font-family:var(--display);font-size:24px;margin:4px 0;color:#F6EDDA}
+.orintro{font-size:14px;line-height:1.5;opacity:.85;margin:4px 0 0}
+.oraltar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px auto 0;width:min(300px,100%)}
+.orcel{aspect-ratio:1;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);transition:background .12s,box-shadow .12s,transform .12s}
+.orcsim{font-size:28px;line-height:1;color:var(--c);filter:brightness(1.3)}
+.orcnome{font:600 11px Poppins,sans-serif;letter-spacing:.08em;opacity:.75}
+.orcel.on{background:color-mix(in srgb,var(--c) 45%,transparent);box-shadow:0 0 18px var(--c),inset 0 0 0 1px rgba(255,255,255,.5);transform:scale(1.05)}
+.orcel.on .orcsim{color:#fff}
+.orcel.escolhido{animation:escolhido 1.2s ease-in-out infinite alternate}
+@keyframes escolhido{from{box-shadow:0 0 12px var(--c)}to{box-shadow:0 0 34px var(--c)}}
+.orbarra{height:8px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden;width:min(300px,100%);margin:6px auto 0}
+.orbarra i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8A3F32,#E2B33C,#F6EDDA)}
+.orbotao{border:0;border-radius:999px;padding:16px 26px;font:600 15px Poppins,sans-serif;color:#2A1C10;background:linear-gradient(180deg,#E8CC98,#B48A4C);box-shadow:0 6px 18px rgba(0,0,0,.4);cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
+.orbotao.vivo{animation:pulsa .5s ease-in-out infinite alternate}
+@keyframes pulsa{from{transform:scale(1)}to{transform:scale(1.06);box-shadow:0 0 26px rgba(226,179,60,.7)}}
+.orvolta{text-align:center;font-size:13px;opacity:.8;margin:6px 0 0}
+.orleitura{background:#FBF6EC;color:#282722;border-radius:18px;padding:18px 16px;margin-top:8px}
+.orltopo{display:flex;gap:14px;align-items:center;margin-bottom:6px}
+.orlsim{flex:0 0 58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:30px;color:#fff;background:var(--c);box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.orltopo h2{font-family:var(--display);font-size:26px;margin:0}
+.orlsub{margin:0;font-size:13px;color:#8A3F32;letter-spacing:.04em}
+.orlnak{margin:2px 0 0;font:italic 14px Lora,Georgia,serif;color:#5B4A38}
+.orleye{font:600 11px Poppins,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A3F32;margin:16px 0 4px}
+.orltxt{font:16px/1.65 Lora,Georgia,serif;margin:0 0 10px}
+.orlsmall{font-size:12.5px;color:#6B5A43;margin:0 0 6px}
+.orlmantra{font:600 20px/1.4 Cinzel,Georgia,serif;color:#8A3F32;margin:0 0 4px}
+.orlnota{text-align:center;font:italic 13px Lora,Georgia,serif;color:#6B5A43;margin:16px 0 0}
 .sheet{position:fixed;inset:0;background:rgba(40,39,34,.35);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
 @media (min-width:700px){.sheet{align-items:center}}
 .sheet>div,.sheet form{background:var(--panel);border-radius:24px;box-shadow:0 20px 60px rgba(40,39,34,.25);padding:24px 20px;width:100%;max-width:500px;max-height:90%;overflow:auto;display:flex;flex-direction:column;gap:12px}
@@ -2346,7 +2385,7 @@ const GUARDIOES = {
       ["👁️", "O terceiro olho", "Na testa ele tem um terceiro olho, que enxerga além das aparências. Nos cabelos, uma lua crescente e o rio Ganga, que ele segurou quando ela desceu do céu."],
       ["💃", "O rei da dança", "Como Nataraja, Shiva dança dentro de um círculo de fogo. É a dança que encerra um ciclo do mundo para que outro possa começar."]],
     onde: "Em Varanasi, a cidade de Shiva, do dia 5 ao dia 7 da travessia.", mantra: "Om Namah Shivaya", trad: "Om, eu me curvo a Shiva." },
-  durga: { nome: "Durga", frase: "a força que protege", intro: "Que guardiã! Durga é a Deusa guerreira, a força que protege quem está ao lado. Com ela, ninguém atravessa sozinho.",
+  durga: { nome: "Durga", frase: "a força que protege", intro: "Que guardiã! Durga é a Deusa guerreira, a força que protege quem está ao lado. Com ela, a coragem não falta.",
     cartas: [["✨", "Nascida da luz de todos", "Um demônio que nenhum deus conseguia vencer ameaçava o mundo. Os deuses uniram as suas forças, e dessa luz nasceu Durga. Cada um lhe deu uma arma."],
       ["🦁", "Montada num leão", "Durga monta um leão: coragem com rumo, força que não perde a calma."],
       ["🪔", "Nove noites de festa", "A vitória de Durga é celebrada todo ano no Navaratri, nove noites de música e dança, e no Dussehra, o dia da vitória."]],
@@ -2482,6 +2521,139 @@ function vDia(d, open, isToday, abrir) {
 
 
 // ---------- Saberes ----------
+// ---------- Oráculo dos Navagrahas: os nove planetas da astrologia védica e as 27 mansões da Lua ----------
+// consulta livre: segura o botão, a energia sobe, a luz corre pelo altar e para num planeta; a mansão e a prática do dia vêm sorteadas junto
+const GRAHAS = [
+  // na grade dos templos: norte em cima, Surya no centro
+  { id: "ketu", nome: "Ketu", sub: "nodo sul da Lua · o desapego", sim: "☋", cor: "#8A6A4A", mantra: "Om Ketave Namaha", dia: "", tom: "cinza-fumaça",
+    img: "Ketu é o corpo do demônio que bebeu o néctar da imortalidade, separado da cabeça pelo disco de Vishnu. Não tem olhos, mas sente tudo. É a cauda do dragão, o ponto onde o caminho da Lua cruza o caminho do Sol.",
+    msg: ["Ketu fala de desapego, intuição e libertação. A sua pergunta pode estar pedindo menos do que você imagina: talvez a resposta seja soltar. O que você segura com tanta força já cumpriu a sua função, e a mão fechada não recebe nada novo.", "Ketu traz perdas que abrem espaço e uma sabedoria que não vem dos livros. Confie no que você sabe sem saber explicar. Na tradição indiana, ele é o planeta de quem busca o espiritual: a sua pergunta tem uma camada mais funda do que a superfície mostra."],
+    hoje: ["Doe ou deixe para trás um objeto que você trouxe e não precisa.", "Medite cinco minutos de olhos fechados, só ouvindo os sons ao redor.", "Siga uma intuição pequena hoje, sem pedir explicação para ela."] },
+  { id: "guru", nome: "Guru", sub: "Júpiter · a sabedoria", sim: "♃", cor: "#E2B33C", mantra: "Om Gurave Namaha", dia: "quinta-feira", tom: "amarelo",
+    img: "Júpiter é Brihaspati, o mestre dos deuses. É o maior dos planetas e, por isso, o que mais protege: a sua gravidade desvia do caminho muito do que viria de longe.",
+    msg: ["Guru é sabedoria, expansão e graça. A sua pergunta está sendo olhada com generosidade. Há um mestre perto de você, e ele pode ter a forma de uma pessoa, de um livro ou de uma situação difícil que ensina mais do que qualquer aula.", "Júpiter também pede humildade: quem acha que já sabe não aprende. A expansão que ele traz não é acumular mais, é enxergar mais longe. Confie no caminho, mas confie com os olhos abertos."],
+    hoje: ["Agradeça, por mensagem, a alguém que te ensinou algo importante.", "Leia com calma, até o fim, um dos saberes desta aba.", "Ofereça ajuda a alguém da caravana antes que peçam."] },
+  { id: "budha", nome: "Budha", sub: "Mercúrio · a palavra", sim: "☿", cor: "#3F7A4A", mantra: "Om Budhaya Namaha", dia: "quarta-feira", tom: "verde",
+    img: "Mercúrio é o mais rápido dos planetas e o mais próximo do Sol. É o mensageiro, o comerciante, o estudante que faz perguntas demais.",
+    msg: ["Budha governa a palavra, o raciocínio e as trocas. A resposta para a sua pergunta pode estar numa conversa, num texto, num detalhe que alguém disse de passagem. Fique atenta(o) aos sinais pequenos: eles chegam rápido e vão embora rápido.", "O risco de Mercúrio é a mente acelerada que analisa tudo e não decide nada. Escolha bem as palavras, porque elas criam aquilo que nomeiam. E lembre que ouvir também é uma forma de inteligência."],
+    hoje: ["Pergunte a alguém da caravana algo sobre a vida dela e apenas escute.", "Aprenda uma palavra em hindi e use com alguém hoje.", "Escreva a sua pergunta num papel, numa frase só, a mais simples possível."] },
+  { id: "shani", nome: "Shani", sub: "Saturno · o tempo", sim: "♄", cor: "#2F3E66", mantra: "Om Shanaye Namaha", dia: "sábado", tom: "azul-escuro",
+    img: "Saturno é o mais lento dos planetas que se veem a olho nu: leva quase trinta anos para dar a volta no Sol. Shani, filho do Sol com Chhaya, a sombra, anda devagar e não esquece nada.",
+    msg: ["Shani é tempo, disciplina e verdade. A sua pergunta não tem atalho. O que parece demora é amadurecimento, e o que parece obstáculo é a estrutura sendo testada para aguentar o que vem depois.", "Saturno é temido, mas é justo: devolve exatamente o que foi plantado. Se você fizer a sua parte com paciência e honestidade, ele é o planeta que mais recompensa. Simplifique, assuma o que é seu e siga um passo de cada vez."],
+    hoje: ["Termine algo pequeno que ficou pela metade.", "Fique dez minutos sentada(o) em silêncio, sem celular.", "Seja pontual em tudo hoje, de propósito."] },
+  { id: "surya", nome: "Surya", sub: "o Sol · a luz própria", sim: "☉", cor: "#E3571A", mantra: "Om Suryaya Namaha", dia: "domingo", tom: "laranja e vermelho",
+    img: "O Sol sobe no seu carro de sete cavalos e não pede licença para nascer. Ilumina do mesmo jeito o templo e a rua, o santo e o ladrão.",
+    msg: ["Surya fala da sua luz própria: aquilo que você é quando não está tentando agradar ninguém. A sua pergunta pede presença, não esconderijo. Talvez você esteja esperando que alguém autorize um passo que só você pode dar.", "Há também um aviso no calor do Sol: luz demais cega. Brilhar não é ocupar todo o espaço. O Sol é generoso porque ilumina sem escolher, e é firme porque volta todos os dias, com plateia ou sem."],
+    hoje: ["Veja o primeiro sol que encontrar e ofereça a ele um minuto de silêncio.", "Diga em voz alta, uma vez, algo que você pensa e costuma guardar.", "Escolha uma tarefa que vem adiando e faça a primeira parte antes do meio-dia."] },
+  { id: "shukra", nome: "Shukra", sub: "Vênus · a beleza", sim: "♀", cor: "#D9A7B8", mantra: "Om Shukraya Namaha", dia: "sexta-feira", tom: "branco e rosa",
+    img: "Vênus é a estrela da manhã e da tarde, o astro mais brilhante do céu depois da Lua. Shukra é também o mestre dos asuras, que conhecia o segredo de devolver a vida aos que caíam.",
+    msg: ["Shukra fala de beleza, prazer, afeto e arte. A sua pergunta pede leveza: talvez você esteja tratando com dureza algo que precisa de carinho. Aquilo que te encanta também te orienta.", "Vênus lembra que o prazer é sagrado quando não aprisiona. Desfrute sem se agarrar. Há uma beleza esperando para ser vista hoje, e ela costuma aparecer quando a gente desacelera."],
+    hoje: ["Enfeite alguma coisa: o cabelo com uma flor, a mesa, a mala.", "Escute uma música inteira de olhos fechados.", "Diga a alguém da caravana o que você acha bonito nela."] },
+  { id: "rahu", nome: "Rahu", sub: "nodo norte da Lua · o desejo", sim: "☊", cor: "#5A5A6E", mantra: "Om Rahave Namaha", dia: "", tom: "fumaça escura",
+    img: "Rahu é a cabeça do demônio que bebeu o néctar da imortalidade. Vishnu cortou o seu corpo, mas a cabeça ficou viva, e de tempos em tempos engole o Sol e a Lua: são os eclipses.",
+    msg: ["Rahu é desejo, fome e tudo o que é novo e estrangeiro. A sua pergunta tem algo de um querer que não se sacia. Ele traz oportunidades inesperadas e mundos desconhecidos, como esta viagem.", "Mas Rahu é cabeça sem corpo: deseja sem digerir. Observe se você está correndo atrás de algo por você ou pelo que os outros vão ver. Use a fome dele para explorar, não para se perder."],
+    hoje: ["Prove uma comida que você nunca provou.", "Antes de comprar qualquer coisa hoje, espere uma hora.", "Pergunte a si: o que eu quero de verdade, quando ninguém está olhando?"] },
+  { id: "mangala", nome: "Mangala", sub: "Marte · a coragem", sim: "♂", cor: "#B83A2B", mantra: "Om Mangalaya Namaha", dia: "terça-feira", tom: "vermelho",
+    img: "Marte é o guerreiro de vermelho, filho da Terra. Carrega uma lança, e a ponta dela aponta sempre para a frente.",
+    msg: ["Mangala traz coragem e fogo. A sua pergunta pede ação: menos pensar, mais fazer. Há uma energia parada em você que quer movimento, e, se não encontrar caminho, pode virar irritação.", "Mas o fogo de Marte precisa de direção. Coragem não é atropelar, é escolher a batalha certa. Antes de agir, pergunte: isso que eu quero defender é mesmo meu? Se for, vá. Se for orgulho, solte."],
+    hoje: ["Caminhe rápido por dez minutos, sentindo os pés na terra.", "Tenha hoje uma conversa que você está evitando, com calma e verdade.", "Quando sentir raiva, respire fundo três vezes antes de responder."] },
+  { id: "chandra", nome: "Chandra", sub: "a Lua · as emoções", sim: "☽", cor: "#CFC6B2", mantra: "Om Chandraya Namaha", dia: "segunda-feira", tom: "branco e prata",
+    img: "A Lua não tem luz própria e, mesmo assim, é ela que move as marés. Cresce, míngua, some e volta, sem nunca deixar de ser a mesma.",
+    msg: ["Chandra é a mente e o coração que sente. A sua pergunta tem mais emoção do que parece, e merece ser ouvida antes de ser resolvida. O que você está sentindo não é um problema a corrigir: é uma informação.", "A Lua lembra que tudo tem fases. Se agora é minguante, não force a cheia. Há momentos de recolher, de dormir mais, de pedir colo. A clareza volta, como volta a Lua, no tempo dela."],
+    hoje: ["Tome um copo d'água bem devagar, prestando atenção em cada gole.", "Escreva três linhas sobre o que está sentindo, sem tentar explicar.", "À noite, procure a Lua no céu e veja em que fase ela está."] }
+];
+const NAKSHATRAS = [
+  ["Ashwini", "cabeça de cavalo", "os Ashvins, gêmeos curadores", "Começo veloz e cura. O que você perguntou pode andar mais depressa do que imagina, se você der o primeiro passo."],
+  ["Bharani", "o ventre", "Yama", "Gestação e responsabilidade. Algo está sendo carregado até poder nascer: não apresse o parto."],
+  ["Krittika", "a chama", "Agni, o fogo", "O fogo que corta e purifica. Seja precisa(o): separe o que é seu do que não é."],
+  ["Rohini", "o carro de boi", "Brahma, o criador", "A mansão preferida da Lua, fértil e bonita. O que for cultivado agora cresce."],
+  ["Mrigashira", "a cabeça de cervo", "Soma, o néctar", "A busca curiosa. Siga a pista, sem pressa de chegar."],
+  ["Ardra", "a gota", "Rudra, a tempestade", "A chuva que lava. Um choro ou uma crise pode limpar o caminho."],
+  ["Punarvasu", "a aljava de flechas", "Aditi, a mãe dos deuses", "O retorno da luz. O que se perdeu pode voltar: recomece com o que tem."],
+  ["Pushya", "a flor", "Brihaspati, o mestre", "Nutrição e cuidado. Alimente e deixe-se alimentar."],
+  ["Ashlesha", "a serpente enrolada", "os Nagas", "Sabedoria escondida. Olhe para o que está enrolado por baixo, com coragem."],
+  ["Magha", "o trono", "os ancestrais", "A linhagem. Honre de onde você vem: há força nos que vieram antes."],
+  ["Purva Phalguni", "a rede de descanso", "Bhaga, a fortuna", "Descanso e prazer. A resposta pode chegar depois de você relaxar."],
+  ["Uttara Phalguni", "a cama", "Aryaman, o protetor das alianças", "Alianças e compromissos. Cumpra o que prometeu e aceite a ajuda que oferecem."],
+  ["Hasta", "a mão", "Savitr, o sol que desperta", "A habilidade das mãos. Faça com as próprias mãos o que puder."],
+  ["Chitra", "a joia brilhante", "Tvashtr, o artesão dos deuses", "Criação e forma. Dê forma ao que ainda está só na ideia."],
+  ["Swati", "o broto ao vento", "Vayu, o vento", "Independência e movimento. Dobre como o broto, sem quebrar."],
+  ["Vishakha", "o arco de vitória", "Indra e Agni", "Foco num objetivo. Escolha um alvo e mantenha os olhos nele."],
+  ["Anuradha", "o lótus", "Mitra, a amizade", "Amizade e devoção. Uma amizade guarda a resposta que você procura."],
+  ["Jyeshtha", "o amuleto", "Indra, o rei dos deuses", "O mais velho, a autoridade. Assuma o seu lugar com responsabilidade, sem arrogância."],
+  ["Mula", "as raízes", "Nirriti", "A raiz de tudo. Vá ao fundo da questão: às vezes é preciso arrancar para replantar."],
+  ["Purva Ashadha", "o leque", "Apas, as águas", "A força das águas, que ninguém detém. Persista com suavidade."],
+  ["Uttara Ashadha", "a presa de elefante", "os Vishvadevas", "A vitória que dura. O que você conquistar com retidão permanece."],
+  ["Shravana", "a orelha", "Vishnu", "Escutar. A resposta chega pelos ouvidos: preste atenção ao que dizem."],
+  ["Dhanishtha", "o tambor", "os Vasus", "Ritmo e abundância. Encontre o seu compasso e siga com ele."],
+  ["Shatabhisha", "o círculo vazio", "Varuna, o senhor das águas", "A mansão dos cem curadores. Há cura no silêncio e no recolhimento."],
+  ["Purva Bhadrapada", "a espada", "Aja Ekapada", "O fogo que transforma. Uma decisão firme corta o que prende."],
+  ["Uttara Bhadrapada", "a serpente das profundezas", "Ahir Budhnya", "Profundidade e calma. Mergulhe devagar: o fundo é sereno."],
+  ["Revati", "o peixe", "Pushan, o protetor dos viajantes", "O fim de um ciclo e a proteção de quem viaja. A travessia está guardada."]
+];
+const hojeLocal = () => new Date().toLocaleDateString("en-CA");
+function lerOraculo() { try { return JSON.parse(localStorage.getItem("cdi-oraculo") || "null"); } catch (e) { return null; } }
+function vOraculoCard() {
+  const L = lerOraculo(), G = L && GRAHAS.find(x => x.id === L.g);
+  return h("button", { type: "button", class: "oraculocard", onclick: () => abrirOraculo() },
+    h("div", { class: "orcgrade", "aria-hidden": "true" }, GRAHAS.map(x => h("span", { style: `--c:${x.cor}`, class: G && G.id === x.id ? "on" : "", text: x.sim }))),
+    h("span", { class: "orctx" }, h("small", { text: "Oráculo dos Navagrahas" }), h("b", { text: "Os nove planetas respondem" }),
+      h("span", { text: G ? "Sua última leitura: " + G.nome + ". Toque para consultar de novo." : "Pense numa pergunta, segure o botão e concentre-se." })));
+}
+function leituraOraculo(L) {
+  const G = GRAHAS.find(x => x.id === L.g), N = NAKSHATRAS[L.n];
+  return h("div", { class: "orleitura" },
+    h("div", { class: "orltopo" }, h("span", { class: "orlsim", style: `--c:${G.cor}`, text: G.sim }),
+      h("div", null, h("h2", { text: G.nome }), h("p", { class: "orlsub", text: G.sub }), h("p", { class: "orlnak", text: "na mansão lunar de " + N[0] }))),
+    h("p", { class: "orleye", text: "A imagem" }), h("p", { class: "orltxt", text: G.img }),
+    h("p", { class: "orleye", text: "A mensagem" }), ...G.msg.map(t => h("p", { class: "orltxt", text: t })),
+    h("p", { class: "orleye", text: "A mansão da Lua · " + N[0] }), h("p", { class: "orlsmall", text: "Símbolo: " + N[1] + " · Regente: " + N[2] }), h("p", { class: "orltxt", text: N[3] }),
+    h("p", { class: "orleye", text: "Para hoje" }), h("p", { class: "orltxt", text: G.hoje[L.p] }),
+    h("p", { class: "orleye", text: "Mantra de " + G.nome }), h("p", { class: "orlmantra", text: G.mantra }),
+    h("p", { class: "orlsmall", text: (G.dia ? "Dia de " + G.nome + ": " + G.dia + " · " : "") + "Cor: " + G.tom }),
+    h("p", { class: "orlnota", text: "O oráculo é um espelho, não uma sentença." }));
+}
+function abrirOraculo() {
+  closeSheets();
+  const L0 = lerOraculo();
+  const box = h("div", { role: "dialog", "aria-label": "Oráculo dos Navagrahas", class: "oraculo" });
+  const fechar = () => { clearInterval(box._t); closeSheets(); render(); };
+  const celulas = GRAHAS.map(x => h("div", { class: "orcel", style: `--c:${x.cor}` }, h("span", { class: "orcsim", text: x.sim }), h("span", { class: "orcnome", text: x.nome })));
+  const altar = h("div", { class: "oraltar" }, celulas);
+  const barra = h("div", { class: "orbarra", "aria-hidden": "true" }, h("i"));
+  const saida = h("div", { class: "orsaida" });
+  const topo = h("div", { class: "ortopo" }, h("p", { class: "eyebrow", text: "Oráculo dos Navagrahas" }), h("h2", { text: "Os nove planetas respondem" }),
+    h("p", { class: "orintro", text: "Na astrologia védica, os nove grahas são as forças que agarram e movem a vida. Pense numa pergunta, segure o botão enquanto se concentra e solte quando sentir que é a hora." }));
+  const acende = i => celulas.forEach((c, k) => c.classList.toggle("on", k === i));
+  {
+    let segurando = false, inicio = 0, pos = 4, vel = 0, raf = 0;
+    const bt = h("button", { type: "button", class: "orbotao" }, "Segure para concentrar");
+    const gira = () => { if (!segurando) return; const t = (performance.now() - inicio) / 1000, f = Math.min(1, t / 3);
+      barra.firstChild.style.width = (f * 100) + "%"; vel += 16 + f * 40;
+      if (vel > 160 - f * 120) { vel = 0; pos = (pos + 1 + Math.floor(Math.random() * 3)) % 9; acende(pos); try { navigator.vibrate && navigator.vibrate(4); } catch (e) {} }
+      raf = requestAnimationFrame(gira); };
+    const comeca = e => { e.preventDefault(); if (segurando || bt.disabled) return; segurando = true; inicio = performance.now(); bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(gira); };
+    const solta = () => { if (!segurando) return; segurando = false; cancelAnimationFrame(raf); bt.disabled = true; bt.classList.remove("vivo");
+      if (performance.now() - inicio < 600) { bt.disabled = false; bt.textContent = "Segure um pouco mais"; barra.firstChild.style.width = "0"; return; }
+      // a luz desacelera e para num planeta
+      const fim = Math.floor(Math.random() * 9), L = { dia: hojeLocal(), g: GRAHAS[fim].id, n: Math.floor(Math.random() * 27), p: Math.floor(Math.random() * 3) };
+      let passos = 9 + ((fim - pos + 9) % 9), d = 70;
+      const anda = () => { pos = (pos + 1) % 9; acende(pos); try { navigator.vibrate && navigator.vibrate(6); } catch (e) {} passos--;
+        if (passos > 0) { d *= 1.13; setTimeout(anda, d); return; }
+        celulas[fim].classList.add("escolhido"); try { navigator.vibrate && navigator.vibrate([30, 60, 90]); } catch (e) {}
+        try { localStorage.setItem("cdi-oraculo", JSON.stringify(L)); } catch (e) {}
+        bt.remove(); barra.remove();
+        setTimeout(() => { saida.replaceChildren(leituraOraculo(L), h("div", { class: "actions", style: "justify-content:center;margin-top:10px" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirOraculo() }, "Consultar de novo"))); saida.scrollIntoView({ behavior: "smooth", block: "start" }); }, 600); };
+      anda(); };
+    bt.addEventListener("pointerdown", comeca); bt.addEventListener("pointerup", solta); bt.addEventListener("pointerleave", solta); bt.addEventListener("pointercancel", solta);
+    bt.addEventListener("contextmenu", e => e.preventDefault());
+    // a última leitura fica guardada para reler, até a próxima consulta
+    if (L0 && GRAHAS.some(x => x.id === L0.g)) saida.append(h("p", { class: "orvolta", text: "Sua última leitura" }), leituraOraculo(L0));
+    box.append(topo, altar, barra, h("div", { class: "actions", style: "justify-content:center" }, bt), saida, h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: fechar }, "Fechar")));
+  }
+  const sheet = h("div", { class: "sheet pombosheet", onclick: e => { if (e.target === sheet) fechar(); } }, box);
+  document.body.append(sheet);
+}
 function vSaberes() {
   const e = S.ens.find(x => x.id === S.ensSel);
   if (e) marcaLido(e.id);
@@ -2503,6 +2675,7 @@ function vSaberes() {
     h("img", { class: "orn", src: "img/mantra-ganesha.webp", alt: "Om Gam Ganapataye Namah" }),
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Para ler pelo caminho" }), h("h1", { text: "Saberes da travessia" }))),
     h("p", { class: "lede", text: "Cada carimbo guarda uma história. Ela se abre quando o passaporte é carimbado no lugar sagrado." }),
+    vOraculoCard(),
     sab.length ? h("p", { class: "lidoscont", text: `Você já leu ${sab.filter(x => S.lidos[x.id] && lib(x)).length} de ${sab.length}` }) : null,
     sab.length ? h("div", { class: "sabgrid" }, sab.map(x => {
       const l = x.localId && localDe(x.localId), ok = lib(x);
