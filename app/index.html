@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 17:33";</script>
+<script>window.__VERSAO = "11/10 · 17:37";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1798,7 +1798,7 @@ const EXTRAS = [
   { id: "durga-kund", nome: "Durga Kund", insignia: "durga-kund", cidadeId: "varanasi", dia: 7, ordem: 7.5, codigo: "durga", lat: 25.2889, lng: 82.9998, busca: "Durga Kund Mandir Varanasi", aberto: false,
     descricao: "O templo vermelho da Deusa Durga, ao lado de um tanque sagrado de pedra.", dica: "A Mãe montada no leão espera ao lado das águas." },
   { id: "travessia", nome: "Travessia Índia Sagrada", insignia: "travessia", cidadeId: "delhi", dia: 12, ordem: 20, codigo: "caravana", lat: 28.6315, lng: 77.2244, busca: "The Lalit New Delhi", aberto: false,
-    descricao: "O selo final, para quem atravessou a Índia Sagrada com a Caravana do Céu.", dica: "O último selo, que só se ganha no fim da travessia." }
+    descricao: "O carimbo final, para quem atravessou a Índia Sagrada com a Caravana do Céu.", dica: "O último carimbo, que só se ganha no fim da travessia." }
 ];
 // junta os selos do banco com os novos (o que vier do banco com o mesmo id tem preferência) e tira os que saíram
 const ajustaLocais = arr => { const v = arr.filter(x => !REMOVIDOS.includes(x.id)), ids = new Set(v.map(x => x.id)); return [...v, ...EXTRAS.filter(x => !ids.has(x.id))]; };
@@ -1817,7 +1817,7 @@ async function selar(l, palavra) {
   try { localStorage.setItem("cdi-ins", JSON.stringify(S.local)); } catch (e) {}
   if (S.db && S.uid && eu()) { try { await S.db.doc("viajantes/" + S.uid).update({ insignias: { [l.id]: ts } }); } catch (e) {} }
   S.novoSelo = l.id;
-  return { ok: true, text: "Selo carimbado no seu passaporte." };
+  return { ok: true, text: "Carimbo novo no seu passaporte." };
 }
 
 // ---------- relógios ----------
@@ -1970,7 +1970,7 @@ function vCadastro() {
     h("img", { class: "cover", src: "img/passaporte-capa.webp", alt: "Passaporte da Travessia · Caravana do Céu" }),
     h("p", { class: "eyebrow", text: "Emissão do passaporte" }),
     h("h1", { text: "Seu passaporte da Índia Sagrada" }),
-    h("p", { class: "lede", text: "Com ele você recebe seu número de viajante, conversa com a caravana e carimba os selos de cada lugar sagrado da travessia." }),
+    h("p", { class: "lede", text: "Com ele você recebe seu número de viajante, conversa com a caravana e ganha os carimbos de cada lugar sagrado da travessia." }),
     h("form", { onsubmit: async e => {
       e.preventDefault();
       if (!nome.value.trim()) { erro.textContent = "Escreva seu nome."; return; }
@@ -2043,7 +2043,7 @@ const FRASES = [
   "Um país que nunca parou de rezar.",
   "Água, mapas e céu aberto para cada dia da travessia.",
   "Que todos os seres de todos os mundos sejam felizes.",
-  "Siga a rota, carimbe os selos, encontre a caravana.",
+  "Siga a rota, ganhe os carimbos, encontre a caravana.",
   "Que eu pise com passos firmes no labirinto da mente.",
   "Vento me leva, vento me eleva pra atravessar todos os mundos.",
   "Onde o sagrado está vivo nas ruas, nos rios e nos gestos.",
@@ -2103,7 +2103,7 @@ function vTravessia() {
     vTempo(),
     S.isOwner ? null : vCorrespondencia(),
     ins.length ? h("div", null,
-      h("p", { class: "eyebrow rule", text: `Os ${ins.length} selos do passaporte` }),
+      h("p", { class: "eyebrow rule", text: `Os ${ins.length} carimbos do passaporte` }),
       h("div", { class: "strip", style: "margin-top:10px" }, ins.map(l => h("button", { type: "button", "aria-label": l.nome, onclick: () => abrirSelo(l) },
         h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off", loading: "lazy" }))))) : null,
     h("nav", { class: "daychips", "aria-label": "Dias" }, dias.map(d => h("button", { type: "button", class: d.iso === hoje ? "today" : "", "aria-current": String(S.diaAberto === d.n), onclick: () => { S.diaAberto = 0; abrir(d.n); } },
@@ -2144,7 +2144,7 @@ function vDia(d, open, isToday, abrir) {
         d.deuses.intro ? h("p", { class: "intro", text: d.deuses.intro }) : null,
         h("div", { class: "godrow" }, d.deuses.cards.map(c => h("figure", { class: "god", style: "margin:0" }, h("img", { src: deusSrc(c.nome), alt: c.nome, loading: "lazy" }), h("span", { text: c.papel })))),
         h("div", { class: "story" }, d.deuses.titulo ? h("h5", { text: d.deuses.titulo }) : null, String(d.deuses.texto || "").split(/\n\s*\n/).map(t => h("p", { text: t.trim() })))) : null,
-      ls.length ? h("div", null, h("p", { class: "eyebrow rule", text: ls.length > 1 ? "Selos deste dia" : "Selo deste dia" }),
+      ls.length ? h("div", null, h("p", { class: "eyebrow rule", text: ls.length > 1 ? "Carimbos deste dia" : "Carimbo deste dia" }),
         h("div", { class: "seals", style: "margin-top:12px" }, ls.map(l => h("button", { type: "button", onclick: () => abrirSelo(l) },
           h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" }), aberto(l) ? "Carimbado" : S.isOwner ? "Carimbar" : "A carimbar")))) : null,
       false && d.cuidados && d.cuidados.length ? h("div", null, h("p", { class: "eyebrow rule", text: "Leve com você" }),
@@ -2179,14 +2179,14 @@ function vSaberes() {
   return h("section", { class: "view" },
     h("img", { class: "orn", src: "img/mantra-ganesha.webp", alt: "Om Gam Ganapataye Namah" }),
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Para ler pelo caminho" }), h("h1", { text: "Saberes da travessia" }))),
-    h("p", { class: "lede", text: "Cada selo guarda uma história. Ela se abre quando você carimba o selo no lugar sagrado." }),
+    h("p", { class: "lede", text: "Cada carimbo guarda uma história. Ela se abre quando o passaporte é carimbado no lugar sagrado." }),
     sab.length ? h("p", { class: "lidoscont", text: `Você já leu ${sab.filter(x => S.lidos[x.id] && lib(x)).length} de ${sab.length}` }) : null,
     sab.length ? h("div", { class: "sabgrid" }, sab.map(x => {
       const l = x.localId && localDe(x.localId), ok = lib(x);
       const lido = ok && S.lidos[x.id];
       return h("button", { class: "sab" + (ok ? "" : " locked") + (lido ? " lido" : ""), type: "button", onclick: () => { if (ok) { S.ensSel = x.id; render(); $("#main").scrollTop = 0; } else if (l) abrirSelo(l); } },
         l ? h("img", { src: badgeSrc(l), alt: "" }) : x.figura ? h("img", { src: x.figura, alt: "" }) : h("img", { class: "sym", src: "img/logo.png", alt: "" }),
-        h("span", { class: "tx" }, h("b", { text: x.titulo }), h("span", { text: ok ? (x.resumo || "") : `Carimbe o selo ${l ? l.nome : ""} para ler` })),
+        h("span", { class: "tx" }, h("b", { text: x.titulo }), h("span", { text: ok ? (x.resumo || "") : `Abre com o carimbo de ${l ? l.nome : ""}` })),
         lido ? h("span", { class: "lidotag", title: "Você já leu", "aria-label": "Lido" }, "✓") : null);
     })) : carregando(),
     guia.length ? h("div", { style: "display:flex;flex-direction:column;gap:10px" },
@@ -2218,7 +2218,7 @@ function camposPassaporte(v) {
 function mrzDe(v, ok) {
   const nome = norm(v ? v.nome : "viajante").toUpperCase().replace(/[^A-Z]+/g, "<");
   const l1 = ("P<CDC" + "<<" + nome + "<<INDIA<SAGRADA").padEnd(44, "<").slice(0, 44);
-  const l2 = (numPassaporte(S.uid) + "<<CDC<261104<F<261116<<SELOS" + nn(ok || 0)).padEnd(44, "<").slice(0, 44);
+  const l2 = (numPassaporte(S.uid) + "<<CDC<261104<F<261116<<CARIMBOS" + nn(ok || 0)).padEnd(44, "<").slice(0, 44);
   return l1 + "\n" + l2;
 }
 // ---------- Vídeo do passaporte (Reels e Stories, 9:16) ----------
@@ -2250,7 +2250,7 @@ function paginaDados(v, foto, W, H) {
 }
 function paginaSelos(lista, imgs, W, H, n0) {
   const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d"); papelPass(x, W, H, 0);
-  x.fillStyle = "#8A6B43"; x.font = '600 13px "Poppins",sans-serif'; x.textAlign = "center"; x.fillText("VISTOS · SELOS DA TRAVESSIA", W / 2, 38); x.textAlign = "start";
+  x.fillStyle = "#8A6B43"; x.font = '600 13px "Poppins",sans-serif'; x.textAlign = "center"; x.fillText("VISTOS · CARIMBOS DA TRAVESSIA", W / 2, 38); x.textAlign = "start";
   lista.forEach((l, i) => { const im = imgs[l.id]; if (!im) return; const col = i % 2, lin = Math.floor(i / 2), pw = 176, ph = pw * im.height / im.width;
     const cx = W / 2 + (col ? 108 : -108), cy = 190 + lin * 300, rot = [-.08, .06, .05, -.07][i % 4];
     x.save(); x.translate(cx, cy); x.rotate(rot); if (!aberto(l)) x.globalAlpha = .25; x.shadowColor = "rgba(60,40,20,.35)"; x.shadowBlur = 14; x.shadowOffsetY = 6; x.drawImage(im, -pw / 2, -ph / 2, pw, ph); x.restore(); });
@@ -2261,7 +2261,7 @@ function paginaFinal(im, qtd, tot, W, H) {
   const g = x.createRadialGradient(W / 2, 290, 20, W / 2, 290, 260); g.addColorStop(0, "rgba(255,210,120,.55)"); g.addColorStop(1, "rgba(255,210,120,0)"); x.fillStyle = g; x.fillRect(0, 0, W, H);
   if (im) { const pw = 250, ph = pw * im.height / im.width; x.save(); x.shadowColor = "rgba(60,40,20,.4)"; x.shadowBlur = 20; x.shadowOffsetY = 8; x.drawImage(im, W / 2 - pw / 2, 290 - ph / 2, pw, ph); x.restore(); }
   x.textAlign = "center"; x.fillStyle = "#3B2A1C"; x.font = '600 30px "Cinzel",Georgia,serif'; x.fillText("TRAVESSIA", W / 2, 540);
-  x.fillStyle = "#8A6B43"; x.font = '500 17px "Poppins",sans-serif'; x.fillText(`${qtd} de ${tot} selos`, W / 2, 572); return c;
+  x.fillStyle = "#8A6B43"; x.font = '500 17px "Poppins",sans-serif'; x.fillText(`${qtd} de ${tot} carimbos`, W / 2, 572); return c;
 }
 async function montaVideoPassaporte(cv, aoFim) {
   const v = eu() || { nome: primeiroNome ? primeiroNome() : "Viajante" }, ls = insigniaLocais(), PW = 480, PH = 660;
@@ -2409,7 +2409,7 @@ async function montaVideoPassaporte(cv, aoFim) {
     x.restore();
     // final: brilho e assinatura
     const tf = t - (fim - 3); if (tf > 0) { x.globalAlpha = ease(tf / .8); x.textAlign = "center"; x.fillStyle = "#FFF1D6"; x.font = '600 46px "Cinzel",Georgia,serif'; x.shadowColor = "rgba(0,0,0,.7)"; x.shadowBlur = 14; x.fillText("TRAVESSIA COMPLETA", CX, 1640);
-      x.fillStyle = "#E2BE78"; x.font = '500 30px "Poppins",sans-serif'; x.fillText((v.nome || "") + " · " + qtd + " de " + ls.length + " selos", CX, 1696); x.shadowBlur = 0; x.globalAlpha = 1; }
+      x.fillStyle = "#E2BE78"; x.font = '500 30px "Poppins",sans-serif'; x.fillText((v.nome || "") + " · " + qtd + " de " + ls.length + " carimbos", CX, 1696); x.shadowBlur = 0; x.globalAlpha = 1; }
     x.textAlign = "center"; x.fillStyle = "rgba(232,211,174,.85)"; x.font = '600 28px "Cinzel",Georgia,serif'; x.fillText("CARAVANA DO CÉU · 2026", CX, SITE_CARAVANA ? 1760 : 1795);
     if (SITE_CARAVANA) { x.fillStyle = "#F4E6C4"; x.font = '600 34px "Poppins",sans-serif'; x.fillText(SITE_CARAVANA, CX, 1812); }
   };
@@ -2558,14 +2558,14 @@ function celebraSelo(l) {
     return h("i", { style: `--a:${a}deg;--d:${dist}px;--t:${.9 + (i % 4) * .18}s`, text: i % 3 ? "✦" : "•" });
   }));
   const fechar = () => { ov.classList.add("sai"); setTimeout(() => ov.remove(), 350); };
-  const ov = h("div", { class: "celebra", role: "dialog", "aria-label": "Selo carimbado: " + l.nome, onclick: e => { if (e.target === ov) fechar(); } },
+  const ov = h("div", { class: "celebra", role: "dialog", "aria-label": "Carimbo: " + l.nome, onclick: e => { if (e.target === ov) fechar(); } },
     h("div", { class: "celcont" },
       h("div", { class: "celpalco" }, h("div", { class: "celraios", "aria-hidden": "true" }), faiscas,
         h("img", { class: "celpin", src: badgeSrc(l), alt: "" }),
         checkSelo("celcheck")),
-      h("p", { class: "celeye", text: "Selo carimbado" }),
+      h("p", { class: "celeye", text: "Carimbado" }),
       h("h2", { class: "celnome", text: l.nome }),
-      h("p", { class: "celsub", text: [d ? `Dia ${d.n} · ${d.cidade}` : "", `${qtd} de ${ls.length} selos`].filter(Boolean).join("  ·  ") }),
+      h("p", { class: "celsub", text: [d ? `Dia ${d.n} · ${d.cidade}` : "", `${qtd} de ${ls.length} carimbos`].filter(Boolean).join("  ·  ") }),
       h("div", { class: "actions", style: "justify-content:center" },
         h("button", { class: "btn gold", type: "button", onclick: () => { fechar(); S.trilhaChegou = l.id; if (S.tab !== "passaporte") go("passaporte"); else render(); setTimeout(() => document.querySelector(".parada.chegou")?.scrollIntoView({ block: "center", behavior: "smooth" }), 120); } }, "Ver na minha trilha"),
         h("button", { class: "btn ghost celfecha", type: "button", onclick: fechar }, "Fechar"))));
@@ -2642,7 +2642,7 @@ function trilhaSelos(ls, mins) {
   const qtd = feitos.filter(Boolean).length;
   return h("div", { class: "trilhawrap" },
     h("div", { class: "trilhacont" }, h("span", { class: "contas", "aria-hidden": "true" }, feitos.map(f => h("i", { class: f ? "on" : "" }))),
-      h("b", { text: `${qtd} de ${n} selos` })),
+      h("b", { text: `${qtd} de ${n} carimbos` })),
     h("div", { class: "trilha", style: `height:${H}px` }, svg,
       ls.map((l, i) => {
         const on = feitos[i], ts = mins[l.id], d = diaDe(l.dia), eProx = i === prox;
@@ -2662,7 +2662,7 @@ function vPassaporte() {
   perfis(gente.map(g => g.id));
   const nomeMrz = norm(v ? v.nome : "viajante").toUpperCase().replace(/[^A-Z]+/g, "<");
   const mrz1 = ("P<CDC<INDIA<<" + nomeMrz).padEnd(44, "<").slice(0, 44);
-  const mrz2 = ((v && v.lider ? "LIDER" : nn(nums[S.uid] || 0) + "<<<") + "<04NOV26<<16NOV26<<SELOS" + nn(ok)).padEnd(44, "<").slice(0, 44);
+  const mrz2 = ((v && v.lider ? "LIDER" : nn(nums[S.uid] || 0) + "<<<") + "<04NOV26<<16NOV26<<CARIMBOS" + nn(ok)).padEnd(44, "<").slice(0, 44);
   return h("section", { class: "view" },
     h("img", { class: "cover", src: "img/passaporte-capa.webp", alt: "Passaporte da Travessia · Caravana do Céu" }),
     v ? h("div", { class: "datapage" },
@@ -2679,13 +2679,13 @@ function vPassaporte() {
         h("div", { class: "fds" }, camposPassaporte(v))),
       h("div", { class: "mrz", "aria-hidden": "true", text: mrzDe(v, ok) }),
       h("div", { class: "actions", style: "margin-top:8px" }, h("button", { class: "btn ghost", type: "button", onclick: editarPerfil }, "Editar meus dados")))
-    : S.db && S.uid ? h("div", { class: "panel", style: "text-align:center;align-items:center" }, h("p", { class: "lede", text: "Emita seu passaporte para guardar os selos e aparecer para a caravana." }),
+    : S.db && S.uid ? h("div", { class: "panel", style: "text-align:center;align-items:center" }, h("p", { class: "lede", text: "Emita seu passaporte para guardar os carimbos e aparecer para a caravana." }),
         h("button", { class: "btn gold", type: "button", onclick: () => { S.pularCadastro = false; render(); } }, "Emitir meu passaporte")) : null,
     h("button", { class: "folhear", type: "button", onclick: () => abrirLivro(0) },
       h("img", { src: "img/passaporte-capa.webp", alt: "" }),
-      h("span", null, h("b", { text: "Folhear meu passaporte" }), h("span", { text: "Abra o passaporte e vire as páginas com seus selos carimbados." }))),
+      h("span", null, h("b", { text: "Folhear meu passaporte" }), h("span", { text: "Abra o passaporte e vire as páginas com seus carimbos." }))),
     h("div", { class: "pages" }, fundoPassaporte(),
-      h("div", { class: "ph" }, h("p", { class: "eyebrow", text: "Os selos da Índia Sagrada" })),
+      h("div", { class: "ph" }, h("p", { class: "eyebrow", text: "Os carimbos da Índia Sagrada" })),
       ls.length ? trilhaSelos(ls, mins) : carregando()),
     gente.length ? h("div", { class: "panel" },
       h("p", { class: "eyebrow", text: "A caravana" }),
@@ -2700,7 +2700,7 @@ function vPassaporte() {
     vGenteLider(),
     S.isOwner || aberto(localDe("travessia")) ? h("button", { class: "folhear video", type: "button", onclick: abrirVideoPassaporte },
       h("span", { class: "vidico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("path", { d: "M8 5.5v13l11-6.5z", fill: "#3B2A1C" }))),
-      h("span", null, h("b", { text: "Vídeo do meu passaporte" }), h("span", { text: "O passaporte gira, abre e folheia seus selos. Pronto para Reels e Stories." }))) : null);
+      h("span", null, h("b", { text: "Vídeo do meu passaporte" }), h("span", { text: "O passaporte gira, abre e folheia seus carimbos. Pronto para Reels e Stories." }))) : null);
 }
 // Só a líder: quem já instalou o app, ligou os avisos e a localização (cada celular conta ao abrir o app)
 // ---------- Habilidades: a líder libera (para todos ou para uma pessoa) e a pessoa faz a foto com a caixinha ----------
@@ -2963,23 +2963,23 @@ function conteudoInsignia(l) {
   const on = aberto(l), ts = minhas()[l.id], d = diaDe(l.dia), livre = disponivel(l);
   const saberes = S.ens.filter(e => e.localId === l.id);
   return [
-    h("div", { class: "bigwrap" + (on ? "" : " off") }, h("img", { src: badgeSrc(l), alt: "Selo " + l.nome }),
+    h("div", { class: "bigwrap" + (on ? "" : " off") }, h("img", { src: badgeSrc(l), alt: "Carimbo " + l.nome }),
       on ? checkSelo(S.novoSelo === l.id ? "new" : "") : null),
     h("p", { class: "eyebrow", style: "text-align:center", text: [cidadeDe(l.cidadeId)?.nome, d ? `Dia ${d.n} · ${d.data}` : ""].filter(Boolean).join(" · ") }),
     isFinite(+l.lat) ? h("p", { class: "coord", text: coordTxt(+l.lat, +l.lng) }) : null,
     h("h2", { text: l.nome }),
     h("p", { class: "lede", style: "text-align:center;margin:0 auto", text: on ? (l.descricao || "") : (l.dica || "") }),
     // os selos são carimbados pela líder para todos quando a caravana passa pelo lugar (não há palavra para digitar)
-    !on && !S.isOwner ? h("p", { class: "small", style: "text-align:center", text: "Este selo se abre quando a caravana passar por aqui." }) : null,
+    !on && !S.isOwner ? h("p", { class: "small", style: "text-align:center", text: "Este carimbo se abre quando a caravana passar por aqui." }) : null,
     S.unlockMsg ? h("p", { class: "msg " + (S.unlockMsg.ok ? "ok" : "err"), style: "text-align:center", role: "status", text: S.unlockMsg.text }) : null,
     on && S.unlockMsg && S.unlockMsg.ok ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirLivro(paginaDoSelo(l.id)) }, "Folhear meu passaporte")) : null,
-    on ? saberes.map(e => h("div", { class: "saber" }, h("p", { class: "eyebrow", text: "O saber deste selo" }), h("h3", { text: e.titulo }),
+    on ? saberes.map(e => h("div", { class: "saber" }, h("p", { class: "eyebrow", text: "O saber deste carimbo" }), h("h3", { text: e.titulo }),
       String(e.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })), e.fonte ? h("p", { class: "src", text: "Fontes: " + e.fonte }) : null)) : null,
     h("div", { class: "actions", style: "justify-content:center" },
       h("a", { class: "btn", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(l.busca || l.nome), target: "_blank", rel: "noopener" }, "Google Maps"),
       h("button", { class: "btn ghost", type: "button", onclick: () => { closeSheets(); S.pertoCentro = { lat: +l.lat, lng: +l.lng }; S.pertoKm = .4; go("mapa"); } }, "Ver no mapa")),
     S.isOwner ? h("div", { class: "secret" },
-      h("p", null, "Só você vê isto. ", l.aberto ? "Selo carimbado para todos." : "Quando a caravana passar por aqui, toque em Carimbar para todos."),
+      h("p", null, "Só você vê isto. ", l.aberto ? "Carimbado para todos." : "Quando a caravana passar por aqui, toque em Carimbar para todos."),
       h("div", { class: "actions", style: "margin-top:8px" },
         h("button", { class: "btn", type: "button", onclick: () => { closeSheets(); editar("local", l); } }, "Editar"),
         h("button", { class: "btn", type: "button", onclick: () => liberarSelo(l) }, l.aberto ? "Tirar o carimbo de todos" : "Carimbar para todos"))) : null
@@ -4007,7 +4007,7 @@ function mapaIndia(cids) {
       onkeydown: e => { if (e.key === "Enter") { S.cidadeSel = c.id; render(); } } },
       h("circle", { cx: x, cy: y, r: 9, class: "c1" }), h("circle", { cx: x, cy: y, r: 4.5, class: "c2" }),
       h("text", { x: right ? x + 16 : x - 16, y: y + 1, "text-anchor": right ? "start" : "end", class: "cnome", text: c.nome.toUpperCase() }),
-      ls.length ? h("text", { x: right ? x + 16 : x - 16, y: y + 18, "text-anchor": right ? "start" : "end", class: "ccnt", text: `${ok} de ${ls.length} ${ls.length === 1 ? "selo" : "selos"}` }) : null));
+      ls.length ? h("text", { x: right ? x + 16 : x - 16, y: y + 18, "text-anchor": right ? "start" : "end", class: "ccnt", text: `${ok} de ${ls.length} ${ls.length === 1 ? "carimbo" : "carimbos"}` }) : null));
   });
   exploradoresNoMapa(svg, P, () => true);
   escala(svg, P); molduraECompasso(svg, W, H, "india", "EXPEDIÇÃO", "Índia Sagrada · 2026"); marcarClick(svg, "india");
@@ -4745,7 +4745,7 @@ function molduraArco(c, W, H, u, ox, oy, w, hh, tmp) {
 // Adesivos: logos da Caravana, bichos da Índia (os mesmos do Explorador), coisas da Índia, brilhos e frases
 const ADESIVOS = {
   // os selos (pins) da travessia, os mesmos do passaporte
-  "Selos": [["india", "Índia"], ["taj-mahal", "Taj Mahal"], ["ganesha", "Ganesha"], ["jaipur", "Jaipur"], ["govind-dev-ji", "Govind Dev Ji"], ["varanasi", "Varanasi"], ["diwali", "Diwali"], ["ganga-aarti", "Ganga Aarti"],
+  "Carimbos": [["india", "Índia"], ["taj-mahal", "Taj Mahal"], ["ganesha", "Ganesha"], ["jaipur", "Jaipur"], ["govind-dev-ji", "Govind Dev Ji"], ["varanasi", "Varanasi"], ["diwali", "Diwali"], ["ganga-aarti", "Ganga Aarti"],
     ["durga-kund", "Durga Kund"], ["sankat-mochan", "Sankat Mochan"], ["batismo", "Batismo no Ganges"], ["rishikesh", "Rishikesh"], ["kunjapuri", "Kunjapuri"], ["caverna", "Caverna"], ["travessia", "Travessia"]].map(([id, n]) => ["img:insignias/" + id + ".webp", n]),
   // os enfeites que aparecem na Cabine de fotos, soltos para colar na foto
   "Caravana": [["img:img/simbolo-dourado.png", "Símbolo dourado"], ["img:img/simbolo-marrom.png", "Símbolo"], ["patch", "Patch bordado"], ["carimbo", "Carimbo"],
@@ -5146,7 +5146,7 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
     canvas.addEventListener("pointerup", solta); canvas.addEventListener("pointercancel", solta);
   }
   canvas.style.touchAction = ades.length ? "none" : "";
-  const catA = ADESIVOS[S.fotoCatA] ? S.fotoCatA : "Selos";
+  const catA = ADESIVOS[S.fotoCatA] ? S.fotoCatA : "Carimbos";
   // selos do passaporte: só os que já foram liberados
   const listaA = ADESIVOS[catA].filter(([k]) => !k.startsWith("img:insignias/") || seloLiberado(k.slice(14, -5)));
   const LUGARES = [[.5, .5], [.26, .3], [.74, .3], [.26, .72], [.74, .72], [.5, .22], [.5, .8], [.16, .5], [.84, .5]];
@@ -5160,7 +5160,7 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
   const painelAdesivos = h("div", { class: "adesbox" },
     h("p", { class: "lab", text: "Adesivos" }),
     h("div", { class: "opts" }, Object.keys(ADESIVOS).map(cn => h("button", { type: "button", class: "opt", "aria-pressed": String(catA === cn), onclick: () => { S.fotoCatA = cn; atualiza(); } }, cn))),
-    catA === "Selos" && !listaA.length ? h("p", { class: "small", text: "Os selos aparecem aqui conforme forem liberados no passaporte, em cada cidade." }) : null,
+    catA === "Carimbos" && !listaA.length ? h("p", { class: "small", text: "Os carimbos aparecem aqui conforme forem liberados no passaporte, em cada cidade." }) : null,
     h("div", { class: "adesgrade" }, listaA.map(([k, n]) => h("button", { type: "button", class: "adesbt", title: n, "aria-label": "Colocar " + n, onclick: () => poeAdesivo(k) }, thumbAdesivo(k)))),
     ades.length ? h("p", { class: "small", style: "margin:6px 0 0", text: "Toque no adesivo na foto para escolher. Arraste para mudar de lugar; com dois dedos, aumenta e gira." }) : null);
   const barraSel = sel ? h("div", { class: "adessel" },
@@ -6921,7 +6921,7 @@ function vDiario(d, liberado) {
     d.n === 13 && leituraAberta() ? h("button", { class: "btn gold", type: "button", onclick: () => abrirLeitura() }, "Abrir a mensagem do meu diário") : null);
 }
 // Correspondência: cartas da líder, em pergaminho, por pombo-correio
-const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nDezesseis selos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
+const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nDezesseis carimbos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
 const ASSINATURA = "Vanessa & Vivian";
 // cartas antigas vinham assinadas só por Vivian ou pela Caravana: agora quem assina são as duas, com Caravana do Céu embaixo
 const assinaturaDe = c => { const a = String(c.assinatura || "").replace(/\s*·\s*Caravana do Céu\s*$/i, "").trim(); return !a || /^(Vivian|Caravana do Céu)$/i.test(a) ? ASSINATURA : a; };
@@ -8063,7 +8063,7 @@ render();
     setTimeout(checaCorreio, 1200);
     // a carta final foi escrita quando eram doze selos; agora são quinze (a líder corrige uma vez só)
     const f = S.isOwner && S.cartas.find(c => c.id === "final");
-    if (f && /(Doze|Treze|Catorze|Quinze) selos/.test(f.texto || "")) S.db.doc("cartas/final").update({ texto: f.texto.replace(/(Doze|Treze|Catorze|Quinze) selos/, "Dezesseis selos") }).catch(() => {});
+    if (f && /(Doze|Treze|Catorze|Quinze|Dezesseis) selos/.test(f.texto || "")) S.db.doc("cartas/final").update({ texto: f.texto.replace(/(Doze|Treze|Catorze|Quinze|Dezesseis) selos/, "Dezesseis carimbos") }).catch(() => {});
   });
   // cartas só para uma pessoa: cada viajante lê só as suas; a líder vê todas
   // pombo-correio: só as cartinhas que chegaram para mim e as que eu mandei

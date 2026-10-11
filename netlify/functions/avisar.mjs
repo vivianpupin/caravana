@@ -59,7 +59,7 @@ async function avisarSelo(d, k, selo) {
   if (!l) return Response.json({ ok: false });
   // o último selo completa o passaporte e libera o vídeo (mesmo aviso do dia do translado, uma vez só)
   const enviados = selo === "travessia" ? await avisarPassaporteCompleto(d, k)
-    : await enviarTodos(d, k, { title: "🏅 Selo novo no seu passaporte!", body: (l.nome || "Selo novo") + ". Abra o passaporte para ver.", tag: "selo-" + selo, url: "./?aba=passaporte" }, null, 24 * 3600);
+    : await enviarTodos(d, k, { title: "🏅 Carimbo novo no seu passaporte!", body: (l.nome || "Carimbo novo") + ". Abra o passaporte para ver.", tag: "selo-" + selo, url: "./?aba=passaporte" }, null, 24 * 3600);
   return Response.json({ ok: true, enviados });
 }
 
