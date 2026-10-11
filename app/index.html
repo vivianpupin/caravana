@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 17:23";</script>
+<script>window.__VERSAO = "11/10 · 17:25";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3636,8 +3636,7 @@ async function retratoCaravana(cen, pose) {
   // título no céu escuro do alto
   const simb = await carregaImg("img/simbolo-dourado.png").catch(() => null);
   // no Embarque a placa da estação ocupa o alto: o nome da travessia vai pequeno no chão da plataforma
-  if (cen === "embarque") { x.textAlign = "center"; x.font = '400 30px Poppins, sans-serif'; x.fillStyle = "rgba(241,226,188,.85)"; x.fillText("CARAVANA DO CÉU · TRAVESSIA DA ÍNDIA SAGRADA · 2026", W / 2, H - 22); }
-  else {
+  if (cen !== "embarque") {
   if (simb) { const sw = 110, sh = sw * simb.height / simb.width; x.drawImage(simb, W / 2 - sw / 2, 110, sw, sh); }
   x.textAlign = "center"; x.fillStyle = "#F1E2BC"; x.font = '600 74px Cinzel, Georgia, serif'; x.fillText("CARAVANA DO CÉU", W / 2, 330);
   x.font = '400 34px Poppins, sans-serif'; x.fillStyle = "#E8C07A"; x.fillText("TRAVESSIA DA ÍNDIA SAGRADA · 2026", W / 2, 390); }
@@ -3652,11 +3651,43 @@ async function retratoCaravana(cen, pose) {
   // a líder fica no meio da fileira da frente (na fila indiana, vai puxando a fila)
   const li = lista.findIndex(v => v.lider);
   if (li >= 0) { const [l] = lista.splice(li, 1); lista.splice(fila ? 0 : n - tam[filas - 1] + Math.floor(tam[filas - 1] / 2), 0, l); }
-  const imgs = await Promise.all(lista.map(v => bonecoImg({ ...bonecoDe(v.id), pet: "nenhum", semSombra: pulo || bananeira || fila || fogueira }, 600)));
+  const imgs = await Promise.all(lista.map(v => bonecoImg({ ...bonecoDe(v.id), pet: "nenhum", semSombra: pulo || bananeira || fila || fogueira || cen === "embarque" }, 600)));
   // todos com a mesma altura (quem segura instrumento ou tem muitos braços só fica mais largo)
   const ALT = 1.75;
   const sombra = (cx, y, w, k) => { x.fillStyle = "rgba(20,12,6,.35)"; x.beginPath(); x.ellipse(cx, y, w * .26 * k, w * .045 * k, 0, 0, 7); x.fill(); };
   const coracao = (cx, cy, r, cor) => { x.fillStyle = cor; x.beginPath(); x.moveTo(cx, cy + r * .9); x.bezierCurveTo(cx - r * 1.6, cy - r * .2, cx - r * .6, cy - r * 1.3, cx, cy - r * .4); x.bezierCurveTo(cx + r * .6, cy - r * 1.3, cx + r * 1.6, cy - r * .2, cx, cy + r * .9); x.fill(); };
+  if (cen === "embarque") {
+    // Embarque: a turma espalhada pela plataforma, uns perto e outros lá no fundo, cada um num jeito (acenando, virado, andando, subindo no trem)
+    // os bonecos vão numa camada à parte, ganham a luz quente da estação e depois o grão da foto antiga junto com o fundo
+    const cam = document.createElement("canvas"); cam.width = W; cam.height = H; const c2 = cam.getContext("2d");
+    // quatro planos de profundidade (fundo, perto da porta do vagão → frente), cada um espalhado de ponta a ponta sem amontoar
+    const PLANOS = [[1395, .46, 250, 720], [1535, .64, 140, 900], [1675, .82, 120, 960], [1805, .98, 140, 940]];
+    const porPlano = PLANOS.map((_, p) => Math.floor(n / 4) + (p < n % 4 ? 1 : 0)).reverse();
+    const lugares = []; let k = 0;
+    PLANOS.forEach(([y, esc, x0, x1], p) => { const m = porPlano[p];
+      for (let i = 0; i < m; i++, k++) { const sr = sorte(k + 3), sr2 = sorte(k + 41), passo = (x1 - x0) / m;
+        lugares.push({ im: imgs[k], k, y: y + (sr2 - .5) * 30, esc, x: x0 + passo * (i + .5) + (p % 2 ? passo * .18 : -passo * .1) + (sr - .5) * passo * .25, sr, sr2 }); } });
+    lugares.sort((p, q) => p.y - q.y);
+    for (const L of lugares) {
+      const hh = 330 * L.esc, w = hh * L.im.width / L.im.height, jeito = Math.floor(L.sr2 * 5);
+      // 0 de frente · 1 virado para o lado · 2 andando (inclinado) · 3 pulinho de alegria · 4 encostado, meio de lado
+      const espelho = jeito === 1 || (jeito === 2 && L.sr > .5) ? -1 : 1, ang = jeito === 2 ? (L.sr - .5) * .22 : jeito === 4 ? -.06 : (L.sr - .5) * .06, sobe = jeito === 3 ? hh * .1 : 0;
+      c2.fillStyle = "rgba(20,10,4,.42)"; c2.beginPath(); c2.ellipse(L.x, L.y, w * .3, w * .06, 0, 0, 7); c2.fill();
+      c2.save(); c2.translate(L.x, L.y - sobe); c2.rotate(ang); c2.scale(espelho, 1); c2.drawImage(L.im, -w / 2, -hh, w, hh); c2.restore();
+    }
+    // luz da estação nos bonecos: tom âmbar e um pouco mais escuro, como o resto da foto
+    c2.globalCompositeOperation = "source-atop"; c2.fillStyle = "rgba(120,70,25,.32)"; c2.fillRect(0, 0, W, H);
+    const lz = c2.createLinearGradient(W, 900, 0, H); lz.addColorStop(0, "rgba(255,190,110,.18)"); lz.addColorStop(1, "rgba(30,15,5,.25)"); c2.fillStyle = lz; c2.fillRect(0, 0, W, H);
+    c2.globalCompositeOperation = "source-over";
+    x.drawImage(cam, 0, 0);
+    // grão de filme por cima de tudo (fundo e bonecos juntos)
+    const gr = document.createElement("canvas"); gr.width = gr.height = 256; const gx = gr.getContext("2d"), gd = gx.createImageData(256, 256);
+    for (let i = 0; i < gd.data.length; i += 4) { const v = 128 + (sorte(i * .37 + 5) - .5) * 190; gd.data[i] = gd.data[i + 1] = gd.data[i + 2] = v; gd.data[i + 3] = 255; }
+    gx.putImageData(gd, 0, 0);
+    x.save(); x.globalCompositeOperation = "overlay"; x.globalAlpha = .22; x.fillStyle = x.createPattern(gr, "repeat"); x.fillRect(0, 0, W, H); x.restore();
+    x.textAlign = "center"; x.font = '400 30px Poppins, sans-serif'; x.fillStyle = "rgba(241,226,188,.85)"; x.fillText("CARAVANA DO CÉU · TRAVESSIA DA ÍNDIA SAGRADA · 2026", W / 2, H - 22);
+    return cv;
+  }
   if (fogueira) {
     // Rishikesh: roda sentada em volta da fogueira, aberta na frente para o fogo aparecer
     const cx0 = W / 2, cy0 = H - 470, rx = n > 14 ? 455 : 420, ry = n > 14 ? 225 : 200, red = Math.min(1, Math.sqrt(14 / n)), abre = 70 * Math.PI / 180, ini = Math.PI / 2 + abre / 2, vao = Math.PI * 2 - abre;
