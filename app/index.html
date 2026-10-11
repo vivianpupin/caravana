@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 19:56";</script>
+<script>window.__VERSAO = "11/10 · 20:01";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -622,18 +622,21 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .orbitas .orcorpo{position:relative;display:block;width:100%}
 .orbitas .orsombra{position:absolute;inset:0;border-radius:50%;pointer-events:none;background:radial-gradient(circle at var(--lx,40%) var(--ly,40%),rgba(255,240,210,.18) 0,transparent 32%,rgba(4,3,10,.22) 55%,rgba(4,3,10,.62) 82%)}
 .orbitas .orsombra.anel{left:28.5%;width:48%;right:auto;top:4%;bottom:auto;aspect-ratio:1}
-.orsolbrilho{position:absolute;left:50%;top:50%;width:60%;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;z-index:1;
-  background:radial-gradient(circle,rgba(255,236,180,.95) 0,rgba(255,196,90,.6) 12%,rgba(255,150,40,.22) 26%,rgba(255,130,30,.07) 42%,transparent 62%)}
-.orsolbrilho i{position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(from 2deg,rgba(255,226,160,.42) 0 .7deg,transparent .7deg 6.5deg),repeating-conic-gradient(from 5deg,rgba(255,200,120,.3) 0 1.4deg,transparent 1.4deg 17deg);filter:blur(.8px);-webkit-mask-image:radial-gradient(circle,#000 10%,rgba(0,0,0,.4) 30%,transparent 55%);mask-image:radial-gradient(circle,#000 10%,rgba(0,0,0,.4) 30%,transparent 55%);animation:orgira 120s linear infinite;mix-blend-mode:screen}
+.orsolbrilho{position:absolute;left:50%;top:50%;width:64%;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;z-index:1;mix-blend-mode:screen;
+  background:radial-gradient(circle closest-side,rgba(255,244,214,.9) 0,rgba(255,214,130,.7) 28%,rgba(255,170,70,.38) 38%,rgba(255,130,40,.16) 55%,rgba(255,110,30,.05) 75%,transparent 100%);animation:orsolrespira 5s ease-in-out infinite alternate}
+.orsolbrilho svg{position:absolute;inset:-30%;width:160%;height:160%;animation:orgira 160s linear infinite}
+.orsolraios2{animation-direction:reverse!important;animation-duration:230s!important;opacity:.6}
+@keyframes orsolrespira{from{opacity:.85;transform:translate(-50%,-50%) scale(.97)}to{opacity:1;transform:translate(-50%,-50%) scale(1.04)}}
+.orsolaura{position:absolute;left:50%;top:50%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;z-index:3;mix-blend-mode:screen;
+  background:radial-gradient(circle closest-side,transparent 0,transparent 54%,rgba(255,236,190,.35) 58%,rgba(255,226,160,.7) 60.5%,rgba(255,190,90,.42) 65%,rgba(255,150,50,.16) 76%,transparent 100%);filter:blur(1.5px)}
 .orbitas .orcel.orsol{z-index:2}
-.orbitas .orcel.orsol:not(.on):not(.escolhido) .orcsim{animation:orsolpulsa 4s ease-in-out infinite alternate}
-@keyframes orsolpulsa{from{filter:drop-shadow(0 0 6px rgba(255,190,80,.85)) drop-shadow(0 0 18px rgba(255,140,40,.45))}to{filter:drop-shadow(0 0 10px rgba(255,210,110,.95)) drop-shadow(0 0 32px rgba(255,150,50,.6))}}
+.orbitas .orcel.orsol .orcsim{filter:saturate(1.15) brightness(1.08) contrast(1.05)}
 @keyframes orgira{to{transform:rotate(360deg)}}
 .orlinhas .orcorre{animation:orcorre linear infinite}
 .orlinhas .orpisca{animation:orpisca 2.6s ease-in-out infinite alternate}
 @keyframes orcorre{to{stroke-dashoffset:-100}}
 @keyframes orpisca{0%{opacity:.15}100%{opacity:1}}
-@media (prefers-reduced-motion:reduce){.orlinhas .orcorre,.orlinhas .orpisca,.orlinhas .orceu,.orsolbrilho i{animation:none}}
+@media (prefers-reduced-motion:reduce){.orlinhas .orcorre,.orlinhas .orpisca,.orlinhas .orceu,.orsolbrilho,.orsolbrilho svg{animation:none}}
 .orbitas .orcel{position:absolute;z-index:2;transform:translate(-50%,-50%) scale(var(--s,1));aspect-ratio:auto;background:none;box-shadow:none;border-radius:50%;padding:0;gap:1px}
 .orbitas .orcsim{width:100%}
 .orbitas .orcnome{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:1px;font-size:9px;letter-spacing:.04em;white-space:nowrap;text-shadow:0 1px 3px #000}
@@ -790,6 +793,9 @@ nav.tabs::-webkit-scrollbar{display:none}
 .enviadas button>span{flex:1;display:flex;flex-direction:column}
 .enviadas small{color:var(--soft);font-size:12px}
 .pombosheet{align-items:center}
+.orsheet{background:radial-gradient(ellipse at 50% 30%,#1A1626,#08070C 70%)!important;backdrop-filter:none}
+.orceufundo{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.orsheet>.oraculo{z-index:1;background:linear-gradient(180deg,rgba(16,13,24,.25),rgba(10,9,14,.45))!important;box-shadow:0 0 0 1px rgba(226,192,138,.12),0 20px 60px rgba(0,0,0,.6)}
 .pombobox{position:relative;background:#FFF9EE;border-radius:24px;padding:18px 16px 16px;width:min(560px,100%);max-height:92vh;overflow-y:auto;display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
 .pombobox>*{flex-shrink:0}
 .pbpresente,.pbpessoa{-webkit-tap-highlight-color:transparent}
@@ -2746,7 +2752,12 @@ const orbitasSvg = () => {
     ${bril.map((g, q) => `<g class="orpisca" style="animation-delay:${-q * 1.3}s">${g}</g>`).join("")}${aneis}</svg>`;
   o.append(svg);
   // o Sol: um brilho grande com raios que giram devagar, atrás da imagem
-  o.append(h("div", { class: "orsolbrilho" }, h("i")));
+  // raios: pontas finas de luz, de tamanhos diferentes, que somem nas pontas (como numa foto do Sol)
+  const raios = (n, comp, larg, op) => { let r = ""; for (let k = 0; k < n; k++) { const a = k / n * 360 + rnd() * (360 / n) * .6, L = comp * (.45 + rnd() * .55), w = larg * (.5 + rnd());
+      r += `<polygon points="50,${50 - w} ${50 + L},50 50,${50 + w}" transform="rotate(${a.toFixed(1)} 50 50)" fill="url(#orraio)" opacity="${(op * (.5 + rnd() * .5)).toFixed(2)}"/>`; } return r; };
+  const sol = h("div", { class: "orsolbrilho" });
+  sol.innerHTML = `<svg viewBox="0 0 100 100"><defs><linearGradient id="orraio" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="#FFF6DC" stop-opacity="1"/><stop offset=".35" stop-color="#FFD78A" stop-opacity=".55"/><stop offset="1" stop-color="#FFB050" stop-opacity="0"/></linearGradient><filter id="orraiobl"><feGaussianBlur stdDeviation=".35"/></filter></defs><g filter="url(#orraiobl)">${raios(22, 48, .55, .85)}</g></svg><svg class="orsolraios2" viewBox="0 0 100 100"><g filter="url(#orraiobl)">${raios(14, 36, .9, .6)}</g></svg>`;
+  o.append(sol);
   return o;
 };
 const posOrb = (id, k = 1, kr = 1) => { const [r, a, w] = ORB[id], rad = a * Math.PI / 180; return `left:${50 + Math.cos(rad) * r * kr * 50}%;top:${50 + Math.sin(rad) * r * kr * 50}%;width:${w * k}%`; };
@@ -2815,6 +2826,40 @@ function leituraOraculo(L) {
     h("p", { class: "orleye", text: "Mantra de " + G.nome }), h("p", { class: "orlmantra", text: G.mantra }),
     h("p", { class: "orlsmall", text: "Cante 9 vezes e entregue a sua pergunta ao céu." }));
 }
+// céu do oráculo: a tela inteira vira céu, com estrelas que cintilam e derivam devagar e estrelas cadentes cruzando de vez em quando
+function ceuEstrelado(cv, dono) {
+  const x = cv.getContext("2d"), dpr = Math.min(2, window.devicePixelRatio || 1), quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W = 0, H = 0, est = [], cad = [], prox = 1.5, ult = performance.now();
+  const ajusta = () => { W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.round(W * H / 1500); est = Array.from({ length: n }, () => { const b = Math.random(); return { x: Math.random() * W, y: Math.random() * H, r: .3 + b * b * 1.5, a: .25 + b * .6, f: .6 + Math.random() * 2.2, ph: Math.random() * 7, v: .6 + b * 2.2, c: Math.random() < .7 ? "255,246,228" : Math.random() < .5 ? "205,225,255" : "255,215,170" }; }); };
+  ajusta(); addEventListener("resize", ajusta);
+  const quadro = agora => {
+    if (!dono.isConnected && W) { removeEventListener("resize", ajusta); return; }
+    if (!W || cv.clientWidth !== W) ajusta();
+    const dt = Math.min(.05, (agora - ult) / 1000), t = agora / 1000; ult = agora;
+    x.clearRect(0, 0, W, H);
+    for (const e of est) {
+      if (!quieto) { e.x += e.v * dt * 2.2; e.y -= e.v * dt * .9; if (e.x > W + 2) e.x = -2; if (e.y < -2) e.y = H + 2; }
+      const br = e.a * (.55 + .45 * Math.sin(t * e.f + e.ph));
+      x.fillStyle = `rgba(${e.c},${br})`; x.beginPath(); x.arc(e.x, e.y, e.r, 0, 7); x.fill();
+      if (e.r > 1.25) { const g = x.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 5); g.addColorStop(0, `rgba(${e.c},${br * .35})`); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.beginPath(); x.arc(e.x, e.y, e.r * 5, 0, 7); x.fill(); }
+    }
+    if (!quieto) {
+      prox -= dt;
+      if (prox <= 0) { prox = 2 + Math.random() * 4; const ang = (20 + Math.random() * 25) * Math.PI / 180, vel = 520 + Math.random() * 420;
+        cad.push({ x: Math.random() * W * .8, y: Math.random() * H * .45, vx: Math.cos(ang) * vel, vy: Math.sin(ang) * vel, vida: 0, dur: .7 + Math.random() * .6, cauda: 70 + Math.random() * 90 }); }
+      cad = cad.filter(c => (c.vida += dt) < c.dur);
+      for (const c of cad) {
+        c.x += c.vx * dt; c.y += c.vy * dt; const k = Math.sin(Math.PI * c.vida / c.dur), n = Math.hypot(c.vx, c.vy), tx = c.x - c.vx / n * c.cauda, ty = c.y - c.vy / n * c.cauda;
+        const g = x.createLinearGradient(c.x, c.y, tx, ty); g.addColorStop(0, `rgba(255,250,235,${.95 * k})`); g.addColorStop(.25, `rgba(255,220,160,${.45 * k})`); g.addColorStop(1, "rgba(255,200,140,0)");
+        x.strokeStyle = g; x.lineWidth = 1.6; x.lineCap = "round"; x.beginPath(); x.moveTo(c.x, c.y); x.lineTo(tx, ty); x.stroke();
+        x.fillStyle = `rgba(255,252,240,${k})`; x.beginPath(); x.arc(c.x, c.y, 1.4, 0, 7); x.fill();
+      }
+    }
+    requestAnimationFrame(quadro);
+  };
+  requestAnimationFrame(quadro);
+}
 function abrirOraculo() {
   closeSheets(); destravaSom();
   const L0 = lerOraculo();
@@ -2828,7 +2873,7 @@ function abrirOraculo() {
     c.style.setProperty("--lx", (50 - Math.cos(a) * 34).toFixed(1) + "%"); c.style.setProperty("--ly", (50 - Math.sin(a) * 34).toFixed(1) + "%"); };
   const COM_SOMBRA = { budha: 1, shukra: 1, chandra: 1, mangala: 1, guru: 1, shani: 1 };
   const celulas = GRAHAS.map(x => { const c = h("div", { class: "orcel" + (x.id === "surya" ? " orsol" : ""), style: `--c:${x.cor};width:${ORB[x.id][2]}%` }, h("span", { class: "orcorpo" }, planetaEl(x.id, "orcsim"), COM_SOMBRA[x.id] ? h("i", { class: "orsombra" + (x.id === "shani" ? " anel" : "") }) : null), h("span", { class: "orcnome", text: x.nome })); poe(c, x.id, ORB[x.id][1]); return c; });
-  const altar = h("div", { class: "oraltar orbitas carregando" }, orbitasSvg(), celulas);
+  const altar = h("div", { class: "oraltar orbitas carregando" }, orbitasSvg(), celulas, h("div", { class: "orsolaura", "aria-hidden": "true" }));
   // o altar aparece inteiro, com um esmaecer suave, quando as imagens dos planetas estão prontas
   Promise.race([Promise.all(preCarregaPlanetas().concat(celulas.map(c => { const i = c.querySelector("img"); return i && i.decode ? i.decode().catch(() => {}) : null; }))), new Promise(r => setTimeout(r, 2500))])
     .then(() => requestAnimationFrame(() => altar.classList.remove("carregando")));
@@ -2874,7 +2919,9 @@ function abrirOraculo() {
     if (L0 && GRAHAS.some(x => x.id === L0.g)) saida.append(h("p", { class: "orvolta", text: "Sua última leitura" }), leituraOraculo(L0));
     box.append(topo, altar, barra, h("div", { class: "actions", style: "justify-content:center" }, bt), saida, h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: fechar }, "Fechar")));
   }
-  const sheet = h("div", { class: "sheet pombosheet", onclick: e => { if (e.target === sheet) fechar(); } }, box);
+  const ceu = h("canvas", { class: "orceufundo", "aria-hidden": "true" });
+  const sheet = h("div", { class: "sheet pombosheet orsheet", onclick: e => { if (e.target === sheet) fechar(); } }, ceu, box);
+  ceuEstrelado(ceu, box);
   document.body.append(sheet);
 }
 function vSaberes() {
