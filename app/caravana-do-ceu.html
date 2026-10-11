@@ -1788,7 +1788,7 @@ const SABERES_AJUSTES = { "senhor-sentidos": x => ({ ...x, texto: "O nome vem de
 const EXTRAS = [
   // o primeiro carimbo: cada pessoa ganha o seu ao completar as missões de preparação, antes de viajar
   { id: "embarque", nome: "Embarque", insignia: "embarque", cidadeId: "", dia: 0, ordem: 0, aberto: false, preparo: true,
-    descricao: "O primeiro carimbo do passaporte, de quem se preparou para a travessia: passaporte emitido, explorador montado, intenção lacrada e lugar garantido no trem da Caravana.", dica: "Complete as missões de preparação, na tela inicial, para ganhar este carimbo." },
+    descricao: "O primeiro carimbo do passaporte, de quem se preparou para a travessia: passaporte emitido, explorador montado, intenção guardada e lugar garantido no trem da Caravana.", dica: "Complete as missões de preparação, na tela inicial, para ganhar este carimbo." },
   { id: "sankat-mochan", nome: "Sankat Mochan", insignia: "sankat-mochan", cidadeId: "varanasi", dia: 7, ordem: 7.6, codigo: "hanuman", lat: 25.2826, lng: 82.9987, busca: "Sankat Mochan Hanuman Temple Varanasi", aberto: false,
     descricao: "O templo de Hanuman em Varanasi, aquele que livra das dificuldades.", dica: "O devoto que carregou uma montanha espera entre as árvores." },
   { id: "ganesha", nome: "Moti Dungri · Ganesha", insignia: "ganesha", cidadeId: "jaipur", dia: 4, ordem: 3.9, codigo: "ganapati", lat: 26.8950, lng: 75.8176, busca: "Moti Dungri Ganesh Temple Jaipur", aberto: false,
@@ -2126,7 +2126,7 @@ const MISSOES = [
   ["passaporte", "Emitir o passaporte", "Seu número de viajante e a página dos carimbos.", v => !!v, () => go("passaporte")],
   ["explorador", "Montar o explorador", "O bonequinho que anda com você pelo mapa.", v => !!(v && v.boneco), () => go("explorador")],
   ["divindade", "Descobrir a divindade que te acompanha", "Cinco perguntas e uma das divindades da Índia vem andar com você.", v => !!minhaDivindade(), () => abrirQuiz()],
-  ["intencao", "Lacrar a sua intenção", "Uma carta para você mesma(o), que só se abre no último dia.", v => !!lerIntencao(), () => abrirIntencao()],
+  ["intencao", "Guardar a sua intenção", "Uma carta para você mesma(o), que só se abre no último dia.", v => !!lerIntencao(), () => abrirIntencao()],
   ["retrato", "Embarcar no trem da Caravana", "Monte o Retrato do Embarque com a turma.", v => false, () => { go("explorador"); requestAnimationFrame(() => document.querySelector(".retprev")?.closest(".carvbon")?.scrollIntoView({ block: "start", behavior: "smooth" })); }],
   ["camera", "Testar uma câmera da maleta", "Tire uma foto com uma das câmeras antigas.", v => false, () => go("fotos")],
   ["pombo", "Mandar um pombo-correio", "Uma cartinha para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")]
@@ -2180,21 +2180,21 @@ function abrirIntencao() {
     const ta = h("textarea", { id: "intencao-tx", rows: "7", maxlength: "1500", placeholder: "O que você leva para a Índia? O que pede, o que entrega, o que quer deixar no caminho…" });
     const msg = h("p", { class: "msg", role: "status" });
     box.append(h("p", { class: "eyebrow", style: "text-align:center", text: "Antes de embarcar" }), h("h2", { text: "Sua intenção para a travessia" }),
-      h("p", { class: "lede", style: "text-align:center", text: "Escreva para você mesma(o). Ao lacrar, a carta se fecha com o selo da Caravana e só se abre no último dia da viagem, 16 de novembro." }),
+      h("p", { class: "lede", style: "text-align:center", text: "Escreva para você mesma(o). Ao guardar, a carta se fecha com o selo da Caravana e só se abre no último dia da viagem, 16 de novembro." }),
       h("p", { class: "small", style: "text-align:center", text: "Ninguém mais lê: ela fica guardada só neste celular." }),
       ta, msg,
       h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => {
-        const t = ta.value.trim(); if (t.length < 3) { msg.textContent = "Escreva a sua intenção antes de lacrar."; msg.className = "msg err"; return; }
+        const t = ta.value.trim(); if (t.length < 3) { msg.textContent = "Escreva a sua intenção antes de guardar."; msg.className = "msg err"; return; }
         try { localStorage.setItem("cdi-intencao", JSON.stringify({ texto: t, ts: Date.now() })); } catch (e) { msg.textContent = "Não consegui guardar neste celular."; msg.className = "msg err"; return; }
         marcaMissao("intencao"); try { navigator.vibrate && navigator.vibrate([20, 50, 60]); } catch (e) {}
-        abrirIntencao(); render(); } }, "Lacrar a carta")), fecha);
+        abrirIntencao(); render(); } }, "Guardar até o último dia")), fecha);
   } else {
     const d = new Date(I.ts);
     box.append(h("p", { class: "eyebrow", style: "text-align:center", text: "Sua intenção" }),
       h("div", { class: "envelope" + (pode ? " aberta" : "") },
         pode ? h("div", { class: "envcarta" }, String(I.texto).split(/\n\s*\n/).map(p => h("p", { text: p.trim() })))
              : h("img", { class: "envlacre", src: "img/lacre-escuro.webp", alt: "Lacre da Caravana" })),
-      h("p", { class: "small", style: "text-align:center", text: (pode ? "Escrita em " : "Lacrada em ") + d.getDate() + " " + MES[d.getMonth()].toLowerCase() + (pode ? ". Leia devagar." : ". Ela se abre no último dia da travessia, 16 de novembro.") }), fecha);
+      h("p", { class: "small", style: "text-align:center", text: (pode ? "Escrita em " : "Guardada em ") + d.getDate() + " " + MES[d.getMonth()].toLowerCase() + (pode ? ". Leia devagar." : ". Ela se abre no último dia da travessia, 16 de novembro.") }), fecha);
   }
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
