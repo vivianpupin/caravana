@@ -2115,7 +2115,7 @@ function vDia(d, open, isToday, abrir) {
         h("div", { class: "story" }, d.deuses.titulo ? h("h5", { text: d.deuses.titulo }) : null, String(d.deuses.texto || "").split(/\n\s*\n/).map(t => h("p", { text: t.trim() })))) : null,
       ls.length ? h("div", null, h("p", { class: "eyebrow rule", text: ls.length > 1 ? "Selos deste dia" : "Selo deste dia" }),
         h("div", { class: "seals", style: "margin-top:12px" }, ls.map(l => h("button", { type: "button", onclick: () => abrirSelo(l) },
-          h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" }), aberto(l) ? "Carimbado" : "Carimbar")))) : null,
+          h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" }), aberto(l) ? "Carimbado" : S.isOwner ? "Carimbar" : "A carimbar")))) : null,
       false && d.cuidados && d.cuidados.length ? h("div", null, h("p", { class: "eyebrow rule", text: "Leve com você" }),
         h("div", { class: "checks", style: "margin-top:10px" }, d.cuidados.map((c, i) => {
           const id = `ck-${d.n}-${i}`;
@@ -2931,9 +2931,6 @@ function closeSheets() { document.querySelectorAll(".sheet").forEach(s => s.remo
 function conteudoInsignia(l) {
   const on = aberto(l), ts = minhas()[l.id], d = diaDe(l.dia), livre = disponivel(l);
   const saberes = S.ens.filter(e => e.localId === l.id);
-  const input = h("input", { type: "text", id: "unlock-" + l.id, placeholder: "Palavra do lugar", autocomplete: "off", "aria-label": "Palavra do lugar" });
-  const tentar = async () => { if (!input.value.trim()) return; S.unlockMsg = await selar(l, input.value); if (S.unlockMsg.ok) { closeSheets(); render(); celebraSelo(l); return; } render(); refreshSheet(); };
-  input.addEventListener("keydown", e => { if (e.key === "Enter") tentar(); });
   return [
     h("div", { class: "bigwrap" + (on ? "" : " off") }, h("img", { src: badgeSrc(l), alt: "Selo " + l.nome }),
       on ? checkSelo(S.novoSelo === l.id ? "new" : "") : null),
@@ -2941,8 +2938,8 @@ function conteudoInsignia(l) {
     isFinite(+l.lat) ? h("p", { class: "coord", text: coordTxt(+l.lat, +l.lng) }) : null,
     h("h2", { text: l.nome }),
     h("p", { class: "lede", style: "text-align:center;margin:0 auto", text: on ? (l.descricao || "") : (l.dica || "") }),
-    !on && l.codigo && livre ? h("div", { class: "unlock" }, input, h("button", { class: "btn gold", type: "button", onclick: tentar }, "Carimbar")) : null,
-    !on && !livre ? h("p", { class: "small", style: "text-align:center", text: `Este selo se abre no dia ${d.n}, ${d.data}, quando a caravana chegar.` }) : null,
+    // os selos são carimbados pela líder para todos quando a caravana passa pelo lugar (não há palavra para digitar)
+    !on && !S.isOwner ? h("p", { class: "small", style: "text-align:center", text: "A líder carimba este selo no passaporte de todos quando a caravana passar por aqui" + (d ? ` (dia ${d.n}, ${d.data}).` : ".") }) : null,
     S.unlockMsg ? h("p", { class: "msg " + (S.unlockMsg.ok ? "ok" : "err"), style: "text-align:center", role: "status", text: S.unlockMsg.text }) : null,
     on && S.unlockMsg && S.unlockMsg.ok ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirLivro(paginaDoSelo(l.id)) }, "Folhear meu passaporte")) : null,
     on ? saberes.map(e => h("div", { class: "saber" }, h("p", { class: "eyebrow", text: "O saber deste selo" }), h("h3", { text: e.titulo }),
@@ -2951,10 +2948,10 @@ function conteudoInsignia(l) {
       h("a", { class: "btn", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(l.busca || l.nome), target: "_blank", rel: "noopener" }, "Google Maps"),
       h("button", { class: "btn ghost", type: "button", onclick: () => { closeSheets(); S.pertoCentro = { lat: +l.lat, lng: +l.lng }; S.pertoKm = .4; go("mapa"); } }, "Ver no mapa")),
     S.isOwner ? h("div", { class: "secret" },
-      h("p", null, "Só você vê isto. Palavra do lugar: ", h("code", { text: l.codigo || "(sem palavra)" }), l.aberto ? " · liberado para todos" : ""),
+      h("p", null, "Só você vê isto. ", l.aberto ? "Selo carimbado para todos." : "Quando a caravana passar por aqui, toque em Carimbar para todos."),
       h("div", { class: "actions", style: "margin-top:8px" },
         h("button", { class: "btn", type: "button", onclick: () => { closeSheets(); editar("local", l); } }, "Editar"),
-        h("button", { class: "btn", type: "button", onclick: () => liberarSelo(l) }, l.aberto ? "Fechar para todos" : "Liberar para todos"))) : null
+        h("button", { class: "btn", type: "button", onclick: () => liberarSelo(l) }, l.aberto ? "Tirar o carimbo de todos" : "Carimbar para todos"))) : null
   ];
 }
 function abrirSelo(l) {
@@ -6481,7 +6478,7 @@ function editar(tipo, item) {
       ["itens", "Programação (uma linha por item: 18:00 | Ganga Aarti)", "linhas"], ["nota", "Nota", "area"], ["ordem", "Ordem", "num"]], obrig: "titulo" },
     local: { col: "locais", t: "lugar", campos: [["nome", "Nome"], ["cidadeId", "Cidade", "sel", cids.map(c => [c.id, c.nome])], ["insignia", "Insígnia (vazio = hotel ou ponto de apoio)", "sel", INS.map(i => [i, i || "Nenhuma"])],
       ["dia", "Dia do roteiro", "num"], ["ordem", "Ordem", "num"], ["lat", "Latitude", "num"], ["lng", "Longitude", "num"], ["busca", "Busca no Google Maps"],
-      ["dica", "Dica enquanto não conquistada", "area"], ["descricao", "Texto depois de conquistada", "area"], ["codigo", "Palavra do lugar"], ["aberto", "Liberada para todos", "chk"]], obrig: "nome" },
+      ["dica", "Dica enquanto não conquistada", "area"], ["descricao", "Texto depois de conquistada", "area"], ["aberto", "Carimbado para todos", "chk"]], obrig: "nome" },
     ens: { col: "ensinamentos", t: "ensinamento", campos: [["titulo", "Título"], ["categoria", "Categoria"],
       ["localId", "Abre com a insígnia de (vazio = sempre aberto)", "sel", [["", "Sempre aberto"], ...locs.filter(l => l.insignia).map(l => [l.id, l.nome])]],
       ["resumo", "Resumo curto"], ["texto", "Texto (separe parágrafos com uma linha em branco)", "area"], ["foto", "Foto", "foto"], ["fonte", "Fontes"], ["ordem", "Ordem", "num"]], obrig: "titulo" }
@@ -6856,7 +6853,7 @@ function vHoje(d, abrir) {
         prim ? h("p", { class: "hjitem" }, h("b", { text: prim.hora }), h("span", { text: prim.texto })) : h("p", { class: "hjitem", text: "Boa volta para casa!" })),
     m ? h("button", { class: "hjmantra", type: "button", onclick: () => { S.diaAberto = 0; abrir(d.n); } }, h("span", { text: "Mantra do dia" }), h("b", { text: m.nome })) : null,
     ls.length ? h("div", { class: "hjselos" }, ls.map(l => h("button", { type: "button", onclick: () => abrirSelo(l) },
-      h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" }), h("span", { text: aberto(l) ? "Carimbado" : "Carimbar" })))) : null,
+      h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" }), h("span", { text: aberto(l) ? "Carimbado" : S.isOwner ? "Carimbar" : "A carimbar" })))) : null,
     h("button", { class: "btn gold", type: "button", onclick: () => { S.diaAberto = 0; abrir(d.n); } }, "Ver o dia completo"));
 }
 function vMantra(n) {
