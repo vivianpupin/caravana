@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 18:09";</script>
+<script>window.__VERSAO = "11/10 · 18:12";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2205,7 +2205,7 @@ const MISSOES = [
   ["passaporte", "Emitir o passaporte", "Seu número de viajante e a página dos carimbos.", v => !!v, () => go("passaporte")],
   ["explorador", "Montar o explorador", "O bonequinho que anda com você pelo mapa.", v => !!(v && v.boneco), () => go("explorador")],
   ["guardiao", "Conhecer o seu guardião", "A história do guardião da sua passagem, onde vocês se encontram na viagem e o mantra dele.", v => false, () => abrirGuardiao(0)],
-  ["intencao", "Mensagem na garrafa", "Quem serei eu ao final dessa travessia? Escreva e lance a garrafa: ela volta no último dia.", v => !!lerIntencao(), () => abrirIntencao()],
+  ["intencao", "Mensagem na garrafa", "Escreva quem você será ao final dessa travessia e lance a garrafa no rio.", v => !!lerIntencao(), () => abrirIntencao()],
   ["retrato", "Embarcar no trem da Caravana", "Monte o Retrato do Embarque com a turma.", v => false, () => { go("explorador"); requestAnimationFrame(() => document.querySelector(".retprev")?.closest(".carvbon")?.scrollIntoView({ block: "start", behavior: "smooth" })); }],
   ["camera", "Testar uma câmera da maleta", "Tire uma foto com uma das câmeras antigas.", v => false, () => go("fotos")],
   ["pombo", "Mandar um pombo-correio", "Uma cartinha para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")]
@@ -2281,11 +2281,11 @@ function abrirIntencao() {
       marcaMissao("intencao"); try { navigator.vibrate && navigator.vibrate([20, 50, 60]); } catch (e) {}
       // como o pombo: a garrafa aparece com a mensagem dentro e vai embora boiando com a correnteza
       box.scrollTop = 0; box.style.overflow = "hidden";
-      box.append(h("div", { class: "partida garrafaparte" }, garrafaSvg(true), h("p", { text: "Sua garrafa seguiu com a correnteza. Ela volta para você no dia 16 de novembro." })));
+      box.append(h("div", { class: "partida garrafaparte" }, garrafaSvg(true), h("p", { text: "Sua garrafa seguiu com a correnteza." })));
       setTimeout(() => { closeSheets(); render(); }, 3400);
     };
-    box.append(ceu("Quem serei eu ao final dessa travessia?", "Escreva em primeira pessoa, como você se vê no fim da viagem. Depois lance a garrafa: a correnteza traz de volta no último dia, 16 de novembro.", false),
-      h("p", { class: "pbpasso", text: "Como eu me vejo ao final dessa travessia" }), h("div", { class: "pbpapel" }, ta),
+    box.append(ceu("Uma mensagem para o rio", "Escreva em primeira pessoa, coloque na garrafa e lance no rio.", false),
+      h("p", { class: "pbpasso", text: "Quem serei eu ao final dessa travessia?" }), h("div", { class: "pbpapel" }, ta),
       h("p", { class: "small", style: "text-align:center", text: "Ninguém mais lê: ela fica guardada só neste celular." }), msg,
       h("div", { class: "foot2" }, h("button", { class: "btn ghost", type: "button", onclick: fechar }, "Agora não"), h("button", { class: "btn gold", type: "button", onclick: lancar }, "🌊 Lançar a garrafa")));
   } else {
@@ -2294,7 +2294,7 @@ function abrirIntencao() {
       h("div", { class: "pbpapel garrafacarta" }, String(I.texto).split(/\n\s*\n/).map(p => h("p", { text: p.trim() }))),
       h("p", { class: "small", style: "text-align:center", text: "Você escreveu esta mensagem em " + quando + ", antes de embarcar." }),
       h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: fechar }, "Fechar")));
-    else box.append(ceu("A garrafa está no rio", "Lançada em " + quando + ". A correnteza traz de volta no último dia da travessia, 16 de novembro.", true),
+    else box.append(ceu("A garrafa está no rio", "Lançada em " + quando + ". Agora ela segue com a correnteza.", true),
       h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: fechar }, "Fechar")));
   }
   const sheet = h("div", { class: "sheet pombosheet", onclick: e => { if (e.target === sheet) fechar(); } }, box);
