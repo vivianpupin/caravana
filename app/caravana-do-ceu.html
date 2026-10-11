@@ -561,8 +561,9 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .quizdeus{display:block;width:170px;max-width:60%;margin:10px auto 4px;border-radius:14px;box-shadow:0 10px 24px rgba(40,24,10,.25)}
 .oraculocard{display:flex;align-items:center;gap:14px;width:100%;margin:14px 0 18px;padding:14px;border:0;border-radius:18px;text-align:left;cursor:pointer;font:inherit;color:#F1E2BC;box-shadow:var(--shadow);background:radial-gradient(ellipse at 20% 0%,#3B3550,#1B1A2A 70%)}
 .orcgrade{flex:0 0 84px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
-.orcgrade span{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:13px;color:#F6EDDA;background:color-mix(in srgb,var(--c) 55%,#1B1A2A);box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
-.orcgrade span.on{background:var(--c);box-shadow:0 0 10px var(--c)}
+.orcgrade{width:84px;min-width:84px;overflow:hidden}
+.orcmini{display:block;width:100%;aspect-ratio:1;overflow:hidden}
+.orcmini svg,.orcsim svg,.orlsim svg{display:block;width:100%;height:100%}
 .orctx{display:flex;flex-direction:column;gap:3px}
 .orctx small{font:600 11px Poppins,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#E2C08A}
 .orctx b{font:600 18px/1.25 Lora,Georgia,serif}
@@ -575,10 +576,10 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .orintro{font-size:14px;line-height:1.5;opacity:.85;margin:4px 0 0}
 .oraltar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px auto 0;width:min(300px,100%)}
 .orcel{aspect-ratio:1;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);transition:background .12s,box-shadow .12s,transform .12s}
-.orcsim{font-size:28px;line-height:1;color:var(--c);filter:brightness(1.3)}
+.orcsim{display:block;width:62%;aspect-ratio:1}
 .orcnome{font:600 11px Poppins,sans-serif;letter-spacing:.08em;opacity:.75}
 .orcel.on{background:color-mix(in srgb,var(--c) 45%,transparent);box-shadow:0 0 18px var(--c),inset 0 0 0 1px rgba(255,255,255,.5);transform:scale(1.05)}
-.orcel.on .orcsim{color:#fff}
+.orcel.on .orcsim{filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
 .orcel.escolhido{animation:escolhido 1.2s ease-in-out infinite alternate}
 @keyframes escolhido{from{box-shadow:0 0 12px var(--c)}to{box-shadow:0 0 34px var(--c)}}
 .orbarra{height:8px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden;width:min(300px,100%);margin:6px auto 0}
@@ -589,7 +590,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .orvolta{text-align:center;font-size:13px;opacity:.8;margin:6px 0 0}
 .orleitura{background:#FBF6EC;color:#282722;border-radius:18px;padding:18px 16px;margin-top:8px}
 .orltopo{display:flex;gap:14px;align-items:center;margin-bottom:6px}
-.orlsim{flex:0 0 58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:30px;color:#fff;background:var(--c);box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.orlsim{flex:0 0 70px;height:70px;border-radius:50%;background:radial-gradient(circle,#2A2840,#1B1A2A);padding:4px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 .orltopo h2{font-family:var(--display);font-size:26px;margin:0}
 .orlsub{margin:0;font-size:13px;color:#8A3F32;letter-spacing:.04em}
 .orlnak{margin:2px 0 0;font:italic 14px Lora,Georgia,serif;color:#5B4A38}
@@ -597,6 +598,11 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .orltxt{font:16px/1.65 Lora,Georgia,serif;margin:0 0 10px}
 .orlsmall{font-size:12.5px;color:#6B5A43;margin:0 0 6px}
 .orlmantra{font:600 20px/1.4 Cinzel,Georgia,serif;color:#8A3F32;margin:0 0 4px}
+.orlluz{background:rgba(199,180,147,.2);border-radius:12px;padding:10px 12px;margin:2px 0 6px}
+.orlluz p{margin:0 0 4px;font-size:14px;line-height:1.5}
+.orlluz b{color:#8A3F32}
+.orldevolve{border-left:3px solid #C9A062;background:#F6EBD3;border-radius:0 12px 12px 0;padding:12px 14px;margin:16px 0 4px}
+.orldevolve p:last-child{font:italic 600 18px/1.45 Lora,Georgia,serif;margin:0;color:#3B2A1C}
 .orlnota{text-align:center;font:italic 13px Lora,Georgia,serif;color:#6B5A43;margin:16px 0 0}
 .sheet{position:fixed;inset:0;background:rgba(40,39,34,.35);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
 @media (min-width:700px){.sheet{align-items:center}}
@@ -2490,7 +2496,7 @@ function vDia(d, open, isToday, abrir) {
 
 
 // ---------- Saberes ----------
-// ---------- Oráculo dos Navagrahas: os nove planetas da astrologia védica e as 27 mansões da Lua ----------
+// ---------- Oráculo dos Planetas (Navagrahas): os nove planetas da astrologia védica e as 27 mansões da Lua ----------
 // consulta livre: segura o botão, a energia sobe, a luz corre pelo altar e para num planeta; a mansão e a prática do dia vêm sorteadas junto
 const GRAHAS = [
   // na grade dos templos: norte em cima, Surya no centro
@@ -2560,39 +2566,85 @@ const NAKSHATRAS = [
   ["Uttara Bhadrapada", "a serpente das profundezas", "Ahir Budhnya", "Profundidade e calma. Mergulhe devagar: o fundo é sereno."],
   ["Revati", "o peixe", "Pushan, o protetor dos viajantes", "O fim de um ciclo e a proteção de quem viaja. A travessia está guardada."]
 ];
+// aprofundamento de cada planeta: o que rege, luz e sombra, o que ele diz à pergunta e a pergunta que devolve
+const GRAHA_MAIS = {
+  surya: { ess: "a luz própria de Surya", rege: "a alma (atman), o pai e as figuras de autoridade, a vitalidade, o coração e os olhos, a vocação", luz: "dignidade, generosidade, liderança que serve, clareza de propósito", sombra: "orgulho, sede de reconhecimento, rigidez, queimar os outros com a própria luz",
+    p2: "Na astrologia védica, Surya representa o atman, a centelha que não muda enquanto todo o resto muda. Quando ele aparece numa consulta, a pergunta deixa de ser o que fazer e passa a ser quem está decidindo. Se a decisão nasce do medo de desagradar, ela vai cansar você. Se nasce do centro, ela aquece.", devolve: "Se ninguém estivesse olhando, o que você escolheria?" },
+  chandra: { ess: "o sentir de Chandra", rege: "a mente (manas), a mãe e o cuidado, as emoções, o sono, as águas do corpo, a memória", luz: "sensibilidade, acolhimento, imaginação, capacidade de nutrir", sombra: "instabilidade de humor, apego ao passado, dependência do olhar do outro",
+    p2: "Um hino dos Vedas diz que a Lua nasceu da mente do ser cósmico. Por isso a astrologia védica dá a ela tanto peso quanto ao Sol: é pela posição da Lua que se descobre a mansão de nascimento de cada pessoa. A sua pergunta passa primeiro pelo coração. Antes de decidir, pergunte como você quer se sentir depois da decisão.", devolve: "O que você está sentindo e ainda não disse a ninguém?" },
+  mangala: { ess: "a coragem de Mangala", rege: "a energia física, o sangue, a coragem, os irmãos, a terra e as propriedades, a capacidade de agir", luz: "coragem, proteção, iniciativa, energia para começar", sombra: "impaciência, raiva, competição, impulsos que machucam",
+    p2: "Mangala também é chamado Bhumiputra, o filho da Terra, e muitas tradições o ligam a Kartikeya, o comandante do exército dos deuses. Não é um planeta de destruição: é a força que protege o que importa. A pergunta que ele faz é pelo que você está disposta(o) a lutar, e de que jeito.", devolve: "Qual é o primeiro passo concreto, e por que ele ainda não foi dado?" },
+  budha: { ess: "a inteligência de Budha", rege: "o intelecto, a fala e a escrita, o comércio, o aprendizado, a pele e os nervos, o humor e a juventude", luz: "inteligência viva, comunicação clara, adaptabilidade, bom humor", sombra: "ansiedade, excesso de análise, indecisão, palavras que ferem sem querer",
+    p2: "Na mitologia, Budha é filho da Lua: a inteligência que nasce da emoção. Ele é um planeta neutro, que assume a natureza dos planetas que estão perto dele. Numa consulta, ele pergunta com quem você está pensando: as vozes ao seu redor estão clareando ou confundindo a sua questão?", devolve: "Se você tivesse que explicar essa questão a uma criança, o que diria?" },
+  guru: { ess: "a sabedoria de Guru", rege: "a sabedoria, os mestres, os filhos, a fé, a boa sorte e o crescimento, o fígado", luz: "generosidade, fé lúcida, capacidade de ensinar, otimismo apoiado na verdade", sombra: "excesso, arrogância espiritual, promessas grandes demais, otimismo que ignora os fatos",
+    p2: "A palavra guru é explicada assim na tradição: gu é a escuridão, ru é o que a remove. Júpiter é o planeta mais benéfico do mapa védico, e o que ele faz crescer depende do que você alimenta. Se a sua pergunta envolve uma escolha, ele favorece o caminho em que você aprende, mesmo que não seja o mais fácil.", devolve: "O que esta situação está tentando te ensinar?" },
+  shukra: { ess: "a beleza de Shukra", rege: "o amor e os relacionamentos, a arte e a beleza, o prazer, o conforto, os rins e a vitalidade", luz: "afeto, harmonia, senso estético, diplomacia, alegria de viver", sombra: "indulgência, vaidade, apego ao conforto, agradar para ser amada(o)",
+    p2: "Shukra era o mestre dos asuras e o único a conhecer a Mrita Sanjivani, o saber que devolve a vida. Para ele, a beleza não é enfeite: é força que regenera. Se a sua pergunta envolve uma relação, ele pede que você olhe para o que há de bom ali antes de olhar para o que falta.", devolve: "O que te daria alegria verdadeira, e não só conforto?" },
+  shani: { ess: "a paciência de Shani", rege: "o tempo e a longevidade, o trabalho, a disciplina, os ossos, os mais velhos e os esquecidos, o karma", luz: "paciência, responsabilidade, humildade, compaixão por quem sofre", sombra: "medo, pessimismo, rigidez, sensação de peso e de atraso",
+    p2: "Shani é filho do Sol com Chhaya, a sombra, e por isso conhece de perto a rejeição. Conta-se que ele manca, e por isso anda devagar. Na Índia, aos sábados, muita gente oferece óleo de gergelim nos templos de Shani pedindo leveza. Ele não castiga: mostra o que estava pendente. A sua pergunta talvez tenha uma parte que você já sabe e está adiando.", devolve: "Que responsabilidade, assumida hoje, deixaria o caminho mais leve?" },
+  rahu: { ess: "a fome de Rahu", rege: "a ambição, o estrangeiro e o desconhecido, a tecnologia, as obsessões, as ilusões, as grandes viradas", luz: "ousadia, capacidade de inovar, coragem de ir aonde ninguém foi", sombra: "ansiedade, insatisfação constante, engano, desejo que nunca se acalma",
+    p2: "Rahu e Ketu não são astros que se veem no céu: são os dois pontos onde o caminho da Lua cruza o caminho do Sol, os lugares dos eclipses. A astrologia védica os chama de planetas sombra. Rahu aponta para o que a sua alma ainda quer experimentar nesta vida, e por isso a fome dele é tão forte. Pergunte se o que você deseja te leva adiante ou só te distrai.", devolve: "Se você conseguisse o que deseja, o que mudaria de verdade?" },
+  ketu: { ess: "o desapego de Ketu", rege: "a espiritualidade, a intuição, o desapego, as perdas que libertam, o passado, a moksha", luz: "intuição, sabedoria interior, simplicidade, liberdade", sombra: "isolamento, confusão, desinteresse pela vida prática, sensação de vazio",
+    p2: "Se Rahu aponta para o que a alma ainda quer viver, Ketu guarda o que ela já viveu e já sabe. Ele é ligado a moksha, a libertação. Numa consulta, pode indicar que a resposta não está em conquistar algo novo, e sim em reconhecer o que você já tem e soltar o que pesa.", devolve: "O que você precisa soltar para seguir mais leve?" }
+};
+// como cada mansão da Lua colore o planeta que cai nela
+const NAK_TEMA = ["um começo rápido, que cura", "uma gestação que pede paciência", "um fogo que corta o que sobra", "um cultivo fértil", "uma busca curiosa", "uma chuva que limpa", "um recomeço", "um cuidado que nutre", "um olhar para o que está escondido", "uma honra aos que vieram antes", "um descanso que restaura", "um compromisso cumprido", "um trabalho feito com as próprias mãos", "uma forma bonita", "um movimento livre", "um foco num único alvo", "uma amizade fiel", "uma responsabilidade assumida", "um mergulho até a raiz", "uma persistência suave", "uma vitória que permanece", "uma escuta atenta", "um ritmo próprio", "um recolhimento que cura", "uma decisão que transforma", "uma calma profunda", "uma travessia protegida"];
+// os planetinhas desenhados como são no céu (Rahu e Ketu, que são os pontos dos eclipses, viram um eclipse e um cometa)
+function planetaSvg(id) {
+  const g = (a, b, c) => `<radialGradient id="pg-${id}" cx="35%" cy="32%" r="70%"><stop offset="0" stop-color="${a}"/><stop offset=".6" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></radialGradient>`;
+  const bola = `<circle cx="32" cy="32" r="20" fill="url(#pg-${id})"/>`;
+  const svg = (defs, corpo) => `<svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true"><defs>${defs}</defs>${corpo}</svg>`;
+  switch (id) {
+    case "surya": return svg(g("#FFF6C8", "#FFB51F", "#E3571A") + `<radialGradient id="pk-surya"><stop offset=".55" stop-color="#FFC94A" stop-opacity=".7"/><stop offset="1" stop-color="#FFC94A" stop-opacity="0"/></radialGradient>`, `<circle cx="32" cy="32" r="30" fill="url(#pk-surya)"/>` + bola);
+    case "chandra": return svg(g("#FFFFFF", "#DAD6CC", "#9E988A"), bola + `<circle cx="25" cy="27" r="4" fill="#B9B3A5" opacity=".7"/><circle cx="38" cy="36" r="5.5" fill="#B9B3A5" opacity=".6"/><circle cx="29" cy="41" r="2.6" fill="#B9B3A5" opacity=".7"/><circle cx="40" cy="24" r="2" fill="#B9B3A5" opacity=".6"/>`);
+    case "mangala": return svg(g("#F2A07A", "#C9502C", "#7A2414"), bola + `<path d="M17 30 q8 -3 14 1 t14 -1" stroke="#8E3018" stroke-width="2.5" fill="none" opacity=".5"/><ellipse cx="32" cy="14" rx="6" ry="2" fill="#fff" opacity=".6"/>`);
+    case "budha": return svg(g("#D9D2C8", "#9C9086", "#5E544C"), bola + `<circle cx="26" cy="30" r="3" fill="#7E736A" opacity=".6"/><circle cx="37" cy="38" r="4" fill="#7E736A" opacity=".5"/><circle cx="38" cy="25" r="2" fill="#7E736A" opacity=".6"/>`);
+    case "guru": return svg(g("#F7E7C8", "#D9A86B", "#8E5F33") + `<clipPath id="pc-guru"><circle cx="32" cy="32" r="20"/></clipPath>`, bola + `<g clip-path="url(#pc-guru)" opacity=".75"><rect x="10" y="22" width="44" height="3.5" fill="#B9773D"/><rect x="10" y="29" width="44" height="2.5" fill="#EAD2A8"/><rect x="10" y="35" width="44" height="4" fill="#A9693A"/><rect x="10" y="43" width="44" height="2.5" fill="#C98F55"/><ellipse cx="38" cy="38" rx="4" ry="2.4" fill="#B4462E"/></g>`);
+    case "shukra": return svg(g("#FFFBEA", "#F1DCA6", "#C9A35E"), bola + `<path d="M15 28 q17 -6 34 2 M16 37 q16 -5 32 3" stroke="#E2C485" stroke-width="2.5" fill="none" opacity=".6"/>`);
+    case "shani": return svg(g("#FBE9C2", "#E0B86E", "#9C7434"), `<ellipse cx="32" cy="34" rx="30" ry="8" fill="none" stroke="#C9A062" stroke-width="3" opacity=".8" transform="rotate(-18 32 32)"/><circle cx="32" cy="32" r="16" fill="url(#pg-${id})"/><path d="M5 40 A30 8 -18 0 0 59 26" fill="none" stroke="#E8CC98" stroke-width="3" transform="rotate(0 32 32)" opacity=".95"/><path d="M18 30 h28 M17 36 h30" stroke="#C99A55" stroke-width="2" opacity=".5"/>`);
+    case "rahu": return svg(`<radialGradient id="pk-rahu"><stop offset=".6" stop-color="#FFD27A" stop-opacity=".9"/><stop offset="1" stop-color="#FF9A3A" stop-opacity="0"/></radialGradient>`, `<circle cx="32" cy="32" r="28" fill="url(#pk-rahu)"/><circle cx="32" cy="32" r="19" fill="#1B1A2A"/><circle cx="32" cy="32" r="19" fill="none" stroke="#FFE7A8" stroke-width="1.5" opacity=".9"/>`);
+    case "ketu": return svg(`<linearGradient id="pk-ketu" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C9D6F2" stop-opacity="0"/><stop offset="1" stop-color="#E6EEFF" stop-opacity=".95"/></linearGradient>` + g("#FFFFFF", "#BFD0F0", "#6E84B8"), `<path d="M4 6 L40 34 L32 42 Z" fill="url(#pk-ketu)"/><path d="M10 4 L42 32" stroke="#E6EEFF" stroke-width="1.5" opacity=".6"/><circle cx="40" cy="38" r="9" fill="url(#pg-${id})"/>`);
+  }
+  return svg("", "");
+}
+const planetaEl = (id, cls) => { const e = h("span", { class: cls || "planeta", "aria-hidden": "true" }); e.innerHTML = planetaSvg(id); return e; };
 const hojeLocal = () => new Date().toLocaleDateString("en-CA");
 function lerOraculo() { try { return JSON.parse(localStorage.getItem("cdi-oraculo") || "null"); } catch (e) { return null; } }
 function vOraculoCard() {
   const L = lerOraculo(), G = L && GRAHAS.find(x => x.id === L.g);
   return h("button", { type: "button", class: "oraculocard", onclick: () => abrirOraculo() },
-    h("div", { class: "orcgrade", "aria-hidden": "true" }, GRAHAS.map(x => h("span", { style: `--c:${x.cor}`, class: G && G.id === x.id ? "on" : "", text: x.sim }))),
-    h("span", { class: "orctx" }, h("small", { text: "Oráculo dos Navagrahas" }), h("b", { text: "Os nove planetas respondem" }),
+    h("div", { class: "orcgrade", "aria-hidden": "true" }, GRAHAS.map(x => planetaEl(x.id, "orcmini"))),
+    h("span", { class: "orctx" }, h("small", { text: "Oráculo dos Planetas" }), h("b", { text: "Os nove planetas respondem" }),
       h("span", { text: G ? "Sua última leitura: " + G.nome + ". Toque para consultar de novo." : "Pense numa pergunta, segure o botão e concentre-se." })));
 }
 function leituraOraculo(L) {
-  const G = GRAHAS.find(x => x.id === L.g), N = NAKSHATRAS[L.n];
+  const G = GRAHAS.find(x => x.id === L.g), M = GRAHA_MAIS[G.id], N = NAKSHATRAS[L.n];
   return h("div", { class: "orleitura" },
-    h("div", { class: "orltopo" }, h("span", { class: "orlsim", style: `--c:${G.cor}`, text: G.sim }),
+    h("div", { class: "orltopo" }, planetaEl(G.id, "orlsim"),
       h("div", null, h("h2", { text: G.nome }), h("p", { class: "orlsub", text: G.sub }), h("p", { class: "orlnak", text: "na mansão lunar de " + N[0] }))),
     h("p", { class: "orleye", text: "A imagem" }), h("p", { class: "orltxt", text: G.img }),
-    h("p", { class: "orleye", text: "A mensagem" }), ...G.msg.map(t => h("p", { class: "orltxt", text: t })),
-    h("p", { class: "orleye", text: "A mansão da Lua · " + N[0] }), h("p", { class: "orlsmall", text: "Símbolo: " + N[1] + " · Regente: " + N[2] }), h("p", { class: "orltxt", text: N[3] }),
+    h("p", { class: "orleye", text: "O que " + G.nome + " rege" }), h("p", { class: "orltxt", text: M.rege.charAt(0).toUpperCase() + M.rege.slice(1) + "." }),
+    h("div", { class: "orlluz" }, h("p", null, h("b", { text: "Na luz: " }), M.luz + "."), h("p", null, h("b", { text: "Na sombra: " }), M.sombra + ".")),
+    h("p", { class: "orleye", text: "A resposta à sua pergunta" }), h("p", { class: "orltxt", text: G.msg[0] }), h("p", { class: "orltxt", text: M.p2 }), h("p", { class: "orltxt", text: G.msg[1] }),
+    h("p", { class: "orleye", text: "A mansão da Lua · " + N[0] }), h("p", { class: "orlsmall", text: "Símbolo: " + N[1] + " · Regente: " + N[2] }),
+    h("p", { class: "orltxt", text: N[3] + " Em " + N[0] + ", " + M.ess + " se expressa como " + NAK_TEMA[L.n] + "." }),
+    h("div", { class: "orldevolve" }, h("p", { class: "orleye", style: "margin-top:0", text: "A pergunta que " + G.nome + " te devolve" }), h("p", { text: M.devolve })),
     h("p", { class: "orleye", text: "Para hoje" }), h("p", { class: "orltxt", text: G.hoje[L.p] }),
     h("p", { class: "orleye", text: "Mantra de " + G.nome }), h("p", { class: "orlmantra", text: G.mantra }),
-    h("p", { class: "orlsmall", text: (G.dia ? "Dia de " + G.nome + ": " + G.dia + " · " : "") + "Cor: " + G.tom }),
-    h("p", { class: "orlnota", text: "O oráculo é um espelho, não uma sentença." }));
+    h("p", { class: "orlsmall", text: "Cante 9 ou 108 vezes, devagar, de preferência ao amanhecer" + (G.dia ? " e no dia de " + G.nome + ", " + G.dia : "") + ". Cor: " + G.tom + "." }),
+    h("p", { class: "orlnota", text: "O oráculo é um espelho: ele mostra, e a escolha é sua." }));
 }
 function abrirOraculo() {
   closeSheets();
   const L0 = lerOraculo();
-  const box = h("div", { role: "dialog", "aria-label": "Oráculo dos Navagrahas", class: "oraculo" });
+  const box = h("div", { role: "dialog", "aria-label": "Oráculo dos Planetas", class: "oraculo" });
   const fechar = () => { clearInterval(box._t); closeSheets(); render(); };
-  const celulas = GRAHAS.map(x => h("div", { class: "orcel", style: `--c:${x.cor}` }, h("span", { class: "orcsim", text: x.sim }), h("span", { class: "orcnome", text: x.nome })));
+  const celulas = GRAHAS.map(x => h("div", { class: "orcel", style: `--c:${x.cor}` }, planetaEl(x.id, "orcsim"), h("span", { class: "orcnome", text: x.nome })));
   const altar = h("div", { class: "oraltar" }, celulas);
   const barra = h("div", { class: "orbarra", "aria-hidden": "true" }, h("i"));
   const saida = h("div", { class: "orsaida" });
-  const topo = h("div", { class: "ortopo" }, h("p", { class: "eyebrow", text: "Oráculo dos Navagrahas" }), h("h2", { text: "Os nove planetas respondem" }),
-    h("p", { class: "orintro", text: "Na astrologia védica, os nove grahas são as forças que agarram e movem a vida. Pense numa pergunta, segure o botão enquanto se concentra e solte quando sentir que é a hora." }));
+  const topo = h("div", { class: "ortopo" }, h("p", { class: "eyebrow", text: "Oráculo dos Planetas" }), h("h2", { text: "Os nove planetas respondem" }),
+    h("p", { class: "orintro", text: "Na astrologia védica, os nove planetas (os navagrahas) são as forças que movem a vida. Pense numa pergunta, segure o botão enquanto se concentra e solte quando sentir que é a hora." }));
   const acende = i => celulas.forEach((c, k) => c.classList.toggle("on", k === i));
   {
     let segurando = false, inicio = 0, pos = 4, vel = 0, raf = 0;
