@@ -582,7 +582,8 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .orcnome{font:600 11px Poppins,sans-serif;letter-spacing:.08em;opacity:.8}
 .orcel.on{background:rgba(255,214,130,.16);box-shadow:0 0 22px rgba(255,201,74,.55),inset 0 0 0 1.5px #FFE7A8;transform:scale(1.06)}
 .orcel.on .orcsim{filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
-.oraltar.orbitas{display:block;position:relative;aspect-ratio:1;width:min(340px,100%);margin:6px auto 0}
+.oraltar.orbitas{display:block;position:relative;aspect-ratio:1;width:min(340px,100%);margin:6px auto 0;transition:opacity .45s ease}
+.oraltar.orbitas.carregando{opacity:0}
 .orlinhas{position:absolute;inset:0}
 .orbitas .orcel{position:absolute;transform:translate(-50%,-50%);aspect-ratio:auto;background:none;box-shadow:none;border-radius:50%;padding:0;gap:1px}
 .orbitas .orcsim{width:100%}
@@ -2652,7 +2653,25 @@ function lerOraculo() { try { return JSON.parse(localStorage.getItem("cdi-oracul
 const ORB = { surya: [0, 0, 20], budha: [.34, 145, 10.5], shukra: [.45, 20, 12], chandra: [.57, 205, 11], rahu: [.57, 115, 12], ketu: [.57, 295, 14], mangala: [.68, 340, 11.5], guru: [.8, 160, 15], shani: [.9, 62, 21] };
 const orbitasSvg = () => { const o = h("div", { class: "orlinhas", "aria-hidden": "true" }); o.innerHTML = `<svg viewBox="0 0 100 100" width="100%" height="100%">${[.34, .45, .57, .68, .8, .9].map(r => `<circle cx="50" cy="50" r="${r * 50}" fill="none" stroke="rgba(232,204,152,.22)" stroke-width=".35" ${r === .57 ? 'stroke-dasharray="1.2 1.2"' : ""}/>`).join("")}</svg>`; return o; };
 const posOrb = (id, k = 1, kr = 1) => { const [r, a, w] = ORB[id], rad = a * Math.PI / 180; return `left:${50 + Math.cos(rad) * r * kr * 50}%;top:${50 + Math.sin(rad) * r * kr * 50}%;width:${w * k}%`; };
+// vibração: no Android usa a vibração normal; no iPhone (que não tem essa função no navegador) usa o "toque" do interruptor do iOS 18+
+let _hapt = null;
+function vibrar(ms) {
+  try {
+    if (navigator.vibrate && navigator.vibrate(ms)) return true;
+    if (!_hapt) { const ck = h("input", { type: "checkbox", switch: "", "aria-hidden": "true", tabindex: "-1" }); _hapt = h("label", { "aria-hidden": "true", style: "position:fixed;left:-99px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none" }, ck); document.body.append(_hapt); }
+    _hapt.click();
+  } catch (e) {}
+  return false;
+}
+// as imagens dos planetas já vêm carregadas antes de abrir o oráculo (assim elas não aparecem do nada)
+const PLANETAS_PRE = [];
+function preCarregaPlanetas() {
+  if (PLANETAS_PRE.length) return PLANETAS_PRE;
+  GRAHAS.forEach(x => { const i = new Image(); i.src = "img/planetas/" + x.id + ".webp"; PLANETAS_PRE.push(i.decode ? i.decode().catch(() => {}) : Promise.resolve()); });
+  return PLANETAS_PRE;
+}
 function vOraculoCard() {
+  setTimeout(preCarregaPlanetas, 400);
   const L = lerOraculo(), G = L && GRAHAS.find(x => x.id === L.g);
   return h("button", { type: "button", class: "oraculocard", onclick: () => abrirOraculo() },
     // roda dourada com os símbolos dos nove planetas
@@ -2683,7 +2702,10 @@ function abrirOraculo() {
   const fechar = () => { clearInterval(box._t); closeSheets(); render(); };
   // o altar como o sistema solar: Surya no centro, os planetas nas órbitas na ordem real; Rahu e Ketu, opostos, na órbita da Lua (onde acontecem os eclipses)
   const celulas = GRAHAS.map(x => h("div", { class: "orcel", style: `--c:${x.cor};` + posOrb(x.id) }, planetaEl(x.id, "orcsim"), h("span", { class: "orcnome", text: x.nome })));
-  const altar = h("div", { class: "oraltar orbitas" }, orbitasSvg(), celulas);
+  const altar = h("div", { class: "oraltar orbitas carregando" }, orbitasSvg(), celulas);
+  // o altar aparece inteiro, com um esmaecer suave, quando as imagens dos planetas estão prontas
+  Promise.race([Promise.all(preCarregaPlanetas().concat(celulas.map(c => { const i = c.querySelector("img"); return i && i.decode ? i.decode().catch(() => {}) : null; }))), new Promise(r => setTimeout(r, 2500))])
+    .then(() => requestAnimationFrame(() => altar.classList.remove("carregando")));
   // os planetas giram nas órbitas enquanto o oráculo está aberto, todos juntos como uma mandala (assim nenhum passa por cima do outro); acelera enquanto a pessoa segura o botão
   const VEL = { surya: 0, budha: 5, shukra: 5, chandra: 5, rahu: 5, ketu: 5, mangala: 5, guru: 5, shani: 5 };
   const ang = Object.fromEntries(GRAHAS.map(x => [x.id, ORB[x.id][1]]));
@@ -2706,7 +2728,7 @@ function abrirOraculo() {
     const bt = h("button", { type: "button", class: "orbotao" }, "Segure para concentrar");
     const gira = () => { if (!segurando) return; const t = (performance.now() - inicio) / 1000, f = Math.min(1, t / 3);
       barra.firstChild.style.width = (f * 100) + "%"; vel += 16 + f * 40; acelera = 1 + f * 5;
-      if (vel > 160 - f * 120) { vel = 0; pos = (pos + 1 + Math.floor(Math.random() * 3)) % 9; acende(pos); try { navigator.vibrate && navigator.vibrate(4); } catch (e) {} }
+      if (vel > 160 - f * 120) { vel = 0; pos = (pos + 1 + Math.floor(Math.random() * 3)) % 9; acende(pos); vibrar(15); }
       raf = requestAnimationFrame(gira); };
     const comeca = e => { e.preventDefault(); if (segurando || bt.disabled) return; segurando = true; inicio = performance.now(); bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(gira); };
     const solta = () => { if (!segurando) return; segurando = false; cancelAnimationFrame(raf); bt.disabled = true; bt.classList.remove("vivo"); acelera = 1;
@@ -2714,9 +2736,9 @@ function abrirOraculo() {
       // a luz desacelera e para num planeta
       const fim = Math.floor(Math.random() * 9), L = { dia: hojeLocal(), g: GRAHAS[fim].id, n: Math.floor(Math.random() * 27), p: Math.floor(Math.random() * 3) };
       let passos = 9 + ((fim - pos + 9) % 9), d = 70;
-      const anda = () => { pos = (pos + 1) % 9; acende(pos); try { navigator.vibrate && navigator.vibrate(6); } catch (e) {} passos--;
+      const anda = () => { pos = (pos + 1) % 9; acende(pos); vibrar(18); passos--;
         if (passos > 0) { d *= 1.13; setTimeout(anda, d); return; }
-        celulas[fim].classList.add("escolhido"); try { navigator.vibrate && navigator.vibrate([30, 60, 90]); } catch (e) {}
+        celulas[fim].classList.add("escolhido"); if (!vibrar([40, 60, 120])) { setTimeout(() => vibrar(1), 120); setTimeout(() => vibrar(1), 260); }
         try { localStorage.setItem("cdi-oraculo", JSON.stringify(L)); } catch (e) {}
         bt.remove(); barra.remove();
         setTimeout(() => { saida.replaceChildren(leituraOraculo(L), h("div", { class: "actions", style: "justify-content:center;margin-top:10px" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirOraculo() }, "Consultar de novo"))); saida.scrollIntoView({ behavior: "smooth", block: "start" }); }, 600); };
