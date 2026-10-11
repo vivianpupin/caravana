@@ -3594,8 +3594,10 @@ function verExplorador(id) {
   document.body.append(sheet);
 }
 const SELO_CENARIO = { agra: "taj-mahal", varanasi: "varanasi", rishikesh: "rishikesh", jaipur: "jaipur", delhi: "india" };
-const POSES = { agra: "turma", varanasi: "pulando", jaipur: "abraco", rishikesh: "fogueira", delhi: "fila" };
-const CENARIOS = [["agra", "Taj Mahal"], ["varanasi", "Varanasi"], ["rishikesh", "Rishikesh"], ["jaipur", "Jaipur"], ["delhi", "Delhi"]];
+const POSES = { embarque: "turma", agra: "turma", varanasi: "pulando", jaipur: "abraco", rishikesh: "fogueira", delhi: "fila" };
+// Embarque: aberto desde já, para a turma fazer o retrato antes de viajar (aparece quando a imagem img/abertura-embarque.webp estiver no app)
+const TEM_EMBARQUE = false;
+const CENARIOS = [["embarque", "Embarque"], ["agra", "Taj Mahal"], ["varanasi", "Varanasi"], ["rishikesh", "Rishikesh"], ["jaipur", "Jaipur"], ["delhi", "Delhi"]];
 async function retratoCaravana(cen, pose) {
   const W = 1080, H = 1920, cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
   const fundo = await carregaImg("img/abertura-" + cen + ".webp"), k = Math.max(W / fundo.width, H / fundo.height);
@@ -3691,7 +3693,7 @@ async function retratoCaravana(cen, pose) {
 function vRetrato() {
   if (comBoneco().length < 1) return null;
   // cada cenário só abre depois que a caravana passa pela cidade (quando o selo dela é liberado); a líder vê todos
-  const livres = CENARIOS.filter(([id]) => S.isOwner || aberto(localDe(SELO_CENARIO[id])));
+  const livres = CENARIOS.filter(([id]) => id === "embarque" ? TEM_EMBARQUE : S.isOwner || aberto(localDe(SELO_CENARIO[id])));
   if (!livres.length) return h("div", { class: "carvbon" }, h("p", { class: "eyebrow rule", text: "Retrato da Caravana" }),
     h("p", { class: "small", style: "text-align:center", text: "Todos os exploradores juntos, num cenário da travessia. Cada cenário se abre quando a caravana passa pela cidade." }));
   const cen = livres.some(([id]) => id === S.retratoCen) ? S.retratoCen : livres[0][0], pose = POSES[cen] || "turma", msg = h("p", { class: "msg", role: "status" }), prev = h("div", { class: "retprev" });
