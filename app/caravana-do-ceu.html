@@ -580,6 +580,15 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .orcnome{font:600 11px Poppins,sans-serif;letter-spacing:.08em;opacity:.8}
 .orcel.on{background:rgba(255,214,130,.16);box-shadow:0 0 22px rgba(255,201,74,.55),inset 0 0 0 1.5px #FFE7A8;transform:scale(1.06)}
 .orcel.on .orcsim{filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
+.oraltar.orbitas{display:block;position:relative;aspect-ratio:1;width:min(340px,100%);margin:6px auto 0}
+.orlinhas{position:absolute;inset:0}
+.orbitas .orcel{position:absolute;transform:translate(-50%,-50%);aspect-ratio:auto;background:none;box-shadow:none;border-radius:50%;padding:0;gap:1px}
+.orbitas .orcsim{width:100%}
+.orbitas .orcnome{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:1px;font-size:9px;letter-spacing:.04em;white-space:nowrap}
+.orbitas .orcel.on{background:none;box-shadow:none;transform:translate(-50%,-50%) scale(1.18)}
+.orbitas .orcel.on .orcsim{filter:drop-shadow(0 0 8px #FFD27A) drop-shadow(0 0 3px #fff)}
+.orbitas .orcel.escolhido .orcsim{animation:escolhidoP 1.2s ease-in-out infinite alternate}
+@keyframes escolhidoP{from{filter:drop-shadow(0 0 4px #FFC94A)}to{filter:drop-shadow(0 0 16px #FFB51F)}}
 .orcel.escolhido{animation:escolhido 1.2s ease-in-out infinite alternate}
 @keyframes escolhido{from{box-shadow:0 0 10px #FFC94A}to{box-shadow:0 0 34px #FFB51F}}
 .orbarra{height:8px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden;width:min(300px,100%);margin:6px auto 0}
@@ -2663,8 +2672,12 @@ function abrirOraculo() {
   const L0 = lerOraculo();
   const box = h("div", { role: "dialog", "aria-label": "Oráculo dos Planetas", class: "oraculo" });
   const fechar = () => { clearInterval(box._t); closeSheets(); render(); };
-  const celulas = GRAHAS.map(x => h("div", { class: "orcel", style: `--c:${x.cor}` }, planetaEl(x.id, "orcsim"), h("span", { class: "orcnome", text: x.nome })));
-  const altar = h("div", { class: "oraltar" }, celulas);
+  // o altar como o sistema solar: Surya no centro, os planetas nas órbitas na ordem real; Rahu e Ketu, opostos, na órbita da Lua (onde acontecem os eclipses)
+  const ORB = { surya: [0, 0, 21], budha: [.34, 140, 11], shukra: [.45, 20, 12.5], chandra: [.57, 205, 11.5], rahu: [.57, 115, 11], ketu: [.57, 295, 11], mangala: [.68, 340, 12], guru: [.8, 160, 16], shani: [.9, 62, 19] };
+  const celulas = GRAHAS.map(x => { const [r, a, w] = ORB[x.id], rad = a * Math.PI / 180;
+    return h("div", { class: "orcel", style: `--c:${x.cor};left:${50 + Math.cos(rad) * r * 50}%;top:${50 + Math.sin(rad) * r * 50}%;width:${w}%` }, planetaEl(x.id, "orcsim"), h("span", { class: "orcnome", text: x.nome })); });
+  const orbitas = h("div", { class: "orlinhas", "aria-hidden": "true" }); orbitas.innerHTML = `<svg viewBox="0 0 100 100" width="100%" height="100%">${[.34, .45, .57, .68, .8, .9].map(r => `<circle cx="50" cy="50" r="${r * 50}" fill="none" stroke="rgba(232,204,152,.22)" stroke-width=".35" ${r === .57 ? 'stroke-dasharray="1.2 1.2"' : ""}/>`).join("")}</svg>`;
+  const altar = h("div", { class: "oraltar orbitas" }, orbitas, celulas);
   const barra = h("div", { class: "orbarra", "aria-hidden": "true" }, h("i"));
   const saida = h("div", { class: "orsaida" });
   const topo = h("div", { class: "ortopo" }, h("h2", { text: "Oráculo dos Planetas" }),
