@@ -7,7 +7,7 @@
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/10 · 18:14";</script>
+<script>window.__VERSAO = "11/10 · 18:15";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2206,7 +2206,7 @@ const MISSOES = [
   ["passaporte", "Emitir o passaporte", "Seu número de viajante e a página dos carimbos.", v => !!v, () => go("passaporte")],
   ["explorador", "Montar o explorador", "O bonequinho que anda com você pelo mapa.", v => !!(v && v.boneco), () => go("explorador")],
   ["guardiao", "Conhecer o seu guardião", "A história do guardião da sua passagem, onde vocês se encontram na viagem e o mantra dele.", v => false, () => abrirGuardiao(0)],
-  ["intencao", "Mensagem na garrafa", "Escreva quem você será ao final dessa travessia e lance a garrafa no rio.", v => !!lerIntencao(), () => abrirIntencao()],
+  ["intencao", "Mensagem na garrafa", "Escreva quem você será ao final desta travessia e lance a garrafa no rio.", v => !!lerIntencao(), () => abrirIntencao()],
   ["retrato", "Embarcar no trem da Caravana", "Monte o Retrato do Embarque com a turma.", v => false, () => { go("explorador"); requestAnimationFrame(() => document.querySelector(".retprev")?.closest(".carvbon")?.scrollIntoView({ block: "start", behavior: "smooth" })); }],
   ["camera", "Testar uma câmera da maleta", "Tire uma foto com uma das câmeras antigas.", v => false, () => go("fotos")],
   ["pombo", "Mandar um pombo-correio", "Uma cartinha para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")]
@@ -2274,7 +2274,7 @@ function abrirIntencao() {
   const box = h("div", { role: "dialog", "aria-label": "Mensagem na garrafa", class: "pombobox garrafabox" + (I && pode ? " chegou" : "") });
   const ceu = (titulo, texto, cheia) => h("div", { class: "garrafahead" }, garrafaSvg(cheia), h("p", { class: "eyebrow", text: "Mensagem na garrafa" }), h("h2", { text: titulo }), texto ? h("p", { class: "lede", text: texto }) : null);
   if (!I) {
-    const ta = h("textarea", { id: "intencao-tx", rows: "7", maxlength: "1500", placeholder: "Ao final dessa travessia, eu serei…" });
+    const ta = h("textarea", { id: "intencao-tx", rows: "7", maxlength: "1500", placeholder: "Ao final desta travessia, eu serei…" });
     const msg = h("p", { class: "msg", role: "status" });
     const lancar = () => {
       const t = ta.value.trim(); if (t.length < 3) { msg.textContent = "Escreva a sua mensagem antes de lançar a garrafa."; msg.className = "msg err"; return; }
@@ -2286,7 +2286,7 @@ function abrirIntencao() {
       setTimeout(() => { closeSheets(); render(); }, 3400);
     };
     box.append(ceu("Uma mensagem para o rio", "Responda a pergunta abaixo, coloque na garrafa e lance no rio.", false),
-      h("h3", { class: "garrafaperg", text: "Quem serei eu ao final dessa travessia?" }), h("p", { class: "small", style: "text-align:center;margin:0", text: "Como você se imagina quando a viagem terminar?" }), h("div", { class: "pbpapel" }, ta),
+      h("h3", { class: "garrafaperg", text: "Quem serei eu ao final desta travessia?" }), h("p", { class: "small", style: "text-align:center;margin:0", text: "Como você se imagina quando a viagem terminar?" }), h("div", { class: "pbpapel" }, ta),
       h("p", { class: "small", style: "text-align:center", text: "Ninguém mais lê: ela fica guardada só neste celular." }), msg,
       h("div", { class: "foot2" }, h("button", { class: "btn ghost", type: "button", onclick: fechar }, "Agora não"), h("button", { class: "btn gold", type: "button", onclick: lancar }, "🌊 Lançar a garrafa")));
   } else {
