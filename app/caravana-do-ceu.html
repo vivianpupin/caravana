@@ -3587,13 +3587,13 @@ function vGuardioesLider() {
   if (!S.isOwner || !noSite() || !S.db) return null;
   if (S.passagensLista === undefined) { S.passagensLista = null; S.db.doc("privado/passagens").get().then(d => { S.passagensLista = d.exists ? String(d.data().lista || "") : ""; if (!S.passagensLista) try { S.passagensLista = localStorage.getItem("cdi-passagens") || ""; } catch (e) {} aplicaGuardioes(); const ta = document.getElementById("lista-passagens"); if (ta && !ta.value) { ta.value = S.passagensLista; ta.dispatchEvent(new Event("input")); } }).catch(() => {}); }
   if (S.palavraAtual === undefined) vPalavraLider();
-  const ta = h("textarea", { id: "lista-passagens", rows: "6", placeholder: "Ana Paula, 7\nJoão Pedro, 3, Hanuman\nMariana, 12" }); ta.value = S.passagensLista || "";
+  const ta = h("textarea", { id: "lista-passagens", rows: "6", placeholder: "Ana Paula, 7\nJoão Pedro, 3, Hanuman\nMariana, 12" }); ta.value = S.passagensRasc != null ? S.passagensRasc : S.passagensLista || "";
   const msg = h("p", { class: "msg", role: "status" }), lista = h("div", { class: "passlista" });
   const esconde = w => btoa(unescape(encodeURIComponent(String(w).trim().toLowerCase()))).replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
   const slug = n => n.trim().toLowerCase().replace(/\s+/g, "-").replace(/[\/?#%&]/g, "");
   const copia = async (txt, el) => { try { await navigator.clipboard.writeText(txt); } catch (e) { const t = document.createElement("textarea"); t.value = txt; document.body.append(t); t.select(); document.execCommand("copy"); t.remove(); }
     const ok = h("span", { class: "ok", text: " copiado" }); el.after(ok); setTimeout(() => ok.remove(), 1500); };
-  const salva = async () => { S.passagensLista = ta.value; try { localStorage.setItem("cdi-passagens", ta.value); } catch (e) {} await S.db.doc("privado/passagens").set({ lista: ta.value, ts: Date.now() }); aplicaGuardioes(); };
+  const salva = async () => { S.passagensLista = ta.value; S.passagensRasc = null; try { localStorage.setItem("cdi-passagens", ta.value); } catch (e) {} await S.db.doc("privado/passagens").set({ lista: ta.value, ts: Date.now() }); aplicaGuardioes(); };
   const desenha = () => {
     const pal = S.palavraAtual || "", linhas = ta.value.split("\n");
     lista.replaceChildren(...linhas.map((linha, i) => { const [x] = lerPassagens(linha); if (!x) return null;
@@ -3607,14 +3607,17 @@ function vGuardioesLider() {
           h("button", { type: "button", class: "btn ghost", onclick: async () => { if (!confirm("Apagar a passagem de " + x.nome + " desta lista?")) return; const l = ta.value.split("\n"); l.splice(i, 1); ta.value = l.join("\n"); desenha(); try { await salva(); } catch (e) {} } }, "Apagar")));
     }).filter(Boolean));
   };
-  ta.addEventListener("input", () => { if (!ta.value.trim()) lista.replaceChildren(); });
+  // o que a líder está digitando fica guardado: se a tela se redesenhar (chegou novidade de alguém), o texto não some
+  ta.addEventListener("input", () => { S.passagensRasc = ta.value; if (!ta.value.trim()) lista.replaceChildren(); });
   const gerar = async () => {
     // a palavra-chave entra escondida no link (raspadinha): busca antes de montar, se ainda não chegou
-    if (!S.palavraAtual) { try { const d = await S.db.doc("privado/acesso").get(); S.palavraAtual = d.exists ? String(d.data().palavra || "") : ""; } catch (e) {} }
-    if (!S.palavraAtual) { msg.textContent = "Não encontrei a palavra-chave. Crie a palavra no cartão acima e gere de novo."; msg.className = "msg err"; }
-    desenha();
-    try { await salva(); msg.textContent = "Passagens prontas. Os guardiões entram sozinhos nos passaportes."; msg.className = "msg ok"; setTimeout(() => { msg.textContent = ""; }, 4000); }
-    catch (e) { msg.textContent = "Não consegui guardar a lista. Tente de novo."; msg.className = "msg err"; }
+    // as passagens aparecem na hora; com internet lenta, a palavra e a gravação chegam depois (no máximo alguns segundos de espera)
+    if (!ta.value.trim()) { msg.textContent = "Escreva pelo menos um nome na lista."; msg.className = "msg err"; return; }
+    desenha(); msg.textContent = "Gerando…"; msg.className = "msg";
+    const espera = (pr, ms) => Promise.race([pr, new Promise((_, no) => setTimeout(() => no(new Error("demorou")), ms))]);
+    if (!S.palavraAtual) { try { const d = await espera(S.db.doc("privado/acesso").get(), 6000); S.palavraAtual = d.exists ? String(d.data().palavra || "") : ""; desenha(); } catch (e) {} }
+    try { await espera(salva(), 8000); msg.textContent = S.palavraAtual ? "Passagens prontas. Os guardiões entram sozinhos nos passaportes." : "Passagens prontas, mas sem a palavra-chave no link: crie a palavra no cartão acima e gere de novo."; msg.className = S.palavraAtual ? "msg ok" : "msg err"; }
+    catch (e) { msg.textContent = "As passagens estão aí embaixo, mas a internet está lenta e a lista ainda não foi guardada. Gere de novo quando a conexão melhorar."; msg.className = "msg err"; }
   };
   if (ta.value.trim()) setTimeout(desenha, 0);
   const gente = S.viajantes.filter(v => !v.lider).slice().sort((a, b) => normNome(a.nome) < normNome(b.nome) ? -1 : 1);
