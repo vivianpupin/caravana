@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/10 · 04:01";</script>
+<script>window.__VERSAO = "12/10 · 04:07";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2031,6 +2031,14 @@ function marcaChat() {
   bt.setAttribute("aria-label", n ? `Chat, ${n} ${n > 1 ? "mensagens novas" : "mensagem nova"}` : "Chat");
   try { if (navigator.setAppBadge) n ? navigator.setAppBadge(n) : navigator.clearAppBadge(); } catch (e) {}
 }
+// seletores das faixas que deslizam para o lado (lidos uma vez do próprio CSS do app)
+let _selRol = null;
+function seletorRolavel() {
+  if (_selRol) return _selRol;
+  const sel = [];
+  try { for (const sh of document.styleSheets) { let rs; try { rs = sh.cssRules; } catch (e) { continue; } for (const r of rs || []) if (r.style && /auto|scroll/.test(r.style.overflowX || "") && r.selectorText) sel.push(r.selectorText); } } catch (e) {}
+  return _selRol = sel.length ? sel.join(",") : ".daychips";
+}
 function render() {
   if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
   marcaChat(); marcaPombos(); convidaAvisos(); registraApp(); checaHabilidades();
@@ -2042,10 +2050,10 @@ function render() {
   const chatDraft = $("#chat-input")?.value;
   const main = $("#main"), scroll = main.scrollTop;
   // o que a pessoa abriu ou deslizou continua igual depois de redesenhar (nada fecha nem pula quando chega novidade de alguém)
-  const mesmaAba = S._abaDesenhada === S.tab;
-  const chaveDet = d => (d.querySelector("summary")?.textContent || "").trim().slice(0, 80);
-  const abertos = mesmaAba ? new Map([...main.querySelectorAll("details")].map(d => [chaveDet(d), d.open])) : null;
-  const rolaveis = el => [...el.querySelectorAll("*")].filter(e => e.scrollWidth > e.clientWidth + 4 && e.className && typeof e.className === "string");
+  const vista = [S.tab, S.fotoAba, S.camSel, S.diaAberto, S.ensSel].join("|"), mesmaAba = S._abaDesenhada === vista;
+  const chavesDet = el => { const n = {}; return [...el.querySelectorAll("details")].map(d => { const t = (d.querySelector("summary")?.textContent || "").trim().slice(0, 80); n[t] = (n[t] || 0) + 1; return [d, t + "#" + n[t]]; }); };
+  const abertos = mesmaAba ? new Map(chavesDet(main).map(([d, k]) => [k, d.open])) : null;
+  const rolaveis = el => [...el.querySelectorAll(seletorRolavel())].filter(e => e.scrollWidth > e.clientWidth + 4 && e.className && typeof e.className === "string");
   const lados = mesmaAba ? rolaveis(main).map(e => [e.className, e.scrollLeft]) : null;
   pintaMe();
   const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
@@ -2055,9 +2063,9 @@ function render() {
   // último dia: o passaporte completo avisa que o vídeo está pronto (no Roteiro e no Passaporte)
   if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte")) { const c = avisoVideo(), v = main.firstElementChild; if (c && v) v.prepend(c); }
   if (!precisaCadastro && S.tab !== "travessia" && S.tab !== "conversa" && avisoEmDestaque(avisoAtual())) { const f = avisoFixado(), v = main.firstElementChild; if (f && v) v.prepend(f); }
-  if (abertos && abertos.size) main.querySelectorAll("details").forEach(d => { const k = chaveDet(d); if (abertos.has(k) && d.open !== abertos.get(k)) d.open = abertos.get(k); });
+  if (abertos && abertos.size) chavesDet(main).forEach(([d, k]) => { if (abertos.has(k) && d.open !== abertos.get(k)) d.open = abertos.get(k); });
   if (lados && lados.length) { const novos = rolaveis(main), usados = new Set(); for (const [cls, x] of lados) { const e = novos.find(n => n.className === cls && !usados.has(n)); if (e) { usados.add(e); if (x) e.scrollLeft = x; } } }
-  S._abaDesenhada = S.tab;
+  S._abaDesenhada = vista;
   main.scrollTop = scroll;
   if (S.tab === "conversa") {
     const inp = $("#chat-input"); if (inp && chatDraft) inp.value = chatDraft;
@@ -2324,7 +2332,7 @@ function marcaMissao(id) {
 // todas cumpridas: carimba o Embarque no passaporte (uma vez só)
 function confereEmbarque() {
   const v = eu(), l = localDe("embarque"); if (!v || !l || minhas().embarque || S.carimbandoEmbarque) return;
-  if (!missoesAtivas().every(missaoFeita)) return;
+  if (!S.muralPronto || !missoesAtivas().every(missaoFeita)) return; // espera a Galeria chegar (a missão das pistas depende dela)
   S.carimbandoEmbarque = true; const ts = Date.now();
   S.local = { ...S.local, embarque: ts }; try { localStorage.setItem("cdi-ins", JSON.stringify(S.local)); } catch (e) {}
   S.db.doc("viajantes/" + S.uid).update({ insignias: { embarque: ts } }).catch(() => {});
@@ -2387,9 +2395,12 @@ function abrirIntencao() {
   if (!I) {
     const ta = h("textarea", { id: "intencao-tx", rows: "7", maxlength: "1500", placeholder: "Ao final desta travessia, eu sou…" });
     const msg = h("p", { class: "msg", role: "status" });
+    let lancou = false;
     const lancar = () => {
+      if (lancou) return;
       const t = ta.value.trim(); if (t.length < 3) { msg.textContent = "Escreva a sua mensagem antes de lançar a garrafa."; msg.className = "msg err"; return; }
-      try { localStorage.setItem("cdi-intencao", JSON.stringify({ texto: t, ts: Date.now() })); } catch (e) { msg.textContent = "Não consegui guardar neste celular."; msg.className = "msg err"; return; }
+      lancou = true;
+      try { localStorage.setItem("cdi-intencao", JSON.stringify({ texto: t, ts: Date.now() })); } catch (e) { lancou = false; msg.textContent = "Não consegui guardar neste celular."; msg.className = "msg err"; return; }
       marcaMissao("intencao"); try { navigator.vibrate && navigator.vibrate([20, 50, 60]); } catch (e) {}
       // como o pombo: a garrafa aparece com a mensagem dentro e vai embora boiando com a correnteza
       box.scrollTop = 0; box.style.overflow = "hidden";
@@ -2483,9 +2494,10 @@ const GUARDIOES = {
 };
 // o link da passagem pode trazer o guardião (?g=ganesha)
 try { const g0 = new URLSearchParams(location.search).get("g"); if (g0 && GUARDIOES[g0]) localStorage.setItem("cdi-guardiao", g0); } catch (e) {}
-const meuGuardiao = () => { const v = eu(); let g = v && v.guardiao; if (!GUARDIOES[g]) try { g = localStorage.getItem("cdi-guardiao"); } catch (e) {}
-  // a líder já tem a lista das passagens: acha o próprio nome nela
+const meuGuardiao = () => { const v = eu(); let g = v && v.guardiao;
+  // a líder já tem a lista das passagens: acha o próprio nome nela (antes do que ficou no celular, que pode ser de uma passagem que ela só foi ver)
   if (!GUARDIOES[g] && v && S.isOwner && S.passagensLista) g = guardiaoNaLista(v, lerPassagens(S.passagensLista));
+  if (!GUARDIOES[g]) try { g = localStorage.getItem("cdi-guardiao"); } catch (e) {}
   // guardião conhecido só neste aparelho (veio do link da passagem): grava no passaporte para valer em qualquer celular
   if (GUARDIOES[g] && v && !v.guardiao && S.db && S.uid && !S._gGravado) { S._gGravado = 1; S.db.doc("viajantes/" + S.uid).update({ guardiao: g }).catch(() => {}); }
   return GUARDIOES[g] ? g : null; };
@@ -2789,11 +2801,12 @@ function ceuFundo(cv, box) {
   const x = cv.getContext("2d"), dpr = Math.min(2, window.devicePixelRatio || 1), quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let W = 0, H = 0, est = [], voando = [], prox = 1.2, ult = performance.now();
   const ajusta = () => { W = box.clientWidth; H = box.clientHeight; if (!W) return; cv.style.height = H + "px"; cv.style.marginBottom = -(H - 18 + 10) + "px"; cv.width = W * dpr; cv.height = H * dpr; x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (est.length && est._w === W) return; // só mudou a altura: as estrelas continuam onde estavam
     // estrelas: poucas, de tamanhos e focos diferentes; as maiores ficam desfocadas, como se estivessem perto, e as pequenas, longe
-    est = Array.from({ length: 34 }, () => { const b = Math.random(), perto = Math.random() < .35; return { x: Math.random() * W, y: Math.random() * H, r: perto ? 3 + b * 7 : .5 + b * 1.1, a: perto ? .06 + b * .1 : .25 + b * .5, perto, f: .3 + Math.random() * 1.2, ph: Math.random() * 7, v: perto ? 4 + b * 4 : 1 + b * 1.5, c: Math.random() < .65 ? "255,244,226" : Math.random() < .5 ? "200,220,255" : "255,214,170" }; }); };
+    est = Array.from({ length: 34 }, () => { const b = Math.random(), perto = Math.random() < .35; return { x: Math.random() * W, y: Math.random() * H, r: perto ? 3 + b * 7 : .5 + b * 1.1, a: perto ? .06 + b * .1 : .25 + b * .5, perto, f: .3 + Math.random() * 1.2, ph: Math.random() * 7, v: perto ? 4 + b * 4 : 1 + b * 1.5, c: Math.random() < .65 ? "255,244,226" : Math.random() < .5 ? "200,220,255" : "255,214,170" }; }); est._w = W; };
   const quadro = agora => {
-    if (W && !box.isConnected) return;
-    if (!W || box.clientWidth !== W || Math.abs(box.clientHeight - H) > 40) ajusta();
+    if (!box.isConnected) { if (!document.querySelector(".oraculo")) try { if (navigator.audioSession) navigator.audioSession.type = "auto"; } catch (e) {} return; }
+    if (!W || box.clientWidth !== W || box.clientHeight !== H) ajusta();
     if (!W) return requestAnimationFrame(quadro);
     const dt = Math.min(.05, (agora - ult) / 1000), t = agora / 1000; ult = agora;
     x.clearRect(0, 0, W, H);
@@ -2838,7 +2851,7 @@ function abrirOraculo() {
   const ang = Object.fromEntries(GRAHAS.map(x => [x.id, ORB[x.id][1]]));
   let ultimo = performance.now(), acelera = 1;
   const gira = agora => {
-    if (!box.isConnected) { try { if (navigator.audioSession) navigator.audioSession.type = "auto"; } catch (e) {} return; }
+    if (!box.isConnected) { if (!document.querySelector(".oraculo")) try { if (navigator.audioSession) navigator.audioSession.type = "auto"; } catch (e) {} return; }
     const dt = Math.min(.1, (agora - ultimo) / 1000); ultimo = agora;
     GRAHAS.forEach((x, k) => { if (!VEL[x.id]) return; ang[x.id] += VEL[x.id] * dt * acelera; poe(celulas[k], x.id, ang[x.id]); });
     requestAnimationFrame(gira);
@@ -2852,24 +2865,24 @@ function abrirOraculo() {
   {
     let segurando = false, inicio = 0, pos = 4, vel = 0, raf = 0;
     const bt = h("button", { type: "button", class: "orbotao" }, "Segure para concentrar");
-    const gira = () => { if (!segurando) return; const t = (performance.now() - inicio) / 1000, f = Math.min(1, t / 3);
+    const gira = () => { if (!segurando) return; if (!box.isConnected) { segurando = false; return; } const t = (performance.now() - inicio) / 1000, f = Math.min(1, t / 3);
       barra.firstChild.style.width = (f * 100) + "%"; vel += 16 + f * 40; acelera = 1 + f * 5;
       if (vel > 160 - f * 120) { vel = 0; pos = (pos + 1 + Math.floor(Math.random() * 3)) % 9; acende(pos); vibrar(15); tique(); }
       raf = requestAnimationFrame(gira); };
-    const comeca = e => { e.preventDefault(); if (segurando || bt.disabled) return; segurando = true; inicio = performance.now(); vibrar(20); tique(true); bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(gira); };
-    const solta = () => { if (!segurando) return; segurando = false; vibrar(30); cancelAnimationFrame(raf); bt.disabled = true; bt.classList.remove("vivo"); acelera = 1;
+    const comeca = e => { e.preventDefault(); if (segurando || bt.disabled) return; segurando = true; bt._ptr = e.pointerId; inicio = performance.now(); vibrar(20); tique(true); bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(gira); };
+    const solta = e => { if (!segurando || (e && e.pointerId != null && bt._ptr != null && e.pointerId !== bt._ptr)) return; segurando = false; vibrar(30); cancelAnimationFrame(raf); bt.disabled = true; bt.classList.remove("vivo"); acelera = 1;
       if (performance.now() - inicio < 600) { bt.disabled = false; bt.textContent = "Segure um pouco mais"; barra.firstChild.style.width = "0"; return; }
       // a luz desacelera e para num planeta
       const fim = Math.floor(Math.random() * 9), L = { dia: hojeLocal(), g: GRAHAS[fim].id, n: Math.floor(Math.random() * 27), p: Math.floor(Math.random() * 3) };
       let passos = 9 + ((fim - pos + 9) % 9), d = 70;
-      const anda = () => { pos = (pos + 1) % 9; acende(pos); vibrar(18); tique(); passos--;
+      const anda = () => { if (!box.isConnected) return; pos = (pos + 1) % 9; acende(pos); vibrar(18); tique(); passos--;
         if (passos > 0) { d *= 1.13; setTimeout(anda, d); return; }
         celulas[fim].classList.add("escolhido"); sino(); if (!vibrar([40, 60, 120])) { setTimeout(() => vibrar(1), 120); setTimeout(() => vibrar(1), 260); }
         try { localStorage.setItem("cdi-oraculo", JSON.stringify(L)); } catch (e) {}
         bt.remove(); barra.remove();
         setTimeout(() => { saida.replaceChildren(leituraOraculo(L), h("div", { class: "actions", style: "justify-content:center;margin-top:10px" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirOraculo() }, "Consultar de novo"))); saida.scrollIntoView({ behavior: "smooth", block: "start" }); }, 600); };
       anda(); };
-    bt.addEventListener("pointerdown", comeca); ["touchstart", "touchend", "click"].forEach(ev => bt.addEventListener(ev, destravaSom, { passive: true })); bt.addEventListener("pointerup", solta); bt.addEventListener("pointerleave", solta); bt.addEventListener("pointercancel", solta);
+    bt.addEventListener("pointerdown", comeca); ["touchstart", "touchend", "click"].forEach(ev => bt.addEventListener(ev, destravaSom, { passive: true })); bt.addEventListener("pointerup", solta); bt.addEventListener("pointerleave", solta); bt.addEventListener("pointercancel", solta); { const some = () => { if (!box.isConnected) return document.removeEventListener("visibilitychange", some); if (document.hidden) solta(); }; document.addEventListener("visibilitychange", some); }
     bt.addEventListener("contextmenu", e => e.preventDefault());
     // a última leitura fica guardada para reler, até a próxima consulta
     if (L0 && GRAHAS.some(x => x.id === L0.g)) saida.append(h("p", { class: "orvolta", text: "Sua última leitura" }), leituraOraculo(L0));
@@ -3640,13 +3653,15 @@ function guardiaoNaLista(v, lista) {
 function aplicaGuardioes() {
   if (!S.isOwner || !S.db || !S.passagensLista) return;
   const lista = lerPassagens(S.passagensLista);
-  for (const v of S.viajantes) { if (v.guardiao) continue; // líderes também recebem passagem
+  for (const v of S.viajantes) { if (v.guardiao || v.guardiao === "") continue; // líderes também recebem passagem; "" = a líder tirou de propósito
     const g = guardiaoNaLista(v, lista); if (g) S.db.doc("viajantes/" + v.id).update({ guardiao: g }).catch(() => {}); }
 }
 // as passagens agora nascem dentro do app: a lista fica guardada (privado/passagens) e o guardião de cada um entra sozinho no passaporte
 function vGuardioesLider() {
   if (!S.isOwner || !noSite() || !S.db) return null;
-  if (S.passagensLista === undefined) { S.passagensLista = null; S.db.doc("privado/passagens").get().then(d => { S.passagensLista = d.exists ? String(d.data().lista || "") : ""; if (!S.passagensLista) try { S.passagensLista = localStorage.getItem("cdi-passagens") || ""; } catch (e) {} aplicaGuardioes(); const ta = document.getElementById("lista-passagens"); if (ta && !ta.value) { ta.value = S.passagensLista; ta.dispatchEvent(new Event("input")); } }).catch(() => {}); }
+  if (S.passagensLista === undefined) { S.passagensLista = null; S.db.doc("privado/passagens").get().then(d => { S.passagensLista = d.exists ? String(d.data().lista || "") : ""; if (!S.passagensLista) try { S.passagensLista = localStorage.getItem("cdi-passagens") || ""; } catch (e) {} aplicaGuardioes(); const ta = document.getElementById("lista-passagens"); if (ta && !ta.value && document.activeElement !== ta) render(); })
+    // sem internet: usa a cópia guardada neste celular e tenta de novo depois (nunca começa com a lista vazia)
+    .catch(() => { let c = ""; try { c = localStorage.getItem("cdi-passagens") || ""; } catch (e) {} S.passagensLista = c || null; if (!c) setTimeout(() => { if (S.passagensLista === null) { S.passagensLista = undefined; render(); } }, 15000); else render(); }); }
   if (S.palavraAtual === undefined) vPalavraLider();
   const ta = h("textarea", { id: "lista-passagens", rows: "6", placeholder: "Ana Paula, 7\nJoão Pedro, 3, Hanuman\nMariana, 12" }); ta.value = S.passagensRasc != null ? S.passagensRasc : S.passagensLista || "";
   const msg = h("p", { class: "msg", role: "status" }), lista = h("div", { class: "passlista" });
@@ -3658,14 +3673,14 @@ function vGuardioesLider() {
   const desenha = () => {
     const pal = S.palavraAtual || "", linhas = ta.value.split("\n");
     lista.replaceChildren(...linhas.map((linha, i) => { const [x] = lerPassagens(linha); if (!x) return null;
-      const link = location.origin + "/embarque/" + slug(x.nome) + (x.num ? "/" + x.num.padStart(2, "0") : "") + (x.pedido ? "/" + x.pedido : "") + (pal ? "#k=" + esconde(pal) : "");
+      const link = location.origin + "/embarque/" + slug(x.nome) + (x.num || x.pedido ? "/" + (x.num || "0").padStart(2, "0") : "") + (x.pedido ? "/" + x.pedido : "") + (pal ? "#k=" + esconde(pal) : "");
       const texto = x.nome.split(" ")[0] + ", sua passagem para a Índia chegou ✈️\n" + link;
       const b1 = h("button", { type: "button", class: "btn gold", onclick: e => copia(texto, e.currentTarget) }, "Copiar mensagem");
       return h("div", { class: "passitem" }, h("b", { text: x.nome + (x.num ? " · Nº " + x.num.padStart(2, "0") : "") + " · " + GUARDIOES[x.g].nome }), h("pre", { text: texto }),
         h("div", { class: "actions" }, b1,
           h("a", { class: "btn", href: "https://wa.me/?text=" + encodeURIComponent(texto), target: "_blank", rel: "noopener" }, "WhatsApp"),
           h("a", { class: "btn ghost", href: link, target: "_blank", rel: "noopener" }, "Ver"),
-          h("button", { type: "button", class: "btn ghost", onclick: async () => { if (!confirm("Apagar a passagem de " + x.nome + " desta lista?")) return; const l = ta.value.split("\n"); l.splice(i, 1); ta.value = l.join("\n"); desenha(); try { await salva(); } catch (e) {} } }, "Apagar")));
+          h("button", { type: "button", class: "btn ghost", onclick: async () => { if (!confirm("Apagar a passagem de " + x.nome + " desta lista?")) return; const l = ta.value.split("\n"), k = l.indexOf(linha); if (k < 0) return; l.splice(k, 1); ta.value = l.join("\n"); desenha(); try { await salva(); } catch (e) {} } }, "Apagar")));
     }).filter(Boolean));
   };
   // o que a líder está digitando fica guardado: se a tela se redesenhar (chegou novidade de alguém), o texto não some
@@ -3673,6 +3688,7 @@ function vGuardioesLider() {
   const gerar = async () => {
     // a palavra-chave entra escondida no link (raspadinha): busca antes de montar, se ainda não chegou
     // as passagens aparecem na hora; com internet lenta, a palavra e a gravação chegam depois (no máximo alguns segundos de espera)
+    if (S.passagensLista === null && S.passagensRasc == null) { msg.textContent = "Ainda carregando a lista guardada. Espere um instante e toque de novo."; msg.className = "msg err"; return; }
     if (!ta.value.trim()) { msg.textContent = "Escreva pelo menos um nome na lista."; msg.className = "msg err"; return; }
     desenha(); msg.textContent = "Gerando…"; msg.className = "msg";
     const espera = (pr, ms) => Promise.race([pr, new Promise((_, no) => setTimeout(() => no(new Error("demorou")), ms))]);
@@ -6472,9 +6488,11 @@ function verFotos(i) {
       h("button", { type: "button", class: "nvacao", "data-txt": "Apagar", "aria-label": "Apagar", onclick: () => { if (confirm("Apagar esta foto?")) { tela.remove(); apagaDoDiario(it.id); } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("path", { d: "M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" }))),
       h("button", { type: "button", class: "nvcompart", "data-txt": "Salvar no dispositivo", "aria-label": "Salvar no dispositivo", onclick: compartilhar }, h("svg", { viewBox: "0 0 24 24", width: "34", height: "34", fill: "currentColor" }, h("path", { d: "M14 5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11V5z" }))),
       h("button", { type: "button", class: "nvacao", "data-txt": "Enviar para a Galeria da Caravana", "aria-label": "Enviar para a Galeria da Caravana", onclick: async () => {
+        if (it.enviando) { msg.textContent = "Já está enviando, espere um pouquinho."; msg.className = "msg"; return; }
         if (!S.assets || !eu()) { msg.textContent = "Para enviar à galeria, emita seu passaporte."; msg.className = "msg err"; return; }
         msg.textContent = "Enviando…"; msg.className = "msg";
-        try { if (/^video/.test(it.blob.type)) { await enviaFilmeGaleria(it, msg); return; }
+        it.enviando = true; setTimeout(() => { it.enviando = false; }, 1500);
+        try { if (/^video/.test(it.blob.type)) { it.enviando = true; try { await enviaFilmeGaleria(it, msg); } finally { it.enviando = false; } return; }
           const rr = await S.assets.upload(it.blob); await S.db.collection("mural").add({ autor: S.uid, fotoId: rr.id, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
         catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("rect", { x: "3", y: "5", width: "18", height: "14", rx: "2" }), h("path", { d: "M3 16l5-5 4 4 3-3 6 6" })))),
     msg);
@@ -8147,19 +8165,23 @@ function editarCarta(c) {
     S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || ""))).map(v => h("option", { value: v.id, text: "Só para " + (v.nome || "viajante"), selected: c.para === v.id })));
   if (c.id) para.disabled = true; // uma carta já criada não muda de destino
   const st = h("p", { class: "msg", role: "status" });
+  let gravando = false;
   const grava = async modo => {
+    if (gravando) return;
     if (!ta.value.trim()) { st.textContent = "Escreva a carta antes."; st.className = "msg err"; return; }
     const envio = modo === "agora" ? Date.now() : Date.parse(`${d.value}T${hr.value || "07:00"}:00+05:30`);
     if (!isFinite(envio)) { st.textContent = "Confira a data e a hora."; st.className = "msg err"; return; }
     const dados = { titulo: tit.value.trim(), texto: ta.value.trim(), assinatura: ass.value.trim() || ASSINATURA, local: loc.value.trim(), envio, rascunho: modo === "rascunho", ts: Date.now() };
     const pv = c.id ? c.para || "" : para.value, col = pv ? "cartasPessoais" : "cartas";
     if (pv) dados.para = pv;
+    gravando = true;
     try {
       if (c.avisada && c.envio === dados.envio) dados.avisada = true; // carta já avisada não avisa de novo ao ser corrigida
       if (c.id) await S.db.doc(col + "/" + c.id).set(dados); else { const r = await S.db.collection(col).add(dados); c.id = r && r.id; c.para = pv; }
       st.textContent = modo === "rascunho" ? "Rascunho guardado. Ninguém vê ainda." : modo === "agora" ? "Carta enviada! Ela chega agora para a caravana." : `Carta programada para ${dataCarta(envio)}, às ${horaCarta(envio)} na Índia.`;
       st.className = "msg ok";
     } catch (e) { st.textContent = "Não consegui guardar a carta."; st.className = "msg err"; }
+    gravando = false;
   };
   const box = h("form", { class: "correioform", onsubmit: e => e.preventDefault() },
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: c.id ? "Editar carta" : "Nova carta" }))),
@@ -8193,19 +8215,19 @@ function vCorrespondencia() {
   if (!abertas.length && !S.isOwner) return h("section", { class: "correio" },
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: "Cartas da travessia" }))),
     h("p", { class: "small", text: "Quando a líder mandar uma carta, o pombo-correio traz até aqui." }));
-  const env = (c, fut) => !S.isOwner || c.id === "final" ? env1(c, fut) : h("div", { class: "envlinha" }, env1(c, fut),
+  const env = (c, fut, entregue) => !S.isOwner || c.id === "final" ? env1(c, fut, entregue) : h("div", { class: "envlinha" }, env1(c, fut, entregue),
     h("button", { type: "button", class: "envapaga", "aria-label": "Apagar carta", title: "Apagar carta", onclick: () => apagarCarta(c) }, "🗑"));
-  const env1 = (c, fut) => h("button", { type: "button", class: "envelope" + (fut ? " fut" : ""), onclick: () => fut ? editarCarta(c) : abrirCarta(c) },
+  const env1 = (c, fut, entregue) => h("button", { type: "button", class: "envelope" + (fut && !entregue ? " fut" : ""), onclick: () => fut ? editarCarta(c) : abrirCarta(c) },
     h("span", { class: "rolinho", "aria-hidden": "true" }, h("i")),
     h("span", { class: "ctx" }, h("b", { text: (c.para || c.pessoal ? "💌 " : "") + (c.titulo || "Carta da líder") }),
-      h("span", { text: (c.para && S.isOwner ? "Só para " + nomeDe(c.para).split(" ")[0] + " · " : c.pessoal ? "Só para você · " : "") + (fut ? (c.rascunho ? "Rascunho · ninguém vê ainda" : `Programada · ${dataCarta(c.envio)}, ${horaCarta(c.envio)} na Índia`) : (c.local ? c.local + " · " : "") + dataCarta(c.envio)) })));
+      h("span", { text: (c.para && S.isOwner ? "Só para " + nomeDe(c.para).split(" ")[0] + " · " : c.pessoal ? "Só para você · " : "") + (fut && !entregue ? (c.rascunho ? "Rascunho · ninguém vê ainda" : `Programada · ${dataCarta(c.envio)}, ${horaCarta(c.envio)} na Índia`) : (c.local ? c.local + " · " : "") + dataCarta(c.envio)) })));
   return h("section", { class: "correio" },
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: "Cartas da travessia" }))),
     abertas.length ? h("div", { class: "envs" }, abertas.map(c => env(c, false))) : null,
     S.isOwner ? h("div", { class: "secret" },
       futuras.length ? h("div", { class: "envs" }, futuras.map(c => env(c, true))) : null,
       enviadasP.length ? h("p", { class: "small", text: "Cartas pessoais já entregues:" }) : null,
-      enviadasP.length ? h("div", { class: "envs" }, enviadasP.map(c => env(c, true))) : null,
+      enviadasP.length ? h("div", { class: "envs" }, enviadasP.map(c => env(c, true, true))) : null,
       h("div", { class: "actions" }, h("button", { class: "btn gold", type: "button", onclick: () => editarCarta(null) }, "Escrever nova carta"))) : null);
 }
 function cartasVistas() { try { return JSON.parse(localStorage.getItem("cdi-cartas") || "{}") || {}; } catch (e) { return S._vistas || (S._vistas = {}); } }
@@ -8273,7 +8295,7 @@ function abasFotos() {
 const podeRolo = () => { try { return !!(navigator.canShare && navigator.canShare({ files: [new File([new Blob(["x"], { type: "image/jpeg" })], "t.jpg", { type: "image/jpeg" })] })); } catch (e) { return false; } };
 async function salvarNoRolo(blobP, nome, msg) {
   const dl = noSite() ? null : await (window.claude?.use?.("downloads") ?? null);
-  const b = await blobP;
+  let b; try { b = await blobP; } catch (e) { msg.textContent = "Não consegui baixar. Confira a internet e tente de novo."; msg.className = "msg err"; return; }
   if (dl) { try { await dl.save({ filename: nome, data: b }); msg.textContent = "Foto salva."; msg.className = "msg ok"; } catch (e) { msg.textContent = e && e.code === "declined" ? "" : "Não consegui salvar. Toque e segure na foto e escolha Salvar imagem."; msg.className = "msg"; } return; }
   const f = new File([b], nome, { type: b.type || "image/jpeg" });
   // iPhone: abre a lista de compartilhar, onde fica "Salvar imagem" (vai direto para o rolo da câmera).
@@ -8335,7 +8357,8 @@ async function baixarAlbum(st, cid) {
 function vMural() {
   const cid = S.muralCidade || "", fotos = S.mural.filter(f => !cid || f.cidade === cid);
   // missão das pistas: ver a galeria já conta (as pistas aparecem normais, com a etiqueta "Pista")
-  { const vis = pistasVistas(), novas = fotos.filter(f => ehPista(f) && !vis[f.id]); if (novas.length) try { localStorage.setItem("cdi-pistas", JSON.stringify({ ...vis, ...Object.fromEntries(novas.map(f => [f.id, Date.now()])) })); } catch (e) {} }
+  { const vis = pistasVistas(), novas = fotos.filter(f => ehPista(f) && !vis[f.id]); if (novas.length) try { localStorage.setItem("cdi-pistas", JSON.stringify({ ...vis, ...Object.fromEntries(novas.map(f => [f.id, Date.now()])) })); } catch (e) {}
+    if (novas.length && !cid) marcaMissao("pistas"); }
   perfis(fotos.map(f => f.autor));
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Galeria da Caravana" }))),
@@ -8384,8 +8407,16 @@ async function filmeMenor(blob, aviso) {
     const dur = Math.min(30, isFinite(v.duration) ? v.duration : 30);
     const pronto = new Promise(r => { mr.onstop = r; });
     await v.play(); mr.start(500);
-    await new Promise(r => { const passo = () => { x.drawImage(v, 0, 0, c.width, c.height); if (aviso) aviso(Math.min(99, Math.round(v.currentTime / dur * 100))); if (v.ended || v.currentTime >= dur) return r(); requestAnimationFrame(passo); }; passo(); });
+    // nunca fica preso: se o vídeo parar (celular bloqueado, app em segundo plano), tenta de novo e, no limite, desiste e usa o filme original
+    const t0 = Date.now(); let ultT = -1, parado = Date.now(), cutucou = false, falhou = false;
+    await new Promise(r => { const passo = () => { x.drawImage(v, 0, 0, c.width, c.height); if (aviso) aviso(Math.min(99, Math.round(v.currentTime / dur * 100)));
+      if (v.currentTime !== ultT) { ultT = v.currentTime; parado = Date.now(); }
+      else if (Date.now() - parado > 3000) { if (!cutucou) { cutucou = true; parado = Date.now(); v.play().catch(() => {}); } else { falhou = true; return r(); } }
+      if (v.ended || v.currentTime >= dur) return r();
+      if (Date.now() - t0 > dur * 1000 + 8000) { falhou = true; return r(); }
+      requestAnimationFrame(passo); }; passo(); });
     mr.stop(); await pronto; v.pause();
+    if (falhou) return blob;
     const novo = new Blob(partes, { type: (tipo || "video/webm").split(";")[0] });
     return novo.size && novo.size < blob.size ? novo : blob;
   } catch (e) { return blob; } finally { v.remove(); URL.revokeObjectURL(v.src); }
@@ -8399,21 +8430,26 @@ async function enviaFilmeGaleria(it, msg) {
   if (filme.size > 6e6) { msg.textContent = "Esse filme é longo demais para a galeria. Grave um trecho mais curto (até 30 segundos)."; msg.className = "msg err"; return; }
   const capaId = (await S.assets.upload(capa)).id;
   let partes = [];
-  if (noSite()) {
-    for (let i = 0, n = Math.ceil(filme.size / PEDACO); i < n; i++) { msg.textContent = `Enviando o filme… ${i + 1} de ${n}`;
-      const r = await S.db.collection("fotos").add({ data: await b64(filme.slice(i * PEDACO, (i + 1) * PEDACO)), autor: S.uid, ts: Date.now(), parte: i }); partes.push(r.id); }
-  } else partes = [(await S.assets.upload(filme)).id];
+  try {
+    if (noSite()) {
+      for (let i = 0, n = Math.ceil(filme.size / PEDACO); i < n; i++) { msg.textContent = `Enviando o filme… ${i + 1} de ${n}`;
+        const r = await S.db.collection("fotos").add({ data: await b64(filme.slice(i * PEDACO, (i + 1) * PEDACO)), autor: S.uid, ts: Date.now(), parte: i }); partes.push(r.id); }
+    } else partes = [(await S.assets.upload(filme)).id];
+  } catch (e) { for (const id of [capaId, ...partes]) S.assets.delete(id).catch(() => {}); throw e; }
   await S.db.collection("mural").add({ autor: S.uid, fotoId: capaId, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now(), video: { partes, tipo: filme.type || "video/mp4" } });
   msg.textContent = "Filme na Galeria da Caravana."; msg.className = "msg ok";
 }
 // o filme só é baixado quando alguém toca para assistir (economiza os dados de todo mundo)
 const filmesBaixados = {};
-async function urlDoFilme(f) {
-  if (filmesBaixados[f.id]) return filmesBaixados[f.id];
+function urlDoFilme(f) {
   const vd = f.video || {};
-  if (!noSite()) return blob(vd.partes[0]);
-  const pedacos = await Promise.all(vd.partes.map(id => S.db.doc("fotos/" + id).get().then(d => { const t = atob(d.data().data), u = new Uint8Array(t.length); for (let i = 0; i < t.length; i++) u[i] = t.charCodeAt(i); return u; })));
-  return filmesBaixados[f.id] = URL.createObjectURL(new Blob(pedacos, { type: vd.tipo || "video/mp4" }));
+  if (!noSite()) return Promise.resolve(blob(vd.partes[0]));
+  if (filmesBaixados[f.id]) return filmesBaixados[f.id];
+  // guarda no máximo 3 filmes na memória (o iPhone fecha o app se a memória enche)
+  const ids = Object.keys(filmesBaixados); if (ids.length >= 3) { const velho = ids[0]; filmesBaixados[velho].then(u => URL.revokeObjectURL(u)).catch(() => {}); delete filmesBaixados[velho]; }
+  return filmesBaixados[f.id] = Promise.all(vd.partes.map(id => S.db.doc("fotos/" + id).get().then(d => { const t = atob(d.data().data), u = new Uint8Array(t.length); for (let i = 0; i < t.length; i++) u[i] = t.charCodeAt(i); return u; })))
+    .then(pedacos => { const bl = new Blob(pedacos, { type: vd.tipo || "video/mp4" }); f._filmeBlob = bl; return URL.createObjectURL(bl); })
+    .catch(e => { delete filmesBaixados[f.id]; throw e; });
 }
 // galeria: vídeo aparece com o primeiro quadro e o símbolo de play; foto antiga que na verdade é vídeo também (a imagem falha e vira vídeo)
 const PLAYSVG = '<svg viewBox="0 0 24 24" width="100%" height="100%"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.45)" stroke="rgba(255,255,255,.85)" stroke-width="1.2"/><path d="M10 8l6 4-6 4z" fill="#fff"/></svg>';
@@ -8432,7 +8468,7 @@ function muralMini(f) {
 function midiaGrandeMural(f, legenda) {
   if (f.video && f.video.partes) {
     const st = h("span", { class: "vidcarrega", text: "Carregando o filme…" }), caixa = h("div", { class: "vidgrande" }, h("img", { class: "mgrande", src: blob(f.fotoId), alt: legenda }), st);
-    urlDoFilme(f).then(u => { caixa.replaceWith(filmeLimpo(u, blob(f.fotoId), "mgrande")); },
+    urlDoFilme(f).then(u => { if (!caixa.isConnected) return; caixa.replaceWith(filmeLimpo(u, blob(f.fotoId), "mgrande")); },
       () => { st.textContent = "Não consegui carregar o filme. Confira a internet e abra de novo."; });
     return caixa;
   }
@@ -8449,7 +8485,10 @@ function abrirFotoMural(f) {
     f.legenda ? h("h3", { text: f.legenda }) : null,
     h("p", { class: "small", text: "Enviada por " + nomeDe(f.autor) }), st,
     h("div", { class: "actions", style: "justify-content:center" },
-      h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo((f.video && f.video.partes ? urlDoFilme(f) : Promise.resolve(blob(f.fotoId))).then(u => fetch(u)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + (f.video ? (/webm/.test((f.video && f.video.tipo) || "") ? ".webm" : ".mp4") : ".jpg"), st) }, "Salvar no dispositivo")),
+      h("button", { class: "btn gold", type: "button", onclick: () => {
+        // filme: o iPhone só abre a lista de salvar logo depois do toque, então o filme precisa já estar baixado
+        if (f.video && f.video.partes && noSite() && !f._filmeBlob) { st.textContent = "Carregando o filme…"; st.className = "msg"; urlDoFilme(f).then(() => { st.textContent = "Filme pronto. Toque de novo em Salvar no dispositivo."; st.className = "msg ok"; }, () => { st.textContent = "Não consegui baixar o filme. Confira a internet."; st.className = "msg err"; }); return; }
+        salvarNoRolo(f._filmeBlob ? Promise.resolve(f._filmeBlob) : (f.video && f.video.partes ? urlDoFilme(f) : Promise.resolve(blob(f.fotoId))).then(u => fetch(u)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + (f.video ? (/webm/.test((f.video && f.video.tipo) || "") ? ".webm" : ".mp4") : ".jpg"), st) ; }}, "Salvar no dispositivo")),
     h("div", { class: "foot2" },
       meu ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (!confirm("Apagar esta foto da galeria?")) return; apagaFotoMural(f).then(closeSheets, () => { st.textContent = "Não consegui apagar a foto."; st.className = "msg err"; }); } }, "Apagar foto") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
@@ -8977,7 +9016,7 @@ render();
   { const cp = db.collection("cartasPessoais"); listen("cartasPessoais", "cartasP", S.isOwner || !cp.where ? cp : cp.where("para", "==", S.uid), () => setTimeout(checaCorreio, 1200)); }
   listen("pensamentos", "pedra");
   if (S.isOwner && window.__SITE) listen("membros", "membros");
-  listen("mural", "mural", db.collection("mural").orderBy("ts", "desc").limit(300));
+  listen("mural", "mural", db.collection("mural").orderBy("ts", "desc").limit(300), () => { S.muralPronto = true; });
   setInterval(() => {
     if (document.activeElement?.matches?.("input,textarea,select,[contenteditable]") || document.querySelector(".sheet")) return;
     if (S.tab === "mapa") return render();
