@@ -8286,7 +8286,7 @@ function vMural() {
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Galeria da Caravana" }))),
     abasFotos(),
-    h("p", { class: "lede", text: "As fotos que a caravana envia do estúdio, separadas por cidade." }),
+    h("p", { class: "lede", text: "As fotos que a caravana envia, separadas por cidade." }),
     h("div", { class: "opts" }, [["", "Todas"], ...CIDADES_MURAL.map(c => [c, c])].map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(cid === id), onclick: () => { S.muralCidade = id; render(); } },
       n + (id ? ` · ${S.mural.filter(f => f.cidade === id).length}` : "")))),
     fotos.length ? (() => { const st = h("p", { class: "small", role: "status" }); return h("div", { class: "album" },
