@@ -2264,9 +2264,9 @@ const MISSOES = [
   ["camera", "Testar uma câmera da maleta", "Tire uma foto com uma das câmeras antigas.", v => false, () => go("fotos")],
   ["pombo", "Mandar um pombo-correio", "Uma cartinha para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")]
 ];
-// pistas: o que as líderes mandam para a Galeria antes da viagem vira pista lacrada; a missão só aparece quando existe alguma pista
+// pistas: tudo o que vai para a Galeria antes da viagem é pista; a missão só aparece quando existe alguma
 const INICIO_VIAGEM = Date.parse("2026-11-04T00:00:00+05:30");
-const ehPista = f => f && f.ts < INICIO_VIAGEM && !!(S.viajantes.find(v => v.id === f.autor) || {}).lider;
+const ehPista = f => !!f && (f.ts || 0) < INICIO_VIAGEM; // tudo o que está na Galeria antes da viagem vale como pista
 const pistas = () => (S.mural || []).filter(ehPista);
 const pistasVistas = () => { try { return JSON.parse(localStorage.getItem("cdi-pistas") || "{}"); } catch (e) { return {}; } };
 const pistaAberta = f => S.isOwner || f.autor === S.uid || !!pistasVistas()[f.id];
