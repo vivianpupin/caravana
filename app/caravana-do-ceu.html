@@ -2430,7 +2430,12 @@ const GUARDIOES = {
 };
 // o link da passagem pode trazer o guardião (?g=ganesha)
 try { const g0 = new URLSearchParams(location.search).get("g"); if (g0 && GUARDIOES[g0]) localStorage.setItem("cdi-guardiao", g0); } catch (e) {}
-const meuGuardiao = () => { const v = eu(); let g = v && v.guardiao; if (!GUARDIOES[g]) try { g = localStorage.getItem("cdi-guardiao"); } catch (e) {} return GUARDIOES[g] ? g : null; };
+const meuGuardiao = () => { const v = eu(); let g = v && v.guardiao; if (!GUARDIOES[g]) try { g = localStorage.getItem("cdi-guardiao"); } catch (e) {}
+  // a líder já tem a lista das passagens: acha o próprio nome nela
+  if (!GUARDIOES[g] && v && S.isOwner && S.passagensLista) g = guardiaoNaLista(v, lerPassagens(S.passagensLista));
+  // guardião conhecido só neste aparelho (veio do link da passagem): grava no passaporte para valer em qualquer celular
+  if (GUARDIOES[g] && v && !v.guardiao && S.db && S.uid && !S._gGravado) { S._gGravado = 1; S.db.doc("viajantes/" + S.uid).update({ guardiao: g }).catch(() => {}); }
+  return GUARDIOES[g] ? g : null; };
 function abrirGuardiao(passo) {
   closeSheets(); passo = passo || 0;
   const g = meuGuardiao(), box = h("div", { role: "dialog", "aria-label": "Conhecer o seu guardião", class: "quiz" });
@@ -3582,7 +3587,8 @@ function guardiaoNaLista(v, lista) {
 function aplicaGuardioes() {
   if (!S.isOwner || !S.db || !S.passagensLista) return;
   const lista = lerPassagens(S.passagensLista);
-  for (const v of S.viajantes) { if (v.lider || v.guardiao) continue; const g = guardiaoNaLista(v, lista); if (g) S.db.doc("viajantes/" + v.id).update({ guardiao: g }).catch(() => {}); }
+  for (const v of S.viajantes) { if (v.guardiao) continue; // líderes também recebem passagem
+    const g = guardiaoNaLista(v, lista); if (g) S.db.doc("viajantes/" + v.id).update({ guardiao: g }).catch(() => {}); }
 }
 // as passagens agora nascem dentro do app: a lista fica guardada (privado/passagens) e o guardião de cada um entra sozinho no passaporte
 function vGuardioesLider() {
@@ -3622,7 +3628,7 @@ function vGuardioesLider() {
     catch (e) { msg.textContent = "As passagens estão aí embaixo, mas a internet está lenta e a lista ainda não foi guardada. Gere de novo quando a conexão melhorar."; msg.className = "msg err"; }
   };
   if (ta.value.trim()) setTimeout(desenha, 0);
-  const gente = S.viajantes.filter(v => !v.lider).slice().sort((a, b) => normNome(a.nome) < normNome(b.nome) ? -1 : 1);
+  const gente = S.viajantes.slice().sort((a, b) => normNome(a.nome) < normNome(b.nome) ? -1 : 1);
   const opcoes = [["", "—"], ...Object.entries(GUARDIOES).map(([id, G]) => [id, G.nome])];
   return h("div", { class: "panel" },
     h("p", { class: "eyebrow", text: "Só você vê · passagens" }),
