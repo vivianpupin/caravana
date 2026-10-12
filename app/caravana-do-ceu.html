@@ -1744,8 +1744,11 @@ nav.tabs button{position:relative}
 .album .zera{color:var(--err)}
 .mfoto{position:relative;width:100%;border:0;padding:0;border-radius:12px;overflow:hidden;background:#2B1F14;aspect-ratio:1;box-shadow:var(--shadow)}
 .mfoto img{width:100%;height:100%;object-fit:cover;display:block}
-.mfoto span{position:absolute;left:0;right:0;bottom:0;padding:18px 8px 6px;font-size:12px;color:#F6EDDA;text-align:left;background:linear-gradient(transparent,rgba(20,14,8,.7))}
+.mfoto .vidmini{position:absolute;inset:0}
+.mfoto .mnome{position:absolute;z-index:1;left:0;right:0;bottom:0;padding:18px 8px 6px;font-size:12px;color:#F6EDDA;text-align:left;background:linear-gradient(transparent,rgba(20,14,8,.7))}
 .mgrande{width:100%;height:auto;border-radius:12px;display:block}
+video.mgrande{max-height:70vh;background:#000}
+.vidgrande{position:relative}.vidcarrega{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(20,14,8,.7);color:#F6EDDA;padding:8px 14px;border-radius:999px;font-size:13px}
 
 .resumobox textarea{width:100%;border:1px solid var(--line2);border-radius:12px;padding:10px 12px;font:15px/1.55 var(--display);background:#FFFCF5}
 /* Mural de pensamentos: pintura rupestre */
@@ -6421,7 +6424,8 @@ function verFotos(i) {
       h("button", { type: "button", class: "nvacao", "data-txt": "Enviar para a Galeria da Caravana", "aria-label": "Enviar para a Galeria da Caravana", onclick: async () => {
         if (!S.assets || !eu()) { msg.textContent = "Para enviar à galeria, emita seu passaporte."; msg.className = "msg err"; return; }
         msg.textContent = "Enviando…"; msg.className = "msg";
-        try { const rr = await S.assets.upload(it.blob); await S.db.collection("mural").add({ autor: S.uid, fotoId: rr.id, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
+        try { if (/^video/.test(it.blob.type)) { await enviaFilmeGaleria(it, msg); return; }
+          const rr = await S.assets.upload(it.blob); await S.db.collection("mural").add({ autor: S.uid, fotoId: rr.id, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
         catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("rect", { x: "3", y: "5", width: "18", height: "14", rx: "2" }), h("path", { d: "M3 16l5-5 4 4 3-3 6 6" })))),
     msg);
   document.body.append(tela);
@@ -8230,6 +8234,7 @@ async function salvarNoRolo(blobP, nome, msg) {
 async function apagaFotoMural(f) {
   await S.db.doc("mural/" + f.id).delete();
   if (f.fotoId && !S.chat.some(m => m.fotoId === f.fotoId)) { try { await S.assets?.delete(f.fotoId); } catch (e) {} }
+  for (const id of (f.video && f.video.partes) || []) { try { await S.assets?.delete(id); } catch (e) {} }
 }
 // Álbum da tribo: todas as fotos da galeria (e do chat) num arquivo .zip só
 function carregaScript(src) { return new Promise((ok, erro) => { if (document.querySelector(`script[src="${src}"]`)) return ok(); const sc = document.createElement("script"); sc.src = src; sc.onload = ok; sc.onerror = erro; document.head.append(sc); }); }
@@ -8289,22 +8294,101 @@ function vMural() {
       h("span", { class: "small", text: cid ? "As fotos desta cidade num arquivo só." : "Todas as fotos da galeria e do chat num arquivo só." }), st); })() : null,
     fotos.length ? h("div", { class: "mural" }, fotos.map(f => h("div", { class: "mwrap" },
       h("button", { type: "button", class: "mfoto", onclick: () => abrirFotoMural(f), "aria-label": (f.legenda || "Foto") + " de " + nomeDe(f.autor) },
-        h("img", { src: blob(f.fotoId), alt: "", loading: "lazy" }), h("span", { text: nomeDe(f.autor).split(" ")[0] + (f.cidade && !cid ? " · " + f.cidade : "") })),
+        muralMini(f), h("span", { class: "mnome", text: nomeDe(f.autor).split(" ")[0] + (f.cidade && !cid ? " · " + f.cidade : "") })),
       f.autor === S.uid || S.isOwner ? h("button", { type: "button", class: "mdel", "aria-label": "Apagar esta foto", onclick: () => { if (confirm("Apagar esta foto da galeria?")) apagaFotoMural(f).catch(() => alert("Não consegui apagar a foto.")); } }, "×") : null)))
       : h("div", { class: "fotovazia" }, h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: cid ? "Nenhuma foto de " + cid + " ainda" : "A galeria está esperando" }),
         h("span", { text: "Monte sua foto no Estúdio e toque em Enviar para a galeria da caravana." }),
         h("button", { class: "btn gold", type: "button", onclick: () => { S.fotoAba = "estudio"; render(); } }, "Ir para o Estúdio")));
 }
+// ---------- filmes na Galeria da Caravana ----------
+// o filme vai em duas partes: a capa (o primeiro quadro, como foto) e o filme em pedaços pequenos (o banco só guarda até 1 MB por item).
+// antes de enviar, o filme é refeito menor (até 30 s, 540 px), para caber e não gastar os dados de quem assiste.
+const PEDACO = 600000;
+async function capaDoFilme(blob) {
+  const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "auto"; v.src = URL.createObjectURL(blob);
+  try { await new Promise((ok, no) => { v.onloadeddata = ok; v.onerror = no; setTimeout(no, 6000); }); try { v.currentTime = .1; await new Promise(r => { v.onseeked = r; setTimeout(r, 1500); }); } catch (e) {}
+    const c = document.createElement("canvas"); c.width = v.videoWidth; c.height = v.videoHeight; c.getContext("2d").drawImage(v, 0, 0);
+    return await new Promise(r => c.toBlob(r, "image/jpeg", .85)); } finally { URL.revokeObjectURL(v.src); }
+}
+async function filmeMenor(blob, aviso) {
+  if (blob.size <= 2.4e6 || !window.MediaRecorder) return blob;
+  const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.src = URL.createObjectURL(blob);
+  v.style.cssText = "position:fixed;left:0;top:0;width:2px;height:2px;opacity:.01;pointer-events:none"; document.body.append(v);
+  try {
+    await new Promise((ok, no) => { v.onloadedmetadata = ok; v.onerror = no; setTimeout(no, 8000); });
+    const k = Math.min(1, 540 / Math.max(v.videoWidth, v.videoHeight)), c = document.createElement("canvas"); c.width = Math.round(v.videoWidth * k / 2) * 2; c.height = Math.round(v.videoHeight * k / 2) * 2;
+    const x = c.getContext("2d"), tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported(t)) || "";
+    const mr = new MediaRecorder(c.captureStream(24), tipo ? { mimeType: tipo, videoBitsPerSecond: 6e5 } : undefined), partes = [];
+    mr.ondataavailable = e => e.data && e.data.size && partes.push(e.data);
+    const dur = Math.min(30, isFinite(v.duration) ? v.duration : 30);
+    const pronto = new Promise(r => { mr.onstop = r; });
+    await v.play(); mr.start(500);
+    await new Promise(r => { const passo = () => { x.drawImage(v, 0, 0, c.width, c.height); if (aviso) aviso(Math.min(99, Math.round(v.currentTime / dur * 100))); if (v.ended || v.currentTime >= dur) return r(); requestAnimationFrame(passo); }; passo(); });
+    mr.stop(); await pronto; v.pause();
+    const novo = new Blob(partes, { type: (tipo || "video/webm").split(";")[0] });
+    return novo.size && novo.size < blob.size ? novo : blob;
+  } catch (e) { return blob; } finally { v.remove(); URL.revokeObjectURL(v.src); }
+}
+const b64 = b => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = no; r.readAsDataURL(b); });
+async function enviaFilmeGaleria(it, msg) {
+  const capa = it.capa || await capaDoFilme(it.blob);
+  if (!capa) throw new Error("capa");
+  msg.textContent = "Preparando o filme…"; msg.className = "msg";
+  const filme = await filmeMenor(it.blob, n => { msg.textContent = "Preparando o filme… " + n + "%"; });
+  if (filme.size > 6e6) { msg.textContent = "Esse filme é longo demais para a galeria. Grave um trecho mais curto (até 30 segundos)."; msg.className = "msg err"; return; }
+  const capaId = (await S.assets.upload(capa)).id;
+  let partes = [];
+  if (noSite()) {
+    for (let i = 0, n = Math.ceil(filme.size / PEDACO); i < n; i++) { msg.textContent = `Enviando o filme… ${i + 1} de ${n}`;
+      const r = await S.db.collection("fotos").add({ data: await b64(filme.slice(i * PEDACO, (i + 1) * PEDACO)), autor: S.uid, ts: Date.now(), parte: i }); partes.push(r.id); }
+  } else partes = [(await S.assets.upload(filme)).id];
+  await S.db.collection("mural").add({ autor: S.uid, fotoId: capaId, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now(), video: { partes, tipo: filme.type || "video/mp4" } });
+  msg.textContent = "Filme na Galeria da Caravana."; msg.className = "msg ok";
+}
+// o filme só é baixado quando alguém toca para assistir (economiza os dados de todo mundo)
+const filmesBaixados = {};
+async function urlDoFilme(f) {
+  if (filmesBaixados[f.id]) return filmesBaixados[f.id];
+  const vd = f.video || {};
+  if (!noSite()) return blob(vd.partes[0]);
+  const pedacos = await Promise.all(vd.partes.map(id => S.db.doc("fotos/" + id).get().then(d => { const t = atob(d.data().data), u = new Uint8Array(t.length); for (let i = 0; i < t.length; i++) u[i] = t.charCodeAt(i); return u; })));
+  return filmesBaixados[f.id] = URL.createObjectURL(new Blob(pedacos, { type: vd.tipo || "video/mp4" }));
+}
+// galeria: vídeo aparece com o primeiro quadro e o símbolo de play; foto antiga que na verdade é vídeo também (a imagem falha e vira vídeo)
+const PLAYSVG = '<svg viewBox="0 0 24 24" width="100%" height="100%"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.45)" stroke="rgba(255,255,255,.85)" stroke-width="1.2"/><path d="M10 8l6 4-6 4z" fill="#fff"/></svg>';
+function vidMiniMural(f) {
+  const ic = h("span", { class: "vidplay", "aria-hidden": "true" }); ic.innerHTML = PLAYSVG;
+  if (f.capaId) return h("span", { class: "vidmini" }, h("img", { src: blob(f.capaId), alt: "", loading: "lazy" }), ic);
+  const v = h("video", { src: blob(f.fotoId) + "#t=0.1", muted: true, playsinline: true, preload: "metadata", onloadedmetadata: e => { try { if (e.target.currentTime < .05) e.target.currentTime = .1; } catch (x) {} } });
+  v.setAttribute("playsinline", ""); v.muted = true;
+  return h("span", { class: "vidmini" }, v, ic);
+}
+function muralMini(f) {
+  if (f.video && f.video.partes) { const ic = h("span", { class: "vidplay", "aria-hidden": "true" }); ic.innerHTML = PLAYSVG; return h("span", { class: "vidmini" }, h("img", { src: blob(f.fotoId), alt: "", loading: "lazy" }), ic); }
+  if (f.video) return vidMiniMural(f);
+  return h("img", { src: blob(f.fotoId), alt: "", loading: "lazy", onerror: e => { const i = e.currentTarget; if (i.dataset.v) return; i.dataset.v = 1; f.video = true; i.replaceWith(vidMiniMural(f)); } });
+}
+function midiaGrandeMural(f, legenda) {
+  if (f.video && f.video.partes) {
+    const st = h("span", { class: "vidcarrega", text: "Carregando o filme…" }), caixa = h("div", { class: "vidgrande" }, h("img", { class: "mgrande", src: blob(f.fotoId), alt: legenda }), st);
+    urlDoFilme(f).then(u => { const v = h("video", { class: "mgrande", src: u, poster: blob(f.fotoId), controls: true, autoplay: true, playsinline: true, loop: true }); v.setAttribute("playsinline", ""); caixa.replaceWith(v); },
+      () => { st.textContent = "Não consegui carregar o filme. Confira a internet e abra de novo."; });
+    return caixa;
+  }
+  const vid = () => { const v = h("video", { class: "mgrande", src: blob(f.fotoId), poster: f.capaId ? blob(f.capaId) : null, controls: true, autoplay: true, playsinline: true, loop: true }); v.setAttribute("playsinline", ""); return v; };
+  if (f.video) return vid();
+  return h("img", { class: "mgrande", src: blob(f.fotoId), alt: legenda, onerror: e => { const i = e.currentTarget; if (i.dataset.v) return; i.dataset.v = 1; f.video = true; i.replaceWith(vid()); } });
+}
 function abrirFotoMural(f) {
   closeSheets();
   const meu = f.autor === S.uid || S.isOwner, st = h("p", { class: "msg", role: "status" });
   const box = h("div", { role: "dialog", "aria-label": "Foto da galeria" },
-    h("img", { class: "mgrande", src: blob(f.fotoId), alt: f.legenda || "Foto da caravana" }),
+    midiaGrandeMural(f, f.legenda || "Foto da caravana"),
     h("p", { class: "eyebrow", text: [f.cidade, new Date(f.ts).toLocaleDateString("pt-BR")].filter(Boolean).join(" · ") }),
     f.legenda ? h("h3", { text: f.legenda }) : null,
     h("p", { class: "small", text: "Enviada por " + nomeDe(f.autor) }), st,
     h("div", { class: "actions", style: "justify-content:center" },
-      h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo(fetch(blob(f.fotoId)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + ".jpg", st) }, "Salvar no dispositivo")),
+      h("button", { class: "btn gold", type: "button", onclick: () => salvarNoRolo((f.video && f.video.partes ? urlDoFilme(f) : Promise.resolve(blob(f.fotoId))).then(u => fetch(u)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + (f.video ? (/webm/.test((f.video && f.video.tipo) || "") ? ".webm" : ".mp4") : ".jpg"), st) }, "Salvar no dispositivo")),
     h("div", { class: "foot2" },
       meu ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (!confirm("Apagar esta foto da galeria?")) return; apagaFotoMural(f).then(closeSheets, () => { st.textContent = "Não consegui apagar a foto."; st.className = "msg err"; }); } }, "Apagar foto") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
