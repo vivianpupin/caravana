@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/10 · 03:38";</script>
+<script>window.__VERSAO = "12/10 · 03:44";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -6445,7 +6445,7 @@ function verFotos(i) {
       ontouchstart: e => { x0 = e.touches[0].clientX; }, ontouchend: e => { if (x0 == null) return; const d = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(d) > 50) verFotos(i + (d < 0 ? 1 : -1)); } },
     h("button", { type: "button", class: "nvfechar", "aria-label": "Fechar", onclick: () => tela.remove() }, "×"),
     h("p", { class: "nvinfo", text: [new Date(it.ts).toLocaleDateString("pt-BR"), it.cidade, it.camera].filter(Boolean).join(" · ") + "   " + (i + 1) + "/" + l.length }),
-    h("div", { class: "nvfoto" }, /^video/.test(it.blob.type) ? h("video", { src: url, poster: it.capa ? (it.capaUrl || (it.capaUrl = URL.createObjectURL(it.capa))) : null, controls: true, autoplay: true, loop: true, muted: true, playsinline: true }) : h("img", { src: url, alt: "", class: "" }),
+    h("div", { class: "nvfoto" }, /^video/.test(it.blob.type) ? filmeLimpo(url, it.capa ? (it.capaUrl || (it.capaUrl = URL.createObjectURL(it.capa))) : null) : h("img", { src: url, alt: "", class: "" }),
       i > 0 ? h("button", { type: "button", class: "nvseta e", "aria-label": "Foto anterior", onclick: () => verFotos(i - 1) }, "‹") : null,
       i < l.length - 1 ? h("button", { type: "button", class: "nvseta d", "aria-label": "Próxima foto", onclick: () => verFotos(i + 1) }, "›") : null),
     h("div", { class: "nvbase" },
@@ -8332,6 +8332,13 @@ function vMural() {
         h("span", { text: "Monte sua foto no Estúdio e toque em Enviar para a galeria da caravana." }),
         h("button", { class: "btn gold", type: "button", onclick: () => { S.fotoAba = "estudio"; render(); } }, "Ir para o Estúdio")));
 }
+// filme tocando limpo: sem os controles do celular (que deixam uma camada escura por cima); um toque pausa e outro volta a tocar
+function filmeLimpo(src, poster, cls) {
+  const v = h("video", { class: cls || null, src, poster: poster || null, autoplay: true, loop: true, muted: true, playsinline: true, onclick: e => { const x = e.currentTarget; if (x.paused) x.play().catch(() => {}); else x.pause(); } });
+  v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", ""); v.muted = true; v.defaultMuted = true;
+  setTimeout(() => v.play().catch(() => {}), 0);
+  return v;
+}
 // ---------- filmes na Galeria da Caravana ----------
 // o filme vai em duas partes: a capa (o primeiro quadro, como foto) e o filme em pedaços pequenos (o banco só guarda até 1 MB por item).
 // antes de enviar, o filme é refeito menor (até 30 s, 540 px), para caber e não gastar os dados de quem assiste.
@@ -8403,11 +8410,11 @@ function muralMini(f) {
 function midiaGrandeMural(f, legenda) {
   if (f.video && f.video.partes) {
     const st = h("span", { class: "vidcarrega", text: "Carregando o filme…" }), caixa = h("div", { class: "vidgrande" }, h("img", { class: "mgrande", src: blob(f.fotoId), alt: legenda }), st);
-    urlDoFilme(f).then(u => { const v = h("video", { class: "mgrande", src: u, poster: blob(f.fotoId), controls: true, autoplay: true, playsinline: true, loop: true }); v.setAttribute("playsinline", ""); caixa.replaceWith(v); },
+    urlDoFilme(f).then(u => { caixa.replaceWith(filmeLimpo(u, blob(f.fotoId), "mgrande")); },
       () => { st.textContent = "Não consegui carregar o filme. Confira a internet e abra de novo."; });
     return caixa;
   }
-  const vid = () => { const v = h("video", { class: "mgrande", src: blob(f.fotoId), poster: f.capaId ? blob(f.capaId) : null, controls: true, autoplay: true, playsinline: true, loop: true }); v.setAttribute("playsinline", ""); return v; };
+  const vid = () => filmeLimpo(blob(f.fotoId), f.capaId ? blob(f.capaId) : null, "mgrande");
   if (f.video) return vid();
   return h("img", { class: "mgrande", src: blob(f.fotoId), alt: legenda, onerror: e => { const i = e.currentTarget; if (i.dataset.v) return; i.dataset.v = 1; f.video = true; i.replaceWith(vid()); } });
 }
