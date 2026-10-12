@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/10 · 03:50";</script>
+<script>window.__VERSAO = "12/10 · 04:01";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2041,6 +2041,12 @@ function render() {
   const draft = act && actId && act.value !== undefined ? act.value : null;
   const chatDraft = $("#chat-input")?.value;
   const main = $("#main"), scroll = main.scrollTop;
+  // o que a pessoa abriu ou deslizou continua igual depois de redesenhar (nada fecha nem pula quando chega novidade de alguém)
+  const mesmaAba = S._abaDesenhada === S.tab;
+  const chaveDet = d => (d.querySelector("summary")?.textContent || "").trim().slice(0, 80);
+  const abertos = mesmaAba ? new Map([...main.querySelectorAll("details")].map(d => [chaveDet(d), d.open])) : null;
+  const rolaveis = el => [...el.querySelectorAll("*")].filter(e => e.scrollWidth > e.clientWidth + 4 && e.className && typeof e.className === "string");
+  const lados = mesmaAba ? rolaveis(main).map(e => [e.className, e.scrollLeft]) : null;
   pintaMe();
   const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
   main.replaceChildren(precisaCadastro ? vCadastro() :
@@ -2049,6 +2055,9 @@ function render() {
   // último dia: o passaporte completo avisa que o vídeo está pronto (no Roteiro e no Passaporte)
   if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte")) { const c = avisoVideo(), v = main.firstElementChild; if (c && v) v.prepend(c); }
   if (!precisaCadastro && S.tab !== "travessia" && S.tab !== "conversa" && avisoEmDestaque(avisoAtual())) { const f = avisoFixado(), v = main.firstElementChild; if (f && v) v.prepend(f); }
+  if (abertos && abertos.size) main.querySelectorAll("details").forEach(d => { const k = chaveDet(d); if (abertos.has(k) && d.open !== abertos.get(k)) d.open = abertos.get(k); });
+  if (lados && lados.length) { const novos = rolaveis(main), usados = new Set(); for (const [cls, x] of lados) { const e = novos.find(n => n.className === cls && !usados.has(n)); if (e) { usados.add(e); if (x) e.scrollLeft = x; } } }
+  S._abaDesenhada = S.tab;
   main.scrollTop = scroll;
   if (S.tab === "conversa") {
     const inp = $("#chat-input"); if (inp && chatDraft) inp.value = chatDraft;
@@ -2296,9 +2305,9 @@ const MISSOES = [
   ["camera", "Testar uma câmera da maleta", "Tire uma foto com uma das câmeras antigas.", v => false, () => go("fotos")],
   ["pombo", "Mandar um pombo-correio", "Uma cartinha para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")]
 ];
-// pistas: o que as líderes mandam para a Galeria antes da viagem vira pista lacrada; a missão só aparece quando existe alguma pista
+// pistas: tudo o que vai para a Galeria antes da viagem é pista; a missão só aparece quando existe alguma
 const INICIO_VIAGEM = Date.parse("2026-11-04T00:00:00+05:30");
-const ehPista = f => f && f.ts < INICIO_VIAGEM && !!(S.viajantes.find(v => v.id === f.autor) || {}).lider;
+const ehPista = f => !!f && (f.ts || 0) < INICIO_VIAGEM; // tudo o que está na Galeria antes da viagem vale como pista
 const pistas = () => (S.mural || []).filter(ehPista);
 const pistasVistas = () => { try { return JSON.parse(localStorage.getItem("cdi-pistas") || "{}"); } catch (e) { return {}; } };
 const pistaAberta = f => S.isOwner || f.autor === S.uid || !!pistasVistas()[f.id];
@@ -6485,6 +6494,8 @@ async function lerDiario() {
   try { const db = await bancoDiario(); return await new Promise((ok, no) => { const q = db.transaction("fotos").objectStore("fotos").getAll(); q.onsuccess = () => { const velhos = new Map((S.fotosDiario || S.diarioAnt || []).map(x => [x.id, x])); ok(q.result.map(x => velhos.get(x.id) || x).sort((a, b) => b.ts - a.ts)); }; q.onerror = () => no(q.error); }); } catch (e) { return []; }
 }
 // lê as fotos guardadas logo depois que o app abre, para a aba Fotos não precisar redesenhar quando elas chegam
+// imagens que aparecem logo ao trocar de aba: já ficam prontas na memória, para não "surgirem" na primeira visita
+setTimeout(() => { ["img/logo.png", "img/simbolo-marrom.png", "insignias/embarque.webp", "img/passaporte-capa.webp", "img/cameras/mala.jpg", "img/lacre.webp"].forEach(u => { const i = new Image(); i.src = u; i.decode?.().catch(() => {}); (window.__preImgs = window.__preImgs || []).push(i); }); }, 2500);
 setTimeout(() => { if (S.fotosDiario) return; lerDiario().then(l => { if (!S.fotosDiario) { S.fotosDiario = l; S.fotosDiarioPronto = true; } }).catch(() => {}); }, 1500);
 // miniatura de foto ou de filme: o filme mostra o primeiro quadro (não fica preto) e o símbolo de play por cima
 function miniMidia(it, extra) {
@@ -8881,13 +8892,17 @@ function vRupias() {
 
 // ---------- dados ----------
 // cada coleção só redesenha as abas que mostram aqueles dados (evita a tela pular à toa)
-const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos"], cartas: ["travessia", "pombo"], cartasP: ["travessia", "pombo"], pombosIn: ["pombo"], pombosOut: ["pombo"] };
+const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos", "travessia"], cartas: ["travessia", "pombo"], cartasP: ["travessia", "pombo"], pombosIn: ["pombo"], pombosOut: ["pombo"] };
 let calmoT = 0, calmoUlt = 0;
 function renderCalmo() { if (calmoT) return; const falta = Math.max(0, 15000 - (Date.now() - calmoUlt)); calmoT = setTimeout(() => { calmoT = 0; calmoUlt = Date.now(); if (!(S.camSel && S.tab === "fotos") && !document.querySelector(".sheet") && !document.activeElement?.matches?.("input,textarea,select,[contenteditable]")) render(); }, falta); }
 function listen(col, key, q, after) {
-  let primeira = true;
+  let primeira = true, assinatura = "";
   (q || S.db.collection(col)).onSnapshot(snap => {
-    S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() })); if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = ajustaSaberes(S.ens); guardaCache(key);
+    const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // a mesma lista de novo (o banco às vezes avisa duas vezes): não redesenha nada, a tela não pisca
+    let ass = ""; try { ass = JSON.stringify(docs); } catch (e) {}
+    if (!primeira && ass && ass === assinatura) return; assinatura = ass;
+    S[key] = docs; if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = ajustaSaberes(S.ens); guardaCache(key);
     S.dbReady = true; if (after) after(); if (key === "chat") marcaChat();
     if (!S.veuAvisado) { S.veuAvisado = true; window.__veuPronto?.(); } // primeiros dados chegaram: o véu de abertura sai logo depois
     // aviso novo da líder: redesenha qualquer aba para ele aparecer em destaque na hora
