@@ -6462,6 +6462,8 @@ async function lerDiario() {
   try { const db = await bancoDiario(); return await new Promise((ok, no) => { const q = db.transaction("fotos").objectStore("fotos").getAll(); q.onsuccess = () => { const velhos = new Map((S.fotosDiario || S.diarioAnt || []).map(x => [x.id, x])); ok(q.result.map(x => velhos.get(x.id) || x).sort((a, b) => b.ts - a.ts)); }; q.onerror = () => no(q.error); }); } catch (e) { return []; }
 }
 // lê as fotos guardadas logo depois que o app abre, para a aba Fotos não precisar redesenhar quando elas chegam
+// imagens que aparecem logo ao trocar de aba: já ficam prontas na memória, para não "surgirem" na primeira visita
+setTimeout(() => { ["img/logo.png", "img/simbolo-marrom.png", "insignias/embarque.webp", "img/passaporte-capa.webp", "img/cameras/mala.jpg", "img/lacre.webp"].forEach(u => { const i = new Image(); i.src = u; i.decode?.().catch(() => {}); (window.__preImgs = window.__preImgs || []).push(i); }); }, 2500);
 setTimeout(() => { if (S.fotosDiario) return; lerDiario().then(l => { if (!S.fotosDiario) { S.fotosDiario = l; S.fotosDiarioPronto = true; } }).catch(() => {}); }, 1500);
 // miniatura de foto ou de filme: o filme mostra o primeiro quadro (não fica preto) e o símbolo de play por cima
 function miniMidia(it, extra) {
