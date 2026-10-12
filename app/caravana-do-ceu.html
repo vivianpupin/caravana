@@ -2009,6 +2009,12 @@ function render() {
   const draft = act && actId && act.value !== undefined ? act.value : null;
   const chatDraft = $("#chat-input")?.value;
   const main = $("#main"), scroll = main.scrollTop;
+  // o que a pessoa abriu ou deslizou continua igual depois de redesenhar (nada fecha nem pula quando chega novidade de alguém)
+  const mesmaAba = S._abaDesenhada === S.tab;
+  const chaveDet = d => (d.querySelector("summary")?.textContent || "").trim().slice(0, 80);
+  const abertos = mesmaAba ? new Map([...main.querySelectorAll("details")].map(d => [chaveDet(d), d.open])) : null;
+  const rolaveis = el => [...el.querySelectorAll("*")].filter(e => e.scrollWidth > e.clientWidth + 4 && e.className && typeof e.className === "string");
+  const lados = mesmaAba ? rolaveis(main).map(e => [e.className, e.scrollLeft]) : null;
   pintaMe();
   const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
   main.replaceChildren(precisaCadastro ? vCadastro() :
@@ -2017,6 +2023,9 @@ function render() {
   // último dia: o passaporte completo avisa que o vídeo está pronto (no Roteiro e no Passaporte)
   if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte")) { const c = avisoVideo(), v = main.firstElementChild; if (c && v) v.prepend(c); }
   if (!precisaCadastro && S.tab !== "travessia" && S.tab !== "conversa" && avisoEmDestaque(avisoAtual())) { const f = avisoFixado(), v = main.firstElementChild; if (f && v) v.prepend(f); }
+  if (abertos && abertos.size) main.querySelectorAll("details").forEach(d => { const k = chaveDet(d); if (abertos.has(k) && d.open !== abertos.get(k)) d.open = abertos.get(k); });
+  if (lados && lados.length) { const novos = rolaveis(main), usados = new Set(); for (const [cls, x] of lados) { const e = novos.find(n => n.className === cls && !usados.has(n)); if (e) { usados.add(e); if (x) e.scrollLeft = x; } } }
+  S._abaDesenhada = S.tab;
   main.scrollTop = scroll;
   if (S.tab === "conversa") {
     const inp = $("#chat-input"); if (inp && chatDraft) inp.value = chatDraft;
@@ -8853,9 +8862,13 @@ const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedr
 let calmoT = 0, calmoUlt = 0;
 function renderCalmo() { if (calmoT) return; const falta = Math.max(0, 15000 - (Date.now() - calmoUlt)); calmoT = setTimeout(() => { calmoT = 0; calmoUlt = Date.now(); if (!(S.camSel && S.tab === "fotos") && !document.querySelector(".sheet") && !document.activeElement?.matches?.("input,textarea,select,[contenteditable]")) render(); }, falta); }
 function listen(col, key, q, after) {
-  let primeira = true;
+  let primeira = true, assinatura = "";
   (q || S.db.collection(col)).onSnapshot(snap => {
-    S[key] = snap.docs.map(d => ({ id: d.id, ...d.data() })); if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = ajustaSaberes(S.ens); guardaCache(key);
+    const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // a mesma lista de novo (o banco às vezes avisa duas vezes): não redesenha nada, a tela não pisca
+    let ass = ""; try { ass = JSON.stringify(docs); } catch (e) {}
+    if (!primeira && ass && ass === assinatura) return; assinatura = ass;
+    S[key] = docs; if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = ajustaSaberes(S.ens); guardaCache(key);
     S.dbReady = true; if (after) after(); if (key === "chat") marcaChat();
     if (!S.veuAvisado) { S.veuAvisado = true; window.__veuPronto?.(); } // primeiros dados chegaram: o véu de abertura sai logo depois
     // aviso novo da líder: redesenha qualquer aba para ele aparecer em destaque na hora
