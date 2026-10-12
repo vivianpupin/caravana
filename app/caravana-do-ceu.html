@@ -1745,13 +1745,6 @@ nav.tabs button{position:relative}
 .mfoto{position:relative;width:100%;border:0;padding:0;border-radius:12px;overflow:hidden;background:#2B1F14;aspect-ratio:1;box-shadow:var(--shadow)}
 .mfoto img{width:100%;height:100%;object-fit:cover;display:block}
 .mfoto .vidmini{position:absolute;inset:0}
-.pistalacrada>img,.pistalacrada>.vidmini{filter:blur(16px) brightness(.7) saturate(.8);transform:scale(1.15)}
-.pistaselo{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#F6EDDA;text-shadow:0 1px 4px rgba(0,0,0,.6);background:radial-gradient(circle,rgba(20,14,8,.15),rgba(20,14,8,.55))}
-.pistaselo img{width:46%;max-width:90px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));transition:transform .5s ease,opacity .5s ease}
-.pistaselo b{font:600 20px Lora,Georgia,serif;letter-spacing:.12em;text-transform:uppercase}
-.pistaselo small{font-size:11px;opacity:.9}
-.pistaselo{transition:opacity .5s ease}.pistalacrada.quebra .pistaselo{opacity:0}
-.pistalacrada.quebra>img,.pistalacrada.quebra>.vidmini{filter:none;transform:none;transition:filter .6s ease,transform .6s ease}
 .mwrap.pista .mfoto::after{content:"Pista";position:absolute;top:8px;left:8px;z-index:2;background:#8A3F32;color:#F6EDDA;font:600 10px Poppins,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px}
 .mfoto .mnome{position:absolute;z-index:1;left:0;right:0;bottom:0;padding:18px 8px 6px;font-size:12px;color:#F6EDDA;text-align:left;background:linear-gradient(transparent,rgba(20,14,8,.7))}
 .mgrande{width:100%;height:auto;border-radius:12px;display:block}
@@ -8298,6 +8291,8 @@ async function baixarAlbum(st, cid) {
 }
 function vMural() {
   const cid = S.muralCidade || "", fotos = S.mural.filter(f => !cid || f.cidade === cid);
+  // missão das pistas: ver a galeria já conta (as pistas aparecem normais, com a etiqueta "Pista")
+  { const vis = pistasVistas(), novas = fotos.filter(f => ehPista(f) && !vis[f.id]); if (novas.length) try { localStorage.setItem("cdi-pistas", JSON.stringify({ ...vis, ...Object.fromEntries(novas.map(f => [f.id, Date.now()])) })); } catch (e) {} }
   perfis(fotos.map(f => f.autor));
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Galeria da Caravana" }))),
@@ -8308,13 +8303,7 @@ function vMural() {
     fotos.length ? (() => { const st = h("p", { class: "small", role: "status" }); return h("div", { class: "album" },
       h("button", { class: "btn", type: "button", onclick: () => baixarAlbum(st, cid) }, (noSite() && podeRolo() ? "Salvar no celular: " : "Baixar ") + (cid ? `álbum de ${cid}` : "álbum da tribo")),
       h("span", { class: "small", text: cid ? "As fotos desta cidade num arquivo só." : "Todas as fotos da galeria e do chat num arquivo só." }), st); })() : null,
-    fotos.length ? h("div", { class: "mural" }, fotos.map(f => ehPista(f) && !pistaAberta(f) ? h("div", { class: "mwrap" },
-      h("button", { type: "button", class: "mfoto pistalacrada", "aria-label": "Pista lacrada: toque para revelar", onclick: e => {
-        const b = e.currentTarget; if (b.classList.contains("quebra")) return; b.classList.add("quebra"); try { navigator.vibrate && navigator.vibrate(25); } catch (x) {}
-        try { localStorage.setItem("cdi-pistas", JSON.stringify({ ...pistasVistas(), [f.id]: Date.now() })); } catch (x) {}
-        setTimeout(render, 650); } },
-        muralMini(f), h("span", { class: "pistaselo" }, h("b", { text: "Pista" }), h("small", { text: "Toque para revelar" }))))
-      : h("div", { class: "mwrap" + (ehPista(f) ? " pista" : "") },
+    fotos.length ? h("div", { class: "mural" }, fotos.map(f => h("div", { class: "mwrap" + (ehPista(f) ? " pista" : "") },
       h("button", { type: "button", class: "mfoto", onclick: () => abrirFotoMural(f), "aria-label": (f.legenda || "Foto") + " de " + nomeDe(f.autor) },
         muralMini(f), h("span", { class: "mnome", text: nomeDe(f.autor).split(" ")[0] + (f.cidade && !cid ? " · " + f.cidade : "") })),
       f.autor === S.uid || S.isOwner ? h("button", { type: "button", class: "mdel", "aria-label": "Apagar esta foto", onclick: () => { if (confirm("Apagar esta foto da galeria?")) apagaFotoMural(f).catch(() => alert("Não consegui apagar a foto.")); } }, "×") : null)))
