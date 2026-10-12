@@ -1748,9 +1748,9 @@ nav.tabs button{position:relative}
 .pistalacrada>img,.pistalacrada>.vidmini{filter:blur(16px) brightness(.7) saturate(.8);transform:scale(1.15)}
 .pistaselo{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#F6EDDA;text-shadow:0 1px 4px rgba(0,0,0,.6);background:radial-gradient(circle,rgba(20,14,8,.15),rgba(20,14,8,.55))}
 .pistaselo img{width:46%;max-width:90px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));transition:transform .5s ease,opacity .5s ease}
-.pistaselo b{font:600 15px Lora,Georgia,serif;letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+.pistaselo b{font:600 20px Lora,Georgia,serif;letter-spacing:.12em;text-transform:uppercase}
 .pistaselo small{font-size:11px;opacity:.9}
-.pistalacrada.quebra .pistaselo img{transform:scale(1.4) rotate(18deg);opacity:0}
+.pistaselo{transition:opacity .5s ease}.pistalacrada.quebra .pistaselo{opacity:0}
 .pistalacrada.quebra>img,.pistalacrada.quebra>.vidmini{filter:none;transform:none;transition:filter .6s ease,transform .6s ease}
 .mwrap.pista .mfoto::after{content:"Pista";position:absolute;top:8px;left:8px;z-index:2;background:#8A3F32;color:#F6EDDA;font:600 10px Poppins,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px}
 .mfoto .mnome{position:absolute;z-index:1;left:0;right:0;bottom:0;padding:18px 8px 6px;font-size:12px;color:#F6EDDA;text-align:left;background:linear-gradient(transparent,rgba(20,14,8,.7))}
@@ -8313,7 +8313,7 @@ function vMural() {
         const b = e.currentTarget; if (b.classList.contains("quebra")) return; b.classList.add("quebra"); try { navigator.vibrate && navigator.vibrate(25); } catch (x) {}
         try { localStorage.setItem("cdi-pistas", JSON.stringify({ ...pistasVistas(), [f.id]: Date.now() })); } catch (x) {}
         setTimeout(render, 650); } },
-        muralMini(f), h("span", { class: "pistaselo" }, h("img", { src: "img/lacre.webp", alt: "" }), h("b", { text: "Pista" }), h("small", { text: "Toque para revelar" }))))
+        muralMini(f), h("span", { class: "pistaselo" }, h("b", { text: "Pista" }), h("small", { text: "Toque para revelar" }))))
       : h("div", { class: "mwrap" + (ehPista(f) ? " pista" : "") },
       h("button", { type: "button", class: "mfoto", onclick: () => abrirFotoMural(f), "aria-label": (f.legenda || "Foto") + " de " + nomeDe(f.autor) },
         muralMini(f), h("span", { class: "mnome", text: nomeDe(f.autor).split(" ")[0] + (f.cidade && !cid ? " · " + f.cidade : "") })),
