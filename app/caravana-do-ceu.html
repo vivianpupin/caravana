@@ -967,7 +967,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .estudiocel .celdir{display:flex;flex-direction:column;align-items:center;gap:7px}
 .estudiocel .celmini{width:58px;height:58px;padding:0;border:0;border-radius:6px;overflow:hidden;cursor:pointer;background:#0B0806;box-shadow:0 0 0 2px #6E5530,0 0 0 3px #24110A,0 3px 6px rgba(0,0,0,.55)}
 .estudiocel .celmini img,.estudiocel .celmini video{width:100%;height:100%;object-fit:cover;display:block}
-.estudiocel .celmini.vazia{background:repeating-linear-gradient(135deg,#140B06 0 5px,#1C1009 5px 10px);cursor:default}
+.estudiocel .celmini.vazia{background:repeating-linear-gradient(135deg,#140B06 0 5px,#1C1009 5px 10px)}
 .estudiocel .celvisor .camacoes .celdir .btn.ghost{min-width:96px;padding:6px 10px;font-size:10.5px}
 /* temporizador: plaquinha de latão no canto da capa */
 .estudiocel .celtempo{position:absolute;z-index:2;top:18px;left:18px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 7px;border-radius:6px;border:1px solid #5C421F;cursor:pointer;
@@ -6909,10 +6909,10 @@ function botaoTempoCel() {
   const v = h("b", { text: rot() });
   return h("button", { type: "button", class: "celtempo" + (S.celTempo ? " on" : ""), "aria-label": "Temporizador", onclick: e => { S.celTempo = S.celTempo === 3 ? 10 : S.celTempo === 10 ? 0 : 3; v.textContent = rot(); e.currentTarget.classList.toggle("on", !!S.celTempo); } }, h("span", { text: "Tempo" }), v);
 }
-// a última foto ou filme num quadradinho no couro; tocar abre os Registros
+// a última foto ou filme num quadradinho no couro; tocar abre a galeria do celular para escolher uma foto e revelar na mesa
 function miniCel() {
   const u = (S.fotosDiario || [])[0];
-  return h("button", { type: "button", class: "celmini" + (u ? "" : " vazia"), "aria-label": "Ver meus Registros", onclick: () => { if ((S.fotosDiario || []).length) verFotos(0); } }, u ? miniMidia(u) : null);
+  return h("button", { type: "button", class: "celmini" + (u ? "" : " vazia"), "aria-label": "Escolher uma foto do celular", onclick: () => { if (!S.gravando && S.celEscolhe) S.celEscolhe(); } }, u ? miniMidia(u) : null);
 }
 // depois do clique a foto vai para os Registros e o visor volta sozinho, pronto para a próxima (sem "Nova foto")
 function voltaAoVivoCel() {
@@ -7087,7 +7087,7 @@ function vFotos() {
           h("button", { class: "celknob celselfie", type: "button", onclick: e => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); e.currentTarget.textContent = C.frente ? "Trás" : "Selfie"; } } }, C0frente() ? "Trás" : "Selfie"),
           h("button", { class: "habclique celobtur", type: "button", "aria-label": "Tirar foto", onclick: disparaCel }),
           h("button", { class: "celknob celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "Parar" : "Filmar"),
-          h("div", { class: "celdir" }, miniCel()))
+          h("div", { class: "celdir" }, (S.celEscolhe = () => fi.click(), miniCel())))
         : S.guardarCel ? null
         : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [], filtro: "original", intens: 1, thumbSrc: null }; render(); } }, "↺ Voltar para a câmera"))),
         F.vivo ? h("p", { class: "celdica" + (S.celGuardou && !S.gravando ? " celok" : ""), text: S.celGuardou && !S.gravando ? "✓ Foto guardada nos seus Registros" : dicaCel() }) : null,
