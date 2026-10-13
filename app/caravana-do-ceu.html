@@ -5750,14 +5750,8 @@ const CARIMBOS_REDONDOS = [
   { t: ["EXPLORADORES DO CÉU", "TRAVESSIA"], cor: "#5B3F7A", simb: 1 }];
 const ADESIVOS = {
   // o explorador da pessoa em várias situações (desenhado com as escolhas dela)
-  get "Meu explorador"() { return [["eu", "Meu explorador"], ["x:eu-sempet", "Só eu"], ["x:eu-virado", "Virado"], ["x:eu-pulo", "Pulando de alegria"], ["x:eu-rosto", "Meu rosto"],
-    ["x:eu-aura", "Iluminado"], ["x:eu-coracao", "Apaixonado pela Índia"],
-    ["x:balao:Namastê!", "Namastê!"], ["x:balao:Cheguei na Índia!", "Cheguei na Índia!"], ["x:balao:Jai Ho!", "Jai Ho!"], ["x:balao:Mais um chai?", "Mais um chai?"], ["x:balao:Que calor!", "Que calor!"],
-    ["x:eu-carimbo", "Carimbo do explorador"], ["x:eu-selo", "Selo postal do explorador"], ["x:eu-polaroid", "Eu na Índia"], ["x:eu-ingresso", "Ingresso da travessia"], ["x:eu-procura", "Procura-se"],
-    ...EXPRESSOES.map(([id]) => ["x:expr:" + id, ({ amor: "Amor", preocupada: "Preocupação", emocionada: "Emoção", susto: "Susto", revira: "Revirando os olhos", beijo: "Beijinho", desdem: "Desdém", rindo: "Rindo", decepcionada: "Decepção", oculos: "Estilo", brava: "Raiva", explodiu: "Cabeça explodindo", vergonha: "Vergonha" })[id] || id]),
-    ["x:meu-pet", "Meu bichinho"], ["x:meu-passaro", "Meu pássaro"], ["x:turma", "A caravana"]]; },
-  // o explorador vestido de cada deus, com a frase de cada um
-  get "Fantasias"() { return FIGURINHAS.map(([id, nome, frase]) => ["x:deus:" + id, nome + " · " + frase]); },
+  get "Meu explorador"() { return [["eu", "Meu explorador"], ["x:eu-sempet", "Só eu"], ["x:balao:Mais um chai?", "Mais um chai?"], ["x:eu-carimbo", "Carimbo do explorador"],
+    ["x:meu-pet", "Meu bichinho"], ["x:deus:shiva", "Shiva · Om Namah Shivaya"]]; },
   // os selos (pins) da travessia, os mesmos do passaporte: só os que já foram liberados
   "Selos": [["india", "Índia"], ["taj-mahal", "Taj Mahal"], ["ganesha", "Ganesha"], ["jaipur", "Jaipur"], ["govind-dev-ji", "Govind Dev Ji"], ["varanasi", "Varanasi"], ["diwali", "Diwali"], ["ganga-aarti", "Ganga Aarti"],
     ["durga-kund", "Durga Kund"], ["sankat-mochan", "Sankat Mochan"], ["batismo", "Batismo no Ganges"], ["rishikesh", "Rishikesh"], ["kunjapuri", "Kunjapuri"], ["caverna", "Caverna"], ["travessia", "Travessia"]].map(([id, n]) => ["img:insignias/" + id + ".webp", n]),
@@ -5765,15 +5759,13 @@ const ADESIVOS = {
   "Caravana": [["img:img/simbolo-dourado.png", "Símbolo dourado"], ["img:img/simbolo-marrom.png", "Símbolo"], ["patch", "Patch bordado"], ["carimbo", "Carimbo"],
     ["postmark", "Carimbo do correio"], ["seloPostal", "Selo postal"], ["data", "Data da câmera"], ["linha", "Caravana do Céu · Índia 2026"], ["fita", "Fita adesiva"],
     ["estrela", "Estrela"], ["flor", "Flor de cravo"], ["guirlanda", "Guirlanda"], ["lungta", "Bandeirinhas de oração"],
-    ["x:item:diya", "Lamparina"], ["x:item:chai", "Chai"], ["x:om", "Om"], ["x:lotus", "Lótus"], ["x:tuktuk", "Tuk-tuk"], ["x:taj", "Taj Mahal"],
-    ...["Namastê", "Jai Ho!", "Om Shanti", "Hare Krishna", "Ma Ganga", "Eu fui!", "Lokah Samastah", "Chai, por favor"].map(t => ["mao:" + t, t]),
-    ["txt:Travessia Índia Sagrada", "Travessia Índia Sagrada"], ["txt:Caravana do Céu", "Caravana do Céu"]],
+    ["x:item:diya", "Lamparina"], ["x:item:chai", "Chai"], ["x:om", "Om"], ["x:lotus", "Lótus"], ["x:tuktuk", "Tuk-tuk"], ["mao:Namastê", "Namastê"], ["mao:Hare Krishna", "Hare Krishna"]],
   // bichos da Índia, no mesmo traço dos pets do explorador
   "Bichos": [["pet:vaca", "Vaquinha sagrada"], ["pet:elefante", "Elefantinho"], ["pet:macaco", "Macaco"], ["pet:pavao", "Pavão"], ["pet:camelo", "Camelo"], ["pet:cabra", "Cabrinha"],
     ["pet:gato", "Gato"], ["pet:cachorro", "Cachorro"], ["ave:periquito", "Periquito"], ["ave:maina", "Mainá"], ["x:item:vaca", "Vaquinha"], ["x:item:macaco", "Macaquinho"]],
   // carimbos e cartão-postal soltos, para colar em qualquer moldura
   "Carimbos": [["postalCombo", "Selo e carimbo do correio"], ["seloPostal", "Selo postal"], ["postmark", "Carimbo do correio"], ["carimbo", "Carimbo da Caravana"], ["mao:Saudações da Índia", "Saudações da Índia"],
-    ...CARIMBOS_ADESIVO.map((c, i) => ["x:cb:" + i, c.t.join(" · ")]), ...CARIMBOS_REDONDOS.map((c, i) => ["x:cr:" + i, c.t.join(" · ")])],
+    ...[0, 1, 5, 6, 8, 10, 14].map(i => ["x:cb:" + i, CARIMBOS_ADESIVO[i].t.join(" · ")]), ...CARIMBOS_REDONDOS.map((c, i) => ["x:cr:" + i, c.t.join(" · ")])],
 };
 const adesivoCache = {};
 // ---------- adesivos novos: o explorador em várias situações, carimbos, bichos e coisas da Índia ----------
