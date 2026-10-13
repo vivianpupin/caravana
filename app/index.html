@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/10 · 22:36";</script>
+<script>window.__VERSAO = "12/10 · 22:41";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -5099,7 +5099,7 @@ const FILTROS = [
   { id: "cam-couro-quente", cat: "Câmeras", nome: "Delhi 1955 quente", m: [1.08, .04, -.02, .03, 1, 0, -.03, .02, .84], lift: 16, con: 1.48, sat: 1.12, split: [[62, 32, 14], [255, 222, 172]], add: [16, 6, -16], vin: .48, grao: 16, pelicula: 1 },
   { id: "cam-couro-frio", cat: "Câmeras", nome: "Delhi 1955 fria", m: [.94, .02, .02, .01, 1, .02, .02, .04, 1.08], lift: 16, con: 1.46, sat: .98, split: [[20, 36, 50], [240, 238, 228]], add: [-4, 1, 10], vin: .46, grao: 16, pelicula: 1 },
   { id: "cam-cinematic", cat: "Câmeras", nome: "Cinematic", m: [1.16, 0, 0, 0, 1.14, 0, 0, 0, 1.12], lift: 24, con: 1.12, sat: .8, split: [[18, 62, 72], [255, 178, 118]], add: [6, 3, -2], vin: .5, grao: 28, cinema: 1 },
-  { id: "cam-noturno", cat: "Câmeras", nome: "Noite azul", m: [1.08, 0, 0, 0, 1.1, 0, 0, 0, 1.14], lift: 34, con: 1.04, sat: .82, split: [[16, 58, 98], [255, 170, 104]], add: [-4, 4, 10], vin: .45, grao: 30, cinema: 2 },
+  { id: "cam-noturno", cat: "Câmeras", nome: "Noite azul", noite: 1, con: 1.22, vin: .45, grao: 30, cinema: 2 },
   { id: "cam-cine", cat: "Câmeras", nome: "Cine", lift: 10, con: 1.36, sat: .7, split: [[14, 38, 44], [242, 196, 150]], add: [2, 0, 2], vin: .54, grao: 32, pelicula: 1 },
   // estilo de câmera de filme de viagem: um para cada cidade
   { id: "cid-delhi", cat: "Profissionais", nome: "Delhi", lift: 34, con: 0.9, sat: 0.85, add: [22, -4, 4], leak: "rosa", brilho: 0.4, vin: 0.32, grao: 18, pelicula: 1 },
@@ -5165,7 +5165,7 @@ function aplicaFiltro(ctx, w, hh, f, graoEsc, modo) {
   const g0 = { nenhum: 0, leve: 12, medio: 24, forte: 42, super8: 16 }[graoEsc];
   const gF = g0 != null ? g0 : (f.grao || 0), g = modo === "cor" ? 0 : gF;
   if (graoEsc === "super8" || (f.super8 && (graoEsc || "auto") === "auto")) f = { ...f, pelicula: 1 };
-  if (!f.m && !f.con && !f.sat && !f.duo && !f.split && !f.arco && !f.holi && !gF && !f.leak) return;
+  if (!f.m && !f.con && !f.sat && !f.duo && !f.split && !f.arco && !f.holi && !f.noite && !gF && !f.leak) return;
   if (modo === "efeitos") { efeitosRapidos(ctx, w, hh, f.vin || 0, g); efeitosFiltro(ctx, w, hh, f); return; }
   const d = ctx.getImageData(0, 0, w, hh), p = d.data, m = f.m, con = f.con || 1, add = f.add || [0, 0, 0], sat = f.sat || 1, lift = f.lift || 0;
   const cx = w / 2, cy = hh / 2, rmax = Math.hypot(cx, cy), vin = modo === "cor" ? 0 : (f.vin || 0);
@@ -5176,6 +5176,12 @@ function aplicaFiltro(ctx, w, hh, f, graoEsc, modo) {
     if (m) { const r = R, gg = G, b = B; R = r * m[0] + gg * m[1] + b * m[2]; G = r * m[3] + gg * m[4] + b * m[5]; B = r * m[6] + gg * m[7] + b * m[8]; }
     const L = .299 * R + .587 * G + .114 * B;
     if (sat !== 1) { R = L + (R - L) * sat; G = L + (G - L) * sat; B = L + (B - L) * sat; }
+    // Noite azul: tudo o que não é luz quente vira azul de cinema (do marinho ao ciano); o que é quente (luzes, pele, laranja) fica laranja forte
+    if (f.noite) { const t = Math.min(1, L / 255 * 1.35), mx = Math.max(R, G, B) + 1, q = Math.min(1, Math.max(0, ((R - B) / mx - .18) / .38)) * Math.min(1, t * 2.2);
+      const a = t < .5 ? t / .5 : (t - .5) / .5, c0 = t < .5 ? [0, 3, 10] : [44, 96, 132], c1 = t < .5 ? [44, 96, 132] : [205, 232, 240];
+      const bR = c0[0] + (c1[0] - c0[0]) * a, bG = c0[1] + (c1[1] - c0[1]) * a, bB = c0[2] + (c1[2] - c0[2]) * a;
+      const Le = t * 255, wR = Math.min(255, Le + (R - L) * 1.5 + 30), wG = Le + (G - L) * 1.3 - 6, wB = Le + (B - L) * 1.4 - 40;
+      R = bR * (1 - q) + wR * q; G = bG * (1 - q) + wG * q; B = bB * (1 - q) + wB * q; }
     if (f.duo) { const t = L / 255, [a, c] = f.duo; R = a[0] + (c[0] - a[0]) * t; G = a[1] + (c[1] - a[1]) * t; B = a[2] + (c[2] - a[2]) * t; }
     if (f.split) { const t = L / 255, [sh, hi] = f.split; R = R * .7 + (sh[0] * (1 - t) + hi[0] * t) * .3; G = G * .7 + (sh[1] * (1 - t) + hi[1] * t) * .3; B = B * .7 + (sh[2] * (1 - t) + hi[2] * t) * .3; }
     if (f.arco) { const hue = (L / 255 * 300 + x / w * 120) % 360, k = hue / 60, c = 255, xx = c * (1 - Math.abs(k % 2 - 1));
@@ -5268,22 +5274,24 @@ function cinemaLuz(ctx, w, hh) {
 function noiteAzulLuz(ctx, w, hh) {
   const cv = ctx.canvas;
   ctx.save(); ctx.imageSmoothingQuality = "high";
-  ctx.globalAlpha = .35; ctx.drawImage(cineReduz(cv, w, hh, 3, "macia"), 0, 0, w, hh);
-  // as luzes (só o que é bem claro), numa versão pequena
-  const p = cineReduz(cv, w, hh, 8, "luz"), px = p.getContext("2d", { willReadFrequently: true }), d = px.getImageData(0, 0, p.width, p.height), q = d.data;
-  for (let i = 0; i < q.length; i += 4) { const L = (.299 * q[i] + .587 * q[i + 1] + .114 * q[i + 2]) / 255, k = Math.pow(Math.max(0, (L - .5) / .5), 1.3); q[i] = 255 * k; q[i + 1] = 214 * k; q[i + 2] = 160 * k; }
+  ctx.globalAlpha = .18; ctx.drawImage(cineReduz(cv, w, hh, 2.5, "macia"), 0, 0, w, hh);
+  // as luzes (só o que é claro), numa versão pequena, num branco quente
+  const p = cineReduz(cv, w, hh, 6, "luz"), px = p.getContext("2d", { willReadFrequently: true }), d = px.getImageData(0, 0, p.width, p.height), q = d.data;
+  for (let i = 0; i < q.length; i += 4) { const L = (.299 * q[i] + .587 * q[i + 1] + .114 * q[i + 2]) / 255, k = Math.pow(Math.max(0, (L - .45) / .55), 1.4), quente = q[i] > q[i + 2] + 10;
+    q[i] = 255 * k; q[i + 1] = (quente ? 210 : 235) * k; q[i + 2] = (quente ? 150 : 240) * k; }
   px.putImageData(d, 0, 0);
   ctx.globalCompositeOperation = "screen";
-  // brilho grande e esverdeado-azulado em volta das luzes (a luz atravessando a neblina) e um miolo quente
-  const halo = cineReduz(p, p.width, p.height, 4, "halo"); ctx.globalAlpha = .9; ctx.drawImage(halo, 0, 0, w, hh);
-  ctx.globalAlpha = .55; ctx.globalCompositeOperation = "screen"; ctx.drawImage(p, 0, 0, w, hh);
+  // super brilho: três tamanhos de halo, do grande e suave ao pequeno e forte
+  const h1 = cineReduz(p, p.width, p.height, 7, "halo"), h2 = cineReduz(p, p.width, p.height, 2.5, "halo2");
+  ctx.globalAlpha = 1; ctx.drawImage(h1, 0, 0, w, hh); ctx.drawImage(h1, 0, 0, w, hh);
+  ctx.globalAlpha = .9; ctx.drawImage(h2, 0, 0, w, hh);
+  ctx.globalAlpha = .7; ctx.drawImage(p, 0, 0, w, hh);
   // rastros horizontais: a luz esticada para os lados
   const rr = cinePool.risco || (cinePool.risco = document.createElement("canvas")); rr.width = Math.max(1, Math.round(p.width / 14)); rr.height = p.height;
   const rx = rr.getContext("2d"); rx.imageSmoothingQuality = "high"; rx.drawImage(p, 0, 0, rr.width, rr.height);
-  ctx.globalAlpha = .75; ctx.drawImage(rr, 0, 0, w, hh); ctx.globalAlpha = .4; ctx.drawImage(rr, -w * .08, 0, w * 1.16, hh);
-  // neblina azul: mais forte no alto e no meio da foto
-  ctx.globalCompositeOperation = "screen";
-  const g = ctx.createLinearGradient(0, 0, 0, hh); g.addColorStop(0, "rgba(70,120,150,.32)"); g.addColorStop(.55, "rgba(60,105,130,.18)"); g.addColorStop(1, "rgba(30,60,80,.04)");
+  ctx.globalAlpha = .45; ctx.drawImage(rr, 0, 0, w, hh);
+  // um véu azul bem leve (a neblina da noite)
+  const g = ctx.createLinearGradient(0, 0, 0, hh); g.addColorStop(0, "rgba(40,90,130,.07)"); g.addColorStop(1, "rgba(20,50,80,0)");
   ctx.globalAlpha = 1; ctx.fillStyle = g; ctx.fillRect(0, 0, w, hh);
   ctx.restore();
 }
@@ -6213,6 +6221,8 @@ const voltaEstante = () => { fechaVivo(); S.camSel = null; S.foto = null; render
 function cliqueSom() { try { const A = window.AudioContext || window.webkitAudioContext, a = S.audioCtx || (S.audioCtx = new A()), n = a.createBufferSource(), b = a.createBuffer(1, a.sampleRate * .08, a.sampleRate), d = b.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3); n.buffer = b; const g = a.createGain(); g.gain.value = .5; n.connect(g); g.connect(a.destination); n.start(); } catch (e) {} }
 // tela da câmera: o próprio corpo da câmera ocupa a tela; a imagem ao vivo aparece no visor, o disparo é o botão de metal
+// botões de cinema em cada câmera: [filtro, nome]
+const CINE_BOTOES = { super8: [["cam-cinematic", "Cinematic"], ["cam-noturno", "Noite azul"]], campo: [["cam-noturno", "Cinematic"]] };
 const FILME_CAM = { campo: "Placa de vidro · obturador lento · 1900", couro: "Filme 35 mm desbotado · 1955", quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
 function vCameraFisica(c) {
   const F0 = S.foto || (S.foto = fotoDaCamera(c));
@@ -6283,9 +6293,9 @@ function vCameraFisica(c) {
   const chave = (rotA, rotB, ligadoB, fn, cls) => h("button", { type: "button", class: "cfchave " + (cls || "") + (ligadoB ? " b" : ""), onclick: fn }, h("span", { text: rotA }), h("i", { "aria-hidden": "true" }), h("span", { text: rotB }));
   const controles = h("div", { class: "cfcontroles" },
     FOTO_CAM[c.id] && temFoto("img/cameras/" + c.id + "-corpo.jpg") ? null : chave("Atrás", "Selfie", frente, virar),
-    c.tons ? h("div", { class: "cftons", role: "radiogroup", "aria-label": "Tom da foto" }, c.tons.map(([f, cor, nome]) => h("button", { type: "button", role: "radio", "aria-checked": S.foto.filtro === f ? "true" : "false", "aria-label": nome, class: "cftom" + (S.foto.filtro === f ? " on" : ""), style: `--cor:${cor}`, onclick: e => { S.foto = { ...S.foto, filtro: f }; montaFoto.img = null; const b = e.currentTarget; b.parentNode.querySelectorAll(".cftom").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-checked", x === b ? "true" : "false"); }); } }))) : null,
-    c.id === "super8" ? h("div", { class: "cfcines" }, [["cam-cinematic", "Cinematic"], ["cam-noturno", "Noite azul"]].map(([fid, nome]) => h("button", { type: "button", class: "cfcinebt" + (S.foto.filtro === fid ? " on" : ""), "aria-pressed": String(S.foto.filtro === fid), "data-f": fid, onclick: ev => { if (S.gravando) return; const liga = S.foto.filtro !== fid; S.foto = { ...S.foto, filtro: liga ? fid : "cam-cine" }; montaFoto.img = null;
-      ev.currentTarget.parentNode.querySelectorAll(".cfcinebt").forEach(b => { const on = liga && b.dataset.f === fid; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); }); } }, h("i", { "aria-hidden": "true" }), nome))) : null,
+    c.tons ? h("div", { class: "cftons", role: "radiogroup", "aria-label": "Tom da foto" }, c.tons.map(([f, cor, nome]) => h("button", { type: "button", role: "radio", "aria-checked": S.foto.filtro === f ? "true" : "false", "aria-label": nome, "data-f": f, class: "cftom" + (S.foto.filtro === f ? " on" : ""), style: `--cor:${cor}`, onclick: e => { S.foto = { ...S.foto, filtro: f }; montaFoto.img = null; const b = e.currentTarget; b.parentNode.querySelectorAll(".cftom").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-checked", x === b ? "true" : "false"); }); document.querySelectorAll(".cfcinebt").forEach(x => { x.classList.remove("on"); x.setAttribute("aria-pressed", "false"); }); } }))) : null,
+    CINE_BOTOES[c.id] ? h("div", { class: "cfcines" }, CINE_BOTOES[c.id].map(([fid, nome]) => h("button", { type: "button", class: "cfcinebt" + (S.foto.filtro === fid ? " on" : ""), "aria-pressed": String(S.foto.filtro === fid), "data-f": fid, onclick: ev => { if (S.gravando) return; const liga = S.foto.filtro !== fid; S.foto = { ...S.foto, filtro: liga ? fid : (c.preset && c.preset.filtro) || "original" }; montaFoto.img = null;
+      ev.currentTarget.parentNode.querySelectorAll(".cfcinebt").forEach(b => { const on = liga && b.dataset.f === fid; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); }); document.querySelectorAll(".cftom").forEach(x => { const on = S.foto.filtro === x.dataset.f; x.classList.toggle("on", on); x.setAttribute("aria-checked", String(on)); }); } }, h("i", { "aria-hidden": "true" }), nome))) : null,
     c.filma ? chave("Foto", "Filme", S.camModo === "filme", ev => { if (S.gravando) return; S.camModo = S.camModo === "filme" ? "foto" : "filme"; trocaModoFilme(c, ev.currentTarget); }) : null);
   const fc = FOTO_CAM[c.id], fotoCorpo = fc && temFoto("img/cameras/" + c.id + "-corpo.jpg");
   // com a foto realista: a câmera de perto ocupa a tela, a imagem ao vivo entra no visor da foto e o botão da foto dispara
