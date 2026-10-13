@@ -1168,6 +1168,10 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfchave i{position:relative;width:30px;height:14px;border-radius:7px;background:#0D0B0A;box-shadow:inset 0 1px 2px rgba(0,0,0,.8)}
 .cfchave i::after{content:"";position:absolute;top:1px;left:1px;width:14px;height:12px;border-radius:6px;background:linear-gradient(180deg,#E8E4DC,#8E8A83);transition:left .15s}
 .cfchave.b i::after{left:15px}
+.cfcinebt{display:flex;align-items:center;gap:7px;border:1px solid rgba(232,192,122,.35);border-radius:999px;padding:6px 12px;cursor:pointer;background:rgba(0,0,0,.42);font:600 10px Poppins,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:rgba(241,226,188,.55)}
+.cfcinebt i{width:8px;height:8px;border-radius:50%;background:#3A2E26;box-shadow:inset 0 1px 2px rgba(0,0,0,.8)}
+.cfcinebt.on{color:#2B1F14;background:linear-gradient(180deg,#E8C98E,#B98A43);border-color:transparent;box-shadow:0 0 14px rgba(232,192,122,.55)}
+.cfcinebt.on i{background:#8FD3E0;box-shadow:0 0 6px #8FD3E0}
 .cfchave span:first-child{color:#F1E2BC}
 .cfchave.b span:first-child{color:rgba(241,226,188,.45)}
 .cfchave.b span:last-child{color:#F1E2BC}
@@ -6223,7 +6227,7 @@ function vCameraFisica(c) {
   const controles = h("div", { class: "cfcontroles" },
     FOTO_CAM[c.id] && temFoto("img/cameras/" + c.id + "-corpo.jpg") ? null : chave("Atrás", "Selfie", frente, virar),
     c.tons ? h("div", { class: "cftons", role: "radiogroup", "aria-label": "Tom da foto" }, c.tons.map(([f, cor, nome]) => h("button", { type: "button", role: "radio", "aria-checked": S.foto.filtro === f ? "true" : "false", "aria-label": nome, class: "cftom" + (S.foto.filtro === f ? " on" : ""), style: `--cor:${cor}`, onclick: e => { S.foto = { ...S.foto, filtro: f }; montaFoto.img = null; const b = e.currentTarget; b.parentNode.querySelectorAll(".cftom").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-checked", x === b ? "true" : "false"); }); } }))) : null,
-    c.id === "super8" ? chave("Super 8", "Cinematic", S.foto.filtro === "cam-cinematic", ev => { if (S.gravando) return; const cine = S.foto.filtro !== "cam-cinematic"; S.foto = { ...S.foto, filtro: cine ? "cam-cinematic" : "cam-cine" }; montaFoto.img = null; ev.currentTarget.classList.toggle("b", cine); }, "cfcine") : null,
+    c.id === "super8" ? h("button", { type: "button", class: "cfcinebt" + (S.foto.filtro === "cam-cinematic" ? " on" : ""), "aria-pressed": String(S.foto.filtro === "cam-cinematic"), onclick: ev => { if (S.gravando) return; const cine = S.foto.filtro !== "cam-cinematic"; S.foto = { ...S.foto, filtro: cine ? "cam-cinematic" : "cam-cine" }; montaFoto.img = null; const b = ev.currentTarget; b.classList.toggle("on", cine); b.setAttribute("aria-pressed", String(cine)); } }, h("i", { "aria-hidden": "true" }), "Cinematic") : null,
     c.filma ? chave("Foto", "Filme", S.camModo === "filme", ev => { if (S.gravando) return; S.camModo = S.camModo === "filme" ? "foto" : "filme"; trocaModoFilme(c, ev.currentTarget); }) : null);
   const fc = FOTO_CAM[c.id], fotoCorpo = fc && temFoto("img/cameras/" + c.id + "-corpo.jpg");
   // com a foto realista: a câmera de perto ocupa a tela, a imagem ao vivo entra no visor da foto e o botão da foto dispara
