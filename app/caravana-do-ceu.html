@@ -1168,8 +1168,9 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfchave i{position:relative;width:30px;height:14px;border-radius:7px;background:#0D0B0A;box-shadow:inset 0 1px 2px rgba(0,0,0,.8)}
 .cfchave i::after{content:"";position:absolute;top:1px;left:1px;width:14px;height:12px;border-radius:6px;background:linear-gradient(180deg,#E8E4DC,#8E8A83);transition:left .15s}
 .cfchave.b i::after{left:15px}
-.cfcines{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;max-width:calc(100vw - 40px);padding:2px 2px 4px;-webkit-overflow-scrolling:touch}.cfcines::-webkit-scrollbar{display:none}
+.cfcines{display:flex;gap:8px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;max-width:min(calc(100vw - 40px),calc(100cqw - 40px));pointer-events:auto!important;touch-action:pan-x;padding:2px 2px 4px;-webkit-overflow-scrolling:touch}.cfcines::-webkit-scrollbar{display:none}
 .cfcines .cfcinebt{flex:0 0 auto;white-space:nowrap}
+.cfcines{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent);padding-right:30px}
 .cfexpo{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.42);border-radius:999px;padding:3px;width:max-content}
 .cfexpo.fora{display:none}
 .cfexpo button{width:32px;height:32px;border-radius:50%;border:1px solid rgba(232,192,122,.4);background:rgba(0,0,0,.35);color:#F1E2BC;font:600 18px/1 Poppins,sans-serif;cursor:pointer}
@@ -1375,7 +1376,7 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .gravando .cfbotaofoto::after{color:#FFD2C8;background:rgba(150,30,20,.8)}
 /* com a foto da câmera, as camadas vazias por cima não podem roubar o toque do botão */
 .cfcorpo.comfoto>*:not(.cfpalco){pointer-events:none}
-.cfcorpo.comfoto>* button,.cfcorpo.comfoto>* a,.cfcorpo.comfoto .cfdepois,.cfcorpo.comfoto .cfdepois *{pointer-events:auto}
+.cfcorpo.comfoto .cfcines,.cfcorpo.comfoto>* button,.cfcorpo.comfoto>* a,.cfcorpo.comfoto .cfdepois,.cfcorpo.comfoto .cfdepois *{pointer-events:auto}
 .cfbotaofoto{z-index:5}
 body:has(.camfull) nav.tabs,body:has(.camfull) .navmais{display:none!important}
 body:has(.sheet) .navmais{display:none!important}
