@@ -963,6 +963,23 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
   box-shadow:0 0 0 3px #24110A,0 0 0 4px rgba(214,176,120,.35),0 6px 12px rgba(0,0,0,.6);-webkit-tap-highlight-color:transparent;transition:transform .08s,filter .08s}
 .estudiocel .celvisor .camacoes .celobtur:active{transform:scale(.94);filter:brightness(.85)}
 /* Selfie e Filmar: botões redondos de latão, iguais ao disparador, com o nome gravado embaixo */
+/* coluna da direita: a última foto em cima, a Fototeca embaixo */
+.estudiocel .celdir{display:flex;flex-direction:column;align-items:center;gap:7px}
+.estudiocel .celmini{width:46px;height:46px;padding:0;border:0;border-radius:6px;overflow:hidden;cursor:pointer;background:#0B0806;box-shadow:0 0 0 2px #6E5530,0 0 0 3px #24110A,0 3px 6px rgba(0,0,0,.55)}
+.estudiocel .celmini img,.estudiocel .celmini video{width:100%;height:100%;object-fit:cover;display:block}
+.estudiocel .celmini.vazia{background:repeating-linear-gradient(135deg,#140B06 0 5px,#1C1009 5px 10px);cursor:default}
+.estudiocel .celvisor .camacoes .celdir .btn.ghost{min-width:96px;padding:6px 10px;font-size:10.5px}
+/* temporizador: plaquinha de latão no canto da capa */
+.estudiocel .celtempo{position:absolute;z-index:2;top:18px;left:18px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 7px;border-radius:6px;border:1px solid #5C421F;cursor:pointer;
+  font:700 8.5px/1 "Courier Prime",monospace;letter-spacing:.14em;text-transform:uppercase;color:#3A2410;background:linear-gradient(180deg,#C9A866,#A88445 55%,#7E6130);box-shadow:inset 0 1px 0 rgba(255,240,200,.5),0 2px 3px rgba(0,0,0,.5)}
+.estudiocel .celtempo b{font-size:12px;letter-spacing:.06em;color:#2A1808}
+.estudiocel .celtempo.on b{color:#8E1A10}
+/* contagem do temporizador no visor: mesmo vermelho aceso do REC */
+.celcontagem{position:absolute;inset:0;z-index:9;display:grid;place-items:center;pointer-events:none;background:rgba(0,0,0,.25)}
+.celcontagem b{font:700 96px/1 "Courier Prime",monospace;color:#E8352A;text-shadow:0 0 4px rgba(255,70,50,.9),0 0 18px rgba(230,40,25,.7),0 0 36px rgba(200,30,20,.45);filter:blur(.3px);animation:contapulsa 1s ease-out infinite}
+@keyframes contapulsa{0%{transform:scale(1.25);opacity:.4}25%{transform:scale(1);opacity:1}100%{opacity:.85}}
+.celflash{position:fixed;z-index:60;pointer-events:none;background:#fff;border-radius:12px;animation:celflash .42s ease-out forwards}
+@keyframes celflash{0%{opacity:.95}100%{opacity:0}}
 .estudiocel .celvisor .celknob{display:flex;flex-direction:column;align-items:center;gap:5px;width:58px;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;
   font:700 9.5px/1 "Courier Prime",monospace!important;letter-spacing:.14em;text-transform:uppercase;color:#E9D3A6!important;text-shadow:0 1px 1px rgba(0,0,0,.8)}
 .estudiocel .celvisor .celknob::before{content:"";width:46px;height:46px;border-radius:50%;background:url("img/cameras/botao-latao.webp") center/cover;
@@ -1300,6 +1317,7 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .cfbaixo .cfmini{margin-left:14px!important}
 .celfilmar{color:#F3B4A4!important;border-color:rgba(243,140,120,.5)!important}
 .celfilmar.gravando{background:#A8322A!important;color:#fff!important;border-color:#A8322A!important;animation:revela 1s ease-in-out infinite alternate}
+.regaviso{text-align:center;margin:8px auto 0;max-width:42ch;opacity:.85}
 .celdica{margin:0;text-align:center;font-size:11.5px;color:#CDB894}
 .celdica.celok{color:#F3D9A4;font-weight:600}
 .cfdicafilme .curta{display:none}
@@ -6469,9 +6487,9 @@ function mostraGravando(novoFilme) {
   const vis = document.querySelector(".cfjanelafoto") || document.querySelector(".cfcorpo .cfjanela") || document.querySelector(".celvisor .fotoframe") || document.querySelector(".fotoframe");
   if (g && vis) {
     if (getComputedStyle(vis).position === "static") vis.style.position = "relative";
-    const tempo = h("small", { text: "00:00" }), t0 = S.gravouEm || Date.now();
+    const tempo = h("small", { text: "00:00 / 01:00" }), t0 = S.gravouEm || Date.now();
     vis.append(h("div", { class: "recborda" }), h("div", { class: "recvisor", role: "status", "aria-label": "Filmando" }, h("i"), h("b", { text: "REC" }), tempo));
-    mostraGravando.rel = setInterval(() => { if (!S.gravando || !tempo.isConnected) return clearInterval(mostraGravando.rel); const s = Math.floor((Date.now() - t0) / 1000); tempo.textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); }, 250);
+    mostraGravando.rel = setInterval(() => { if (!S.gravando || !tempo.isConnected) return clearInterval(mostraGravando.rel); const s = Math.floor((Date.now() - t0) / 1000); tempo.textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0") + " / 01:00"; }, 250);
   }
   document.querySelector(".cfcorpo")?.classList.toggle("gravando", g);
   const lg = document.querySelector(".cfdicafilme .longa"), ct = document.querySelector(".cfdicafilme .curta");
@@ -6484,7 +6502,7 @@ function mostraGravando(novoFilme) {
   if (novoFilme) {
     const ult = (S.fotosDiario || [])[0], mini = document.querySelector(".cfmini");
     if (mini && ult) mini.replaceChildren(miniMidia(ult));
-    if (dc && !document.querySelector(".celregistros")) dc.before(h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros")));
+    document.querySelector(".celmini")?.replaceWith(miniCel());
   }
 }
 function piscaVisor() { const j = document.querySelector(".cfjanela"); if (!j) return; j.classList.remove("pisca"); void j.offsetWidth; j.classList.add("pisca"); }
@@ -6737,6 +6755,7 @@ async function apagaDoDiario(id) { try { const db = await bancoDiario(); await n
   const cart = document.querySelector(".diariofotos"), mini = document.querySelector(".cfmini");
   if (cart) cart.replaceWith(vDiarioViajante());
   if (mini) { const u = l[0]; mini.replaceChildren(...(u ? [miniMidia(u)] : [])); }
+  document.querySelector(".celmini")?.replaceWith(miniCel());
 }
 // Registros: as fotos ficam dentro de uma carteira de couro de viajante, 4 por página; arrastando para o lado, aparecem as anteriores
 const CARTEIRA_FOTO = [[0.134, 0.103, 0.396, 0.431], [0.595, 0.103, 0.863, 0.431], [0.132, 0.559, 0.396, 0.890], [0.595, 0.559, 0.866, 0.890]];
@@ -6761,14 +6780,18 @@ function vDiarioViajante() {
         h("button", { type: "button", disabled: pg === 0, "aria-label": "Mais novas", onclick: () => vai(pg - 1) }, "‹"),
         h("span", { text: (l[pg * 4] ? dia(l[pg * 4].ts) : "") + "  ·  página " + (pg + 1) + " de " + pags }),
         h("button", { type: "button", disabled: pg >= pags - 1, "aria-label": "Mais antigas", onclick: () => vai(pg + 1) }, "›"))
-        : h("p", { class: "small", style: "text-align:center", text: "As fotos que você tirar com as câmeras da maleta ficam guardadas aqui." }));
+        : h("p", { class: "small", style: "text-align:center", text: "As fotos que você tirar com as câmeras da maleta ficam guardadas aqui." }),
+      l.length ? avisoRegistros() : null);
   }
   return h("div", { class: "diario diariofotos" },
     h("p", { class: "eyebrow rule", text: "Registros" }),
     !l.length ? h("p", { class: "small", style: "text-align:center", text: "As fotos que você tirar com as câmeras da maleta ficam guardadas aqui, com o dia, a cidade e a câmera." }) :
     h("div", { class: "contato" }, l.map(it => h("button", { type: "button", class: "quadro", onclick: () => verFotos(l.indexOf(it)) }, midia(it),
-        h("span", { text: [dia(it.ts), it.cidade, it.camera].filter(Boolean).join(" · ") })))));
+        h("span", { text: [dia(it.ts), it.cidade, it.camera].filter(Boolean).join(" · ") })))),
+    l.length ? avisoRegistros() : null);
 }
+// os Registros ficam só no aparelho: se apagar os dados do navegador ou trocar de celular, somem
+const avisoRegistros = () => h("p", { class: "small regaviso", text: "Os Registros ficam guardados só neste celular. Salve no aparelho ou envie para a Galeria as fotos e filmes que quiser guardar para sempre." });
 function verNoDiario(it) {
   closeSheets(); const msg = h("p", { class: "msg", role: "status" });
   const box = h("div", { role: "dialog", "aria-label": "Foto do diário", style: "text-align:center" },
@@ -6841,6 +6864,34 @@ async function ligaCam() {
   } catch (e) { if (S.camEst !== C || C.vez !== vez) return; fechaVivo(); S.camFalhou = true; if (S.foto && S.foto.vivo) S.foto = { ...S.foto, img: null, vivo: false }; render(); }
 }
 const dicaCel = () => S.gravando ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure Filmar, ou toque uma vez para começar e outra para parar.";
+// clique da câmera do celular: som de obturador, vibração e a piscada no visor, como nas câmeras da maleta; com o temporizador, conta antes
+function disparaCel() {
+  if (S.gravando) return;
+  if (S.celConta) { clearInterval(S.celConta); S.celConta = null; document.querySelector(".celcontagem")?.remove(); return; } // tocar de novo cancela a contagem
+  const n = S.celTempo || 0;
+  const clica = () => { if (S.camSel !== "celular" || !S.foto || !S.foto.vivo || S.gravando) return;
+    cliqueSom(); vibrar(30);
+    const fr = document.querySelector(".celvisor .fotoframe");
+    if (fr) { const r = fr.getBoundingClientRect(), fl = h("div", { class: "celflash", style: `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px` }); document.body.append(fl); setTimeout(() => fl.remove(), 450); }
+    S.guardarCel = true; tiraFotoVivo(); };
+  if (!n) return clica();
+  let falta = n; const fr = document.querySelector(".celvisor .fotoframe"), num = h("div", { class: "celcontagem", "aria-live": "assertive" }, h("b", { text: String(falta) }));
+  if (fr) fr.append(num); tique(true);
+  S.celConta = setInterval(() => { falta--;
+    if (falta <= 0 || !num.isConnected) { clearInterval(S.celConta); S.celConta = null; num.remove(); if (falta <= 0) clica(); return; }
+    num.firstChild.textContent = String(falta); tique(falta <= 3); }, 1000);
+}
+// temporizador: desligado, 3 ou 10 segundos (para a foto do grupo com o celular apoiado)
+function botaoTempoCel() {
+  const rot = () => (S.celTempo ? S.celTempo + "s" : "off");
+  const v = h("b", { text: rot() });
+  return h("button", { type: "button", class: "celtempo" + (S.celTempo ? " on" : ""), "aria-label": "Temporizador", onclick: e => { S.celTempo = S.celTempo === 3 ? 10 : S.celTempo === 10 ? 0 : 3; v.textContent = rot(); e.currentTarget.classList.toggle("on", !!S.celTempo); } }, h("span", { text: "Tempo" }), v);
+}
+// a última foto ou filme num quadradinho no couro; tocar abre os Registros
+function miniCel() {
+  const u = (S.fotosDiario || [])[0];
+  return h("button", { type: "button", class: "celmini" + (u ? "" : " vazia"), "aria-label": "Ver meus Registros", onclick: () => { if ((S.fotosDiario || []).length) verFotos(0); } }, u ? miniMidia(u) : null);
+}
 // depois do clique a foto vai para os Registros e o visor volta sozinho, pronto para a próxima (sem "Nova foto")
 function voltaAoVivoCel() {
   if (S.camSel !== "celular" || S.tab !== "fotos" || !S.foto || S.foto.vivo) return;
@@ -7007,15 +7058,14 @@ function vFotos() {
         h("p", { class: "celsub", text: "Tire a foto com o celular e revele aqui: filtros, molduras e adesivos da Caravana." }))),
     F.img ? h("div", { class: "estudio" },
       // visor e botão de clique andam juntos: ao rolar a tela, o botão nunca fica escondido atrás da foto
-      h("div", { class: "fotofixa" }, h("div", { class: "celvisor" }, h("div", { class: "fotoframe" }, canvas, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
+      h("div", { class: "fotofixa" }, h("div", { class: "celvisor" }, F.vivo ? botaoTempoCel() : null, h("div", { class: "fotoframe" }, canvas, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
         F.vivo ? h("div", { class: "actions camacoes" },
           h("button", { class: "celknob celselfie", type: "button", onclick: e => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); e.currentTarget.textContent = C.frente ? "Trás" : "Selfie"; } } }, C0frente() ? "Trás" : "Selfie"),
-          h("button", { class: "habclique celobtur", type: "button", "aria-label": "Tirar foto", onclick: () => { if (!S.gravando) { S.guardarCel = true; tiraFotoVivo(); } } }),
+          h("button", { class: "habclique celobtur", type: "button", "aria-label": "Tirar foto", onclick: disparaCel }),
           h("button", { class: "celknob celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "Parar" : "Filmar"),
-          h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, "Fototeca"))
+          h("div", { class: "celdir" }, miniCel(), h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, "Fototeca")))
         : S.guardarCel ? null
         : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [], filtro: "original", intens: 1, thumbSrc: null }; render(); } }, "↺ Voltar para a câmera"))),
-        F.vivo && (S.fotosDiario || []).length ? h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros")) : null,
         F.vivo ? h("p", { class: "celdica" + (S.celGuardou && !S.gravando ? " celok" : ""), text: S.celGuardou && !S.gravando ? "✓ Foto guardada nos seus Registros" : dicaCel() }) : null,
         barraSel, tiraFiltros(F, (id, el) => set("filtro", id, el)), barraIntensidade),
       h("div", { class: "fcontrols" },
