@@ -5074,6 +5074,11 @@ const FILTROS = [
   { id: "cam-couro-frio", cat: "Câmeras", nome: "Delhi 1955 fria", m: [.94, .02, .02, .01, 1, .02, .02, .04, 1.08], lift: 16, con: 1.46, sat: .98, split: [[20, 36, 50], [240, 238, 228]], add: [-4, 1, 10], vin: .46, grao: 16, pelicula: 1 },
   { id: "cam-cinematic", cat: "Câmeras", nome: "Cinematic", m: [1.16, 0, 0, 0, 1.14, 0, 0, 0, 1.12], lift: 24, con: 1.12, sat: .8, split: [[18, 62, 72], [255, 178, 118]], add: [6, 3, -2], vin: .5, grao: 28, cinema: 1 },
   { id: "cam-noturno", cat: "Câmeras", nome: "Blue Lassi", noite: 1, con: 1.22, vin: .45, grao: 30, cinema: 2 },
+  { id: "cam-mango", cat: "Câmeras", nome: "Mango Lassi", noite: 1, rampa: [[10, 4, 0], [130, 66, 22], [255, 214, 150]], quente: [40, 4, -50], con: 1.22, vin: .45, grao: 30, cinema: 2 },
+  { id: "cam-rose", cat: "Câmeras", nome: "Rose Lassi", noite: 1, rampa: [[8, 0, 8], [120, 48, 92], [250, 205, 225]], quente: [36, -4, -34], con: 1.22, vin: .45, grao: 30, cinema: 2 },
+  { id: "cam-pista", cat: "Câmeras", nome: "Pistache", noite: 1, rampa: [[0, 8, 4], [36, 98, 74], [205, 238, 212]], quente: [32, -2, -42], con: 1.22, vin: .45, grao: 30, cinema: 2 },
+  { id: "cam-masala", cat: "Câmeras", nome: "Masala", noite: 1, rampa: [[10, 0, 0], [128, 30, 22], [255, 200, 160]], quente: [34, 14, -46], con: 1.22, vin: .45, grao: 30, cinema: 2 },
+  { id: "cam-indigo", cat: "Câmeras", nome: "Índigo", noite: 1, rampa: [[4, 0, 14], [68, 52, 140], [214, 206, 246]], quente: [36, -2, -36], con: 1.22, vin: .45, grao: 30, cinema: 2 },
   { id: "cam-cine", cat: "Câmeras", nome: "Cine", lift: 10, con: 1.36, sat: .7, split: [[14, 38, 44], [242, 196, 150]], add: [2, 0, 2], vin: .54, grao: 32, pelicula: 1 },
   // estilo de câmera de filme de viagem: um para cada cidade
   { id: "cid-delhi", cat: "Profissionais", nome: "Delhi", lift: 34, con: 0.9, sat: 0.85, add: [22, -4, 4], leak: "rosa", brilho: 0.4, vin: 0.32, grao: 18, pelicula: 1 },
@@ -5153,9 +5158,9 @@ function aplicaFiltro(ctx, w, hh, f, graoEsc, modo) {
     if (sat !== 1) { R = L + (R - L) * sat; G = L + (G - L) * sat; B = L + (B - L) * sat; }
     // Noite azul: tudo o que não é luz quente vira azul de cinema (do marinho ao ciano); o que é quente (luzes, pele, laranja) fica laranja forte
     if (f.noite) { const t = Math.min(1, L / 255 * 1.35), mx = Math.max(R, G, B) + 1, q = Math.min(1, Math.max(0, ((R - B) / mx - .18) / .38)) * Math.min(1, t * 2.2);
-      const a = t < .5 ? t / .5 : (t - .5) / .5, c0 = t < .5 ? [0, 3, 10] : [44, 96, 132], c1 = t < .5 ? [44, 96, 132] : [205, 232, 240];
+      const a = t < .5 ? t / .5 : (t - .5) / .5, rp = f.rampa || [[0, 3, 10], [44, 96, 132], [205, 232, 240]], c0 = t < .5 ? rp[0] : rp[1], c1 = t < .5 ? rp[1] : rp[2];
       const bR = c0[0] + (c1[0] - c0[0]) * a, bG = c0[1] + (c1[1] - c0[1]) * a, bB = c0[2] + (c1[2] - c0[2]) * a;
-      const Le = t * 255, wR = Math.min(255, Le + (R - L) * 1.5 + 30), wG = Le + (G - L) * 1.3 - 6, wB = Le + (B - L) * 1.4 - 40;
+      const Le = t * 255, qt = f.quente || [30, -6, -40], wR = Math.min(255, Le + (R - L) * 1.5 + qt[0]), wG = Le + (G - L) * 1.3 + qt[1], wB = Le + (B - L) * 1.4 + qt[2];
       R = bR * (1 - q) + wR * q; G = bG * (1 - q) + wG * q; B = bB * (1 - q) + wB * q; }
     if (f.duo) { const t = L / 255, [a, c] = f.duo; R = a[0] + (c[0] - a[0]) * t; G = a[1] + (c[1] - a[1]) * t; B = a[2] + (c[2] - a[2]) * t; }
     if (f.split) { const t = L / 255, [sh, hi] = f.split; R = R * .7 + (sh[0] * (1 - t) + hi[0] * t) * .3; G = G * .7 + (sh[1] * (1 - t) + hi[1] * t) * .3; B = B * .7 + (sh[2] * (1 - t) + hi[2] * t) * .3; }
