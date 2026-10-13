@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "13/10 · 09:46";</script>
+<script>window.__VERSAO = "13/10 · 09:51";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2341,7 +2341,6 @@ const MISSOES = [
   ["explorador", "Montar o explorador", "O bonequinho que anda com você pelo mapa.", v => !!(v && v.boneco), () => go("explorador")],
   ["guardiao", "Conhecer o seu guardião", "A história do guardião da sua passagem, onde vocês se encontram na viagem e o mantra dele.", v => false, () => abrirGuardiao(0)],
   ["intencao", "Mensagem na garrafa", "Escreva e lance a garrafa no rio.", v => !!lerIntencao(), () => abrirIntencao()],
-  ["retrato", "Embarcar no trem da Caravana", "Monte o Retrato do Embarque com a turma.", v => false, () => { go("explorador"); requestAnimationFrame(() => document.querySelector(".retprev")?.closest(".carvbon")?.scrollIntoView({ block: "start", behavior: "smooth" })); }],
   ["camera", "Testar uma câmera da maleta", "Tire uma foto com uma das câmeras antigas.", v => false, () => go("fotos")],
   ["pombo", "Mandar um pombo-correio", "Uma cartinha para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")]
 ];
