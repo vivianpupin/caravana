@@ -944,7 +944,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .intens input{width:100%;accent-color:#3F4938}
 .intens b{text-align:right;color:var(--ink);font-weight:600}
 .trocafoto{display:flex;justify-content:center}
-.estudiocel .celvisor{display:flex;flex-direction:column;align-items:center;gap:12px;position:relative;padding:18px 16px 16px;border-radius:24px;color:#F6E6C8;
+.estudiocel .celvisor{display:flex;flex-direction:column;align-items:center;gap:12px;position:relative;padding:58px 16px 16px;border-radius:24px;color:#F6E6C8;
   background:radial-gradient(ellipse 75% 50% at 28% 15%,rgba(255,190,130,.14),transparent 70%),radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(10,4,0,.5)),#3A1A0A url("img/cameras/couro-delhi.webp") center/340px 300px;
   box-shadow:inset 0 2px 2px rgba(255,214,170,.18),inset 0 -12px 26px rgba(10,4,0,.55),inset 0 0 0 1px rgba(30,10,2,.7),0 12px 26px rgba(0,0,0,.6)}
 /* costura em linha de algodão cru, como na Delhi 1955 e na carteira de registros */
@@ -970,7 +970,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .estudiocel .celmini.vazia{background:repeating-linear-gradient(135deg,#140B06 0 5px,#1C1009 5px 10px)}
 .estudiocel .celvisor .camacoes .celdir .btn.ghost{min-width:96px;padding:6px 10px;font-size:10.5px}
 /* temporizador: plaquinha de latão no canto da capa */
-.estudiocel .celtempo{position:absolute;z-index:2;top:18px;left:18px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 7px;border-radius:6px;border:1px solid #5C421F;cursor:pointer;
+.estudiocel .celvisor .cfvolta.celvolta{position:absolute;z-index:4;top:16px;left:16px;margin:0;padding:6px 11px 6px 8px;font-size:10px}
+.estudiocel .celtempo{position:absolute;z-index:2;top:18px;right:18px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 7px;border-radius:6px;border:1px solid #5C421F;cursor:pointer;
   font:700 8.5px/1 "Courier Prime",monospace;letter-spacing:.14em;text-transform:uppercase;color:#3A2410;background:linear-gradient(180deg,#C9A866,#A88445 55%,#7E6130);box-shadow:inset 0 1px 0 rgba(255,240,200,.5),0 2px 3px rgba(0,0,0,.5)}
 .estudiocel .celtempo b{font-size:12px;letter-spacing:.06em;color:#2A1808}
 .estudiocel .celtempo.on b{color:#8E1A10}
@@ -1294,7 +1295,7 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .estudiocel .fotoframe{border-radius:14px;padding:8px;background:linear-gradient(180deg,#14100C,#0A0806);box-shadow:inset 0 0 0 1.5px rgba(232,192,122,.35),0 10px 24px rgba(0,0,0,.6)}
 .estudiocel .fotoframe{width:fit-content;max-width:100%;align-self:center;margin:0 auto}
 @media (min-width:820px){.estudiocel .fotoframe{position:relative}}
-@media (max-width:819px){.estudiocel .celvisor{position:sticky;top:4px;z-index:3;margin:0 -6px;width:auto;align-self:stretch}.estudiocel .celvisor .fotoframe{position:relative;top:auto;margin:0 auto}.estudiocel .fotoframe .fotocanvas{max-height:50vh;max-height:50svh}}
+@media (max-width:819px){.estudiocel .celvisor{position:sticky;top:4px;z-index:3;margin:0 -6px;width:auto;align-self:stretch}.estudiocel .celvisor .fotoframe{position:relative;top:auto;margin:0 auto}.estudiocel .fotoframe .fotocanvas{max-height:60vh;max-height:60svh}}
 .celmesa{margin:0 0 4px;font:700 12px "Courier Prime",monospace;letter-spacing:.22em;text-transform:uppercase;color:#E2C27E;text-align:center;padding-bottom:8px;border-bottom:1.5px dashed rgba(214,180,128,.3)}
 .estudiocel .fcontrols{background:rgba(20,13,8,.45);border:1px solid rgba(232,192,122,.18);border-radius:14px;padding:16px 14px;box-shadow:inset 0 2px 10px rgba(0,0,0,.4)}
 .estudiocel .lab{font-family:"Courier Prime",monospace;letter-spacing:.16em;color:#C9A96A!important}
@@ -7077,12 +7078,12 @@ function vFotos() {
   const voltaCel = h("button", { type: "button", class: "cfvolta", "aria-label": "Voltar para a maleta", onclick: voltaEstante }, h("span", { class: "cfvoltaic" }), h("span", { text: "Maleta" }));
   voltaCel.firstChild.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V5.5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 5.5v2M3 12.5h18M10.5 12.5v2h3v-2"/></svg>';
   return h("section", { class: "view estudiocel" },
-    h("div", { class: "celtopo" }, voltaCel,
-      h("div", { class: "celtit" }, h("p", { class: "celeye", text: "Arsenal de Travessia" }), h("h1", { text: "Câmera do celular" }),
-        h("p", { class: "celsub", text: "Tire a foto com o celular e revele aqui: filtros, molduras e adesivos da Caravana." }))),
+    // sem o título em cima: a tela já abre na câmera; o voltar para a maleta fica no canto da capa de couro
+    F.img ? null : h("div", { class: "celtopo" }, voltaCel,
+      h("div", { class: "celtit" }, h("p", { class: "celeye", text: "Arsenal de Travessia" }), h("h1", { text: "Câmera do celular" }))),
     F.img ? h("div", { class: "estudio" },
       // visor e botão de clique andam juntos: ao rolar a tela, o botão nunca fica escondido atrás da foto
-      h("div", { class: "fotofixa" }, h("div", { class: "celvisor" }, F.vivo ? botaoTempoCel() : null, h("div", { class: "fotoframe" }, canvas, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
+      h("div", { class: "fotofixa" }, h("div", { class: "celvisor" }, voltaMaleta("topo celvolta"), F.vivo ? botaoTempoCel() : null, h("div", { class: "fotoframe" }, canvas, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
         F.vivo ? h("div", { class: "actions camacoes" },
           h("button", { class: "celknob celselfie", type: "button", onclick: e => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); e.currentTarget.textContent = C.frente ? "Trás" : "Selfie"; } } }, C0frente() ? "Trás" : "Selfie"),
           h("button", { class: "habclique celobtur", type: "button", "aria-label": "Tirar foto", onclick: disparaCel }),
