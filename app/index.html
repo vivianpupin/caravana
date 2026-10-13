@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "13/10 · 09:17";</script>
+<script>window.__VERSAO = "13/10 · 09:21";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -5184,7 +5184,7 @@ function aplicaFiltro(ctx, w, hh, f, graoEsc, modo) {
     const L = .299 * R + .587 * G + .114 * B;
     if (sat !== 1) { R = L + (R - L) * sat; G = L + (G - L) * sat; B = L + (B - L) * sat; }
     // Noite azul: tudo o que não é luz quente vira azul de cinema (do marinho ao ciano); o que é quente (luzes, pele, laranja) fica laranja forte
-    if (f.noite) { const t = Math.min(1, L / 255 * 1.18), mx = Math.max(R, G, B) + 1, q = Math.min(1, Math.max(0, ((R - B) / mx - .18) / .38)) * Math.min(1, t * 2.2);
+    if (f.noite) { const t = Math.min(1, L / 255 * 1.35), mx = Math.max(R, G, B) + 1, q = Math.min(1, Math.max(0, ((R - B) / mx - .18) / .38)) * Math.min(1, t * 2.2);
       const a = t < .5 ? t / .5 : (t - .5) / .5, c0 = t < .5 ? [0, 3, 10] : [44, 96, 132], c1 = t < .5 ? [44, 96, 132] : [205, 232, 240];
       const bR = c0[0] + (c1[0] - c0[0]) * a, bG = c0[1] + (c1[1] - c0[1]) * a, bB = c0[2] + (c1[2] - c0[2]) * a;
       const Le = t * 255, wR = Math.min(255, Le + (R - L) * 1.5 + 30), wG = Le + (G - L) * 1.3 - 6, wB = Le + (B - L) * 1.4 - 40;
@@ -5285,9 +5285,7 @@ function noiteAzulLuz(ctx, w, hh) {
   ctx.globalAlpha = .18; ctx.drawImage(cineReduz(cv, w, hh, 2.5, "macia"), 0, 0, w, hh);
   // as luzes (só o que é claro), numa versão pequena, num branco quente
   const p = cineReduz(cv, w, hh, 6, "luz"), px = p.getContext("2d", { willReadFrequently: true }), d = px.getImageData(0, 0, p.width, p.height), q = d.data;
-  // de dia (cena clara) o brilho só pega o que é bem claro e fica mais fraco, para a foto não estourar
-  let soma = 0; for (let i = 0; i < q.length; i += 16) soma += .299 * q[i] + .587 * q[i + 1] + .114 * q[i + 2];
-  const media = soma / (q.length / 16) / 255, lim = Math.min(.86, .45 + Math.max(0, media - .18) * 1.3), forca = Math.max(.25, 1 - Math.max(0, media - .2) * 2);
+  const lim = .45, forca = 1;
   for (let i = 0; i < q.length; i += 4) { const L = (.299 * q[i] + .587 * q[i + 1] + .114 * q[i + 2]) / 255, k = forca * Math.pow(Math.max(0, (L - lim) / (1 - lim)), 1.4), quente = q[i] > q[i + 2] + 10;
     q[i] = 255 * k; q[i + 1] = (quente ? 210 : 235) * k; q[i + 2] = (quente ? 150 : 240) * k; }
   px.putImageData(d, 0, 0);
