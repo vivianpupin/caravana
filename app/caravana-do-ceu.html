@@ -2018,6 +2018,17 @@ function seletorRolavel() {
   try { for (const sh of document.styleSheets) { let rs; try { rs = sh.cssRules; } catch (e) { continue; } for (const r of rs || []) if (r.style && /auto|scroll/.test(r.style.overflowX || "") && r.selectorText) sel.push(r.selectorText); } } catch (e) {}
   return _selRol = sel.length ? sel.join(",") : ".daychips";
 }
+// celular pequeno: o botão de selfie (desenhado sobre a foto da câmera) nunca fica atrás das bolinhas de cor e dos botões de baixo
+function ajustaSelfie() {
+  const sf = document.querySelector(".cfselfie"), ctl = document.querySelector(".cfcontroles"); if (!sf || !ctl) return;
+  sf.style.marginTop = "";
+  const b0 = sf.getBoundingClientRect(), a = { left: b0.left - 30, right: b0.right + 30, top: b0.top, bottom: b0.bottom + 24 }, itens = [...ctl.querySelectorAll(":scope > *")].map(e => e.getBoundingClientRect()).filter(r => r.width && r.height);
+  const bate = itens.filter(r => r.left < a.right && r.right > a.left && r.top < a.bottom && r.bottom > a.top);
+  if (!bate.length) return;
+  const topo = Math.min(...bate.map(r => r.top));
+  sf.style.marginTop = -(a.bottom - topo + 8) + "px";
+}
+addEventListener("resize", () => { if (S.camSel) ajustaSelfie(); });
 function render() {
   if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
   marcaChat(); marcaPombos(); convidaAvisos(); registraApp(); checaHabilidades();
@@ -2059,6 +2070,7 @@ function render() {
     }
   }
   tickRelogios();
+  if (S.camSel) requestAnimationFrame(ajustaSelfie);
   if (S.tab === "travessia") alturaFrases();
   const el = actId && document.getElementById(actId);
   if (el && el !== act) { if (draft != null && "value" in el && el.type !== "file" && el.type !== "checkbox") el.value = draft; el.focus({ preventScroll: true }); if (el.isContentEditable) cursorNoFim(el); else if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
