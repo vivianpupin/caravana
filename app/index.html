@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "13/10 · 16:20";</script>
+<script>window.__VERSAO = "13/10 · 16:44";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -976,12 +976,41 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .intens input{width:100%;accent-color:#3F4938}
 .intens b{text-align:right;color:var(--ink);font-weight:600}
 .trocafoto{display:flex;justify-content:center}
-.estudiocel .celvisor{display:flex;flex-direction:column;align-items:center;gap:10px}
-.estudiocel .camacoes{display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:auto auto;align-items:center;column-gap:16px;row-gap:6px;width:100%;max-width:420px;margin:0}
-.estudiocel .camacoes>:nth-child(1){grid-area:1/1;justify-self:end}
-.estudiocel .camacoes>:nth-child(2){grid-area:1/2/3/3}
-.estudiocel .camacoes>:nth-child(3){grid-area:2/1;justify-self:end}
-.estudiocel .camacoes>:nth-child(4){grid-area:1/3/3/4;justify-self:start}
+.estudiocel .celvisor{display:flex;flex-direction:column;align-items:center;gap:12px;position:relative;padding:18px 16px 16px;border-radius:24px;color:#F6E6C8;
+  background:radial-gradient(ellipse 75% 50% at 28% 15%,rgba(255,190,130,.14),transparent 70%),radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(10,4,0,.5)),#3A1A0A url("img/cameras/couro-delhi.webp") center/340px 300px;
+  box-shadow:inset 0 2px 2px rgba(255,214,170,.18),inset 0 -12px 26px rgba(10,4,0,.55),inset 0 0 0 1px rgba(30,10,2,.7),0 12px 26px rgba(0,0,0,.6)}
+/* costura em linha de algodão cru, como na Delhi 1955 e na carteira de registros */
+.estudiocel .celvisor::before{content:"";position:absolute;inset:8px;border:1.8px dashed rgba(214,176,120,.7);border-radius:17px;pointer-events:none;filter:drop-shadow(0 1px 0 rgba(10,4,0,.7))}
+/* a tela: vidro escuro com aro de latão envelhecido */
+.estudiocel .celvisor .fotoframe{position:relative;z-index:1;background:#080604;padding:5px;border-radius:12px;box-shadow:inset 0 3px 8px rgba(0,0,0,.9),0 0 0 2px #6E5530,0 0 0 3px #2A1A0C,0 0 0 4px rgba(214,176,120,.35),0 3px 6px 3px rgba(0,0,0,.45)}
+.estudiocel .celvisor .fotoframe .fotocanvas{border-radius:8px}
+.estudiocel .celvisor .camacoes{position:relative;z-index:1}
+/* plaquinhas de latão gravado, no lugar de botões modernos */
+.estudiocel .celvisor .camacoes .btn.ghost{min-width:100px;justify-content:center;text-align:center;padding:7px 12px;border-radius:7px;font:700 11px "Courier Prime",monospace;letter-spacing:.16em;text-transform:uppercase;color:#3A2410;text-shadow:0 1px 0 rgba(255,236,190,.45);border:1px solid #5C421F;
+  background:linear-gradient(180deg,rgba(255,240,200,.35),rgba(255,240,200,0) 45%,rgba(60,35,10,.25)),url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='60'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/><feColorMatrix values='0 0 0 0 .2  0 0 0 0 .13  0 0 0 0 .05  0 0 0 .5 0'/></filter><rect width='120' height='60' filter='url(%23n)'/></svg>"),linear-gradient(180deg,#C9A866,#A88445 55%,#7E6130);
+  box-shadow:inset 0 1px 0 rgba(255,240,200,.5),inset 0 -1px 0 rgba(40,20,5,.4),0 2px 3px rgba(0,0,0,.5)}
+.estudiocel .celvisor .camacoes .btn.ghost:active{transform:translateY(1px);box-shadow:inset 0 2px 3px rgba(40,20,5,.5)}
+/* o disparador: botão de latão de verdade, o mesmo da Agra 1900 */
+.estudiocel .celvisor .camacoes .celobtur{width:74px;height:74px;padding:0;border:0;border-radius:50%;cursor:pointer;background:url("img/cameras/botao-latao.webp") center/cover;
+  box-shadow:0 0 0 3px #24110A,0 0 0 4px rgba(214,176,120,.35),0 6px 12px rgba(0,0,0,.6);-webkit-tap-highlight-color:transparent;transition:transform .08s,filter .08s}
+.estudiocel .celvisor .camacoes .celobtur:active{transform:scale(.94);filter:brightness(.85)}
+/* Selfie e Filmar: botões redondos de latão, iguais ao disparador, com o nome gravado embaixo */
+.estudiocel .celvisor .celknob{display:flex;flex-direction:column;align-items:center;gap:5px;width:58px;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  font:700 9.5px/1 "Courier Prime",monospace!important;letter-spacing:.14em;text-transform:uppercase;color:#E9D3A6!important;text-shadow:0 1px 1px rgba(0,0,0,.8)}
+.estudiocel .celvisor .celknob::before{content:"";width:46px;height:46px;border-radius:50%;background:url("img/cameras/botao-latao.webp") center/cover;
+  box-shadow:0 0 0 2px #24110A,0 0 0 3px rgba(214,176,120,.3),0 4px 8px rgba(0,0,0,.55);transition:transform .08s,filter .08s}
+.estudiocel .celvisor .celknob:active::before{transform:scale(.92);filter:brightness(.85)}
+.estudiocel .celvisor .celselfie.on::before,.estudiocel .celvisor .celknob[aria-pressed="true"]::before{filter:brightness(.8)}
+.estudiocel .celvisor .celknob.celfilmar{color:#FF9A88!important}
+.estudiocel .celvisor .celknob.celfilmar::before{background:radial-gradient(circle at 46% 42%,#FF7A66 0 6%,#D8301F 13%,#8E1A10 21%,rgba(60,10,4,.9) 23%,rgba(60,10,4,0) 26%),url("img/cameras/botao-latao.webp") center/cover;
+  box-shadow:0 0 0 2px #24110A,0 0 0 3.5px #C7402F,0 0 10px 2px rgba(220,60,40,.45),0 4px 8px rgba(0,0,0,.55)}
+.estudiocel .celvisor .celknob.celfilmar.gravando{background:none!important;color:#FF9C8C!important;animation:none}
+.estudiocel .celvisor .celknob.celfilmar.gravando::before{box-shadow:0 0 0 2px #24110A,0 0 0 4px #E2483A,0 0 14px 4px rgba(255,70,50,.6);animation:revela 1s ease-in-out infinite alternate}
+.estudiocel .camacoes{display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:auto;align-items:center;column-gap:16px;row-gap:6px;width:100%;max-width:420px;margin:0}
+.estudiocel .camacoes>:nth-child(1){grid-area:1/1;justify-self:end;margin-right:64px}
+.estudiocel .camacoes>:nth-child(2){grid-area:1/2}
+.estudiocel .camacoes>:nth-child(3){grid-area:1/1;justify-self:end}
+.estudiocel .camacoes>:nth-child(4){grid-area:1/3;justify-self:start}
 .estudiocel .camacoes .btn{padding:8px 10px;font-size:12.5px;white-space:nowrap}
 .estudiocel .camacoes .habclique{width:72px;height:72px;min-width:0;padding:0;border-radius:50%;font-size:26px;display:grid;place-items:center;box-shadow:0 0 0 3px #22170F,0 0 0 5px rgba(217,178,106,.75),0 6px 14px rgba(0,0,0,.5)}
 .trocafoto .btn{padding:8px 18px;font-size:13.5px}
@@ -1278,7 +1307,7 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .estudiocel .fotoframe{border-radius:14px;padding:8px;background:linear-gradient(180deg,#14100C,#0A0806);box-shadow:inset 0 0 0 1.5px rgba(232,192,122,.35),0 10px 24px rgba(0,0,0,.6)}
 .estudiocel .fotoframe{width:fit-content;max-width:100%;align-self:center;margin:0 auto}
 @media (min-width:820px){.estudiocel .fotoframe{position:relative}}
-@media (max-width:819px){.estudiocel .celvisor{position:sticky;top:0;z-index:3;margin:0 -16px;padding:6px 12px 10px;background:#22170F}.estudiocel .celvisor .fotoframe{position:relative;top:auto;margin:0 auto;padding:8px}.estudiocel .fotoframe .fotocanvas{max-height:50vh;max-height:50svh}}
+@media (max-width:819px){.estudiocel .celvisor{position:sticky;top:4px;z-index:3;margin:0 -6px;width:auto;align-self:stretch}.estudiocel .celvisor .fotoframe{position:relative;top:auto;margin:0 auto}.estudiocel .fotoframe .fotocanvas{max-height:50vh;max-height:50svh}}
 .celmesa{margin:0 0 4px;font:700 12px "Courier Prime",monospace;letter-spacing:.22em;text-transform:uppercase;color:#E2C27E;text-align:center;padding-bottom:8px;border-bottom:1.5px dashed rgba(214,180,128,.3)}
 .estudiocel .fcontrols{background:rgba(20,13,8,.45);border:1px solid rgba(232,192,122,.18);border-radius:14px;padding:16px 14px;box-shadow:inset 0 2px 10px rgba(0,0,0,.4)}
 .estudiocel .lab{font-family:"Courier Prime",monospace;letter-spacing:.16em;color:#C9A96A!important}
@@ -1390,8 +1419,16 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .gravando .cfbotaofoto::after{content:"PARAR"}
 .cfdicafilme{position:absolute;z-index:4;left:8%;right:8%;bottom:10px;padding:6px 10px;border-radius:8px;background:rgba(12,8,5,.62);color:#F3E3C0;font:600 10.5px/1.35 Poppins,sans-serif;text-align:center;pointer-events:none}
 
-.gravando .cfjanelafoto::before{content:"● REC";position:absolute;z-index:4;top:8px;right:10px;font:700 11px "Courier Prime",monospace;color:#FF4A3A;text-shadow:0 0 6px rgba(255,60,40,.8);animation:piscarec 1s steps(2) infinite}
+.gravando .cfjanelafoto::before{content:none;display:none;position:absolute;z-index:4;top:8px;right:10px;font:700 11px "Courier Prime",monospace;color:#FF4A3A;text-shadow:0 0 6px rgba(255,60,40,.8);animation:piscarec 1s steps(2) infinite}
 @keyframes piscarec{50%{opacity:0}}
+/* REC grande no visor de todas as câmeras enquanto filma: bolinha vermelha piscando, o tempo correndo e a borda do visor acesa em vermelho */
+.recvisor{position:absolute;z-index:8;top:10px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:9px;padding:4px 10px;pointer-events:none;
+  /* letreiro de visor antigo: vermelho de lâmpada, levemente borrado e tremendo, sem caixa moderna */
+  font:700 17px/1 "Courier Prime",monospace;letter-spacing:.14em;color:#E8352A;text-shadow:0 0 2px rgba(255,70,50,.9),0 0 8px rgba(230,40,25,.7),0 0 16px rgba(200,30,20,.45);filter:blur(.25px) contrast(1.1);animation:recvelho 3.2s steps(1) infinite}
+.recvisor i{width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#FF6A55,#C4180C 70%);box-shadow:0 0 6px 2px rgba(230,40,25,.75);animation:piscarec 1s steps(2) infinite}
+.recvisor b,.recvisor small{font:inherit;color:inherit;letter-spacing:inherit}
+@keyframes recvelho{0%,100%{opacity:.96}37%{opacity:.82}38%{opacity:.98}71%{opacity:.88}72%{opacity:1}}
+.recborda{position:absolute;inset:0;z-index:7;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 0 2px rgba(200,35,22,.75),inset 0 0 22px rgba(200,35,22,.4);animation:revela 1s ease-in-out infinite alternate}
 /* selfie: um botãozinho de metal recartilhado no canto da câmera, com SELFIE bordado em ouro */
 .cf-instantanea .cfbotaofoto::after{top:50%;left:auto;right:calc(100% + 12px);transform:translateY(-50%)}
 .cf-rajastao .cfbotaofoto::after{top:calc(100% + 34px)}
@@ -1408,8 +1445,9 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
   box-shadow:0 0 0 2px #22170A,0 0 0 3.5px rgba(122,98,52,.6),0 4px 7px rgba(0,0,0,.65),inset 0 -3px 5px rgba(30,18,4,.6),inset 0 2px 2px rgba(230,205,150,.22);
   filter:sepia(.35) saturate(.75) contrast(1.05)}
 .cfselfie.on{transform:translate(-50%,-50%) scale(.93);filter:sepia(.35) saturate(.75) brightness(.78);box-shadow:0 0 0 2px #22170A,0 0 0 3.5px rgba(122,98,52,.5),0 1px 2px rgba(0,0,0,.6),inset 0 3px 6px rgba(20,12,2,.75)}
-.cfselfie::after{content:"SELFIE";position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);font:700 12px/1 "Courier Prime",monospace;letter-spacing:.26em;white-space:nowrap;pointer-events:none;
-  color:#F6E3B4;padding:5px 9px 5px calc(9px + .26em);border-radius:999px;background:rgba(18,11,6,.66);box-shadow:0 1px 3px rgba(0,0,0,.45);text-shadow:0 1px 1px rgba(0,0,0,.8)}
+/* nome do botão no mesmo padrão das outras etiquetas da câmera (Foto/Filme, filtros): letra pequena, pílula escura */
+.cfselfie::after{content:"SELFIE";position:absolute;left:50%;top:calc(100% + 7px);transform:translateX(-50%);font:600 10px/1 Poppins,sans-serif;letter-spacing:.12em;white-space:nowrap;pointer-events:none;
+  color:#F1E2BC;padding:5px 10px 5px calc(10px + .12em);border-radius:999px;border:1px solid rgba(232,192,122,.35);background:rgba(0,0,0,.42);box-shadow:0 1px 3px rgba(0,0,0,.35);text-shadow:0 1px 1px rgba(0,0,0,.6)}
 .cfbotaofoto:active{background:rgba(0,0,0,.25)}
 /* CLICK / FILM legíveis em qualquer câmera: letra clara de máquina de escrever numa plaquinha escura */
 .cfbotaofoto::after{content:"CLICK";position:absolute;left:50%;top:calc(100% + 12px);transform:translateX(-50%);font:700 12px/1 "Courier Prime",monospace;letter-spacing:.26em;white-space:nowrap;pointer-events:none;
@@ -2132,6 +2170,7 @@ function render() {
   }
   tickRelogios();
   if (S.camSel) requestAnimationFrame(ajustaSelfie);
+  if (S.gravando) requestAnimationFrame(() => mostraGravando());
   if (S.camSel === "celular") { requestAnimationFrame(ajustaVisorCel); setTimeout(ajustaVisorCel, 700); }
   if (S.tab === "travessia") alturaFrases();
   const el = actId && document.getElementById(actId);
@@ -6457,14 +6496,23 @@ async function filma(c) {
 // começar e parar de filmar muda só o que precisa (REC, textos, botão e a miniatura), sem redesenhar a tela: nada pisca
 function mostraGravando(novoFilme) {
   const g = !!S.gravando;
+  // REC grande no visor (todas as câmeras), com o tempo de filmagem correndo
+  document.querySelectorAll(".recvisor,.recborda").forEach(e => e.remove()); clearInterval(mostraGravando.rel);
+  const vis = document.querySelector(".cfjanelafoto") || document.querySelector(".cfcorpo .cfjanela") || document.querySelector(".celvisor .fotoframe") || document.querySelector(".fotoframe");
+  if (g && vis) {
+    if (getComputedStyle(vis).position === "static") vis.style.position = "relative";
+    const tempo = h("small", { text: "00:00" }), t0 = S.gravouEm || Date.now();
+    vis.append(h("div", { class: "recborda" }), h("div", { class: "recvisor", role: "status", "aria-label": "Filmando" }, h("i"), h("b", { text: "REC" }), tempo));
+    mostraGravando.rel = setInterval(() => { if (!S.gravando || !tempo.isConnected) return clearInterval(mostraGravando.rel); const s = Math.floor((Date.now() - t0) / 1000); tempo.textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); }, 250);
+  }
   document.querySelector(".cfcorpo")?.classList.toggle("gravando", g);
   const lg = document.querySelector(".cfdicafilme .longa"), ct = document.querySelector(".cfdicafilme .curta");
   if (lg) lg.textContent = g ? "Solte ou toque para parar · até 1 min" : "Segure para filmar · ou toque para começar e parar";
   if (ct) ct.textContent = g ? "Solte para parar" : "Segure para filmar";
   const bf = document.querySelector(".celfilmar");
-  if (bf) { bf.classList.toggle("gravando", g); bf.textContent = g ? "■ Parar" : "● Filmar"; bf.setAttribute("aria-label", g ? "Parar de filmar" : "Filmar"); }
+  if (bf) { bf.classList.toggle("gravando", g); bf.textContent = g ? "Parar" : "Filmar"; bf.setAttribute("aria-label", g ? "Parar de filmar" : "Filmar"); }
   const dc = document.querySelector(".celdica");
-  if (dc) { dc.classList.remove("celok"); if (g) S.celGuardou = 0; } if (dc) dc.textContent = g ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure ● Filmar, ou toque uma vez para começar e outra para parar.";
+  if (dc) { dc.classList.remove("celok"); if (g) S.celGuardou = 0; } if (dc) dc.textContent = g ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure Filmar, ou toque uma vez para começar e outra para parar.";
   if (novoFilme) {
     const ult = (S.fotosDiario || [])[0], mini = document.querySelector(".cfmini");
     if (mini && ult) mini.replaceChildren(miniMidia(ult));
@@ -6824,7 +6872,7 @@ async function ligaCam() {
     if (!C.rodando) { C.rodando = true; requestAnimationFrame(quadroCam); }
   } catch (e) { if (S.camEst !== C || C.vez !== vez) return; fechaVivo(); S.camFalhou = true; if (S.foto && S.foto.vivo) S.foto = { ...S.foto, img: null, vivo: false }; render(); }
 }
-const dicaCel = () => S.gravando ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure ● Filmar, ou toque uma vez para começar e outra para parar.";
+const dicaCel = () => S.gravando ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure Filmar, ou toque uma vez para começar e outra para parar.";
 // depois do clique a foto vai para os Registros e o visor volta sozinho, pronto para a próxima (sem "Nova foto")
 function voltaAoVivoCel() {
   if (S.camSel !== "celular" || S.tab !== "fotos" || !S.foto || S.foto.vivo) return;
@@ -6993,10 +7041,10 @@ function vFotos() {
       // visor e botão de clique andam juntos: ao rolar a tela, o botão nunca fica escondido atrás da foto
       h("div", { class: "fotofixa" }, h("div", { class: "celvisor" }, h("div", { class: "fotoframe" }, canvas, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
         F.vivo ? h("div", { class: "actions camacoes" },
-          h("button", { class: "btn ghost", type: "button", onclick: e => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); e.currentTarget.textContent = C.frente ? "↺ Virar câmera" : "↺ Selfie"; } } }, C0frente() ? "↺ Virar câmera" : "↺ Selfie"),
-          h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: () => { if (!S.gravando) { S.guardarCel = true; tiraFotoVivo(); } } }, "📸"),
-          h("button", { class: "btn ghost celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "■ Parar" : "● Filmar"),
-          h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, iconeFototeca(), "Fototeca"))
+          h("button", { class: "celknob celselfie", type: "button", onclick: e => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); e.currentTarget.textContent = C.frente ? "Trás" : "Selfie"; } } }, C0frente() ? "Trás" : "Selfie"),
+          h("button", { class: "habclique celobtur", type: "button", "aria-label": "Tirar foto", onclick: () => { if (!S.gravando) { S.guardarCel = true; tiraFotoVivo(); } } }),
+          h("button", { class: "celknob celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "Parar" : "Filmar"),
+          h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, "Fototeca"))
         : S.guardarCel ? null
         : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [], filtro: "original", intens: 1, thumbSrc: null }; render(); } }, "↺ Voltar para a câmera"))),
         F.vivo && (S.fotosDiario || []).length ? h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros")) : null,
@@ -7010,8 +7058,8 @@ function vFotos() {
         F.formato === "reels" ? null : h("div", { class: "opts" }, MOLDURAS.filter(([id]) => id !== "carimbo").map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: e => set("moldura", id, e.currentTarget) }, n))),
         painelAdesivos,
         // sem "Grão de filme" aqui: os filtros já trazem o grão de cada um
-        // volta tudo ao começo (filtro, grão, formato, patch, moldura e adesivos) sem trocar a foto
-        h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn", type: "button", onclick: () => { S.fotoSel = null; S.foto = { ...S.foto, filtro: "original", intens: 1, grao: "auto", formato: "original", patch: "nenhum", moldura: "nenhuma", adesivos: [] }; render(); } }, "Remover tudo")),
+        // tira tudo o que foi posto na mesa de revelação (patch, moldura, adesivos e carimbos); o filtro escolhido continua
+        h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn", type: "button", onclick: () => { S.fotoSel = null; S.foto = { ...S.foto, formato: "original", patch: "nenhum", moldura: "nenhuma", adesivos: [] }; render(); } }, "Remover tudo")),
         F.vivo ? null :
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no dispositivo"),
