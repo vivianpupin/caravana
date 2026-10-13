@@ -1390,12 +1390,13 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .gravando .cfjanelafoto::before{content:none;display:none;position:absolute;z-index:4;top:8px;right:10px;font:700 11px "Courier Prime",monospace;color:#FF4A3A;text-shadow:0 0 6px rgba(255,60,40,.8);animation:piscarec 1s steps(2) infinite}
 @keyframes piscarec{50%{opacity:0}}
 /* REC grande no visor de todas as câmeras enquanto filma: bolinha vermelha piscando, o tempo correndo e a borda do visor acesa em vermelho */
-.recvisor{position:absolute;z-index:8;top:10px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:6px 12px 6px 10px;border-radius:999px;background:rgba(0,0,0,.62);
-  font:700 16px/1 "Courier Prime",monospace;letter-spacing:.12em;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8);pointer-events:none;box-shadow:0 0 0 1.5px rgba(255,74,58,.85),0 2px 8px rgba(0,0,0,.5)}
-.recvisor i{width:13px;height:13px;border-radius:50%;background:#FF3B2E;box-shadow:0 0 10px 2px rgba(255,60,40,.9);animation:piscarec 1s steps(2) infinite}
-.recvisor b{color:#FF6A5C;font-weight:700}
-.recvisor small{font:700 14px/1 "Courier Prime",monospace;letter-spacing:.06em;color:#F3E6D0}
-.recborda{position:absolute;inset:0;z-index:7;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 0 3px rgba(255,59,46,.9),inset 0 0 18px rgba(255,59,46,.45);animation:revela 1s ease-in-out infinite alternate}
+.recvisor{position:absolute;z-index:8;top:10px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:9px;padding:4px 10px;pointer-events:none;
+  /* letreiro de visor antigo: vermelho de lâmpada, levemente borrado e tremendo, sem caixa moderna */
+  font:700 17px/1 "Courier Prime",monospace;letter-spacing:.14em;color:#E8352A;text-shadow:0 0 2px rgba(255,70,50,.9),0 0 8px rgba(230,40,25,.7),0 0 16px rgba(200,30,20,.45);filter:blur(.25px) contrast(1.1);animation:recvelho 3.2s steps(1) infinite}
+.recvisor i{width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#FF6A55,#C4180C 70%);box-shadow:0 0 6px 2px rgba(230,40,25,.75);animation:piscarec 1s steps(2) infinite}
+.recvisor b,.recvisor small{font:inherit;color:inherit;letter-spacing:inherit}
+@keyframes recvelho{0%,100%{opacity:.96}37%{opacity:.82}38%{opacity:.98}71%{opacity:.88}72%{opacity:1}}
+.recborda{position:absolute;inset:0;z-index:7;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 0 2px rgba(200,35,22,.75),inset 0 0 22px rgba(200,35,22,.4);animation:revela 1s ease-in-out infinite alternate}
 /* selfie: um botãozinho de metal recartilhado no canto da câmera, com SELFIE bordado em ouro */
 .cf-instantanea .cfbotaofoto::after{top:50%;left:auto;right:calc(100% + 12px);transform:translateY(-50%)}
 .cf-rajastao .cfbotaofoto::after{top:calc(100% + 34px)}
