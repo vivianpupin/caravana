@@ -1168,6 +1168,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfchave i{position:relative;width:30px;height:14px;border-radius:7px;background:#0D0B0A;box-shadow:inset 0 1px 2px rgba(0,0,0,.8)}
 .cfchave i::after{content:"";position:absolute;top:1px;left:1px;width:14px;height:12px;border-radius:6px;background:linear-gradient(180deg,#E8E4DC,#8E8A83);transition:left .15s}
 .cfchave.b i::after{left:15px}
+.cfcines{display:flex;gap:8px;flex-wrap:wrap}
 .cfcinebt{display:flex;align-items:center;gap:7px;border:1px solid rgba(232,192,122,.35);border-radius:999px;padding:6px 12px;cursor:pointer;background:rgba(0,0,0,.42);font:600 10px Poppins,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:rgba(241,226,188,.55)}
 .cfcinebt i{width:8px;height:8px;border-radius:50%;background:#3A2E26;box-shadow:inset 0 1px 2px rgba(0,0,0,.8)}
 .cfcinebt.on{color:#2B1F14;background:linear-gradient(180deg,#E8C98E,#B98A43);border-color:transparent;box-shadow:0 0 14px rgba(232,192,122,.55)}
@@ -5066,6 +5067,7 @@ const FILTROS = [
   { id: "cam-couro-quente", cat: "Câmeras", nome: "Delhi 1955 quente", m: [1.08, .04, -.02, .03, 1, 0, -.03, .02, .84], lift: 16, con: 1.48, sat: 1.12, split: [[62, 32, 14], [255, 222, 172]], add: [16, 6, -16], vin: .48, grao: 16, pelicula: 1 },
   { id: "cam-couro-frio", cat: "Câmeras", nome: "Delhi 1955 fria", m: [.94, .02, .02, .01, 1, .02, .02, .04, 1.08], lift: 16, con: 1.46, sat: .98, split: [[20, 36, 50], [240, 238, 228]], add: [-4, 1, 10], vin: .46, grao: 16, pelicula: 1 },
   { id: "cam-cinematic", cat: "Câmeras", nome: "Cinematic", m: [1.16, 0, 0, 0, 1.14, 0, 0, 0, 1.12], lift: 24, con: 1.12, sat: .8, split: [[18, 62, 72], [255, 178, 118]], add: [6, 3, -2], vin: .5, grao: 28, cinema: 1 },
+  { id: "cam-noturno", cat: "Câmeras", nome: "Noite azul", m: [1.08, 0, 0, 0, 1.1, 0, 0, 0, 1.14], lift: 34, con: 1.04, sat: .82, split: [[16, 58, 98], [255, 170, 104]], add: [-4, 4, 10], vin: .45, grao: 30, cinema: 2 },
   { id: "cam-cine", cat: "Câmeras", nome: "Cine", lift: 10, con: 1.36, sat: .7, split: [[14, 38, 44], [242, 196, 150]], add: [2, 0, 2], vin: .54, grao: 32, pelicula: 1 },
   // estilo de câmera de filme de viagem: um para cada cidade
   { id: "cid-delhi", cat: "Profissionais", nome: "Delhi", lift: 34, con: 0.9, sat: 0.85, add: [22, -4, 4], leak: "rosa", brilho: 0.4, vin: 0.32, grao: 18, pelicula: 1 },
@@ -5179,7 +5181,7 @@ function efeitosFiltro(ctx, w, hh, f) {
   if (f.riscos) { ctx.save(); ctx.globalAlpha = .18; ctx.strokeStyle = "#F4EFE3"; for (let k = 0; k < 7; k++) { const x = Math.random() * w; ctx.lineWidth = Math.random() * 1.5 + .4; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + (Math.random() - .5) * 20, hh); ctx.stroke(); } ctx.restore(); }
   if (f.leak) vazaLuz(ctx, w, hh, f.leak);
   if (f.super8) super8Luz(ctx, w, hh);
-  if (f.cinema) cinemaLuz(ctx, w, hh);
+  if (f.cinema === 2) noiteAzulLuz(ctx, w, hh); else if (f.cinema) cinemaLuz(ctx, w, hh);
   if (f.pelicula) pelicula(ctx, w, hh);
   if (f.graoRosa) graoRosa(ctx, w, hh);
   if (f.festa) efeitoFesta(ctx, w, hh, f.festa);
@@ -5228,6 +5230,29 @@ function cinemaLuz(ctx, w, hh) {
   // rastros de luz
   const [r1, r2, r3] = cineRastros(w, hh);
   ctx.globalAlpha = .9; ctx.drawImage(r1, 0, 0, w, hh); ctx.globalAlpha = .55; ctx.drawImage(r2, 0, 0, w, hh); ctx.globalAlpha = .4; ctx.drawImage(r3, 0, 0, w, hh);
+  ctx.restore();
+}
+// Noite azul (botão da Super 8): neblina azulada, luzes que brilham forte e rastros horizontais das luzes, como faróis passando
+function noiteAzulLuz(ctx, w, hh) {
+  const cv = ctx.canvas;
+  ctx.save(); ctx.imageSmoothingQuality = "high";
+  ctx.globalAlpha = .35; ctx.drawImage(cineReduz(cv, w, hh, 3, "macia"), 0, 0, w, hh);
+  // as luzes (só o que é bem claro), numa versão pequena
+  const p = cineReduz(cv, w, hh, 8, "luz"), px = p.getContext("2d", { willReadFrequently: true }), d = px.getImageData(0, 0, p.width, p.height), q = d.data;
+  for (let i = 0; i < q.length; i += 4) { const L = (.299 * q[i] + .587 * q[i + 1] + .114 * q[i + 2]) / 255, k = Math.pow(Math.max(0, (L - .5) / .5), 1.3); q[i] = 255 * k; q[i + 1] = 214 * k; q[i + 2] = 160 * k; }
+  px.putImageData(d, 0, 0);
+  ctx.globalCompositeOperation = "screen";
+  // brilho grande e esverdeado-azulado em volta das luzes (a luz atravessando a neblina) e um miolo quente
+  const halo = cineReduz(p, p.width, p.height, 4, "halo"); ctx.globalAlpha = .9; ctx.drawImage(halo, 0, 0, w, hh);
+  ctx.globalAlpha = .55; ctx.globalCompositeOperation = "screen"; ctx.drawImage(p, 0, 0, w, hh);
+  // rastros horizontais: a luz esticada para os lados
+  const rr = cinePool.risco || (cinePool.risco = document.createElement("canvas")); rr.width = Math.max(1, Math.round(p.width / 14)); rr.height = p.height;
+  const rx = rr.getContext("2d"); rx.imageSmoothingQuality = "high"; rx.drawImage(p, 0, 0, rr.width, rr.height);
+  ctx.globalAlpha = .75; ctx.drawImage(rr, 0, 0, w, hh); ctx.globalAlpha = .4; ctx.drawImage(rr, -w * .08, 0, w * 1.16, hh);
+  // neblina azul: mais forte no alto e no meio da foto
+  ctx.globalCompositeOperation = "screen";
+  const g = ctx.createLinearGradient(0, 0, 0, hh); g.addColorStop(0, "rgba(70,120,150,.32)"); g.addColorStop(.55, "rgba(60,105,130,.18)"); g.addColorStop(1, "rgba(30,60,80,.04)");
+  ctx.globalAlpha = 1; ctx.fillStyle = g; ctx.fillRect(0, 0, w, hh);
   ctx.restore();
 }
 // Super 8: luz vazando pela borda, halo nas partes claras e imagem um pouco macia
@@ -6227,7 +6252,8 @@ function vCameraFisica(c) {
   const controles = h("div", { class: "cfcontroles" },
     FOTO_CAM[c.id] && temFoto("img/cameras/" + c.id + "-corpo.jpg") ? null : chave("Atrás", "Selfie", frente, virar),
     c.tons ? h("div", { class: "cftons", role: "radiogroup", "aria-label": "Tom da foto" }, c.tons.map(([f, cor, nome]) => h("button", { type: "button", role: "radio", "aria-checked": S.foto.filtro === f ? "true" : "false", "aria-label": nome, class: "cftom" + (S.foto.filtro === f ? " on" : ""), style: `--cor:${cor}`, onclick: e => { S.foto = { ...S.foto, filtro: f }; montaFoto.img = null; const b = e.currentTarget; b.parentNode.querySelectorAll(".cftom").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-checked", x === b ? "true" : "false"); }); } }))) : null,
-    c.id === "super8" ? h("button", { type: "button", class: "cfcinebt" + (S.foto.filtro === "cam-cinematic" ? " on" : ""), "aria-pressed": String(S.foto.filtro === "cam-cinematic"), onclick: ev => { if (S.gravando) return; const cine = S.foto.filtro !== "cam-cinematic"; S.foto = { ...S.foto, filtro: cine ? "cam-cinematic" : "cam-cine" }; montaFoto.img = null; const b = ev.currentTarget; b.classList.toggle("on", cine); b.setAttribute("aria-pressed", String(cine)); } }, h("i", { "aria-hidden": "true" }), "Cinematic") : null,
+    c.id === "super8" ? h("div", { class: "cfcines" }, [["cam-cinematic", "Cinematic"], ["cam-noturno", "Noite azul"]].map(([fid, nome]) => h("button", { type: "button", class: "cfcinebt" + (S.foto.filtro === fid ? " on" : ""), "aria-pressed": String(S.foto.filtro === fid), "data-f": fid, onclick: ev => { if (S.gravando) return; const liga = S.foto.filtro !== fid; S.foto = { ...S.foto, filtro: liga ? fid : "cam-cine" }; montaFoto.img = null;
+      ev.currentTarget.parentNode.querySelectorAll(".cfcinebt").forEach(b => { const on = liga && b.dataset.f === fid; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); }); } }, h("i", { "aria-hidden": "true" }), nome))) : null,
     c.filma ? chave("Foto", "Filme", S.camModo === "filme", ev => { if (S.gravando) return; S.camModo = S.camModo === "filme" ? "foto" : "filme"; trocaModoFilme(c, ev.currentTarget); }) : null);
   const fc = FOTO_CAM[c.id], fotoCorpo = fc && temFoto("img/cameras/" + c.id + "-corpo.jpg");
   // com a foto realista: a câmera de perto ocupa a tela, a imagem ao vivo entra no visor da foto e o botão da foto dispara
