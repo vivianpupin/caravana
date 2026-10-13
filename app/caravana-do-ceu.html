@@ -5731,19 +5731,167 @@ function molduraArco(c, W, H, u, ox, oy, w, hh, tmp) {
   c.save(); arco(0); c.clip(); c.drawImage(tmp, ox, oy); c.restore();
 }
 // Adesivos: logos da Caravana, bichos da Índia (os mesmos do Explorador), coisas da Índia, brilhos e frases
+// carimbos de tinta para colar na foto: os do fundo do passaporte e outros da viagem
+const CARIMBOS_ADESIVO = [...CARIMBOS_FUNDO,
+  { t: ["NAMASTÊ", "नमस्ते"], cor: "#A8281B", f: "ret2", r: 0 },
+  { t: ["JAI HO!", "जय हो"], cor: "#2F4F8A", f: "chanfro", r: 0 },
+  { t: ["OM SHANTI", "ॐ शान्ति"], cor: "#5B3F7A", f: "ret", r: 0 },
+  { t: ["CHAI", "APROVADO", "MASALA"], cor: "#8A4A1C", f: "ret", r: 0 },
+  { t: ["MA GANGA", "गंगा", "RISHIKESH"], cor: "#2F4F8A", f: "ret", r: 0 },
+  { t: ["DIWALI", "दीवाली", "NOV 2026"], cor: "#A8281B", f: "chanfro", r: 0 },
+  { t: ["KASHI", "VARANASI", "CIDADE DA LUZ"], cor: "#3F6B4A", f: "ret", r: 0 },
+  { t: ["TAJ MAHAL", "AGRA"], cor: "#5B3F7A", f: "ret2", r: 0 },
+  { t: ["VISTO", "APROVADO", "CARAVANA DO CÉU"], cor: "#A8281B", f: "ret", r: 0 },
+  { t: ["CORREIO", "AÉREO", "PAR AVION"], cor: "#2F4F8A", f: "chanfro", r: 0 }];
+const CARIMBOS_REDONDOS = [
+  { t: ["CARAVANA DO CÉU", "ÍNDIA · 2026"], cor: "#3F6B4A", simb: 1 },
+  { t: ["DELHI · AGRA · JAIPUR", "VARANASI · RISHIKESH"], cor: "#2F4F8A", centro: "✦" },
+  { t: ["CORREIOS DA ÍNDIA", "POSTA · 2026"], cor: "#A8281B", centro: "ॐ" },
+  { t: ["EXPLORADORES DO CÉU", "TRAVESSIA"], cor: "#5B3F7A", simb: 1 }];
 const ADESIVOS = {
-  // os selos (pins) da travessia, os mesmos do passaporte
-  "Carimbos": [["india", "Índia"], ["taj-mahal", "Taj Mahal"], ["ganesha", "Ganesha"], ["jaipur", "Jaipur"], ["govind-dev-ji", "Govind Dev Ji"], ["varanasi", "Varanasi"], ["diwali", "Diwali"], ["ganga-aarti", "Ganga Aarti"],
+  // o explorador da pessoa em várias situações (desenhado com as escolhas dela)
+  get "Meu explorador"() { return [["eu", "Meu explorador"], ["x:eu-sempet", "Só eu"], ["x:eu-virado", "Virado"], ["x:eu-pulo", "Pulando de alegria"], ["x:eu-rosto", "Meu rosto"],
+    ["x:eu-aura", "Iluminado"], ["x:eu-coracao", "Apaixonado pela Índia"],
+    ["x:balao:Namastê!", "Namastê!"], ["x:balao:Cheguei na Índia!", "Cheguei na Índia!"], ["x:balao:Jai Ho!", "Jai Ho!"], ["x:balao:Mais um chai?", "Mais um chai?"], ["x:balao:Que calor!", "Que calor!"],
+    ["x:eu-carimbo", "Carimbo do explorador"], ["x:eu-selo", "Selo postal do explorador"], ["x:eu-polaroid", "Eu na Índia"], ["x:eu-ingresso", "Ingresso da travessia"], ["x:eu-procura", "Procura-se"],
+    ...EXPRESSOES.map(([id]) => ["x:expr:" + id, ({ amor: "Amor", preocupada: "Preocupação", emocionada: "Emoção", susto: "Susto", revira: "Revirando os olhos", beijo: "Beijinho", desdem: "Desdém", rindo: "Rindo", decepcionada: "Decepção", oculos: "Estilo", brava: "Raiva", explodiu: "Cabeça explodindo", vergonha: "Vergonha" })[id] || id]),
+    ["x:meu-pet", "Meu bichinho"], ["x:meu-passaro", "Meu pássaro"], ["x:turma", "A caravana"]]; },
+  // o explorador vestido de cada deus, com a frase de cada um
+  get "Fantasias"() { return FIGURINHAS.map(([id, nome, frase]) => ["x:deus:" + id, nome + " · " + frase]); },
+  // os selos (pins) da travessia, os mesmos do passaporte: só os que já foram liberados
+  "Selos": [["india", "Índia"], ["taj-mahal", "Taj Mahal"], ["ganesha", "Ganesha"], ["jaipur", "Jaipur"], ["govind-dev-ji", "Govind Dev Ji"], ["varanasi", "Varanasi"], ["diwali", "Diwali"], ["ganga-aarti", "Ganga Aarti"],
     ["durga-kund", "Durga Kund"], ["sankat-mochan", "Sankat Mochan"], ["batismo", "Batismo no Ganges"], ["rishikesh", "Rishikesh"], ["kunjapuri", "Kunjapuri"], ["caverna", "Caverna"], ["travessia", "Travessia"]].map(([id, n]) => ["img:insignias/" + id + ".webp", n]),
   // os enfeites que aparecem na Cabine de fotos, soltos para colar na foto
   "Caravana": [["img:img/simbolo-dourado.png", "Símbolo dourado"], ["img:img/simbolo-marrom.png", "Símbolo"], ["patch", "Patch bordado"], ["carimbo", "Carimbo"],
     ["postmark", "Carimbo do correio"], ["seloPostal", "Selo postal"], ["data", "Data da câmera"], ["linha", "Caravana do Céu · Índia 2026"], ["fita", "Fita adesiva"],
-    ["estrela", "Estrela"], ["flor", "Flor de cravo"], ["guirlanda", "Guirlanda"], ["lungta", "Bandeirinhas de oração"]],
+    ["estrela", "Estrela"], ["flor", "Flor de cravo"], ["guirlanda", "Guirlanda"], ["lungta", "Bandeirinhas de oração"],
+    ["x:item:diya", "Lamparina"], ["x:item:chai", "Chai"], ["x:om", "Om"], ["x:lotus", "Lótus"], ["x:tuktuk", "Tuk-tuk"], ["x:taj", "Taj Mahal"],
+    ...["Namastê", "Jai Ho!", "Om Shanti", "Hare Krishna", "Ma Ganga", "Eu fui!", "Lokah Samastah", "Chai, por favor"].map(t => ["mao:" + t, t]),
+    ["txt:Travessia Índia Sagrada", "Travessia Índia Sagrada"], ["txt:Caravana do Céu", "Caravana do Céu"]],
+  // bichos da Índia, no mesmo traço dos pets do explorador
+  "Bichos": [["pet:vaca", "Vaquinha sagrada"], ["pet:elefante", "Elefantinho"], ["pet:macaco", "Macaco"], ["pet:pavao", "Pavão"], ["pet:camelo", "Camelo"], ["pet:cabra", "Cabrinha"],
+    ["pet:gato", "Gato"], ["pet:cachorro", "Cachorro"], ["ave:periquito", "Periquito"], ["ave:maina", "Mainá"], ["x:item:vaca", "Vaquinha"], ["x:item:macaco", "Macaquinho"]],
   // carimbos e cartão-postal soltos, para colar em qualquer moldura
-  "Carimbos": [["postalCombo", "Selo e carimbo do correio"], ["seloPostal", "Selo postal"], ["postmark", "Carimbo do correio"], ["carimbo", "Carimbo da Caravana"], ["mao:Saudações da Índia", "Saudações da Índia"]],
-  "Meu explorador": [["eu", "Meu explorador"]],
+  "Carimbos": [["postalCombo", "Selo e carimbo do correio"], ["seloPostal", "Selo postal"], ["postmark", "Carimbo do correio"], ["carimbo", "Carimbo da Caravana"], ["mao:Saudações da Índia", "Saudações da Índia"],
+    ...CARIMBOS_ADESIVO.map((c, i) => ["x:cb:" + i, c.t.join(" · ")]), ...CARIMBOS_REDONDOS.map((c, i) => ["x:cr:" + i, c.t.join(" · ")])],
 };
 const adesivoCache = {};
+// ---------- adesivos novos: o explorador em várias situações, carimbos, bichos e coisas da Índia ----------
+async function svgVB(g, vb, lado) { // desenha um pedaço do desenho (viewBox fixo), para o rosto e os itens
+  const NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg"), [, , w, hh] = vb.split(" ").map(Number);
+  svg.setAttribute("xmlns", NS); svg.setAttribute("viewBox", vb); svg.setAttribute("width", Math.round(lado * w / Math.max(w, hh))); svg.setAttribute("height", Math.round(lado * hh / Math.max(w, hh))); svg.append(g);
+  const txt = new XMLSerializer().serializeToString(svg);
+  const im = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(txt); });
+  const cv = document.createElement("canvas"); cv.width = im.width; cv.height = im.height; cv.getContext("2d").drawImage(im, 0, 0); return cv;
+}
+// as letras desenhadas no adesivo só saem certas depois que a fonte carrega (senão o texto sai em outra letra e cortado)
+const fontesAdesivo = () => fontesAdesivo.p ||= (document.fonts ? Promise.all(['700 64px Caveat', '600 70px Cinzel', '700 30px "Courier Prime"'].map(f => document.fonts.load(f).catch(() => {}))) : Promise.resolve());
+const telaA = (w, hh) => { const cv = document.createElement("canvas"); cv.width = w; cv.height = hh; return [cv, cv.getContext("2d")]; };
+const encaixa = (x, im, cx, cy, maxW, maxH) => { const e = Math.min(maxW / im.width, maxH / im.height); x.drawImage(im, cx - im.width * e / 2, cy - im.height * e / 2, im.width * e, im.height * e); };
+const meuBoneco = extra => ({ ...bonecoDe(S.uid), ...(extra || {}) });
+const bonecoCv = (b, lado) => svgParaImg(h("g", null, desenhaBoneco(b)), lado || 600);
+function tingeCv(im, cor) { const [cv, x] = telaA(im.width, im.height); x.drawImage(im, 0, 0); x.globalCompositeOperation = "source-in"; x.fillStyle = cor; x.fillRect(0, 0, cv.width, cv.height); return cv; }
+function tintaFalhada(x, w, hh, n) { x.save(); x.globalCompositeOperation = "destination-out"; for (let k = 0; k < (n || 900); k++) { x.globalAlpha = Math.random() * .8; x.beginPath(); x.arc(Math.random() * w, Math.random() * hh, Math.random() * 3, 0, 7); x.fill(); } x.restore(); }
+function textoEmArco(x, txt, cx, cy, r, ini, fim, cima) {
+  const n = txt.length, passo = (fim - ini) / Math.max(1, n - 1);
+  for (let i = 0; i < n; i++) { const a = ini + passo * i; x.save(); x.translate(cx + Math.cos(a) * r, cy + Math.sin(a) * r); x.rotate(a + (cima ? Math.PI / 2 : -Math.PI / 2)); x.fillText(txt[i], 0, 0); x.restore(); }
+}
+async function carimboRedondo(c) {
+  const [cv, x] = telaA(440, 440), R = 200; x.translate(220, 220); x.strokeStyle = c.cor; x.fillStyle = c.cor;
+  x.lineWidth = 9; x.beginPath(); x.arc(0, 0, R, 0, 7); x.stroke(); x.lineWidth = 3; x.beginPath(); x.arc(0, 0, R - 18, 0, 7); x.stroke(); x.beginPath(); x.arc(0, 0, R - 74, 0, 7); x.stroke();
+  x.font = '700 30px "Courier Prime",monospace'; x.textAlign = "center"; x.textBaseline = "middle";
+  const t0 = c.t[0], t1 = c.t[1] || "", vao = t => Math.min(2.8, t.length * .135);
+  textoEmArco(x, t0, 0, 0, R - 46, -Math.PI / 2 - vao(t0) / 2, -Math.PI / 2 + vao(t0) / 2, true);
+  textoEmArco(x, t1, 0, 0, R - 46, Math.PI / 2 + vao(t1) / 2, Math.PI / 2 - vao(t1) / 2, false);
+  if (c.simb) { const sb = simboloEm(await carregaImgOu("img/simbolo-dourado.png"), c.cor, 130); x.drawImage(sb, -sb.width / 2, -sb.height / 2); }
+  else { x.font = '700 110px "Noto Sans Devanagari",Georgia,serif'; x.fillText(c.centro || "✦", 0, 8); }
+  x.setTransform(1, 0, 0, 1, 0, 0); tintaFalhada(x, 440, 440, 1500); return cv;
+}
+function balaoFala(texto) {
+  const [m] = telaA(1, 1), mx = m.getContext("2d"); mx.font = '700 64px Caveat,"Segoe Print",cursive'; const L = mx.measureText(texto).width;
+  const w = Math.ceil(L + 70), hh = 130, [cv, x] = telaA(w, hh + 40);
+  x.fillStyle = "#FFFBF0"; x.strokeStyle = "#3B2A1C"; x.lineWidth = 6; x.lineJoin = "round";
+  x.beginPath(); x.roundRect(4, 4, w - 8, hh - 8, 50); x.moveTo(34, hh - 10); x.lineTo(22, hh + 32); x.lineTo(70, hh - 8); x.fill(); x.stroke();
+  x.fillStyle = "#FFFBF0"; x.fillRect(36, hh - 14, 32, 10);
+  x.fillStyle = "#3B2A1C"; x.font = '700 64px Caveat,"Segoe Print",cursive'; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(texto, w / 2, hh / 2 + 2); return cv;
+}
+function serrilha(x, X, Y, w, hh, r, cor) { x.fillStyle = cor; x.beginPath(); const d = r * 2.6;
+  for (let a = X; a <= X + w; a += d) { x.moveTo(a + r, Y); x.arc(a, Y, r, 0, 7); x.moveTo(a + r, Y + hh); x.arc(a, Y + hh, r, 0, 7); }
+  for (let b = Y; b <= Y + hh; b += d) { x.moveTo(X + r, b); x.arc(X, b, r, 0, 7); x.moveTo(X + w + r, b); x.arc(X + w, b, r, 0, 7); }
+  x.fill(); x.fillRect(X, Y, w, hh); }
+const SVG_ADES = {
+  om: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="92" fill="#3B2A1C"/><circle cx="100" cy="100" r="82" fill="none" stroke="#D9B26A" stroke-width="3"/><text x="100" y="138" text-anchor="middle" font-size="120" font-family="Noto Sans Devanagari,Georgia,serif" fill="#F0C978">ॐ</text></svg>`,
+  lotus: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 170"><g stroke="#7A2E3E" stroke-width="3" stroke-linejoin="round"><path d="M120 150 C70 150 30 125 18 95 C55 92 95 112 120 150Z" fill="#E7A0B0"/><path d="M120 150 C170 150 210 125 222 95 C185 92 145 112 120 150Z" fill="#E7A0B0"/><path d="M120 150 C85 125 70 85 80 45 C105 70 120 110 120 150Z" fill="#F0B9C5"/><path d="M120 150 C155 125 170 85 160 45 C135 70 120 110 120 150Z" fill="#F0B9C5"/><path d="M120 150 C100 110 102 55 120 15 C138 55 140 110 120 150Z" fill="#F7D3DA"/></g><path d="M40 158 Q120 172 200 158" stroke="#3F6B4A" stroke-width="7" fill="none" stroke-linecap="round"/></svg>`,
+  tuktuk: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 190"><g stroke="#2A1C10" stroke-width="4" stroke-linejoin="round"><path d="M40 140 L40 70 Q44 34 96 30 L188 30 Q214 32 220 60 L226 140 Z" fill="#F2C230"/><path d="M40 70 Q44 34 96 30 L188 30 Q214 32 220 60 L222 74 L40 76 Z" fill="#2F5D3A"/><path d="M58 82 L118 82 L118 128 L54 128 Z" fill="#BFE0E8"/><path d="M136 82 L206 82 L210 128 L136 128 Z" fill="#E9DFC6"/><rect x="30" y="134" width="206" height="14" rx="6" fill="#3B2A1C"/></g><g fill="#2A1C10"><circle cx="72" cy="156" r="22"/><circle cx="200" cy="156" r="22"/></g><g fill="#B9B2A6"><circle cx="72" cy="156" r="9"/><circle cx="200" cy="156" r="9"/></g><circle cx="230" cy="104" r="7" fill="#FFE08A" stroke="#2A1C10" stroke-width="3"/></svg>`,
+  taj: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 200"><g fill="#F4ECDC" stroke="#8A6B43" stroke-width="3" stroke-linejoin="round"><rect x="20" y="176" width="220" height="14"/><rect x="18" y="62" width="10" height="114"/><rect x="232" y="62" width="10" height="114"/><path d="M14 62 Q23 46 32 62Z"/><path d="M228 62 Q237 46 246 62Z"/><rect x="58" y="96" width="144" height="80"/><path d="M84 98 Q84 54 130 40 Q176 54 176 98Z"/><path d="M130 40 L130 22"/><circle cx="130" cy="20" r="4"/><path d="M58 96 Q62 80 72 80 Q82 80 86 96Z"/><path d="M174 96 Q178 80 188 80 Q198 80 202 96Z"/><path d="M116 176 L116 132 Q130 112 144 132 L144 176Z" fill="#E2D2B4"/><path d="M70 176 L70 148 Q78 138 86 148 L86 176Z" fill="#E2D2B4"/><path d="M174 176 L174 148 Q182 138 190 148 L190 176Z" fill="#E2D2B4"/></g></svg>`
+};
+async function adesivoNovo(k) {
+  await fontesAdesivo();
+  const svgImg = async txt => { const im = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(txt); });
+    const [cv, x] = telaA(im.width * 2.4, im.height * 2.4); x.drawImage(im, 0, 0, cv.width, cv.height); return cv; };
+  if (SVG_ADES[k]) return svgImg(SVG_ADES[k]);
+  if (k.startsWith("item:")) return svgVB(h("g", null, desenhaItem(k.slice(5))), "0 0 40 40", 360);
+  if (k.startsWith("cb:")) { const c = CARIMBOS_ADESIVO[+k.slice(3)], url = carimboBorrado(c, await carregaImgOu("img/simbolo-dourado.png")); return carregaImg(url); }
+  if (k.startsWith("cr:")) return carimboRedondo(CARIMBOS_REDONDOS[+k.slice(3)]);
+  const b = meuBoneco();
+  if (k === "eu-sempet") return bonecoCv({ ...b, pet: "nenhum" });
+  if (k === "eu-virado") { const im = await bonecoCv(b), [cv, x] = telaA(im.width, im.height); x.translate(cv.width, 0); x.scale(-1, 1); x.drawImage(im, 0, 0); return cv; }
+  if (k === "eu-rosto") { const im = await svgVB(h("g", null, desenhaBoneco({ ...b, pet: "nenhum" })), "13 3 34 34", 300), [cv, x] = telaA(340, 340);
+    x.fillStyle = "#3B2A1C"; x.beginPath(); x.arc(170, 170, 166, 0, 7); x.fill(); x.fillStyle = "#E9DCC2"; x.beginPath(); x.arc(170, 170, 150, 0, 7); x.fill();
+    x.save(); x.beginPath(); x.arc(170, 170, 150, 0, 7); x.clip(); x.drawImage(im, 20, 26, 300, 300); x.restore(); x.strokeStyle = "#D9B26A"; x.lineWidth = 6; x.beginPath(); x.arc(170, 170, 158, 0, 7); x.stroke(); return cv; }
+  if (k === "eu-pulo") { const im = await bonecoCv({ ...b, pet: "nenhum", semSombra: 1 }, 520), [cv, x] = telaA(520, 680);
+    x.save(); x.translate(260, 300); x.rotate(-.12); encaixa(x, im, 0, 0, 400, 520); x.restore();
+    x.strokeStyle = "rgba(59,42,28,.7)"; x.lineWidth = 7; x.lineCap = "round"; for (const [a, b2] of [[190, 600], [260, 615], [330, 600]]) { x.beginPath(); x.moveTo(a, b2); x.lineTo(a + (a - 260) * .15, b2 + 40); x.stroke(); }
+    x.fillStyle = "#F0C978"; for (const [a, b2, r] of [[70, 120, 28], [460, 90, 22], [470, 330, 16], [60, 380, 18]]) estrela4(x, a, b2, r, "#F0C978"); return cv; }
+  if (k === "eu-aura") { const im = await bonecoCv(b), [cv, x] = telaA(700, 700);
+    const g = x.createRadialGradient(350, 330, 40, 350, 330, 330); g.addColorStop(0, "rgba(255,226,140,.95)"); g.addColorStop(.55, "rgba(240,190,90,.45)"); g.addColorStop(1, "rgba(240,190,90,0)"); x.fillStyle = g; x.fillRect(0, 0, 700, 700);
+    x.strokeStyle = "rgba(240,190,90,.55)"; x.lineWidth = 6; for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; x.beginPath(); x.moveTo(350 + Math.cos(a) * 170, 330 + Math.sin(a) * 170); x.lineTo(350 + Math.cos(a) * 320, 330 + Math.sin(a) * 320); x.stroke(); }
+    encaixa(x, im, 350, 360, 440, 600); return cv; }
+  if (k === "eu-coracao") { const im = await bonecoCv(b), [cv, x] = telaA(640, 640);
+    const cor = (cx, cy, r, c) => { x.fillStyle = c; x.beginPath(); x.moveTo(cx, cy + r * .9); x.bezierCurveTo(cx - r * 1.6, cy - r * .2, cx - r * .6, cy - r * 1.4, cx, cy - r * .5); x.bezierCurveTo(cx + r * .6, cy - r * 1.4, cx + r * 1.6, cy - r * .2, cx, cy + r * .9); x.fill(); };
+    for (const [a, b2, r, c] of [[110, 120, 46, "#C0392B"], [530, 150, 38, "#E06A7A"], [80, 360, 30, "#E06A7A"], [560, 400, 44, "#C0392B"], [320, 70, 30, "#B83A6B"]]) cor(a, b2, r, c);
+    encaixa(x, im, 320, 360, 420, 560); return cv; }
+  if (k.startsWith("balao:")) { const im = await bonecoCv({ ...b, pet: "nenhum" }), bl = balaoFala(k.slice(6)), W = Math.max(420, 200 + bl.width), [cv, x] = telaA(W, 640);
+    encaixa(x, im, 150, 400, 300, 480); x.drawImage(bl, W - bl.width, 0); return cv; }
+  if (k === "eu-carimbo") { const im = tingeCv(await bonecoCv({ ...b, pet: "nenhum", semSombra: 1 }, 400), "#2F4F8A"), [cv, x] = telaA(460, 460); x.translate(230, 230);
+    x.strokeStyle = x.fillStyle = "#2F4F8A"; x.lineWidth = 9; x.beginPath(); x.arc(0, 0, 210, 0, 7); x.stroke(); x.lineWidth = 3; x.beginPath(); x.arc(0, 0, 190, 0, 7); x.stroke();
+    x.font = '700 30px "Courier Prime",monospace'; x.textAlign = "center"; x.textBaseline = "middle";
+    const tt = "EXPLORADOR · " + numPassaporte(S.uid).slice(-3), vao = t => Math.min(2.8, t.length * .15);
+    textoEmArco(x, tt, 0, 0, 165, -Math.PI / 2 - vao(tt) / 2, -Math.PI / 2 + vao(tt) / 2, true); textoEmArco(x, "CARAVANA DO CÉU", 0, 0, 165, Math.PI / 2 + vao("CARAVANA DO CÉU") / 2, Math.PI / 2 - vao("CARAVANA DO CÉU") / 2, false);
+    x.setTransform(1, 0, 0, 1, 0, 0); encaixa(x, im, 230, 236, 190, 230); tintaFalhada(x, 460, 460, 1600); return cv; }
+  if (k === "eu-selo") { const im = await bonecoCv(b, 500), [cv, x] = telaA(380, 470);
+    serrilha(x, 16, 16, 348, 438, 9, "#FBF6EA"); x.fillStyle = "#2F5D7C"; x.fillRect(38, 38, 304, 394); x.fillStyle = "#E9DCC2"; x.fillRect(50, 50, 280, 300);
+    encaixa(x, im, 190, 205, 250, 290); x.fillStyle = "#F4E6C4"; x.textAlign = "center"; x.font = '600 36px Cinzel, Georgia, serif'; x.fillText("ÍNDIA", 190, 392); x.font = '500 22px Poppins, sans-serif'; x.fillText("2026 · ₹ 26", 190, 420); return cv; }
+  if (k === "eu-polaroid") { const im = await bonecoCv(b), [cv, x] = telaA(460, 560);
+    x.shadowColor = "rgba(0,0,0,.35)"; x.shadowBlur = 16; x.shadowOffsetY = 6; x.fillStyle = "#FBF8F1"; x.fillRect(20, 14, 420, 520); x.shadowColor = "transparent";
+    const g = x.createLinearGradient(0, 40, 0, 420); g.addColorStop(0, "#F2B26B"); g.addColorStop(1, "#C9655A"); x.fillStyle = g; x.fillRect(44, 38, 372, 380);
+    encaixa(x, im, 230, 236, 300, 360); x.fillStyle = "#3B2A1C"; x.font = '700 54px Caveat,"Segoe Print",cursive'; x.textAlign = "center"; x.fillText("Eu na Índia", 230, 492); return cv; }
+  if (k === "eu-ingresso") { const im = await bonecoCv({ ...b, pet: "nenhum" }, 500), [cv, x] = telaA(720, 340);
+    x.fillStyle = "#E9C77A"; x.beginPath(); x.roundRect(10, 10, 700, 320, 24); x.fill(); x.globalCompositeOperation = "destination-out"; for (const y of [10, 330]) { x.beginPath(); x.arc(520, y, 26, 0, 7); x.fill(); } x.globalCompositeOperation = "source-over";
+    x.setLineDash([10, 9]); x.strokeStyle = "#7A5A2A"; x.lineWidth = 4; x.beginPath(); x.moveTo(520, 40); x.lineTo(520, 300); x.stroke(); x.setLineDash([]);
+    x.strokeStyle = "#7A5A2A"; x.lineWidth = 4; x.strokeRect(34, 34, 652, 272);
+    encaixa(x, im, 128, 172, 170, 260); x.fillStyle = "#3B2A1C"; x.textAlign = "center"; x.font = '700 44px Cinzel, Georgia, serif'; x.fillText("TRAVESSIA", 360, 130); x.font = '600 26px Poppins, sans-serif'; x.fillText("ÍNDIA SAGRADA", 360, 172); x.font = '500 22px "Courier Prime",monospace'; x.fillText("04 — 16 NOV 2026", 360, 214);
+    x.save(); x.translate(610, 170); x.rotate(-Math.PI / 2); x.font = '700 30px "Courier Prime",monospace'; x.fillText("ADMIT ONE", 0, 10); x.restore(); return cv; }
+  if (k === "eu-procura") { const im = await bonecoCv({ ...b, pet: "nenhum" }, 500), [cv, x] = telaA(460, 620);
+    x.fillStyle = "#E8D6AE"; x.fillRect(10, 10, 440, 600); x.strokeStyle = "#5A3A22"; x.lineWidth = 5; x.strokeRect(26, 26, 408, 568);
+    x.fillStyle = "#3B2A1C"; x.textAlign = "center"; x.font = '700 64px Cinzel, Georgia, serif'; x.fillText("PROCURA-SE", 230, 100);
+    x.fillStyle = "#F4E6C4"; x.fillRect(80, 124, 300, 330); x.strokeStyle = "#5A3A22"; x.lineWidth = 3; x.strokeRect(80, 124, 300, 330); encaixa(x, im, 230, 290, 260, 310);
+    x.fillStyle = "#3B2A1C"; x.font = '600 26px Poppins, sans-serif'; x.fillText("Visto pela última vez", 230, 500); x.fillText("tomando chai na Índia", 230, 534); x.font = '700 28px "Courier Prime",monospace'; x.fillText("RECOMPENSA: 1 CHAI", 230, 578);
+    const r = rng("procura"); x.globalCompositeOperation = "multiply"; for (let i = 0; i < 40; i++) { x.fillStyle = `rgba(120,80,30,${r() * .12})`; x.beginPath(); x.arc(r() * 460, r() * 620, r() * 40, 0, 7); x.fill(); } return cv; }
+  if (k.startsWith("expr:")) { const g = desenhaBoneco({ ...b, expr: k.slice(5), pet: "nenhum", nariz: "nenhum", ...(k === "expr:oculos" ? { oculos: "nenhum" } : {}) }); g.querySelectorAll("[data-expr]").forEach(e => g.append(e)); return svgParaImg(g, 600); }
+  if (k.startsWith("deus:")) { const id = k.slice(5), f = FIGURINHAS.find(x => x[0] === id) || [id, id, ""];
+    const im = await bonecoCv({ ...b, deus: id, pet: "nenhum", ombro: "nenhum", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum" }, 600), fr = letreiro(f[2], true), W = Math.max(520, fr.width), [cv, x] = telaA(W, 800);
+    encaixa(x, im, W / 2, 330, 480, 620); x.drawImage(fr, (W - fr.width) / 2, 640); return cv; }
+  if (k === "meu-pet") { const g = desenhaPet(b.pet && b.pet !== "nenhum" ? b.pet : "vaca"); g.firstChild && g.firstChild.remove(); return svgParaImg(g, 420); }
+  if (k === "meu-passaro") return svgParaImg(h("g", null, passaroOmbro(b.ombro && b.ombro !== "nenhum" ? b.ombro : "periquito")), 360);
+  if (k === "turma") { const vs = (S.viajantes || []).filter(v => v.id).slice(0, 18), lista = vs.length ? vs : [{ id: S.uid }];
+    const ims = await Promise.all(lista.map(v => bonecoCv({ ...bonecoDe(v.id), pet: "nenhum", semSombra: 1 }, 260)));
+    const porLinha = Math.ceil(ims.length / 2), W = Math.max(400, porLinha * 110 + 160), [cv, x] = telaA(W, 520);
+    ims.forEach((im, i) => { const linha = i < porLinha ? 0 : 1, col = linha ? i - porLinha : i, n = linha ? ims.length - porLinha : porLinha;
+      encaixa(x, im, W / 2 + (col - (n - 1) / 2) * 110 + (linha ? 0 : 0), linha ? 360 : 230, 150, 250); });
+    x.fillStyle = "#3B2A1C"; x.font = '700 60px Caveat,"Segoe Print",cursive'; x.textAlign = "center"; x.fillText("A Caravana", W / 2, 505); return cv; }
+  throw new Error("adesivo");
+}
 async function svgParaImg(g, lado) {
   const NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg");
   svg.setAttribute("xmlns", NS); svg.style.cssText = "position:absolute;left:-9999px;top:0;width:300px;height:300px"; svg.append(g); document.body.append(svg);
@@ -5790,11 +5938,13 @@ function imgAdesivo(k) {
       x.save(); x.translate(560, 200); x.rotate(.06); x.shadowColor = "rgba(0,0,0,.35)"; x.shadowBlur = 14; x.shadowOffsetY = 4; x.drawImage(selo, -selo.width * .5 * 1.05, -selo.height * .5 * 1.05, selo.width * 1.05, selo.height * 1.05); x.restore();
       x.globalAlpha = .9; x.drawImage(marca, 10, 100, marca.width * .95, marca.height * .95); return cv; }
     if (k.startsWith("hab:")) return caixaHabilidade(k.slice(4), (eu() || {}).genero);
+    if (k.startsWith("txt:") || k.startsWith("mao:")) await fontesAdesivo();
     if (k.startsWith("txt:")) return letreiro(k.slice(4), false);
     if (k.startsWith("mao:")) return letreiro(k.slice(4), true);
     if (k.startsWith("pet:")) { const g = desenhaPet(k.slice(4)); g.firstChild && g.firstChild.remove(); return svgParaImg(g, 420); }
     if (k.startsWith("ave:")) return svgParaImg(h("g", null, passaroOmbro(k.slice(4))), 360);
     if (k === "eu") return svgParaImg(h("g", null, desenhaBoneco({ ...bonecoDe(S.uid) })), 600);
+    if (k.startsWith("x:")) return adesivoNovo(k.slice(2));
     if (k.startsWith("e:")) { const cv = document.createElement("canvas"); cv.width = cv.height = 260; const x = cv.getContext("2d");
       x.font = '210px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(k.slice(2), 130, 142); return cv; }
     throw new Error("adesivo");
@@ -6134,9 +6284,10 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
     canvas.addEventListener("pointerup", solta); canvas.addEventListener("pointercancel", solta);
   }
   canvas.style.touchAction = ades.length ? "none" : "";
-  const catA = ADESIVOS[S.fotoCatA] ? S.fotoCatA : "Carimbos";
+  const catA = ADESIVOS[S.fotoCatA] ? S.fotoCatA : "Meu explorador";
   // selos do passaporte: só os que já foram liberados
-  const listaA = ADESIVOS[catA].filter(([k]) => !k.startsWith("img:insignias/") || seloLiberado(k.slice(14, -5)));
+  const bEu = bonecoDe(S.uid), listaA = ADESIVOS[catA].filter(([k]) => (!k.startsWith("img:insignias/") || seloLiberado(k.slice(14, -5)))
+    && (k !== "x:meu-pet" || (bEu.pet && bEu.pet !== "nenhum")) && (k !== "x:meu-passaro" || (bEu.ombro && bEu.ombro !== "nenhum")));
   const LUGARES = [[.5, .5], [.26, .3], [.74, .3], [.26, .72], [.74, .72], [.5, .22], [.5, .8], [.16, .5], [.84, .5]];
   const poeAdesivo = k => { const [lx, ly] = LUGARES[ades.length % LUGARES.length]; ades.push({ k, x: lx, y: ly, s: k.startsWith("img:insignias/") ? .26 : k === "linha" || k === "guirlanda" || k === "lungta" ? .9 : k === "data" ? .35 : .3, r: 0 }); S[SEL] = ades.length - 1; atualiza(); };
   const sel = S[SEL] != null ? ades[S[SEL]] : null;
@@ -6148,7 +6299,7 @@ function editorAdesivos(canvas, chave, estado, redesenha) {
   const painelAdesivos = h("div", { class: "adesbox" },
     h("p", { class: "lab", text: "Adesivos" }),
     h("div", { class: "opts" }, Object.keys(ADESIVOS).map(cn => h("button", { type: "button", class: "opt", "aria-pressed": String(catA === cn), onclick: () => { S.fotoCatA = cn; atualiza(); } }, cn))),
-    catA === "Carimbos" && !listaA.length ? h("p", { class: "small", text: "Os carimbos aparecem aqui conforme forem liberados no passaporte, em cada cidade." }) : null,
+    catA === "Selos" && !listaA.length ? h("p", { class: "small", text: "Os carimbos aparecem aqui conforme forem liberados no passaporte, em cada cidade." }) : null,
     h("div", { class: "adesgrade" }, listaA.map(([k, n]) => h("button", { type: "button", class: "adesbt", title: n, "aria-label": "Colocar " + n, onclick: () => poeAdesivo(k) }, thumbAdesivo(k)))),
     ades.length ? h("p", { class: "small", style: "margin:6px 0 0", text: "Toque no adesivo na foto para escolher. Arraste para mudar de lugar; com dois dedos, aumenta e gira." }) : null);
   const barraSel = sel ? h("div", { class: "adessel" },
