@@ -1412,8 +1412,9 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
   box-shadow:0 0 0 2px #22170A,0 0 0 3.5px rgba(122,98,52,.6),0 4px 7px rgba(0,0,0,.65),inset 0 -3px 5px rgba(30,18,4,.6),inset 0 2px 2px rgba(230,205,150,.22);
   filter:sepia(.35) saturate(.75) contrast(1.05)}
 .cfselfie.on{transform:translate(-50%,-50%) scale(.93);filter:sepia(.35) saturate(.75) brightness(.78);box-shadow:0 0 0 2px #22170A,0 0 0 3.5px rgba(122,98,52,.5),0 1px 2px rgba(0,0,0,.6),inset 0 3px 6px rgba(20,12,2,.75)}
-.cfselfie::after{content:"SELFIE";position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);font:700 12px/1 "Courier Prime",monospace;letter-spacing:.26em;white-space:nowrap;pointer-events:none;
-  color:#F6E3B4;padding:5px 9px 5px calc(9px + .26em);border-radius:999px;background:rgba(18,11,6,.66);box-shadow:0 1px 3px rgba(0,0,0,.45);text-shadow:0 1px 1px rgba(0,0,0,.8)}
+/* nome do botão no mesmo padrão das outras etiquetas da câmera (Foto/Filme, filtros): letra pequena, pílula escura */
+.cfselfie::after{content:"SELFIE";position:absolute;left:50%;top:calc(100% + 7px);transform:translateX(-50%);font:600 10px/1 Poppins,sans-serif;letter-spacing:.12em;white-space:nowrap;pointer-events:none;
+  color:#F1E2BC;padding:5px 10px 5px calc(10px + .12em);border-radius:999px;border:1px solid rgba(232,192,122,.35);background:rgba(0,0,0,.42);box-shadow:0 1px 3px rgba(0,0,0,.35);text-shadow:0 1px 1px rgba(0,0,0,.6)}
 .cfbotaofoto:active{background:rgba(0,0,0,.25)}
 /* CLICK / FILM legíveis em qualquer câmera: letra clara de máquina de escrever numa plaquinha escura */
 .cfbotaofoto::after{content:"CLICK";position:absolute;left:50%;top:calc(100% + 12px);transform:translateX(-50%);font:700 12px/1 "Courier Prime",monospace;letter-spacing:.26em;white-space:nowrap;pointer-events:none;
