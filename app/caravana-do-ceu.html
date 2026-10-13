@@ -2165,7 +2165,7 @@ function render() {
   tickRelogios();
   if (S.camSel) requestAnimationFrame(ajustaSelfie);
   if (S.gravando) requestAnimationFrame(() => mostraGravando());
-  if (S.camSel === "celular") { requestAnimationFrame(ajustaVisorCel); setTimeout(ajustaVisorCel, 700); }
+  if (S.camSel === "celular") { ajustaVisorCel(); requestAnimationFrame(ajustaVisorCel); setTimeout(ajustaVisorCel, 700); }
   if (S.tab === "travessia") alturaFrases();
   const el = actId && document.getElementById(actId);
   if (el && el !== act) { if (draft != null && "value" in el && el.type !== "file" && el.type !== "checkbox") el.value = draft; el.focus({ preventScroll: true }); if (el.isContentEditable) cursorNoFim(el); else if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
@@ -7029,6 +7029,11 @@ function vFotos() {
   if (!F.data) { const d = new Date(); F.data = d.getDate() + " " + MES[d.getMonth()].toLowerCase() + " " + d.getFullYear(); }
   // a mesma tela da foto em todas as trocas: a foto fica parada e só o filtro muda
   const canvas = S.fotoCanvas || (S.fotoCanvas = h("canvas", { class: "fotocanvas", "aria-label": "Prévia da foto" }));
+  // enquanto a câmera liga, o visor já nasce no tamanho da foto em pé (9:16), escuro ou com a última cena, para não abrir pequenininho e depois pular
+  if (F.vivo && !(S.camEst && S.camEst.quadros) && (canvas.width / canvas.height > .7 || canvas.width < 200)) {
+    canvas.width = 540; canvas.height = 960; const x = canvas.getContext("2d"); x.fillStyle = "#0B0806"; x.fillRect(0, 0, 540, 960);
+    const fr = S.camEst && S.camEst.acordou && S.camEst.frame; if (fr && fr.width) { const e = Math.max(540 / fr.width, 960 / fr.height); x.drawImage(fr, (540 - fr.width * e) / 2, (960 - fr.height * e) / 2, fr.width * e, fr.height * e); }
+  }
   const msg = h("p", { class: "msg", role: "status" });
   const fi = h("input", { type: "file", accept: "image/*", id: "estudio-foto", hidden: true, onchange: async () => {
     const f = fi.files[0]; if (!f) return;
