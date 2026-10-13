@@ -3571,15 +3571,16 @@ async function cameraHabilidade(id) {
   const abre = async () => {
     para();
     try { fluxo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: frente ? "user" : "environment" }, audio: false });
-      video.srcObject = fluxo; await video.play(); st.textContent = ""; }
+      video.classList.toggle("espelho", frente); video.srcObject = fluxo; await video.play(); st.textContent = ""; }
     catch (e) { st.textContent = ""; st.append(h("button", { class: "btn gold", type: "button", style: "width:100%", onclick: () => { fecha(); entradaFoto(id, true); } }, "📸 Abrir a câmera do celular")); }
   };
   const clica = () => {
     if (!video.videoWidth) return;
-    // guarda exatamente o que aparecia na tela (recorte 3x4 do meio); a selfie não é espelhada, fica como as pessoas veem
+    // guarda exatamente o que aparecia na tela (recorte 3x4 do meio); a selfie sai espelhada, igual ao visor
     const vw = video.videoWidth, vh = video.videoHeight, alvo = 3 / 4;
     let sw = vw, sh = vh; if (vw / vh > alvo) sw = vh * alvo; else sh = vw / alvo;
     const c = document.createElement("canvas"); c.width = Math.round(sw); c.height = Math.round(sh); const x = c.getContext("2d");
+    if (frente) x.setTransform(-1, 0, 0, 1, c.width, 0);
     x.drawImage(video, (vw - sw) / 2, (vh - sh) / 2, sw, sh, 0, 0, c.width, c.height); para(); fotoComHabilidade(id, c);
   };
   const fecha = () => { para(); closeSheets(); };
@@ -6263,7 +6264,7 @@ function vCameraFisica(c) {
   const flashOn = false; // sem flash em nenhuma câmera
   // Quatro Tempos: quatro disparos seguidos; cada um vira uma faixa em pé, lado a lado (como a câmera de 4 lentes), com divisórias pretas irregulares
   const rajada = async () => {
-    const C = S.camEst, v = C && C.video; if (!v || !v.videoWidth || C.rajando) return; C.rajando = true;
+    const C = S.camEst, v = videoCam(C); if (!v || !v.videoWidth || C.rajando) return; C.rajando = true;
     // como a 1234 da NOMO: cada lente vê o MEIO da cena num instante diferente, e as 4 faixas em pé ficam lado a lado numa foto deitada (3:2);
     // depois ela vai para o Reels no meio, sobre preto
     const vw = v.videoWidth, vh = v.videoHeight, W = 2000, H = Math.round(W / 1.5), fx = W / 4;
@@ -6273,7 +6274,7 @@ function vCameraFisica(c) {
     for (let k = 0; k < 4; k++) { const sx = Math.max(0, Math.min(vw - k0, (vw - k0) / 2 + (k - 1.5) * passo));
       cliqueSom(); if (navigator.vibrate) navigator.vibrate(18);
       document.querySelectorAll(".cfluz").forEach((l, i) => l.classList.toggle("on", i <= k));
-      o.drawImage(v, sx, sy, k0, sh, k * fx, 0, fx, H);
+      o.drawImage(videoCam(C) || v, sx, sy, k0, sh, k * fx, 0, fx, H);
       // cada lente puxa uma cor diferente, como as lentes baratas de plástico
       // cada lente tem o seu próprio escurecido nas bordas, como nas fotos da 1234
       const vg = o.createRadialGradient(k * fx + fx / 2, H / 2, fx * .25, k * fx + fx / 2, H / 2, H * .62); vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, "rgba(0,0,0,.6)");
@@ -6289,13 +6290,13 @@ function vCameraFisica(c) {
     piscaVisor(); revelaFoto(out, c, { recorte: null });
   };
   // como na NOMO: o clique revela a foto por trás, a câmera continua ligada e a miniatura do canto mostra a foto nova
-  const dispara = () => { if (!F.vivo) return; if (c.filma && S.camModo === "filme") return; if (c.rajadas) return rajada(); const C = S.camEst, v = C && C.video; if (!v || !v.videoWidth) return;
+  const dispara = () => { if (!F.vivo) return; if (c.filma && S.camModo === "filme") return; if (c.rajadas) return rajada(); const C = S.camEst, v = videoCam(C); if (!v || !v.videoWidth) return;
     cliqueSom(); if (navigator.vibrate) navigator.vibrate(30); if (flashOn) { const fl = h("div", { class: "flashcam" }); document.body.append(fl); setTimeout(() => fl.remove(), 450); }
     const q = document.createElement("canvas"); q.width = v.videoWidth; q.height = v.videoHeight; q.getContext("2d").drawImage(v, 0, 0);
     // obturador lento: a câmera de placa fica aberta quase um segundo e soma as imagens; o que se mexe sai riscado, como foto de 1900
     if (c.lento) { if (C.expondo) return; C.expondo = true; const g = q.getContext("2d"), n = 10; let k = 1;
       document.querySelector(".cfjanela")?.classList.add("expondo");
-      const passo = () => { if (!S.camEst || !v.videoWidth) { C.expondo = false; return; } g.globalAlpha = 1 / (k + 1); g.drawImage(v, 0, 0); k++;
+      const passo = () => { if (!S.camEst || !v.videoWidth) { C.expondo = false; return; } g.globalAlpha = 1 / (k + 1); g.drawImage(videoCam(C) || v, 0, 0); k++;
         if (k < n) return setTimeout(passo, 90);
         g.globalAlpha = 1; C.expondo = false; document.querySelector(".cfjanela")?.classList.remove("expondo"); piscaVisor(); revelaFoto(q, c); };
       return setTimeout(passo, 90); }
@@ -6435,7 +6436,7 @@ function mostraGravando(novoFilme) {
   if (novoFilme) {
     const ult = (S.fotosDiario || [])[0], mini = document.querySelector(".cfmini");
     if (mini && ult) mini.replaceChildren(miniMidia(ult));
-    if (dc && !document.querySelector(".celregistros")) dc.before(h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros (fotos e filmes)")));
+    if (dc && !document.querySelector(".celregistros")) dc.before(h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros")));
   }
 }
 function piscaVisor() { const j = document.querySelector(".cfjanela"); if (!j) return; j.classList.remove("pisca"); void j.offsetWidth; j.classList.add("pisca"); }
@@ -6740,6 +6741,14 @@ const iconeFototeca = () => h("svg", { viewBox: "0 0 24 24", width: "20", height
   h("path", { d: "M4.4 18.2 L8.8 14 L11.4 16.4 L13.6 14.4 L16 17.2 L16 18.4 L4.4 18.4 Z", fill: "#C98A73" }));
 const podeCamera = () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 const C0frente = () => !!(S.camEst && S.camEst.frente);
+// selfie espelhada, como num espelho: o que a pessoa vê no visor é o que fica na foto e no filme (em todas as câmeras)
+function videoCam(C) {
+  const v = C && C.video; if (!v || !C.frente || !v.videoWidth) return v;
+  const e = C.espelho || (C.espelho = document.createElement("canvas"));
+  if (e.width !== v.videoWidth || e.height !== v.videoHeight) { e.width = v.videoWidth; e.height = v.videoHeight; }
+  const x = e.getContext("2d"); x.setTransform(-1, 0, 0, 1, e.width, 0); x.drawImage(v, 0, 0); x.setTransform(1, 0, 0, 1, 0, 0);
+  e.videoWidth = e.width; e.videoHeight = e.height; return e;
+}
 function iniciaVivo(F0) {
   let C = S.camEst;
   if (!C) {
@@ -6792,7 +6801,7 @@ function voltaAoVivoCel() {
   setTimeout(() => { if (S.celGuardou !== vez) return; S.celGuardou = 0; const dc = document.querySelector(".estudiocel .celdica.celok"); if (dc) { dc.classList.remove("celok"); dc.textContent = dicaCel(); } }, 2600);
 }
 function tiraFotoVivo() {
-  const C = S.camEst, v = C && C.video; if (!v || !v.videoWidth) return;
+  const C = S.camEst, v = videoCam(C); if (!v || !v.videoWidth) return;
   const c = document.createElement("canvas"); c.width = v.videoWidth; c.height = v.videoHeight; c.getContext("2d").drawImage(v, 0, 0);
   fechaVivo(); S.foto = { ...S.foto, img: c, vivo: false }; render();
 }
@@ -6831,10 +6840,11 @@ function quadroCam() {
   const C = S.camEst; if (!C || !C.rodando) return;
   const tela = S.fotoCanvas, F = S.foto;
   if (!F || !F.vivo || F.img !== C.frame || !tela || !tela.isConnected) { if (!document.hidden) { fechaVivo(); if (F && F.vivo) S.foto = { ...F, img: null, vivo: false }; } else requestAnimationFrame(quadroCam); return; }
-  const v = C.video;
+  const v0 = C.video;
   // os primeiros quadros da câmera recém-ligada vêm pretos: o visor segura a última imagem até a câmera nova mostrar de verdade
-  if (!v.videoWidth || v.readyState < 2 || performance.now() - (C.vivoDesde || 0) < 350) { requestAnimationFrame(quadroCam); return; }
-  if (v.videoWidth && !C.ocupado) {
+  if (!v0.videoWidth || v0.readyState < 2 || performance.now() - (C.vivoDesde || 0) < 350) { requestAnimationFrame(quadroCam); return; }
+  if (v0.videoWidth && !C.ocupado) {
+    const v = videoCam(C);
     const f = FILTROS.find(y => y.id === F.filtro) || FILTROS[0], G = !(f.arco || f.holi) && glVivo(C);
     const lado = G ? 960 : 640, // tamanho do visor ao vivo: maior que isso o iPhone fica sem memória e some com as fotos das câmeras
       k = lado / Math.max(v.videoWidth, v.videoHeight), w = Math.round(v.videoWidth * k), hh = Math.round(v.videoHeight * k);
@@ -6957,7 +6967,7 @@ function vFotos() {
           h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, iconeFototeca(), "Fototeca"))
         : S.guardarCel ? null
         : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [], filtro: "original", intens: 1, thumbSrc: null }; render(); } }, "↺ Voltar para a câmera"))),
-        F.vivo && (S.fotosDiario || []).length ? h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros (fotos e filmes)")) : null,
+        F.vivo && (S.fotosDiario || []).length ? h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros")) : null,
         F.vivo ? h("p", { class: "celdica" + (S.celGuardou && !S.gravando ? " celok" : ""), text: S.celGuardou && !S.gravando ? "✓ Foto guardada nos seus Registros" : dicaCel() }) : null,
         barraSel, tiraFiltros(F, (id, el) => set("filtro", id, el)), barraIntensidade),
       h("div", { class: "fcontrols" },
