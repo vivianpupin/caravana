@@ -6427,8 +6427,9 @@ async function revelaFoto(img, c, extra) {
     const out = document.createElement("canvas");
     const Fx = { ...S.foto, ...(extra || {}), img, vivo: false }; if (Fx.molduraFinal) Fx.moldura = Fx.molduraFinal; // o visor mostra só a cena; a moldura branca aparece na foto revelada
     await montaFoto(out, Fx);
-    personalidade(out, Fx.geo, c);
-    variaFilme(out, Fx.geo, c);
+    // cores Lassi da Super 8: foto limpa, sem riscos, poeira, tremido nem luz vazando da película
+    const limpa = (FILTROS.find(y => y.id === Fx.filtro) || {}).cinema === 2;
+    if (!limpa) { personalidade(out, Fx.geo, c); variaFilme(out, Fx.geo, c); }
     await marcaCaravana(out, Fx.geo, c && c.id === "rajastao");
     const fim = paraReels(out, Fx.reels);
     const b = await new Promise(ok => fim.toBlob(ok, "image/jpeg", .9));
