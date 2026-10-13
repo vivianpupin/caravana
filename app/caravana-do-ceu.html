@@ -1168,7 +1168,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfchave i{position:relative;width:30px;height:14px;border-radius:7px;background:#0D0B0A;box-shadow:inset 0 1px 2px rgba(0,0,0,.8)}
 .cfchave i::after{content:"";position:absolute;top:1px;left:1px;width:14px;height:12px;border-radius:6px;background:linear-gradient(180deg,#E8E4DC,#8E8A83);transition:left .15s}
 .cfchave.b i::after{left:15px}
-.cfcines{display:flex;gap:8px;flex-wrap:wrap}
+.cfcines{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;max-width:calc(100vw - 40px);padding:2px 2px 4px;-webkit-overflow-scrolling:touch}.cfcines::-webkit-scrollbar{display:none}
+.cfcines .cfcinebt{flex:0 0 auto;white-space:nowrap}
 .cfexpo{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.42);border-radius:999px;padding:3px;width:max-content}
 .cfexpo.fora{display:none}
 .cfexpo button{width:32px;height:32px;border-radius:50%;border:1px solid rgba(232,192,122,.4);background:rgba(0,0,0,.35);color:#F1E2BC;font:600 18px/1 Poppins,sans-serif;cursor:pointer}
@@ -6211,7 +6212,7 @@ function mudaExpo(d) {
   try { navigator.vibrate && navigator.vibrate(8); } catch (e) {}
 }
 // botões de cinema em cada câmera: [filtro, nome]
-const CINE_BOTOES = { super8: [["cam-cinematic", "Cinematic"], ["cam-noturno", "Blue Lassi"]] };
+const CINE_BOTOES = { super8: [["cam-cinematic", "Cinematic"], ["cam-noturno", "Blue Lassi"], ["cam-mango", "Mango Lassi"], ["cam-rose", "Rose Lassi"], ["cam-pista", "Pistache"], ["cam-masala", "Masala"], ["cam-indigo", "Índigo"]] };
 const FILME_CAM = { campo: "Placa de vidro · obturador lento · 1900", couro: "Filme 35 mm desbotado · 1955", quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
 function vCameraFisica(c) {
   const F0 = S.foto || (S.foto = fotoDaCamera(c));
