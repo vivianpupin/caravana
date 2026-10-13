@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/10 · 22:41";</script>
+<script>window.__VERSAO = "12/10 · 22:46";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -5099,7 +5099,7 @@ const FILTROS = [
   { id: "cam-couro-quente", cat: "Câmeras", nome: "Delhi 1955 quente", m: [1.08, .04, -.02, .03, 1, 0, -.03, .02, .84], lift: 16, con: 1.48, sat: 1.12, split: [[62, 32, 14], [255, 222, 172]], add: [16, 6, -16], vin: .48, grao: 16, pelicula: 1 },
   { id: "cam-couro-frio", cat: "Câmeras", nome: "Delhi 1955 fria", m: [.94, .02, .02, .01, 1, .02, .02, .04, 1.08], lift: 16, con: 1.46, sat: .98, split: [[20, 36, 50], [240, 238, 228]], add: [-4, 1, 10], vin: .46, grao: 16, pelicula: 1 },
   { id: "cam-cinematic", cat: "Câmeras", nome: "Cinematic", m: [1.16, 0, 0, 0, 1.14, 0, 0, 0, 1.12], lift: 24, con: 1.12, sat: .8, split: [[18, 62, 72], [255, 178, 118]], add: [6, 3, -2], vin: .5, grao: 28, cinema: 1 },
-  { id: "cam-noturno", cat: "Câmeras", nome: "Noite azul", noite: 1, con: 1.22, vin: .45, grao: 30, cinema: 2 },
+  { id: "cam-noturno", cat: "Câmeras", nome: "Blue Lassi", noite: 1, con: 1.22, vin: .45, grao: 30, cinema: 2 },
   { id: "cam-cine", cat: "Câmeras", nome: "Cine", lift: 10, con: 1.36, sat: .7, split: [[14, 38, 44], [242, 196, 150]], add: [2, 0, 2], vin: .54, grao: 32, pelicula: 1 },
   // estilo de câmera de filme de viagem: um para cada cidade
   { id: "cid-delhi", cat: "Profissionais", nome: "Delhi", lift: 34, con: 0.9, sat: 0.85, add: [22, -4, 4], leak: "rosa", brilho: 0.4, vin: 0.32, grao: 18, pelicula: 1 },
@@ -6222,7 +6222,7 @@ function cliqueSom() { try { const A = window.AudioContext || window.webkitAudio
   for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3); n.buffer = b; const g = a.createGain(); g.gain.value = .5; n.connect(g); g.connect(a.destination); n.start(); } catch (e) {} }
 // tela da câmera: o próprio corpo da câmera ocupa a tela; a imagem ao vivo aparece no visor, o disparo é o botão de metal
 // botões de cinema em cada câmera: [filtro, nome]
-const CINE_BOTOES = { super8: [["cam-cinematic", "Cinematic"], ["cam-noturno", "Noite azul"]], campo: [["cam-noturno", "Cinematic"]] };
+const CINE_BOTOES = { super8: [["cam-cinematic", "Cinematic"], ["cam-noturno", "Blue Lassi"]] };
 const FILME_CAM = { campo: "Placa de vidro · obturador lento · 1900", couro: "Filme 35 mm desbotado · 1955", quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
 function vCameraFisica(c) {
   const F0 = S.foto || (S.foto = fotoDaCamera(c));
