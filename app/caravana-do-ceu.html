@@ -1405,17 +1405,18 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .cf-super8 .cfvf{display:none}
 
 .cfjanela.expondo::before{content:"SEGURE FIRME";position:absolute;z-index:4;left:0;right:0;bottom:10px;text-align:center;font:700 10px "Courier Prime",monospace;letter-spacing:.2em;color:#F3D9A4;text-shadow:0 1px 3px #000}
-.gravando .cfbotaofoto::after{content:"PARAR"}
+.gravando .cfbotaofoto::after{content:"STOP"}
 .cfdicafilme{position:absolute;z-index:4;left:8%;right:8%;bottom:10px;padding:6px 10px;border-radius:8px;background:rgba(12,8,5,.62);color:#F3E3C0;font:600 10.5px/1.35 Poppins,sans-serif;text-align:center;pointer-events:none}
 
 .gravando .cfjanelafoto::before{content:none;display:none;position:absolute;z-index:4;top:8px;right:10px;font:700 11px "Courier Prime",monospace;color:#FF4A3A;text-shadow:0 0 6px rgba(255,60,40,.8);animation:piscarec 1s steps(2) infinite}
 @keyframes piscarec{50%{opacity:0}}
 /* REC grande no visor de todas as câmeras enquanto filma: bolinha vermelha piscando, o tempo correndo e a borda do visor acesa em vermelho */
-.recvisor{position:absolute;z-index:8;top:10px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:9px;padding:4px 10px;pointer-events:none;
+.recvisor{position:absolute;z-index:8;top:10px;left:50%;transform:translateX(-50%);display:grid;grid-template-columns:auto auto;align-items:center;justify-items:center;column-gap:8px;row-gap:4px;padding:4px 10px;pointer-events:none;white-space:nowrap;
   /* letreiro de visor antigo: vermelho de lâmpada, levemente borrado e tremendo, sem caixa moderna */
   font:700 17px/1 "Courier Prime",monospace;letter-spacing:.14em;color:#E8352A;text-shadow:0 0 2px rgba(255,70,50,.9),0 0 8px rgba(230,40,25,.7),0 0 16px rgba(200,30,20,.45);filter:blur(.25px) contrast(1.1);animation:recvelho 3.2s steps(1) infinite}
 .recvisor i{width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#FF6A55,#C4180C 70%);box-shadow:0 0 6px 2px rgba(230,40,25,.75);animation:piscarec 1s steps(2) infinite}
-.recvisor b,.recvisor small{font:inherit;color:inherit;letter-spacing:inherit}
+.recvisor b{font:inherit;color:inherit;letter-spacing:inherit}
+.recvisor small{grid-column:1/-1;font:700 12px/1 "Courier Prime",monospace;color:inherit;letter-spacing:.08em}
 @keyframes recvelho{0%,100%{opacity:.96}37%{opacity:.82}38%{opacity:.98}71%{opacity:.88}72%{opacity:1}}
 .recborda{position:absolute;inset:0;z-index:7;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 0 2px rgba(200,35,22,.75),inset 0 0 22px rgba(200,35,22,.4);animation:revela 1s ease-in-out infinite alternate}
 /* selfie: um botãozinho de metal recartilhado no canto da câmera, com SELFIE bordado em ouro */
@@ -2114,7 +2115,9 @@ function ajustaVisorCel() {
   // posição do visor com a tela no começo (sem rolar), que é quando ele fica mais embaixo
   const fimVisor = est.getBoundingClientRect().top + (sc ? sc.scrollTop : 0) + vis.offsetHeight + 6;
   const sobra = fimVisor - fundo;
-  if (sobra > 0) cv.style.maxHeight = Math.max(220, cv.getBoundingClientRect().height - sobra) + "px";
+  // 30% menor do que caberia, para os filtros, os adesivos e a mesa de revelação aparecerem logo embaixo
+  const cabe = sobra > 0 ? cv.getBoundingClientRect().height - sobra : cv.getBoundingClientRect().height;
+  cv.style.maxHeight = Math.max(200, cabe * .7) + "px";
 }
 addEventListener("resize", () => { if (S.camSel) ajustaSelfie(); if (S.camSel === "celular") ajustaVisorCel(); });
 function render() {
@@ -6499,9 +6502,9 @@ function mostraGravando(novoFilme) {
   if (lg) lg.textContent = g ? "Solte ou toque para parar · até 1 min" : "Segure para filmar · ou toque para começar e parar";
   if (ct) ct.textContent = g ? "Solte para parar" : "Segure para filmar";
   const bf = document.querySelector(".celfilmar");
-  if (bf) { bf.classList.toggle("gravando", g); bf.textContent = g ? "Parar" : "Filmar"; bf.setAttribute("aria-label", g ? "Parar de filmar" : "Filmar"); }
+  if (bf) { bf.classList.toggle("gravando", g); bf.textContent = g ? "Stop" : "Filma"; bf.setAttribute("aria-label", g ? "Parar de filmar" : "Filmar"); }
   const dc = document.querySelector(".celdica");
-  if (dc) { dc.classList.remove("celok"); if (g) S.celGuardou = 0; } if (dc) dc.textContent = g ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure Filmar, ou toque uma vez para começar e outra para parar.";
+  if (dc) { dc.classList.remove("celok"); if (g) S.celGuardou = 0; } if (dc) dc.textContent = g ? "Gravando… solte ou toque em Stop · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure Filma, ou toque uma vez para começar e outra para parar.";
   if (novoFilme) {
     const ult = (S.fotosDiario || [])[0], mini = document.querySelector(".cfmini");
     if (mini && ult) mini.replaceChildren(miniMidia(ult));
@@ -6866,7 +6869,7 @@ async function ligaCam() {
     if (!C.rodando) { C.rodando = true; requestAnimationFrame(quadroCam); }
   } catch (e) { if (S.camEst !== C || C.vez !== vez) return; fechaVivo(); S.camFalhou = true; if (S.foto && S.foto.vivo) S.foto = { ...S.foto, img: null, vivo: false }; render(); }
 }
-const dicaCel = () => S.gravando ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure Filmar, ou toque uma vez para começar e outra para parar.";
+const dicaCel = () => S.gravando ? "Gravando… solte ou toque em Stop · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure Filma, ou toque uma vez para começar e outra para parar.";
 // clique da câmera do celular: som de obturador, vibração e a piscada no visor, como nas câmeras da maleta; com o temporizador, conta antes
 function disparaCel() {
   if (S.gravando) return;
@@ -7087,7 +7090,7 @@ function vFotos() {
         F.vivo ? h("div", { class: "actions camacoes" },
           h("button", { class: "celknob celselfie", type: "button", onclick: e => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); e.currentTarget.textContent = C.frente ? "Trás" : "Selfie"; } } }, C0frente() ? "Trás" : "Selfie"),
           h("button", { class: "habclique celobtur", type: "button", "aria-label": "Tirar foto", onclick: disparaCel }),
-          h("button", { class: "celknob celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "Parar" : "Filmar"),
+          h("button", { class: "celknob celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "Stop" : "Filma"),
           h("div", { class: "celdir" }, (S.celEscolhe = () => fi.click(), miniCel())))
         : S.guardarCel ? null
         : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [], filtro: "original", intens: 1, thumbSrc: null }; render(); } }, "↺ Voltar para a câmera"))),
