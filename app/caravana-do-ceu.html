@@ -6212,7 +6212,7 @@ function mudaExpo(d) {
   try { navigator.vibrate && navigator.vibrate(8); } catch (e) {}
 }
 // botões de cinema em cada câmera: [filtro, nome]
-const CINE_BOTOES = { super8: [["cam-cinematic", "Cinematic"], ["cam-noturno", "Blue Lassi"], ["cam-mango", "Mango Lassi"], ["cam-rose", "Rose Lassi"], ["cam-pista", "Pistache"], ["cam-masala", "Masala"], ["cam-indigo", "Índigo"]] };
+const CINE_BOTOES = { campo: [["cam-cinematic", "Cinematic"]], super8: [["cam-noturno", "Blue Lassi"], ["cam-mango", "Mango Lassi"], ["cam-rose", "Rose Lassi"], ["cam-pista", "Pistache"], ["cam-masala", "Masala"], ["cam-indigo", "Índigo"]] };
 const FILME_CAM = { campo: "Placa de vidro · obturador lento · 1900", couro: "Filme 35 mm desbotado · 1955", quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
 function vCameraFisica(c) {
   const F0 = S.foto || (S.foto = fotoDaCamera(c));
@@ -6284,7 +6284,7 @@ function vCameraFisica(c) {
   const controles = h("div", { class: "cfcontroles" },
     FOTO_CAM[c.id] && temFoto("img/cameras/" + c.id + "-corpo.jpg") ? null : chave("Atrás", "Selfie", frente, virar),
     c.tons ? h("div", { class: "cftons", role: "radiogroup", "aria-label": "Tom da foto" }, c.tons.map(([f, cor, nome]) => h("button", { type: "button", role: "radio", "aria-checked": S.foto.filtro === f ? "true" : "false", "aria-label": nome, "data-f": f, class: "cftom" + (S.foto.filtro === f ? " on" : ""), style: `--cor:${cor}`, onclick: e => { S.foto = { ...S.foto, filtro: f }; montaFoto.img = null; const b = e.currentTarget; b.parentNode.querySelectorAll(".cftom").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-checked", x === b ? "true" : "false"); }); document.querySelectorAll(".cfcinebt").forEach(x => { x.classList.remove("on"); x.setAttribute("aria-pressed", "false"); }); } }))) : null,
-    CINE_BOTOES[c.id] ? h("div", { class: "cfexpo" + (CINE_BOTOES[c.id].some(([fid]) => fid === S.foto.filtro) ? "" : " fora"), "aria-label": "Exposição" },
+    CINE_BOTOES[c.id] && c.id === "super8" ? h("div", { class: "cfexpo" + (CINE_BOTOES[c.id].some(([fid]) => fid === S.foto.filtro) ? "" : " fora"), "aria-label": "Exposição" },
       h("button", { type: "button", "aria-label": "Mais escuro", onclick: () => mudaExpo(-1) }, "−"),
       h("span", { class: "cfexpov" }, h("small", { text: "Exposição" }), h("b", { text: textoExpo() })),
       h("button", { type: "button", "aria-label": "Mais claro", onclick: () => mudaExpo(1) }, "+")) : null,
