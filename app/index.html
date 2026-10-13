@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "13/10 · 16:49";</script>
+<script>window.__VERSAO = "13/10 · 19:04";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -997,9 +997,9 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 /* Selfie e Filmar: botões redondos de latão, iguais ao disparador, com o nome gravado embaixo */
 /* coluna da direita: a última foto em cima, a Fototeca embaixo */
 .estudiocel .celdir{display:flex;flex-direction:column;align-items:center;gap:7px}
-.estudiocel .celmini{width:46px;height:46px;padding:0;border:0;border-radius:6px;overflow:hidden;cursor:pointer;background:#0B0806;box-shadow:0 0 0 2px #6E5530,0 0 0 3px #24110A,0 3px 6px rgba(0,0,0,.55)}
+.estudiocel .celmini{width:58px;height:58px;padding:0;border:0;border-radius:6px;overflow:hidden;cursor:pointer;background:#0B0806;box-shadow:0 0 0 2px #6E5530,0 0 0 3px #24110A,0 3px 6px rgba(0,0,0,.55)}
 .estudiocel .celmini img,.estudiocel .celmini video{width:100%;height:100%;object-fit:cover;display:block}
-.estudiocel .celmini.vazia{background:repeating-linear-gradient(135deg,#140B06 0 5px,#1C1009 5px 10px);cursor:default}
+.estudiocel .celmini.vazia{background:repeating-linear-gradient(135deg,#140B06 0 5px,#1C1009 5px 10px)}
 .estudiocel .celvisor .camacoes .celdir .btn.ghost{min-width:96px;padding:6px 10px;font-size:10.5px}
 /* temporizador: plaquinha de latão no canto da capa */
 .estudiocel .celtempo{position:absolute;z-index:2;top:18px;left:18px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 7px;border-radius:6px;border:1px solid #5C421F;cursor:pointer;
@@ -1020,14 +1020,16 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .estudiocel .celvisor .celselfie.on::before,.estudiocel .celvisor .celknob[aria-pressed="true"]::before{filter:brightness(.8)}
 .estudiocel .celvisor .celknob.celfilmar{color:#FF9A88!important}
 .estudiocel .celvisor .celknob.celfilmar::before{background:radial-gradient(circle at 46% 42%,#FF7A66 0 6%,#D8301F 13%,#8E1A10 21%,rgba(60,10,4,.9) 23%,rgba(60,10,4,0) 26%),url("img/cameras/botao-latao.webp") center/cover;
-  box-shadow:0 0 0 2px #24110A,0 0 0 3.5px #C7402F,0 0 10px 2px rgba(220,60,40,.45),0 4px 8px rgba(0,0,0,.55)}
+  box-shadow:0 0 0 2px #24110A,0 0 0 3px rgba(214,176,120,.3),0 4px 8px rgba(0,0,0,.55)}
 .estudiocel .celvisor .celknob.celfilmar.gravando{background:none!important;color:#FF9C8C!important;animation:none}
-.estudiocel .celvisor .celknob.celfilmar.gravando::before{box-shadow:0 0 0 2px #24110A,0 0 0 4px #E2483A,0 0 14px 4px rgba(255,70,50,.6);animation:revela 1s ease-in-out infinite alternate}
+.estudiocel .celvisor .celknob.celfilmar.gravando::before{box-shadow:0 0 0 2px #24110A,0 0 0 4px #E2483A,0 0 14px 4px rgba(255,70,50,.6);animation:aroRec 1s ease-in-out infinite alternate}
+/* só filmando: o aro em volta acende vermelho e pulsa */
+@keyframes aroRec{from{box-shadow:0 0 0 2px #24110A,0 0 0 4px #B8281C,0 0 6px 1px rgba(255,70,50,.35)}to{box-shadow:0 0 0 2px #24110A,0 0 0 4px #FF4A3A,0 0 16px 5px rgba(255,70,50,.7)}}
 .estudiocel .camacoes{display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:auto;align-items:center;column-gap:16px;row-gap:6px;width:100%;max-width:420px;margin:0}
 .estudiocel .camacoes>:nth-child(1){grid-area:1/1;justify-self:end;margin-right:64px}
 .estudiocel .camacoes>:nth-child(2){grid-area:1/2}
 .estudiocel .camacoes>:nth-child(3){grid-area:1/1;justify-self:end}
-.estudiocel .camacoes>:nth-child(4){grid-area:1/3;justify-self:start}
+.estudiocel .camacoes>:nth-child(4){grid-area:1/3;justify-self:center}
 .estudiocel .camacoes .btn{padding:8px 10px;font-size:12.5px;white-space:nowrap}
 .estudiocel .camacoes .habclique{width:72px;height:72px;min-width:0;padding:0;border-radius:50%;font-size:26px;display:grid;place-items:center;box-shadow:0 0 0 3px #22170F,0 0 0 5px rgba(217,178,106,.75),0 6px 14px rgba(0,0,0,.5)}
 .trocafoto .btn{padding:8px 18px;font-size:13.5px}
@@ -6905,7 +6907,7 @@ function disparaCel() {
     cliqueSom(); vibrar(30);
     const fr = document.querySelector(".celvisor .fotoframe");
     if (fr) { const r = fr.getBoundingClientRect(), fl = h("div", { class: "celflash", style: `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px` }); document.body.append(fl); setTimeout(() => fl.remove(), 450); }
-    S.guardarCel = true; tiraFotoVivo(); };
+    fotoCelSemPiscar(); };
   if (!n) return clica();
   let falta = n; const fr = document.querySelector(".celvisor .fotoframe"), num = h("div", { class: "celcontagem", "aria-live": "assertive" }, h("b", { text: String(falta) }));
   if (fr) fr.append(num); tique(true);
@@ -6913,16 +6915,36 @@ function disparaCel() {
     if (falta <= 0 || !num.isConnected) { clearInterval(S.celConta); S.celConta = null; num.remove(); if (falta <= 0) clica(); return; }
     num.firstChild.textContent = String(falta); tique(falta <= 3); }, 1000);
 }
+// a foto é revelada por trás, sem trocar a tela: o visor continua ao vivo e os botões não se mexem; só a miniatura e o aviso mudam
+async function fotoCelSemPiscar() {
+  const C = S.camEst, v = videoCam(C); if (!v || !v.videoWidth || C.revelando) return;
+  const q = document.createElement("canvas"); q.width = v.videoWidth; q.height = v.videoHeight; q.getContext("2d").drawImage(v, 0, 0);
+  C.revelando = true; C.pausa = true;
+  try {
+    for (let i = 0; i < 20 && C.ocupado; i++) await new Promise(r => setTimeout(r, 20)); // espera o quadro ao vivo que estiver no meio terminar
+    const out = document.createElement("canvas"), Fx = { ...S.foto, img: q, vivo: false };
+    const rnd = Math.random; let sem = 7; Math.random = () => { sem = (sem * 16807) % 2147483647; return sem / 2147483647; };
+    try { await montaFoto(out, Fx); } finally { Math.random = rnd; montaFoto.img = null; }
+    C.pausa = false;
+    const b = await new Promise(r => out.toBlob(r, "image/jpeg", .9)); if (!b) return;
+    await guardaNoDiario(b, CAMERAS_C.find(x => x.id === "celular") || { nome: "Celular" });
+    S.fotosDiario = await lerDiario();
+    document.querySelector(".celmini")?.replaceWith(miniCel());
+    const vez = S.celGuardou = Date.now(), dc = document.querySelector(".estudiocel .celdica");
+    if (dc && !S.gravando) { dc.classList.add("celok"); dc.textContent = "✓ Foto guardada nos seus Registros"; }
+    setTimeout(() => { if (S.celGuardou !== vez) return; S.celGuardou = 0; const d = document.querySelector(".estudiocel .celdica.celok"); if (d) { d.classList.remove("celok"); d.textContent = dicaCel(); } }, 2600);
+  } catch (e) {} finally { C.pausa = false; C.revelando = false; }
+}
 // temporizador: desligado, 3 ou 10 segundos (para a foto do grupo com o celular apoiado)
 function botaoTempoCel() {
   const rot = () => (S.celTempo ? S.celTempo + "s" : "off");
   const v = h("b", { text: rot() });
   return h("button", { type: "button", class: "celtempo" + (S.celTempo ? " on" : ""), "aria-label": "Temporizador", onclick: e => { S.celTempo = S.celTempo === 3 ? 10 : S.celTempo === 10 ? 0 : 3; v.textContent = rot(); e.currentTarget.classList.toggle("on", !!S.celTempo); } }, h("span", { text: "Tempo" }), v);
 }
-// a última foto ou filme num quadradinho no couro; tocar abre os Registros
+// a última foto ou filme num quadradinho no couro; tocar abre a galeria do celular para escolher uma foto e revelar na mesa
 function miniCel() {
   const u = (S.fotosDiario || [])[0];
-  return h("button", { type: "button", class: "celmini" + (u ? "" : " vazia"), "aria-label": "Ver meus Registros", onclick: () => { if ((S.fotosDiario || []).length) verFotos(0); } }, u ? miniMidia(u) : null);
+  return h("button", { type: "button", class: "celmini" + (u ? "" : " vazia"), "aria-label": "Escolher uma foto do celular", onclick: () => { if (!S.gravando && S.celEscolhe) S.celEscolhe(); } }, u ? miniMidia(u) : null);
 }
 // depois do clique a foto vai para os Registros e o visor volta sozinho, pronto para a próxima (sem "Nova foto")
 function voltaAoVivoCel() {
@@ -6974,7 +6996,7 @@ function quadroCam() {
   const v0 = C.video;
   // os primeiros quadros da câmera recém-ligada vêm pretos: o visor segura a última imagem até a câmera nova mostrar de verdade
   if (!v0.videoWidth || v0.readyState < 2 || performance.now() - (C.vivoDesde || 0) < 350) { requestAnimationFrame(quadroCam); return; }
-  if (v0.videoWidth && !C.ocupado) {
+  if (v0.videoWidth && !C.ocupado && !C.pausa) {
     const v = videoCam(C);
     const f = FILTROS.find(y => y.id === F.filtro) || FILTROS[0], G = !(f.arco || f.holi) && glVivo(C);
     const lado = G ? 960 : 640, // tamanho do visor ao vivo: maior que isso o iPhone fica sem memória e some com as fotos das câmeras
@@ -7010,6 +7032,8 @@ function quadroCam() {
     Promise.resolve(pr).catch(() => {}).finally(() => { C.ocupado = false; C.quadros = (C.quadros || 0) + 1;
       // a imagem de verdade já está no visor: só agora tira o aviso "Ligando a câmera…" (antes ele saía antes e o visor ficava preto um instante)
       if (C.quadros === 1) document.querySelectorAll(".cfligando").forEach(e => e.remove());
+      // a imagem da câmera chegou (ou mudou de tamanho, como ao virar para a selfie): o visor do celular se ajusta para os botões caberem na tela
+      const tam = tela.width + "x" + tela.height; if (C.tamVisor !== tam) { C.tamVisor = tam; if (S.camSel === "celular") requestAnimationFrame(ajustaVisorCel); }
       // guarda uma cópia pequena da cena para a próxima câmera abrir já com imagem, em vez de preto
       if (C.quadros % 20 === 1) { try { const q = S.vivoCru || (S.vivoCru = document.createElement("canvas")), r = 360 / Math.max(v.videoWidth, v.videoHeight); q.width = Math.round(v.videoWidth * r); q.height = Math.round(v.videoHeight * r); q.getContext("2d").drawImage(v, 0, 0, q.width, q.height); } catch (e) {} } });
     // sem a placa de vídeo: as miniaturas saem da primeira imagem
@@ -7095,7 +7119,7 @@ function vFotos() {
           h("button", { class: "celknob celselfie", type: "button", onclick: e => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); e.currentTarget.textContent = C.frente ? "Trás" : "Selfie"; } } }, C0frente() ? "Trás" : "Selfie"),
           h("button", { class: "habclique celobtur", type: "button", "aria-label": "Tirar foto", onclick: disparaCel }),
           h("button", { class: "celknob celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "Parar" : "Filmar"),
-          h("div", { class: "celdir" }, miniCel(), h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, "Fototeca")))
+          h("div", { class: "celdir" }, (S.celEscolhe = () => fi.click(), miniCel())))
         : S.guardarCel ? null
         : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [], filtro: "original", intens: 1, thumbSrc: null }; render(); } }, "↺ Voltar para a câmera"))),
         F.vivo ? h("p", { class: "celdica" + (S.celGuardou && !S.gravando ? " celok" : ""), text: S.celGuardou && !S.gravando ? "✓ Foto guardada nos seus Registros" : dicaCel() }) : null,
