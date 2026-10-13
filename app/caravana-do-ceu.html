@@ -1355,9 +1355,13 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .cf-rajastao .cfbotaofoto::after{top:calc(100% + 34px)}
 
 .cfselfie{position:absolute;z-index:5;width:7.5%;aspect-ratio:1;transform:translate(-50%,-50%);border:0;border-radius:50%;cursor:pointer;padding:0;
-  background:radial-gradient(circle at 38% 32%,#F2EEE6 0 10%,#B9B3A8 30%,#6E6A63 62%,#3A3733 78%),repeating-conic-gradient(#2A2724 0 6deg,#8E8A83 6deg 12deg);
-  box-shadow:0 0 0 2px #1E1B18,0 3px 5px rgba(0,0,0,.6),inset 0 -2px 3px rgba(0,0,0,.45)}
-.cfselfie.on{transform:translate(-50%,-50%) scale(.93);filter:brightness(.82);box-shadow:0 0 0 2px #1E1B18,0 1px 2px rgba(0,0,0,.6),inset 0 2px 4px rgba(0,0,0,.6)}
+  /* latão envelhecido, como o botão do CLICK: miolo abaulado com brilho, anéis torneados e aro escuro */
+  background:radial-gradient(circle at 40% 34%,rgba(255,240,196,.95) 0 6%,rgba(255,240,196,0) 22%),
+    repeating-radial-gradient(circle at 50% 50%,rgba(60,38,12,0) 0 3.5%,rgba(60,38,12,.22) 4% 4.6%),
+    radial-gradient(circle at 50% 50%,#D9B46A 0 40%,#A97E3A 52%,#6E4D1E 60%,#C9A15A 64%,#8A6428 72%,#3E2A10 82%);
+  box-shadow:0 0 0 2px #2A1C0C,0 0 0 3px rgba(201,161,90,.55),0 4px 7px rgba(0,0,0,.6),inset 0 -2px 4px rgba(40,24,6,.55),inset 0 2px 2px rgba(255,236,190,.35);
+  filter:sepia(.15) saturate(.9)}
+.cfselfie.on{transform:translate(-50%,-50%) scale(.93);filter:sepia(.15) saturate(.9) brightness(.8);box-shadow:0 0 0 2px #2A1C0C,0 0 0 3px rgba(201,161,90,.45),0 1px 2px rgba(0,0,0,.6),inset 0 3px 5px rgba(30,18,4,.7)}
 .cfselfie::after{content:"SELFIE";position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);font:700 12px/1 "Courier Prime",monospace;letter-spacing:.26em;white-space:nowrap;pointer-events:none;
   color:#F6E3B4;padding:5px 9px 5px calc(9px + .26em);border-radius:999px;background:rgba(18,11,6,.66);box-shadow:0 1px 3px rgba(0,0,0,.45);text-shadow:0 1px 1px rgba(0,0,0,.8)}
 .cfbotaofoto:active{background:rgba(0,0,0,.25)}
