@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "13/10 · 09:51";</script>
+<script>window.__VERSAO = "13/10 · 16:20";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -976,6 +976,14 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .intens input{width:100%;accent-color:#3F4938}
 .intens b{text-align:right;color:var(--ink);font-weight:600}
 .trocafoto{display:flex;justify-content:center}
+.estudiocel .celvisor{display:flex;flex-direction:column;align-items:center;gap:10px}
+.estudiocel .camacoes{display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:auto auto;align-items:center;column-gap:16px;row-gap:6px;width:100%;max-width:420px;margin:0}
+.estudiocel .camacoes>:nth-child(1){grid-area:1/1;justify-self:end}
+.estudiocel .camacoes>:nth-child(2){grid-area:1/2/3/3}
+.estudiocel .camacoes>:nth-child(3){grid-area:2/1;justify-self:end}
+.estudiocel .camacoes>:nth-child(4){grid-area:1/3/3/4;justify-self:start}
+.estudiocel .camacoes .btn{padding:8px 10px;font-size:12.5px;white-space:nowrap}
+.estudiocel .camacoes .habclique{width:72px;height:72px;min-width:0;padding:0;border-radius:50%;font-size:26px;display:grid;place-items:center;box-shadow:0 0 0 3px #22170F,0 0 0 5px rgba(217,178,106,.75),0 6px 14px rgba(0,0,0,.5)}
 .trocafoto .btn{padding:8px 18px;font-size:13.5px}
 .habbox{display:flex;flex-direction:column;gap:12px}
 .habcaixa{width:100%;height:auto;display:block;min-height:120px}
@@ -1270,7 +1278,7 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .estudiocel .fotoframe{border-radius:14px;padding:8px;background:linear-gradient(180deg,#14100C,#0A0806);box-shadow:inset 0 0 0 1.5px rgba(232,192,122,.35),0 10px 24px rgba(0,0,0,.6)}
 .estudiocel .fotoframe{width:fit-content;max-width:100%;align-self:center;margin:0 auto}
 @media (min-width:820px){.estudiocel .fotoframe{position:relative}}
-@media (max-width:819px){.estudiocel .fotoframe{position:sticky;top:0;z-index:3}.estudiocel .fotoframe .fotocanvas{max-height:36vh}}
+@media (max-width:819px){.estudiocel .celvisor{position:sticky;top:0;z-index:3;margin:0 -16px;padding:6px 12px 10px;background:#22170F}.estudiocel .celvisor .fotoframe{position:relative;top:auto;margin:0 auto;padding:8px}.estudiocel .fotoframe .fotocanvas{max-height:50vh;max-height:50svh}}
 .celmesa{margin:0 0 4px;font:700 12px "Courier Prime",monospace;letter-spacing:.22em;text-transform:uppercase;color:#E2C27E;text-align:center;padding-bottom:8px;border-bottom:1.5px dashed rgba(214,180,128,.3)}
 .estudiocel .fcontrols{background:rgba(20,13,8,.45);border:1px solid rgba(232,192,122,.18);border-radius:14px;padding:16px 14px;box-shadow:inset 0 2px 10px rgba(0,0,0,.4)}
 .estudiocel .lab{font-family:"Courier Prime",monospace;letter-spacing:.16em;color:#C9A96A!important}
@@ -1296,6 +1304,7 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .celfilmar{color:#F3B4A4!important;border-color:rgba(243,140,120,.5)!important}
 .celfilmar.gravando{background:#A8322A!important;color:#fff!important;border-color:#A8322A!important;animation:revela 1s ease-in-out infinite alternate}
 .celdica{margin:0;text-align:center;font-size:11.5px;color:#CDB894}
+.celdica.celok{color:#F3D9A4;font-weight:600}
 .cfdicafilme .curta{display:none}
 .cf-descartavel .cfdicafilme .longa,.cf-instantanea .cfdicafilme .longa{display:none}
 .cf-descartavel .cfdicafilme .curta,.cf-instantanea .cfdicafilme .curta{display:inline}
@@ -2069,7 +2078,18 @@ function ajustaSelfie() {
   const topo = Math.min(...bate.map(r => r.top));
   sf.style.marginTop = -(a.bottom - topo + 8) + "px";
 }
-addEventListener("resize", () => { if (S.camSel) ajustaSelfie(); });
+// câmera do celular: o visor encolhe o necessário para que o clique, a Selfie, o Filmar e a Fototeca caibam na tela já ao abrir, acima do menu de baixo
+function ajustaVisorCel() {
+  const vis = document.querySelector(".estudiocel .celvisor"), cv = vis && vis.querySelector(".fotocanvas"); if (!cv || innerWidth >= 820) return;
+  const sc = document.getElementById("main"), menu = document.getElementById("tabs"), est = vis.closest(".estudio");
+  cv.style.maxHeight = "";
+  const fundo = Math.min(innerHeight, menu ? menu.getBoundingClientRect().top : innerHeight) - 8;
+  // posição do visor com a tela no começo (sem rolar), que é quando ele fica mais embaixo
+  const fimVisor = est.getBoundingClientRect().top + (sc ? sc.scrollTop : 0) + vis.offsetHeight + 6;
+  const sobra = fimVisor - fundo;
+  if (sobra > 0) cv.style.maxHeight = Math.max(220, cv.getBoundingClientRect().height - sobra) + "px";
+}
+addEventListener("resize", () => { if (S.camSel) ajustaSelfie(); if (S.camSel === "celular") ajustaVisorCel(); });
 function render() {
   if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
   marcaChat(); marcaPombos(); convidaAvisos(); registraApp(); checaHabilidades();
@@ -2112,6 +2132,7 @@ function render() {
   }
   tickRelogios();
   if (S.camSel) requestAnimationFrame(ajustaSelfie);
+  if (S.camSel === "celular") { requestAnimationFrame(ajustaVisorCel); setTimeout(ajustaVisorCel, 700); }
   if (S.tab === "travessia") alturaFrases();
   const el = actId && document.getElementById(actId);
   if (el && el !== act) { if (draft != null && "value" in el && el.type !== "file" && el.type !== "checkbox") el.value = draft; el.focus({ preventScroll: true }); if (el.isContentEditable) cursorNoFim(el); else if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
@@ -3582,15 +3603,16 @@ async function cameraHabilidade(id) {
   const abre = async () => {
     para();
     try { fluxo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: frente ? "user" : "environment" }, audio: false });
-      video.srcObject = fluxo; await video.play(); st.textContent = ""; }
+      video.classList.toggle("espelho", frente); video.srcObject = fluxo; await video.play(); st.textContent = ""; }
     catch (e) { st.textContent = ""; st.append(h("button", { class: "btn gold", type: "button", style: "width:100%", onclick: () => { fecha(); entradaFoto(id, true); } }, "📸 Abrir a câmera do celular")); }
   };
   const clica = () => {
     if (!video.videoWidth) return;
-    // guarda exatamente o que aparecia na tela (recorte 3x4 do meio); a selfie não é espelhada, fica como as pessoas veem
+    // guarda exatamente o que aparecia na tela (recorte 3x4 do meio); a selfie sai espelhada, igual ao visor
     const vw = video.videoWidth, vh = video.videoHeight, alvo = 3 / 4;
     let sw = vw, sh = vh; if (vw / vh > alvo) sw = vh * alvo; else sh = vw / alvo;
     const c = document.createElement("canvas"); c.width = Math.round(sw); c.height = Math.round(sh); const x = c.getContext("2d");
+    if (frente) x.setTransform(-1, 0, 0, 1, c.width, 0);
     x.drawImage(video, (vw - sw) / 2, (vh - sh) / 2, sw, sh, 0, 0, c.width, c.height); para(); fotoComHabilidade(id, c);
   };
   const fecha = () => { para(); closeSheets(); };
@@ -6274,7 +6296,7 @@ function vCameraFisica(c) {
   const flashOn = false; // sem flash em nenhuma câmera
   // Quatro Tempos: quatro disparos seguidos; cada um vira uma faixa em pé, lado a lado (como a câmera de 4 lentes), com divisórias pretas irregulares
   const rajada = async () => {
-    const C = S.camEst, v = C && C.video; if (!v || !v.videoWidth || C.rajando) return; C.rajando = true;
+    const C = S.camEst, v = videoCam(C); if (!v || !v.videoWidth || C.rajando) return; C.rajando = true;
     // como a 1234 da NOMO: cada lente vê o MEIO da cena num instante diferente, e as 4 faixas em pé ficam lado a lado numa foto deitada (3:2);
     // depois ela vai para o Reels no meio, sobre preto
     const vw = v.videoWidth, vh = v.videoHeight, W = 2000, H = Math.round(W / 1.5), fx = W / 4;
@@ -6284,7 +6306,7 @@ function vCameraFisica(c) {
     for (let k = 0; k < 4; k++) { const sx = Math.max(0, Math.min(vw - k0, (vw - k0) / 2 + (k - 1.5) * passo));
       cliqueSom(); if (navigator.vibrate) navigator.vibrate(18);
       document.querySelectorAll(".cfluz").forEach((l, i) => l.classList.toggle("on", i <= k));
-      o.drawImage(v, sx, sy, k0, sh, k * fx, 0, fx, H);
+      o.drawImage(videoCam(C) || v, sx, sy, k0, sh, k * fx, 0, fx, H);
       // cada lente puxa uma cor diferente, como as lentes baratas de plástico
       // cada lente tem o seu próprio escurecido nas bordas, como nas fotos da 1234
       const vg = o.createRadialGradient(k * fx + fx / 2, H / 2, fx * .25, k * fx + fx / 2, H / 2, H * .62); vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, "rgba(0,0,0,.6)");
@@ -6300,13 +6322,13 @@ function vCameraFisica(c) {
     piscaVisor(); revelaFoto(out, c, { recorte: null });
   };
   // como na NOMO: o clique revela a foto por trás, a câmera continua ligada e a miniatura do canto mostra a foto nova
-  const dispara = () => { if (!F.vivo) return; if (c.filma && S.camModo === "filme") return; if (c.rajadas) return rajada(); const C = S.camEst, v = C && C.video; if (!v || !v.videoWidth) return;
+  const dispara = () => { if (!F.vivo) return; if (c.filma && S.camModo === "filme") return; if (c.rajadas) return rajada(); const C = S.camEst, v = videoCam(C); if (!v || !v.videoWidth) return;
     cliqueSom(); if (navigator.vibrate) navigator.vibrate(30); if (flashOn) { const fl = h("div", { class: "flashcam" }); document.body.append(fl); setTimeout(() => fl.remove(), 450); }
     const q = document.createElement("canvas"); q.width = v.videoWidth; q.height = v.videoHeight; q.getContext("2d").drawImage(v, 0, 0);
     // obturador lento: a câmera de placa fica aberta quase um segundo e soma as imagens; o que se mexe sai riscado, como foto de 1900
     if (c.lento) { if (C.expondo) return; C.expondo = true; const g = q.getContext("2d"), n = 10; let k = 1;
       document.querySelector(".cfjanela")?.classList.add("expondo");
-      const passo = () => { if (!S.camEst || !v.videoWidth) { C.expondo = false; return; } g.globalAlpha = 1 / (k + 1); g.drawImage(v, 0, 0); k++;
+      const passo = () => { if (!S.camEst || !v.videoWidth) { C.expondo = false; return; } g.globalAlpha = 1 / (k + 1); g.drawImage(videoCam(C) || v, 0, 0); k++;
         if (k < n) return setTimeout(passo, 90);
         g.globalAlpha = 1; C.expondo = false; document.querySelector(".cfjanela")?.classList.remove("expondo"); piscaVisor(); revelaFoto(q, c); };
       return setTimeout(passo, 90); }
@@ -6442,11 +6464,11 @@ function mostraGravando(novoFilme) {
   const bf = document.querySelector(".celfilmar");
   if (bf) { bf.classList.toggle("gravando", g); bf.textContent = g ? "■ Parar" : "● Filmar"; bf.setAttribute("aria-label", g ? "Parar de filmar" : "Filmar"); }
   const dc = document.querySelector(".celdica");
-  if (dc) dc.textContent = g ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure ● Filmar, ou toque uma vez para começar e outra para parar.";
+  if (dc) { dc.classList.remove("celok"); if (g) S.celGuardou = 0; } if (dc) dc.textContent = g ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure ● Filmar, ou toque uma vez para começar e outra para parar.";
   if (novoFilme) {
     const ult = (S.fotosDiario || [])[0], mini = document.querySelector(".cfmini");
     if (mini && ult) mini.replaceChildren(miniMidia(ult));
-    if (dc && !document.querySelector(".celregistros")) dc.before(h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros (fotos e filmes)")));
+    if (dc && !document.querySelector(".celregistros")) dc.before(h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros")));
   }
 }
 function piscaVisor() { const j = document.querySelector(".cfjanela"); if (!j) return; j.classList.remove("pisca"); void j.offsetWidth; j.classList.add("pisca"); }
@@ -6751,6 +6773,14 @@ const iconeFototeca = () => h("svg", { viewBox: "0 0 24 24", width: "20", height
   h("path", { d: "M4.4 18.2 L8.8 14 L11.4 16.4 L13.6 14.4 L16 17.2 L16 18.4 L4.4 18.4 Z", fill: "#C98A73" }));
 const podeCamera = () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 const C0frente = () => !!(S.camEst && S.camEst.frente);
+// selfie espelhada, como num espelho: o que a pessoa vê no visor é o que fica na foto e no filme (em todas as câmeras)
+function videoCam(C) {
+  const v = C && C.video; if (!v || !C.frente || !v.videoWidth) return v;
+  const e = C.espelho || (C.espelho = document.createElement("canvas"));
+  if (e.width !== v.videoWidth || e.height !== v.videoHeight) { e.width = v.videoWidth; e.height = v.videoHeight; }
+  const x = e.getContext("2d"); x.setTransform(-1, 0, 0, 1, e.width, 0); x.drawImage(v, 0, 0); x.setTransform(1, 0, 0, 1, 0, 0);
+  e.videoWidth = e.width; e.videoHeight = e.height; return e;
+}
 function iniciaVivo(F0) {
   let C = S.camEst;
   if (!C) {
@@ -6794,8 +6824,16 @@ async function ligaCam() {
     if (!C.rodando) { C.rodando = true; requestAnimationFrame(quadroCam); }
   } catch (e) { if (S.camEst !== C || C.vez !== vez) return; fechaVivo(); S.camFalhou = true; if (S.foto && S.foto.vivo) S.foto = { ...S.foto, img: null, vivo: false }; render(); }
 }
+const dicaCel = () => S.gravando ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure ● Filmar, ou toque uma vez para começar e outra para parar.";
+// depois do clique a foto vai para os Registros e o visor volta sozinho, pronto para a próxima (sem "Nova foto")
+function voltaAoVivoCel() {
+  if (S.camSel !== "celular" || S.tab !== "fotos" || !S.foto || S.foto.vivo) return;
+  S.camFalhou = false; S.foto = { ...S.foto, img: null, thumbSrc: null }; render();
+  const vez = S.celGuardou = Date.now();
+  setTimeout(() => { if (S.celGuardou !== vez) return; S.celGuardou = 0; const dc = document.querySelector(".estudiocel .celdica.celok"); if (dc) { dc.classList.remove("celok"); dc.textContent = dicaCel(); } }, 2600);
+}
 function tiraFotoVivo() {
-  const C = S.camEst, v = C && C.video; if (!v || !v.videoWidth) return;
+  const C = S.camEst, v = videoCam(C); if (!v || !v.videoWidth) return;
   const c = document.createElement("canvas"); c.width = v.videoWidth; c.height = v.videoHeight; c.getContext("2d").drawImage(v, 0, 0);
   fechaVivo(); S.foto = { ...S.foto, img: c, vivo: false }; render();
 }
@@ -6834,10 +6872,11 @@ function quadroCam() {
   const C = S.camEst; if (!C || !C.rodando) return;
   const tela = S.fotoCanvas, F = S.foto;
   if (!F || !F.vivo || F.img !== C.frame || !tela || !tela.isConnected) { if (!document.hidden) { fechaVivo(); if (F && F.vivo) S.foto = { ...F, img: null, vivo: false }; } else requestAnimationFrame(quadroCam); return; }
-  const v = C.video;
+  const v0 = C.video;
   // os primeiros quadros da câmera recém-ligada vêm pretos: o visor segura a última imagem até a câmera nova mostrar de verdade
-  if (!v.videoWidth || v.readyState < 2 || performance.now() - (C.vivoDesde || 0) < 350) { requestAnimationFrame(quadroCam); return; }
-  if (v.videoWidth && !C.ocupado) {
+  if (!v0.videoWidth || v0.readyState < 2 || performance.now() - (C.vivoDesde || 0) < 350) { requestAnimationFrame(quadroCam); return; }
+  if (v0.videoWidth && !C.ocupado) {
+    const v = videoCam(C);
     const f = FILTROS.find(y => y.id === F.filtro) || FILTROS[0], G = !(f.arco || f.holi) && glVivo(C);
     const lado = G ? 960 : 640, // tamanho do visor ao vivo: maior que isso o iPhone fica sem memória e some com as fotos das câmeras
       k = lado / Math.max(v.videoWidth, v.videoHeight), w = Math.round(v.videoWidth * k), hh = Math.round(v.videoHeight * k);
@@ -6934,7 +6973,7 @@ function vFotos() {
     catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
   };
   // foto tirada com o celular também vai para os Registros (como nas câmeras da maleta)
-  if (F.img && !F.vivo) requestAnimationFrame(() => montaFoto(canvas).then(() => { if (S.guardarCel) { S.guardarCel = false; canvas.toBlob(b => b && guardaNoDiario(b, CAMERAS_C.find(x => x.id === "celular") || { nome: "Celular" }).then(() => lerDiario()).then(l => { S.fotosDiario = l; }), "image/jpeg", .9); } }).catch(() => {}));
+  if (F.img && !F.vivo) requestAnimationFrame(() => montaFoto(canvas).then(() => { if (S.guardarCel) { canvas.toBlob(b => { S.guardarCel = false; if (b) guardaNoDiario(b, CAMERAS_C.find(x => x.id === "celular") || { nome: "Celular" }).then(() => lerDiario()).then(l => { S.fotosDiario = l; if (S.camSel === "celular" && S.foto && S.foto.vivo) render(); }); voltaAoVivoCel(); }, "image/jpeg", .9); } }).catch(() => { if (S.guardarCel) { S.guardarCel = false; voltaAoVivoCel(); } }));
   const redesenha = () => { if (redesenha.pend) return; redesenha.pend = true; requestAnimationFrame(() => { redesenha.pend = false; montaFoto(canvas).catch(() => {}); }); };
   const { painelAdesivos, barraSel } = editorAdesivos(canvas, "foto", () => S.foto, redesenha);
   // intensidade: desliza e a foto muda na hora, sem redesenhar a tela toda
@@ -6951,24 +6990,24 @@ function vFotos() {
       h("div", { class: "celtit" }, h("p", { class: "celeye", text: "Arsenal de Travessia" }), h("h1", { text: "Câmera do celular" }),
         h("p", { class: "celsub", text: "Tire a foto com o celular e revele aqui: filtros, molduras e adesivos da Caravana." }))),
     F.img ? h("div", { class: "estudio" },
-      h("div", { class: "fotofixa" }, h("div", { class: "fotoframe" }, canvas, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
-        F.vivo ? h("div", { class: "actions camacoes", style: "justify-content:center;align-items:center" },
+      // visor e botão de clique andam juntos: ao rolar a tela, o botão nunca fica escondido atrás da foto
+      h("div", { class: "fotofixa" }, h("div", { class: "celvisor" }, h("div", { class: "fotoframe" }, canvas, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
+        F.vivo ? h("div", { class: "actions camacoes" },
           h("button", { class: "btn ghost", type: "button", onclick: e => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); e.currentTarget.textContent = C.frente ? "↺ Virar câmera" : "↺ Selfie"; } } }, C0frente() ? "↺ Virar câmera" : "↺ Selfie"),
           h("button", { class: "btn gold habclique", type: "button", "aria-label": "Tirar foto", onclick: () => { if (!S.gravando) { S.guardarCel = true; tiraFotoVivo(); } } }, "📸"),
           h("button", { class: "btn ghost celfilmar" + (S.gravando ? " gravando" : ""), type: "button", "aria-label": S.gravando ? "Parar de filmar" : "Filmar", onpointerdown: e => apertaFilmar(e, CAMERAS_C.find(x => x.id === "celular"), S.foto, true) }, S.gravando ? "■ Parar" : "● Filmar"),
           h("button", { class: "btn ghost fototeca", type: "button", onclick: () => fi.click() }, iconeFototeca(), "Fototeca"))
-        : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [], filtro: "original", intens: 1, thumbSrc: null }; render(); } }, "📸 Nova foto")),
-        F.vivo && (S.fotosDiario || []).length ? h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros (fotos e filmes)")) : null,
-        F.vivo ? h("p", { class: "celdica", text: S.gravando ? "Gravando… solte ou toque em Parar · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure ● Filmar, ou toque uma vez para começar e outra para parar." }) : null,
+        : S.guardarCel ? null
+        : h("div", { class: "trocafoto" }, h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null, adesivos: [], filtro: "original", intens: 1, thumbSrc: null }; render(); } }, "↺ Voltar para a câmera"))),
+        F.vivo && (S.fotosDiario || []).length ? h("div", { class: "actions celregistros", style: "justify-content:center;margin:0" }, h("button", { class: "btn ghost", type: "button", onclick: () => verFotos(0) }, "🎞️ Ver meus Registros")) : null,
+        F.vivo ? h("p", { class: "celdica" + (S.celGuardou && !S.gravando ? " celok" : ""), text: S.celGuardou && !S.gravando ? "✓ Foto guardada nos seus Registros" : dicaCel() }) : null,
         barraSel, tiraFiltros(F, (id, el) => set("filtro", id, el)), barraIntensidade),
       h("div", { class: "fcontrols" },
         h("p", { class: "celmesa", text: "Mesa de revelação" }),
-        h("p", { class: "lab", text: "Formato" }),
-        h("div", { class: "opts" }, FORMATOS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.formato || "original") === id), onclick: e => set("formato", id, e.currentTarget) }, n))),
         h("p", { class: "lab", text: "Patches" }),
         h("div", { class: "opts" }, PATCHES.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.patch || "nenhum") === id), onclick: e => set("patch", id, e.currentTarget) }, n))),
         F.formato === "reels" ? null : h("p", { class: "lab", text: "Moldura" }),
-        F.formato === "reels" ? null : h("div", { class: "opts" }, MOLDURAS.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: e => set("moldura", id, e.currentTarget) }, n))),
+        F.formato === "reels" ? null : h("div", { class: "opts" }, MOLDURAS.filter(([id]) => id !== "carimbo").map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: e => set("moldura", id, e.currentTarget) }, n))),
         painelAdesivos,
         // sem "Grão de filme" aqui: os filtros já trazem o grão de cada um
         // volta tudo ao começo (filtro, grão, formato, patch, moldura e adesivos) sem trocar a foto
