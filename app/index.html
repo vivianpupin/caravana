@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "14/10 · 19:13";</script>
+<script>window.__VERSAO = "14/10 · 19:18";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -5283,7 +5283,7 @@ function aplicaLut(ctx, w, hh, f) {
 // modo "cor": só a parte de cor, ponto a ponto (vira a tabela de cores da câmera ao vivo); modo "efeitos": só vinheta, grão e luzes por cima
 function aplicaFiltro(ctx, w, hh, f, graoEsc, modo) {
   if (f.lut && modo !== "efeitos") aplicaLut(ctx, w, hh, f);
-  const g0 = { nenhum: 0, leve: 12, medio: 24, forte: 42, super8: 16 }[graoEsc];
+  const g0 = { nenhum: 0, leve: 12, medio: 24, forte: 42, super8: 16, filme: 5 }[graoEsc];
   const gF = g0 != null ? g0 : (f.grao || 0), g = modo === "cor" ? 0 : gF;
   if (graoEsc === "super8" || (f.super8 && (graoEsc || "auto") === "auto")) f = { ...f, pelicula: 1 };
   if (!f.m && !f.con && !f.sat && !f.duo && !f.split && !f.arco && !f.holi && !f.noite && !gF && !f.leak) return;
@@ -7165,7 +7165,9 @@ function quadroCam() {
       const fl = C.filt || (C.filt = document.createElement("canvas")); if (fl.width !== fw || fl.height !== fh) { fl.width = fw; fl.height = fh; }
       const flx = fl.getContext("2d"); flx.globalAlpha = 1; flx.globalCompositeOperation = "source-over"; flx.drawImage(G.c, sx, sy, sw, sh, 0, 0, fw, fh);
       const rnd0 = Math.random; let s0 = 7; Math.random = () => { s0 = (s0 * 16807) % 2147483647; return s0 / 2147483647; };
-      try { aplicaFiltro(flx, fw, fh, f, F.grao || "auto", "efeitos"); } finally { Math.random = rnd0; }
+      // filmando com os Lassi: o filme sai como a foto em movimento, com o brilho e as cores, mas quase sem grão (o grão parado por cima do vídeo fica feio)
+      const graoVivo = S.gravando && f.cinema === 2 && (F.grao || "auto") === "auto" ? "filme" : F.grao || "auto";
+      try { aplicaFiltro(flx, fw, fh, f, graoVivo, "efeitos"); } finally { Math.random = rnd0; }
       fx.globalAlpha = 1; if (intens < .999) fx.drawImage(v, sx / k, sy / k, sw / k, sh / k, 0, 0, fw, fh); fx.globalAlpha = intens; fx.drawImage(fl, 0, 0); fx.globalAlpha = 1;
       // miniaturas dos filtros: tiradas da câmera crua, depois de a luz assentar (~meio segundo)
       C.n = (C.n || 0) + 1;
