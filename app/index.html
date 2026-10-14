@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "13/10 · 20:38";</script>
+<script>window.__VERSAO = "14/10 · 08:56";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -7279,14 +7279,17 @@ function vFotos() {
         barraSel, tiraFiltros(F, (id, el) => set("filtro", id, el)), barraIntensidade),
       h("div", { class: "fcontrols" },
         h("p", { class: "celmesa", text: "Mesa de revelação" }),
+        // quanto grão de filme a foto leva: o do próprio filtro, nenhum, ou mais leve/mais forte
+        h("p", { class: "lab", text: "Grão" }),
+        h("div", { class: "opts" }, GRAOS.filter(([id]) => id !== "super8").map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.grao || "auto") === id), onclick: e => set("grao", id, e.currentTarget) }, n))),
         h("p", { class: "lab", text: "Patches" }),
         h("div", { class: "opts" }, PATCHES.map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String((F.patch || "nenhum") === id), onclick: e => set("patch", id, e.currentTarget) }, n))),
         F.formato === "reels" ? null : h("p", { class: "lab", text: "Moldura" }),
         F.formato === "reels" ? null : h("div", { class: "opts" }, MOLDURAS.filter(([id]) => id !== "carimbo").map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(F.moldura === id), onclick: e => set("moldura", id, e.currentTarget) }, n))),
         painelAdesivos,
         // sem "Grão de filme" aqui: os filtros já trazem o grão de cada um
-        // tira tudo o que foi posto na mesa de revelação (patch, moldura, adesivos e carimbos); o filtro escolhido continua
-        h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn", type: "button", onclick: () => { S.fotoSel = null; S.foto = { ...S.foto, formato: "original", patch: "nenhum", moldura: "nenhuma", adesivos: [] }; render(); } }, "Remover tudo")),
+        // tira tudo o que foi posto na mesa de revelação (grão, patch, moldura, adesivos e carimbos); o filtro escolhido continua
+        h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn", type: "button", onclick: () => { S.fotoSel = null; S.foto = { ...S.foto, formato: "original", grao: "auto", patch: "nenhum", moldura: "nenhuma", adesivos: [] }; render(); } }, "Remover tudo")),
         F.vivo ? null :
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: salvar }, "Salvar no dispositivo"),
