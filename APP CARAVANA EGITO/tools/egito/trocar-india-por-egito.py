@@ -110,7 +110,7 @@ troca('const lista = tipo === "india" && seloLiberado("india") ? ["india", "cara
 
 # tela inicial: título, linha da rota, diferença de horário e frases que giram
 troca('h("h1", null, "Travessia da", h("br"), "Índia Sagrada"),', 'h("h1", null, "Travessia do", h("br"), "Velho Mundo"),')
-troca('h("p", { class: "route sa", lang: "sa", text: "लोकाः समस्ताः सुखिनो भवन्तु" }),', 'h("p", { class: "route", text: "Cairo · Deserto Branco · Aswan · Luxor · Hurghada" }),')
+troca('h("p", { class: "route sa", lang: "sa", text: "लोकाः समस्ताः सुखिनो भवन्तु" }),', '')  # sem a linha das cidades embaixo do título (pedido da Vivian)
 troca('h("span", { text: "Brasília · +8h30" })', 'h("span", { text: "Brasília · +6h" })')
 troca('x.fillText("Travessia da", CX, 330); x.fillText("Índia Sagrada", CX, 408);', 'x.fillText("Travessia do", CX, 330); x.fillText("Velho Mundo", CX, 408);')
 troca('x.fillText("लोकाः समस्ताः सुखिनो भवन्तु", CX, 470);', 'x.fillText("Egito · 2027", CX, 470);')
