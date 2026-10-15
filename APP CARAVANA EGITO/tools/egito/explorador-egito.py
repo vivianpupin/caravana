@@ -29,7 +29,7 @@ troca('''        h("p", { class: "lab", text: "Fantasia dos deuses" }), chips("d
 # (o editor aparece em mais de um lugar: tira de todos)
 for lab in ("Na testa", "Pássaro no ombro", "Fantasia dos deuses", "Piercing no nariz", "Nos pés"):
     t = re.sub(r'        h\("p", \{ class: "lab", text: "' + lab + r'" \}\), chips\("\w+", BONECO\.\w+\),\n', '', t)
-troca('''h("p", { class: "eyebrow", text: "Mapa da Expedição" }), h("h1", { text: "Monte seu explorador" })''', '''h("p", { class: "eyebrow", text: "Expedição ao Velho Mundo" }), h("h1", { text: "Monte seu arqueólogo" })''')
+troca('''h("p", { class: "eyebrow", text: "Mapa da Expedição" }), h("h1", { text: "Monte seu explorador" })''', '''h("p", { class: "eyebrow", text: "Expedição ao Velho Mundo" }), h("h1", { text: "Monte seu explorador" })''')
 # desenho: nemes (pano listrado dos faraós)
 troca('''  if (b.chapeu === "flores") for''', '''  if (b.chapeu === "nemes") g.append(P("M19.5 23 Q19 9 30 8.5 Q41 9 40.5 23 L43 37 L38.5 36 Q39.5 24 37 20 Q30 18 23 20 Q20.5 24 21.5 36 L17 37 Z", "#D4A84F"),
     ...[11.5, 14.5, 17.5].map(y => P(`M${20.2 + (y - 11) * .1} ${y} Q30 ${y - 2.6} ${39.8 - (y - 11) * .1} ${y}`, "none", { stroke: "#2F4F8A", "stroke-width": 1.3 })),

@@ -66,12 +66,25 @@ p{margin:0}
 #entrada .texto{bottom:max(34px,env(safe-area-inset-bottom));z-index:7;pointer-events:none;transition:opacity 1s}
 #entrada .topoTxt{top:max(30px,env(safe-area-inset-top));bottom:auto}
 .barra{width:150px;height:2px;background:rgba(212,168,79,.2);overflow:hidden}.barra i{display:block;height:100%;width:0;background:var(--ouro);transition:width .3s}
-#entrada.entra .foto{transform:scale(3.4);transform-origin:56% 53%;filter:brightness(1.6) sepia(.4)}
+#entrada.entra .foto{transform:scale(2.6);transform-origin:56% 53%;filter:brightness(.15) blur(2px);transition:transform 1.3s cubic-bezier(.5,0,.8,.4),filter 1.3s ease-in}
+.intro{max-width:30ch;margin:4px 0 0;font:italic 14px/1.5 var(--f-txt);color:#CDB98E;text-shadow:0 1px 4px #000}
+/* névoa que passa devagar nas cenas internas */
+.nevoa{position:absolute;inset:-20%;pointer-events:none;opacity:.5;mix-blend-mode:screen;
+  background:radial-gradient(ellipse 40% 18% at 30% 60%,rgba(200,180,150,.22),transparent 70%),radial-gradient(ellipse 50% 20% at 70% 40%,rgba(200,180,150,.18),transparent 70%),radial-gradient(ellipse 35% 15% at 50% 80%,rgba(220,200,170,.2),transparent 70%);
+  animation:nevoa 18s ease-in-out infinite alternate}
+@keyframes nevoa{to{transform:translate(8%,-4%) scale(1.1)}}
+/* o santuário aparece como se uma tocha fosse acesa lá dentro */
+.cena.ativa .foto.acende{animation:acende 2.6s ease-out both}
+@keyframes acende{0%{opacity:0}35%{opacity:.35}45%{opacity:.15}60%{opacity:.7}100%{opacity:1}}
+/* texto numa faixa escura embaixo: a imagem fica limpa em cima */
+.faixa{position:absolute;left:0;right:0;bottom:0;z-index:7;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;
+  padding:60px max(22px,env(safe-area-inset-right)) max(30px,env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left));
+  background:linear-gradient(180deg,transparent,rgba(8,5,2,.82) 34%,rgba(8,5,2,.95))}
 
 /* 2. PERGUNTA: teto astronômico */
-#pergunta .foto{background-image:url(img/fundo-nut-canto.webp);filter:brightness(.42) sepia(.25)}
-#pergunta .sombra{background:radial-gradient(ellipse at 50% 42%,rgba(255,170,80,.18),transparent 55%),radial-gradient(ellipse at 50% 50%,transparent 35%,rgba(0,0,0,.85))}
-#pergunta .texto{top:50%;transform:translateY(-50%)}
+#pergunta .foto{background-image:url(img/fundo-nut-canto.webp);filter:brightness(.62) sepia(.15);background-position:center 30%}
+#pergunta .sombra{background:radial-gradient(ellipse at 50% 32%,rgba(255,170,80,.14),transparent 55%),radial-gradient(ellipse at 50% 38%,transparent 40%,rgba(0,0,0,.7))}
+
 
 /* 3. A BARCA: a barca do deus de cabeça de carneiro, pintada no Vale dos Reis */
 #barcaCena .foto{background-image:url(img/fundo-barca-ra.webp);background-position:45% 52%;transform:scale(1.35);transform-origin:45% 54%;filter:brightness(.62) sepia(.2)}
@@ -107,14 +120,14 @@ p{margin:0}
 <section class="cena ativa" id="entrada" aria-label="Entrada do templo">
   <div class="foto"></div>
   <canvas id="escuro" aria-label="Parede no escuro. Arraste o dedo para iluminar com a tocha."></canvas>
-  <div class="texto topoTxt" style="pointer-events:none"><p class="rotulo">Templo de Amon</p><h1>O Oráculo do<br>Deus Oculto</h1></div>
+  <div class="texto topoTxt" style="pointer-events:none"><p class="rotulo">Templo de Amon</p><h1>O Oráculo do<br>Deus Oculto</h1><p class="intro">No Egito antigo, quem tinha uma dúvida ia ao templo à noite consultar o deus. Atravesse o escuro e leve a sua pergunta.</p></div>
   <div class="texto" id="entTexto"><p class="txt" id="entTxt">Está escuro. Arraste a tocha pela parede e procure a passagem.</p><div class="barra"><i id="barra"></i></div></div>
 </section>
 
 <!-- 2. A PERGUNTA -->
 <section class="cena" id="pergunta" aria-label="A pergunta">
-  <div class="foto"></div><div class="sombra"></div>
-  <div class="texto">
+  <div class="foto acende"></div><div class="sombra"></div><div class="nevoa"></div>
+  <div class="faixa">
     <p class="rotulo">Diante do santuário</p>
     <h2>Faça a sua pergunta</h2>
     <p class="txt">Pense numa pergunta ou num tema da sua vida, com o coração, e diga baixinho, só para você. A barca vai parar diante do deus que tem algo a te dizer.</p>
@@ -125,7 +138,7 @@ p{margin:0}
 
 <!-- 3. A BARCA -->
 <section class="cena" id="barcaCena" aria-label="A barca sagrada">
-  <div class="foto"></div><div class="sombra"></div>
+  <div class="foto"></div><div class="sombra"></div><div class="nevoa"></div>
   <div class="texto topoTxt"><p class="rotulo" id="barcaCap">A barca do deus</p></div>
   <div class="texto">
     <p class="txt" id="barcaTxt">Segure para os sacerdotes erguerem a barca. Quando ela parar, um deus terá vindo até você.</p>
@@ -243,8 +256,8 @@ function abre() {
   // a tocha vai até a fenda e a câmera entra por ela
   const ini = { ...tocha }, t0 = performance.now();
   (function voa(t) { const k = Math.min(1, (t - t0) / 1400); tocha.x = ini.x + (.56 - ini.x) * k; tocha.y = ini.y + (.53 - ini.y) * k; marca(tocha.x * W, tocha.y * H); if (k < 1) requestAnimationFrame(voa); })(t0);
-  setTimeout(() => { E.style.transition = "opacity 1.8s"; E.style.opacity = "0"; $("entTexto").style.opacity = "0"; $("entrada").classList.add("entra"); }, 1500);
-  setTimeout(() => { fogoLigado(false); tocha.viva = false; vai("pergunta"); }, 4200);
+  setTimeout(() => { E.style.transition = "opacity .9s"; E.style.opacity = "0"; $("entTexto").style.opacity = "0"; $("entrada").classList.add("entra"); }, 1300);
+  setTimeout(() => { fogoLigado(false); tocha.viva = false; vai("pergunta"); }, 2500);
 }
 function laco(t) { quadroEntrada(t); desenhaLuz(t); requestAnimationFrame(laco); }
 requestAnimationFrame(laco);
