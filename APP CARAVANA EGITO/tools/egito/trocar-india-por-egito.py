@@ -154,5 +154,14 @@ else:
 if "family=Bangers" not in t:
     troca('<link rel="preconnect" href="https://fonts.googleapis.com">', '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Special+Elite&display=swap">')
 
+# fundo de foto: muda com o lugar do dia (antes e depois da viagem, as palmeiras da Caravana)
+troca('function render() {\n  if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }', 'function render() {\n  if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }\n  fundoDoDia();')
+troca('const fraseDoDia = d => FRASES_DIA[d.n] || "";', '''const fraseDoDia = d => FRASES_DIA[d.n] || "";
+const FUNDO_CIDADE = { "Cairo": "cairo", "Deserto Branco": "deserto", "Aswan": "aswan", "Abu Simbel": "abusimbel", "Luxor": "luxor", "Hurghada": "hurghada" };
+function fundoDoDia() {
+  const d = (S.roteiro?.dias || []).find(x => x.iso === hojeIso()), f = d && FUNDO_CIDADE[d.cidade] ? `img/abertura-${FUNDO_CIDADE[d.cidade]}.webp` : "img/fundo-palmeiras.webp";
+  if (S.fundoAtual === f) return; S.fundoAtual = f; document.body.style.setProperty("--fundo", `url(${f})`);
+}''')
+
 arq.write_text(t, encoding="utf-8")
 print("ok")

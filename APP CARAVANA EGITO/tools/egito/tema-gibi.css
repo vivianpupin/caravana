@@ -120,3 +120,30 @@ details.guide .gb p,.saber p{font-family:var(--ui);color:var(--ink)}
 .hilist b{font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:.04em}
 .hpron{font-family:var(--cap);color:var(--terra)}
 .hdev{font-size:20px}
+
+/* ===== fundo de foto de filme: nunca fundo liso. A foto do lugar do dia (ou as palmeiras da Caravana),
+   desfocada, quente, com grão de película e cantos escuros; os quadros do gibi ficam por cima ===== */
+.app{background:transparent}
+body{background:#1B140C}
+body::before{content:"";position:fixed;inset:-24px;z-index:-2;background:var(--fundo,url(img/fundo-palmeiras.webp)) center/cover no-repeat;
+  filter:blur(5px) saturate(1.12) sepia(.18) brightness(.82) contrast(1.05);transform:scale(1.04);transition:background-image .8s}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 40%,transparent 35%,rgba(12,8,3,.62) 100%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .45  0 0 0 0 .38  0 0 0 .55 0'/></filter><rect width='220' height='220' filter='url(%23g)'/></svg>");
+  mix-blend-mode:overlay;opacity:.9;animation:grao .9s steps(4) infinite}
+@keyframes grao{25%{background-position:0 0,-40px 30px}50%{background-position:0 0,60px -20px}75%{background-position:0 0,-25px -55px}}
+@media (prefers-reduced-motion:reduce){body::after{animation:none}}
+/* o grão também passa por cima dos quadros, bem leve, como papel fotografado */
+main::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.16;mix-blend-mode:multiply;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23g)'/></svg>")}
+/* textos soltos sobre a foto: claros, com sombra, para ler em qualquer foto */
+.view>.head h1,.view>.head h2{color:var(--mostarda);-webkit-text-stroke:1.5px #1E140B;paint-order:stroke fill;text-shadow:3px 3px 0 #1E140B}
+.view>.lede,.view>p.small,.view>.small,.hero .intro,.view>p:not([class]){color:#F3E4BC;text-shadow:0 1px 2px #000,0 0 14px rgba(0,0,0,.6)}
+.view>.eyebrow.rule,.view>div>.eyebrow.rule{color:var(--mostarda);text-shadow:2px 2px 0 #1E140B}
+.view>.eyebrow.rule::after,.view>div>.eyebrow.rule::after{background:var(--mostarda);box-shadow:0 2px 0 #1E140B}
+.daychips{background:rgba(30,20,11,.55);backdrop-filter:blur(8px);border-bottom:3px solid #000}
+.hero h1{filter:drop-shadow(0 6px 16px rgba(0,0,0,.45))}
+.clock div{background:rgba(243,228,188,.94)}
+/* abertura do dia: frase longa em letra de legenda, cidade em letra de capa */
+.abfrase{font-family:var(--cap)!important;font-style:normal!important;letter-spacing:.01em}
+.abcidade{color:var(--mostarda);-webkit-text-stroke:1.5px #1E140B;paint-order:stroke fill;text-shadow:3px 3px 0 #1E140B}
