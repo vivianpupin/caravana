@@ -8,19 +8,19 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "15/10 · 18:33";</script>
+<script>window.__VERSAO = "15/10 · 18:46";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
 /* véu de abertura: cobre o app nos primeiros instantes, enquanto ele decide o que mostrar (boas-vindas, abertura do dia, permissões, cartas);
    assim nenhuma tela aparece "por cima" do app já aberto, nada pisca */
 #veu{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;background:#120E0A url(img/bilhete-textura.jpg) center/cover;transition:opacity .45s ease}
-#veu img{width:58px;opacity:.9;animation:veupulsa 1.6s ease-in-out infinite}
+#veu img{width:120px;border-radius:50%;opacity:.9;animation:veupulsa 1.6s ease-in-out infinite}
 #veu.sai{opacity:0;pointer-events:none}
 @keyframes veupulsa{50%{opacity:.45;transform:scale(.96)}}
 </style>
 </head><body>
-<div id="veu" aria-hidden="true"><img src="img/simbolo-dourado.png" alt=""></div>
+<div id="veu" aria-hidden="true"><img src="img/logo-egito-240.png" alt=""></div>
 <script>
 // tira o véu quando o app já abriu e as telas de início (boas-vindas, abertura, avisos) já tiveram tempo de entrar; nunca fica mais de 6 s
 (function () {
@@ -117,6 +117,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--moss);outline:none;bo
 /* Roteiro: abertura */
 .hero{text-align:center;padding:18px 8px 4px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .hero .logo{width:56px;height:auto}
+.hero .logo.moeda{width:112px;border-radius:50%;box-shadow:0 10px 26px rgba(40,25,10,.35)}
 .hero h1{font-family:"Cinzel",Georgia,serif;font-weight:500;font-size:clamp(28px,7.6vw,44px);line-height:1.1;letter-spacing:.04em;color:#3B2A1C}
 .hero .route{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--moss)}
 .hero .line{display:none}
@@ -921,6 +922,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .ab-rishikesh .abfundo{filter:blur(1.5px) brightness(1) saturate(1.1)}
 .ab-rishikesh .abfundo::after{background:radial-gradient(ellipse at 50% 42%,rgba(242,194,48,.12),rgba(20,12,6,.55) 75%)}
 .abconteudo{position:relative;text-align:center;color:#F4E6C4;padding:24px;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.absimb.moeda{width:110px;border-radius:50%}
 .absimb{width:74px;height:auto;margin-bottom:10px;filter:drop-shadow(0 0 18px rgba(242,194,48,.45));animation:absimb 1.8s ease both}
 .abdia{margin:0;font:600 12px var(--ui);letter-spacing:.38em;text-transform:uppercase;color:#E2BE78;animation:absobe 1.2s .7s ease both}
 .abcidade{margin:0;font-family:var(--display);font-weight:400;font-size:44px;letter-spacing:.02em;color:#FFF3D6;animation:absobe 1.2s 1.1s ease both}
@@ -2381,7 +2383,7 @@ function vTravessia() {
   const abrir = n => { S.diaAberto = S.diaAberto === n ? 0 : n; render(); if (S.diaAberto) requestAnimationFrame(() => document.getElementById("dia-" + n)?.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })); };
   return h("section", { class: "view" }, cartaoCelular(), avisoFixado(),
     h("div", { class: "hero" },
-      h("img", { class: "logo", src: "img/simbolo-marrom.png", alt: "" }),
+      h("img", { class: "logo moeda", src: "img/logo-egito-240.png", alt: "Caravana do Céu · Travessia do Velho Mundo" }),
       h("h1", null, "Travessia do", h("br"), "Velho Mundo"),
       h("p", { class: "route", text: "Cairo · Deserto Branco · Aswan · Luxor · Hurghada" }),
       h("span", { class: "line" }),
@@ -7907,7 +7909,7 @@ function aberturaDoDia(forcar) {
   const ov = h("div", { class: "abertura" + (cid ? " ab-" + cid.toLowerCase() : ""), role: "dialog", "aria-label": `Dia ${d.n}, ${d.cidade}`, style: cid ? `--abimg:url(img/abertura-${cid.toLowerCase()}.webp)` : "" },
     h("div", { class: "abfundo", "aria-hidden": "true" }),
     h("div", { class: "abconteudo" },
-      h("img", { class: "absimb", src: "img/simbolo-dourado.png", alt: "" }),
+      h("img", { class: "absimb moeda", src: "img/logo-egito-240.png", alt: "" }),
       h("p", { class: "abdia", text: "Dia " + nn(d.n) }),
       h("h1", { class: "abcidade", text: d.cidade }),
       h("p", { class: "abdata", text: d.data }),
@@ -7928,7 +7930,7 @@ function boasVindas(pronto) {
   const ov = h("div", { class: "abertura ab-varanasi", id: "boasvindas", role: "dialog", "aria-label": "Boas-vindas", style: "--abimg:url(img/abertura-cairo.webp)" },
     h("div", { class: "abfundo", "aria-hidden": "true" }),
     h("div", { class: "abconteudo" },
-      h("img", { class: "absimb", src: "img/simbolo-dourado.png", alt: "" }),
+      h("img", { class: "absimb moeda", src: "img/logo-egito-240.png", alt: "" }),
       h("h1", { class: "abcidade", text: "Bem-vindo à Caravana" }),
       h("p", { class: "abfrase", text: "Os ventos já sopram no horizonte dourado…" }),
       h("button", { class: "absegue", type: "button", onclick: () => fecha() }, "Começar a travessia")));

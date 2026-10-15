@@ -51,7 +51,7 @@ const css = `
 #portao .dlg .row i{width:30px;height:30px;border-radius:8px;background:#F5EFE4 url(img/simbolo-marrom.png) center/70% no-repeat;border:1px solid #e3d7c0}
 #portao .home{position:absolute;inset:0;background:linear-gradient(160deg,#6b7a5e,#3F4938);opacity:0;animation:home 18s infinite;display:grid;grid-template-columns:repeat(3,36px);justify-content:center;align-content:start;gap:12px;padding:26px 8px}
 #portao .home b{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.25);justify-self:center}
-#portao .home .app{background:#F5EFE4 url(img/simbolo-marrom.png) center/70% no-repeat;animation:pop 18s infinite}
+#portao .home .app{background:#120E0A url(img/icone-192.png) center/cover no-repeat;animation:pop 18s infinite}
 #portao .dedo{position:absolute;width:26px;height:26px;border-radius:50%;background:rgba(138,63,50,.55);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);animation:dedo 18s infinite;left:50%;top:60%;z-index:3}
 @keyframes dedo{0.0%{left:60%;top:45%;opacity:0}2.2%,8.3%{left:60%;top:45%;opacity:1;transform:scale(1)}14.4%{left:calc(100% - 40px);top:calc(100% - 30px);transform:scale(1)}16.1%{transform:scale(.7)}17.8%,25.6%{left:calc(100% - 40px);top:calc(100% - 30px);transform:scale(1)}32.2%{left:calc(50% - 13px);top:calc(100% - 78px);transform:scale(1)}33.9%{transform:scale(.7)}35.6%,48.9%{left:calc(50% - 13px);top:calc(100% - 78px);transform:scale(1)}55.6%{left:calc(100% - 36px);top:4px;transform:scale(1)}57.2%{transform:scale(.7)}58.9%,72.2%{left:calc(100% - 36px);top:4px;transform:scale(1)}78.9%{left:calc(50% - 13px);top:61px;transform:scale(1)}80.6%{transform:scale(.7)}82.2%{left:calc(50% - 13px);top:61px;transform:scale(1);opacity:1}87.8%,100.0%{left:calc(50% - 13px);top:61px;opacity:0}}
 @keyframes folha{0.0%,18.3%{transform:translateY(105%)}21.7%,46.1%{transform:translateY(0)}47.8%,100.0%{transform:translateY(105%)}}
@@ -88,7 +88,7 @@ const css = `
 #portao .man .chip svg{width:16px;height:16px}
 #portao .man .chip.redondo{border-radius:999px;padding:6px 14px;font-weight:700;letter-spacing:.08em}
 #portao .man .chip.azul{color:#2F6FD6;font-weight:600}
-#portao .man .icone{display:inline-block;width:44px;height:44px;border-radius:11px;background:#F5EFE4 url(img/simbolo-marrom.png) center/68% no-repeat;border:1px solid #E2D6C0;box-shadow:0 2px 5px rgba(0,0,0,.12)}
+#portao .man .icone{display:inline-block;width:44px;height:44px;border-radius:11px;background:#120E0A url(img/icone-192.png) center/cover no-repeat;border:1px solid #E2D6C0;box-shadow:0 2px 5px rgba(0,0,0,.12)}
 #portao .man li.obs{font-size:13px;color:#6B5A43;background:#F1E8D6;border-radius:12px;padding:10px 12px}
 #portao .como{font:300 10px Poppins,system-ui,sans-serif;letter-spacing:.03em;color:#5A4A38;margin:2px 0 -2px}
 #portao .leg{width:100%;display:flex;flex-direction:column;gap:8px;text-align:left}
@@ -280,7 +280,7 @@ function telaInstalar() {
   @media (prefers-reduced-motion:reduce){#bvinst *{animation-duration:.01s!important;animation-delay:0s!important}}`;
   document.head.append(st);
   const d = document.createElement("div"); d.id = "bvinst";
-  d.innerHTML = '<img class="s" src="img/simbolo-dourado.png" alt=""><small>Caravana do Céu</small><h1>Bem-vindo ao aplicativo<br>da Caravana do Céu</h1><div class="fio"></div><p>Aqui inicia a sua travessia.</p><button type="button" aria-label="Embarcar"></button><b class="r">EMBARCAR</b>';
+  d.innerHTML = '<img class="s" src="img/logo-egito-240.png" alt="" style="border-radius:50%"><small>Caravana do Céu</small><h1>Bem-vindo ao aplicativo<br>da Caravana do Céu</h1><div class="fio"></div><p>Aqui inicia a sua travessia.</p><button type="button" aria-label="Embarcar"></button><b class="r">EMBARCAR</b>';
   document.body.append(d); document.documentElement.classList.remove("espera"); window.__tiraVeu?.();
   d.querySelector("button").onclick = () => {
     try { sessionStorage.setItem("cdi-bv-inst", "1"); } catch (e) {}

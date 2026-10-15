@@ -137,5 +137,11 @@ troca('"ADMIT ONE · ÍNDIA SAGRADA 2026"', '"ADMIT ONE · VELHO MUNDO 2027"')
 troca('x.fillText("ÍNDIA SAGRADA"', 'x.fillText("DO VELHO MUNDO"')
 troca('"04 — 16 NOV 2026"', '"08 — 20 OUT 2027"')
 
+# logo da Travessia do Velho Mundo (moeda de bronze): tela inicial e abertura de cada dia
+troca('h("img", { class: "logo", src: "img/simbolo-marrom.png", alt: "" }),', 'h("img", { class: "logo moeda", src: "img/logo-egito-240.png", alt: "Caravana do Céu · Travessia do Velho Mundo" }),')
+troca('.hero .logo{width:56px;height:auto}', '.hero .logo{width:56px;height:auto}\n.hero .logo.moeda{width:112px;border-radius:50%;box-shadow:0 10px 26px rgba(40,25,10,.35)}')
+troca('.absimb{width:74px;height:auto;', '.absimb.moeda{width:110px;border-radius:50%}\n.absimb{width:74px;height:auto;')
+troca('h("img", { class: "absimb", src: "img/simbolo-dourado.png", alt: "" }),', 'h("img", { class: "absimb moeda", src: "img/logo-egito-240.png", alt: "" }),', True)
+
 arq.write_text(t, encoding="utf-8")
 print("ok")
