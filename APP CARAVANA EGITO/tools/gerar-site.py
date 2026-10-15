@@ -69,7 +69,7 @@ versao = (datetime.datetime.utcnow() - datetime.timedelta(hours=3)).strftime("%d
 # lista de tudo que o celular guarda para abrir sem internet (sw.js); a marca muda quando alguma imagem ou dado muda
 import hashlib, json as _json, re as _re
 _app = raiz / "app"
-_arqs = ["index.html", "shim.js", "config.js", "manifest.webmanifest"] + sorted(
+_arqs = ["index.html", "shim.js", "config.js", "manifest.webmanifest", "oraculo.html", "oraculo-dados.js", "hieroglifos.html", "gibi.html"] + sorted(
     str(f.relative_to(_app)) for pasta in ("img", "dados", "deuses", "insignias") for f in (_app / pasta).rglob("*")
     if f.is_file() and "-antiga" not in f.name and not f.name.startswith("."))
 _marca = hashlib.sha1(b"".join((_app / a).read_bytes() for a in _arqs if a != "index.html")).hexdigest()[:10]

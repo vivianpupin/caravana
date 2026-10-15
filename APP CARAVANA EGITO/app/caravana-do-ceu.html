@@ -2047,6 +2047,16 @@ html[data-tab="passaporte"] body::after,html[data-tab="tradutor"] body::after,ht
 :is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"]) :is(.view>.lede,.view>p.small,.view>.small,.view>p:not([class])){color:var(--ink);text-shadow:none}
 :is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"]) :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule){color:var(--terra);text-shadow:none}
 :is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"]) :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{background:var(--ink);box-shadow:none}
+
+/* Oráculo de Amon: cartão com a barca do deus pintada no Vale dos Reis (foto da Vivian); abre em tela cheia */
+.oraculocard.amon{position:relative;min-height:118px;padding:16px;gap:14px;border:1px solid #000;border-radius:4px;color:#F3E2B6;
+  background:linear-gradient(90deg,rgba(14,8,3,.92) 30%,rgba(14,8,3,.45)),url(img/fundo-barca-ra.webp) 40% 52%/cover #1E140B;box-shadow:0 10px 26px rgba(0,0,0,.55)}
+.oraculocard.amon .orcdeus{width:64px;height:auto;flex:none;border-radius:3px;box-shadow:0 4px 12px rgba(0,0,0,.6)}
+.oraculocard.amon small{display:block;font:600 10.5px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:#D4A84F}
+.oraculocard.amon b{display:block;font:500 22px/1.2 "Cinzel",var(--serif);letter-spacing:.03em;color:#F3E2B6}
+.oraculocard.amon span span{font-size:13.5px;color:#D9C9A4}
+.orsheet{position:fixed;inset:0;z-index:2147480000;background:#000}
+.orframe{display:block;width:100%;height:100%;border:0}
 </style>
 
 <div class="app">
@@ -3033,13 +3043,13 @@ function preCarregaPlanetas() {
   return PLANETAS_PRE;
 }
 function vOraculoCard() {
-  setTimeout(preCarregaPlanetas, 400);
-  const L = lerOraculo(), G = L && GRAHAS.find(x => x.id === L.g);
-  return h("button", { type: "button", class: "oraculocard", onclick: () => abrirOraculo() },
-    // roda dourada com os símbolos dos nove planetas
-    (() => { const d = h("div", { class: "orcroda", "aria-hidden": "true" }); d.innerHTML = `<svg viewBox="0 0 100 100"><g fill="none" stroke="#C9A35F" stroke-width=".8"><circle cx="50" cy="50" r="46"/><circle cx="50" cy="50" r="38" stroke-dasharray="1.5 2"/><circle cx="50" cy="50" r="13"/></g><g fill="#E2C08A" font-family="Georgia,serif" font-size="11" text-anchor="middle" dominant-baseline="central"><text x="50" y="50" font-size="15">☉</text><text x="50" y="22">☽</text><text x="70" y="30">♂</text><text x="78" y="50">☿</text><text x="70" y="70">♃</text><text x="50" y="78">♀</text><text x="30" y="70">♄</text><text x="22" y="50">☊</text><text x="30" y="30">☋</text></g></svg>`; return d; })(),
-    h("span", { class: "orctx" }, h("b", { text: "Oráculo dos Planetas" }),
-      h("span", { text: G ? "Sua última leitura: " + G.nome + ". Toque para consultar de novo." : "Faça uma pergunta ao céu." })));
+  let L = null; try { L = JSON.parse(localStorage.getItem("cdi-oraculo-egito") || "null"); } catch (e) {}
+  const NOMES = { ra: "Rá", thoth: "Thoth", isis: "Ísis", osiris: "Osíris", horus: "Hórus", anubis: "Anúbis", hathor: "Hathor", maat: "Maat", ptah: "Ptah", amon: "Amon", sobek: "Sobek", imhotep: "Imhotep" };
+  const d = L && NOMES[L.deus];
+  return h("button", { type: "button", class: "oraculocard amon", onclick: () => abrirOraculo() },
+    h("img", { class: "orcdeus", src: "deuses/" + (d ? L.deus : "amon") + ".webp", alt: "" }),
+    h("span", { class: "orctx" }, h("small", { text: "Templo de Amon" }), h("b", { text: "Oráculo de Amon" }),
+      h("span", { text: d ? `Sua última resposta: ${L.sim ? "sim" : "não"}, trazida por ${d}. Toque para perguntar de novo.` : "Acenda a tocha, faça a sua pergunta e espere a barca do deus." })));
 }
 function leituraOraculo(L) {
   const G = GRAHAS.find(x => x.id === L.g), M = GRAHA_MAIS[G.id], N = NAKSHATRAS[L.n];
@@ -3094,65 +3104,12 @@ function ceuFundo(cv, box) {
   requestAnimationFrame(quadro);
 }
 function abrirOraculo() {
-  closeSheets(); destravaSom();
-  const L0 = lerOraculo();
-  const box = h("div", { role: "dialog", "aria-label": "Oráculo dos Planetas", class: "oraculo" });
-  const fechar = () => { clearInterval(box._t); try { if (navigator.audioSession) navigator.audioSession.type = "auto"; } catch (e) {} closeSheets(); render(); };
-  // o altar como o sistema solar: Surya no centro, os planetas nas órbitas na ordem real; Rahu e Ketu, opostos, na órbita da Lua (onde acontecem os eclipses)
-    const poe = (c, id, graus) => { const p = posAltar(ORB[id][0], graus); c.style.left = p.x + "%"; c.style.top = p.y + "%";
-  };
-  const celulas = GRAHAS.map(x => { const c = h("div", { class: "orcel", style: `--c:${x.cor};width:${ORB[x.id][2]}%` }, planetaEl(x.id, "orcsim"), h("span", { class: "orcnome", text: x.nome })); poe(c, x.id, ORB[x.id][1]); return c; });
-  const altar = h("div", { class: "oraltar orbitas carregando" }, orbitasSvg(), celulas);
-  // o altar aparece inteiro, com um esmaecer suave, quando as imagens dos planetas estão prontas
-  Promise.race([Promise.all(preCarregaPlanetas().concat(celulas.map(c => { const i = c.querySelector("img"); return i && i.decode ? i.decode().catch(() => {}) : null; }))), new Promise(r => setTimeout(r, 2500))])
-    .then(() => requestAnimationFrame(() => altar.classList.remove("carregando")));
-  // os planetas giram nas órbitas enquanto o oráculo está aberto, todos juntos como uma mandala (assim nenhum passa por cima do outro); acelera enquanto a pessoa segura o botão
-  const VEL = { surya: 0, budha: 5, shukra: 5, chandra: 5, rahu: 5, ketu: 5, mangala: 5, guru: 5, shani: 5 };
-  const ang = Object.fromEntries(GRAHAS.map(x => [x.id, ORB[x.id][1]]));
-  let ultimo = performance.now(), acelera = 1;
-  const gira = agora => {
-    if (!box.isConnected) { if (!document.querySelector(".oraculo")) try { if (navigator.audioSession) navigator.audioSession.type = "auto"; } catch (e) {} return; }
-    const dt = Math.min(.1, (agora - ultimo) / 1000); ultimo = agora;
-    GRAHAS.forEach((x, k) => { if (!VEL[x.id]) return; ang[x.id] += VEL[x.id] * dt * acelera; poe(celulas[k], x.id, ang[x.id]); });
-    requestAnimationFrame(gira);
-  };
-  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) requestAnimationFrame(t => { ultimo = t; requestAnimationFrame(gira); });
-  const barra = h("div", { class: "orbarra", "aria-hidden": "true" }, h("i"));
-  const saida = h("div", { class: "orsaida" });
-  const topo = h("div", { class: "ortopo" }, h("h2", { text: "Oráculo dos Planetas" }),
-    h("p", { class: "orintro", text: "Na astrologia védica, os nove planetas (os navagrahas) são as forças que movem a vida. Pense numa pergunta, segure o botão enquanto se concentra e solte quando sentir que é a hora." }));
-  const acende = i => celulas.forEach((c, k) => c.classList.toggle("on", k === i));
-  {
-    let segurando = false, inicio = 0, pos = 4, vel = 0, raf = 0;
-    const bt = h("button", { type: "button", class: "orbotao" }, "Segure para concentrar");
-    const gira = () => { if (!segurando) return; if (!box.isConnected) { segurando = false; return; } const t = (performance.now() - inicio) / 1000, f = Math.min(1, t / 3);
-      barra.firstChild.style.width = (f * 100) + "%"; vel += 16 + f * 40; acelera = 1 + f * 5;
-      if (vel > 160 - f * 120) { vel = 0; pos = (pos + 1 + Math.floor(Math.random() * 3)) % 9; acende(pos); vibrar(15); tique(); }
-      raf = requestAnimationFrame(gira); };
-    const comeca = e => { e.preventDefault(); if (segurando || bt.disabled) return; segurando = true; bt._ptr = e.pointerId; inicio = performance.now(); vibrar(20); tique(true); bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(gira); };
-    const solta = e => { if (!segurando || (e && e.pointerId != null && bt._ptr != null && e.pointerId !== bt._ptr)) return; segurando = false; vibrar(30); cancelAnimationFrame(raf); bt.disabled = true; bt.classList.remove("vivo"); acelera = 1;
-      if (performance.now() - inicio < 600) { bt.disabled = false; bt.textContent = "Segure um pouco mais"; barra.firstChild.style.width = "0"; return; }
-      // a luz desacelera e para num planeta
-      const fim = Math.floor(Math.random() * 9), L = { dia: hojeLocal(), g: GRAHAS[fim].id, n: Math.floor(Math.random() * 27), p: Math.floor(Math.random() * 3) };
-      let passos = 9 + ((fim - pos + 9) % 9), d = 70;
-      const anda = () => { if (!box.isConnected) return; pos = (pos + 1) % 9; acende(pos); vibrar(18); tique(); passos--;
-        if (passos > 0) { d *= 1.13; setTimeout(anda, d); return; }
-        celulas[fim].classList.add("escolhido"); sino(); if (!vibrar([40, 60, 120])) { setTimeout(() => vibrar(1), 120); setTimeout(() => vibrar(1), 260); }
-        try { localStorage.setItem("cdi-oraculo", JSON.stringify(L)); } catch (e) {}
-        bt.remove(); barra.remove();
-        setTimeout(() => { saida.replaceChildren(leituraOraculo(L), h("div", { class: "actions", style: "justify-content:center;margin-top:10px" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirOraculo() }, "Consultar de novo"))); saida.scrollIntoView({ behavior: "smooth", block: "start" }); }, 600); };
-      anda(); };
-    bt.addEventListener("pointerdown", comeca); ["touchstart", "touchend", "click"].forEach(ev => bt.addEventListener(ev, destravaSom, { passive: true })); bt.addEventListener("pointerup", solta); bt.addEventListener("pointerleave", solta); bt.addEventListener("pointercancel", solta); { const some = () => { if (!box.isConnected) return document.removeEventListener("visibilitychange", some); if (document.hidden) solta(); }; document.addEventListener("visibilitychange", some); }
-    bt.addEventListener("contextmenu", e => e.preventDefault());
-    // a última leitura fica guardada para reler, até a próxima consulta
-    if (L0 && GRAHAS.some(x => x.id === L0.g)) saida.append(h("p", { class: "orvolta", text: "Sua última leitura" }), leituraOraculo(L0));
-    box.append(topo, altar, barra, h("div", { class: "actions", style: "justify-content:center" }, bt), saida, h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: fechar }, "Fechar")));
-  }
-  // fundo do oráculo: poucas estrelas desfocadas (sensação de espaço infinito) e estrelas cadentes de vez em quando
-  const fundo = h("canvas", { class: "orfundo", "aria-hidden": "true" }); box.prepend(fundo);
-  const sheet = h("div", { class: "sheet pombosheet", onclick: e => { if (e.target === sheet) fechar(); } }, box);
-  document.body.append(sheet);
-  ceuFundo(fundo, box);
+  closeSheets();
+  const fr = h("iframe", { src: "oraculo.html", title: "Oráculo de Amon", class: "orframe", allow: "autoplay" });
+  const caixa = h("div", { class: "orsheet", role: "dialog", "aria-label": "Oráculo de Amon" }, fr);
+  const fecha = e => { if (e.data !== "fecha-oraculo") return; removeEventListener("message", fecha); caixa.remove(); render(); };
+  addEventListener("message", fecha);
+  document.body.append(caixa);
 }
 function vSaberes() {
   const e = S.ens.find(x => x.id === S.ensSel);

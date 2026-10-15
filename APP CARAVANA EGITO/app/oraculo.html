@@ -93,17 +93,12 @@ p{margin:0}
   background:linear-gradient(180deg,#FFF0C4,#E2B45A 45%,#8E6020 55%,#D9A851);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 10px #000) drop-shadow(0 0 30px rgba(240,180,80,.45))}
 .botoes{display:flex;flex-direction:column;gap:10px;width:min(100%,440px)}
 
-/* 4. PESAGEM: procissão de Anúbis */
-#pesagem .foto{background-image:url(img/fundo-anubis.webp);filter:brightness(.38) sepia(.3)}
-#pesagem .sombra{background:radial-gradient(ellipse at 50% 30%,rgba(255,170,80,.16),transparent 55%),radial-gradient(ellipse at 50% 45%,transparent 30%,rgba(0,0,0,.85))}
-#pesagem .rolar{position:absolute;inset:0;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:16px;padding:max(34px,env(safe-area-inset-top)) 18px max(34px,env(safe-area-inset-bottom));z-index:7}
-#bal{width:min(84vw,340px);height:auto;flex:none;filter:drop-shadow(0 10px 18px rgba(0,0,0,.8))}
-#braco{transform-origin:170px 52px;transition:transform 1.1s cubic-bezier(.3,1.3,.5,1)}
-.prato{transition:transform 1.1s cubic-bezier(.3,1.3,.5,1)}
-.decl .n{font:600 11px var(--f-ui);letter-spacing:.2em;color:var(--verm)}
-.decl q{font:500 22px/1.3 var(--f-tit);quotes:"“" "”"}
-.decl .bt{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.decl .bt .btn{padding:11px 8px;font-size:12px}
+/* narrativa da leitura */
+.luzsombra{display:flex;flex-direction:column;gap:6px;padding:10px 12px;background:rgba(142,59,36,.08);border-left:2px solid var(--verm)}
+.devolve{padding:12px 14px;margin-top:6px;background:rgba(212,168,79,.16);border:1px solid rgba(142,98,30,.35)}
+.heka{font:600 20px var(--f-tit);letter-spacing:.04em;color:#6B4512}
+.miudoL{font:13px/1.55 var(--f-ui)!important;color:#5B4630}
+.fechaApp{position:fixed;top:max(10px,env(safe-area-inset-top));right:12px;z-index:20;width:38px;height:38px;border-radius:50%;border:1px solid rgba(212,168,79,.6);background:rgba(10,6,3,.6);color:#F0D08A;font:22px/1 var(--f-ui);cursor:pointer}
 @media (prefers-reduced-motion:reduce){.grao,.treme,#barcaCena.carrega .foto{animation:none}}
 </style>
 </head><body>
@@ -148,43 +143,8 @@ p{margin:0}
       <p>A barca desta parede é a do deus sol com cabeça de carneiro, navegando pela noite, protegida pela serpente Mehen. Foi fotografada no Vale dos Reis.</p>
     </details>
     <div class="botoes">
-      <button class="btn" type="button" id="irPesagem">Seguir para o Salão das Duas Verdades</button>
-      <button class="btn pedra" type="button" onclick="location.reload()">Fazer outra pergunta</button>
+      <button class="btn" type="button" onclick="location.reload()">Fazer outra pergunta</button>
     </div>
-  </div>
-</section>
-
-<!-- 4. PESAGEM DO CORAÇÃO -->
-<section class="cena" id="pesagem" aria-label="Pesagem do coração">
-  <div class="foto"></div><div class="sombra"></div>
-  <div class="rolar">
-    <p class="rotulo">Salão das Duas Verdades</p>
-    <svg id="bal" viewBox="0 0 340 230" aria-label="Balança com o coração e a pena de Maat">
-      <defs>
-        <linearGradient id="ouroV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE3A2"/><stop offset=".45" stop-color="#C9963E"/><stop offset=".55" stop-color="#8E621E"/><stop offset="1" stop-color="#D3A453"/></linearGradient>
-        <linearGradient id="ouroH" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8E621E"/><stop offset=".5" stop-color="#F5D894"/><stop offset="1" stop-color="#8E621E"/></linearGradient>
-        <radialGradient id="prato" cx=".5" cy=".3" r=".8"><stop offset="0" stop-color="#F7DC9A"/><stop offset=".6" stop-color="#B2832F"/><stop offset="1" stop-color="#5C3E12"/></radialGradient>
-      </defs>
-      <rect x="164" y="52" width="12" height="160" fill="url(#ouroH)"/>
-      <path d="M128 222 h84 l-10 -12 h-64z" fill="url(#ouroV)"/>
-      <text x="170" y="40" text-anchor="middle" font-family="Noto Sans Egyptian Hieroglyphs" font-size="34" fill="url(#ouroV)">𓁦</text>
-      <g id="braco">
-        <rect x="40" y="48" width="260" height="8" rx="4" fill="url(#ouroV)"/>
-        <circle cx="170" cy="52" r="8" fill="url(#prato)"/>
-        <g class="prato" id="pE" style="transform-origin:48px 52px">
-          <path d="M48 52 L22 128 M48 52 L74 128" stroke="#C9A05A" stroke-width="1.2"/>
-          <ellipse cx="48" cy="130" rx="34" ry="7" fill="url(#prato)"/>
-          <text x="48" y="124" text-anchor="middle" font-family="Noto Sans Egyptian Hieroglyphs" font-size="30" fill="#9C2F1C">𓄣</text>
-        </g>
-        <g class="prato" id="pD" style="transform-origin:292px 52px">
-          <path d="M292 52 L266 128 M292 52 L318 128" stroke="#C9A05A" stroke-width="1.2"/>
-          <ellipse cx="292" cy="130" rx="34" ry="7" fill="url(#prato)"/>
-          <circle id="brilhoPena" cx="292" cy="108" r="22" fill="#F7D98C" opacity="0" style="filter:blur(8px)"/>
-          <text x="292" y="124" text-anchor="middle" font-family="Noto Sans Egyptian Hieroglyphs" font-size="32" fill="#F1E3BE">𓆄</text>
-        </g>
-      </g>
-    </svg>
-    <div class="lamina decl" id="decl"></div>
   </div>
 </section>
 
@@ -311,43 +271,24 @@ function responde() {
   vibra(sim ? [80, 60, 200] : [200, 80, 60]); gongo();
   const sorte = n => crypto.getRandomValues(new Uint32Array(1))[0] % n;
   const Dd = ORACULO.deuses[sorte(ORACULO.deuses.length)], M = ORACULO.amuletos[sorte(ORACULO.amuletos.length)];
+  const F = ORACULO.falas[Dd.id], Hh = ORACULO.horas[sorte(12)], dia = sorte(3);
   $("leitura").innerHTML = `<div class="topo"><img src="deuses/${Dd.id}.webp" alt="${Dd.nome}"><div><small>${sim ? "Sim" : "Não"}, e quem traz a resposta é</small><b>${Dd.nome}</b><i>${Dd.titulo}</i></div></div>
-    <p>${Dd.mito}</p><h4>Rege</h4><p>${Dd.rege}</p><h4>Luz</h4><p>${Dd.luz}</p><h4>Sombra</h4><p>${Dd.sombra}</p>
-    <h4>${sim ? "Para o seu sim" : "Para o seu não"}</h4><p>${sim ? "O caminho está aberto. " + Dd.nome + " pede que você siga com " + Dd.luz.split(",")[0].toLowerCase() + "." : "Não é castigo: é desvio. " + Dd.nome + " pede atenção a isto: " + Dd.sombra.charAt(0).toLowerCase() + Dd.sombra.slice(1)}</p>
-    <h4>A pergunta que o deus devolve</h4><p class="perg">${Dd.pergunta}</p><h4>Para hoje, no Egito</h4><ul>${Dd.hoje.map(x => `<li>${x}</li>`).join("")}</ul>`;
+    <h4>A imagem nas paredes</h4><p>${F.imagem}</p>
+    <h4>O mito</h4><p>${Dd.mito}</p>
+    <h4>O que ${Dd.nome} rege</h4><p>${Dd.rege.charAt(0).toUpperCase() + Dd.rege.slice(1)}.</p>
+    <div class="luzsombra"><p><b>Na luz:</b> ${Dd.luz}</p><p><b>Na sombra:</b> ${Dd.sombra}</p></div>
+    <h4>A resposta à sua pergunta</h4><p>${sim ? F.sim : F.nao}</p>
+    <h4>A hora da noite · ${Hh.n}ª hora · ${Hh.nome}</h4><p>${Hh.txt}</p><p>A barca de ${Dd.nome} encontrou você nesta hora: a sua pergunta vive ${Hh.tema}.</p>
+    <div class="devolve"><h4 style="margin-top:0">A pergunta que ${Dd.nome} te devolve</h4><p class="perg">${Dd.pergunta}</p></div>
+    <h4>Para hoje, no Egito</h4><p>${Dd.hoje[dia]}</p>
+    <h4>Palavras de poder</h4><p class="heka">Dua ${F.nome[0]}</p><p class="miudoL">“Louvor a ${F.nome[1]}.” Assim começavam os hinos nas paredes dos templos: dua quer dizer adorar. Diga três vezes, baixinho, e entregue a sua pergunta ao deus.</p>`;
+  try { localStorage.setItem("cdi-oraculo-egito", JSON.stringify({ ts: Date.now(), sim, deus: Dd.id, amuleto: M.id, hora: Hh.n, dia })); } catch (e) {}
   $("amuleto").innerHTML = `<span class="glifo">${M.h}</span><div><h4 style="margin:0">Seu amuleto para a viagem</h4><b style="font:500 21px var(--f-tit)">${M.nome} · ${M.sentido}</b><p>${M.texto}</p></div>`;
-  try { localStorage.setItem("cdi-oraculo-egito", JSON.stringify({ ts: Date.now(), sim, deus: Dd.id, amuleto: M.id })); } catch (e) {}
   setTimeout(() => { $("segura").hidden = true; $("barcaTxt").hidden = true; $("barcaCap").textContent = "O deus respondeu"; $("resposta").textContent = sim ? "SIM" : "NÃO"; $("respostaBox").hidden = false; }, 2600);
 }
 
-// ---------- 4. pesagem do coração ----------
-// declarações do capítulo 125 do Livro dos Mortos (seleção, em tradução livre)
-const DECL = ["Não causei dor.", "Não fiz ninguém chorar.", "Não menti.", "Não roubei.", "Não deixei ninguém passar fome.",
-  "Não fui surdo às palavras da verdade.", "Não me enchi de arrogância.", "Não represei a água na sua estação.", "Não apaguei o fogo na sua hora."];
-let k = 0, peso = 0;
-function pesa() {
-  const ang = Math.max(-14, Math.min(14, peso * 3)); // positivo: coração pesado, desce à esquerda
-  $("braco").style.transform = `rotate(${-ang}deg)`;
-  $("pE").style.transform = `rotate(${ang}deg)`; $("pD").style.transform = `rotate(${ang}deg)`;
-  $("brilhoPena").setAttribute("opacity", Math.abs(peso) < 1 ? .7 : 0);
-}
-function declaracao() {
-  const d = $("decl");
-  if (k >= DECL.length) return fim();
-  d.innerHTML = `<span class="n">DECLARAÇÃO ${k + 1} DE ${DECL.length}</span><q>${DECL[k]}</q><div class="bt"><button class="btn" type="button" id="posso">Posso declarar</button><button class="btn pedra" type="button" id="carrego">Ainda carrego isso</button></div>`;
-  $("posso").onclick = () => { peso -= 1; k++; sistro(); vibra(20); pesa(); declaracao(); };
-  $("carrego").onclick = () => { peso += 1; k++; tambor(); vibra(60); pesa(); declaracao(); };
-}
-function fim() {
-  pesa(); gongo(); vibra([40, 60, 120]);
-  const leve = peso <= 2;
-  $("decl").innerHTML = `<span class="n">O JULGAMENTO</span><q>${leve ? "Maa-kheru: justificada de voz." : "O coração ainda pesa, e há tempo."}</q>
-    <p>${leve
-      ? "Quando o coração ficava leve como a pena de Maat, Thoth escrevia o resultado e a pessoa recebia o título maa-kheru, “justa de voz”, e seguia para os Campos de Juncos, o paraíso egípcio."
-      : "Para os egípcios, o coração guardava a memória de tudo o que a pessoa fez. Se pesasse mais que a pena, a devoradora Ammit o comia. Mas enquanto se está vivo, dá para aliviar: escolha uma das declarações que você ainda carrega e leve para esta viagem como intenção."}</p>
-    <p>No Salão das Duas Verdades, a alma declarava 42 coisas que não tinha feito, diante de 42 juízes. Anúbis conduzia a pesagem, Thoth anotava, e na outra bandeja ficava a pena de Maat, a verdade e o equilíbrio do mundo. Você vai ver essa cena pintada nas tumbas do Vale dos Reis.</p>
-    <button class="btn pedra" type="button" onclick="location.reload()">Voltar ao início do templo</button>`;
-}
-$("irPesagem").onclick = () => { vai("pesagem"); pesa(); declaracao(); };
+// dentro do app, o oráculo abre numa janela: o botão fecha a janela em vez de recarregar
+const noApp = window.parent !== window;
+if (noApp) { const f = document.createElement("button"); f.className = "fechaApp"; f.type = "button"; f.setAttribute("aria-label", "Fechar o oráculo"); f.textContent = "×"; f.onclick = () => parent.postMessage("fecha-oraculo", "*"); document.body.append(f); }
 </script>
 </body></html>

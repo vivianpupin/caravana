@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Seu nome em hieróglifos</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&family=Lora:ital,wght@0,500;1,400&family=Poppins:wght@400;600&family=Special+Elite&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&family=Lora:ital,wght@0,500;1,400&family=Poppins:wght@400;600&family=Special+Elite&family=Caveat&display=swap">
 <style>
 /* Oficina do escriba: tábua de pedra escura à luz de lamparina; o cartucho é gravado sinal por sinal */
 :root{
@@ -29,28 +29,20 @@ button{font:600 14px var(--f-ui);cursor:pointer}
 .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--tinta)}
 .btn:disabled{opacity:.4}
 
-/* a parede: foto real dos dois cartuchos vazios do templo de Hathor em Dendera (foto da Vivian). O nome é entalhado ali dentro */
-.parede{position:relative;width:min(100%,420px);margin:0 auto;aspect-ratio:840/1500;overflow:hidden;border-radius:3px;background:#2A1D10;
-  box-shadow:0 24px 60px rgba(0,0,0,.75),0 0 0 1px rgba(0,0,0,.6)}
-.parede img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.95) contrast(1.05)}
-.parede .luz{position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light;
-  background:radial-gradient(ellipse at 38% 36%,rgba(255,190,110,.55),rgba(255,150,60,.12) 45%,transparent 70%);animation:chama 3.2s ease-in-out infinite}
-.parede::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 45% 40%,transparent 40%,rgba(14,8,3,.78) 100%)}
-@keyframes chama{0%,100%{opacity:.85}22%{opacity:1}41%{opacity:.7}63%{opacity:.95}81%{opacity:.78}}
-.cart{position:absolute;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:text}
-#c1{left:26.9%;top:23.2%;width:20.2%;height:35.4%}
-#c2{left:61.9%;top:26.3%;width:19%;height:35.4%}
-/* relevo afundado: o sinal é mais escuro que a pedra, com sombra na borda de cima e luz na de baixo */
-.sinal{display:block;font-family:var(--f-hiero);line-height:1;color:rgba(52,32,14,.8);-webkit-text-stroke:1.2px rgba(40,24,10,.55);
-  text-shadow:-1.5px -1.5px 0 rgba(14,7,2,.75),1.5px 2px 0 rgba(255,228,180,.42),0 0 3px rgba(0,0,0,.35);filter:blur(.2px);clip-path:inset(0 0 100% 0)}
-.sinal.talho{position:relative;font-size:0!important;-webkit-text-stroke:0;text-shadow:none;filter:none;color:transparent}
-.sinal.talho canvas{position:absolute;inset:0;width:100%;height:100%}
-.sinal.talho canvas.fundo{}.sinal.talho canvas.borda{}
-.sinal.talho.brilha{clip-path:none;text-shadow:none}
-.sinal.gravado{animation:grava .55s steps(7,end) forwards}
-.sinal.brilha{animation:none;clip-path:none;color:rgba(70,42,16,.86);text-shadow:-1px -1px 0 rgba(18,9,3,.75),1px 1.5px 0 rgba(255,228,180,.45),0 0 12px rgba(255,190,100,.35)}
+/* a pedra da caravana (a mesma do mural da Índia): o nome é riscado na rocha, na cor de terra, como as marcas do mural */
+.parede{position:relative;overflow:hidden;border-radius:18px 26px 14px 30px;min-height:420px;display:flex;justify-content:center;align-items:center;gap:22px;padding:34px 16px 40px;
+  background:url(img/pedra.webp) center/cover,#4A3426;box-shadow:inset 0 0 70px rgba(0,0,0,.6),inset 0 0 12px rgba(0,0,0,.5),0 10px 30px rgba(0,0,0,.45)}
+.cart{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:96px;min-height:330px;padding:22px 6px;cursor:text;
+  border:3px solid #D9964E;border-radius:999px;filter:url(#rupestre);
+  box-shadow:inset 0 2px 0 rgba(0,0,0,.75),0 -1px 0 rgba(0,0,0,.75),inset 0 -1px 0 rgba(255,228,190,.3),0 1.5px 0 rgba(255,228,190,.3)}
+.cart::after{content:"";position:absolute;left:14%;right:14%;bottom:-14px;height:3px;background:#D9964E;box-shadow:0 -1px 0 rgba(0,0,0,.75),0 1.5px 0 rgba(255,228,190,.3)}
+.cart.vazio2{display:none}
+.sinal{display:block;font-family:var(--f-hiero);line-height:1.05;color:#D9964E;filter:url(#cravado);
+  text-shadow:0 -1px 0 rgba(0,0,0,.85),-1px -1px 1px rgba(0,0,0,.55),0 1px 0 rgba(255,228,190,.38),1px 1.5px 1px rgba(255,228,190,.18);clip-path:inset(0 0 100% 0)}
+.sinal.gravado{animation:grava .55s steps(6,end) forwards}
+.sinal.brilha{clip-path:none}
 @keyframes grava{to{clip-path:inset(0 0 0 0)}}
-.legendaP{position:absolute;left:0;right:0;bottom:3%;z-index:2;margin:0;text-align:center;font:italic 13px/1.4 var(--f-tit);color:#E9D6A8;text-shadow:0 1px 3px #000;padding:0 12%}
+.legendaP{position:absolute;left:0;right:0;bottom:12px;margin:0;text-align:center;font:14px "Caveat",cursive;color:#EADBC0;opacity:.75;padding:0 10%}
 .lasca{position:absolute;z-index:3;width:3px;height:3px;border-radius:1px;background:#CDB48C;pointer-events:none}
 .treme{animation:treme .12s linear 2}
 @keyframes treme{25%{transform:translate(1px,-1px)}75%{transform:translate(-1px,1px)}}
@@ -103,9 +95,12 @@ input:focus{box-shadow:inset 0 2px 5px rgba(0,0,0,.25),0 0 0 2px #B88A3A}
     </div>
   </div>
 
-  <div class="parede" id="parede"><img src="img/parede-cartuchos.webp" alt="Parede do templo de Dendera com dois cartuchos reais deixados vazios"><div class="luz"></div>
-    <div class="cart" id="c1"></div><div class="cart" id="c2"></div>
-    <p class="legendaP" id="legP">Templo de Dendera: estes dois cartuchos foram esculpidos e nunca receberam um nome. Esperam o seu.</p></div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="rupestre"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="r"/><feDisplacementMap in="SourceGraphic" in2="r" scale="2.6"/></filter>
+    <filter id="cravado"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="1" seed="7" result="r"/><feDisplacementMap in="SourceGraphic" in2="r" scale="1.3"/></filter></svg>
+  <div class="parede" id="parede">
+    <div class="cart" id="c1"></div><div class="cart vazio2" id="c2"></div>
+    <p class="legendaP" id="legP">o cartucho espera o seu nome</p></div>
 
   <div class="quadro" id="leituraBox" hidden>
     <p class="cap" style="box-shadow:none">O que cada sinal é</p>
@@ -176,58 +171,17 @@ function lasca(el) {
     d.style.left = x + "px"; d.style.top = y + "px";
     d.animate([{ transform: "translate(0,0) rotate(0)", opacity: 1 }, { transform: `translate(${Math.cos(a) * k}px,${Math.sin(a) * k + 50}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }], { duration: 700 + Math.random() * 400, easing: "cubic-bezier(.2,.6,.6,1)" }).onfinish = () => d.remove(); }
 }
-// entalhe de verdade: o sinal vira um corte na pedra (fundo escurecido da própria foto, sombra na borda de cima, luz na de baixo)
-function pinta(mask, cor, d) { const c = document.createElement("canvas"); c.width = mask.width; c.height = mask.height; const x = c.getContext("2d"); x.drawImage(mask, 0, 0); x.globalCompositeOperation = "source-in"; x.fillStyle = cor; x.fillRect(0, 0, c.width, c.height); x.globalCompositeOperation = "source-over"; return c; }
-function menos(a, b, dx, dy) { const c = document.createElement("canvas"); c.width = a.width; c.height = a.height; const x = c.getContext("2d"); x.drawImage(a, 0, 0); x.globalCompositeOperation = "destination-out"; x.drawImage(b, dx, dy); return c; }
-// os sinais da fonte são contornos; na pedra o escriba escava a figura inteira: preenche tudo o que não é "fora"
-function dilata(c, r) { const o = document.createElement("canvas"); o.width = c.width; o.height = c.height; const x = o.getContext("2d");
-  for (const k of [r, r * .5]) for (let i = 0; i < 16; i++) x.drawImage(c, Math.cos(i * Math.PI / 8) * k, Math.sin(i * Math.PI / 8) * k); x.drawImage(c, 0, 0); return o; }
-function cheio(c) {
-  const W = c.width, H = c.height, r = Math.max(2, Math.round(W * .025));
-  // fecha as frestas do contorno, acha o "fora", e devolve a margem que engordou
-  const g = dilata(c, r).getContext("2d").getImageData(0, 0, W, H).data, fora = new Uint8Array(W * H), fila = new Int32Array(W * H); let ini = 0, fim = 0;
-  const poe = i => { if (!fora[i] && g[i * 4 + 3] < 100) { fora[i] = 1; fila[fim++] = i; } };
-  for (let X = 0; X < W; X++) { poe(X); poe((H - 1) * W + X); } for (let Y = 0; Y < H; Y++) { poe(Y * W); poe(Y * W + W - 1); }
-  while (ini < fim) { const i = fila[ini++], X = i % W; if (X > 0) poe(i - 1); if (X < W - 1) poe(i + 1); if (i >= W) poe(i - W); if (i < W * (H - 1)) poe(i + W); }
-  const E = document.createElement("canvas"); E.width = W; E.height = H; const ex = E.getContext("2d"), ei = ex.createImageData(W, H);
-  for (let i = 0; i < W * H; i++) if (fora[i]) ei.data[i * 4 + 3] = 255; ex.putImageData(ei, 0, 0);
-  const e2 = dilata(E, r).getContext("2d").getImageData(0, 0, W, H).data, x = c.getContext("2d"), im = x.getImageData(0, 0, W, H), a = im.data;
-  for (let i = 0; i < W * H; i++) if (e2[i * 4 + 3] < 128) a[i * 4 + 3] = 255;
-  x.putImageData(im, 0, 0);
-}
-function entalha(s, ch, fs, maxW) {
-  const d = Math.min(devicePixelRatio || 1, 3), fonte = f => `${f}px "Noto Sans Egyptian Hieroglyphs"`, m = document.createElement("canvas").getContext("2d");
-  // mede o desenho real do sinal (os hieróglifos fogem da linha de base) e ajusta ao espaço do cartucho
-  m.font = fonte(100); const mt = m.measureText(ch), bw = mt.actualBoundingBoxLeft + mt.actualBoundingBoxRight, bh = mt.actualBoundingBoxAscent + mt.actualBoundingBoxDescent;
-  const f = Math.min(fs * .95 / (bh / 100), maxW * .9 / (bw / 100)), pad = Math.ceil(f * .1), w = Math.ceil(bw * f / 100) + pad * 2, H = Math.ceil(bh * f / 100) + pad * 2;
-  const mask = document.createElement("canvas"); mask.width = Math.ceil(w * d); mask.height = Math.ceil(H * d);
-  const x = mask.getContext("2d"); x.scale(d, d); x.font = fonte(f); x.textAlign = "left"; x.textBaseline = "alphabetic"; x.lineJoin = "round"; x.lineWidth = Math.max(2, f * .07);
-  const ox = pad + mt.actualBoundingBoxLeft * f / 100, oy = pad + mt.actualBoundingBoxAscent * f / 100;
-  x.fillStyle = x.strokeStyle = "#000"; x.fillText(ch, ox, oy); x.strokeText(ch, ox, oy);
-  // os traços de dentro da figura (penas, olho, dobras) ficam como riscos mais fundos
-  const risco = document.createElement("canvas"); risco.width = mask.width; risco.height = mask.height; const rx = risco.getContext("2d"); rx.scale(d, d); rx.font = fonte(f); rx.fillStyle = "rgba(14,7,2,.55)"; rx.fillText(ch, ox, oy);
-  cheio(mask);
-  const k = Math.max(1.2, f * .03) * d;
-  const fundo = pinta(mask, "rgba(46,28,12,.45)", d), fx = fundo.getContext("2d");
-  fx.drawImage(risco, 0, 0); fx.drawImage(pinta(menos(mask, mask, k, k), "rgba(18,9,3,.8)", d), 0, 0);
-  const borda = pinta(menos(mask, mask, -k * .8, -k * .8), "rgba(255,226,180,.45)", d);
-  // o canto de baixo e da direita do corte pega a luz da tocha
-  const lip = document.createElement("canvas"); lip.width = mask.width; lip.height = mask.height; const lx = lip.getContext("2d"); lx.drawImage(borda, k * .8, k * .8); lx.globalCompositeOperation = "destination-out"; lx.drawImage(mask, 0, 0);
-  fundo.className = "fundo"; lip.className = "borda";
-  s.classList.add("talho"); s.style.width = w + "px"; s.style.height = H + "px"; s.replaceChildren(fundo, lip);
-}
 // divide o nome entre os dois cartuchos, como os dois nomes de um faraó
 function partes(ks) { if (ks.length <= 4) return [ks, []]; const m = Math.ceil(ks.length / 2); return [ks.slice(0, m), ks.slice(m)]; }
-function cabe(caixa, n) { const r = caixa.getBoundingClientRect(); return Math.max(10, Math.min(r.width * .9, r.height * .78 / Math.max(n, 1))); }
+function cabe(caixa, n) { const r = caixa.getBoundingClientRect(); return Math.max(16, Math.min(56, r.height * .8 / Math.max(n, 1))); }
 function desenha(ks, anima) {
   const id = ++escrevendo; lista = ks.slice(); $("c1").replaceChildren(); $("c2").replaceChildren();
-  $("legP").hidden = ks.length > 0;
+  $("legP").hidden = ks.length > 0; $("c2").classList.toggle("vazio2", ks.length <= 4);
   if (!ks.length) { $("leituraBox").hidden = true; return; }
   const [p1, p2] = partes(ks), todos = [];
   [[$("c1"), p1], [$("c2"), p2]].forEach(([caixa, grupo]) => { const fs = cabe(caixa, grupo.length);
-    const largura = caixa.getBoundingClientRect().width * .95;
-    grupo.forEach(k => { const s = document.createElement("span"); s.className = "sinal"; s.textContent = S[k][0]; s.title = S[k][1]; s.style.fontSize = fs + "px"; caixa.append(s); todos.push(s);
-      document.fonts.load(`${fs}px "Noto Sans Egyptian Hieroglyphs"`, S[k][0]).then(() => entalha(s, S[k][0], fs, largura)); }); });
+        grupo.forEach(k => { const s = document.createElement("span"); s.className = "sinal"; s.textContent = S[k][0]; s.title = S[k][1]; s.style.fontSize = fs + "px"; caixa.append(s); todos.push(s);
+ }); });
   todos.forEach((s, i) => {
     const mostra = () => { if (id !== escrevendo) return; s.classList.add("gravado"); [0, 160, 320].forEach(t => setTimeout(cinzel, t)); vibra([12, 140, 12, 140, 12]); lasca(s);
       $("parede").classList.remove("treme"); void $("parede").offsetWidth; $("parede").classList.add("treme");
