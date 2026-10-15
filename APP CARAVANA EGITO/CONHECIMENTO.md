@@ -244,3 +244,9 @@ O roteiro contratado, dia a dia (sem os valores). Complementa o roteiro da Vivia
 - Páginas em `app/img/gibi/`, montadas por `tools/egito/gibi-paginas.py` a partir das artes da Vivian (referencias/comics). O nome antigo "Caravanegita" saiu: capa provisória é a página "As Aventuras da Caravana do Céu"; o cabeçalho do Dia 1 foi cortado; as duas legendas com o nome foram reletradas ("DA CARAVANA...", "A VIAJANTE ENCONTRA UM MAPA ANTIGO.") com PT Sans Narrow Bold (via npm @fontsource/pt-sans-narrow; caminho da fonte é o 1º argumento do script).
 - Artes novas geradas no Canva (15/10/2026), esperando liberar o download (a rede da sessão bloqueia media.canva.com e www.canva.com): capa com o título "O SEGREDO DO VELHO MUNDO" (MAHYHXTc7tc), capa sem texto (MAHYHeFAdQ8), página da chegada ao Cairo (MAHYHT59mQE), página de Gizé (MAHYHe_rP2I).
 - Prova publicada: https://claude.ai/artifact/GNTPTDfC7LajguksZ9pgB3
+
+## 12. Banco de fotos da Vivian (Vale dos Reis e Abu Simbel)
+- Originais em `referencias/fotos-vivian/` (nomes descritivos); versões webp em `app/img/fundo-*.webp` e `app/img/textura-estrelas.webp`.
+- Em uso: céu de Nut (fundo do app), teto de estrelas (barra do topo e menu), teto dourado (entrada do oráculo), teto astronômico (pergunta ao oráculo), Nut com a barca (barca de Amon), procissão de Anúbis (pesagem do coração), cartucho do rei e colunas de hieróglifos (escriba), Livro das Portas (gibi).
+- Guardadas para usar: Nut com o sol, Ápis sob o céu, barca de Rá com a serpente Mehen, sacerdote com pele de leopardo, serpente entre hieróglifos, asas de Nut com serpente, e a foto da Vivian olhando a parede (referência para o explorador em segunda pessoa; não usar como fundo).
+- Fotos com gente não viram fundo.

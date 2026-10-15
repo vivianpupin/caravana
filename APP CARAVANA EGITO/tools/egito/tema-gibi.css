@@ -20,15 +20,15 @@
 b,strong{font-weight:700}
 
 /* cabeçalho: faixa preta de capa de gibi com o nome em amarelo */
-.top{background:#1E140B radial-gradient(circle,rgba(233,185,73,.10) 1px,transparent 1.4px) 0 0/6px 6px;border-bottom:4px solid var(--mostarda)}
+.top{background:linear-gradient(rgba(20,13,6,.72),rgba(20,13,6,.82)),url(img/textura-estrelas.webp) center/300px auto #1E140B;border-bottom:4px solid var(--mostarda)}
 .me:not(.bubble){background:#F3E4BC;border:2px solid #000;box-shadow:2px 2px 0 #000}
 
 /* menu de baixo: barra preta, aba escolhida em mostarda */
-nav.tabs{background:#1E140B;border-top:4px solid var(--mostarda)}
+nav.tabs{background:linear-gradient(rgba(20,13,6,.6),rgba(20,13,6,.75)),url(img/textura-estrelas.webp) center/300px auto #1E140B;border-top:4px solid var(--mostarda)}
 nav.tabs button{color:#C9B58C}
 nav.tabs button[aria-current="page"]{color:var(--mostarda)}
 nav.tabs button[aria-current="page"] .ic{background:var(--mostarda);color:#1E140B;border:2px solid #000;box-shadow:2px 2px 0 #000}
-@media (min-width:900px){nav.tabs{background:#1E140B;border-right:4px solid var(--mostarda)}}
+@media (min-width:900px){nav.tabs{background:linear-gradient(rgba(20,13,6,.6),rgba(20,13,6,.75)),url(img/textura-estrelas.webp) center/300px auto #1E140B;border-right:4px solid var(--mostarda)}}
 
 /* quadros: cada bloco é um quadro de gibi, contorno de tinta e sombra deslocada */
 .panel,.day,.clock div,.empty{border:3px solid var(--ink);border-radius:var(--r);box-shadow:var(--shadow)}
