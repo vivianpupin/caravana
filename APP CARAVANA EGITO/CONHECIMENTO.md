@@ -252,3 +252,9 @@ O roteiro contratado, dia a dia (sem os valores). Complementa o roteiro da Vivia
 - Fotos com gente não viram fundo.
 - Paleta tirada das fotos (out/2026): azul-lápis #1C2230 dos tetos, ouro #D4A84F das estrelas, vermelho-ocre #8E3B24, azul-cinza de Dendera #5E7A8A, calcário #E8D9BA. Regra da Vivian: nenhum fundo chapado ou "de celular"; quadros, botões e etiquetas usam `textura-calcario*.webp` (relevo real de Dendera) e o selecionado usa `textura-lapis.webp`.
 - Cada aba tem sua parede (`html[data-tab]` no tema): Roteiro céu de Nut, Passaporte janela de Abu Simbel, Saberes zodíaco de Dendera, Explorador colunas de Hathor, Maleta serpente vermelha, Mapa Nut de Dendera, Chat colar de Hathor, Câmbio Ísis entronizada, Tradutor "lâmpada" de Dendera.
+- Out/2026 (pedido da Vivian): tudo realista, estilo Indiana Jones/Tomb Raider, priorizando fotos tiradas de frente (não em perspectiva).
+  - Cartucho do escriba: foto real dos dois cartuchos vazios de Dendera (`img/parede-cartuchos.webp`); o nome é entalhado em canvas (relevo afundado: figura preenchida, sombra em cima, luz embaixo, traços internos), com lascas e cinzel. Nome longo continua no segundo cartucho (nome de trono e de nascimento).
+  - Oráculo de Amon refeito: entrada no escuro total com a parede rachada de Abu Simbel revelada pela tocha (o dedo); quando metade foi iluminada a parede cede e a câmera entra pela fenda. Pergunta sob o teto astronômico, barca do deus de cabeça de carneiro (foto do Vale dos Reis) que avança (sim) ou recua (não), balança de ouro com os sinais do coração e da pena. Sem caixas amarelas nem sombras de quadrinho.
+  - Cabeçalho e menu do app: marrom escuro fixo (#24180F) com filete dourado. Moeda sem sombra.
+  - Passaporte, tradutor e câmbio: papel de gibi envelhecido (`img/fundo-papel-gibi.webp`, gerado com manchas, fibra, oxidação e borda queimada).
+  - Gibi: página ocupa o livro todo, sem margem clara nem pilha de folhas.

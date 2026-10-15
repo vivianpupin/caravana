@@ -3,185 +3,199 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Oráculo de Amon</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&family=Lora:ital,wght@0,500;1,400&family=Poppins:wght@400;600&family=Special+Elite&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&family=Cinzel:wght@500;700&family=Lora:ital,wght@0,500;1,400&family=Poppins:wght@400;600&display=swap">
 <style>
-/* O templo à noite: pedra escura, só a luz das tochas. Cada etapa é uma cena que entra por cima da outra */
+/* O templo de verdade, no escuro: fotos das paredes que a Vivian fotografou, iluminadas só pela tocha.
+   Nada desenhado por cima: a luz, a poeira e o movimento da câmera fazem a cena. */
 :root{
-  --pedra:#120C07; --ouro:#E9B949; --fogo:#F2A53A; --papel:#F3E4BC; --tinta:#1E140B; --verm:#B5402A; --azul:#4F6E78;
-  --f-tit:"Lora",Georgia,serif; --f-ui:"Poppins",system-ui,sans-serif; --f-cap:"Special Elite","Courier New",monospace;
+  --ouro:#D4A84F; --ouro2:#F0D08A; --papel:#EFE3C6; --tinta:#1E140B; --verm:#8E3B24;
+  --f-tit:"Cinzel","Lora",Georgia,serif; --f-txt:"Lora",Georgia,serif; --f-ui:"Poppins",system-ui,sans-serif;
   color-scheme:dark;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
-html,body{margin:0;height:100%;overflow:hidden;background:var(--pedra);color:var(--papel);font:15px/1.55 var(--f-ui);user-select:none;-webkit-user-select:none}
-.cena{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;
-  padding:max(20px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));
-  opacity:0;pointer-events:none;transition:opacity 1.1s ease}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;color:var(--papel);font:15px/1.55 var(--f-ui);user-select:none;-webkit-user-select:none}
+.cena{position:absolute;inset:0;overflow:hidden;opacity:0;pointer-events:none;transition:opacity 1.4s ease}
 .cena.ativa{opacity:1;pointer-events:auto}
-.cap{font:12px var(--f-cap);letter-spacing:.08em;text-transform:uppercase;color:var(--tinta);background:var(--ouro);border:2px solid #000;padding:3px 8px 2px;box-shadow:2px 2px 0 #000}
-h1,h2{margin:0;font:500 clamp(26px,7.5vw,36px)/1.15 var(--f-tit);text-shadow:0 2px 8px #000}
+/* foto da parede atrás de cada cena */
+.foto{position:absolute;inset:-4%;background-size:cover;background-position:center;transition:transform 2.6s cubic-bezier(.3,.1,.2,1),filter 2s ease}
+.sombra{position:absolute;inset:0;pointer-events:none}
+.texto{position:absolute;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;
+  padding:0 max(22px,env(safe-area-inset-right)) 0 max(22px,env(safe-area-inset-left))}
+.rotulo{font:600 11px var(--f-ui);letter-spacing:.32em;text-transform:uppercase;color:var(--ouro);display:flex;align-items:center;gap:10px;text-shadow:0 1px 3px #000}
+.rotulo::before,.rotulo::after{content:"";width:26px;height:1px;background:linear-gradient(90deg,transparent,var(--ouro))}
+.rotulo::after{transform:scaleX(-1)}
+h1,h2{margin:0;font:500 clamp(25px,7vw,34px)/1.18 var(--f-tit);letter-spacing:.04em;color:#F3E2B6;text-shadow:0 2px 12px #000,0 0 30px rgba(0,0,0,.8)}
 p{margin:0}
-.txt{max-width:34ch;color:#E9D6A8;text-shadow:0 1px 3px #000}
-.miudo{font:13px/1.5 var(--f-cap);color:#C9B58C;max-width:36ch}
-.btn{font:600 15px var(--f-ui);border:2.5px solid #000;border-radius:4px;background:var(--ouro);color:var(--tinta);box-shadow:3px 3px 0 #000;padding:11px 20px;cursor:pointer}
-.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #000}
-.btn.claro{background:var(--papel)}
-.btn:disabled{opacity:.35}
-/* papel de leitura (o ensinamento) */
-.folha{background:var(--papel);color:var(--tinta);border:3px solid #000;border-radius:6px;box-shadow:4px 4px 0 #000;padding:16px;max-width:420px;text-align:left;display:flex;flex-direction:column;gap:8px;max-height:56vh;overflow:auto}
-.folha h3{margin:0;font:500 22px var(--f-tit)}
-.folha p{font-size:14.5px;line-height:1.6}
-.folha summary{cursor:pointer;list-style:none;font:500 18px var(--f-tit)}.folha summary::-webkit-details-marker{display:none}
-.leitura .topo{display:flex;gap:12px;align-items:center}
-.leitura img{width:92px;height:auto;border:2px solid #000;border-radius:4px;box-shadow:3px 3px 0 #000;flex:none;animation:surge 1.2s ease both}
-@keyframes surge{from{opacity:0;transform:scale(.8) rotate(-4deg)}}
-.leitura .tt small{display:block;font:12px var(--f-cap);color:var(--verm);letter-spacing:.06em;text-transform:uppercase}
-.leitura .tt b{font:500 26px/1.1 var(--f-tit)}
-.leitura .tt i{display:block;color:#5B4630}
-.leitura h4{margin:6px 0 0;font:600 12px var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:var(--verm)}
-.leitura ul{margin:0;padding-left:18px}.leitura li{font-size:14.5px;line-height:1.5;margin:3px 0}
-.leitura .perg{font:italic 500 18px/1.4 var(--f-tit);border-left:4px solid var(--ouro);padding-left:10px}
-.amuleto{flex-direction:row!important;align-items:center;gap:14px}
-.amuleto .glifo{font:64px/1 "Noto Sans Egyptian Hieroglyphs",serif;color:#7A4A12;text-shadow:0 0 18px rgba(233,185,73,.8);flex:none;animation:surge 1.4s .3s ease both}
+.txt{max-width:32ch;font:italic 400 16px/1.55 var(--f-txt);color:#E6D3A8;text-shadow:0 1px 4px #000,0 0 18px #000}
+.miudo{font:12.5px/1.5 var(--f-ui);color:#B9A47C;max-width:34ch;text-shadow:0 1px 3px #000}
+/* botões de ouro velho, sem cara de computador */
+.btn{font:600 14px var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:#24170A;border:1px solid #5C3E14;border-radius:2px;cursor:pointer;padding:13px 22px;
+  background:linear-gradient(180deg,#F2D48C 0%,#C9973F 48%,#9C6E25 52%,#C49340 100%);box-shadow:0 6px 18px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,245,210,.7),inset 0 -1px 0 rgba(60,35,5,.5)}
+.btn:active{transform:translateY(1px);filter:brightness(.92)}
+.btn.pedra{color:#2A1C0E;border-color:rgba(40,25,10,.6);background:linear-gradient(rgba(240,229,203,.6),rgba(214,196,158,.8)),url(img/textura-calcario.webp) center/240px auto;box-shadow:0 6px 18px rgba(0,0,0,.5)}
+/* lâmina de pedra para ler */
+.lamina{width:min(100%,440px);color:var(--tinta);text-align:left;display:flex;flex-direction:column;gap:8px;padding:18px 18px 20px;border-radius:2px;
+  background:linear-gradient(rgba(242,232,208,.82),rgba(228,212,178,.9)),url(img/textura-calcario.webp) center/380px auto #E8D9BA;
+  box-shadow:0 20px 50px rgba(0,0,0,.75),inset 0 0 50px rgba(90,60,25,.3);border:1px solid rgba(0,0,0,.5)}
+.lamina h3{margin:0;font:500 21px var(--f-tit)}
+.lamina p,.lamina li{font:15px/1.6 var(--f-txt)}
+.lamina h4{margin:8px 0 0;font:600 11px var(--f-ui);letter-spacing:.2em;text-transform:uppercase;color:var(--verm)}
+.lamina ul{margin:0;padding-left:18px}
+.lamina summary{cursor:pointer;list-style:none;font:500 17px var(--f-tit)}.lamina summary::-webkit-details-marker{display:none}
+.lamina .perg{font:italic 500 18px/1.45 var(--f-txt);border-left:2px solid var(--ouro);padding-left:12px}
+.topo{display:flex;gap:14px;align-items:center}
+.topo img{width:86px;height:auto;flex:none;border-radius:2px;box-shadow:0 6px 16px rgba(0,0,0,.5);animation:surge 1.4s ease both}
+@keyframes surge{from{opacity:0;transform:scale(.92)}}
+.topo small{display:block;font:600 11px var(--f-ui);letter-spacing:.18em;text-transform:uppercase;color:var(--verm)}
+.topo b{display:block;font:500 26px/1.1 var(--f-tit)}
+.topo i{display:block;color:#5B4630;font-family:var(--f-txt)}
+.amuleto{flex-direction:row;align-items:center;gap:16px}
+.amuleto .glifo{font:62px/1 "Noto Sans Egyptian Hieroglyphs",serif;color:#8A5A14;text-shadow:-1px -1px 0 rgba(40,20,0,.5),1px 1px 0 rgba(255,240,200,.7);flex:none}
+/* luz da tocha, poeira e grão de filme por cima de tudo */
+#luzes{position:fixed;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}
+.grao{position:fixed;inset:-50%;z-index:6;pointer-events:none;opacity:.13;mix-blend-mode:overlay;animation:grao .5s steps(3) infinite;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='220' height='220' filter='url(%23g)'/></svg>")}
+@keyframes grao{33%{transform:translate(-3%,2%)}66%{transform:translate(2%,-3%)}}
+.treme{animation:treme .09s linear infinite}
+@keyframes treme{25%{transform:translate(2px,-1px)}50%{transform:translate(-2px,1px)}75%{transform:translate(1px,2px)}}
 
-/* 1. corredor com as tochas */
-#entrada{background:linear-gradient(180deg,rgba(10,6,3,.55),rgba(10,6,3,.92)),url(img/fundo-teto-dourado.webp) center/cover}
-#barcaCena{background:linear-gradient(180deg,rgba(10,6,3,.62),rgba(10,6,3,.9)),url(img/fundo-nut-barca.webp) center 60%/cover}
-#pesagem{background:linear-gradient(180deg,rgba(10,6,3,.7),rgba(10,6,3,.93)),url(img/fundo-anubis.webp) center/cover}
-#pergunta{background:linear-gradient(180deg,rgba(10,6,3,.6),rgba(10,6,3,.9)),url(img/fundo-astronomico.webp) center/cover}
-#entrada{justify-content:flex-end;padding-bottom:max(40px,env(safe-area-inset-bottom))}
-#fogo{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
-.portas{position:absolute;left:50%;top:14%;width:min(62vw,300px);height:52%;transform:translateX(-50%);display:flex;
-  box-shadow:0 0 0 6px #0A0603,0 0 60px rgba(0,0,0,.9)}
-.porta{flex:1;transition:transform 2.6s cubic-bezier(.6,.05,.3,1);background:
-  repeating-linear-gradient(0deg,rgba(0,0,0,.25) 0 2px,transparent 2px 30px),
-  linear-gradient(90deg,#3A2A18,#2A1D10 60%,#1C130A)}
-.porta.d{transform-origin:right;background:repeating-linear-gradient(0deg,rgba(0,0,0,.25) 0 2px,transparent 2px 30px),linear-gradient(270deg,#3A2A18,#2A1D10 60%,#1C130A)}
-.porta svg{width:70%;margin:30% auto 0;display:block;opacity:.55}
-.abertas .porta.e{transform:translateX(-102%)}.abertas .porta.d{transform:translateX(102%)}
-.luzdentro{position:absolute;left:50%;top:14%;width:min(62vw,300px);height:52%;transform:translateX(-50%);z-index:-0;
-  background:radial-gradient(ellipse at 50% 70%,rgba(255,200,110,.9),rgba(160,90,30,.4) 45%,rgba(20,10,4,1) 80%)}
-.tocha{position:absolute;bottom:22%;width:64px;height:150px;border:0;background:none;cursor:pointer;z-index:3}
-.tocha.e{left:6%}.tocha.d{right:6%}
-.tocha i{position:absolute;left:50%;bottom:0;width:12px;height:96px;transform:translateX(-50%);background:linear-gradient(90deg,#3A2412,#6B4426,#3A2412);border-radius:3px}
-.tocha b{position:absolute;left:50%;bottom:90px;width:26px;height:16px;transform:translateX(-50%);background:#5A3A18;border-radius:3px 3px 8px 8px}
-.tocha:not(.acesa)::after{content:"toque";position:absolute;left:50%;bottom:118px;transform:translateX(-50%);font:12px var(--f-cap);color:var(--ouro);animation:pisca 1.6s ease-in-out infinite}
-@keyframes pisca{50%{opacity:.3}}
+/* 1. ENTRADA: a parede rachada de Abu Simbel no escuro total; a tocha é o dedo */
+#entrada .foto{background-image:url(img/fundo-abu-janela.webp);background-position:56% 50%}
+#escuro{position:absolute;inset:0;width:100%;height:100%;touch-action:none;z-index:2}
+#entrada .texto{bottom:max(34px,env(safe-area-inset-bottom));z-index:7;pointer-events:none;transition:opacity 1s}
+#entrada .topoTxt{top:max(30px,env(safe-area-inset-top));bottom:auto}
+.barra{width:150px;height:2px;background:rgba(212,168,79,.2);overflow:hidden}.barra i{display:block;height:100%;width:0;background:var(--ouro);transition:width .3s}
+#entrada.entra .foto{transform:scale(3.4);transform-origin:56% 53%;filter:brightness(1.6) sepia(.4)}
 
-/* 3. a barca */
-.palco{position:relative;width:min(88vw,400px);display:grid;place-items:center}
-#barcaCena{justify-content:flex-start;overflow:auto}
-#barcaCena .folha{max-height:none}
-#barca{width:100%;height:auto;transform-origin:50% 70%;filter:drop-shadow(0 14px 18px rgba(0,0,0,.8))}
-.balanca{animation:balanca 1.1s ease-in-out infinite}
-@keyframes balanca{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-6px)}}
-.vem{transition:transform 1.6s cubic-bezier(.2,.8,.2,1);transform:scale(1.15) translateY(8px)!important}
-.vai{transition:transform 1.6s cubic-bezier(.2,.8,.2,1);transform:scale(.62) translateY(-40px)!important;opacity:.8}
-.segura{position:relative;flex:none;width:110px;height:110px;border-radius:50%;border:3px solid var(--ouro);background:radial-gradient(circle,rgba(233,185,73,.25),rgba(0,0,0,.4));color:var(--papel);font:600 13px var(--f-ui);cursor:pointer;touch-action:none}
-.segura svg{position:absolute;inset:-6px;width:calc(100% + 12px);height:calc(100% + 12px);transform:rotate(-90deg)}
-.segura circle{fill:none;stroke:var(--ouro);stroke-width:5;stroke-linecap:round}
-.resposta{font:500 clamp(40px,12vw,60px)/1 var(--f-tit);color:var(--ouro);text-shadow:0 0 30px rgba(233,185,73,.7),0 3px 0 #000;letter-spacing:.06em}
+/* 2. PERGUNTA: teto astronômico */
+#pergunta .foto{background-image:url(img/fundo-astronomico-2.webp);filter:brightness(.42) sepia(.25)}
+#pergunta .sombra{background:radial-gradient(ellipse at 50% 42%,rgba(255,170,80,.18),transparent 55%),radial-gradient(ellipse at 50% 50%,transparent 35%,rgba(0,0,0,.85))}
+#pergunta .texto{top:50%;transform:translateY(-50%)}
 
-/* 4. pesagem do coração */
-#pesagem{justify-content:flex-start;overflow:auto;padding-top:max(26px,env(safe-area-inset-top))}
-#bal{width:min(86vw,360px);height:auto}
-#braco{transform-origin:180px 70px;transition:transform .9s cubic-bezier(.3,1.4,.5,1)}
-.decl{background:var(--papel);color:var(--tinta);border:3px solid #000;box-shadow:4px 4px 0 #000;border-radius:6px;padding:14px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:10px}
-.decl .n{font:12px var(--f-cap);color:var(--verm);letter-spacing:.06em}
-.decl q{font:500 21px/1.3 var(--f-tit);quotes:"“" "”"}
+/* 3. A BARCA: a barca do deus de cabeça de carneiro, pintada no Vale dos Reis */
+#barcaCena .foto{background-image:url(img/fundo-barca-ra.webp);background-position:45% 52%;transform:scale(1.35);transform-origin:45% 54%;filter:brightness(.62) sepia(.2)}
+#barcaCena .sombra{background:radial-gradient(ellipse 70% 40% at 45% 52%,transparent 30%,rgba(0,0,0,.88) 100%)}
+#barcaCena.carrega .foto{animation:carrega 1.3s ease-in-out infinite}
+@keyframes carrega{0%,100%{transform:scale(1.35) translate(0,0) rotate(-.4deg)}50%{transform:scale(1.36) translate(0,-6px) rotate(.4deg)}}
+#barcaCena.sim .foto{transform:scale(1.9);filter:brightness(.9) sepia(.15)}
+#barcaCena.nao .foto{transform:scale(1.05);filter:brightness(.35) sepia(.3)}
+#barcaCena .texto{bottom:max(30px,env(safe-area-inset-bottom));z-index:7}
+#barcaCena .topoTxt{top:max(30px,env(safe-area-inset-top));bottom:auto}
+.segura{position:relative;width:96px;height:96px;border-radius:50%;border:1px solid rgba(212,168,79,.6);cursor:pointer;touch-action:none;color:#F3E2B6;
+  font:600 10.5px var(--f-ui);letter-spacing:.2em;text-transform:uppercase;background:radial-gradient(circle,rgba(212,168,79,.22),rgba(0,0,0,.55) 70%);box-shadow:0 0 30px rgba(0,0,0,.8)}
+.segura svg{position:absolute;inset:-5px;width:calc(100% + 10px);height:calc(100% + 10px);transform:rotate(-90deg)}
+.segura circle{fill:none;stroke:var(--ouro2);stroke-width:2.5;stroke-linecap:round;filter:drop-shadow(0 0 4px rgba(240,190,90,.9))}
+#respostaBox{position:absolute;inset:0;z-index:8;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:16px;
+  padding:max(40px,env(safe-area-inset-top)) 18px max(40px,env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(0,0,0,0) 0,rgba(0,0,0,.55) 30%,rgba(0,0,0,.85));animation:aparece 1.6s ease both}
+@keyframes aparece{from{opacity:0}}
+.resposta{margin-top:18vh;font:700 clamp(54px,17vw,84px)/1 var(--f-tit);letter-spacing:.12em;
+  background:linear-gradient(180deg,#FFF0C4,#E2B45A 45%,#8E6020 55%,#D9A851);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 10px #000) drop-shadow(0 0 30px rgba(240,180,80,.45))}
+.botoes{display:flex;flex-direction:column;gap:10px;width:min(100%,440px)}
+
+/* 4. PESAGEM: procissão de Anúbis */
+#pesagem .foto{background-image:url(img/fundo-anubis.webp);filter:brightness(.38) sepia(.3)}
+#pesagem .sombra{background:radial-gradient(ellipse at 50% 30%,rgba(255,170,80,.16),transparent 55%),radial-gradient(ellipse at 50% 45%,transparent 30%,rgba(0,0,0,.85))}
+#pesagem .rolar{position:absolute;inset:0;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:16px;padding:max(34px,env(safe-area-inset-top)) 18px max(34px,env(safe-area-inset-bottom));z-index:7}
+#bal{width:min(84vw,340px);height:auto;flex:none;filter:drop-shadow(0 10px 18px rgba(0,0,0,.8))}
+#braco{transform-origin:170px 52px;transition:transform 1.1s cubic-bezier(.3,1.3,.5,1)}
+.prato{transition:transform 1.1s cubic-bezier(.3,1.3,.5,1)}
+.decl .n{font:600 11px var(--f-ui);letter-spacing:.2em;color:var(--verm)}
+.decl q{font:500 22px/1.3 var(--f-tit);quotes:"“" "”"}
 .decl .bt{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.decl .bt .btn{padding:10px 8px;font-size:13.5px}
-@media (prefers-reduced-motion:reduce){.balanca{animation:none}}
+.decl .bt .btn{padding:11px 8px;font-size:12px}
+@media (prefers-reduced-motion:reduce){.grao,.treme,#barcaCena.carrega .foto{animation:none}}
 </style>
 </head><body>
 
 <!-- 1. ENTRADA -->
 <section class="cena ativa" id="entrada" aria-label="Entrada do templo">
-  <canvas id="fogo" aria-hidden="true"></canvas>
-  <div class="luzdentro" aria-hidden="true"></div>
-  <div class="portas" id="portas" aria-hidden="true">
-    <div class="porta e"><svg viewBox="0 0 40 70"><g fill="none" stroke="#C9A55C" stroke-width="4" stroke-linecap="round"><ellipse cx="20" cy="14" rx="9" ry="11"/><path d="M4 28 H36 M20 26 V66"/></g></svg></div>
-    <div class="porta d"><svg viewBox="0 0 40 70"><g fill="none" stroke="#C9A55C" stroke-width="4" stroke-linecap="round"><path d="M14 10 V66 M26 10 V66 M8 22 H32 M8 32 H32 M8 42 H32 M6 66 H34"/></g></svg></div>
-  </div>
-  <button class="tocha e" type="button" aria-label="Acender a tocha da esquerda"><i></i><b></b></button>
-  <button class="tocha d" type="button" aria-label="Acender a tocha da direita"><i></i><b></b></button>
-  <p class="cap">Templo de Amon</p>
-  <h1 id="entTit">O Oráculo do Deus Oculto</h1>
-  <p class="txt" id="entTxt">O templo está escuro. Acenda as duas tochas para que as portas se abram.</p>
+  <div class="foto"></div>
+  <canvas id="escuro" aria-label="Parede no escuro. Arraste o dedo para iluminar com a tocha."></canvas>
+  <div class="texto topoTxt" style="pointer-events:none"><p class="rotulo">Templo de Amon</p><h1>O Oráculo do<br>Deus Oculto</h1></div>
+  <div class="texto" id="entTexto"><p class="txt" id="entTxt">Está escuro. Arraste a tocha pela parede e procure a passagem.</p><div class="barra"><i id="barra"></i></div></div>
 </section>
 
 <!-- 2. A PERGUNTA -->
 <section class="cena" id="pergunta" aria-label="A pergunta">
-  <p class="cap">Diante do santuário</p>
-  <h2>Faça a sua pergunta</h2>
-  <p class="txt">O deus respondia só “sim” ou “não”. Pense numa pergunta assim, com o coração, e diga baixinho, só para você.</p>
-  <p class="miudo">Ninguém lê a sua pergunta. Ela não fica guardada.</p>
-  <button class="btn" type="button" id="chamar">Chamar a barca do deus</button>
+  <div class="foto"></div><div class="sombra"></div>
+  <div class="texto">
+    <p class="rotulo">Diante do santuário</p>
+    <h2>Faça a sua pergunta</h2>
+    <p class="txt">O deus respondia só sim ou não. Pense numa pergunta assim, com o coração, e diga baixinho, só para você.</p>
+    <p class="miudo">Ninguém lê a sua pergunta. Ela não fica guardada.</p>
+    <button class="btn" type="button" id="chamar">Chamar a barca do deus</button>
+  </div>
 </section>
 
 <!-- 3. A BARCA -->
 <section class="cena" id="barcaCena" aria-label="A barca sagrada">
-  <p class="cap" id="barcaCap">A barca de Amon</p>
-  <div class="palco">
-    <svg id="barca" viewBox="0 0 360 260" aria-label="A barca sagrada carregada pelos sacerdotes">
-      <defs><linearGradient id="ouro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7D27A"/><stop offset="1" stop-color="#A86E1E"/></linearGradient></defs>
-      <!-- varas e sacerdotes -->
-      <g fill="#4A3420" stroke="#E9B949" stroke-opacity=".35" stroke-width="1.2">
-        <rect x="30" y="168" width="300" height="7" rx="3" fill="#5A3A18"/>
-        <g id="padres"></g>
-      </g>
-      <!-- casco com cabeças de carneiro (a barca de Amon tinha a cabeça do carneiro na proa e na popa) -->
-      <path d="M40 150 Q180 182 320 150 L306 128 Q180 150 54 128 Z" fill="url(#ouro)" stroke="#3A2410" stroke-width="2"/>
-      <g fill="url(#ouro)" stroke="#3A2410" stroke-width="2">
-        <path d="M54 128 Q30 112 36 90 Q46 76 60 84 Q70 94 64 112 Z"/><path d="M306 128 Q330 112 324 90 Q314 76 300 84 Q290 94 296 112 Z"/>
-      </g>
-      <g fill="none" stroke="#3A2410" stroke-width="2"><path d="M40 92 q-8 -10 2 -16"/><path d="M320 92 q8 -10 -2 -16"/></g>
-      <!-- santuário velado (o deus ia escondido: Amon quer dizer "o oculto") -->
-      <rect x="132" y="70" width="96" height="68" rx="4" fill="#2F4F8A" stroke="#E9B949" stroke-width="3"/>
-      <path d="M132 70 Q180 46 228 70" fill="#E9B949" stroke="#3A2410" stroke-width="2"/>
-      <g stroke="#E9B949" stroke-width="2"><path d="M146 82 V128 M160 82 V128 M174 82 V128 M188 82 V128 M202 82 V128 M216 82 V128"/></g>
-      <circle cx="180" cy="40" r="10" fill="#F2A53A"/>
-    </svg>
+  <div class="foto"></div><div class="sombra"></div>
+  <div class="texto topoTxt"><p class="rotulo" id="barcaCap">A barca do deus</p></div>
+  <div class="texto">
+    <p class="txt" id="barcaTxt">Segure para os sacerdotes erguerem a barca. Quando ela se mover sozinha, o deus respondeu.</p>
+    <button class="segura" type="button" id="segura" aria-label="Segure para carregar a barca"><svg viewBox="0 0 120 120"><circle id="anel" cx="60" cy="60" r="56" stroke-dasharray="352" stroke-dashoffset="352"/></svg>Segure</button>
   </div>
-  <p class="txt" id="barcaTxt">Segure o botão para os sacerdotes erguerem a barca. Quando ela se mover sozinha, o deus respondeu.</p>
-  <button class="segura" type="button" id="segura" aria-label="Segure para carregar a barca"><svg viewBox="0 0 120 120"><circle id="anel" cx="60" cy="60" r="54" stroke-dasharray="340" stroke-dashoffset="340"/></svg>Segure</button>
-  <div id="respostaBox" hidden style="display:flex;flex-direction:column;align-items:center;gap:12px">
+  <div id="respostaBox" hidden>
     <p class="resposta" id="resposta"></p>
-    <div class="folha leitura" id="leitura"></div>
-    <div class="folha amuleto" id="amuleto"></div>
-    <details class="folha">
-      <summary><b>Como o deus respondia</b> ▾</summary>
+    <div class="lamina" id="leitura"></div>
+    <div class="lamina amuleto" id="amuleto"></div>
+    <details class="lamina">
+      <summary>Como o deus respondia ▾</summary>
       <p>Nas grandes festas, os sacerdotes carregavam nos ombros a barca de Amon, com a estátua do deus escondida dentro de um santuário fechado. Diante dela, as pessoas faziam perguntas. Se a barca avançava, era sim. Se recuava, era não.</p>
       <p>Amon quer dizer “o oculto”: o deus que ninguém vê, mas que move tudo. Em Tebas, a antiga Luxor, ele virou Amon-Rá, o rei dos deuses, e Karnak foi construído para ele.</p>
       <p>O oráculo mais famoso de Amon ficava no oásis de Siwa, no deserto. Em 331 a.C., Alexandre, o Grande, atravessou a areia para consultá-lo, e saiu de lá chamado de filho de Amon.</p>
+      <p>A barca desta parede é a do deus sol com cabeça de carneiro, navegando pela noite, protegida pela serpente Mehen. Foi fotografada no Vale dos Reis.</p>
     </details>
-    <button class="btn claro" type="button" onclick="location.reload()">Fazer outra pergunta</button>
-    <button class="btn" type="button" id="irPesagem">Seguir para o Salão das Duas Verdades</button>
+    <div class="botoes">
+      <button class="btn" type="button" id="irPesagem">Seguir para o Salão das Duas Verdades</button>
+      <button class="btn pedra" type="button" onclick="location.reload()">Fazer outra pergunta</button>
+    </div>
   </div>
 </section>
 
 <!-- 4. PESAGEM DO CORAÇÃO -->
 <section class="cena" id="pesagem" aria-label="Pesagem do coração">
-  <p class="cap">Salão das Duas Verdades</p>
-  <svg id="bal" viewBox="0 0 360 220" aria-label="Balança com o coração e a pena de Maat">
-    <path d="M180 70 V200 M140 206 H220" stroke="#E9B949" stroke-width="6" stroke-linecap="round"/>
-    <g id="braco">
-      <path d="M60 70 H300" stroke="#E9B949" stroke-width="6" stroke-linecap="round"/>
-      <circle cx="180" cy="70" r="8" fill="#2F4F8A" stroke="#E9B949" stroke-width="3"/>
-      <g id="pE"><path d="M60 70 L38 124 M60 70 L82 124" stroke="#C9B58C" stroke-width="1.6"/><path d="M30 124 Q60 142 90 124 Z" fill="#E9B949"/>
-        <path id="coracao" d="M60 120 c-12 -14 -22 -2 -12 -12 c-10 -12 8 -18 12 -6 c4 -12 22 -6 12 6 c10 10 0 -2 -12 12z" fill="#B5402A"/></g>
-      <g id="pD"><path d="M300 70 L278 124 M300 70 L322 124" stroke="#C9B58C" stroke-width="1.6"/><path d="M270 124 Q300 142 330 124 Z" fill="#E9B949"/>
-        <circle id="brilhoPena" cx="301" cy="98" r="24" fill="#F3D27A" opacity="0"/>
-        <path d="M301 121 Q294 98 301 74 Q309 98 301 121 Z" fill="#F3E4BC"/><path d="M301 121 V76" stroke="#4F6E78" stroke-width="1.5"/></g>
-    </g>
-  </svg>
-  <div class="decl" id="decl"></div>
+  <div class="foto"></div><div class="sombra"></div>
+  <div class="rolar">
+    <p class="rotulo">Salão das Duas Verdades</p>
+    <svg id="bal" viewBox="0 0 340 230" aria-label="Balança com o coração e a pena de Maat">
+      <defs>
+        <linearGradient id="ouroV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE3A2"/><stop offset=".45" stop-color="#C9963E"/><stop offset=".55" stop-color="#8E621E"/><stop offset="1" stop-color="#D3A453"/></linearGradient>
+        <linearGradient id="ouroH" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8E621E"/><stop offset=".5" stop-color="#F5D894"/><stop offset="1" stop-color="#8E621E"/></linearGradient>
+        <radialGradient id="prato" cx=".5" cy=".3" r=".8"><stop offset="0" stop-color="#F7DC9A"/><stop offset=".6" stop-color="#B2832F"/><stop offset="1" stop-color="#5C3E12"/></radialGradient>
+      </defs>
+      <rect x="164" y="52" width="12" height="160" fill="url(#ouroH)"/>
+      <path d="M128 222 h84 l-10 -12 h-64z" fill="url(#ouroV)"/>
+      <text x="170" y="40" text-anchor="middle" font-family="Noto Sans Egyptian Hieroglyphs" font-size="34" fill="url(#ouroV)">𓁦</text>
+      <g id="braco">
+        <rect x="40" y="48" width="260" height="8" rx="4" fill="url(#ouroV)"/>
+        <circle cx="170" cy="52" r="8" fill="url(#prato)"/>
+        <g class="prato" id="pE" style="transform-origin:48px 52px">
+          <path d="M48 52 L22 128 M48 52 L74 128" stroke="#C9A05A" stroke-width="1.2"/>
+          <ellipse cx="48" cy="130" rx="34" ry="7" fill="url(#prato)"/>
+          <text x="48" y="124" text-anchor="middle" font-family="Noto Sans Egyptian Hieroglyphs" font-size="30" fill="#9C2F1C">𓄣</text>
+        </g>
+        <g class="prato" id="pD" style="transform-origin:292px 52px">
+          <path d="M292 52 L266 128 M292 52 L318 128" stroke="#C9A05A" stroke-width="1.2"/>
+          <ellipse cx="292" cy="130" rx="34" ry="7" fill="url(#prato)"/>
+          <circle id="brilhoPena" cx="292" cy="108" r="22" fill="#F7D98C" opacity="0" style="filter:blur(8px)"/>
+          <text x="292" y="124" text-anchor="middle" font-family="Noto Sans Egyptian Hieroglyphs" font-size="32" fill="#F1E3BE">𓆄</text>
+        </g>
+      </g>
+    </svg>
+    <div class="lamina decl" id="decl"></div>
+  </div>
 </section>
+
+<canvas id="luzes" aria-hidden="true"></canvas>
+<div class="grao" aria-hidden="true"></div>
 
 <script src="oraculo-dados.js"></script>
 <script>
 const $ = id => document.getElementById(id);
-const vai = id => { document.querySelectorAll(".cena").forEach(c => c.classList.toggle("ativa", c.id === id)); };
+let cenaAtual = "entrada";
+const vai = id => { cenaAtual = id; document.querySelectorAll(".cena").forEach(c => c.classList.toggle("ativa", c.id === id)); };
 const vibra = p => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
 // ---------- sons ----------
 let A = null; const audio = () => { A = A || new (window.AudioContext || window.webkitAudioContext)(); if (A.state === "suspended") A.resume(); return A; };
@@ -191,68 +205,119 @@ function ruido(dur, freq, q, vol, curva) {
     const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain(); f.type = "bandpass"; f.frequency.value = freq; f.Q.value = q; g.gain.value = vol;
     s.buffer = b; s.connect(f); f.connect(g); g.connect(a.destination); s.start(); } catch (e) {}
 }
-const fogoSom = () => ruido(.9, 900, .6, .9, t => t < .1 ? t * 10 : Math.pow(1 - t, 2));
-const pedraSom = () => ruido(2.6, 140, .8, 1.6, t => Math.min(1, t * 8) * Math.pow(1 - t, 1.5));
-const tambor = () => { try { const a = audio(), t = a.currentTime, o = a.createOscillator(), g = a.createGain(); o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(48, t + .3);
-  g.gain.setValueAtTime(.7, t); g.gain.exponentialRampToValueAtTime(.001, t + .35); o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + .4); } catch (e) {} };
-const sistro = () => ruido(.25, 6200, 4, .35, t => Math.pow(1 - t, 3) * (1 + Math.sin(t * 90) * .5));
+const pedraSom = () => ruido(3.4, 110, .7, 2, t => Math.min(1, t * 6) * Math.pow(1 - t, 1.2) * (.7 + .3 * Math.sin(t * 60)));
+const tambor = () => { try { const a = audio(), t = a.currentTime, o = a.createOscillator(), g = a.createGain(); o.frequency.setValueAtTime(100, t); o.frequency.exponentialRampToValueAtTime(42, t + .35);
+  g.gain.setValueAtTime(.8, t); g.gain.exponentialRampToValueAtTime(.001, t + .4); o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + .45); } catch (e) {} };
+const sistro = () => ruido(.25, 6200, 4, .3, t => Math.pow(1 - t, 3) * (1 + Math.sin(t * 90) * .5));
 function gongo() { try { const a = audio(), t = a.currentTime, out = a.createGain(); out.gain.value = .22; out.connect(a.destination);
-  [[174, 1, 5], [174 * 2.4, .4, 3.5], [174 * 4.2, .2, 2.4]].forEach(([fr, am, du]) => { const o = a.createOscillator(), g = a.createGain(); o.frequency.value = fr; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(am, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + du); o.connect(g); g.connect(out); o.start(t); o.stop(t + du); }); } catch (e) {} }
-
-// ---------- 1. tochas: fogo desenhado em partículas ----------
-const cv = $("fogo"), cx = cv.getContext("2d"); let fogos = [], parts = [];
-function tam() { const d = Math.min(devicePixelRatio || 1, 2); cv.width = innerWidth * d; cv.height = innerHeight * d; cx.setTransform(d, 0, 0, d, 0, 0); }
-tam(); addEventListener("resize", tam);
-function quadro() {
-  cx.clearRect(0, 0, innerWidth, innerHeight);
-  // a luz das tochas acesas ilumina a pedra
-  for (const f of fogos) { const r = cx.createRadialGradient(f.x, f.y, 4, f.x, f.y, innerWidth * .7); r.addColorStop(0, `rgba(242,165,58,${.28 + Math.random() * .05})`); r.addColorStop(1, "rgba(0,0,0,0)"); cx.fillStyle = r; cx.fillRect(0, 0, innerWidth, innerHeight);
-    for (let i = 0; i < 3; i++) parts.push({ x: f.x + (Math.random() - .5) * 14, y: f.y, vy: -1.2 - Math.random() * 1.6, vx: (Math.random() - .5) * .6, v: 1, r: 6 + Math.random() * 8 }); }
-  cx.globalCompositeOperation = "lighter";
-  parts = parts.filter(p => (p.v -= .03) > 0);
-  for (const p of parts) { p.x += p.vx; p.y += p.vy; p.r *= .97; cx.fillStyle = `rgba(255,${120 + p.v * 100 | 0},40,${p.v * .5})`; cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 7); cx.fill(); }
-  cx.globalCompositeOperation = "source-over";
-  requestAnimationFrame(quadro);
+  [[150, 1, 6], [150 * 2.4, .4, 4], [150 * 4.2, .2, 2.6]].forEach(([fr, am, du]) => { const o = a.createOscillator(), g = a.createGain(); o.frequency.value = fr; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(am, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + du); o.connect(g); g.connect(out); o.start(t); o.stop(t + du); }); } catch (e) {} }
+// o crepitar da tocha, em loop baixinho enquanto ela está na mão
+let fogoNo = null;
+function fogoLigado(on) {
+  try { if (on && !fogoNo) { const a = audio(), n = a.sampleRate * 2, b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (Math.random() < .002 ? 1 : .08);
+      const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain(); s.buffer = b; s.loop = true; f.type = "lowpass"; f.frequency.value = 1800; g.gain.value = .5;
+      s.connect(f); f.connect(g); g.connect(a.destination); s.start(); fogoNo = { s, g }; }
+    if (!on && fogoNo) { fogoNo.s.stop(); fogoNo = null; } } catch (e) {}
 }
-requestAnimationFrame(quadro);
-document.querySelectorAll(".tocha").forEach(t => t.onclick = () => {
-  if (t.classList.contains("acesa")) return; audio(); t.classList.add("acesa"); fogoSom(); vibra(25);
-  const r = t.getBoundingClientRect(); fogos.push({ x: r.left + r.width / 2, y: r.bottom - 112 });
-  if (fogos.length === 2) setTimeout(() => { $("portas").classList.add("abertas"); pedraSom(); vibra([60, 80, 120]);
-    $("entTxt").textContent = "As portas se abriram. Entre."; setTimeout(() => vai("pergunta"), 3000); }, 700);
-});
+
+// ---------- luz da tocha e poeira no ar (por cima de todas as cenas) ----------
+const L = $("luzes"), lx = L.getContext("2d"); let W = 0, H = 0, D = 1;
+function medeLuz() { D = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; L.width = W * D; L.height = H * D; lx.setTransform(D, 0, 0, D, 0, 0); }
+medeLuz(); addEventListener("resize", () => { medeLuz(); medeEscuro(); });
+const poeira = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), r: .4 + Math.random() * 1.4, v: .0003 + Math.random() * .0007, f: Math.random() * 6 }));
+let fagulhas = [];
+const tocha = { x: .5, y: .78, viva: true };
+function desenhaLuz(t) {
+  lx.clearRect(0, 0, W, H);
+  // poeira suspensa: só aparece onde a luz bate
+  lx.globalCompositeOperation = "lighter";
+  for (const p of poeira) { p.y -= p.v; p.x += Math.sin(t / 2000 + p.f) * .0002; if (p.y < -.02) { p.y = 1.02; p.x = Math.random(); }
+    const dx = p.x * W - tocha.x * W, dy = p.y * H - tocha.y * H, perto = cenaAtual === "entrada" ? Math.max(0, 1 - Math.hypot(dx, dy) / 220) : .35;
+    if (perto <= 0) continue; lx.fillStyle = `rgba(255,214,160,${.5 * perto})`; lx.beginPath(); lx.arc(p.x * W, p.y * H, p.r, 0, 7); lx.fill(); }
+  // fagulhas que sobem da chama
+  if (cenaAtual === "entrada" && tocha.viva && Math.random() < .5) fagulhas.push({ x: tocha.x * W + (Math.random() - .5) * 8, y: tocha.y * H - 10, vx: (Math.random() - .5) * .8, vy: -1 - Math.random() * 1.8, v: 1 });
+  fagulhas = fagulhas.filter(f => (f.v -= .018) > 0);
+  for (const f of fagulhas) { f.x += f.vx + Math.sin(t / 90 + f.y) * .3; f.y += f.vy; lx.fillStyle = `rgba(255,${150 + f.v * 90 | 0},60,${f.v})`; lx.fillRect(f.x, f.y, 1.6, 1.6); }
+  lx.globalCompositeOperation = "source-over";
+}
+
+// ---------- 1. ENTRADA: a parede no escuro, revelada pela tocha ----------
+const E = $("escuro"), ex = E.getContext("2d"), mem = document.createElement("canvas"), mx = mem.getContext("2d");
+const GX = 10, GY = 14, visto = new Set(); let aberta = false, arrastou = false;
+function medeEscuro() { E.width = W * D; E.height = H * D; mem.width = Math.ceil(W / 3); mem.height = Math.ceil(H / 3); }
+medeEscuro();
+function quadroEntrada(t) {
+  if (cenaAtual !== "entrada") return;
+  const fl = 1 + Math.sin(t / 70) * .03 + Math.sin(t / 23) * .02 + (Math.random() - .5) * .04, R = Math.min(W, H) * .42 * fl;
+  const x = tocha.x * W * D, y = tocha.y * H * D;
+  ex.setTransform(1, 0, 0, 1, 0, 0); ex.globalCompositeOperation = "source-over"; ex.clearRect(0, 0, E.width, E.height);
+  ex.fillStyle = "rgba(4,2,1,.985)"; ex.fillRect(0, 0, E.width, E.height);
+  // o que a tocha já iluminou fica na memória, bem fraco (os olhos se acostumam)
+  ex.globalCompositeOperation = "destination-out"; ex.globalAlpha = .38; ex.drawImage(mem, 0, 0, E.width, E.height); ex.globalAlpha = 1;
+  const g = ex.createRadialGradient(x, y, R * .05 * D, x, y, R * D); g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(.45, "rgba(0,0,0,.85)"); g.addColorStop(1, "rgba(0,0,0,0)");
+  ex.fillStyle = g; ex.beginPath(); ex.arc(x, y, R * D, 0, 7); ex.fill();
+  // calor da chama tingindo a pedra
+  ex.globalCompositeOperation = "lighter"; const q = ex.createRadialGradient(x, y, 0, x, y, R * .8 * D);
+  q.addColorStop(0, `rgba(255,150,50,${.28 * fl})`); q.addColorStop(1, "rgba(255,120,30,0)"); ex.fillStyle = q; ex.beginPath(); ex.arc(x, y, R * D, 0, 7); ex.fill();
+  // a chama
+  const c = ex.createRadialGradient(x, y - 10 * D, 0, x, y - 10 * D, 26 * D * fl); c.addColorStop(0, "rgba(255,245,210,.95)"); c.addColorStop(.3, "rgba(255,190,80,.7)"); c.addColorStop(1, "rgba(255,90,20,0)");
+  ex.fillStyle = c; ex.beginPath(); ex.ellipse(x, y - 14 * D, 14 * D * fl, 30 * D * fl, 0, 0, 7); ex.fill();
+  ex.globalCompositeOperation = "source-over";
+}
+function marca(px, py) {
+  const r = Math.min(W, H) * .3 / 3, g = mx.createRadialGradient(px / 3, py / 3, 0, px / 3, py / 3, r); g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(1, "rgba(0,0,0,0)");
+  mx.fillStyle = g; mx.beginPath(); mx.arc(px / 3, py / 3, r, 0, 7); mx.fill();
+  const cx = Math.floor(px / W * GX), cy = Math.floor(py / H * GY);
+  for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) { const X = cx + a, Y = cy + b; if (X >= 0 && Y >= 0 && X < GX && Y < GY) visto.add(X + "," + Y); }
+  const p = visto.size / (GX * GY); $("barra").style.width = Math.min(100, p / .5 * 100) + "%";
+  if (p >= .5 && !aberta) abre();
+}
+function move(e) { if (aberta) return; const r = E.getBoundingClientRect(); tocha.x = (e.clientX - r.left) / W; tocha.y = (e.clientY - r.top) / H; marca(e.clientX - r.left, e.clientY - r.top); }
+E.addEventListener("pointerdown", e => { audio(); fogoLigado(true); try { E.setPointerCapture(e.pointerId); } catch (x) {} arrastou = true; move(e); });
+E.addEventListener("pointermove", e => { if (arrastou) move(e); });
+["pointerup", "pointercancel"].forEach(t => E.addEventListener(t, () => { arrastou = false; }));
+function abre() {
+  aberta = true; vibra([80, 60, 160, 60, 300]); pedraSom(); $("entTxt").textContent = "A parede cedeu. Há luz lá dentro.";
+  $("entrada").classList.add("treme"); setTimeout(() => $("entrada").classList.remove("treme"), 1600);
+  // a tocha vai até a fenda e a câmera entra por ela
+  const ini = { ...tocha }, t0 = performance.now();
+  (function voa(t) { const k = Math.min(1, (t - t0) / 1400); tocha.x = ini.x + (.56 - ini.x) * k; tocha.y = ini.y + (.53 - ini.y) * k; marca(tocha.x * W, tocha.y * H); if (k < 1) requestAnimationFrame(voa); })(t0);
+  setTimeout(() => { E.style.transition = "opacity 1.8s"; E.style.opacity = "0"; $("entTexto").style.opacity = "0"; $("entrada").classList.add("entra"); }, 1500);
+  setTimeout(() => { fogoLigado(false); tocha.viva = false; vai("pergunta"); }, 4200);
+}
+function laco(t) { quadroEntrada(t); desenhaLuz(t); requestAnimationFrame(laco); }
+requestAnimationFrame(laco);
 
 // ---------- 2 e 3. a barca ----------
-const padres = $("padres");
-for (let i = 0; i < 6; i++) { const x = 52 + i * 51; padres.insertAdjacentHTML("beforeend", `<circle cx="${x}" cy="160" r="9"/><path d="M${x - 12} 260 L${x - 9} 176 Q${x} 166 ${x + 9} 176 L${x + 12} 260 Z"/>`); }
 $("chamar").onclick = () => { audio(); vai("barcaCena"); };
 let seg = null, prog = 0, decidiu = false;
-const anel = $("anel"), barca = $("barca");
-function solta() { if (!seg || decidiu) return; clearInterval(seg); seg = null; barca.classList.remove("balanca"); $("barcaTxt").textContent = "A barca parou. Segure de novo para os sacerdotes seguirem."; }
+const anel = $("anel"), cena3 = $("barcaCena");
+function solta() { if (!seg || decidiu) return; clearInterval(seg); seg = null; cena3.classList.remove("carrega"); $("barcaTxt").textContent = "A barca parou. Segure de novo para os sacerdotes seguirem."; }
 $("segura").addEventListener("pointerdown", e => {
-  e.preventDefault(); try { $("segura").setPointerCapture(e.pointerId); } catch (x) {} if (decidiu || seg) return; audio(); barca.classList.add("balanca"); $("barcaTxt").textContent = "Os sacerdotes erguem a barca…";
+  e.preventDefault(); try { $("segura").setPointerCapture(e.pointerId); } catch (x) {} if (decidiu || seg) return; audio(); cena3.classList.add("carrega"); $("barcaTxt").textContent = "Os sacerdotes erguem a barca nos ombros…";
   let batida = 0;
   seg = setInterval(() => {
-    prog = Math.min(1, prog + .025); anel.style.strokeDashoffset = String(340 * (1 - prog));
-    if (++batida % 9 === 0) { tambor(); vibra(30); } if (batida % 14 === 0) sistro();
+    prog = Math.min(1, prog + .022); anel.style.strokeDashoffset = String(352 * (1 - prog));
+    if (++batida % 10 === 0) { tambor(); vibra(30); } if (batida % 15 === 0) sistro();
     if (prog >= 1) { clearInterval(seg); seg = null; decidiu = true; responde(); }
   }, 60);
 });
 ["pointerup", "pointercancel"].forEach(t => $("segura").addEventListener(t, solta));
 function responde() {
   const sim = (crypto.getRandomValues(new Uint8Array(1))[0] & 1) === 1;
-  barca.classList.remove("balanca"); void barca.offsetWidth; barca.classList.add(sim ? "vem" : "vai");
-  $("barcaTxt").textContent = sim ? "A barca avançou na sua direção." : "A barca recuou.";
+  cena3.classList.remove("carrega"); cena3.classList.add(sim ? "sim" : "nao");
+  $("barcaTxt").textContent = sim ? "A barca avança na sua direção." : "A barca recua para o escuro.";
   vibra(sim ? [80, 60, 200] : [200, 80, 60]); gongo();
   const sorte = n => crypto.getRandomValues(new Uint32Array(1))[0] % n;
-  const D = ORACULO.deuses[sorte(ORACULO.deuses.length)], M = ORACULO.amuletos[sorte(ORACULO.amuletos.length)];
-  $("leitura").innerHTML = `<div class="topo"><img src="deuses/${D.id}.webp" alt="${D.nome}"><div class="tt"><small>${sim ? "Sim" : "Não"}, e quem traz a resposta é</small><b>${D.nome}</b><i>${D.titulo}</i></div></div>
-    <p>${D.mito}</p><h4>Rege</h4><p>${D.rege}</p><h4>Luz</h4><p>${D.luz}</p><h4>Sombra</h4><p>${D.sombra}</p>
-    <h4>${sim ? "Para o seu sim" : "Para o seu não"}</h4><p>${sim ? "O caminho está aberto. " + D.nome + " pede que você siga com " + D.luz.split(",")[0].toLowerCase() + "." : "Não é castigo: é desvio. " + D.nome + " pede atenção a isto: " + D.sombra.charAt(0).toLowerCase() + D.sombra.slice(1)}</p>
-    <h4>A pergunta que o deus devolve</h4><p class="perg">${D.pergunta}</p><h4>Para hoje, no Egito</h4><ul>${D.hoje.map(x => `<li>${x}</li>`).join("")}</ul>`;
-  $("amuleto").innerHTML = `<span class="glifo">${M.h}</span><div><h4 style="margin:0;font:600 12px var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:var(--verm)">Seu amuleto para a viagem</h4><b style="font:500 22px var(--f-tit)">${M.nome} · ${M.sentido}</b><p>${M.texto}</p></div>`;
-  try { localStorage.setItem("cdi-oraculo-egito", JSON.stringify({ ts: Date.now(), sim, deus: D.id, amuleto: M.id })); } catch (e) {}
-  setTimeout(() => { $("segura").hidden = true; $("barcaCap").textContent = "O deus respondeu"; $("resposta").textContent = sim ? "SIM" : "NÃO"; $("respostaBox").hidden = false; }, 1700);
+  const Dd = ORACULO.deuses[sorte(ORACULO.deuses.length)], M = ORACULO.amuletos[sorte(ORACULO.amuletos.length)];
+  $("leitura").innerHTML = `<div class="topo"><img src="deuses/${Dd.id}.webp" alt="${Dd.nome}"><div><small>${sim ? "Sim" : "Não"}, e quem traz a resposta é</small><b>${Dd.nome}</b><i>${Dd.titulo}</i></div></div>
+    <p>${Dd.mito}</p><h4>Rege</h4><p>${Dd.rege}</p><h4>Luz</h4><p>${Dd.luz}</p><h4>Sombra</h4><p>${Dd.sombra}</p>
+    <h4>${sim ? "Para o seu sim" : "Para o seu não"}</h4><p>${sim ? "O caminho está aberto. " + Dd.nome + " pede que você siga com " + Dd.luz.split(",")[0].toLowerCase() + "." : "Não é castigo: é desvio. " + Dd.nome + " pede atenção a isto: " + Dd.sombra.charAt(0).toLowerCase() + Dd.sombra.slice(1)}</p>
+    <h4>A pergunta que o deus devolve</h4><p class="perg">${Dd.pergunta}</p><h4>Para hoje, no Egito</h4><ul>${Dd.hoje.map(x => `<li>${x}</li>`).join("")}</ul>`;
+  $("amuleto").innerHTML = `<span class="glifo">${M.h}</span><div><h4 style="margin:0">Seu amuleto para a viagem</h4><b style="font:500 21px var(--f-tit)">${M.nome} · ${M.sentido}</b><p>${M.texto}</p></div>`;
+  try { localStorage.setItem("cdi-oraculo-egito", JSON.stringify({ ts: Date.now(), sim, deus: Dd.id, amuleto: M.id })); } catch (e) {}
+  setTimeout(() => { $("segura").hidden = true; $("barcaTxt").hidden = true; $("barcaCap").textContent = "O deus respondeu"; $("resposta").textContent = sim ? "SIM" : "NÃO"; $("respostaBox").hidden = false; }, 2600);
 }
 
 // ---------- 4. pesagem do coração ----------
@@ -261,28 +326,27 @@ const DECL = ["Não causei dor.", "Não fiz ninguém chorar.", "Não menti.", "N
   "Não fui surdo às palavras da verdade.", "Não me enchi de arrogância.", "Não represei a água na sua estação.", "Não apaguei o fogo na sua hora."];
 let k = 0, peso = 0;
 function pesa() {
-  const ang = Math.max(-16, Math.min(16, peso * 3.2)); // positivo: coração pesado, desce à esquerda
+  const ang = Math.max(-14, Math.min(14, peso * 3)); // positivo: coração pesado, desce à esquerda
   $("braco").style.transform = `rotate(${-ang}deg)`;
-  $("pE").style.transform = `rotate(${ang}deg)`; $("pE").style.transformOrigin = "60px 70px";
-  $("pD").style.transform = `rotate(${ang}deg)`; $("pD").style.transformOrigin = "300px 70px";
-  $("brilhoPena").setAttribute("opacity", Math.abs(peso) < 1 ? .55 : 0);
+  $("pE").style.transform = `rotate(${ang}deg)`; $("pD").style.transform = `rotate(${ang}deg)`;
+  $("brilhoPena").setAttribute("opacity", Math.abs(peso) < 1 ? .7 : 0);
 }
 function declaracao() {
   const d = $("decl");
   if (k >= DECL.length) return fim();
-  d.innerHTML = `<span class="n">DECLARAÇÃO ${k + 1} DE ${DECL.length}</span><q>${DECL[k]}</q><div class="bt"><button class="btn" type="button" id="posso">Posso declarar</button><button class="btn claro" type="button" id="carrego">Ainda carrego isso</button></div>`;
+  d.innerHTML = `<span class="n">DECLARAÇÃO ${k + 1} DE ${DECL.length}</span><q>${DECL[k]}</q><div class="bt"><button class="btn" type="button" id="posso">Posso declarar</button><button class="btn pedra" type="button" id="carrego">Ainda carrego isso</button></div>`;
   $("posso").onclick = () => { peso -= 1; k++; sistro(); vibra(20); pesa(); declaracao(); };
   $("carrego").onclick = () => { peso += 1; k++; tambor(); vibra(60); pesa(); declaracao(); };
 }
 function fim() {
-  peso = Math.max(peso, 0) === 0 ? 0 : peso; pesa(); gongo(); vibra([40, 60, 120]);
+  pesa(); gongo(); vibra([40, 60, 120]);
   const leve = peso <= 2;
   $("decl").innerHTML = `<span class="n">O JULGAMENTO</span><q>${leve ? "Maa-kheru: justificada de voz." : "O coração ainda pesa, e há tempo."}</q>
-    <p style="font-size:14.5px;line-height:1.6">${leve
+    <p>${leve
       ? "Quando o coração ficava leve como a pena de Maat, Thoth escrevia o resultado e a pessoa recebia o título maa-kheru, “justa de voz”, e seguia para os Campos de Juncos, o paraíso egípcio."
       : "Para os egípcios, o coração guardava a memória de tudo o que a pessoa fez. Se pesasse mais que a pena, a devoradora Ammit o comia. Mas enquanto se está vivo, dá para aliviar: escolha uma das declarações que você ainda carrega e leve para esta viagem como intenção."}</p>
-    <p style="font-size:14.5px;line-height:1.6">No Salão das Duas Verdades, a alma declarava 42 coisas que não tinha feito, diante de 42 juízes. Anúbis conduzia a pesagem, Thoth anotava, e na outra bandeja ficava a pena de Maat, a verdade e o equilíbrio do mundo. Você vai ver essa cena pintada nas tumbas do Vale dos Reis.</p>
-    <button class="btn" type="button" onclick="location.reload()">Voltar ao início do templo</button>`;
+    <p>No Salão das Duas Verdades, a alma declarava 42 coisas que não tinha feito, diante de 42 juízes. Anúbis conduzia a pesagem, Thoth anotava, e na outra bandeja ficava a pena de Maat, a verdade e o equilíbrio do mundo. Você vai ver essa cena pintada nas tumbas do Vale dos Reis.</p>
+    <button class="btn pedra" type="button" onclick="location.reload()">Voltar ao início do templo</button>`;
 }
 $("irPesagem").onclick = () => { vai("pesagem"); pesa(); declaracao(); };
 </script>

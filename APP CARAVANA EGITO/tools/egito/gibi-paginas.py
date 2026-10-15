@@ -24,8 +24,16 @@ def reletra(im, caixa, linha, texto, tam, k=1):
     d.text((x0, (y0 + y1) / 2 - (bb[1] + bb[3]) / 2), texto, font=f, fill=TINTA + (255,))
     im.alpha_composite(camada.filter(ImageFilter.GaussianBlur(.5)))
 
+def sem_margem(im):
+    # corta a borda lisa de papel em volta dos quadros (no app a página ocupa o livro todo, sem folga)
+    import numpy as np
+    a = np.asarray(im.convert("L"), float); cs, rs = a.std(0), a.std(1)
+    pri = lambda v: next((i for i, x in enumerate(v) if x > 18), 0)
+    l, r, t, b = pri(cs), pri(cs[::-1]), pri(rs), pri(rs[::-1])
+    return im.crop((l + 4 if l else 0, t + 4 if t else 0, im.width - (r + 4 if r else 0), im.height - (b + 4 if b else 0)))
+
 def salva(im, nome, larg=1100):
-    im = im.convert("RGB")
+    im = sem_margem(im.convert("RGB"))
     if im.width < larg: im = im.resize((larg, round(im.height * larg / im.width)), Image.LANCZOS)
     im.save(OUT / nome, "WEBP", quality=88, method=6)
 

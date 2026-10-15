@@ -55,5 +55,5 @@ papel = Image.open(raiz / "referencias" / "comics" / "comic-02.png").convert("RG
 reg2 = im.crop(box); reg2 = ImageChops.multiply(reg2, Image.merge("RGB", [papel.point(lambda v: 200 + v * 55 // 255)] * 3))
 im.paste(reg2, box[:2], mask)
 out = raiz / "app" / "img" / "gibi" / "p01-capa.webp"
-im = im.crop((22, 26, 1002, 1514)); im = im.resize((1100, round(im.height * 1100 / im.width)), Image.LANCZOS)
+im = im.crop((22, 26, 1002, 1514)); im = im.resize((1100, 1560), Image.LANCZOS)  # proporção do livro (1:1,4), sem folga
 im.save(out, "WEBP", quality=88, method=6); print("ok", out)
