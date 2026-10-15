@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "15/10 · 13:24";</script>
+<script>window.__VERSAO = "15/10 · 13:41";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -5202,7 +5202,7 @@ const FILTROS = [
   // filtros das câmeras da estante, cada um no jeito do filme que aquela câmera usaria
   // Rajastão 35: negativo colorido quente (tipo Kodak Gold): pele dourada, amarelos fortes, sombras marrons
   // a mesma Rajastão 35 em cores: o contraste, o grão e a película do preto e branco, com a cor de filme 35 mm
-  { id: "cam-kodak-cor", cat: "Câmeras", nome: "Rajastão 35 Color", m: [1.04, .03, 0, .02, 1, .01, 0, .05, .9], lift: 6, con: 1.28, sat: .95, split: [[16, 20, 26], [250, 240, 222]], add: [4, 0, -6], vin: .34, grao: 20, pelicula: 1 },
+  { id: "cam-kodak-cor", cat: "Câmeras", nome: "Rajastão 35 Color", m: [1.04, .03, 0, .02, 1, .01, 0, .05, .9], lift: 6, con: 1.28, sat: .95, split: [[16, 20, 26], [250, 240, 222]], add: [4, 0, -6], vin: .34, grao: 20, pelicula: 1, semFiapos: 1 },
   { id: "cam-kodak", cat: "Câmeras", nome: "Rajastão 35", m: [.3, .59, .11, .3, .59, .11, .3, .59, .11], lift: 6, con: 1.28, sat: .001, split: [[16, 16, 16], [246, 246, 244]], add: [0, 0, 0], vin: .34, grao: 20, pelicula: 1 },
   // Descartável: filme de câmera descartável (tipo Fuji Superia): verdes e cianos fortes, sombras esverdeadas, contraste e grão
   // Bazar: a referência da Vivian (descartável de verdade): tudo puxado para o quente amarelado, preto levantado e quente, branco que nunca estoura (fica creme)
@@ -6718,8 +6718,9 @@ async function revelaFoto(img, c, extra) {
     const Fx = { ...S.foto, ...(extra || {}), img, vivo: false }; if (Fx.molduraFinal) Fx.moldura = Fx.molduraFinal; // o visor mostra só a cena; a moldura branca aparece na foto revelada
     await montaFoto(out, Fx);
     // cores Lassi da Super 8: foto limpa, sem riscos, poeira, tremido nem luz vazando da película
-    const limpa = (FILTROS.find(y => y.id === Fx.filtro) || {}).cinema === 2;
-    if (!limpa) { personalidade(out, Fx.geo, c); variaFilme(out, Fx.geo, c); }
+    const fF = FILTROS.find(y => y.id === Fx.filtro) || {}, limpa = fF.cinema === 2;
+    // Rajastão Color: o grão da câmera fica, mas sem os riscos, fiapos e poeira de filme velho
+    if (!limpa) { personalidade(out, Fx.geo, c); if (!fF.semFiapos) variaFilme(out, Fx.geo, c); }
     await marcaCaravana(out, Fx.geo, c && c.id === "rajastao");
     const fim = paraReels(out, Fx.reels);
     const b = await new Promise(ok => fim.toBlob(ok, "image/jpeg", .9));
