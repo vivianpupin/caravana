@@ -116,3 +116,19 @@ Onde cada coisa da Índia mora no código (procurar pelo nome; números de linha
 5. Selos, aberturas dos dias e cenários do retrato (com as artes).
 6. Habilidades, nomes das câmeras e filtros, explorador e chat (escolhas da Vivian).
 7. Firebase e Netlify novos, repositório próprio.
+
+## 7. O que já se sabe do Egito (PDF "EGYTP 2027 _ CARAVANA", páginas 1 a 5 de 26)
+
+Fonte: prints que a Vivian mandou em 15/10/2026, guardados em `referencias/pdf-egito-2027/`.
+
+- **Nome**: Travessia do Velho Mundo · Caravana do Céu · Egito 2027.
+- **Datas**: 13 dias e 12 noites, de 08/10 a 20/10 (2027). Atenção: os contratos da Egito Tours falam em "Setembro27, Grupo 1 e Grupo 2"; confirmar com a Vivian as datas de cada grupo.
+- **Rota** ("uma travessia que corta o Egito de norte a sul"): Cairo, White Desert (Deserto Branco), Hurghada, Luxor, Aswan, Abu Simbel, com mais duas paradas de templo no caminho entre Hurghada e Luxor e uma entre Aswan e Luxor (nomes a confirmar nas páginas seguintes).
+- **Identidade visual do PDF**:
+  - Fotos reais escuras e granuladas, céu dramático, tons de pedra e areia.
+  - Títulos em letra fina, geométrica, toda em maiúsculas e bem espaçada ("EGITO", "TRAVESSIA / DO VELHO MUNDO").
+  - Citações em letra bold condensada em maiúsculas, com palavra de destaque em amarelo.
+  - Texto corrido em sans arredondada sobre fundo de pedra escura, com palavras-chave em negrito; olho de Hórus como ícone.
+  - Mapa "a rota da Caravana": pergaminho rasgado com desenhos a tinta azul (pirâmides, templos, escaravelho, hieróglifos, jipe, barco), linha tracejada da rota.
+  - Símbolo da Caravana pequeno no alto de cada página.
+- **Direção pedida pela Vivian para o app**: estética toda nova, mais interativa, sem cara de IA; céu de Nut, papiro, tumbas pintadas coloridas e Indiana Jones. Página principal com mapa-mundo estilo videogame (referência: mapa do Donkey Kong Country 3 refeito em HD, em `referencias/mapa-game/`), com as cidades da rota e o viajante avançando pelo mundo.
