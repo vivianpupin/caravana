@@ -6427,11 +6427,9 @@ function vEstante() {
 // só a líder vê: tirar o logo da Caravana das fotos e filmes que ela fizer (em todas as câmeras); fica guardado neste celular
 const semLogo = () => { try { return ehLider(S.uid) && localStorage.getItem("cdi-sem-logo") === "1"; } catch (e) { return false; } };
 function chaveLogoLider() {
-  const sem = semLogo(), rot = h("span", { text: sem ? "Desligado" : "Ligado" });
   return h("div", { class: "logolider" },
-    h("p", { class: "small", text: "Só a líder vê" }),
-    h("label", { class: "logochave" }, h("span", { text: "Logo da Caravana nas minhas fotos" }),
-      h("input", { type: "checkbox", role: "switch", checked: !sem, onchange: e => { try { localStorage.setItem("cdi-sem-logo", e.target.checked ? "0" : "1"); } catch (x) {} rot.textContent = e.target.checked ? "Ligado" : "Desligado"; } }), rot));
+    h("label", { class: "logochave" }, h("span", { text: "Logo CARAVANA" }),
+      h("input", { type: "checkbox", role: "switch", "aria-label": "Logo da Caravana nas minhas fotos", checked: !semLogo(), onchange: e => { try { localStorage.setItem("cdi-sem-logo", e.target.checked ? "0" : "1"); } catch (x) {} } })));
 }
 const fotoDaCamera = c => ({ filtro: "original", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "original", legenda: "", cidade: "", data: "", ...(c.preset || {}), adesivos: (c.preset && c.preset.adesivos || []).map(a => ({ ...a })) });
 document.addEventListener("contextmenu", e => { if (e.target.closest?.(".camfull,.nomovisor,.carteira")) e.preventDefault(); });
