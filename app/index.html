@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "15/10 · 12:58";</script>
+<script>window.__VERSAO = "15/10 · 13:24";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -5201,6 +5201,8 @@ const FILTROS = [
   // filtros próprios das câmeras da estante (estilo de filme de câmera antiga)
   // filtros das câmeras da estante, cada um no jeito do filme que aquela câmera usaria
   // Rajastão 35: negativo colorido quente (tipo Kodak Gold): pele dourada, amarelos fortes, sombras marrons
+  // a mesma Rajastão 35 em cores: o contraste, o grão e a película do preto e branco, com a cor de filme 35 mm
+  { id: "cam-kodak-cor", cat: "Câmeras", nome: "Rajastão 35 Color", m: [1.04, .03, 0, .02, 1, .01, 0, .05, .9], lift: 6, con: 1.28, sat: .95, split: [[16, 20, 26], [250, 240, 222]], add: [4, 0, -6], vin: .34, grao: 20, pelicula: 1 },
   { id: "cam-kodak", cat: "Câmeras", nome: "Rajastão 35", m: [.3, .59, .11, .3, .59, .11, .3, .59, .11], lift: 6, con: 1.28, sat: .001, split: [[16, 16, 16], [246, 246, 244]], add: [0, 0, 0], vin: .34, grao: 20, pelicula: 1 },
   // Descartável: filme de câmera descartável (tipo Fuji Superia): verdes e cianos fortes, sombras esverdeadas, contraste e grão
   // Bazar: a referência da Vivian (descartável de verdade): tudo puxado para o quente amarelado, preto levantado e quente, branco que nunca estoura (fica creme)
@@ -6506,7 +6508,7 @@ function mudaExpo(d) {
   try { navigator.vibrate && navigator.vibrate(8); } catch (e) {}
 }
 // botões de cinema em cada câmera: [filtro, nome]
-const CINE_BOTOES = { campo: [["cam-cinematic", "Cinematic"]], super8: [["cam-magic", "Magic Lassi"], ["cam-noturno", "Blue Lassi"], ["cam-mango", "Mango Lassi"], ["cam-rose", "Rose Lassi"], ["cam-pista", "Pistache"], ["cam-masala", "Masala"], ["cam-indigo", "Índigo"]] };
+const CINE_BOTOES = { rajastao: [["cam-kodak-cor", "Color"]], campo: [["cam-cinematic", "Cinematic"]], super8: [["cam-magic", "Magic Lassi"], ["cam-noturno", "Blue Lassi"], ["cam-mango", "Mango Lassi"], ["cam-rose", "Rose Lassi"], ["cam-pista", "Pistache"], ["cam-masala", "Masala"], ["cam-indigo", "Índigo"]] };
 const FILME_CAM = { campo: "Placa de vidro · obturador lento · 1900", couro: "Filme 35 mm desbotado · 1955", quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
 function vCameraFisica(c) {
   const F0 = S.foto || (S.foto = fotoDaCamera(c));
