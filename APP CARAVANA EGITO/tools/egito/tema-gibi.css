@@ -194,7 +194,7 @@ html[data-tab="travessia"] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::aft
 html[data-tab="travessia"] .daychips{background:rgba(232,203,140,.82);border-bottom:2px solid #8C6A3A}
 html[data-tab="travessia"] .lidoscont{color:#5A4127;text-shadow:none}
 .mapahero{gap:12px;padding-top:12px}
-.mmundo{position:relative;width:calc(100% + 16px);margin:0 -8px;aspect-ratio:1298/1226;border-radius:4px;overflow:visible;
+.mmundo{position:relative;width:calc(100% + 16px);margin:0 -8px;aspect-ratio:1320/1242;border-radius:4px;overflow:visible;
   }
 .mmundo>img{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 8px 14px rgba(70,40,10,.4))}
 @keyframes mmpulsa{from{transform:scale(.6);opacity:1}to{transform:scale(1.5);opacity:0}}
@@ -309,3 +309,8 @@ html[data-tab="explorador"] .controls .lab{color:#B5402A;text-shadow:none}
 .mmexp{width:12%}
 /* frase que gira embaixo do mapa: sempre uma linha só */
 .mapahero .intro{white-space:nowrap;font-size:clamp(11.5px,3.45vw,15px);min-height:0!important;margin-top:6px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+
+/* o mapa vai de ponta a ponta da tela, como no slide: os lados retos encostam na borda do celular */
+.mapahero .mmundo{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);max-width:none}
+.mmundo>img{filter:drop-shadow(0 6px 10px rgba(70,40,10,.35))}
+@media (min-width:600px){.mapahero .mmundo{width:100%;margin-left:0;margin-right:0}}

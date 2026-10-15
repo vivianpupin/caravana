@@ -2,16 +2,16 @@
 // Sobre o mapa antigo da rota: uma trilha de pontinhos que acendem conforme a viagem avança, cada parada é uma "fase"
 // com o selo do lugar, e o explorador da pessoa anda pela trilha da última parada vista até a de hoje.
 // mapa da rota da caravana (a arte do material da viagem): paradas e trilha em pixels da imagem img/mapa-rota.webp
-const MAPA_W = 1298, MAPA_H = 1226;
+const MAPA_W = 1320, MAPA_H = 1242;
 const PARADAS = [
-  { n: 1, c: "Cairo", x: 403, y: 235, dias: [1, 2, 3], selo: "cairo" },
-  { n: 2, c: "Deserto Branco", x: 364, y: 400, dias: [4, 5], selo: "deserto-branco" },
-  { n: 3, c: "Aswan", x: 610, y: 638, dias: [6], selo: "aswan" },
-  { n: 4, c: "Abu Simbel", x: 677, y: 960, dias: [7], selo: "abu-simbel" },
-  { n: 5, c: "Luxor", x: 860, y: 809, dias: [8, 9], selo: "luxor" },
-  { n: 6, c: "Hurghada", x: 954, y: 354, dias: [10, 11, 12], selo: "mar-vermelho" },
-  { n: 7, c: "Cairo · volta para casa", x: 449, y: 269, dias: [13], selo: "piramides-gize" }];
-const TRECHOS = [[[403,235],[372,287],[342,337],[364,400]],[[364,400],[447,497],[557,597],[610,638]],[[610,638],[695,629],[667,733],[648,846],[677,960]],[[677,960],[757,917],[817,867],[860,809]],[[860,809],[808,742],[779,663],[732,563],[723,469],[752,402],[847,377],[954,354]],[[954,354],[847,377],[752,402],[637,357],[517,297],[449,269]]];
+  { n: 1, c: "Cairo", x: 406, y: 236, dias: [1, 2, 3], selo: "cairo" },
+  { n: 2, c: "Deserto Branco", x: 367, y: 401, dias: [4, 5], selo: "deserto-branco" },
+  { n: 3, c: "Aswan", x: 613, y: 639, dias: [6], selo: "aswan" },
+  { n: 4, c: "Abu Simbel", x: 680, y: 961, dias: [7], selo: "abu-simbel" },
+  { n: 5, c: "Luxor", x: 863, y: 810, dias: [8, 9], selo: "luxor" },
+  { n: 6, c: "Hurghada", x: 957, y: 355, dias: [10, 11, 12], selo: "mar-vermelho" },
+  { n: 7, c: "Cairo · volta para casa", x: 452, y: 270, dias: [13], selo: "piramides-gize" }];
+const TRECHOS = [[[406,236],[375,288],[345,338],[367,401]],[[367,401],[450,498],[560,598],[613,639]],[[613,639],[698,630],[670,734],[651,847],[680,961]],[[680,961],[760,918],[820,868],[863,810]],[[863,810],[811,743],[782,663],[735,564],[726,470],[755,403],[850,378],[957,355]],[[957,355],[850,378],[755,403],[640,358],[520,298],[452,270]]];
 function vMapaMundo(dias, hoje, f, abrir) {
   const W = MAPA_W, H = MAPA_H, dHoje = dias.find(d => d.iso === hoje), fim = hoje > dias[dias.length - 1].iso;
   const atual = fim ? 6 : dHoje ? Math.max(0, PARADAS.findIndex(q => q.dias.includes(dHoje.n))) : 0;
@@ -37,6 +37,8 @@ function vMapaMundo(dias, hoje, f, abrir) {
   // pontinhos da trilha: acesos até a parada de hoje, apagados dali em diante
   requestAnimationFrame(() => {
     if (!svg.isConnected) return;
+    // no celular o mapa encosta nas duas bordas da tela, como no slide
+    if (innerWidth < 600) { const r = box.getBoundingClientRect(), ml = parseFloat(getComputedStyle(box).marginLeft) || 0; box.style.marginLeft = (ml - r.left) + "px"; box.style.width = innerWidth + "px"; }
     segs.forEach((s, i) => { const len = s.getTotalLength(), n = Math.max(3, Math.round(len / 34));
       for (let k = 1; k < n; k++) { const pt = s.getPointAtLength(len * k / n), aceso = i < atual;
         const c = document.createElementNS(NS, "circle"); c.setAttribute("cx", pt.x); c.setAttribute("cy", pt.y); c.setAttribute("r", aceso ? 7 : 5.5);
