@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "15/10 · 10:31";</script>
+<script>window.__VERSAO = "15/10 · 12:58";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -6660,7 +6660,9 @@ async function filma(c) {
   const tela = S.fotoCanvas; if (!tela || !tela.captureStream || !window.MediaRecorder) { alert("Este celular não consegue filmar pelo app."); return; }
   const W = 1080, H = 1920, rec = document.createElement("canvas"); rec.width = W; rec.height = H; const x = rec.getContext("2d");
   const marca = document.createElement("canvas"); marca.width = W; marca.height = H; await marcaCaravana(marca, { ox: 0, oy: 0, w: W, hh: H }, c && c.id === "rajastao");
-  const copia = setInterval(() => { const e = Math.max(W / tela.width, H / tela.height), w = tela.width * e, hh = tela.height * e; x.fillStyle = "#000"; x.fillRect(0, 0, W, H); x.drawImage(tela, (W - w) / 2, (H - hh) / 2, w, hh); x.drawImage(marca, 0, 0); }, 1000 / 24);
+  const desenha = () => { const e = Math.max(W / tela.width, H / tela.height), w = tela.width * e, hh = tela.height * e; x.fillStyle = "#000"; x.fillRect(0, 0, W, H); x.drawImage(tela, (W - w) / 2, (H - hh) / 2, w, hh); x.drawImage(marca, 0, 0); };
+  // o primeiro quadro já sai com a imagem (antes saía preto, e o vídeo salvo no celular aparecia com a capa preta na galeria)
+  desenha(); const copia = setInterval(desenha, 1000 / 24);
   const tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || "";
   const mr = new MediaRecorder(rec.captureStream(24), tipo ? { mimeType: tipo, videoBitsPerSecond: 3.5e6 } : undefined), partes = [];
   mr.ondataavailable = e => e.data && e.data.size && partes.push(e.data);
@@ -6672,7 +6674,11 @@ async function filma(c) {
   // capa do filme: o primeiro quadro, guardado como foto, para a miniatura nunca ficar preta (o iPhone não mostra quadro de vídeo parado)
   let capa = null; setTimeout(() => { const k = document.createElement("canvas"); k.width = 360; k.height = 640; k.getContext("2d").drawImage(rec, 0, 0, 360, 640); k.toBlob(b => { capa = b; }, "image/jpeg", .8); }, 250);
   const limite = setTimeout(() => mr.state === "recording" && mr.stop(), 60000);
-  S.gravando = mr; S.gravouEm = Date.now(); mr.start(500); cliqueSom(); mostraGravando();
+  // o iPhone só manda imagem para o filme depois que a tela já foi desenhada algumas vezes: a gravação começa um instante depois, para o 1º quadro não sair preto
+  const comeca = setTimeout(() => { if (mr.state === "inactive" && S.gravando === mr) mr.start(500); }, 250);
+  const para0 = mr.stop.bind(mr);
+  mr.stop = () => { if (mr.state === "inactive") { clearTimeout(comeca); clearInterval(copia); clearTimeout(limite); S.gravando = null; mostraGravando(); return; } para0(); };
+  S.gravando = mr; S.gravouEm = Date.now(); cliqueSom(); mostraGravando();
 }
 // começar e parar de filmar muda só o que precisa (REC, textos, botão e a miniatura), sem redesenhar a tela: nada pisca
 function mostraGravando(novoFilme) {
