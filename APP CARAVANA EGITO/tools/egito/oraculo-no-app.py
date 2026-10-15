@@ -6,11 +6,11 @@ t = p.read_text()
 NOVO_CARD = '''function vOraculoCard() {
   let L = null; try { L = JSON.parse(localStorage.getItem("cdi-oraculo-egito") || "null"); } catch (e) {}
   const NOMES = { ra: "Rá", thoth: "Thoth", isis: "Ísis", osiris: "Osíris", horus: "Hórus", anubis: "Anúbis", hathor: "Hathor", maat: "Maat", ptah: "Ptah", amon: "Amon", sobek: "Sobek", imhotep: "Imhotep" };
-  const d = L && NOMES[L.deus];
+  const d = L && (L.titulo || NOMES[L.deus]);
   return h("button", { type: "button", class: "oraculocard amon", onclick: () => abrirOraculo() },
-    h("img", { class: "orcdeus", src: "deuses/" + (d ? L.deus : "amon") + ".webp", alt: "" }),
+    h("img", { class: "orcdeus", src: "deuses/" + (L && L.deus ? L.deus : "amon") + ".webp", alt: "" }),
     h("span", { class: "orctx" }, h("small", { text: "Templo de Amon" }), h("b", { text: "Oráculo de Amon" }),
-      h("span", { text: d ? `Sua última leitura: ${d}. Toque para consultar de novo.` : "Acenda a tocha, pense na sua pergunta e veja qual deus a barca traz." })));
+      h("span", { text: d ? `Sua última jogada parou na ${L.titulo || d}. Toque para jogar de novo.` : "Acenda a tocha, pense na sua pergunta e jogue o Senet, o jogo da passagem." })));
 }
 '''
 NOVO_ABRIR = '''function abrirOraculo() {

@@ -152,3 +152,41 @@ window.ORACULO.mensagens = {
   sobek: "Sobek fala da força e do instinto. A sua pergunta pede coragem crua, aquela que não espera estar pronta. Mas o crocodilo também sabe esperar imóvel ao sol até a hora certa. Use a força, sim, mas com o tempo do rio: nem paralisada, nem afobada.",
   imhotep: "Imhotep fala da sabedoria prática. A sua pergunta se resolve com método: um degrau de cada vez, como a primeira pirâmide, que era uma escada para o céu. Cuide do corpo, organize os passos, peça ajuda a quem sabe. O que parece impossível vira obra quando é bem planejado."
 };
+
+// ---------- Senet: o jogo da passagem ----------
+// O tabuleiro de 30 casas, em 3 fileiras, percorrido em zigue-zague. As casas 15 e 26 a 30 têm sinais pintados nos
+// tabuleiros que sobreviveram (o ankh, o nefer, a água, o três, o dois e a figura de Hórus ou de Rá). As outras casas
+// não têm nome conhecido: aqui cada uma ganha um deus guardião, que fala com a pessoa (isso é escolha nossa).
+// A consulta começa na Casa do Renascimento (15) e são 4 lançamentos dos 4 bastões.
+window.ORACULO.senet = {
+  casas: {
+    15: { nome: "Casa do Renascimento", h: "𓋹", amuleto: "ankh", tema: "recomeço",
+      txt: "Toda consulta começa aqui. Nos tabuleiros, esta casa leva o ankh, a vida. Era onde a peça renascia depois de cair na água.",
+      msg: "Você voltou ao ponto de partida, mas não é a mesma pessoa que saiu. O que parecia andar para trás é o caminho dando a você uma segunda chance de começar com o que já aprendeu. Renascer não é apagar: é começar de novo carregando a experiência.",
+      pergunta: "Se você pudesse começar isso de novo hoje, o que faria diferente?" },
+    26: { nome: "Casa da Beleza", h: "𓄤", amuleto: "nefer", tema: "o que é bom e belo",
+      txt: "A casa do nefer, a palavra que quer dizer bom e belo ao mesmo tempo. Chegar aqui era sinal de sorte: a peça podia seguir protegida.",
+      msg: "O caminho está abençoado. O que você perguntou tem beleza dentro, e para os egípcios beleza e bondade eram a mesma coisa. Siga, mas siga com cuidado com o que vem: a casa seguinte é a da água. Aproveite este momento sem pressa de passar por ele.",
+      pergunta: "Que beleza na sua vida você ainda não parou para agradecer?" },
+    27: { nome: "Casa da Água", h: "𓈗", amuleto: "djed", tema: "a queda que ensina",
+      txt: "A casa das águas do caos. Quem caía aqui se afogava e voltava para a Casa do Renascimento. É a única casa que manda a peça para trás.",
+      msg: "Você caiu na água. Não é castigo: é o Nilo te puxando para o fundo para mostrar o que ainda não foi visto. Algo na sua pergunta precisa ser revisto antes de seguir. Respire, volte ao começo e atravesse de novo, mais leve. Muitas vezes a resposta está no que a gente tentou pular.",
+      pergunta: "O que você está tentando atravessar rápido demais?" },
+    28: { nome: "Casa das Três Verdades", h: "𓏼", amuleto: "ib", tema: "o que precisa ser visto por três lados",
+      txt: "Nos tabuleiros, esta casa tem três traços. Muitos estudiosos ligam essa casa aos juízes do outro mundo.",
+      msg: "A sua pergunta tem três lados, e você está olhando só um. Pense no que você sente, no que é justo para os outros e no que é melhor para o seu futuro. Quando as três verdades concordam, a peça sai daqui sozinha. Se uma delas discorda, escute essa primeiro.",
+      pergunta: "Qual das três verdades você tem evitado ouvir?" },
+    29: { nome: "Casa das Duas Verdades", h: "𓏻", amuleto: "udjat", tema: "o equilíbrio entre dois caminhos",
+      txt: "A casa com dois traços. Ligada às duas Maats, a verdade e a justiça, e ao sol que se põe, Atum.",
+      msg: "Você está entre dois caminhos, e os dois têm verdade. Não é escolher o certo contra o errado: é encontrar o equilíbrio entre duas coisas boas. Maat não pede que você abra mão de um lado, pede que você não pese demais nenhum. A resposta está no meio, onde a balança fica parada.",
+      pergunta: "O que acontece se você não precisar escolher só um lado?" },
+    30: { nome: "Casa de Hórus", h: "𓅃", amuleto: "escaravelho", tema: "a chegada",
+      txt: "A última casa, a saída do tabuleiro. Em alguns tabuleiros ela tem a figura de Hórus ou de Rá nascendo. Quem chegava aqui atravessava para a luz.",
+      msg: "Você chegou. A peça sai do tabuleiro e nasce como o sol. O que você perguntou está maduro, pronto para acontecer. Este é o momento de agir com a coragem de Hórus, que viu longe e tomou o seu lugar. Não espere mais um sinal: este é o sinal.",
+      pergunta: "O que você faria hoje se soubesse que já está pronta?" }
+  },
+  // casas sem nome conhecido: um deus guardião para cada uma (16 a 25)
+  guardioes: { 16: "thoth", 17: "isis", 18: "osiris", 19: "anubis", 20: "hathor", 21: "maat", 22: "ptah", 23: "amon", 24: "sobek", 25: "imhotep" },
+  amuletoGuardiao: { thoth: "ib", isis: "tyet", osiris: "djed", anubis: "udjat", hathor: "nefer", maat: "shen", ptah: "was", amon: "shen", sobek: "was", imhotep: "lotus" },
+  bolsa: [["O que veio", "Isto te trouxe até aqui."], ["O que é", "Isto pede a sua atenção agora."], ["O que vem", "Isto te espera no caminho."]]
+};
