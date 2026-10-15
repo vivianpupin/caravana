@@ -4,9 +4,9 @@ raiz = pathlib.Path(__file__).resolve().parents[2]
 arq = raiz / "app" / "caravana-do-ceu.html"; t = arq.read_text(encoding="utf-8")
 def troca(v, n, todas=False):
     global t
+    if n in t: return
     c = t.count(v)
     if c == 0:
-        if n in t: return
         raise SystemExit("não achei: " + v[:80])
     if c > 1 and not todas: raise SystemExit(f"{c}x: " + v[:80])
     t = t.replace(v, n)

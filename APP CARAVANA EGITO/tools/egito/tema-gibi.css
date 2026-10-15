@@ -8,30 +8,24 @@
   --ok:#3F6B3A; --err:#A0302A; --seal:#B5402A; --on-dark:#F3E4BC;
   --azul:#4F6E78; --mostarda:#E9B949;
   --shadow:4px 4px 0 #1E140B;
-  --display:"Bangers","Impact","Arial Narrow",sans-serif;
-  --ui:"Comic Neue","Trebuchet MS",system-ui,sans-serif;
   --cap:"Special Elite","Courier New",monospace;
   --r:6px;
 }
-body{font-weight:400;font-size:15.5px}
 /* papel de gibi: retícula de pontinhos e fibras, com as bordas mais escuras */
 .app{background:
   radial-gradient(ellipse at 50% 30%,transparent 55%,rgba(90,55,15,.22)),
   radial-gradient(circle,rgba(110,70,20,.10) 1px,transparent 1.4px) 0 0/7px 7px,
   repeating-linear-gradient(8deg,rgba(120,80,30,.035) 0 2px,transparent 2px 9px),
   var(--bg)}
-h1,h2,h3,h4,h5{font-family:var(--display);font-weight:400;letter-spacing:.03em;line-height:1.05}
 b,strong{font-weight:700}
 
 /* cabeçalho: faixa preta de capa de gibi com o nome em amarelo */
 .top{background:#1E140B radial-gradient(circle,rgba(233,185,73,.10) 1px,transparent 1.4px) 0 0/6px 6px;border-bottom:4px solid var(--mostarda)}
-.brand b{font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:.06em;color:var(--mostarda);text-shadow:2px 2px 0 #000}
-.brand span{color:#E9D6A8;font-family:var(--cap);letter-spacing:.08em;font-size:10.5px}
 .me:not(.bubble){background:#F3E4BC;border:2px solid #000;box-shadow:2px 2px 0 #000}
 
 /* menu de baixo: barra preta, aba escolhida em mostarda */
 nav.tabs{background:#1E140B;border-top:4px solid var(--mostarda)}
-nav.tabs button{color:#C9B58C;font-family:var(--display);font-weight:400;font-size:12.5px;letter-spacing:.06em}
+nav.tabs button{color:#C9B58C}
 nav.tabs button[aria-current="page"]{color:var(--mostarda)}
 nav.tabs button[aria-current="page"] .ic{background:var(--mostarda);color:#1E140B;border:2px solid #000;box-shadow:2px 2px 0 #000}
 @media (min-width:900px){nav.tabs{background:#1E140B;border-right:4px solid var(--mostarda)}}
@@ -44,30 +38,28 @@ nav.tabs button[aria-current="page"] .ic{background:var(--mostarda);color:#1E140
 
 /* legendas (os "olhos" de seção) viram caixa de legenda amarela */
 .eyebrow{font-family:var(--cap);font-weight:400;font-size:12px;letter-spacing:.06em;color:var(--ink);background:var(--mostarda);border:2px solid var(--ink);padding:3px 8px 2px;width:fit-content;box-shadow:2px 2px 0 var(--ink);text-transform:uppercase}
-.eyebrow.rule{width:auto;background:none;border:0;box-shadow:none;padding:0;color:var(--terra);font-family:var(--display);font-size:17px;letter-spacing:.06em}
+.eyebrow.rule{width:auto;background:none;border:0;box-shadow:none;padding:0;color:var(--terra);font-family:var(--ui);font-weight:600;font-size:11.5px;letter-spacing:.16em}
 .rule::after{height:3px;background:var(--ink)}
 .lede,.hero .intro,.dtit .fr{font-family:var(--cap);font-style:normal;font-size:15px;color:var(--soft)}
 .small{color:var(--soft)}
 
 /* botões de gibi */
-.btn{border:2.5px solid var(--ink);border-radius:4px;background:#F3E4BC;box-shadow:3px 3px 0 var(--ink);font-family:var(--display);font-weight:400;font-size:17px;letter-spacing:.06em;padding:8px 16px 6px;color:var(--ink)}
+.btn{border:2.5px solid var(--ink);border-radius:4px;background:#F3E4BC;box-shadow:3px 3px 0 var(--ink);padding:8px 16px;color:var(--ink)}
 .btn:hover{border-color:var(--ink)}
 .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
 .btn.gold{background:var(--mostarda);border-color:var(--ink);color:var(--ink)}
 .btn.gold:hover{background:#F2C75A}
 .btn.ghost{box-shadow:none;border-color:transparent;background:none;color:var(--soft)}
 .btn.danger{background:#F3E4BC;color:var(--err);border-color:var(--err);box-shadow:3px 3px 0 var(--err)}
-.opt,.daychips button,.tag{font-family:var(--ui);font-weight:700}
-input[type=text],input[type=number],input[type=email],select,textarea{background:#FBF2D9;border:2.5px solid var(--ink);border-radius:4px;font-family:var(--ui)}
+input[type=text],input[type=number],input[type=email],select,textarea{background:#FBF2D9;border:2.5px solid var(--ink);border-radius:4px}
 input:focus,select:focus,textarea:focus{border-color:var(--terra);box-shadow:3px 3px 0 var(--terra)}
 
 /* tela inicial: título de capa de gibi */
-.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(40px,12vw,60px);line-height:.92;letter-spacing:.03em;color:var(--mostarda);
-  -webkit-text-stroke:2px #1E140B;paint-order:stroke fill;text-shadow:3px 3px 0 #1E140B,5px 6px 0 rgba(30,20,11,.35);transform:rotate(-2deg)}
-.hero .route{font-family:var(--cap);font-weight:400;letter-spacing:.08em;color:var(--ink);background:#F3E4BC;border:2px solid var(--ink);padding:4px 10px;box-shadow:2px 2px 0 var(--ink)}
+.hero h1{color:#F3E4BC;text-shadow:0 2px 3px #000,0 0 22px rgba(0,0,0,.6)}
+.hero .route{letter-spacing:.08em;color:var(--ink);background:#F3E4BC;border:2px solid var(--ink);padding:4px 10px;box-shadow:2px 2px 0 var(--ink)}
 .hero .logo.moeda{box-shadow:0 0 0 3px #1E140B,5px 5px 0 3px #1E140B}
 .clock div{background:var(--panel)}
-.clock b{font-family:var(--display);font-weight:400;font-size:32px;color:var(--terra)}
+.clock b{color:var(--terra)}
 .clock span{font-family:var(--cap)}
 
 /* roteiro: dias como quadros numerados */
@@ -75,10 +67,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--terra);box-shadow:3px
 .daychips button{background:#F3E4BC;border:2px solid var(--ink);border-radius:4px;color:var(--ink)}
 .daychips button[aria-current="true"]{background:var(--ink);color:var(--mostarda)}
 .daychips button[aria-current="true"] b{color:var(--mostarda)}
-.dnum b{font-family:var(--display);font-weight:400;font-size:36px;color:var(--azul)}
+.dnum b{color:var(--azul)}
 .day.open .dnum b,.day.is-today .dnum b{color:var(--terra)}
 .dnum small{font-family:var(--cap);color:var(--soft)}
-.dtit h3{font-size:22px}
 .tag{border-radius:3px;background:#E2CB96;color:var(--ink);border:1.5px solid var(--ink)}
 .tag.date{background:var(--mostarda);color:var(--ink)}
 .tag.today{background:var(--terra);color:#F3E4BC}
@@ -86,14 +77,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--terra);box-shadow:3px
 ul.items li{border-top:1.5px dashed var(--line2)}
 ul.items .h{color:var(--terra)}
 .place .sub{font-family:var(--cap);font-weight:400;color:var(--terra);letter-spacing:.06em}
-.place h4{font-size:26px}
 
 /* janelas e cartões soltos */
 .sheet>*{border:3px solid var(--ink)!important;box-shadow:6px 6px 0 var(--ink)!important;border-radius:6px!important}
 
 /* cabeçalho: o visual da Índia forçava letra fina com !important */
-.brand b{font-family:var(--display)!important;font-weight:400!important;letter-spacing:.08em!important;font-size:21px!important;color:var(--mostarda);text-shadow:2px 2px 0 #000;text-transform:uppercase}
-.brand span{color:#E9D6A8;font-family:var(--cap);letter-spacing:.08em;font-size:10.5px}
+.brand b{color:#F1E2BC}
 
 /* antes de embarcar: quadro de missão */
 .missoes{background:var(--panel);border:3px solid var(--ink);border-radius:var(--r);box-shadow:var(--shadow)}
@@ -101,12 +90,10 @@ ul.items .h{color:var(--terra)}
 .missoesbarra i{background:repeating-linear-gradient(-45deg,var(--terra) 0 6px,#C9502F 6px 12px);border-radius:0}
 .missaock{border:2px solid var(--ink);border-radius:3px}
 .missoeslista li.ok .missaock{background:var(--terra);border-color:var(--ink)}
-.missaotx b{font-family:var(--display);font-weight:400;font-size:18px;letter-spacing:.04em}
 .missoeslista li button{border-bottom:1.5px dashed var(--line2)}
 
 /* saberes, guias e frases: quadros de gibi */
 .sab,details.guide{background:var(--panel);border:3px solid var(--ink);border-radius:var(--r);box-shadow:var(--shadow)}
-details.guide summary b,.sab h3{font-family:var(--display);font-weight:400;letter-spacing:.04em}
 details.guide .gb p,.saber p{font-family:var(--ui);color:var(--ink)}
 .saber h3{font-style:normal}
 .oraculocard{border:3px solid #000;border-radius:var(--r);box-shadow:var(--shadow)}
@@ -114,10 +101,8 @@ details.guide .gb p,.saber p{font-family:var(--ui);color:var(--ink)}
 /* tradutor */
 .tradmodo button{border:2.5px solid var(--ink);border-radius:4px;background:#F3E4BC;box-shadow:3px 3px 0 var(--ink)}
 .tradmodo button[aria-selected="true"]{background:var(--ink);color:var(--mostarda)}
-.tradmodo button b{font-family:var(--display);font-weight:400;font-size:19px;letter-spacing:.04em}
 .opt{border:2px solid var(--ink);border-radius:4px;background:#F3E4BC;box-shadow:2px 2px 0 var(--ink)}
 .opt[aria-pressed="true"]{background:var(--mostarda);color:var(--ink);border-color:var(--ink)}
-.hilist b{font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:.04em}
 .hpron{font-family:var(--cap);color:var(--terra)}
 .hdev{font-size:20px}
 
@@ -126,9 +111,9 @@ details.guide .gb p,.saber p{font-family:var(--ui);color:var(--ink)}
 .app{background:transparent}
 body{background:#1B140C}
 body::before{content:"";position:fixed;inset:-24px;z-index:-2;background:var(--fundo,url(img/fundo-palmeiras.webp)) center/cover no-repeat;
-  filter:blur(5px) saturate(1.12) sepia(.18) brightness(.82) contrast(1.05);transform:scale(1.04);transition:background-image .8s}
+  filter:blur(5px) saturate(1.05) sepia(.22) brightness(.55) contrast(1.08);transform:scale(1.04);transition:background-image .8s}
 body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 40%,transparent 35%,rgba(12,8,3,.62) 100%),
+  background:radial-gradient(ellipse at 50% 40%,rgba(12,8,3,.15) 20%,rgba(8,5,2,.78) 100%),
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .45  0 0 0 0 .38  0 0 0 .55 0'/></filter><rect width='220' height='220' filter='url(%23g)'/></svg>");
   mix-blend-mode:overlay;opacity:.9;animation:grao .9s steps(4) infinite}
 @keyframes grao{25%{background-position:0 0,-40px 30px}50%{background-position:0 0,60px -20px}75%{background-position:0 0,-25px -55px}}
@@ -137,13 +122,12 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 main::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.16;mix-blend-mode:multiply;
   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23g)'/></svg>")}
 /* textos soltos sobre a foto: claros, com sombra, para ler em qualquer foto */
-.view>.head h1,.view>.head h2{color:var(--mostarda);-webkit-text-stroke:1.5px #1E140B;paint-order:stroke fill;text-shadow:3px 3px 0 #1E140B}
+.view>.head h1,.view>.head h2{color:#F3E4BC;text-shadow:0 2px 3px #000,0 0 18px rgba(0,0,0,.6)}
 .view>.lede,.view>p.small,.view>.small,.hero .intro,.view>p:not([class]){color:#F3E4BC;text-shadow:0 1px 2px #000,0 0 14px rgba(0,0,0,.6)}
-.view>.eyebrow.rule,.view>div>.eyebrow.rule{color:var(--mostarda);text-shadow:2px 2px 0 #1E140B}
+.view>.eyebrow.rule,.view>div>.eyebrow.rule{color:var(--mostarda);text-shadow:0 1px 2px #000}
 .view>.eyebrow.rule::after,.view>div>.eyebrow.rule::after{background:var(--mostarda);box-shadow:0 2px 0 #1E140B}
 .daychips{background:rgba(30,20,11,.55);backdrop-filter:blur(8px);border-bottom:3px solid #000}
 .hero h1{filter:drop-shadow(0 6px 16px rgba(0,0,0,.45))}
 .clock div{background:rgba(243,228,188,.94)}
 /* abertura do dia: frase longa em letra de legenda, cidade em letra de capa */
-.abfrase{font-family:var(--cap)!important;font-style:normal!important;letter-spacing:.01em}
-.abcidade{color:var(--mostarda);-webkit-text-stroke:1.5px #1E140B;paint-order:stroke fill;text-shadow:3px 3px 0 #1E140B}
+.lidoscont{color:#F3E4BC;text-shadow:0 1px 2px #000}
