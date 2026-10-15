@@ -197,10 +197,6 @@ html[data-tab="travessia"] .lidoscont{color:#5A4127;text-shadow:none}
 .mmundo{position:relative;width:calc(100% + 16px);margin:0 -8px;aspect-ratio:1536/1024;border-radius:4px;overflow:visible;
   box-shadow:0 1px 0 rgba(255,240,200,.6),0 10px 24px rgba(90,55,15,.3);outline:1px solid rgba(90,60,25,.35)}
 .mmundo>img{position:absolute;inset:0;width:100%;height:100%;border-radius:4px}
-.mmparada{position:absolute;width:3.6%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:0;background:none;cursor:pointer;padding:0}
-.mmparada.foi::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:1.5px solid #B5402A}
-.mmparada::before{content:"";position:absolute;inset:-12px}
-.mmparada.aqui::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(181,64,42,.7);animation:mmpulsa 1.8s ease-out infinite}
 @keyframes mmpulsa{from{transform:scale(.6);opacity:1}to{transform:scale(1.5);opacity:0}}
 .mmexp{position:absolute;width:13%;transform:translate(-50%,-100%);pointer-events:none;z-index:2;
   transition:left 2.4s cubic-bezier(.45,.05,.4,1),top 2.4s cubic-bezier(.45,.05,.4,1)}
@@ -210,7 +206,7 @@ html[data-tab="travessia"] .lidoscont{color:#5A4127;text-shadow:none}
 .mmfala{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);white-space:nowrap;margin-bottom:4px;padding:3px 8px 2px;
   font:600 10.5px var(--ui);letter-spacing:.04em;color:#3B2A1C;background:#F6E6BF;border:1.5px solid #3B2A1C;border-radius:10px}
 .mmfala::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#3B2A1C}
-@media (prefers-reduced-motion:reduce){.mmexp{transition:none}.mmexp .bonecosvg,.mmparada.aqui::before{animation:none}}
+@media (prefers-reduced-motion:reduce){.mmexp .bonecosvg,.mmfase.aqui{animation:none}}
 /* na página inicial os quadros viram papel de mapa: claros, com filete marrom, sem sombra de gibi nem pedra */
 .mapahero .mmundo{margin-top:34px}
 html[data-tab="travessia"] :is(.panel,.day,.clock div,.missoes,.empty){background:rgba(250,238,210,.72)!important;border:1px solid rgba(90,60,25,.45)!important;box-shadow:0 2px 6px rgba(90,55,15,.15)!important;border-radius:4px!important}
@@ -276,3 +272,27 @@ html[data-tab="explorador"] .controls .lab{color:#B5402A;text-shadow:none}
 .builder .preview{background:linear-gradient(rgba(246,236,208,.55),rgba(236,220,182,.65)),url(img/fundo-pergaminho.webp) center/cover #EEDDB4!important;border:1px solid rgba(90,60,25,.45)!important;box-shadow:0 4px 14px rgba(90,55,15,.2)!important}
 .builder .preview{flex-wrap:wrap}
 .builder .preview .bonecosvg.big{width:auto;height:150px}
+
+/* ===== mapa de videogame: trilha de pontinhos, fases com o selo do lugar, bandeira nas fases feitas, placa com a fase de hoje ===== */
+.mmtrilha{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.mmponto{fill:#6B4A2A;stroke:#F6E6BF;stroke-width:2;opacity:.55}
+.mmponto.aceso{fill:#F2C14E;stroke:#7A4A12;stroke-width:2.5;opacity:1;filter:drop-shadow(0 0 4px rgba(255,200,80,.9));animation:mmacende .5s ease both}
+@keyframes mmacende{from{opacity:0;transform-box:fill-box;transform-origin:center;transform:scale(.2)}}
+.mmfase{position:absolute;width:8.4%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:2.5px solid #7A4A12;padding:2px;cursor:pointer;
+  background:radial-gradient(circle at 40% 35%,#FFF3D0,#E2B66F);box-shadow:0 3px 0 #5A3A18,0 6px 10px rgba(60,35,10,.35);display:grid;place-items:center;z-index:1}
+.mmfase img{width:100%;height:100%;object-fit:contain;border-radius:50%}
+.mmfase b{font:700 14px var(--ui);color:#5A3A18}
+.mmfase.futura{filter:grayscale(.85) brightness(.92);opacity:.85}
+.mmfase.aqui{border-color:#B5402A;box-shadow:0 3px 0 #7A2A18,0 0 0 4px rgba(242,193,78,.7),0 0 18px rgba(242,193,78,.9);animation:mmfasepulsa 1.6s ease-in-out infinite}
+@keyframes mmfasepulsa{50%{box-shadow:0 3px 0 #7A2A18,0 0 0 7px rgba(242,193,78,.35),0 0 26px rgba(242,193,78,.6)}}
+.mmbandeira{position:absolute;right:-14%;top:-30%;width:42%;height:60%;pointer-events:none}
+.mmbandeira::before{content:"";position:absolute;left:0;top:0;width:2px;height:100%;background:#3A2A1C}
+.mmbandeira::after{content:"";position:absolute;left:2px;top:4%;width:85%;height:45%;background:#B5402A;clip-path:polygon(0 0,100% 30%,0 60%)}
+.mmexp{position:absolute;width:13%;transform:translate(-50%,-96%);pointer-events:none;z-index:2}
+.mmexp.andando .bonecosvg{animation:mmanda .28s ease-in-out infinite alternate}
+.mmplaca{position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;padding:5px 18px 6px;
+  background:linear-gradient(#3B2A1C,#24180F);border:2px solid #D4A84F;border-radius:6px;box-shadow:0 4px 10px rgba(40,24,10,.4);white-space:nowrap}
+.mmplaca small{font:600 9.5px var(--ui);letter-spacing:.22em;text-transform:uppercase;color:#D4A84F}
+.mmplaca b{font:500 16px/1.15 "Cinzel",Georgia,serif;letter-spacing:.04em;color:#F6E6BF}
+.mapahero .intro{margin-top:18px}
+.mapahero .logo.moeda{width:78px;margin-bottom:-4px}

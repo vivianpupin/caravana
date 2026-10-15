@@ -28,14 +28,19 @@ function vMapaMundo(dias, hoje, f, abrir) {
     ex);
 }
 '''
+JS = (pathlib.Path(__file__).resolve().parent / "js" / "mapa-mundo.js").read_text()
+if "function vMapaMundo" in t and "TRECHOS" not in t:
+    a = t.index("// ---------- Mapa-mundo da travessia ----------"); b = t.index("// ---------- Travessia ----------\nfunction vTravessia() {")
+    t = t[:a] + JS + "\n" + t[b:]; p.write_text(t); print("mapa estilo videogame")
 if "function vMapaMundo" not in t:
-    t = t.replace("// ---------- Travessia ----------\nfunction vTravessia() {", FUNC + "\n// ---------- Travessia ----------\nfunction vTravessia() {", 1)
+    t = t.replace("// ---------- Travessia ----------\nfunction vTravessia() {", JS + "\n" + "\n// ---------- Travessia ----------\nfunction vTravessia() {", 1)
     velho = '''    h("div", { class: "hero" },
       h("img", { class: "logo moeda", src: "img/logo-egito-240.png", alt: "Caravana do Céu · Travessia do Velho Mundo" }),
       h("h1", null, "Travessia do", h("br"), "Velho Mundo"),
       h("span", { class: "line" }),
       h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] })),'''
     novo = '''    h("div", { class: "hero mapahero" },
+      h("img", { class: "logo moeda", src: "img/logo-egito-240.png", alt: "Caravana do Céu · Travessia do Velho Mundo" }),
       h("h1", null, "Travessia do Velho Mundo"),
       vMapaMundo(dias, hoje, f, abrir),
       h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] })),'''
