@@ -117,7 +117,7 @@ Onde cada coisa da Índia mora no código (procurar pelo nome; números de linha
 6. Habilidades, nomes das câmeras e filtros, explorador e chat (escolhas da Vivian).
 7. Firebase e Netlify novos, repositório próprio.
 
-## 7. O que já se sabe do Egito (PDF "EGYTP 2027 _ CARAVANA", páginas 1 a 5 de 26)
+## 7. O que já se sabe do Egito (PDF "EGYTP 2027 _ CARAVANA", páginas 1 a 10 de 26)
 
 Fonte: prints que a Vivian mandou em 15/10/2026, guardados em `referencias/pdf-egito-2027/`.
 
@@ -132,3 +132,47 @@ Fonte: prints que a Vivian mandou em 15/10/2026, guardados em `referencias/pdf-e
   - Mapa "a rota da Caravana": pergaminho rasgado com desenhos a tinta azul (pirâmides, templos, escaravelho, hieróglifos, jipe, barco), linha tracejada da rota.
   - Símbolo da Caravana pequeno no alto de cada página.
 - **Direção pedida pela Vivian para o app**: estética toda nova, mais interativa, sem cara de IA; céu de Nut, papiro, tumbas pintadas coloridas e Indiana Jones. Página principal com mapa-mundo estilo videogame (referência: mapa do Donkey Kong Country 3 refeito em HD, em `referencias/mapa-game/`), com as cidades da rota e o viajante avançando pelo mundo.
+
+### Itinerário (PDF, páginas 8 e 9)
+
+Ordem real da viagem: Cairo → Deserto (Bahariya) → Cairo → voo para Aswan → cruzeiro pelo Nilo (Abu Simbel, Kom Ombo, Edfu) → Luxor → Hurghada → voo para o Cairo → Brasil. Os destaques em amarelo no PDF estão em **negrito**.
+
+| Dia | Programa |
+| --- | --- |
+| 01 | Chegada ao Cairo · Check-in em hotel **em frente às Pirâmides** · Cerimônia de Abertura da Caravana · Entardecer com Show de Luzes e vista para as Pirâmides de Gizé |
+| 02 | **Desvendando as Pirâmides de Gizé** · Esfinge · Grande Museu Egípcio |
+| 03 | **Saqqara – A origem de tudo!** · Antigo (e lendário) Museu Egípcio · Museu das Múmias |
+| 04 | **Travessia para o Deserto do Sahara** · Saída de 4x4 off-road com guia local beduíno · Oásis Bahariya · **Noite de acampamento no deserto: estrelas, fogueira e raposas!** |
+| 05 | **Nascer do sol no deserto** · Deserto Negro · Crystal Mountain · Vale de Agabat · Retorno ao Cairo |
+| 06 | Voo para Aswan · **Pisando na terra dos Faraós** · Templo de Philae · Check-in Cruzeiro pelo Nilo Sagrado · **Exploração na Antiga Vila Núbia** |
+| 07 | **O lendário templo de Abu Simbel** · Navegação pelo Nilo · Templo de Kom Ombo |
+| 08 | Templo de Edfu · **Chegada em Luxor – A Antiga Tebas** · Templo de Luxor |
+| 09 | **Vale dos Reis** · Templo de Hatshepsut · Templo de Karnak |
+| 10 | **Transfer para Hurghada** · Check-in em resort All Inclusive |
+| 11 | **Navegação pelo Mar Vermelho** |
+| 12 | **Dia livre em Hurghada** |
+| 13 | Voo para Cairo · **Retorno ao Brasil** |
+
+Sem horários nem hotéis por enquanto: pedir à Vivian o roteiro operacional (como na Índia, o app segue o roteiro da turma só com os destaques).
+
+### "Zerando a vida · Os checks da travessia" (PDF, página 6)
+
+Dez conquistas com ícones de traço fino em círculo. Encaixam como as conquistas do mapa game:
+1. Ver as Pirâmides de Gizé (maior enigma da Terra)
+2. Acampar no Deserto do Sahara no estilo beduíno, cercado de raposas fofinhas
+3. Fazer um cruzeiro no Rio Nilo
+4. Ver o sarcófago de Tutankhamon
+5. Assistir a lua cheia nascer em um cruzeiro pelo Rio Nilo, rumo a Luxor, antiga capital dos faraós
+6. Se banhar no icônico Mar Vermelho e descobrir que ele é o azul mais claro que você já viu
+7. Ouvir histórias esquecidas de um Egito pouco falado
+8. Entrar dentro do maior mistério da humanidade: a Pirâmide de Khufu
+9. Ver múmias ao vivo!
+10. Conhecer e reviver antigos rituais egípcios
+
+### Frases e textos do PDF
+- "Ver que viemos daquilo tudo faz um download diferente na sua cabeça"
+- "De pirâmides, templos, desertos... e o icônico Mar Vermelho... ao nascer da lua cheia refletido pelas águas do Rio Nilo"
+- "Da mítica Atlântida às escolas iniciáticas do Antigo Egito"
+- Cairo: "O poder dos primeiros homens e figuras misteriosas como o arquiteto das estrelas: Imhotep – Hermes Trimegistro!" e o texto "O Cairo é o ponto de entrada para tudo aquilo que desafia o tempo!…" (página 10).
+- Página 5: "Os mistérios que envolvem o Egito atravessam o tempo como um enigma ainda vivo…" até "É para esse território que a Caravana segue!"
+- Identidade extra: títulos "ZERANDŌ A VIDA" em letra condensada de traço irregular; itinerário em fundo preto com faixa de pintura de tumba no alto, destaques em amarelo-ouro e linha laranja ondulada com ponto e X (como mapa de tesouro); Cairo em fundo azul granulado com texto de máquina de escrever e trilha pontilhada laranja.
