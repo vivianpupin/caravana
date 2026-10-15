@@ -183,3 +183,39 @@ html[data-tab="passaporte"] body::after,html[data-tab="tradutor"] body::after,ht
 .oraculocard.amon span span{font-size:13.5px;color:#D9C9A4}
 .orsheet{position:fixed;inset:0;z-index:2147480000;background:#000}
 .orframe{display:block;width:100%;height:100%;border:0}
+
+/* ===== página inicial: cartografia antiga, clara (pergaminho), com o mapa-mundo da rota e o explorador ===== */
+html[data-tab="travessia"] body::before{background:url(img/fundo-pergaminho.webp) center/cover no-repeat;filter:none}
+html[data-tab="travessia"] body::after{background:radial-gradient(ellipse at 50% 40%,transparent 60%,rgba(90,55,15,.22))}
+html[data-tab="travessia"] .hero h1{color:#3B2A1C;text-shadow:none;filter:none;font-size:clamp(24px,6.6vw,36px)}
+html[data-tab="travessia"] .hero .intro{color:#5A4127;text-shadow:none}
+html[data-tab="travessia"] :is(.view>.head h1,.view>.head h2,.view>.lede,.view>p.small,.view>.small,.view>p:not([class])){color:var(--ink);text-shadow:none}
+html[data-tab="travessia"] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule){color:var(--terra);text-shadow:none}
+html[data-tab="travessia"] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{background:#3B2A1C;box-shadow:none}
+html[data-tab="travessia"] .daychips{background:rgba(232,203,140,.82);border-bottom:2px solid #8C6A3A}
+html[data-tab="travessia"] .lidoscont{color:#5A4127;text-shadow:none}
+.mapahero{gap:12px;padding-top:12px}
+.mmundo{position:relative;width:calc(100% + 16px);margin:0 -8px;aspect-ratio:1536/1024;border-radius:4px;overflow:visible;
+  box-shadow:0 1px 0 rgba(255,240,200,.6),0 10px 24px rgba(90,55,15,.3);outline:1px solid rgba(90,60,25,.35)}
+.mmundo>img{position:absolute;inset:0;width:100%;height:100%;border-radius:4px}
+.mmparada{position:absolute;width:3.6%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:0;background:none;cursor:pointer;padding:0}
+.mmparada.foi::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:1.5px solid #B5402A}
+.mmparada::before{content:"";position:absolute;inset:-12px}
+.mmparada.aqui::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(181,64,42,.7);animation:mmpulsa 1.8s ease-out infinite}
+@keyframes mmpulsa{from{transform:scale(.6);opacity:1}to{transform:scale(1.5);opacity:0}}
+.mmexp{position:absolute;width:13%;transform:translate(-50%,-100%);pointer-events:none;z-index:2;
+  transition:left 2.4s cubic-bezier(.45,.05,.4,1),top 2.4s cubic-bezier(.45,.05,.4,1)}
+.mmexp .bonecosvg{display:block;width:100%;height:auto;animation:mmanda .6s ease-in-out infinite alternate;filter:drop-shadow(0 2px 1px rgba(60,35,10,.5))}
+@keyframes mmanda{from{transform:translateY(0)}to{transform:translateY(-6%)}}
+.mmsombra{position:absolute;left:20%;right:20%;bottom:-2%;height:8%;border-radius:50%;background:rgba(60,35,10,.35);filter:blur(2px)}
+.mmfala{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);white-space:nowrap;margin-bottom:4px;padding:3px 8px 2px;
+  font:600 10.5px var(--ui);letter-spacing:.04em;color:#3B2A1C;background:#F6E6BF;border:1.5px solid #3B2A1C;border-radius:10px}
+.mmfala::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#3B2A1C}
+@media (prefers-reduced-motion:reduce){.mmexp{transition:none}.mmexp .bonecosvg,.mmparada.aqui::before{animation:none}}
+/* na página inicial os quadros viram papel de mapa: claros, com filete marrom, sem sombra de gibi nem pedra */
+.mapahero .mmundo{margin-top:34px}
+html[data-tab="travessia"] :is(.panel,.day,.clock div,.missoes,.empty){background:rgba(250,238,210,.72)!important;border:1px solid rgba(90,60,25,.45)!important;box-shadow:0 2px 6px rgba(90,55,15,.15)!important;border-radius:4px!important}
+html[data-tab="travessia"] .day.is-today{box-shadow:0 0 0 2px #B5402A,0 2px 6px rgba(90,55,15,.15)!important}
+html[data-tab="travessia"] .daychips button{background:rgba(250,238,210,.85);border:1px solid rgba(90,60,25,.5);box-shadow:none}
+html[data-tab="travessia"] .daychips button[aria-current="true"]{background:#3B2A1C;color:#F6E6BF}
+html[data-tab="travessia"] .eyebrow:not(.rule){background:none;border:0;box-shadow:none;padding:0;color:#B5402A;font:600 11px var(--ui);letter-spacing:.18em}
