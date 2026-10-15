@@ -5170,7 +5170,7 @@ const FILTROS = [
   // filtros das câmeras da estante, cada um no jeito do filme que aquela câmera usaria
   // Rajastão 35: negativo colorido quente (tipo Kodak Gold): pele dourada, amarelos fortes, sombras marrons
   // a mesma Rajastão 35 em cores: o contraste, o grão e a película do preto e branco, com a cor de filme 35 mm
-  { id: "cam-kodak-cor", cat: "Câmeras", nome: "Rajastão 35 Color", m: [1.04, .03, 0, .02, 1, .01, 0, .05, .9], lift: 6, con: 1.28, sat: .95, split: [[16, 20, 26], [250, 240, 222]], add: [4, 0, -6], vin: .34, grao: 20, pelicula: 1, semFiapos: 1 },
+  { id: "cam-kodak-cor", cat: "Câmeras", nome: "Rajastão 35 Color", m: [1.04, .03, 0, .02, 1, .01, 0, .05, .9], lift: 6, con: 1.28, sat: .95, split: [[16, 20, 26], [250, 240, 222]], add: [4, 0, -6], vin: .34, grao: 12, pelicula: 1, semFiapos: 1 },
   { id: "cam-kodak", cat: "Câmeras", nome: "Rajastão 35", m: [.3, .59, .11, .3, .59, .11, .3, .59, .11], lift: 6, con: 1.28, sat: .001, split: [[16, 16, 16], [246, 246, 244]], add: [0, 0, 0], vin: .34, grao: 20, pelicula: 1 },
   // Descartável: filme de câmera descartável (tipo Fuji Superia): verdes e cianos fortes, sombras esverdeadas, contraste e grão
   // Bazar: a referência da Vivian (descartável de verdade): tudo puxado para o quente amarelado, preto levantado e quente, branco que nunca estoura (fica creme)
@@ -6688,7 +6688,7 @@ async function revelaFoto(img, c, extra) {
     // cores Lassi da Super 8: foto limpa, sem riscos, poeira, tremido nem luz vazando da película
     const fF = FILTROS.find(y => y.id === Fx.filtro) || {}, limpa = fF.cinema === 2;
     // Rajastão Color: o grão da câmera fica, mas sem os riscos, fiapos e poeira de filme velho
-    if (!limpa) { personalidade(out, Fx.geo, c); if (!fF.semFiapos) variaFilme(out, Fx.geo, c); }
+    if (!limpa) { personalidade(out, Fx.geo, c, fF.semFiapos); if (!fF.semFiapos) variaFilme(out, Fx.geo, c); }
     await marcaCaravana(out, Fx.geo, c && c.id === "rajastao");
     const fim = paraReels(out, Fx.reels);
     const b = await new Promise(ok => fim.toBlob(ok, "image/jpeg", .9));
@@ -6716,13 +6716,13 @@ function paraReels(cv, modo) {
   c.drawImage(cv, (W - pw) / 2, (H - ph) / 2, pw, ph); c.restore(); return out;
 }
 // a marca de cada câmera, além da cor do filtro
-function personalidade(cv, g, c) {
+function personalidade(cv, g, c, suave) {
   const x = cv.getContext("2d"), G = g && g.w ? g : { ox: 0, oy: 0, w: cv.width, hh: cv.height }, u = Math.max(G.w, G.hh) / 1000, R = Math.random, id = c && c.id;
   const cx = G.ox + G.w / 2, cy = G.oy + G.hh / 2, L = Math.max(G.w, G.hh);
   x.save(); x.beginPath(); x.rect(G.ox, G.oy, G.w, G.hh); x.clip();
   const sombra = (a, f = .5) => { const gr = x.createRadialGradient(cx, cy, L * f * .5, cx, cy, L * .75); gr.addColorStop(0, "rgba(0,0,0,0)"); gr.addColorStop(1, `rgba(0,0,0,${a})`); x.fillStyle = gr; x.fillRect(G.ox, G.oy, G.w, G.hh); };
   if (id === "rajastao") { // filme puxado: grão grosso que aparece mais nas sombras
-    const N = Math.round(G.w * G.hh / (90 * u * u)); x.globalCompositeOperation = "overlay";
+    const N = Math.round(G.w * G.hh / (90 * u * u) * (suave ? .2 : 1)); x.globalCompositeOperation = "overlay"; if (suave) x.globalAlpha = .5; // no Color, bem menos pontinhos
     for (let i = 0; i < N; i++) { const v = R(); x.fillStyle = v < .5 ? "rgba(0,0,0,.35)" : "rgba(255,255,255,.3)"; const r = (.8 + R() * 1.6) * u; x.fillRect(G.ox + R() * G.w, G.oy + R() * G.hh, r, r); }
   } else if (id === "descartavel") { // flash estourado no meio, cantos caindo no escuro
     x.globalCompositeOperation = "screen"; const gr = x.createRadialGradient(cx, cy * .98, 0, cx, cy, L * .42); gr.addColorStop(0, "rgba(255,240,200,.14)"); gr.addColorStop(1, "rgba(255,240,200,0)"); x.fillStyle = gr; x.fillRect(G.ox, G.oy, G.w, G.hh);
@@ -7157,8 +7157,9 @@ function quadroCam() {
       const flx = fl.getContext("2d"); flx.globalAlpha = 1; flx.globalCompositeOperation = "source-over"; flx.drawImage(G.c, sx, sy, sw, sh, 0, 0, fw, fh);
       const rnd0 = Math.random; let s0 = 7; Math.random = () => { s0 = (s0 * 16807) % 2147483647; return s0 / 2147483647; };
       // filmando com os Lassi: o filme sai como a foto em movimento, com o brilho e as cores, mas quase sem grão (o grão parado por cima do vídeo fica feio)
-      const graoVivo = S.gravando && f.cinema === 2 && (F.grao || "auto") === "auto" ? "filme" : F.grao || "auto";
-      try { aplicaFiltro(flx, fw, fh, f, graoVivo, "efeitos"); } finally { Math.random = rnd0; }
+      const graoVivo = S.gravando && (f.cinema === 2 || f.semFiapos) && (F.grao || "auto") === "auto" ? "filme" : F.grao || "auto";
+      const fVivo = graoVivo === "filme" && f.pelicula ? { ...f, pelicula: 0 } : f; // o grão de película, ampliado no vídeo, fica grosso: no filme sai só o grão leve
+      try { aplicaFiltro(flx, fw, fh, fVivo, graoVivo, "efeitos"); } finally { Math.random = rnd0; }
       fx.globalAlpha = 1; if (intens < .999) fx.drawImage(v, sx / k, sy / k, sw / k, sh / k, 0, 0, fw, fh); fx.globalAlpha = intens; fx.drawImage(fl, 0, 0); fx.globalAlpha = 1;
       // miniaturas dos filtros: tiradas da câmera crua, depois de a luz assentar (~meio segundo)
       C.n = (C.n || 0) + 1;
