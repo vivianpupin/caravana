@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "14/10 · 19:18";</script>
+<script>window.__VERSAO = "15/10 · 10:31";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1354,6 +1354,11 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .cfbaixo .cfmini{margin-left:14px!important}
 .celfilmar{color:#F3B4A4!important;border-color:rgba(243,140,120,.5)!important}
 .celfilmar.gravando{background:#A8322A!important;color:#fff!important;border-color:#A8322A!important;animation:revela 1s ease-in-out infinite alternate}
+.logolider{margin:6px auto 0;padding:12px 14px;max-width:420px;border:1px dashed var(--line2);border-radius:12px;text-align:center}
+.logolider .small{margin:0 0 6px;text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;opacity:.7}
+.logochave{display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;cursor:pointer}
+.logochave input{width:20px;height:20px;accent-color:#8A3F32}
+.logochave span:last-child{font-size:12px;opacity:.75;min-width:70px;text-align:left}
 .regaviso{text-align:center;margin:8px auto 0;max-width:42ch;opacity:.85}
 .celdica{margin:0;text-align:center;font-size:11.5px;color:#CDB894}
 .celdica.celok{color:#F3D9A4;font-weight:600}
@@ -6448,7 +6453,15 @@ function vEstante() {
       h("div", { class: "itens" }, lin.map(c => h("button", { type: "button", class: "camitem", onclick: () => escolheCamera(c.id) },
         imgCam(c), h("span", { class: "etiqueta", text: c.nome })))),
       h("div", { class: "tabua" })))),
-    vDiarioViajante());
+    vDiarioViajante(),
+    ehLider(S.uid) ? chaveLogoLider() : null);
+}
+// só a líder vê: tirar o logo da Caravana das fotos e filmes que ela fizer (em todas as câmeras); fica guardado neste celular
+const semLogo = () => { try { return ehLider(S.uid) && localStorage.getItem("cdi-sem-logo") === "1"; } catch (e) { return false; } };
+function chaveLogoLider() {
+  return h("div", { class: "logolider" },
+    h("label", { class: "logochave" }, h("span", { text: "Logo CARAVANA" }),
+      h("input", { type: "checkbox", role: "switch", "aria-label": "Logo da Caravana nas minhas fotos", checked: !semLogo(), onchange: e => { try { localStorage.setItem("cdi-sem-logo", e.target.checked ? "0" : "1"); } catch (x) {} } })));
 }
 const fotoDaCamera = c => ({ filtro: "original", cat: "Clássicos", grao: "auto", moldura: "nenhuma", patch: "nenhum", formato: "original", legenda: "", cidade: "", data: "", ...(c.preset || {}), adesivos: (c.preset && c.preset.adesivos || []).map(a => ({ ...a })) });
 document.addEventListener("contextmenu", e => { if (e.target.closest?.(".camfull,.nomovisor,.carteira")) e.preventDefault(); });
@@ -6801,6 +6814,7 @@ function variaFilme(cv, g, c) {
 }
 // a marquinha no canto de baixo da foto: o símbolo dourado e CARAVANA escrito de lado, como as câmeras de filme fazem
 async function marcaCaravana(cv, g, pb) {
+  if (semLogo()) return; // a líder desligou o logo nas fotos dela
   // marca como a data impressa pelas câmeras de filme: laranja queimado, um pouco borrada e com brilho, "dentro" da foto
   const c = cv.getContext("2d"), G = g && g.w ? g : { ox: 0, oy: 0, w: cv.width, hh: cv.height }, u = Math.max(G.w, G.hh) / 1000;
   const img = await carregaImg("img/simbolo-claro.png").catch(() => carregaImg("img/simbolo-dourado.png").catch(() => null));
