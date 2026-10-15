@@ -1,0 +1,34 @@
+# Site da Caravana do Céu (versão fora do Claude)
+[build]
+  publish = "app"
+  # Cada publicação gasta créditos do Netlify: só publica quando a mensagem do commit tiver [publicar].
+  # Os outros commits ficam guardados no GitHub e entram na próxima publicação.
+  ignore = "git log -1 --pretty=%B | grep -qF '[publicar]' && exit 1 || exit 0"
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["firebase-admin"]
+[[headers]]
+  for = "/versao.json"
+  [headers.values]
+    Cache-Control = "no-cache"
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+# Login do Google pelo próprio endereço do app (o iPhone bloqueia o login quando ele volta de outro site)
+[[redirects]]
+  from = "/__/auth/*"
+  to = "https://app-caravana-70c8a.firebaseapp.com/__/auth/:splat"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/__/firebase/*"
+  to = "https://app-caravana-70c8a.firebaseapp.com/__/firebase/:splat"
+  status = 200
+  force = true
+# Bilhete de embarque de cada viajante: /embarque/ana-paula/07 abre a mesma página com o nome
+[[redirects]]
+  from = "/embarque/*"
+  to = "/embarque.html"
+  status = 200
