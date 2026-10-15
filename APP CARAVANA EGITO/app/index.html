@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "15/10 · 18:46";</script>
+<script>window.__VERSAO = "15/10 · 18:50";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -34,6 +34,7 @@
 <meta name="apple-mobile-web-app-title" content="Caravana">
 <meta name="application-name" content="Caravana">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Special+Elite&display=swap">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@400;500;600&family=Raleway:wght@300&family=Cinzel:wght@500;600;700;900&family=Jost:wght@500;600&family=Julius+Sans+One&family=Caveat:wght@400;600&family=Rock+Salt&family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap">
 <style>
@@ -117,6 +118,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--moss);outline:none;bo
 /* Roteiro: abertura */
 .hero{text-align:center;padding:18px 8px 4px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .hero .logo{width:56px;height:auto}
+.hero .logo.moeda{width:112px;border-radius:50%;box-shadow:0 10px 26px rgba(40,25,10,.35)}
+.hero .logo.moeda{width:112px;border-radius:50%;box-shadow:0 10px 26px rgba(40,25,10,.35)}
 .hero .logo.moeda{width:112px;border-radius:50%;box-shadow:0 10px 26px rgba(40,25,10,.35)}
 .hero h1{font-family:"Cinzel",Georgia,serif;font-weight:500;font-size:clamp(28px,7.6vw,44px);line-height:1.1;letter-spacing:.04em;color:#3B2A1C}
 .hero .route{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--moss)}
@@ -922,6 +925,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .ab-rishikesh .abfundo{filter:blur(1.5px) brightness(1) saturate(1.1)}
 .ab-rishikesh .abfundo::after{background:radial-gradient(ellipse at 50% 42%,rgba(242,194,48,.12),rgba(20,12,6,.55) 75%)}
 .abconteudo{position:relative;text-align:center;color:#F4E6C4;padding:24px;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.absimb.moeda{width:110px;border-radius:50%}
+.absimb.moeda{width:110px;border-radius:50%}
 .absimb.moeda{width:110px;border-radius:50%}
 .absimb{width:74px;height:auto;margin-bottom:10px;filter:drop-shadow(0 0 18px rgba(242,194,48,.45));animation:absimb 1.8s ease both}
 .abdia{margin:0;font:600 12px var(--ui);letter-spacing:.38em;text-transform:uppercase;color:#E2BE78;animation:absobe 1.2s .7s ease both}
@@ -1902,6 +1907,130 @@ video.mgrande{max-height:70vh;background:#000}
 .marca .apaga{background:none;border:0;color:inherit;opacity:.7;font-size:18px;padding:0 4px;cursor:pointer}
 .rocha .vazia{grid-column:1/-1;text-align:center;color:#E0B889;font:18px/1.6 "Rock Salt","Caveat",cursive;margin:auto}
 </style>
+<style id="tema-gibi">
+/* ===== Tema gibi do Egito: papel de revista em quadrinhos dos anos 40, tinta preta, mostarda, vermelho-tijolo e azul desbotado =====
+   Este bloco entra depois do visual da Índia e só repinta: as funções e a disposição das telas continuam as mesmas. */
+:root{
+  --bg:#E6D2A3; --panel:#F3E4BC; --panel2:#EFDDB0; --panel3:#E2CB96;
+  --ink:#1E140B; --soft:#4F3B22; --faint:#8C7550;
+  --moss:#1E140B; --terra:#B5402A; --sand:#C9A55C; --paper:#E9D6A8; --gold:#E9B949;
+  --line:rgba(30,20,11,.22); --line2:rgba(30,20,11,.55);
+  --ok:#3F6B3A; --err:#A0302A; --seal:#B5402A; --on-dark:#F3E4BC;
+  --azul:#4F6E78; --mostarda:#E9B949;
+  --shadow:4px 4px 0 #1E140B;
+  --display:"Bangers","Impact","Arial Narrow",sans-serif;
+  --ui:"Comic Neue","Trebuchet MS",system-ui,sans-serif;
+  --cap:"Special Elite","Courier New",monospace;
+  --r:6px;
+}
+body{font-weight:400;font-size:15.5px}
+/* papel de gibi: retícula de pontinhos e fibras, com as bordas mais escuras */
+.app{background:
+  radial-gradient(ellipse at 50% 30%,transparent 55%,rgba(90,55,15,.22)),
+  radial-gradient(circle,rgba(110,70,20,.10) 1px,transparent 1.4px) 0 0/7px 7px,
+  repeating-linear-gradient(8deg,rgba(120,80,30,.035) 0 2px,transparent 2px 9px),
+  var(--bg)}
+h1,h2,h3,h4,h5{font-family:var(--display);font-weight:400;letter-spacing:.03em;line-height:1.05}
+b,strong{font-weight:700}
+
+/* cabeçalho: faixa preta de capa de gibi com o nome em amarelo */
+.top{background:#1E140B radial-gradient(circle,rgba(233,185,73,.10) 1px,transparent 1.4px) 0 0/6px 6px;border-bottom:4px solid var(--mostarda)}
+.brand b{font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:.06em;color:var(--mostarda);text-shadow:2px 2px 0 #000}
+.brand span{color:#E9D6A8;font-family:var(--cap);letter-spacing:.08em;font-size:10.5px}
+.me:not(.bubble){background:#F3E4BC;border:2px solid #000;box-shadow:2px 2px 0 #000}
+
+/* menu de baixo: barra preta, aba escolhida em mostarda */
+nav.tabs{background:#1E140B;border-top:4px solid var(--mostarda)}
+nav.tabs button{color:#C9B58C;font-family:var(--display);font-weight:400;font-size:12.5px;letter-spacing:.06em}
+nav.tabs button[aria-current="page"]{color:var(--mostarda)}
+nav.tabs button[aria-current="page"] .ic{background:var(--mostarda);color:#1E140B;border:2px solid #000;box-shadow:2px 2px 0 #000}
+@media (min-width:900px){nav.tabs{background:#1E140B;border-right:4px solid var(--mostarda)}}
+
+/* quadros: cada bloco é um quadro de gibi, contorno de tinta e sombra deslocada */
+.panel,.day,.clock div,.empty{border:3px solid var(--ink);border-radius:var(--r);box-shadow:var(--shadow)}
+.panel{background:var(--panel)}
+.day.is-today{box-shadow:0 0 0 3px var(--terra),var(--shadow)}
+.empty{border-style:dashed;box-shadow:none}
+
+/* legendas (os "olhos" de seção) viram caixa de legenda amarela */
+.eyebrow{font-family:var(--cap);font-weight:400;font-size:12px;letter-spacing:.06em;color:var(--ink);background:var(--mostarda);border:2px solid var(--ink);padding:3px 8px 2px;width:fit-content;box-shadow:2px 2px 0 var(--ink);text-transform:uppercase}
+.eyebrow.rule{width:auto;background:none;border:0;box-shadow:none;padding:0;color:var(--terra);font-family:var(--display);font-size:17px;letter-spacing:.06em}
+.rule::after{height:3px;background:var(--ink)}
+.lede,.hero .intro,.dtit .fr{font-family:var(--cap);font-style:normal;font-size:15px;color:var(--soft)}
+.small{color:var(--soft)}
+
+/* botões de gibi */
+.btn{border:2.5px solid var(--ink);border-radius:4px;background:#F3E4BC;box-shadow:3px 3px 0 var(--ink);font-family:var(--display);font-weight:400;font-size:17px;letter-spacing:.06em;padding:8px 16px 6px;color:var(--ink)}
+.btn:hover{border-color:var(--ink)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn.gold{background:var(--mostarda);border-color:var(--ink);color:var(--ink)}
+.btn.gold:hover{background:#F2C75A}
+.btn.ghost{box-shadow:none;border-color:transparent;background:none;color:var(--soft)}
+.btn.danger{background:#F3E4BC;color:var(--err);border-color:var(--err);box-shadow:3px 3px 0 var(--err)}
+.opt,.daychips button,.tag{font-family:var(--ui);font-weight:700}
+input[type=text],input[type=number],input[type=email],select,textarea{background:#FBF2D9;border:2.5px solid var(--ink);border-radius:4px;font-family:var(--ui)}
+input:focus,select:focus,textarea:focus{border-color:var(--terra);box-shadow:3px 3px 0 var(--terra)}
+
+/* tela inicial: título de capa de gibi */
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(40px,12vw,60px);line-height:.92;letter-spacing:.03em;color:var(--mostarda);
+  -webkit-text-stroke:2px #1E140B;paint-order:stroke fill;text-shadow:3px 3px 0 #1E140B,5px 6px 0 rgba(30,20,11,.35);transform:rotate(-2deg)}
+.hero .route{font-family:var(--cap);font-weight:400;letter-spacing:.08em;color:var(--ink);background:#F3E4BC;border:2px solid var(--ink);padding:4px 10px;box-shadow:2px 2px 0 var(--ink)}
+.hero .logo.moeda{box-shadow:0 0 0 3px #1E140B,5px 5px 0 3px #1E140B}
+.clock div{background:var(--panel)}
+.clock b{font-family:var(--display);font-weight:400;font-size:32px;color:var(--terra)}
+.clock span{font-family:var(--cap)}
+
+/* roteiro: dias como quadros numerados */
+.daychips{background:rgba(230,210,163,.95);border-bottom:3px solid var(--ink)}
+.daychips button{background:#F3E4BC;border:2px solid var(--ink);border-radius:4px;color:var(--ink)}
+.daychips button[aria-current="true"]{background:var(--ink);color:var(--mostarda)}
+.daychips button[aria-current="true"] b{color:var(--mostarda)}
+.dnum b{font-family:var(--display);font-weight:400;font-size:36px;color:var(--azul)}
+.day.open .dnum b,.day.is-today .dnum b{color:var(--terra)}
+.dnum small{font-family:var(--cap);color:var(--soft)}
+.dtit h3{font-size:22px}
+.tag{border-radius:3px;background:#E2CB96;color:var(--ink);border:1.5px solid var(--ink)}
+.tag.date{background:var(--mostarda);color:var(--ink)}
+.tag.today{background:var(--terra);color:#F3E4BC}
+.daybody{border-top:3px solid var(--ink)}
+ul.items li{border-top:1.5px dashed var(--line2)}
+ul.items .h{color:var(--terra)}
+.place .sub{font-family:var(--cap);font-weight:400;color:var(--terra);letter-spacing:.06em}
+.place h4{font-size:26px}
+
+/* janelas e cartões soltos */
+.sheet>*{border:3px solid var(--ink)!important;box-shadow:6px 6px 0 var(--ink)!important;border-radius:6px!important}
+
+/* cabeçalho: o visual da Índia forçava letra fina com !important */
+.brand b{font-family:var(--display)!important;font-weight:400!important;letter-spacing:.08em!important;font-size:21px!important;color:var(--mostarda);text-shadow:2px 2px 0 #000;text-transform:uppercase}
+.brand span{color:#E9D6A8;font-family:var(--cap);letter-spacing:.08em;font-size:10.5px}
+
+/* antes de embarcar: quadro de missão */
+.missoes{background:var(--panel);border:3px solid var(--ink);border-radius:var(--r);box-shadow:var(--shadow)}
+.missoesbarra{height:10px;border-radius:2px;background:#E2CB96;border:2px solid var(--ink)}
+.missoesbarra i{background:repeating-linear-gradient(-45deg,var(--terra) 0 6px,#C9502F 6px 12px);border-radius:0}
+.missaock{border:2px solid var(--ink);border-radius:3px}
+.missoeslista li.ok .missaock{background:var(--terra);border-color:var(--ink)}
+.missaotx b{font-family:var(--display);font-weight:400;font-size:18px;letter-spacing:.04em}
+.missoeslista li button{border-bottom:1.5px dashed var(--line2)}
+
+/* saberes, guias e frases: quadros de gibi */
+.sab,details.guide{background:var(--panel);border:3px solid var(--ink);border-radius:var(--r);box-shadow:var(--shadow)}
+details.guide summary b,.sab h3{font-family:var(--display);font-weight:400;letter-spacing:.04em}
+details.guide .gb p,.saber p{font-family:var(--ui);color:var(--ink)}
+.saber h3{font-style:normal}
+.oraculocard{border:3px solid #000;border-radius:var(--r);box-shadow:var(--shadow)}
+
+/* tradutor */
+.tradmodo button{border:2.5px solid var(--ink);border-radius:4px;background:#F3E4BC;box-shadow:3px 3px 0 var(--ink)}
+.tradmodo button[aria-selected="true"]{background:var(--ink);color:var(--mostarda)}
+.tradmodo button b{font-family:var(--display);font-weight:400;font-size:19px;letter-spacing:.04em}
+.opt{border:2px solid var(--ink);border-radius:4px;background:#F3E4BC;box-shadow:2px 2px 0 var(--ink)}
+.opt[aria-pressed="true"]{background:var(--mostarda);color:var(--ink);border-color:var(--ink)}
+.hilist b{font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:.04em}
+.hpron{font-family:var(--cap);color:var(--terra)}
+.hdev{font-size:20px}
+</style>
 
 <div class="app">
   <header class="top">
@@ -2714,7 +2843,7 @@ const GRAHAS = [
   { id: "budha", nome: "Budha", sub: "Mercúrio · a palavra", sim: "☿", cor: "#3F7A4A", mantra: "Om Budhaya Namaha", dia: "quarta-feira", tom: "verde",
     img: "Mercúrio é o mais rápido dos planetas e o mais próximo do Sol. É o mensageiro, o comerciante, o estudante que faz perguntas demais.",
     msg: ["Budha governa a palavra, o raciocínio e as trocas. A resposta para a sua pergunta pode estar numa conversa, num texto, num detalhe que alguém disse de passagem. Fique atenta(o) aos sinais pequenos: eles chegam rápido e vão embora rápido.", "O risco de Mercúrio é a mente acelerada que analisa tudo e não decide nada. Escolha bem as palavras, porque elas criam aquilo que nomeiam. E lembre que ouvir também é uma forma de inteligência."],
-    hoje: ["Aprenda uma palavra em hindi e use com alguém hoje. Comece por dhanyavaad, que quer dizer obrigado.", "Conte a alguém da caravana o que mais te tocou até agora e depois ouça o que mais tocou essa pessoa.", "Escreva a sua pergunta num papel, numa frase só, e leve no bolso o dia todo."] },
+    hoje: ["Aprenda uma palavra em árabe e use com alguém hoje. Comece por shukran, que quer dizer obrigado.", "Conte a alguém da caravana o que mais te tocou até agora e depois ouça o que mais tocou essa pessoa.", "Escreva a sua pergunta num papel, numa frase só, e leve no bolso o dia todo."] },
   { id: "shani", nome: "Shani", sub: "Saturno · o tempo", sim: "♄", cor: "#2F3E66", mantra: "Om Shanaye Namaha", dia: "sábado", tom: "azul-escuro",
     img: "Saturno é o mais lento dos planetas que se veem a olho nu: leva quase trinta anos para dar a volta no Sol. Shani, filho do Sol com Chhaya, a sombra, anda devagar e não esquece nada.",
     msg: ["Shani é tempo, disciplina e verdade. A sua pergunta não tem atalho. O que parece demora é amadurecimento, e o que parece obstáculo é a estrutura sendo testada para aguentar o que vem depois.", "Saturno é temido, mas é justo: devolve exatamente o que foi plantado. Se você fizer a sua parte com paciência e honestidade, ele é o planeta que mais recompensa. Simplifique, assuma o que é seu e siga um passo de cada vez."],
@@ -7975,40 +8104,43 @@ const PERGUNTAS = {
   13: "Uma palavra para esta travessia."
 };
 const HINDI = [
-  ["Olá / saudação", "Namaste", "नमस्ते", "na-mas-TÊ"],
-  ["Obrigado(a)", "Dhanyavaad", "धन्यवाद", "dan-ia-VÁD"],
-  ["Obrigado(a), mais informal", "Shukriya", "शुक्रिया", "chu-KRI-iá"],
-  ["Sim / Não", "Haan / Nahin", "हाँ / नहीं", "hãn / na-HÍN"],
-  ["Não quero, obrigado(a)", "Nahin chahiye, dhanyavaad", "नहीं चाहिए, धन्यवाद", "na-HÍN TCHÁ-hi-ê, dan-ia-VÁD"],
-  ["Quanto custa?", "Kitne ka hai?", "कितने का है?", "KIT-nê ká hé?"],
-  ["Está muito caro", "Bahut mehenga hai", "बहुत महँगा है", "ba-HÚT me-HÊN-gá hé"],
-  ["Água", "Paani", "पानी", "PÁ-ni"],
-  ["Sem pimenta, por favor", "Teekha nahin", "तीखा नहीं", "TI-kha na-HÍN"],
-  ["Onde fica o banheiro?", "Toilet kahaan hai?", "टॉयलेट कहाँ है?", "TÓI-let ka-HÃN hé?"],
-  ["Tudo bem / ok", "Theek hai", "ठीक है", "tík hé"],
-  ["Muito bonito!", "Bahut sundar!", "बहुत सुंदर!", "ba-HÚT SUN-dar"],
-  ["Vamos!", "Chalo!", "चलो!", "TCHA-lô"],
-  ["Socorro / ajuda", "Madad!", "मदद!", "MA-dad"]
+  ["Olá (a saudação de todo dia)", "Salam aleikum", "السلام عليكم", "sa-LÁM a-LÊI-kum"],
+  ["Resposta à saudação", "Aleikum salam", "وعليكم السلام", "a-LÊI-kum sa-LÁM"],
+  ["Obrigado(a)", "Shukran", "شكرًا", "CHÚ-kran"],
+  ["Por favor", "Min fadlak / Min fadlik", "من فضلك", "min FÁD-lak (a um homem), min FÁD-lik (a uma mulher)"],
+  ["Sim / Não", "Aiwa / La'", "أيوه / لا", "ÁI-ua / lá"],
+  ["Não, obrigado(a)", "La', shukran", "لا، شكرًا", "lá, CHÚ-kran"],
+  ["Chega / já basta (para vendedor insistente)", "Khalas", "خلاص", "rra-LÁS"],
+  ["Quanto custa?", "Bikam?", "بكام؟", "bi-KÁM"],
+  ["Está muito caro", "Ghali awi", "غالي أوي", "RRÁ-li Á-ui"],
+  ["Água", "Mayya", "ميّة", "MÁI-ia"],
+  ["Sem pimenta, por favor", "Min ghir shatta", "من غير شطة", "min rrêr CHÁ-ta"],
+  ["Onde fica o banheiro?", "Fein el-hammam?", "فين الحمام؟", "fêin el-ra-MÁM"],
+  ["Tudo bem / ok", "Tamam", "تمام", "ta-MÁM"],
+  ["Muito bonito!", "Gamil awi!", "جميل أوي", "ga-MÍL Á-ui"],
+  ["Vamos!", "Yalla!", "يلا", "IÁ-la"],
+  ["Se Deus quiser", "Inshallah", "إن شاء الله", "in-CHA-lá"],
+  ["Socorro / ajuda!", "Ilha'uni!", "الحقوني", "il-RA-u-ni"]
 ];
 const INICIO = "2027-10-08", FIM = "2027-10-20";
 try { localStorage.removeItem("cdi-sim"); } catch (e) {}
 const hojeTrip = () => hojeIso();
 const ehHora = x => /^\d\d:\d\d$/.test(x || "");
 const itensDe = d => (d ? d.agenda.flatMap(p => p.itens) : []).filter(i => ehHora(i.hora));
-function falar(txt) { falarEm(txt, "hi-IN", .85); }
+function falar(txt) { falarEm(txt, "ar-EG", .85); }
 const podeFalar = "speechSynthesis" in window || typeof Audio !== "undefined";
 
-// ---------- Tradutor: português ↔ hindi / inglês, para conversar na rua ----------
-const LINGUAS = { pt: ["Português", "pt-BR"], hi: ["Hindi", "hi-IN"], en: ["Inglês", "en-IN"] };
-S.trad = { modo: "eu", outra: "hi", texto: "", res: null, busy: false, erro: "" };
+// ---------- Tradutor: português ↔ árabe / inglês, para conversar na rua ----------
+const LINGUAS = { pt: ["Português", "pt-BR"], ar: ["Árabe", "ar-EG"], en: ["Inglês", "en-US"] };
+S.trad = { modo: "eu", outra: "ar", texto: "", res: null, busy: false, erro: "" };
 try { S.tradHist = JSON.parse(localStorage.getItem("cdi-trad") || "[]"); } catch (e) { S.tradHist = []; }
 async function traduzir(txt, de, para) {
-  // 1º Google (melhor para hindi, e já dá a pronúncia em letras latinas); 2º MyMemory
+  // 1º Google (já dá a pronúncia do árabe em letras latinas); 2º MyMemory
   try {
     const r = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${de}&tl=${para}&dt=t&dt=rm&q=${encodeURIComponent(txt)}`);
     if (r.ok) { const j = await r.json(), partes = (j[0] || []).filter(x => x && x[0] != null && x[1] != null);
       const trad = partes.map(x => x[0]).join(""), rm = (j[0] || []).find(x => x && x[0] == null && x[2]);
-      if (trad) return { trad, rom: para === "hi" && rm ? rm[2] : "", origRom: de === "hi" && rm ? rm[3] || "" : "" }; }
+      if (trad) return { trad, rom: para === "ar" && rm ? rm[2] : "", origRom: de === "ar" && rm ? rm[3] || "" : "" }; }
   } catch (e) {}
   const r = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(txt)}&langpair=${de}|${para}`);
   if (!r.ok) throw new Error("sem tradução");
@@ -8061,7 +8193,7 @@ function mostrarGrande(txt, rom) {
 }
 function vTradutor() {
   const T = S.trad, de = T.modo === "eu" ? "pt" : T.outra, para = T.modo === "eu" ? T.outra : "pt";
-  const ta = h("textarea", { id: "trad-texto", rows: 3, maxlength: "500", placeholder: T.modo === "eu" ? "Escreva ou fale em português…" : (T.outra === "hi" ? "Peça para a pessoa falar em hindi, ou digite…" : "Peça para a pessoa falar em inglês, ou digite…") });
+  const ta = h("textarea", { id: "trad-texto", rows: 3, maxlength: "500", placeholder: T.modo === "eu" ? "Escreva ou fale em português…" : (T.outra === "ar" ? "Peça para a pessoa falar em árabe, ou digite…" : "Peça para a pessoa falar em inglês, ou digite…") });
   ta.value = T.texto;
   // frase já traduzida: tocar no campo (ou em Falar) limpa sozinho e já espera a próxima frase; a tradução anterior continua embaixo
   const jaTraduzida = () => T.texto && T.res && T.texto.trim() === T.res.orig;
@@ -8134,11 +8266,11 @@ function vTradutor() {
   const troca = m => { VOZ.parar(); T.modo = m; T.texto = ""; T.res = null; T.erro = ""; render(); };
   const R = T.res;
   return h("section", { class: "view" },
-    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Fale com a Índia" }), h("h1", { text: "Tradutor" }))),
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Fale com o Egito" }), h("h1", { text: "Tradutor" }))),
     h("div", { class: "tradmodo", role: "tablist" },
       h("button", { type: "button", role: "tab", "aria-selected": String(T.modo === "eu"), onclick: () => troca("eu") }, h("b", { text: "Eu falo" }), h("span", { text: "português → " + LINGUAS[T.outra][0].toLowerCase() })),
       h("button", { type: "button", role: "tab", "aria-selected": String(T.modo === "ele"), onclick: () => troca("ele") }, h("b", { text: "A pessoa responde" }), h("span", { text: LINGUAS[T.outra][0].toLowerCase() + " → português" }))),
-    h("div", { class: "opts" }, ["hi", "en"].map(l => h("button", { type: "button", class: "opt", "aria-pressed": String(T.outra === l), onclick: () => { T.outra = l; T.res = null; render(); } }, LINGUAS[l][0]))),
+    h("div", { class: "opts" }, ["ar", "en"].map(l => h("button", { type: "button", class: "opt", "aria-pressed": String(T.outra === l), onclick: () => { T.outra = l; T.res = null; render(); } }, LINGUAS[l][0]))),
     h("div", { class: "panel tradbox" }, ta,
       h("div", { class: "actions" },
         h("button", { class: "btn" + (VOZ.rec ? " gold" : ""), id: "trad-mic", type: "button", onclick: ouvir }, VOZ.rec ? VOZ.rotulo || "Ouvindo…" : "🎤 Falar"),
@@ -8146,12 +8278,12 @@ function vTradutor() {
         T.texto ? h("button", { class: "btn ghost", type: "button", onclick: () => { T.texto = ""; T.res = null; render(); } }, "Limpar") : null),
       T.teclado ? h("div", { class: "tecladica" },
         h("b", { text: "🎙️ Use o microfone do teclado" }),
-        h("span", { text: (T.modo === "eu" ? "Toque no microfone do teclado (embaixo, à direita) e fale em português." : "Entregue o celular e peça para a pessoa tocar no microfone do teclado e falar" + (T.outra === "hi" ? " em hindi. Se o teclado não tiver hindi, toque no globo 🌐 para trocar." : " em inglês.")) + " Quando parar de falar, a tradução aparece sozinha." }),
+        h("span", { text: (T.modo === "eu" ? "Toque no microfone do teclado (embaixo, à direita) e fale em português." : "Entregue o celular e peça para a pessoa tocar no microfone do teclado e falar" + (T.outra === "ar" ? " em árabe. Se o teclado não tiver árabe, toque no globo 🌐 para trocar." : " em inglês.")) + " Quando parar de falar, a tradução aparece sozinha." }),
         vozPeloTeclado() && Reconhece ? h("button", { class: "linkbtn", type: "button", onclick: () => { lsSet("cdi-voz-teclado", "0"); lsSet("cdi-voz-falhas", "0"); T.teclado = false; render(); } }, "Tentar o microfone do app de novo") : null) : null,
       T.erro ? h("p", { class: "msg err", role: "status", text: T.erro }) : null),
     R ? h("div", { class: "panel tradres" },
       h("p", { class: "eyebrow", text: LINGUAS[R.para][0] }),
-      h("p", { class: "tradtxt", lang: R.para, text: R.trad }),
+      h("p", { class: "tradtxt", lang: R.para, dir: R.para === "ar" ? "rtl" : "auto", text: R.trad }),
       R.rom ? h("p", { class: "tradrom", text: "fala-se: " + R.rom }) : null,
       h("p", { class: "small", text: "“" + R.orig + "”" + (R.origRom ? " (" + R.origRom + ")" : "") }),
       h("div", { class: "actions" },
@@ -8719,11 +8851,11 @@ setInterval(checaCorreio, 60000);
 // Frases em hindi
 function vHindi() {
   return h("details", { class: "guide hindi" + (S.lidos.hindi ? " lido" : ""), ontoggle: ev => { if (ev.currentTarget.open) { marcaLido("hindi"); ev.currentTarget.classList.add("lido"); } } },
-    h("summary", null, h("div", null, h("b", { text: "Frases úteis em hindi" }), h("span", { text: "Namaste, obrigado, quanto custa e outras, com a pronúncia." })), h("span", { class: "lidotag", "aria-label": "Lido" }, "✓"), h("span", { text: "▾", "aria-hidden": "true" })),
+    h("summary", null, h("div", null, h("b", { text: "Frases úteis em árabe" }), h("span", { text: "Salam aleikum, obrigado, quanto custa e outras, com a pronúncia." })), h("span", { class: "lidotag", "aria-label": "Lido" }, "✓"), h("span", { text: "▾", "aria-hidden": "true" })),
     h("div", { class: "gb" },
-      h("p", { class: "small", text: "A sílaba em maiúsculas é a mais forte. O h soa como no inglês house." }),
+      h("p", { class: "small", text: "A sílaba em maiúsculas é a mais forte. O rr soa como o r carioca, raspado na garganta." }),
       h("ul", { class: "hilist" }, HINDI.map(([pt, rom, dev, pron]) => h("li", null,
-        h("div", null, h("span", { class: "hpt", text: pt }), h("b", { text: rom }), h("span", { class: "hpron", text: "fala-se " + pron }), h("span", { class: "hdev", lang: "hi", text: dev })),
+        h("div", null, h("span", { class: "hpt", text: pt }), h("b", { text: rom }), h("span", { class: "hpron", text: "fala-se " + pron }), h("span", { class: "hdev", lang: "ar", dir: "rtl", text: dev })),
         podeFalar ? h("button", { class: "hfala", type: "button", "aria-label": "Ouvir " + rom, onclick: () => falar(dev) },
           h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: "M4 9v6h4l5 4V5L8 9H4zM16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12", fill: "none", stroke: "currentColor", "stroke-width": 1.6, "stroke-linecap": "round", "stroke-linejoin": "round" }))) : null)))));
 }
@@ -8739,13 +8871,13 @@ function htmlOffline() {
   return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Caravana do Céu · Índia 2026</title>
 <style>body{margin:0;background:#F6EFE3;color:#282722;font:16px/1.6 Georgia,serif}main{max-width:640px;margin:0 auto;padding:20px 16px 60px}h1{font-size:28px;margin:.2em 0}h2{font-size:22px;margin:1.6em 0 .3em;border-top:1px solid #C7B493;padding-top:14px}h3{font-size:18px;margin:1em 0 .2em}.e{font:600 11px/1.4 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A3F32}.s{font:14px/1.5 system-ui,sans-serif;color:#6B6556}ul{padding-left:0;list-style:none}li{padding:4px 0;border-bottom:1px dotted #D8CBB0;font-family:system-ui,sans-serif;font-size:15px}li b{display:inline-block;min-width:52px;color:#8A3F32}.m{background:#EFE3C8;border-radius:12px;padding:12px 14px;margin:10px 0}.m i{display:block;color:#3F4938}nav a{display:inline-block;margin:0 10px 6px 0;color:#8A3F32;font-family:system-ui,sans-serif;font-size:14px}</style></head><body><main>
 <p class="e">Caravana do Céu · Índia Sagrada · 4 a 16 nov 2026</p><h1>Travessia da Índia Sagrada</h1><p class="s">Cópia para ler sem internet. Salva em ${esc(new Date().toLocaleDateString("pt-BR"))}.</p>
-<nav>${dias.map(d => `<a href="#d${d.n}">Dia ${d.n}</a>`).join("")}<a href="#hindi">Hindi</a><a href="#saberes">Saberes</a><a href="#guia">Guia</a></nav>
+<nav>${dias.map(d => `<a href="#d${d.n}">Dia ${d.n}</a>`).join("")}<a href="#hindi">Árabe</a><a href="#saberes">Saberes</a><a href="#guia">Guia</a></nav>
 ${dias.map(d => { return `<h2 id="d${d.n}">Dia ${d.n} · ${esc(d.data)} · ${esc(d.titulo)}</h2><p class="s">${esc(d.rota)}<br>Hospedagem: ${esc(d.hotel)}${d.guia ? " · " + esc(d.guia) : ""}</p>
 <ul>${d.agenda.flatMap(p => p.itens).map(i => `<li><b>${esc(i.hora || "·")}</b> ${esc(i.texto)}</li>`).join("")}</ul>
 ${d.cerimonia ? `<h3>${esc(d.cerimonia.titulo)}</h3><p class="s">${esc(d.cerimonia.quando || "")}</p>${par(d.cerimonia.texto)}` : ""}${d.aviso ? `<h3>${esc(d.aviso.titulo)}</h3>${par(d.aviso.texto)}` : ""}
 ${(d.lugares || []).map(l => `<h3>${esc(l.nome)}</h3>${par(l.texto)}`).join("")}
 `; }).join("")}
-<h2 id="hindi">Frases úteis em hindi</h2><ul>${HINDI.map(([pt, rom, dev, pron]) => `<li><b>${esc(rom)}</b> ${esc(pt)} · fala-se ${esc(pron)}</li>`).join("")}</ul>
+<h2 id="hindi">Frases úteis em árabe</h2><ul>${HINDI.map(([pt, rom, dev, pron]) => `<li><b>${esc(rom)}</b> ${esc(pt)} · fala-se ${esc(pron)}</li>`).join("")}</ul>
 <h2 id="saberes">Saberes da travessia</h2>${sab.map(x => `<h3>${esc(x.titulo)}</h3>${par(x.texto)}`).join("")}
 ${cartasAbertas().length ? `<h2 id="cartas">Cartas da travessia</h2>${cartasAbertas().map(c => `<h3>${esc(c.titulo || "Carta")}</h3>${par(c.texto)}<p class="s">${esc(assinaturaDe(c) + " · Caravana do Céu")}</p>`).join("")}` : ""}<h2 id="guia">Guia da travessia</h2>${guia.map(x => `<h3>${esc(x.titulo)}</h3>${par(x.texto)}`).join("")}
 <p class="s" style="margin-top:40px;text-align:center">Lokah Samastah Sukhino Bhavantu</p></main></body></html>`;

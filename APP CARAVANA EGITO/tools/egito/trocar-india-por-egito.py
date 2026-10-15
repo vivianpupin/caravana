@@ -143,5 +143,16 @@ troca('.hero .logo{width:56px;height:auto}', '.hero .logo{width:56px;height:auto
 troca('.absimb{width:74px;height:auto;', '.absimb.moeda{width:110px;border-radius:50%}\n.absimb{width:74px;height:auto;')
 troca('h("img", { class: "absimb", src: "img/simbolo-dourado.png", alt: "" }),', 'h("img", { class: "absimb moeda", src: "img/logo-egito-240.png", alt: "" }),', True)
 
+# tema gibi: entra depois do visual da Índia (tools/egito/tema-gibi.css) e carrega as letras de gibi
+css = (raiz / "tools" / "egito" / "tema-gibi.css").read_text(encoding="utf-8")
+if "<style id=\"tema-gibi\">" in t:
+    i = t.index("<style id=\"tema-gibi\">"); j = t.index("</style>", i) + len("</style>")
+    t = t[:i] + "<style id=\"tema-gibi\">\n" + css + "</style>" + t[j:]
+else:
+    i = t.index("</style>") + len("</style>")
+    t = t[:i] + "\n<style id=\"tema-gibi\">\n" + css + "</style>" + t[i:]
+if "family=Bangers" not in t:
+    troca('<link rel="preconnect" href="https://fonts.googleapis.com">', '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Special+Elite&display=swap">')
+
 arq.write_text(t, encoding="utf-8")
 print("ok")

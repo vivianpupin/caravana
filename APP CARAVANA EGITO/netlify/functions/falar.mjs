@@ -1,12 +1,12 @@
-// Voz do tradutor: busca a fala em hindi, inglês ou português e devolve o áudio (mp3) para o app tocar.
+// Voz do tradutor: busca a fala em árabe, inglês ou português e devolve o áudio (mp3) para o app tocar.
 // Passa pelo servidor porque o celular não consegue buscar essa voz direto (o Google recusa pedidos vindos de outro site).
-const LINGUAS = { hi: "hi", en: "en", pt: "pt-BR" };
+const LINGUAS = { ar: "ar", hi: "hi", en: "en", pt: "pt-BR" };
 
 // a voz aceita até ~200 letras por vez: divide o texto em pedaços pelas pausas naturais
 function pedacos(t, max = 180) {
   const out = []; let resto = t.trim();
   while (resto.length > max) {
-    let corte = Math.max(resto.lastIndexOf("।", max), resto.lastIndexOf(".", max), resto.lastIndexOf(",", max), resto.lastIndexOf("?", max), resto.lastIndexOf("!", max));
+    let corte = Math.max(resto.lastIndexOf("،", max), resto.lastIndexOf(".", max), resto.lastIndexOf(",", max), resto.lastIndexOf("?", max), resto.lastIndexOf("!", max));
     if (corte < max * .4) corte = resto.lastIndexOf(" ", max);
     if (corte <= 0) corte = max;
     out.push(resto.slice(0, corte + 1).trim()); resto = resto.slice(corte + 1).trim();
@@ -16,7 +16,7 @@ function pedacos(t, max = 180) {
 }
 
 export default async req => {
-  const u = new URL(req.url), t = String(u.searchParams.get("t") || "").slice(0, 600), l = LINGUAS[u.searchParams.get("l")] || "hi";
+  const u = new URL(req.url), t = String(u.searchParams.get("t") || "").slice(0, 600), l = LINGUAS[u.searchParams.get("l")] || "ar";
   const lento = u.searchParams.get("v") === "lento";
   if (!t.trim()) return new Response("sem texto", { status: 400 });
   try {
