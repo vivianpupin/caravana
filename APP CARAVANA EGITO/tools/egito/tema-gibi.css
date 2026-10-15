@@ -132,15 +132,3 @@ main::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:3;opac
 /* abertura do dia: frase longa em letra de legenda, cidade em letra de capa */
 .lidoscont{color:#F3E4BC;text-shadow:0 1px 2px #000}
 
-/* peças do gibi */
-.hero .asas,.view>.asas{width:min(260px,70%);height:auto;align-self:center;filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))}
-.pecas{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:end}
-.peca{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;color:#F3E4BC;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;text-shadow:0 1px 2px #000}
-.peca img{width:100%;max-width:120px;height:auto;filter:drop-shadow(3px 4px 0 rgba(0,0,0,.55));transition:transform .2s}
-.peca.selo img{transform:rotate(-6deg)}.peca.polaroid img{transform:rotate(5deg);max-width:96px}
-.peca:active img{transform:scale(.94)}
-.citacao{width:min(320px,86%);height:auto;align-self:center;transform:rotate(-1.5deg);filter:drop-shadow(4px 5px 0 rgba(0,0,0,.5))}
-.asasfim{width:180px!important;height:auto!important}
-.bussolahead{width:74px;height:auto;filter:drop-shadow(3px 3px 0 rgba(0,0,0,.5))}
-.dnum{position:relative}
-.dnum .etiq{width:52px;height:auto;margin-top:4px;transform:rotate(-8deg);filter:drop-shadow(1px 2px 0 rgba(0,0,0,.4))}

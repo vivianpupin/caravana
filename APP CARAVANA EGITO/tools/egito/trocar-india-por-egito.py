@@ -164,16 +164,6 @@ function fundoDoDia() {
   if (S.fundoAtual === f) return; S.fundoAtual = f; document.body.style.setProperty("--fundo", `url(${f})`);
 }''')
 
-# peças do gibi (app/img/pecas) como enfeites e botões
-troca('      h("span", { class: "line" }),\n      h("p", { class: "intro", id: "frase-giro"', '      h("img", { class: "asas", src: "img/pecas/asas-sol.webp", alt: "" }),\n      h("p", { class: "intro", id: "frase-giro"')
-troca('      h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +6h" }))),\n    vGarrafaVolta(),',
-      '      h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +6h" }))),\n    h("div", { class: "pecas" },\n      h("button", { type: "button", class: "peca selo", onclick: () => go("passaporte") }, h("img", { src: "img/pecas/selo-caravaneer.webp", alt: "" }), h("span", { text: "Meu passaporte" })),\n      h("button", { type: "button", class: "peca bussola", onclick: () => go("mapa") }, h("img", { src: "img/pecas/bussola.webp", alt: "" }), h("span", { text: "Onde está a caravana" })),\n      h("button", { type: "button", class: "peca polaroid", onclick: () => go("fotos") }, h("img", { src: "img/pecas/polaroid-cairo.webp", alt: "" }), h("span", { text: "Câmera" }))),\n    h("img", { class: "citacao", src: "img/pecas/citacao.webp", alt: "O Egito não se explica. O Egito se sente. Cada pedra fala. Cada sombra lembra. Cada história nos transforma." }),\n    vGarrafaVolta(),')
-troca('      h("img", { class: "s", src: "img/simbolo-marrom.png", alt: "" }),', '      h("img", { class: "s asasfim", src: "img/pecas/asas-escaravelho.webp", alt: "" }),')
-troca('    h("p", { class: "lede", text: "Cada carimbo guarda uma história. Ela se abre quando o passaporte é carimbado no lugar sagrado." }),', '    h("img", { class: "asas", src: "img/pecas/asas-roteiro.webp", alt: "" }),\n    h("p", { class: "lede", text: "Cada carimbo guarda uma história. Ela se abre quando o passaporte é carimbado no lugar sagrado." }),')
-troca('      h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: "Perto de mim" }))),\n    h("div", { class: "mapwrap" }',
-      '      h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: "Perto de mim" })), h("img", { class: "bussolahead", src: "img/pecas/bussola-2.webp", alt: "" })),\n    h("div", { class: "mapwrap" }')
-# dias no Cairo ganham a etiqueta CAIRO · EGITO do gibi
-troca('    h("span", { class: "dnum" }, h("small", { text: "Dia" }), h("b", { text: nn(d.n) })),', '    h("span", { class: "dnum" }, h("small", { text: "Dia" }), h("b", { text: nn(d.n) }), d.cidade === "Cairo" ? h("img", { class: "etiq", src: "img/pecas/etiqueta-cairo.webp", alt: "" }) : null),')
 
 arq.write_text(t, encoding="utf-8")
 print("ok")

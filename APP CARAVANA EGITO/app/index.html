@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "15/10 · 19:01";</script>
+<script>window.__VERSAO = "15/10 · 19:10";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2046,18 +2046,6 @@ main::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:3;opac
 /* abertura do dia: frase longa em letra de legenda, cidade em letra de capa */
 .lidoscont{color:#F3E4BC;text-shadow:0 1px 2px #000}
 
-/* peças do gibi */
-.hero .asas,.view>.asas{width:min(260px,70%);height:auto;align-self:center;filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))}
-.pecas{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:end}
-.peca{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;color:#F3E4BC;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;text-shadow:0 1px 2px #000}
-.peca img{width:100%;max-width:120px;height:auto;filter:drop-shadow(3px 4px 0 rgba(0,0,0,.55));transition:transform .2s}
-.peca.selo img{transform:rotate(-6deg)}.peca.polaroid img{transform:rotate(5deg);max-width:96px}
-.peca:active img{transform:scale(.94)}
-.citacao{width:min(320px,86%);height:auto;align-self:center;transform:rotate(-1.5deg);filter:drop-shadow(4px 5px 0 rgba(0,0,0,.5))}
-.asasfim{width:180px!important;height:auto!important}
-.bussolahead{width:74px;height:auto;filter:drop-shadow(3px 3px 0 rgba(0,0,0,.5))}
-.dnum{position:relative}
-.dnum .etiq{width:52px;height:auto;margin-top:4px;transform:rotate(-8deg);filter:drop-shadow(1px 2px 0 rgba(0,0,0,.4))}
 </style>
 
 <div class="app">
@@ -2544,7 +2532,7 @@ function vTravessia() {
       h("img", { class: "logo moeda", src: "img/logo-egito-240.png", alt: "Caravana do Céu · Travessia do Velho Mundo" }),
       h("h1", null, "Travessia do", h("br"), "Velho Mundo"),
       h("p", { class: "route", text: "Cairo · Deserto Branco · Aswan · Luxor · Hurghada" }),
-      h("img", { class: "asas", src: "img/pecas/asas-sol.webp", alt: "" }),
+      h("span", { class: "line" }),
       h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] })),
     h("div", { class: "clock" },
       f > 0 ? h("div", null, h("b", { text: f }), h("span", { text: f === 1 ? "dia para embarcar" : "dias para embarcar" }))
@@ -2553,11 +2541,6 @@ function vTravessia() {
             : h("div", null, h("b", { text: String(dias.length) }), h("span", { text: "dias de travessia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "Africa/Cairo", text: horaEm("Africa/Cairo") }), h("span", { text: "Agora no Egito" })),
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +6h" }))),
-    h("div", { class: "pecas" },
-      h("button", { type: "button", class: "peca selo", onclick: () => go("passaporte") }, h("img", { src: "img/pecas/selo-caravaneer.webp", alt: "" }), h("span", { text: "Meu passaporte" })),
-      h("button", { type: "button", class: "peca bussola", onclick: () => go("mapa") }, h("img", { src: "img/pecas/bussola.webp", alt: "" }), h("span", { text: "Onde está a caravana" })),
-      h("button", { type: "button", class: "peca polaroid", onclick: () => go("fotos") }, h("img", { src: "img/pecas/polaroid-cairo.webp", alt: "" }), h("span", { text: "Câmera" }))),
-    h("img", { class: "citacao", src: "img/pecas/citacao.webp", alt: "O Egito não se explica. O Egito se sente. Cada pedra fala. Cada sombra lembra. Cada história nos transforma." }),
     vGarrafaVolta(),
     vMissoes(),
     vOnlineLider(),
@@ -2573,7 +2556,7 @@ function vTravessia() {
     vOffline(),
     h("div", { class: "foot" },
       h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }),
-      h("img", { class: "s asasfim", src: "img/pecas/asas-escaravelho.webp", alt: "" }),
+      h("img", { class: "s", src: "img/simbolo-marrom.png", alt: "" }),
       h("q", { text: "Explorando nossa origem nos damos conta de que somos infinitos." }),
       h("p", { class: "eyebrow", style: "text-align:center;line-height:1.8" }, "Caravana do Céu", h("br"), "a travessia te espera"),
       window.__VERSAO ? h("p", { class: "small", style: "text-align:center;opacity:.6;margin-top:6px", text: "versão " + window.__VERSAO }) : null));
@@ -2823,7 +2806,7 @@ function abrirGuardiao(passo) {
 function vDia(d, open, isToday, abrir) {
   const ls = (d.pins || []).map(localDe).filter(Boolean);
   const head = h("button", { class: "dayhead", type: "button", "aria-expanded": String(open), onclick: () => abrir(d.n) },
-    h("span", { class: "dnum" }, h("small", { text: "Dia" }), h("b", { text: nn(d.n) }), d.cidade === "Cairo" ? h("img", { class: "etiq", src: "img/pecas/etiqueta-cairo.webp", alt: "" }) : null),
+    h("span", { class: "dnum" }, h("small", { text: "Dia" }), h("b", { text: nn(d.n) })),
     h("span", { class: "dtit" },
       h("h3", { text: d.titulo }),
       h("span", { class: "fr", text: d.frase }),
@@ -3189,7 +3172,6 @@ function vSaberes() {
   return h("section", { class: "view" },
     h("img", { class: "orn", src: "img/mantra-ganesha.webp", alt: "Om Gam Ganapataye Namah" }),
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Para ler pelo caminho" }), h("h1", { text: "Saberes da travessia" }))),
-    h("img", { class: "asas", src: "img/pecas/asas-roteiro.webp", alt: "" }),
     h("p", { class: "lede", text: "Cada carimbo guarda uma história. Ela se abre quando o passaporte é carimbado no lugar sagrado." }),
     vOraculoCard(),
     sab.length ? h("p", { class: "lidoscont", text: `Você já leu ${sab.filter(x => S.lidos[x.id] && lib(x)).length} de ${sab.length}` }) : null,
@@ -5317,7 +5299,7 @@ function vMapa() {
   perfis(S.posicoes.map(p => p.id));
   return h("section", { class: "view" },
     h("div", { class: "head" },
-      h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: "Perto de mim" })), h("img", { class: "bussolahead", src: "img/pecas/bussola-2.webp", alt: "" })),
+      h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: "Perto de mim" }))),
     h("div", { class: "mapwrap" }, vPerto(),
       h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null), vHotelHoje())));
 }
