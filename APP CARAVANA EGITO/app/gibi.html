@@ -51,7 +51,11 @@ body{background:radial-gradient(ellipse at 50% 35%,#3A2A18 0%,#1F160D 60%,#120C0
 .alvo.ok .carimbo{animation:carimba .45s cubic-bezier(.3,1.6,.5,1) forwards}
 @keyframes carimba{to{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}}
 @keyframes pisca{50%{opacity:.45}}
-.dica{font:13px var(--f-nota);color:#C8B48A;text-align:center;min-height:1.3em;animation:pisca 2.4s ease-in-out infinite}
+.dica{font:12px var(--f-nota);color:#C8B48A;text-align:center;min-height:1.3em;margin:0;flex:1;animation:pisca 2.4s ease-in-out infinite}
+.setas{width:min(100%,520px);display:flex;align-items:center;gap:8px}
+.setas button{font:17px/1 var(--f-gibi);letter-spacing:.06em;color:var(--tinta);background:var(--ouro);border:2px solid #000;box-shadow:3px 3px 0 #000;padding:9px 12px 7px;cursor:pointer;flex:none}
+.setas button:disabled{opacity:.25;box-shadow:none}
+.setas button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #000}
 
 /* janela do enigma */
 .janela{position:fixed;inset:0;z-index:20;display:grid;place-items:end center;background:rgba(10,6,2,.55);padding:16px}
@@ -86,7 +90,7 @@ body{background:radial-gradient(ellipse at 50% 35%,#3A2A18 0%,#1F160D 60%,#120C0
     <span class="pag" id="pag">CAPA</span>
   </div>
   <div class="livro" id="livro"><div class="pilha"></div></div>
-  <p class="dica" id="dica">Arraste a página para o lado para folhear</p>
+  <div class="setas"><button type="button" id="ant" aria-label="Página anterior">‹ anterior</button><p class="dica" id="dica">Arraste para folhear</p><button type="button" id="prox" aria-label="Próxima página">próxima ›</button></div>
 </div>
 <div class="janela" id="janela" hidden><div class="caixa" role="dialog" aria-modal="true" aria-labelledby="enigma-t">
   <h2 id="enigma-t">Enigma</h2><p id="enigma-p"></p><div id="enigma-ops" style="display:grid;gap:8px"></div>
@@ -160,18 +164,18 @@ function pos(i, giro, anima) {
   const f = folhas[i]; f.classList.toggle("anima", !!anima); f.classList.toggle("virando", giro !== 0 && giro !== -180);
   f.style.transform = `rotateY(${giro}deg)`;
   // a folha virada passa para trás das que ainda não viraram
-  f.style.zIndex = giro <= -90 ? String(i + 1) : String(PAGINAS.length - i + 10);
+  f.style.zIndex = anima === false && giro > -180 && giro < 0 ? "99" : giro <= -90 ? String(i + 1) : String(PAGINAS.length - i + 10);
 }
 function mostra() {
   folhas.forEach((f, i) => pos(i, i < lidas ? -180 : 0, true));
-  $("pag").textContent = PAGINAS[lidas].nome; $("volta").disabled = lidas === 0;
-  $("dica").textContent = PAGINAS[lidas].enigmas && resolvidos.size < 3 ? "Toque nos quadros dos enigmas para decifrar" : lidas < PAGINAS.length - 1 ? "Arraste a página para o lado para folhear" : "";
+  $("pag").textContent = PAGINAS[lidas].nome; $("volta").disabled = $("ant").disabled = lidas === 0; $("prox").disabled = lidas === PAGINAS.length - 1;
+  $("dica").textContent = PAGINAS[lidas].enigmas && resolvidos.size < 3 ? "Toque nos quadros dos enigmas para decifrar" : lidas < PAGINAS.length - 1 ? "Toque à direita para avançar, à esquerda para voltar" : "";
 }
 function vira(dir) {
   const n = lidas + dir; if (n < 0 || n > PAGINAS.length - 1) return mostra();
   lidas = n; somPapel(); mostra();
 }
-$("volta").onclick = () => vira(-1);
+$("volta").onclick = $("ant").onclick = () => vira(-1); $("prox").onclick = () => vira(1);
 
 // arrastar com o dedo: a página acompanha; passando da metade, vira
 let ini = null;
@@ -183,7 +187,7 @@ livro.addEventListener("pointermove", e => {
 });
 const solta = e => {
   if (!ini) return; const dx = e.clientX - ini.x, rapido = Date.now() - ini.t < 300 && Math.abs(dx) > 30; ini = null;
-  if (Math.abs(dx) < 8) { if (e.clientX - livro.getBoundingClientRect().left > livro.clientWidth * .55) vira(1); else if (lidas > 0 && e.clientX - livro.getBoundingClientRect().left < livro.clientWidth * .2) vira(-1); else mostra(); return; }
+  if (Math.abs(dx) < 8) { if (e.clientX - livro.getBoundingClientRect().left > livro.clientWidth * .5) vira(1); else vira(-1); return; }
   if (dx < 0 && (dx < -ini_w() * .35 || rapido)) vira(1); else if (dx > 0 && (dx > ini_w() * .35 || rapido)) vira(-1); else mostra();
 };
 const ini_w = () => livro.clientWidth;
