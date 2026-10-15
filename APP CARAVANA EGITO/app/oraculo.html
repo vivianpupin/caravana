@@ -119,13 +119,20 @@ p{margin:0}
 #leituraBox,#bolsaBox{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
 .topo .glifo{font:58px/1 "Noto Sans Egyptian Hieroglyphs",serif;color:#8A5A14;flex:none;width:86px;text-align:center}
 .amu1{display:flex;gap:12px;align-items:center}.amu1 .glifo{font:46px/1 "Noto Sans Egyptian Hieroglyphs",serif;color:#8A5A14;flex:none}
-.bolsa{width:150px;height:170px;border:0;cursor:pointer;background:none;position:relative}
-.bolsa::before{content:"";position:absolute;inset:30px 10px 0;border-radius:40% 40% 46% 46%;background:radial-gradient(circle at 40% 32%,rgba(255,240,200,.25),transparent 55%),radial-gradient(circle at 50% 60%,transparent 50%,rgba(60,35,10,.55)),url(img/fundo-pergaminho.webp) center/240px #B89A68;box-shadow:0 14px 26px rgba(0,0,0,.7),inset 0 -8px 16px rgba(50,28,8,.5)}
-.bolsa::after{content:"";position:absolute;left:44px;right:44px;top:22px;height:20px;border-radius:9px;background:repeating-linear-gradient(60deg,#7A2A18 0 4px,#9C3A22 4px 8px);box-shadow:0 3px 3px rgba(0,0,0,.5)}
-.bolsa span{position:absolute;inset:auto 0 46px;font:44px/1 "Noto Sans Egyptian Hieroglyphs",serif;color:#3A2410;opacity:.8;z-index:1;text-shadow:0 1px 0 rgba(255,230,180,.4)}
+.bolsa{width:190px;height:220px;border:0;cursor:pointer;background:url(img/bolsa-bronze.webp) center/contain no-repeat;position:relative;transform-origin:50% 80%}
+.bolsa span{display:none}
+/* amuletos: medalha de bronze com o sinal em relevo, texto em painel escuro de bronze gasto */
+.amuletos .lamina{background:linear-gradient(rgba(30,20,10,.82),rgba(20,13,6,.9)),url(img/bronze.webp) center/260px #241708!important;color:#E9D7AE;border:1px solid rgba(214,170,100,.35);box-shadow:0 14px 30px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,220,160,.15)}
+.amuletos .lamina h4{color:#D4A84F!important}
+#bolsaBox>details.lamina{background:linear-gradient(rgba(30,20,10,.82),rgba(20,13,6,.9)),url(img/bronze.webp) center/260px #241708;color:#E9D7AE;border:1px solid rgba(214,170,100,.35)}
+#bolsaBox .btn.pedra{background:linear-gradient(180deg,#F2D48C 0%,#C9973F 48%,#9C6E25 52%,#C49340 100%);color:#24170A;border-color:#5C3E14}
+.amuletos .lamina b{color:#F3E2B6}
+.amuletos .glifo{width:78px;height:78px;flex:none;display:grid;place-items:center;border-radius:50%;font-size:40px!important;color:rgba(36,20,8,.9)!important;
+  background:url(img/bronze.webp) center/120px;box-shadow:inset 0 0 0 3px rgba(60,36,14,.8),inset 0 0 0 5px rgba(214,170,100,.45),inset 2px 3px 6px rgba(255,225,170,.35),inset -3px -4px 8px rgba(0,0,0,.55),0 6px 12px rgba(0,0,0,.6);
+  text-shadow:0 1.5px 0 rgba(255,225,170,.5),0 -1px 1px rgba(0,0,0,.6)}
 .bolsa.mexe{animation:mexe .5s}
 @keyframes mexe{25%{transform:rotate(-6deg)}50%{transform:rotate(5deg) translateY(-6px)}75%{transform:rotate(-3deg)}}
-.bolsa:disabled{opacity:.6}
+.bolsa:disabled{opacity:1;filter:brightness(.85)}
 .amuletos{display:flex;flex-direction:column;gap:12px;width:min(100%,440px)}
 .sai{animation:sai .8s cubic-bezier(.2,.8,.2,1) both}
 @keyframes sai{from{opacity:0;transform:translateY(-40px) scale(.9)}}
