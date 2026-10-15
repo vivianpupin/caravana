@@ -222,3 +222,25 @@ Decisões tomadas sem a Vivian (conferir):
 - Carta final ficou como rascunho para a Vivian escrever.
 
 Ainda com cara de Índia (próximas rodadas): tradutor e frases em hindi, câmbio em rúpias, oráculo dos planetas, guardiões das passagens (deuses hindus), habilidades, explorador (sari, fantasias de deuses hindus), nomes das câmeras e filtros, mapa em pergaminho (contorno da Índia), retrato da Caravana, figurinhas do chat, gibi de abertura e mapa estilo videogame.
+
+## 10. Roteiro operacional da Egito Tours (`referencias/egito-tours/`)
+
+O roteiro contratado, dia a dia (sem os valores). Complementa o roteiro da Vivian com detalhes que ainda não estão no app:
+- Dia 2: também o Templo do Vale (onde Quéfren foi mumificado); almoço no 9 Pyramids.
+- Dia 3: em Saqqara, Pirâmide de Djoser, Túmulo de Kagemny e Pirâmide de Titi; Museu do Cairo e Museu da Civilização.
+- Dia 4: 5 h de estrada até o Oásis de Bahariyah; safári pelo Deserto Preto, Montanhas de Cristal, Agabat e Deserto Branco no mesmo dia; chá preto na fogueira.
+- Dia 5: nascer do sol, café beduíno, 6 h de volta ao Cairo.
+- Dia 6: voo de 1h30 para Aswan, Philae, feluca, banho no Nilo, camelo na orla e Vila Núbia (casa típica, escola núbia).
+- Dia 7: saída às 4h30 para Abu Simbel (templos de Ramsés II e de Nefertari), Kom Ombo (templo da medicina).
+- Dia 8: Edfu de charrete, eclusa de Esna, Templo de Luxor ao pôr do sol.
+- Dia 9: Vale dos Reis, Hatshepsut, Colossos de Mêmnon, Karnak.
+- Dia 10: 4 h de carro até Hurghada. Dias 11 e 12 livres (passeio de barco no Mar Vermelho é opcional da Egito Tours). Dia 13: voo de 1 h para o Cairo.
+- Guia egiptólogo em português; no deserto, guias beduínos em inglês. Gorjeta obrigatória de US$ 50 por pessoa aos guias e motoristas. Entradas no interior das pirâmides e nas tumbas de Tutankhamon, Sety I e Ramsés VI são à parte, pagas só com cartão.
+- Atenção: o roteiro da Vivian diz "Barco da Caravana no Mar Vermelho" incluso; na Egito Tours o barco é opcional. Confirmar.
+
+## 11. O gibi (responsável: Claude)
+
+- `app/gibi.html`: gibi de papel para folhear com o dedo (a página acompanha o dedo e vira pela lombada, com som de papel). A página do Dia 1 tem os três enigmas por cima dos quadros; cada acerto carimba DECIFRADO e acende uma parte do símbolo; a contracapa libera "Abrir o mapa da jornada".
+- Páginas em `app/img/gibi/`, montadas por `tools/egito/gibi-paginas.py` a partir das artes da Vivian (referencias/comics). O nome antigo "Caravanegita" saiu: capa provisória é a página "As Aventuras da Caravana do Céu"; o cabeçalho do Dia 1 foi cortado; as duas legendas com o nome foram reletradas ("DA CARAVANA...", "A VIAJANTE ENCONTRA UM MAPA ANTIGO.") com PT Sans Narrow Bold (via npm @fontsource/pt-sans-narrow; caminho da fonte é o 1º argumento do script).
+- Artes novas geradas no Canva (15/10/2026), esperando liberar o download (a rede da sessão bloqueia media.canva.com e www.canva.com): capa com o título "O SEGREDO DO VELHO MUNDO" (MAHYHXTc7tc), capa sem texto (MAHYHeFAdQ8), página da chegada ao Cairo (MAHYHT59mQE), página de Gizé (MAHYHe_rP2I).
+- Prova publicada: https://claude.ai/artifact/GNTPTDfC7LajguksZ9pgB3
