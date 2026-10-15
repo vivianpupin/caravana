@@ -6401,6 +6401,7 @@ const IMG_FIXA = new Map();
 function imgFixa(src, cls) { let i = IMG_FIXA.get(src); if (!i) { i = new Image(); i.decoding = "sync"; i.alt = ""; i.src = src; if (i.decode) i.decode().catch(() => {}); IMG_FIXA.set(src, i); } i.className = cls; return i; }
 setTimeout(() => { for (const f of ["maleta-foto.jpg", "carteira-foto.jpg"]) if (temFoto("img/cameras/" + f)) imgFixa("img/cameras/" + f, ""); }, 800);
 function vEstante() {
+  setTimeout(preparaCameras, 300); // já deixa as fotos das câmeras prontas enquanto a pessoa olha a maleta
   const mala = (() => { const foto = temFoto("img/cameras/maleta-foto.jpg"), papel = foto || temFoto("img/cameras/mala-papel.webp"), oito = papel || temFoto("img/cameras/mala-oito.webp"), cheia = oito || temFoto("img/cameras/mala-cheia.jpg"), vazia = temFoto("img/cameras/mala.jpg");
       if (!cheia && !vazia) return null;
       const src = foto ? "img/cameras/maleta-foto.jpg" : papel ? "img/cameras/mala-papel.webp" : oito ? "img/cameras/mala-oito.webp" : cheia ? "img/cameras/mala-cheia.jpg" : "img/cameras/mala.jpg", casas = foto ? MALA_FOTO : papel ? MALA_PAPEL : oito ? MALA_OITO : cheia ? MALA_CHEIA : MALA_CASAS;
@@ -6449,7 +6450,15 @@ function faixaCota(esgotou) {
 }
 window.addEventListener("caravana-cota", e => faixaCota(e.detail));
 // deixa as fotos de todas as câmeras prontas na memória, para a troca não mostrar fundo preto enquanto a imagem chega
-function preparaCameras() { amostraFiltro(); if (S.camPrep) return; S.camPrep = []; for (const c of CAMERAS_C) { if (!FOTOS_CAM.has(c.id + "-corpo.jpg")) continue; fetch("img/cameras/" + c.id + "-corpo.jpg").catch(() => {}); S.camPrep.push(c.id); } } // só baixa para o cache (não segura as 7 fotos abertas na memória do iPhone)
+function preparaCameras() { amostraFiltro(); if (S.camPrep) return; S.camPrep = []; for (const c of CAMERAS_C) { if (!FOTOS_CAM.has(c.id + "-corpo.jpg")) continue; corpoPronto(c.id); S.camPrep.push(c.id); } }
+// a foto do corpo de cada câmera fica carregada e decodificada na memória: ao trocar de câmera, ela aparece na hora, sem piscar preto
+const CORPO_IMG = {};
+function corpoPronto(id) {
+  if (!FOTOS_CAM.has(id + "-corpo.jpg")) return Promise.resolve();
+  const k = CORPO_IMG[id] || (CORPO_IMG[id] = (() => { const i = new Image(); i.decoding = "sync"; i.src = "img/cameras/" + id + "-corpo.jpg";
+    return { i, p: (i.decode ? i.decode() : new Promise(ok => { i.onload = ok; i.onerror = ok; })).catch(() => {}) }; })());
+  return k.p;
+} // só baixa para o cache (não segura as 7 fotos abertas na memória do iPhone)
 // botão claro de voltar para a maleta (no alto da câmera, onde a pessoa procura o "voltar")
 function voltaMaleta(onde) {
   const b = h("button", { type: "button", class: "cfvolta" + (onde ? " " + onde : ""), "aria-label": "Voltar para a maleta", onclick: voltaEstante },
@@ -6457,13 +6466,17 @@ function voltaMaleta(onde) {
   b.children[1].innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V5.5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 5.5v2M3 12.5h18M10.5 12.5v2h3v-2"/></svg>';
   return b;
 }
-function escolheCamera(id) {
-  preparaCameras(); S.quadroAnterior = S.camEst && S.camEst.frame;
+async function escolheCamera(id) {
+  preparaCameras(); S.trocandoCam = id;
+  // espera a foto da câmera nova estar pronta (no máximo meio segundo); enquanto isso a câmera atual continua na tela, em vez de piscar preto
+  await Promise.race([corpoPronto(id), new Promise(ok => setTimeout(ok, 500))]);
+  if (S.trocandoCam !== id) return; // tocou em outra câmera no meio do caminho
+  S.quadroAnterior = S.camEst && S.camEst.frame;
   fechaVivo(); const c = CAMERAS_C.find(x => x.id === id);
   S.camSel = id; S.fotoSel = null; S.camFalhou = false; S.camDupla = false; S.duplaA = null; S.foto = fotoDaCamera(c);
   render(); $("#main") && ($("#main").scrollTop = 0);
 }
-const voltaEstante = () => { fechaVivo(); S.camSel = null; S.foto = null; render(); };
+const voltaEstante = () => { S.trocandoCam = null; fechaVivo(); S.camSel = null; S.foto = null; render(); };
 // som de obturador, curtinho
 function cliqueSom() { try { const A = window.AudioContext || window.webkitAudioContext, a = S.audioCtx || (S.audioCtx = new A()), n = a.createBufferSource(), b = a.createBuffer(1, a.sampleRate * .08, a.sampleRate), d = b.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3); n.buffer = b; const g = a.createGain(); g.gain.value = .5; n.connect(g); g.connect(a.destination); n.start(); } catch (e) {} }
@@ -6557,8 +6570,8 @@ function vCameraFisica(c) {
     c.filma ? chave("Foto", "Filme", S.camModo === "filme", ev => { if (S.gravando) return; S.camModo = S.camModo === "filme" ? "foto" : "filme"; trocaModoFilme(c, ev.currentTarget); }) : null);
   const fc = FOTO_CAM[c.id], fotoCorpo = fc && temFoto("img/cameras/" + c.id + "-corpo.jpg");
   // com a foto realista: a câmera de perto ocupa a tela, a imagem ao vivo entra no visor da foto e o botão da foto dispara
-  const palco = fotoCorpo ? h("div", { class: "cfpalco", "aria-hidden": "false" }, h("img", { class: "cffundo", src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }), h("div", { class: "cfimg" },
-    h("img", { src: "img/cameras/" + c.id + "-corpo.jpg", alt: "" }),
+  const palco = fotoCorpo ? h("div", { class: "cfpalco", "aria-hidden": "false" }, h("img", { class: "cffundo", src: "img/cameras/" + c.id + "-corpo.jpg", alt: "", decoding: "sync" }), h("div", { class: "cfimg" },
+    h("img", { src: "img/cameras/" + c.id + "-corpo.jpg", alt: "", decoding: "sync" }),
     h("div", { class: "cfjanela cfjanelafoto" + (fc.invertido ? " invertido" : "") + (fc.inteira ? " inteira" : ""), style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : null,
       F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando", "aria-live": "polite" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null,
       c.filma && S.camModo === "filme" && F.vivo ? dicaFilme() : null,
