@@ -117,7 +117,7 @@ Onde cada coisa da Índia mora no código (procurar pelo nome; números de linha
 6. Habilidades, nomes das câmeras e filtros, explorador e chat (escolhas da Vivian).
 7. Firebase e Netlify novos, repositório próprio.
 
-## 7. O que já se sabe do Egito (PDF "EGYTP 2027 _ CARAVANA", páginas 1 a 20 de 26)
+## 7. O que já se sabe do Egito (PDF "EGYTP 2027 _ CARAVANA", páginas 1 a 20 e 24 a 26 de 26; faltam 21 a 23)
 
 Fonte: prints que a Vivian mandou em 15/10/2026, guardados em `referencias/pdf-egito-2027/`.
 
@@ -194,3 +194,9 @@ Dez conquistas com ícones de traço fino em círculo. Encaixam como as conquist
 - **Página 19 · O que está incluso**: acomodação em quarto duplo 4/5 estrelas; café da manhã; guias locais em português ou espanhol; todos os ingressos do roteiro (museus e templos); acampamento no deserto com alimentação beduína; cruzeiro de 4 dias pelo Nilo (com alimentação, sem bebida); 2 voos domésticos (Cairo → Aswan / Hurghada → Cairo); transporte privado terrestre durante toda a viagem (com transfer para aeroporto); Barco da Caravana no Mar Vermelho; Kit de viagem Caravaner; auxílio pré-viagem (visto e bagagem); suporte 24 horas.
 - **Página 20 · O que não está incluso**: passagem aérea até o Cairo; seguro viagem (obrigatório); despesas extras e compras; alimentação e bebidas não mencionadas; visto para o Egito (30 USD); gorjetas.
 - Úteis para o app: o "Antes de embarcar" pode ter missões de visto (30 USD), seguro viagem e bagagem; quem viaja se chama **Caravaner** (kit de viagem Caravaner).
+
+### Textos das páginas 24 a 26 (21 a 23 ainda não chegaram; a 23 mostra o navio do cruzeiro e o salão interno)
+
+- **Página 24 · QUEM CONDUZ A TRAVESSIA? · VANESSA DELEU + VIVIAN PUPIN** (título em bold grosso branco; foto à luz de vela, com violão): "Há 6 anos elas conduzem experiências que unem viagens, percepção e estados de presença; tendo o projeto Cerim0nia como base, onde trabalham com música, medicina do som e práticas de interiorização. Suas formações passam por diferentes caminhos: Hinduísmo, Xamanismo, Kriya Yoga, Thetahealing, Hipnose, Terapia Floral, Tarot, Magia, Umbanda, trabalho com ervas, práticas energéticas, estudos simbólicos e condução de cerimônias; utilizam desses estudos não como técnicas isoladas, mas como partes de uma mesma busca: recordar o sagrado, relembrar quem somos e despertar o ato de poder que cada um carrega dentro de si. O chamado da dupla não é apenas para buscar para si, e sim criar grupos de força, como faziam as caravanas antigas, e conduzir essas pessoas a lugares de poder onde a natureza reorganiza, limpa, transforma e toca! Cada roteiro é construído a partir de pesquisa, vivência direta e uma curadoria que busca ir além do turismo, criando experiências que conectam o viajante ao lugar de forma profunda! Na Caravana, elas conduzem o ritmo, o olhar e a forma de atravessar cada território, aprofundando-se na história e na magia do mistério que esses locais exalam!"
+- **Página 25** (Abu Simbel, Vivian em frente aos colossos): "EXPLORANDO NOSSA ORIGEM NOS DAMOS CONTA DE QUE SOMOS INFINITOS" (bold em maiúsculas cor areia, com INFINITOS em branco).
+- **Página 26** (colunas de Hathor de Dendera, teto pintado): assinatura "caravana" em letra de máquina de escrever gasta, sobre o símbolo da Caravana grande em branco. Bom candidato para a tela de abertura ou o véu do app.
