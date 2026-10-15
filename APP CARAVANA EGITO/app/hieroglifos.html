@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Seu nome em hieróglifos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&family=Lora:ital,wght@0,500;1,400&family=Poppins:wght@400;600&family=Special+Elite&display=swap">
+<style>
+/* Oficina do escriba: tábua de pedra escura à luz de lamparina; o cartucho é gravado sinal por sinal */
+:root{
+  --pedra:#2A1D10; --pedra2:#3A2A18; --ouro:#E9B949; --ocre:#C9A55C; --papel:#F3E4BC; --tinta:#1E140B; --azul:#4F6E78; --verm:#B5402A;
+  --f-hiero:"Noto Sans Egyptian Hieroglyphs",serif; --f-tit:"Lora",Georgia,serif; --f-ui:"Poppins",system-ui,sans-serif; --f-cap:"Special Elite","Courier New",monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;color:var(--papel);font:15px/1.55 var(--f-ui)}
+body{background:
+  radial-gradient(ellipse at 50% 18%,rgba(233,185,73,.22),transparent 55%),
+  radial-gradient(circle,rgba(0,0,0,.25) 1px,transparent 1.5px) 0 0/6px 6px,
+  linear-gradient(175deg,#4A3420,#2A1D10 60%,#1A120A)}
+.pag{max-width:560px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 40px max(16px,env(safe-area-inset-left));display:flex;flex-direction:column;gap:18px}
+.cap{font:12px var(--f-cap);letter-spacing:.06em;text-transform:uppercase;color:var(--tinta);background:var(--ouro);border:2px solid var(--tinta);padding:3px 8px 2px;width:fit-content;box-shadow:2px 2px 0 #000}
+h1{margin:0;font:500 clamp(26px,7vw,34px)/1.15 var(--f-tit);color:var(--papel);text-shadow:0 2px 3px #000}
+.lede{margin:0;color:#E2CFA3;max-width:58ch}
+.quadro{background:var(--papel);color:var(--tinta);border:3px solid var(--tinta);box-shadow:4px 4px 0 #000;border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:12px}
+label{font:600 12px var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:var(--verm)}
+input{width:100%;font:500 22px var(--f-tit);padding:10px 12px;border:2.5px solid var(--tinta);border-radius:4px;background:#FBF2D9;color:var(--tinta);letter-spacing:.04em}
+input:focus{outline:none;box-shadow:3px 3px 0 var(--verm)}
+.botoes{display:flex;gap:8px;flex-wrap:wrap}
+button{font:600 14px var(--f-ui);cursor:pointer}
+.btn{border:2.5px solid var(--tinta);border-radius:4px;background:var(--ouro);color:var(--tinta);box-shadow:3px 3px 0 var(--tinta);padding:9px 16px}
+.btn.claro{background:#F3E4BC}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--tinta)}
+.btn:disabled{opacity:.4}
+
+/* a parede com o cartucho */
+.parede{position:relative;border:3px solid #000;border-radius:6px;box-shadow:4px 4px 0 #000;overflow:hidden;min-height:440px;display:grid;place-items:center;padding:24px 12px;
+  background:radial-gradient(ellipse at 50% 30%,rgba(255,200,120,.35),transparent 60%),
+    repeating-linear-gradient(0deg,rgba(0,0,0,.06) 0 2px,transparent 2px 22px),
+    radial-gradient(circle,rgba(90,60,25,.25) 1px,transparent 1.6px) 0 0/5px 5px,
+    linear-gradient(180deg,#D8B77A,#B88E52)}
+.parede::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 45%,rgba(30,18,6,.55))}
+.cartucho{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:26px 18px 30px;min-width:96px;min-height:200px;
+  border:5px solid #5A3A18;border-radius:999px;box-shadow:inset 0 3px 6px rgba(0,0,0,.35),0 2px 0 rgba(255,235,190,.6)}
+.cartucho::after{content:"";position:absolute;left:12%;right:12%;bottom:-16px;height:9px;background:#5A3A18;border-radius:3px;box-shadow:0 2px 0 rgba(255,235,190,.6)}
+.sinal{font:72px/1.05 var(--f-hiero);color:#4A2C0E;text-shadow:0 1px 0 rgba(255,235,190,.7),0 -1px 0 rgba(0,0,0,.35);opacity:0;transform:scale(1.5)}
+.sinal.gravado{animation:grava .5s cubic-bezier(.3,1.5,.5,1) forwards}
+.sinal.brilha{color:#9A5A10;text-shadow:0 0 14px rgba(255,210,120,.9)}
+@keyframes grava{to{opacity:1;transform:none}}
+.vazio{font:14px var(--f-cap);color:#5A3A18;text-align:center;max-width:12ch;opacity:.8}
+.poeira{position:absolute;width:4px;height:4px;border-radius:50%;background:#F3E4BC;pointer-events:none;z-index:2}
+
+/* leitura dos sinais */
+.leitura{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.leitura li{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:center;padding:8px 0;border-top:1.5px dashed rgba(30,20,11,.3)}
+.leitura li:first-child{border-top:0}
+.leitura .h{font:40px/1 var(--f-hiero);color:#4A2C0E;text-align:center}
+.leitura b{font-family:var(--f-tit);font-size:17px}
+.leitura small{display:block;color:#5B4630;font-size:13px}
+.nota{font:13px/1.5 var(--f-cap);color:#5B4630;margin:0}
+
+/* alfabeto do escriba */
+.alfa{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}
+.alfa button{display:flex;flex-direction:column;align-items:center;gap:0;border:2px solid var(--tinta);border-radius:4px;background:#FBF2D9;padding:4px 2px;box-shadow:2px 2px 0 var(--tinta)}
+.alfa button span{font:32px/1.1 var(--f-hiero);color:#4A2C0E}
+.alfa button small{font:11px var(--f-ui);color:var(--tinta)}
+.alfa button:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--tinta)}
+details summary{cursor:pointer;font:600 15px var(--f-ui);list-style:none}
+details summary::-webkit-details-marker{display:none}
+@media (prefers-reduced-motion:reduce){.sinal.gravado{animation:none;opacity:1;transform:none}}
+</style>
+</head><body>
+<main class="pag">
+  <p class="cap">Oficina do escriba</p>
+  <h1>Seu nome em hieróglifos</h1>
+  <p class="lede">Os faraós escreviam o nome dentro de um cartucho, um laço de corda sem fim que protegia o nome para sempre. Escreva o seu e veja o escriba gravar sinal por sinal na pedra.</p>
+
+  <div class="quadro">
+    <label for="nome">Seu nome</label>
+    <input id="nome" maxlength="14" autocomplete="off" placeholder="Vivian" value="">
+    <div class="botoes">
+      <button class="btn" type="button" id="gravar">Gravar na pedra</button>
+      <button class="btn claro" type="button" id="limpar">Apagar</button>
+    </div>
+  </div>
+
+  <div class="parede" id="parede"><div class="cartucho" id="cartucho"><p class="vazio">O cartucho espera o seu nome</p></div></div>
+
+  <div class="quadro" id="leituraBox" hidden>
+    <p class="cap" style="box-shadow:none">O que cada sinal é</p>
+    <ul class="leitura" id="leitura"></ul>
+    <p class="nota" id="notaVogais"></p>
+  </div>
+
+  <details class="quadro">
+    <summary>Escrever sinal por sinal, como um escriba ▾</summary>
+    <p class="nota">Toque nos sinais para montar o cartucho você mesma. Os egípcios escreviam os sons, não as letras.</p>
+    <div class="alfa" id="alfa"></div>
+  </details>
+
+  <div class="quadro">
+    <p class="cap" style="box-shadow:none">Para saber</p>
+    <p class="nota">Este é o alfabeto dos sinais de um som só. Os escribas tinham mais de 700 sinais, mas usavam estes para escrever nomes estrangeiros, como os de Alexandre e Cleópatra. Foi lendo os cartuchos desses dois nomes na Pedra de Roseta que Champollion decifrou os hieróglifos, em 1822. O L não existia no egípcio antigo: no tempo dos Ptolomeus, os escribas usaram o leão para escrever o L de Ptolomeu e de Cleópatra.</p>
+  </div>
+</main>
+<script>
+// sinais de um som (lista de Gardiner) e a letra que cada um representa em português
+const S = {
+  A: ["𓄿", "abutre", "o som de a"], B: ["𓃀", "pé", "b"], C: ["𓎡", "cesto com alça", "k, como em casa"], Ç: ["𓋴", "pano dobrado", "s"],
+  D: ["𓂧", "mão", "d"], E: ["𓇋", "junco florido", "i ou e"], F: ["𓆑", "víbora com chifres", "f"], G: ["𓎼", "suporte de jarro", "g"],
+  H: ["𓉔", "abrigo de junco", "h"], I: ["𓇋", "junco florido", "i"], J: ["𓆓", "naja", "dj"], K: ["𓎡", "cesto com alça", "k"],
+  L: ["𓃭", "leão deitado", "l (usado pelos Ptolomeus)"], M: ["𓅓", "coruja", "m"], N: ["𓈖", "água", "n"], O: ["𓅱", "filhote de codorna", "u ou o"],
+  P: ["𓊪", "banquinho", "p"], Q: ["𓈎", "encosta", "q"], R: ["𓂋", "boca", "r"], S: ["𓋴", "pano dobrado", "s"],
+  T: ["𓏏", "pão", "t"], U: ["𓅱", "filhote de codorna", "u"], V: ["𓆑", "víbora com chifres", "f ou v"], W: ["𓅱", "filhote de codorna", "w"],
+  X: ["𓈙", "lago", "ch, como em chá"], Y: ["𓇌", "dois juncos", "i"], Z: ["𓊃", "ferrolho", "z"], CH: ["𓈙", "lago", "ch"]
+};
+const ALFA = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+const tira = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase();
+// quebra o nome em sons: "CH" vira um sinal só, C antes de E/I soa como S, letras repetidas seguidas viram uma
+function sons(nome) {
+  const t = tira(nome).replace(/[^A-ZÇ]/g, ""), out = [];
+  for (let i = 0; i < t.length; i++) {
+    let k = t[i];
+    if (k === "C" && t[i + 1] === "H") { k = "CH"; i++; }
+    else if (k === "C" && /[EI]/.test(t[i + 1] || "")) k = "Ç";
+    if (out.length && out[out.length - 1] === k) continue;
+    if (S[k]) out.push(k);
+  }
+  return out;
+}
+
+// sons: o cinzel batendo na pedra e um gongo no fim
+let A = null;
+function audio() { A = A || new (window.AudioContext || window.webkitAudioContext)(); if (A.state === "suspended") A.resume(); return A; }
+function cinzel() {
+  try { const a = audio(), n = a.sampleRate * .09, b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 6);
+    const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain(); f.type = "bandpass"; f.frequency.value = 2600 + Math.random() * 900; f.Q.value = 3; g.gain.value = .9;
+    s.buffer = b; s.connect(f); f.connect(g); g.connect(a.destination); s.start(); } catch (e) {}
+}
+function gongo() {
+  try { const a = audio(), t = a.currentTime, out = a.createGain(); out.gain.value = .2; out.connect(a.destination);
+    [[196, 1, 5], [196 * 2.4, .4, 3.5], [196 * 4.1, .2, 2.4], [197.5, .5, 5]].forEach(([fr, am, du]) => { const o = a.createOscillator(), g = a.createGain(); o.frequency.value = fr;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(am, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + du); o.connect(g); g.connect(out); o.start(t); o.stop(t + du); }); } catch (e) {}
+}
+const vibra = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
+
+const $ = id => document.getElementById(id), cart = $("cartucho");
+let lista = [], escrevendo = 0;
+function poeira(el) {
+  const p = $("parede").getBoundingClientRect(), r = el.getBoundingClientRect();
+  for (let i = 0; i < 9; i++) { const d = document.createElement("i"); d.className = "poeira"; $("parede").append(d);
+    const x = r.left - p.left + r.width / 2, y = r.top - p.top + r.height / 2, a = Math.random() * 6.28, k = 20 + Math.random() * 40;
+    d.style.left = x + "px"; d.style.top = y + "px";
+    d.animate([{ transform: "translate(0,0)", opacity: .9 }, { transform: `translate(${Math.cos(a) * k}px,${Math.sin(a) * k}px)`, opacity: 0 }], { duration: 650, easing: "ease-out" }).onfinish = () => d.remove(); }
+}
+function desenha(ks, anima) {
+  const id = ++escrevendo; cart.replaceChildren(); lista = ks.slice();
+  if (!ks.length) { cart.append(Object.assign(document.createElement("p"), { className: "vazio", textContent: "O cartucho espera o seu nome" })); $("leituraBox").hidden = true; return; }
+  ks.forEach((k, i) => {
+    const s = document.createElement("span"); s.className = "sinal"; s.textContent = S[k][0]; s.title = S[k][1]; cart.append(s);
+    const mostra = () => { if (id !== escrevendo) return; s.classList.add("gravado"); cinzel(); vibra(18); poeira(s); if (i === ks.length - 1 && anima) setTimeout(() => { if (id !== escrevendo) return; gongo(); vibra([30, 50, 80]); cart.querySelectorAll(".sinal").forEach(x => x.classList.add("brilha")); }, 450); };
+    anima ? setTimeout(mostra, 350 + i * 520) : (s.classList.add("gravado"));
+  });
+  const L = $("leitura"); L.replaceChildren(...ks.map(k => { const li = document.createElement("li"); li.innerHTML = `<span class="h">${S[k][0]}</span><span><b>${S[k][1]}</b><small>soa como ${S[k][2]}</small></span>`; return li; }));
+  $("notaVogais").textContent = "Os egípcios quase não escreviam as vogais: o leitor completava de cabeça. Por isso, num cartucho de verdade, muitos nomes ficavam mais curtos do que o que se falava.";
+  $("leituraBox").hidden = false;
+}
+$("gravar").onclick = () => { audio(); desenha(sons($("nome").value), true); try { localStorage.setItem("cdi-cartucho", JSON.stringify({ nome: $("nome").value, sinais: lista })); } catch (e) {} };
+$("nome").addEventListener("keydown", e => { if (e.key === "Enter") $("gravar").click(); });
+$("limpar").onclick = () => { $("nome").value = ""; desenha([], false); };
+$("alfa").append(...ALFA.map(k => { const b = document.createElement("button"); b.type = "button"; b.innerHTML = `<span>${S[k][0]}</span><small>${k}</small>`;
+  b.onclick = () => { audio(); if (lista.length >= 14) return; const novo = [...lista, k]; ++escrevendo; if (!lista.length) cart.replaceChildren();
+    const s = document.createElement("span"); s.className = "sinal"; s.textContent = S[k][0]; cart.append(s); requestAnimationFrame(() => { s.classList.add("gravado"); cinzel(); vibra(15); poeira(s); });
+    lista = novo; desenha(lista, false); }; return b; }));
+try { const g = JSON.parse(localStorage.getItem("cdi-cartucho") || "null"); if (g) { $("nome").value = g.nome || ""; desenha(g.sinais || [], false); } } catch (e) {}
+</script>
+</body></html>
