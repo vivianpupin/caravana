@@ -105,8 +105,11 @@ p{margin:0}
 .casa.especial{box-shadow:inset 0 0 0 1.5px rgba(255,220,150,.55),inset 1px 1px 0 rgba(255,230,180,.35),inset -1px -2px 2px rgba(0,0,0,.55)}
 .casa::after{content:attr(data-n);position:absolute;left:3px;top:1px;font:600 8px var(--f-ui);color:rgba(40,24,10,.45)}
 .casa.final{box-shadow:inset 0 0 0 2px #F3D27A,0 0 14px rgba(255,200,110,.8)}
-.peca{position:absolute;width:15%;aspect-ratio:1/1.25;transform:translate(-50%,-60%);border-radius:50% 50% 32% 32%;pointer-events:none;z-index:2;
-  background:radial-gradient(circle at 34% 28%,#F4DCA0,#B8873E 45%,#5E3B16 90%);box-shadow:0 5px 6px rgba(0,0,0,.7),inset 0 -3px 4px rgba(0,0,0,.4);transition:left .28s ease,top .28s ease}
+.peca{position:absolute;width:19%;aspect-ratio:1/1.3;transform:translate(-50%,-62%);border-radius:50% 50% 30% 30%;pointer-events:none;z-index:2;
+  background:radial-gradient(circle at 35% 25%,#7FB2E0,#1F4E8C 45%,#0B1E3C 92%);border:2px solid #E9C46A;
+  box-shadow:0 0 0 2px rgba(20,12,4,.8),0 6px 8px rgba(0,0,0,.8),0 0 14px 3px rgba(255,210,120,.75);transition:left .28s ease,top .28s ease}
+.peca::after{content:"";position:absolute;left:50%;top:-14%;width:34%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF0C4,#D4A84F 60%,#8E6020);box-shadow:0 1px 2px rgba(0,0,0,.6)}
+.casa.passou{box-shadow:inset 0 0 0 2px rgba(255,214,130,.7),inset 0 0 12px rgba(255,200,110,.45)}
 .lado{flex:1;max-width:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 .lado .txt{font-size:13.5px;max-width:none}
 .bastoes{display:flex;gap:6px;align-items:flex-end;height:150px}
@@ -330,9 +333,10 @@ function lanca() {
     let k = 0;
     const anda = () => {
       if (k >= passos || pos >= 30) return chegou();
-      pos++; k++; poe(pos); madeira(); vibra(8); setTimeout(anda, 330);
+      pos++; k++; poe(pos); celulas[pos].classList.add("passou"); madeira(); vibra(8); setTimeout(anda, 380);
     };
-    setTimeout(anda, 500);
+    celulas[pos].scrollIntoView({ behavior: "smooth", block: "center" });
+    setTimeout(anda, 600);
   }, 900);
 }
 function chegou() {
