@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Oráculo de Amon</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;1,400&family=Poppins:wght@400;600&family=Special+Elite&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&family=Lora:ital,wght@0,500;1,400&family=Poppins:wght@400;600&family=Special+Elite&display=swap">
 <style>
 /* O templo à noite: pedra escura, só a luz das tochas. Cada etapa é uma cena que entra por cima da outra */
 :root{
@@ -31,6 +31,18 @@ p{margin:0}
 .folha{background:var(--papel);color:var(--tinta);border:3px solid #000;border-radius:6px;box-shadow:4px 4px 0 #000;padding:16px;max-width:420px;text-align:left;display:flex;flex-direction:column;gap:8px;max-height:56vh;overflow:auto}
 .folha h3{margin:0;font:500 22px var(--f-tit)}
 .folha p{font-size:14.5px;line-height:1.6}
+.folha summary{cursor:pointer;list-style:none;font:500 18px var(--f-tit)}.folha summary::-webkit-details-marker{display:none}
+.leitura .topo{display:flex;gap:12px;align-items:center}
+.leitura img{width:92px;height:auto;border:2px solid #000;border-radius:4px;box-shadow:3px 3px 0 #000;flex:none;animation:surge 1.2s ease both}
+@keyframes surge{from{opacity:0;transform:scale(.8) rotate(-4deg)}}
+.leitura .tt small{display:block;font:12px var(--f-cap);color:var(--verm);letter-spacing:.06em;text-transform:uppercase}
+.leitura .tt b{font:500 26px/1.1 var(--f-tit)}
+.leitura .tt i{display:block;color:#5B4630}
+.leitura h4{margin:6px 0 0;font:600 12px var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:var(--verm)}
+.leitura ul{margin:0;padding-left:18px}.leitura li{font-size:14.5px;line-height:1.5;margin:3px 0}
+.leitura .perg{font:italic 500 18px/1.4 var(--f-tit);border-left:4px solid var(--ouro);padding-left:10px}
+.amuleto{flex-direction:row!important;align-items:center;gap:14px}
+.amuleto .glifo{font:64px/1 "Noto Sans Egyptian Hieroglyphs",serif;color:#7A4A12;text-shadow:0 0 18px rgba(233,185,73,.8);flex:none;animation:surge 1.4s .3s ease both}
 
 /* 1. corredor com as tochas */
 #entrada{justify-content:flex-end;padding-bottom:max(40px,env(safe-area-inset-bottom))}
@@ -131,12 +143,15 @@ p{margin:0}
   <button class="segura" type="button" id="segura" aria-label="Segure para carregar a barca"><svg viewBox="0 0 120 120"><circle id="anel" cx="60" cy="60" r="54" stroke-dasharray="340" stroke-dashoffset="340"/></svg>Segure</button>
   <div id="respostaBox" hidden style="display:flex;flex-direction:column;align-items:center;gap:12px">
     <p class="resposta" id="resposta"></p>
-    <div class="folha">
-      <h3>Como o deus respondia</h3>
+    <div class="folha leitura" id="leitura"></div>
+    <div class="folha amuleto" id="amuleto"></div>
+    <details class="folha">
+      <summary><b>Como o deus respondia</b> ▾</summary>
       <p>Nas grandes festas, os sacerdotes carregavam nos ombros a barca de Amon, com a estátua do deus escondida dentro de um santuário fechado. Diante dela, as pessoas faziam perguntas. Se a barca avançava, era sim. Se recuava, era não.</p>
       <p>Amon quer dizer “o oculto”: o deus que ninguém vê, mas que move tudo. Em Tebas, a antiga Luxor, ele virou Amon-Rá, o rei dos deuses, e Karnak foi construído para ele.</p>
       <p>O oráculo mais famoso de Amon ficava no oásis de Siwa, no deserto. Em 331 a.C., Alexandre, o Grande, atravessou a areia para consultá-lo, e saiu de lá chamado de filho de Amon.</p>
-    </div>
+    </details>
+    <button class="btn claro" type="button" onclick="location.reload()">Fazer outra pergunta</button>
     <button class="btn" type="button" id="irPesagem">Seguir para o Salão das Duas Verdades</button>
   </div>
 </section>
@@ -159,6 +174,7 @@ p{margin:0}
   <div class="decl" id="decl"></div>
 </section>
 
+<script src="oraculo-dados.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const vai = id => { document.querySelectorAll(".cena").forEach(c => c.classList.toggle("ativa", c.id === id)); };
@@ -224,6 +240,14 @@ function responde() {
   barca.classList.remove("balanca"); void barca.offsetWidth; barca.classList.add(sim ? "vem" : "vai");
   $("barcaTxt").textContent = sim ? "A barca avançou na sua direção." : "A barca recuou.";
   vibra(sim ? [80, 60, 200] : [200, 80, 60]); gongo();
+  const sorte = n => crypto.getRandomValues(new Uint32Array(1))[0] % n;
+  const D = ORACULO.deuses[sorte(ORACULO.deuses.length)], M = ORACULO.amuletos[sorte(ORACULO.amuletos.length)];
+  $("leitura").innerHTML = `<div class="topo"><img src="deuses/${D.id}.webp" alt="${D.nome}"><div class="tt"><small>${sim ? "Sim" : "Não"}, e quem traz a resposta é</small><b>${D.nome}</b><i>${D.titulo}</i></div></div>
+    <p>${D.mito}</p><h4>Rege</h4><p>${D.rege}</p><h4>Luz</h4><p>${D.luz}</p><h4>Sombra</h4><p>${D.sombra}</p>
+    <h4>${sim ? "Para o seu sim" : "Para o seu não"}</h4><p>${sim ? "O caminho está aberto. " + D.nome + " pede que você siga com " + D.luz.split(",")[0].toLowerCase() + "." : "Não é castigo: é desvio. " + D.nome + " pede atenção a isto: " + D.sombra.charAt(0).toLowerCase() + D.sombra.slice(1)}</p>
+    <h4>A pergunta que o deus devolve</h4><p class="perg">${D.pergunta}</p><h4>Para hoje, no Egito</h4><ul>${D.hoje.map(x => `<li>${x}</li>`).join("")}</ul>`;
+  $("amuleto").innerHTML = `<span class="glifo">${M.h}</span><div><h4 style="margin:0;font:600 12px var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:var(--verm)">Seu amuleto para a viagem</h4><b style="font:500 22px var(--f-tit)">${M.nome} · ${M.sentido}</b><p>${M.texto}</p></div>`;
+  try { localStorage.setItem("cdi-oraculo-egito", JSON.stringify({ ts: Date.now(), sim, deus: D.id, amuleto: M.id })); } catch (e) {}
   setTimeout(() => { $("segura").hidden = true; $("barcaCap").textContent = "O deus respondeu"; $("resposta").textContent = sim ? "SIM" : "NÃO"; $("respostaBox").hidden = false; }, 1700);
 }
 
