@@ -33,8 +33,7 @@ function vMapaMundo(dias, hoje, f, abrir) {
         "aria-label": `Fase ${q.n}: ${q.c}, dia ${q.dias.join(", ")}`, onclick: () => { S.diaAberto = 0; abrir(q.dias[0]); } },
         l && badgeSrc(l) ? h("img", { src: badgeSrc(l), alt: "" }) : h("b", { text: q.n }),
         feito && i !== atual ? h("i", { class: "mmbandeira", "aria-hidden": "true" }) : null);
-    }), ex,
-    h("div", { class: "mmplaca" }, h("small", { text: f > 0 ? "Ponto de partida" : `Fase ${PARADAS[atual].n} de 7` }), h("b", { text: PARADAS[atual].c })));
+    }), ex);
   // pontinhos da trilha: acesos até a parada de hoje, apagados dali em diante
   requestAnimationFrame(() => {
     if (!svg.isConnected) return;

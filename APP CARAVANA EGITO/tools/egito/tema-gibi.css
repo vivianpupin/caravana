@@ -294,7 +294,7 @@ html[data-tab="explorador"] .controls .lab{color:#B5402A;text-shadow:none}
   background:linear-gradient(#3B2A1C,#24180F);border:2px solid #D4A84F;border-radius:6px;box-shadow:0 4px 10px rgba(40,24,10,.4);white-space:nowrap}
 .mmplaca small{font:600 9.5px var(--ui);letter-spacing:.22em;text-transform:uppercase;color:#D4A84F}
 .mmplaca b{font:500 16px/1.15 "Cinzel",Georgia,serif;letter-spacing:.04em;color:#F6E6BF}
-.mapahero .intro{margin-top:18px}
+
 .mapahero .logo.moeda{width:78px;margin-bottom:-4px}
 
 /* no mapa da rota a fase é só um anel em volta do ponto que já está desenhado (sem cobrir os nomes) */
@@ -307,3 +307,5 @@ html[data-tab="explorador"] .controls .lab{color:#B5402A;text-shadow:none}
 .mmponto{fill:transparent;stroke:none}
 .mmponto.aceso{fill:#F2C14E;stroke:#7A4A12;stroke-width:2}
 .mmexp{width:12%}
+/* frase que gira embaixo do mapa: sempre uma linha só */
+.mapahero .intro{white-space:nowrap;font-size:clamp(11.5px,3.45vw,15px);min-height:0!important;margin-top:6px;max-width:100%;overflow:hidden;text-overflow:ellipsis}

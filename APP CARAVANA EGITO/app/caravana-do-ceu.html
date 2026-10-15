@@ -2168,7 +2168,7 @@ html[data-tab="explorador"] .controls .lab{color:#B5402A;text-shadow:none}
   background:linear-gradient(#3B2A1C,#24180F);border:2px solid #D4A84F;border-radius:6px;box-shadow:0 4px 10px rgba(40,24,10,.4);white-space:nowrap}
 .mmplaca small{font:600 9.5px var(--ui);letter-spacing:.22em;text-transform:uppercase;color:#D4A84F}
 .mmplaca b{font:500 16px/1.15 "Cinzel",Georgia,serif;letter-spacing:.04em;color:#F6E6BF}
-.mapahero .intro{margin-top:18px}
+
 .mapahero .logo.moeda{width:78px;margin-bottom:-4px}
 
 /* no mapa da rota a fase é só um anel em volta do ponto que já está desenhado (sem cobrir os nomes) */
@@ -2181,6 +2181,8 @@ html[data-tab="explorador"] .controls .lab{color:#B5402A;text-shadow:none}
 .mmponto{fill:transparent;stroke:none}
 .mmponto.aceso{fill:#F2C14E;stroke:#7A4A12;stroke-width:2}
 .mmexp{width:12%}
+/* frase que gira embaixo do mapa: sempre uma linha só */
+.mapahero .intro{white-space:nowrap;font-size:clamp(11.5px,3.45vw,15px);min-height:0!important;margin-top:6px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 </style>
 
 <div class="app">
@@ -2614,30 +2616,26 @@ function contador(n, rotulo) {
 const FRASES = [
   "Treze dias atravessando o Egito de norte a sul.",
   "Uma caravana é feita de quem caminha junto.",
-  "Caminhos abertos e chuva de bênçãos. É o meu destino, é o que vou encontrar.",
+  "Caminhos abertos e chuva de bênçãos.",
   "Cada manhã, uma nova partida.",
   "Eu vim pra Terra pra me vestir de quem eu sou.",
-  "Explorando nossa origem nos damos conta de que somos infinitos.",
-  "Da mítica Atlântida às escolas iniciáticas do Antigo Egito.",
-  "Água, mapas e céu aberto para cada dia da travessia.",
-  "De pirâmides, templos, desertos e o icônico Mar Vermelho.",
-  "Siga a rota, ganhe os carimbos, encontre a caravana.",
-  "Que eu pise com passos firmes no labirinto da mente.",
-  "Vento me leva, vento me eleva pra atravessar todos os mundos.",
-  "Um enigma ainda vivo, inscrito nas pedras, nos templos e nos símbolos.",
-  "Partimos de madrugada, quando as estrelas orientam a rota.",
-  "Especiarias, mapas e força para a longa jornada.",
-  "Eu vou seguindo meu caminho no silêncio do meu ser.",
-  "Tudo o que você precisa para a travessia, num só lugar.",
-  "Eu trarei do silêncio minha paz.",
-  "Você não volta da Caravana. Você chega em casa diferente.",
-  "Nunca foi sobre estar sozinha, sempre foi sobre estar rodeada do que se vê e do invisível.",
+  "Explorando a origem, nos sabemos infinitos.",
+  "Das escolas iniciáticas do Antigo Egito.",
+  "Pirâmides, templos, desertos e o Mar Vermelho.",
+  "Siga a rota, ganhe os carimbos.",
+  "Um enigma ainda vivo, inscrito nas pedras.",
+  "Partimos quando as estrelas orientam a rota.",
+  "O Nilo leva, o deserto ensina.",
+  "Eu trarei do silêncio a minha paz.",
+  "Você chega em casa diferente.",
   "O Egito te ensina que o tempo é outra coisa.",
-  "Eu não sou daqui, eu vim de longe, lá das estrelas.",
-  "Que todo esse percorrer seja um estado de celebração e reencontro.",
+  "Eu vim de longe, lá das estrelas.",
   "A Luz de todas as Luzes é você.",
   "Eu toco o céu e a terra. Sou início e fim.",
-  "Vivendo o que estava escrito, o meu caminho eu vou trilhar."
+  "O meu caminho eu vou trilhar.",
+  "Que o coração fique leve como a pena de Maat.",
+  "Sob o céu de Nut, a caravana descansa.",
+  "Todo amanhecer é Rá nascendo de novo."
 ];
 S.fraseIdx = 0;
 function alturaFrases() {
@@ -2690,8 +2688,7 @@ function vMapaMundo(dias, hoje, f, abrir) {
         "aria-label": `Fase ${q.n}: ${q.c}, dia ${q.dias.join(", ")}`, onclick: () => { S.diaAberto = 0; abrir(q.dias[0]); } },
         l && badgeSrc(l) ? h("img", { src: badgeSrc(l), alt: "" }) : h("b", { text: q.n }),
         feito && i !== atual ? h("i", { class: "mmbandeira", "aria-hidden": "true" }) : null);
-    }), ex,
-    h("div", { class: "mmplaca" }, h("small", { text: f > 0 ? "Ponto de partida" : `Fase ${PARADAS[atual].n} de 7` }), h("b", { text: PARADAS[atual].c })));
+    }), ex);
   // pontinhos da trilha: acesos até a parada de hoje, apagados dali em diante
   requestAnimationFrame(() => {
     if (!svg.isConnected) return;
