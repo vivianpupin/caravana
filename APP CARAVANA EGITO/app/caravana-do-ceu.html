@@ -1988,18 +1988,18 @@ details.guide .gb p,.saber p{font-family:var(--ui);color:var(--ink)}
 .hpron{font-family:var(--cap);color:var(--terra)}
 .hdev{font-size:20px}
 
-/* ===== fundo de foto de filme: nunca fundo liso. A foto do lugar do dia (ou as palmeiras da Caravana),
-   desfocada, quente, com grão de película e cantos escuros; os quadros do gibi ficam por cima ===== */
+/* ===== fundo de gibi: papel de revista antiga escurecido, retícula, manchas e cantos queimados, nos tons do gibi da Caravana ===== */
 .app{background:transparent}
-body{background:#1B140C}
-body::before{content:"";position:fixed;inset:-24px;z-index:-2;background:var(--fundo,url(img/fundo-palmeiras.webp)) center/cover no-repeat;
-  filter:blur(5px) saturate(1.05) sepia(.22) brightness(.55) contrast(1.08);transform:scale(1.04);transition:background-image .8s}
-body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 40%,rgba(12,8,3,.15) 20%,rgba(8,5,2,.78) 100%),
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .45  0 0 0 0 .38  0 0 0 .55 0'/></filter><rect width='220' height='220' filter='url(%23g)'/></svg>");
-  mix-blend-mode:overlay;opacity:.9;animation:grao .9s steps(4) infinite}
-@keyframes grao{25%{background-position:0 0,-40px 30px}50%{background-position:0 0,60px -20px}75%{background-position:0 0,-25px -55px}}
-@media (prefers-reduced-motion:reduce){body::after{animation:none}}
+body{background:#2A1D10}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:
+  radial-gradient(ellipse at 50% 35%,rgba(120,84,40,.0) 0%,rgba(20,12,5,.55) 75%,rgba(10,6,2,.85) 100%),
+  radial-gradient(circle at 18% 22%,rgba(150,105,50,.35),transparent 35%),
+  radial-gradient(circle at 82% 70%,rgba(70,90,95,.28),transparent 40%),
+  radial-gradient(circle,rgba(20,12,5,.28) 1px,transparent 1.5px) 0 0/6px 6px,
+  repeating-linear-gradient(12deg,rgba(255,230,180,.025) 0 2px,transparent 2px 8px),
+  linear-gradient(170deg,#6A4C2A,#4A3420 45%,#33402F 120%)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;mix-blend-mode:multiply;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.012' numOctaves='3' seed='5'/><feColorMatrix values='0 0 0 0 .55  0 0 0 0 .4  0 0 0 0 .22  0 0 0 1.2 -.35'/></filter><rect width='300' height='300' filter='url(%23p)'/></svg>") 0 0/600px 600px}
 /* o grão também passa por cima dos quadros, bem leve, como papel fotografado */
 main::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.16;mix-blend-mode:multiply;
   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23g)'/></svg>")}
@@ -2013,6 +2013,19 @@ main::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:3;opac
 .clock div{background:rgba(243,228,188,.94)}
 /* abertura do dia: frase longa em letra de legenda, cidade em letra de capa */
 .lidoscont{color:#F3E4BC;text-shadow:0 1px 2px #000}
+
+/* peças do gibi */
+.hero .asas,.view>.asas{width:min(260px,70%);height:auto;align-self:center;filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))}
+.pecas{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:end}
+.peca{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;color:#F3E4BC;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;text-shadow:0 1px 2px #000}
+.peca img{width:100%;max-width:120px;height:auto;filter:drop-shadow(3px 4px 0 rgba(0,0,0,.55));transition:transform .2s}
+.peca.selo img{transform:rotate(-6deg)}.peca.polaroid img{transform:rotate(5deg);max-width:96px}
+.peca:active img{transform:scale(.94)}
+.citacao{width:min(320px,86%);height:auto;align-self:center;transform:rotate(-1.5deg);filter:drop-shadow(4px 5px 0 rgba(0,0,0,.5))}
+.asasfim{width:180px!important;height:auto!important}
+.bussolahead{width:74px;height:auto;filter:drop-shadow(3px 3px 0 rgba(0,0,0,.5))}
+.dnum{position:relative}
+.dnum .etiq{width:52px;height:auto;margin-top:4px;transform:rotate(-8deg);filter:drop-shadow(1px 2px 0 rgba(0,0,0,.4))}
 </style>
 
 <div class="app">
@@ -2499,7 +2512,7 @@ function vTravessia() {
       h("img", { class: "logo moeda", src: "img/logo-egito-240.png", alt: "Caravana do Céu · Travessia do Velho Mundo" }),
       h("h1", null, "Travessia do", h("br"), "Velho Mundo"),
       h("p", { class: "route", text: "Cairo · Deserto Branco · Aswan · Luxor · Hurghada" }),
-      h("span", { class: "line" }),
+      h("img", { class: "asas", src: "img/pecas/asas-sol.webp", alt: "" }),
       h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] })),
     h("div", { class: "clock" },
       f > 0 ? h("div", null, h("b", { text: f }), h("span", { text: f === 1 ? "dia para embarcar" : "dias para embarcar" }))
@@ -2508,6 +2521,11 @@ function vTravessia() {
             : h("div", null, h("b", { text: String(dias.length) }), h("span", { text: "dias de travessia" })),
       h("div", null, h("b", { class: "hora", "data-tz": "Africa/Cairo", text: horaEm("Africa/Cairo") }), h("span", { text: "Agora no Egito" })),
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +6h" }))),
+    h("div", { class: "pecas" },
+      h("button", { type: "button", class: "peca selo", onclick: () => go("passaporte") }, h("img", { src: "img/pecas/selo-caravaneer.webp", alt: "" }), h("span", { text: "Meu passaporte" })),
+      h("button", { type: "button", class: "peca bussola", onclick: () => go("mapa") }, h("img", { src: "img/pecas/bussola.webp", alt: "" }), h("span", { text: "Onde está a caravana" })),
+      h("button", { type: "button", class: "peca polaroid", onclick: () => go("fotos") }, h("img", { src: "img/pecas/polaroid-cairo.webp", alt: "" }), h("span", { text: "Câmera" }))),
+    h("img", { class: "citacao", src: "img/pecas/citacao.webp", alt: "O Egito não se explica. O Egito se sente. Cada pedra fala. Cada sombra lembra. Cada história nos transforma." }),
     vGarrafaVolta(),
     vMissoes(),
     vOnlineLider(),
@@ -2523,7 +2541,7 @@ function vTravessia() {
     vOffline(),
     h("div", { class: "foot" },
       h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }),
-      h("img", { class: "s", src: "img/simbolo-marrom.png", alt: "" }),
+      h("img", { class: "s asasfim", src: "img/pecas/asas-escaravelho.webp", alt: "" }),
       h("q", { text: "Explorando nossa origem nos damos conta de que somos infinitos." }),
       h("p", { class: "eyebrow", style: "text-align:center;line-height:1.8" }, "Caravana do Céu", h("br"), "a travessia te espera"),
       window.__VERSAO ? h("p", { class: "small", style: "text-align:center;opacity:.6;margin-top:6px", text: "versão " + window.__VERSAO }) : null));
@@ -2773,7 +2791,7 @@ function abrirGuardiao(passo) {
 function vDia(d, open, isToday, abrir) {
   const ls = (d.pins || []).map(localDe).filter(Boolean);
   const head = h("button", { class: "dayhead", type: "button", "aria-expanded": String(open), onclick: () => abrir(d.n) },
-    h("span", { class: "dnum" }, h("small", { text: "Dia" }), h("b", { text: nn(d.n) })),
+    h("span", { class: "dnum" }, h("small", { text: "Dia" }), h("b", { text: nn(d.n) }), d.cidade === "Cairo" ? h("img", { class: "etiq", src: "img/pecas/etiqueta-cairo.webp", alt: "" }) : null),
     h("span", { class: "dtit" },
       h("h3", { text: d.titulo }),
       h("span", { class: "fr", text: d.frase }),
@@ -3139,6 +3157,7 @@ function vSaberes() {
   return h("section", { class: "view" },
     h("img", { class: "orn", src: "img/mantra-ganesha.webp", alt: "Om Gam Ganapataye Namah" }),
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Para ler pelo caminho" }), h("h1", { text: "Saberes da travessia" }))),
+    h("img", { class: "asas", src: "img/pecas/asas-roteiro.webp", alt: "" }),
     h("p", { class: "lede", text: "Cada carimbo guarda uma história. Ela se abre quando o passaporte é carimbado no lugar sagrado." }),
     vOraculoCard(),
     sab.length ? h("p", { class: "lidoscont", text: `Você já leu ${sab.filter(x => S.lidos[x.id] && lib(x)).length} de ${sab.length}` }) : null,
@@ -5266,7 +5285,7 @@ function vMapa() {
   perfis(S.posicoes.map(p => p.id));
   return h("section", { class: "view" },
     h("div", { class: "head" },
-      h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: "Perto de mim" }))),
+      h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: "Perto de mim" })), h("img", { class: "bussolahead", src: "img/pecas/bussola-2.webp", alt: "" })),
     h("div", { class: "mapwrap" }, vPerto(),
       h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null), vHotelHoje())));
 }

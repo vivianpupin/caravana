@@ -90,7 +90,7 @@ body{background:radial-gradient(ellipse at 50% 35%,#3A2A18 0%,#1F160D 60%,#120C0
     <span class="pag" id="pag">CAPA</span>
   </div>
   <div class="livro" id="livro"><div class="pilha"></div></div>
-  <div class="setas"><button type="button" id="ant" aria-label="Página anterior">‹ anterior</button><p class="dica" id="dica">Arraste para folhear</p><button type="button" id="prox" aria-label="Próxima página">próxima ›</button></div>
+  <div class="setas"><button type="button" id="ant" aria-label="Página anterior">‹ anterior</button><p class="dica" id="dica"></p><button type="button" id="prox" aria-label="Próxima página">próxima ›</button></div>
 </div>
 <div class="janela" id="janela" hidden><div class="caixa" role="dialog" aria-modal="true" aria-labelledby="enigma-t">
   <h2 id="enigma-t">Enigma</h2><p id="enigma-p"></p><div id="enigma-ops" style="display:grid;gap:8px"></div>
@@ -169,7 +169,7 @@ function pos(i, giro, anima) {
 function mostra() {
   folhas.forEach((f, i) => pos(i, i < lidas ? -180 : 0, true));
   $("pag").textContent = PAGINAS[lidas].nome; $("volta").disabled = $("ant").disabled = lidas === 0; $("prox").disabled = lidas === PAGINAS.length - 1;
-  $("dica").textContent = PAGINAS[lidas].enigmas && resolvidos.size < 3 ? "Toque nos quadros dos enigmas para decifrar" : lidas < PAGINAS.length - 1 ? "Toque à direita para avançar, à esquerda para voltar" : "";
+  $("dica").textContent = PAGINAS[lidas].enigmas && resolvidos.size < 3 ? "Toque nos quadros dos enigmas para decifrar" : "";
 }
 function vira(dir) {
   const n = lidas + dir; if (n < 0 || n > PAGINAS.length - 1) return mostra();
