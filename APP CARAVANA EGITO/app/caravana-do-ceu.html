@@ -1988,18 +1988,14 @@ details.guide .gb p,.saber p{font-family:var(--ui);color:var(--ink)}
 .hpron{font-family:var(--cap);color:var(--terra)}
 .hdev{font-size:20px}
 
-/* ===== fundo de gibi: papel de revista antiga escurecido, retícula, manchas e cantos queimados, nos tons do gibi da Caravana ===== */
+/* ===== fundo realista: parede pintada de uma tumba do Vale dos Reis (foto da Vivian), escurecida e quente,
+   com grão e cantos queimados; os quadros de gibi ficam por cima ===== */
 .app{background:transparent}
-body{background:#2A1D10}
-body::before{content:"";position:fixed;inset:0;z-index:-2;background:
-  radial-gradient(ellipse at 50% 35%,rgba(120,84,40,.0) 0%,rgba(20,12,5,.55) 75%,rgba(10,6,2,.85) 100%),
-  radial-gradient(circle at 18% 22%,rgba(150,105,50,.35),transparent 35%),
-  radial-gradient(circle at 82% 70%,rgba(70,90,95,.28),transparent 40%),
-  radial-gradient(circle,rgba(20,12,5,.28) 1px,transparent 1.5px) 0 0/6px 6px,
-  repeating-linear-gradient(12deg,rgba(255,230,180,.025) 0 2px,transparent 2px 8px),
-  linear-gradient(170deg,#6A4C2A,#4A3420 45%,#33402F 120%)}
-body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;mix-blend-mode:multiply;
-  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.012' numOctaves='3' seed='5'/><feColorMatrix values='0 0 0 0 .55  0 0 0 0 .4  0 0 0 0 .22  0 0 0 1.2 -.35'/></filter><rect width='300' height='300' filter='url(%23p)'/></svg>") 0 0/600px 600px}
+body{background:#1E140B}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:url(img/fundo-parede.webp) center 70%/cover no-repeat;
+  filter:brightness(.42) saturate(.9) sepia(.35) contrast(1.1)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 38%,rgba(30,20,11,.15) 25%,rgba(14,9,4,.8) 100%),linear-gradient(180deg,rgba(30,20,11,.35),transparent 30%,transparent 70%,rgba(14,9,4,.55))}
 /* o grão também passa por cima dos quadros, bem leve, como papel fotografado */
 main::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.16;mix-blend-mode:multiply;
   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23g)'/></svg>")}
