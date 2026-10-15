@@ -1,6 +1,6 @@
 // Conteúdo do Oráculo de Amon: cada consulta junta a resposta da barca (sim ou não),
 // um neter (deus) que fala com a pessoa e um amuleto para levar na viagem.
-// 2 respostas × 12 deuses × 12 horas da noite × 10 amuletos × 3 conselhos = 8.640 leituras diferentes.
+// 12 deuses × 12 horas da noite × 10 amuletos × 3 conselhos = 4.320 leituras diferentes (sem sim ou não: a barca escolhe o deus).
 window.ORACULO = {
   deuses: [
     { id: "ra", nome: "Rá", titulo: "o sol que atravessa a noite",
@@ -136,3 +136,19 @@ Object.assign(window.ORACULO, {
     { n: 12, nome: "O renascimento", txt: "A barca entra pela cauda de uma serpente imensa e sai pela boca. O sol renasce como escaravelho, Khepri, no horizonte do leste.", tema: "renascer de outro jeito" }
   ]
 });
+
+// a mensagem de cada deus quando a barca para diante dele (sem sim ou não: como no I Ching, o que sai é um tema para olhar)
+window.ORACULO.mensagens = {
+  ra: "Rá fala de um ciclo que está terminando para que outro comece. A sua pergunta pede luz: tirar do escuro o que você vem guardando e deixar que os outros vejam. O sol não pede desculpas por nascer. Este é um tempo de aparecer, de assumir, de ocupar o seu lugar no céu, e também de lembrar que até o sol descansa toda noite.",
+  thoth: "Thoth fala do conhecimento e da palavra. A sua pergunta ainda não tem resposta porque ainda não foi bem escrita: falta nomear, medir, entender. Estude o assunto, converse, anote. O que hoje parece confuso vai se ordenar quando você der nome a cada parte. A sabedoria aqui não é saber tudo, é saber o que perguntar.",
+  isis: "Ísis fala de reunir o que se espalhou. A sua pergunta toca em algo que se quebrou ou se dividiu: uma relação, um projeto, uma parte de você. Não é tempo de pressa, é tempo de cuidado paciente, pedaço por pedaço. A magia de Ísis é a fidelidade: o que você protege com amor volta a ter vida.",
+  osiris: "Osíris fala de morte e renascimento. A sua pergunta envolve algo que precisa ser enterrado para brotar de novo. Não lute contra o fim de uma fase: ele é a terra fértil do que vem. Como o Nilo, que inundava e recuava todo ano, a sua vida tem estações. Esta é a da semente.",
+  horus: "Hórus fala de coragem e de visão. A sua pergunta pede que você enxergue longe e decida, como o falcão que vê do alto. Há uma batalha justa a travar, e ela é sua. O olho de Hórus foi ferido e curado: o que te machucou também pode virar força e proteção.",
+  anubis: "Anúbis fala das passagens. A sua pergunta está numa porta, entre o que foi e o que vai ser. Não tenha medo do escuro do meio do caminho: ele é guiado. Cuide bem do que está terminando, com respeito, e deixe-se conduzir. Toda travessia tem um guardião.",
+  hathor: "Hathor fala de alegria, beleza e amor. A sua pergunta pede que você consulte o prazer, não só a obrigação. O que te faz dançar? O que te deixa leve? Hathor lembra que o sagrado também mora na música, na festa, no toque e no riso. Escolha o caminho que tem alegria dentro.",
+  maat: "Maat fala do equilíbrio. A sua pergunta envolve algo fora do prumo: você está dando mais do que recebe, ou recebendo sem retribuir, ou dizendo uma coisa e fazendo outra. Não é sobre culpa, é sobre medida. Quando a balança se ajusta, o caminho aparece sozinho.",
+  ptah: "Ptah fala da criação. A sua pergunta tem a ver com algo que você quer construir. Ptah criou o mundo pensando com o coração e falando com a língua, e depois trabalhou com as mãos. Primeiro imagine com clareza, depois diga em voz alta, depois faça. É tempo de artesão.",
+  amon: "Amon, o oculto, fala do que você ainda não vê. A sua pergunta tem uma parte escondida, e ela está trabalhando a seu favor. Não force a resposta agora. Confie no vento que não se vê mas move as velas. Amon pede fé no invisível e atenção aos sinais pequenos.",
+  sobek: "Sobek fala da força e do instinto. A sua pergunta pede coragem crua, aquela que não espera estar pronta. Mas o crocodilo também sabe esperar imóvel ao sol até a hora certa. Use a força, sim, mas com o tempo do rio: nem paralisada, nem afobada.",
+  imhotep: "Imhotep fala da sabedoria prática. A sua pergunta se resolve com método: um degrau de cada vez, como a primeira pirâmide, que era uma escada para o céu. Cuide do corpo, organize os passos, peça ajuda a quem sabe. O que parece impossível vira obra quando é bem planejado."
+};

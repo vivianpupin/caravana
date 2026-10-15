@@ -21,7 +21,7 @@ head = """<!doctype html>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
 /* véu de abertura: cobre o app nos primeiros instantes, enquanto ele decide o que mostrar (boas-vindas, abertura do dia, permissões, cartas);
    assim nenhuma tela aparece "por cima" do app já aberto, nada pisca */
-#veu{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;background:#120E0A url(img/bilhete-textura.jpg) center/cover;transition:opacity .45s ease}
+#veu{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;background:#1E140C url(img/veu-cafe.jpg) center/cover;transition:opacity .45s ease}
 #veu img{width:120px;border-radius:50%;opacity:.9;animation:veupulsa 1.6s ease-in-out infinite}
 #veu.sai{opacity:0;pointer-events:none}
 @keyframes veupulsa{50%{opacity:.45;transform:scale(.96)}}

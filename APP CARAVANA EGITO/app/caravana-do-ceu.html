@@ -2,7 +2,7 @@
 <meta name="apple-mobile-web-app-title" content="Caravana">
 <meta name="application-name" content="Caravana">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Noto+Sans+Egyptian+Hieroglyphs&display=swap">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@400;500;600&family=Raleway:wght@300&family=Cinzel:wght@500;600;700;900&family=Jost:wght@500;600&family=Julius+Sans+One&family=Caveat:wght@400;600&family=Rock+Salt&family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap">
 <style>
@@ -2029,24 +2029,23 @@ input[type=text],input[type=number],input[type=email],select,textarea{background
 nav.tabs button[aria-current="page"] .ic{background:linear-gradient(rgba(212,168,79,.8),rgba(212,168,79,.8)),url(img/textura-calcario-escuro.webp) center/120px auto}
 
 /* cada aba tem a sua parede: o fundo muda junto com a página */
-html[data-tab="ensinamentos"] body::before{background-image:url(img/fundo-zodiaco.webp);background-position:center}
-html[data-tab="explorador"] body::before{background-image:url(img/fundo-barca-ra.webp);background-position:center 40%}
-html[data-tab="fotos"] body::before{background-image:url(img/fundo-serpente-vermelha.webp);background-position:center}
-html[data-tab="mapa"] body::before{background-image:url(img/fundo-zodiaco-2.webp);background-position:center}
-html[data-tab="conversa"] body::before{background-image:url(img/fundo-hathor.webp);background-position:center}
+html[data-tab="explorador"] body::before{background-image:url(img/fundo-porta-dourada.webp);background-position:center 30%}
+html[data-tab="fotos"] body::before{background-image:url(img/fundo-cobras-colunas.webp);background-position:center}
+html[data-tab="mapa"] body::before{background-image:url(img/fundo-dendera-azul.webp);background-position:center}
+html[data-tab="conversa"] body::before{background-image:url(img/fundo-vale-livro.webp);background-position:center}
 /* passaporte: a página de dados também é pedra clara, não papel branco */
 .datapage,.panel.datapage{background:linear-gradient(rgba(244,236,214,.8),rgba(236,224,196,.84)),url(img/textura-calcario.webp) center/360px auto #ECE0C4!important}
 .fotoadd{background:linear-gradient(rgba(214,194,156,.75),rgba(214,194,156,.75)),url(img/textura-calcario-escuro.webp) center/200px auto}
 
 /* abas do dia a dia (passaporte, tradutor, câmbio): papel de gibi envelhecido, sem foto, para ler rápido */
-html[data-tab="passaporte"] body::before,html[data-tab="tradutor"] body::before,html[data-tab="cambio"] body::before{
+html[data-tab="passaporte"] body::before,html[data-tab="tradutor"] body::before,html[data-tab="cambio"] body::before,html[data-tab="ensinamentos"] body::before{
   background:url(img/fundo-papel-gibi.webp) center/cover no-repeat;filter:none}
-html[data-tab="passaporte"] body::after,html[data-tab="tradutor"] body::after,html[data-tab="cambio"] body::after{background:radial-gradient(ellipse at 50% 45%,transparent 60%,rgba(60,35,10,.25))}
-:is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"]) .view>.head h1,
-:is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"]) .view>.head h2,
-:is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"]) :is(.view>.lede,.view>p.small,.view>.small,.view>p:not([class])){color:var(--ink);text-shadow:none}
-:is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"]) :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule){color:var(--terra);text-shadow:none}
-:is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"]) :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{background:var(--ink);box-shadow:none}
+html[data-tab="passaporte"] body::after,html[data-tab="tradutor"] body::after,html[data-tab="cambio"] body::after,html[data-tab="ensinamentos"] body::after{background:radial-gradient(ellipse at 50% 45%,transparent 60%,rgba(60,35,10,.25))}
+:is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"],html[data-tab="ensinamentos"]) .view>.head h1,
+:is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"],html[data-tab="ensinamentos"]) .view>.head h2,
+:is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"],html[data-tab="ensinamentos"]) :is(.view>.lede,.view>p.small,.view>.small,.view>p:not([class])){color:var(--ink);text-shadow:none}
+:is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"],html[data-tab="ensinamentos"]) :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule){color:var(--terra);text-shadow:none}
+:is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"],html[data-tab="ensinamentos"]) :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{background:var(--ink);box-shadow:none}
 
 /* Oráculo de Amon: cartão com a barca do deus pintada no Vale dos Reis (foto da Vivian); abre em tela cheia */
 .oraculocard.amon{position:relative;min-height:118px;padding:16px;gap:14px;border:1px solid #000;border-radius:4px;color:#F3E2B6;
@@ -2093,6 +2092,37 @@ html[data-tab="travessia"] .day.is-today{box-shadow:0 0 0 2px #B5402A,0 2px 6px 
 html[data-tab="travessia"] .daychips button{background:rgba(250,238,210,.85);border:1px solid rgba(90,60,25,.5);box-shadow:none}
 html[data-tab="travessia"] .daychips button[aria-current="true"]{background:#3B2A1C;color:#F6E6BF}
 html[data-tab="travessia"] .eyebrow:not(.rule){background:none;border:0;box-shadow:none;padding:0;color:#B5402A;font:600 11px var(--ui);letter-spacing:.18em}
+
+/* abertura de cada dia: sem a foto escurecida e borrada; fica a pedra marrom com veios de ouro (a mesma da tela de carregar) até a Vivian escolher a imagem */
+.abfundo{background:url(img/veu-cafe.jpg) center/cover #1E140C!important;filter:none!important}
+.abfundo::after{background:radial-gradient(ellipse at 50% 42%,rgba(212,168,79,.12),rgba(20,12,6,.35) 75%)!important}
+
+/* Diário de escavação (Explorador) */
+.escav{display:flex;flex-direction:column;gap:10px}
+.escgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.esccard{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border:1px solid rgba(40,25,10,.5);border-radius:4px;cursor:pointer;text-align:center;font:inherit;color:var(--ink);
+  background:linear-gradient(rgba(240,229,203,.78),rgba(228,212,178,.86)),url(img/textura-calcario.webp) center/240px auto #E8D9BA}
+.esccard img{width:54px;height:54px;object-fit:contain}
+.esccard.fechado img{filter:grayscale(1) opacity(.45)}
+.esccard b{font:600 12.5px/1.25 var(--ui)}
+.esccard small{font-size:11px;color:var(--terra)}
+.esccard.fechado small{color:var(--faint)}
+.escglifo{font:40px/1 "Noto Sans Egyptian Hieroglyphs",serif;color:#7A4A12}
+.escglifo.grande{font-size:64px;text-align:center;display:block}
+.escsheet{max-width:460px}
+.escbox{display:flex;flex-direction:column;gap:10px}
+.escbox h2{margin:0}
+.escpalco{position:relative;height:230px;border-radius:4px;overflow:hidden;background:linear-gradient(rgba(240,229,203,.6),rgba(214,196,158,.8)),url(img/textura-calcario.webp) center/260px auto}
+.escachado{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.escareia{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+.escenigma{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.escperg{font:500 18px/1.35 var(--serif,Georgia);margin:0}
+.escops{display:flex;flex-direction:column;gap:6px}
+.escops .btn{text-align:left}
+.escops .btn.errou{opacity:.45;text-decoration:line-through}
+.oraculocard.escriba{background:linear-gradient(90deg,rgba(14,8,3,.92) 30%,rgba(14,8,3,.5)),url(img/fundo-cartucho.webp) center 40%/cover #1E140B;min-height:96px}
+.oraculocard.escriba .escglifo{color:#D4A84F;font-size:48px;flex:none;width:64px;text-align:center}
+.escav>.small{color:#F3E4BC;text-shadow:0 1px 3px #000,0 0 12px rgba(0,0,0,.7)}
 </style>
 
 <div class="app">
@@ -3108,7 +3138,7 @@ function vOraculoCard() {
   return h("button", { type: "button", class: "oraculocard amon", onclick: () => abrirOraculo() },
     h("img", { class: "orcdeus", src: "deuses/" + (d ? L.deus : "amon") + ".webp", alt: "" }),
     h("span", { class: "orctx" }, h("small", { text: "Templo de Amon" }), h("b", { text: "Oráculo de Amon" }),
-      h("span", { text: d ? `Sua última resposta: ${L.sim ? "sim" : "não"}, trazida por ${d}. Toque para perguntar de novo.` : "Acenda a tocha, faça a sua pergunta e espere a barca do deus." })));
+      h("span", { text: d ? `Sua última leitura: ${d}. Toque para consultar de novo.` : "Acenda a tocha, pense na sua pergunta e veja qual deus a barca traz." })));
 }
 function leituraOraculo(L) {
   const G = GRAHAS.find(x => x.id === L.g), M = GRAHA_MAIS[G.id], N = NAKSHATRAS[L.n];
@@ -3718,20 +3748,21 @@ function vPassaporte() {
 // ---------- Habilidades: a líder libera (para todos ou para uma pessoa) e a pessoa faz a foto com a caixinha ----------
 // [id, nome no feminino, nome no masculino, frase no feminino, frase no masculino]
 const HABILIDADES = [
-  ["transito", "Sobrevivente do Trânsito Indiano", "Sobrevivente do Trânsito Indiano", "Atravesso a rua entre vacas, tuk-tuks e buzinas.", "Atravesso a rua entre vacas, tuk-tuks e buzinas.", "varanasi"],
-  ["rupias", "Milionária em Rúpias", "Milionário em Rúpias", "Troquei alguns dólares e saí do câmbio com um maço de rúpias.", "Troquei alguns dólares e saí do câmbio com um maço de rúpias.", "india"],
-  ["bollywood", "Estrela de Bollywood", "Astro de Bollywood", "Tirei mais selfies com indianos do que com a caravana.", "Tirei mais selfies com indianos do que com a caravana.", "taj-mahal"],
-  ["ceramica", "Mestra do Barro", "Mestre do Barro", "Fiz minha própria peça de barro no Rajastão.", "Fiz minha própria peça de barro no Rajastão.", "jaipur"],
-  ["pechincha", "Mestra da Pechincha", "Mestre da Pechincha", "Pago metade e ainda saio amiga do vendedor.", "Pago metade e ainda saio amigo do vendedor.", "jaipur"],
-  ["diyas", "Acendedora de Diyas", "Acendedor de Diyas", "Meu desejo desceu o Ganges numa lamparina.", "Meu desejo desceu o Ganges numa lamparina.", "diwali"],
-  ["chai", "Sommelier de Chai", "Sommelier de Chai", "Especialista em copinho de barro, tempero e buzina!", "Especialista em copinho de barro, tempero e buzina!", "varanasi"],
-  ["vacas", "Madre Teresa das Vacas", "São Francisco das Vacas", "Paixão pelas vaquíneas, peludíneas e fofíneas!", "Paixão pelas vaquíneas, peludíneas e fofíneas!", "durga-kund"],
-  ["templos", "Peregrina de Templos", "Peregrino de Templos", "De templo em templo, recebendo marcas no espírito.", "De templo em templo, recebendo marcas no espírito.", "sankat-mochan"],
-  ["cozinha", "Chef de Masala", "Chef de Masala", "Minha cozinha nunca mais vai ser a mesma.", "Minha cozinha nunca mais vai ser a mesma.", "rishikesh"],
-  ["caverna", "Sábia da Caverna", "Sábio da Caverna", "Meditei no escuro da caverna onde Vashishta meditou.", "Meditei no escuro da caverna onde Vashishta meditou.", "caverna"],
-  ["batismo", "Batizada no Ganges", "Batizado no Ganges", "Ma Ganga levou meus karmas e renasci como Eu Sou!", "Ma Ganga levou meus karmas e renasci como Eu Sou!", "batismo"],
-  ["rafting", "Remadora do Ganges", "Remador do Ganges", "Rema, que lá vem corredeira!", "Rema, que lá vem corredeira!", "rishikesh"],
-  ["coracao", "Coração de Caravana", "Coração de Caravana", "Atravessei a Índia e voltei com uma família.", "Atravessei a Índia e voltei com uma família.", "travessia"]
+  ["escriba", "Escriba Real", "Escriba Real", "Escrevi meu nome em hieróglifos dentro de um cartucho.", "Escrevi meu nome em hieróglifos dentro de um cartucho.", "cairo"],
+  ["piramides", "Guardiã das Pirâmides", "Guardião das Pirâmides", "Fiquei aos pés da única maravilha antiga que ainda está de pé.", "Fiquei aos pés da única maravilha antiga que ainda está de pé.", "piramides-gize"],
+  ["camelo", "Cameleira do Saara", "Cameleiro do Saara", "Subi no camelo e ele levantou primeiro de trás. Sobrevivi!", "Subi no camelo e ele levantou primeiro de trás. Sobrevivi!", "piramides-gize"],
+  ["pechincha", "Mestra do Khan el-Khalili", "Mestre do Khan el-Khalili", "Pago metade, tomo um chá com o vendedor e saio amiga.", "Pago metade, tomo um chá com o vendedor e saio amigo.", "cairo"],
+  ["libras", "Milionária em Libras Egípcias", "Milionário em Libras Egípcias", "Troquei uns dólares e saí com um maço de libras.", "Troquei uns dólares e saí com um maço de libras.", "egito"],
+  ["mumias", "Amiga das Múmias", "Amigo das Múmias", "Olhei nos olhos de Ramsés II e ele não piscou.", "Olhei nos olhos de Ramsés II e ele não piscou.", "mumias"],
+  ["deserto", "Filha do Deserto Branco", "Filho do Deserto Branco", "Dormi sob as estrelas entre rochas de giz.", "Dormi sob as estrelas entre rochas de giz.", "deserto-branco"],
+  ["felucca", "Navegadora do Nilo", "Navegador do Nilo", "Velejei de felucca no rio mais longo da África.", "Velejei de felucca no rio mais longo da África.", "rio-nilo"],
+  ["sol", "Testemunha do Sol", "Testemunha do Sol", "Vi o sol nascer no deserto, como faziam os sacerdotes de Rá.", "Vi o sol nascer no deserto, como faziam os sacerdotes de Rá.", "sahara"],
+  ["ramses", "Convidada de Ramsés", "Convidado de Ramsés", "Entrei no templo que Ramsés esculpiu na montanha.", "Entrei no templo que Ramsés esculpiu na montanha.", "abu-simbel"],
+  ["oraculo", "Sacerdotisa de Amon", "Sacerdote de Amon", "Consultei o oráculo e a barca do deus parou para mim.", "Consultei o oráculo e a barca do deus parou para mim.", "luxor"],
+  ["tumbas", "Exploradora de Tumbas", "Explorador de Tumbas", "Desci no Vale dos Reis e vi o céu pintado no teto.", "Desci no Vale dos Reis e vi o céu pintado no teto.", "vale-dos-reis"],
+  ["balao", "Voadora de Luxor", "Voador de Luxor", "Vi o Vale dos Reis do alto, de balão, ao amanhecer.", "Vi o Vale dos Reis do alto, de balão, ao amanhecer.", "luxor"],
+  ["mergulho", "Sereia do Mar Vermelho", "Tritão do Mar Vermelho", "Nadei entre os corais do Mar Vermelho.", "Nadei entre os corais do Mar Vermelho.", "mar-vermelho"],
+  ["coracao", "Coração de Caravana", "Coração de Caravana", "Atravessei o Egito e voltei com uma família.", "Atravessei o Egito e voltei com uma família.", "travessia"]
 ];
 const habDe = id => HABILIDADES.find(x => x[0] === id);
 const habTexto = (id, gen) => { const x = habDe(id); if (!x) return null; const o = gen === "o"; return { nome: o ? x[2] : x[1], frase: o ? (x[4] || x[3]) : x[3], local: x[5] }; };
@@ -4114,23 +4145,23 @@ const BONECO = {
   pele: ["#F3D2B3", "#E4B48C", "#C98E62", "#A0673F", "#7A4A2B", "#4E2F1C"],
   cabeloCor: ["#2B1D14", "#5A3A22", "#8A5A2B", "#C9A063", "#D9D2C5", "#A83E2A"],
   cabelo: [["curto", "Curto"], ["longo", "Longo"], ["cacheado", "Cacheado"], ["coque", "Coque"], ["tranca", "Trança"], ["careca", "Careca"]],
-  chapeu: [["fedora", "Chapéu de viajante"], ["safari", "Safári"], ["lenco", "Lenço"], ["turbante", "Turbante"], ["flores", "Coroa de flores"], ["sem", "Sem chapéu"]],
-  roupa: [["basico", "Sem roupa"], ["jaqueta", "Jaqueta"], ["colete", "Colete"], ["kurta", "Kurta"], ["sari", "Sari"], ["sari2", "Sari de bolinhas"], ["cigana", "Cigana"], ["monge", "Monge"], ["yogi", "Yogi de branco"], ["terno", "Terno"], ["academia", "Academia"], ["vestido", "Vestido"]],
+  chapeu: [["fedora", "Chapéu de explorador"], ["safari", "Capacete de safári"], ["lenco", "Lenço do deserto"], ["nemes", "Nemes de faraó"], ["sem", "Sem chapéu"]],
+  roupa: [["basico", "Sem roupa"], ["jaqueta", "Jaqueta de campo"], ["colete", "Colete de explorador"], ["kurta", "Túnica"], ["yogi", "Linho branco"], ["vestido", "Vestido"], ["terno", "Terno de 1922"], ["academia", "Academia"]],
   roupaCor: ["#8B6B43", "#C2A878", "#5F6B45", "#8A3F32", "#D9822B", "#B83A6B", "#2F5D7C", "#E8E0CF", "#2B2622"],
-  acessorio: [["japamala", "Japamala"], ["incenso", "Incenso"], ["violao", "Violão"], ["tambor", "Djembê"], ["ghungroo", "Ghungroo"], ["flautim", "Flauta"], ["sitar", "Sitar"], ["harmonium", "Harmonium"], ["chai", "Chai"], ["diya", "Lamparina"], ["lotus", "Lótus"], ["sino", "Sino"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["nenhum", "Nada"]],
-  colar: [["nenhum", "Nenhum"], ["guirlanda", "Guirlanda de flores"], ["rudraksha", "Rudraksha"], ["tulsi", "Contas de tulsi"], ["contas", "Contas coloridas"], ["ouro", "Colar de ouro"], ["moedas", "Colar de moedas"], ["om", "Pingente Om"]],
+  acessorio: [["violao", "Violão"], ["tambor", "Tambor"], ["flautim", "Flauta"], ["sino", "Sino"], ["ankh", "Ankh"], ["escaravelho", "Escaravelho"], ["pincel", "Pincel de arqueólogo"], ["bussola", "Bússola"], ["lotus", "Lótus"], ["diya", "Lamparina"], ["bolsa", "Bolsa"], ["mapa", "Mapa"], ["camera", "Câmera"], ["lanterna", "Lanterna"], ["nenhum", "Nada"]],
+  colar: [["nenhum", "Nenhum"], ["usekh", "Colar usekh"], ["ankhcolar", "Pingente ankh"], ["contas", "Contas coloridas"], ["ouro", "Colar de ouro"], ["moedas", "Colar de moedas"]],
   testa: [["nada", "Nada"], ["bindi", "Bindi"], ["tilak", "Tilak"], ["cinzas", "Shivaísta · tripundra"], ["vaishnava", "Vaishnava · urdhva pundra"]],
   nariz: [["nenhum", "Sem piercing"], ["argola", "Argola no nariz"], ["ponto", "Brilhante no nariz"]],
   ombro: [["nenhum", "Nenhum"], ["periquito", "Periquito indiano"], ["maina", "Mainá"]],
   pes: [["nenhum", "Nada"], ["aneis", "Anéis nos pés"], ["payal", "Tornozeleira"], ["os2", "Anéis e tornozeleira"]],
   barba: [["nao", "Sem barba"], ["sim", "Com barba"]],
   oculos: [["nenhum", "Sem óculos"], ["redondo", "Redondo"], ["aviador", "Aviador"], ["sol", "De sol"], ["grau", "De grau"]],
-  pet: [["nenhum", "Nenhum"], ["gato", "Gato"], ["cachorro", "Cachorro"], ["camelo", "Camelo"], ["elefante", "Elefantinho"], ["vaca", "Vaquinha sagrada"], ["macaco", "Macaco"], ["pavao", "Pavão"], ["cabra", "Cabrinha"]]
+  pet: [["nenhum", "Nenhum"], ["gato", "Gato de Bastet"], ["cachorro", "Cachorro"], ["camelo", "Camelo"]]
 };
 function bonecoPadrao(id) {
   const r = rng(id || "x"), p = arr => arr[Math.floor(r() * arr.length)], v = arr => p(arr)[0];
   return { pele: p(BONECO.pele), cabeloCor: p(BONECO.cabeloCor), cabelo: v(BONECO.cabelo), chapeu: v(BONECO.chapeu), roupa: v(BONECO.roupa), roupaCor: p(BONECO.roupaCor),
-    acessorio: v(BONECO.acessorio), colar: r() > .6 ? "guirlanda" : "nenhum", testa: r() > .6 ? v(BONECO.testa) : "nada", barba: r() > .75 ? "sim" : "nao", pet: r() > .5 ? v(BONECO.pet) : "nenhum", acessorio2: "nenhum", oculos: r() > .7 ? v(BONECO.oculos) : "nenhum" };
+    acessorio: v(BONECO.acessorio), colar: r() > .6 ? "usekh" : "nenhum", testa: "nada", barba: r() > .75 ? "sim" : "nao", pet: r() > .5 ? v(BONECO.pet) : "nenhum", acessorio2: "nenhum", oculos: r() > .7 ? v(BONECO.oculos) : "nenhum" };
 }
 const bonecoDe = id => ({ ...bonecoPadrao(id), ...((S.viajantes.find(v => v.id === id) || {}).boneco || {}) });
 function escurece(hex, f) { const n = parseInt(hex.slice(1), 16); const c = k => Math.round(((n >> k) & 255) * f); return `rgb(${c(16)},${c(8)},${c(0)})`; }
@@ -4141,6 +4172,9 @@ function colarBase(b, g) {
   if (b.colar === "rudraksha") for (let i = 0; i <= 12; i++) { const t = Math.PI * (i / 12), x = 30 - Math.cos(t) * 7, y = 33.5 + Math.sin(t) * 10; g.append(h("circle", { cx: x, cy: y, r: 1.3, fill: "#6B3A20" })); }
   if (b.colar === "tulsi") for (let i = 0; i <= 16; i++) { const t = Math.PI * (i / 16); g.append(h("circle", { cx: 30 - Math.cos(t) * 6.5, cy: 33.5 + Math.sin(t) * 7, r: .85, fill: "#E3CFA0", stroke: "#9C7A45", "stroke-width": .3 })); }
   if (b.colar === "contas") { const cs = ["#E24A7A", "#F2C94C", "#3FB5A5", "#E0761C", "#2F6FB0", "#7FBF4D"]; for (let i = 0; i <= 12; i++) { const t = Math.PI * (i / 12); g.append(h("circle", { cx: 30 - Math.cos(t) * 7.5, cy: 33.5 + Math.sin(t) * 9, r: 1.3, fill: cs[i % cs.length] })); } }
+  if (b.colar === "usekh") ["#2F4F8A", "#D4A84F", "#3E8F86", "#A3231A", "#D4A84F"].forEach((c, i) => g.append(h("path", { d: `M${22.6 - i * .9} ${34 + i * .3} Q30 ${40 + i * 1.5} ${37.4 + i * .9} ${34 + i * .3}`, fill: "none", stroke: c, "stroke-width": 1.3 })));
+  if (b.colar === "ankhcolar") g.append(h("path", { d: "M23.5 34 Q30 40 36.5 34", fill: "none", stroke: "#B8862A", "stroke-width": .7 }), h("ellipse", { cx: 30, cy: 39.4, rx: 1.3, ry: 1.6, fill: "none", stroke: "#D4A84F", "stroke-width": .9 }),
+    h("line", { x1: 28, y1: 41.3, x2: 32, y2: 41.3, stroke: "#D4A84F", "stroke-width": .9 }), h("line", { x1: 30, y1: 41, x2: 30, y2: 44.5, stroke: "#D4A84F", "stroke-width": .9 }));
   if (b.colar === "moedas") { g.append(h("path", { d: "M22.5 34 Q30 41 37.5 34", fill: "none", stroke: "#B8862A", "stroke-width": .8 })); for (let i = 0; i <= 8; i++) { const t = Math.PI * (.1 + .8 * i / 8), x = 30 - Math.cos(t) * 7.6, y = 34 + Math.sin(t) * 6.4; g.append(h("circle", { cx: x, cy: y + 1.5, r: 1.35, fill: "#E2B540", stroke: "#8A6420", "stroke-width": .35 })); } }
   if (b.colar === "om") g.append(h("path", { d: "M24 34 Q30 40 36 34", fill: "none", stroke: "#8A6420", "stroke-width": .6 }), h("circle", { cx: 30, cy: 40.5, r: 3, fill: "#E2B540", stroke: "#8A6420", "stroke-width": .5 }), h("text", { x: 30, y: 42.1, "text-anchor": "middle", "font-size": 4.2, fill: "#7A2A18", "font-family": "serif" }, "ॐ"));
 }
@@ -4397,6 +4431,10 @@ function desenhaBoneco(b) {
   if (b.chapeu === "safari") g.append(h("ellipse", { cx: 30, cy: 15, rx: 16, ry: 3.4, fill: "#CDBB8F" }), P("M20 15 Q20 3 30 3.5 Q40 3 40 15 Z", "#D8C8A0"), h("rect", { x: 20.2, y: 12.3, width: 19.6, height: 2.4, fill: "#8A6B43" }));
   if (b.chapeu === "lenco") { const lc = roupa === "#8A3F32" ? "#C9A063" : "#8A3F32"; g.append(P("M19 23 Q18 9 30 9 Q42 9 41 23 Q40 16 30 15.5 Q20 16 19 23 Z", lc), P("M39 20 L45 28 L40 27 Z", lc)); }
   if (b.chapeu === "turbante") g.append(h("ellipse", { cx: 30, cy: 15.5, rx: 11.5, ry: 6, fill: "#D98B2B" }), h("ellipse", { cx: 30, cy: 11, rx: 10, ry: 5, fill: "#E6A03F" }), P("M22 15 Q30 7 38 15", "none", { stroke: "#B86E1E", "stroke-width": 1.2 }), h("circle", { cx: 30, cy: 12, r: 1.8, fill: "#8A3F32" }));
+  if (b.chapeu === "nemes") g.append(P("M19.5 23 Q19 9 30 8.5 Q41 9 40.5 23 L43 37 L38.5 36 Q39.5 24 37 20 Q30 18 23 20 Q20.5 24 21.5 36 L17 37 Z", "#D4A84F"),
+    ...[11.5, 14.5, 17.5].map(y => P(`M${20.2 + (y - 11) * .1} ${y} Q30 ${y - 2.6} ${39.8 - (y - 11) * .1} ${y}`, "none", { stroke: "#2F4F8A", "stroke-width": 1.3 })),
+    ...[[18.6, 26], [41.4, 26], [18.2, 30], [41.8, 30], [17.8, 34], [42.2, 34]].map(([x, y]) => h("line", { x1: x - 1.6, y1: y, x2: x + 1.6, y2: y, stroke: "#2F4F8A", "stroke-width": 1.2 })),
+    h("rect", { x: 21, y: 18.6, width: 18, height: 2, fill: "#2F4F8A" }), P("M30 9.5 q1.6 1.8 0 4 q-1.6 -2.2 0 -4", "#B5402A"));
   if (b.chapeu === "flores") for (let i = 0; i <= 8; i++) { const t = Math.PI * (1 + i / 8), x = 30 + Math.cos(t) * 10.5, y = 17 + Math.sin(t) * 6; g.append(h("circle", { cx: x, cy: y, r: 2.4, fill: ["#E0661C", "#F2A72B", "#E24A7A"][i % 3] }), h("circle", { cx: x, cy: y, r: .8, fill: "#FFE7A3" })); }
   // piercing no nariz
   if (b.nariz === "argola") g.append(h("circle", { cx: 32, cy: 27, r: 2.5, fill: "none", stroke: ouro, "stroke-width": 1.2 }), h("circle", { cx: 33.8, cy: 28.6, r: .9, fill: "#C0392B", stroke: ouro, "stroke-width": .4 }));
@@ -4455,6 +4493,11 @@ function desenhaBoneco(b) {
     if (A === "lotus") T.append(...[-40, -15, 15, 40].map(a => h("ellipse", { cx: 48 + Math.sin(a * Math.PI / 180) * 4, cy: 54 - Math.cos(a * Math.PI / 180) * 2, rx: 2, ry: 4.5, fill: "#E7849E", transform: `rotate(${a} ${48 + Math.sin(a * Math.PI / 180) * 4} ${54 - Math.cos(a * Math.PI / 180) * 2})` })), h("ellipse", { cx: 48, cy: 56, rx: 5.5, ry: 2, fill: "#5F8A4A" }), h("circle", { cx: 48, cy: 54, r: 1.4, fill: "#F2C94C" }));
     if (A === "sino") T.append(P("M44 62 Q44 55 48 55 Q52 55 52 62 L53.5 64 L42.5 64 Z", ouro), h("circle", { cx: 48, cy: 65, r: 1.2, fill: "#8A6B2A" }), h("rect", { x: 47, y: 52, width: 2, height: 3.5, fill: "#8A6B2A" }));
     if (A === "bolsa") T.append(h("line", { x1: 20, y1: 36, x2: 41, y2: 55, stroke: couro, "stroke-width": 1.8 }), h("rect", { x: 37, y: 51, width: 10, height: 9, rx: 2, fill: "#7A5431" }), h("rect", { x: 37, y: 51, width: 10, height: 3.5, rx: 1.5, fill: "#5E3F24" }));
+    if (A === "ankh") T.append(h("ellipse", { cx: 48, cy: 53.5, rx: 2.4, ry: 3.2, fill: "none", stroke: "#D4A84F", "stroke-width": 1.6 }), h("line", { x1: 44.4, y1: 57.4, x2: 51.6, y2: 57.4, stroke: "#D4A84F", "stroke-width": 1.6, "stroke-linecap": "round" }), h("line", { x1: 48, y1: 56.8, x2: 48, y2: 65, stroke: "#D4A84F", "stroke-width": 1.6, "stroke-linecap": "round" }));
+    if (A === "escaravelho") T.append(h("ellipse", { cx: 48, cy: 60, rx: 4, ry: 5, fill: "#2F6F6A" }), h("line", { x1: 48, y1: 56, x2: 48, y2: 65, stroke: "#173E3B", "stroke-width": .7 }), h("ellipse", { cx: 48, cy: 55, rx: 2.4, ry: 1.6, fill: "#245955" }),
+      ...[[-1, 58], [-1, 61], [-1, 64], [1, 58], [1, 61], [1, 64]].map(([s, y]) => h("line", { x1: 48 + s * 4, y1: y, x2: 48 + s * 6, y2: y + 1, stroke: "#173E3B", "stroke-width": .7 })));
+    if (A === "pincel") T.append(h("line", { x1: 46, y1: 66, x2: 50.5, y2: 54, stroke: "#8A5A2B", "stroke-width": 1.6, "stroke-linecap": "round" }), h("path", { d: "M50 55.5 L52.6 49.5 Q54 50 53.8 51.6 L51.6 56.4 Z", fill: "#E8D3A2" }), h("line", { x1: 49.6, y1: 55.6, x2: 51.8, y2: 56.4, stroke: "#B8862A", "stroke-width": 1.2 }));
+    if (A === "bussola") T.append(h("circle", { cx: 48, cy: 60, r: 5, fill: "#C9A063", stroke: "#7A5431", "stroke-width": 1 }), h("circle", { cx: 48, cy: 60, r: 3.8, fill: "#F3E6C4" }), h("path", { d: "M48 56.6 L49 60 L48 63.4 L47 60 Z", fill: "#B5402A" }), h("circle", { cx: 48, cy: 60, r: .6, fill: "#3A2A1C" }));
     if (A === "lanterna") T.append(h("circle", { cx: 48, cy: 67, r: 7, fill: "rgba(255,196,90,.35)" }), h("rect", { x: 45.5, y: 62, width: 5, height: 8, rx: 1, fill: "#C9A063" }), h("rect", { x: 46.5, y: 63.5, width: 3, height: 5, fill: "#FFD27A" }), h("line", { x1: 48, y1: 62, x2: 48, y2: 59, stroke: couro, "stroke-width": 1 }));
     if (A === "mapa") T.append(h("g", { transform: "rotate(-10 50 60)" },
       h("path", { d: "M40 52 L46 53.5 L52 52 L58 53.5 L58 67 L52 65.5 L46 67 L40 65.5 Z", fill: "#EAD6A8", stroke: "#8A6B43", "stroke-width": .7, "stroke-linejoin": "round" }),
@@ -4624,6 +4667,82 @@ function leao() {
     P("M12 58 Q30 52 46 58", "none", { stroke: "#A3231A", "stroke-width": 3 }), P("M12 58 Q30 52 46 58", "none", { stroke: "#E0B24A", "stroke-width": 1, "stroke-dasharray": "2 2" }));
 }
 
+// ---------- Diário de escavação: cada carimbo libera um achado (raspar a areia com o dedo) e um enigma do lugar ----------
+const ACHADOS = {
+  cairo: { g: "𓏛", nome: "Rolo de papiro", txt: "O papiro era feito do caule de uma planta que crescia nas margens do Nilo: fatiado, cruzado em camadas, prensado e seco ao sol. Foi o papel do mundo antigo por mais de três mil anos.", p: "Qual rio atravessa o Cairo?", o: ["Nilo", "Eufrates", "Jordão"], c: 0 },
+  "piramides-gize": { g: "𓍑", nome: "Cinzel de cobre", txt: "Os construtores das pirâmides cortavam o calcário com cinzéis de cobre, martelos de pedra e cunhas. Eram trabalhadores pagos, que moravam numa vila ao lado do canteiro, não escravos.", p: "Quantas pirâmides grandes de faraós há no planalto de Gizé?", o: ["Duas", "Três", "Sete"], c: 1 },
+  "piramide-khufu": { g: "𓉴", nome: "Bloco de calcário de Tura", txt: "A Grande Pirâmide era revestida de calcário branco e polido, trazido das pedreiras de Tura, do outro lado do Nilo. Ao sol, ela brilhava. Quase todo o revestimento foi retirado séculos depois para construir o Cairo.", p: "Por quanto tempo a Grande Pirâmide foi a construção mais alta feita pelo ser humano?", o: ["Cerca de 380 anos", "Cerca de 1.000 anos", "Cerca de 3.800 anos"], c: 2 },
+  "sarcofago-tut": { g: "𓆣", nome: "Escaravelho de faiança", txt: "O escaravelho rola uma bola de esterco como o sol rola pelo céu. Por isso virou o símbolo de Khepri, o sol que renasce. Era o amuleto mais comum do Egito, feito de faiança azul-esverdeada.", p: "Quantos caixões, um dentro do outro, guardavam a múmia de Tutankhamon?", o: ["Um", "Três", "Cinco"], c: 1 },
+  saqqara: { g: "𓊍", nome: "Óstraco de calcário", txt: "Óstraco é um caco de cerâmica ou de pedra usado como rascunho. Papiro era caro, então escribas e operários escreviam listas, contas, cartas e até desenhos em cacos.", p: "Quem projetou a Pirâmide de Degraus de Djoser, em Saqqara?", o: ["Imhotep", "Ramsés II", "Cleópatra"], c: 0 },
+  mumias: { g: "𓄣", nome: "Escaravelho do coração", txt: "Sobre o peito da múmia ia um escaravelho de pedra com um capítulo do Livro dos Mortos, pedindo ao coração que não testemunhasse contra o morto na pesagem diante de Osíris.", p: "Segundo Heródoto, quantos dias durava a mumificação?", o: ["7 dias", "40 dias", "70 dias"], c: 2 },
+  sahara: { g: "𓇳", nome: "Cristal de quartzo", txt: "A Crystal Mountain, no caminho do Deserto Branco, é uma crista de rocha cheia de cristais de quartzo que brilham ao sol. O Egito antigo usava cristal de rocha em olhos de estátuas e amuletos.", p: "Por que o Deserto Negro tem esse nome?", o: ["Por causa das tempestades", "Por causa das pedras vulcânicas escuras nas colinas", "Porque é visitado à noite"], c: 1 },
+  "deserto-branco": { g: "𓆟", nome: "Fóssil marinho", txt: "Onde hoje é deserto já foi fundo de mar. As formações brancas são de giz, feito de restos de seres marinhos, e é possível encontrar conchas fósseis no chão.", p: "Do que são feitas as rochas brancas do Deserto Branco?", o: ["Sal", "Giz (calcário)", "Mármore"], c: 1 },
+  aswan: { g: "𓌪", nome: "Lasca de granito rosa", txt: "Aswan era a pedreira do granito vermelho, a pedra mais dura usada pelos egípcios. De lá saíram obeliscos e estátuas que desceram o Nilo em barcaças até Tebas e Gizé.", p: "De que pedra é o Obelisco Inacabado de Aswan?", o: ["Granito", "Arenito", "Calcário"], c: 0 },
+  "rio-nilo": { g: "𓊛", nome: "Barca de madeira em miniatura", txt: "As tumbas tinham barquinhos de madeira para o morto navegar na outra vida. No Egito, viajar era navegar: até o sol cruzava o céu de barca.", p: "Para onde corre o Nilo?", o: ["Para o sul", "Para o norte", "Para o leste"], c: 1 },
+  "abu-simbel": { g: "𓍹", nome: "Cartucho de Ramsés II", txt: "Ramsés II reinou 66 anos e espalhou o próprio nome por todo o Egito. Em Abu Simbel, duas vezes por ano, o sol entra pelo templo e ilumina as estátuas no fundo do santuário.", p: "Quantas estátuas colossais de Ramsés II estão na fachada do Grande Templo?", o: ["Duas", "Quatro", "Seis"], c: 1 },
+  luxor: { g: "𓃬", nome: "Esfinge da avenida", txt: "Uma avenida de quase três quilômetros, ladeada de esfinges, ligava o templo de Luxor ao de Karnak. Por ela passava a procissão da barca de Amon na festa de Opet.", p: "Onde está hoje o segundo obelisco da entrada do Templo de Luxor?", o: ["Em Roma", "Em Londres", "Em Paris"], c: 2 },
+  "vale-dos-reis": { g: "𓉐", nome: "Óstraco de um operário", txt: "Os artistas das tumbas moravam na vila de Deir el-Medina e deixaram milhares de óstracos: listas de faltas ao trabalho, receitas, cartas e desenhos de treino.", p: "Qual é o número da tumba de Tutankhamon no Vale dos Reis?", o: ["KV5", "KV17", "KV62"], c: 2 },
+  "mar-vermelho": { g: "𓇋", nome: "Resina de incenso de Punt", txt: "A rainha Hatshepsut mandou barcos pelo Mar Vermelho até a terra de Punt, de onde voltaram com árvores de incenso e mirra. A viagem está esculpida no templo dela, em Luxor.", p: "Por que o Mar Vermelho é tão salgado?", o: ["Muita evaporação e quase nenhum rio deságua nele", "Por causa dos corais", "Porque é muito fundo"], c: 0 }
+};
+const lerEsc = () => { try { return JSON.parse(localStorage.getItem("cdi-escavacao") || "{}"); } catch (e) { return {}; } };
+const gravaEsc = o => { try { localStorage.setItem("cdi-escavacao", JSON.stringify(o)); } catch (e) {} };
+function vEscavacao() {
+  const E = lerEsc(), ls = Object.keys(ACHADOS).map(localDe).filter(Boolean), achados = ls.filter(l => E[l.id]).length;
+  return h("div", { class: "escav" },
+    h("p", { class: "eyebrow rule", text: "Diário de escavação" }),
+    h("button", { type: "button", class: "oraculocard amon escriba", onclick: () => abrirPagina("hieroglifos.html", "Seu nome em hieróglifos") },
+      h("span", { class: "escglifo", text: "𓍹" }), h("span", { class: "orctx" }, h("small", { text: "Oficina do escriba" }), h("b", { text: "Seu nome em hieróglifos" }), h("span", { text: "Grave o seu nome num cartucho, como os faraós." }))),
+    h("p", { class: "small", text: `Cada carimbo do passaporte libera um achado para desenterrar e um enigma do lugar. ${achados} de ${ls.length} achados.` }),
+    h("div", { class: "escgrid" }, ls.map(l => {
+      const A = ACHADOS[l.id], ok = aberto(l), e = E[l.id];
+      return h("button", { type: "button", class: "esccard" + (ok ? "" : " fechado") + (e ? " achado" : ""), onclick: () => ok ? abrirEscavacao(l) : abrirSelo(l) },
+        e ? h("span", { class: "escglifo", text: A.g }) : h("img", { src: badgeSrc(l), alt: "" }),
+        h("b", { text: e ? A.nome : l.nome }), h("small", { text: e ? (e.enigma === true ? "Enigma resolvido" : "Toque para o enigma") : ok ? "Escavar" : "Abre com o carimbo" }));
+    })));
+}
+function abrirPagina(src, titulo) {
+  closeSheets();
+  const caixa = h("div", { class: "orsheet", role: "dialog", "aria-label": titulo }, h("iframe", { src, title: titulo, class: "orframe", allow: "autoplay" }));
+  const fecha = e => { if (e.data !== "fecha-oraculo") return; removeEventListener("message", fecha); caixa.remove(); render(); };
+  addEventListener("message", fecha); document.body.append(caixa);
+}
+function abrirEscavacao(l) {
+  closeSheets();
+  const A = ACHADOS[l.id], E = lerEsc(), corpo = h("div", { class: "escbox" });
+  const fechar = () => { closeSheets(); render(); };
+  const mostra = () => {
+    const e = lerEsc()[l.id] || {};
+    const ops = h("div", { class: "escops" }, A.o.map((op, i) => h("button", { type: "button", class: "btn" + (e.enigma === true && i === A.c ? " gold" : ""), disabled: e.enigma === true, onclick: ev => {
+      const X = lerEsc(); X[l.id] = { ...(X[l.id] || {}), enigma: i === A.c }; gravaEsc(X);
+      if (i === A.c) { vibrar([30, 40, 80]); mostra(); } else { vibrar(120); ev.currentTarget.classList.add("errou"); ev.currentTarget.disabled = true; } } }, op)));
+    corpo.replaceChildren(
+      h("span", { class: "escglifo grande", text: A.g }), h("p", { class: "eyebrow", text: l.nome }), h("h2", { text: A.nome }), h("p", { text: A.txt }),
+      h("div", { class: "escenigma" }, h("p", { class: "eyebrow rule", text: "Enigma do lugar" }), h("p", { class: "escperg", text: A.p }), ops,
+        e.enigma === true ? h("p", { class: "msg ok", text: "Isso! Você decifrou o enigma deste lugar." }) : h("p", { class: "small", text: "Olhe ao redor, pergunte ao guia ou leia os Saberes deste lugar." })),
+      h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: fechar }, "Fechar")));
+  };
+  if (E[l.id]) mostra();
+  else {
+    // a areia cobre o achado; a pessoa raspa com o dedo
+    const cv = h("canvas", { class: "escareia", "aria-label": "Raspe a areia com o dedo" }), fundo = h("div", { class: "escachado" }, h("span", { class: "escglifo grande", text: A.g }), h("b", { text: A.nome }));
+    const palco = h("div", { class: "escpalco" }, fundo, cv), dica = h("p", { class: "small", style: "text-align:center", text: "Raspe a areia com o dedo." });
+    corpo.replaceChildren(h("p", { class: "eyebrow", text: l.nome }), h("h2", { text: "Escavação" }), palco, dica, h("div", { class: "foot2" }, h("span"), h("button", { class: "btn ghost", type: "button", onclick: fechar }, "Depois")));
+    requestAnimationFrame(() => {
+      const r = { width: palco.clientWidth, height: palco.clientHeight }, d = Math.min(2, devicePixelRatio || 1), x = cv.getContext("2d"); cv.width = r.width * d; cv.height = r.height * d; x.scale(d, d);
+      const g = x.createLinearGradient(0, 0, 0, r.height); g.addColorStop(0, "#E2C27E"); g.addColorStop(1, "#C9A15C"); x.fillStyle = g; x.fillRect(0, 0, r.width, r.height);
+      for (let i = 0; i < 2600; i++) { x.fillStyle = `rgba(${Math.random() < .5 ? "120,85,40" : "255,240,200"},${Math.random() * .35})`; x.fillRect(Math.random() * r.width, Math.random() * r.height, 1.5, 1.5); }
+      let fim = false, n = 0;
+      const raspa = ev => { if (fim) return; const b = cv.getBoundingClientRect(), px = (ev.clientX - b.left) * r.width / b.width, py = (ev.clientY - b.top) * r.height / b.height; x.globalCompositeOperation = "destination-out"; x.fillStyle = "#000";
+        x.beginPath(); x.arc(px, py, 22, 0, 7); x.fill(); if (++n % 6 === 0) vibrar(5);
+        if (n % 10 === 0) { const dd = x.getImageData(0, 0, cv.width, cv.height).data; let v = 0; for (let k = 3; k < dd.length; k += 64) if (dd[k] < 40) v++; if (v / (dd.length / 64) > .55) {
+          fim = true; cv.style.transition = "opacity .8s"; cv.style.opacity = "0"; vibrar([40, 60, 120]); const X = lerEsc(); X[l.id] = { achou: Date.now() }; gravaEsc(X); setTimeout(mostra, 1100); } } };
+      cv.addEventListener("pointerdown", ev => { cv.setPointerCapture(ev.pointerId); raspa(ev); });
+      cv.addEventListener("pointermove", ev => { if (ev.buttons || ev.pointerType === "touch") raspa(ev); });
+    });
+  }
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) fechar(); } }, h("div", { role: "dialog", "aria-label": "Escavação em " + l.nome, class: "escsheet" }, corpo));
+  document.body.append(sheet);
+}
 function vExplorador() {
   const v = eu();
   if (!S.bonecoRasc) {
@@ -4637,7 +4756,7 @@ function vExplorador() {
   const msg = h("p", { class: "msg" + (S.expMsg ? " ok" : ""), role: "status", text: S.expMsg || "" });
   return h("section", { class: "view" },
 
-    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Mapa da Expedição" }), h("h1", { text: "Monte seu explorador" }))),
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Expedição ao Velho Mundo" }), h("h1", { text: "Monte seu arqueólogo" }))),
     h("div", { class: "builder" },
       h("div", { class: "preview" }, bonecoSvg(b, "bonecosvg big"), h("p", { class: "tagname", text: v ? v.nome : "Viajante" }),
         h("div", { class: "actions", style: "flex-direction:column;gap:6px" },
@@ -4652,13 +4771,8 @@ function vExplorador() {
         h("p", { class: "lab", text: "Mão direita" }), chips("acessorio2", BONECO.acessorio.filter(([v]) => !INSTRUMENTOS.includes(v))),
         h("p", { class: "lab", text: "Óculos" }), chips("oculos", BONECO.oculos),
         h("p", { class: "lab", text: "Colar" }), chips("colar", BONECO.colar),
-        h("p", { class: "lab", text: "Na testa" }), chips("testa", BONECO.testa),
-        h("p", { class: "lab", text: "Piercing no nariz" }), chips("nariz", BONECO.nariz),
-        h("p", { class: "lab", text: "Nos pés" }), chips("pes", BONECO.pes),
-        h("p", { class: "lab", text: "Pássaro no ombro" }), chips("ombro", BONECO.ombro),
         h("p", { class: "lab", text: "Barba" }), chips("barba", BONECO.barba),
         h("p", { class: "lab", text: "Companheiro de viagem" }), chips("pet", BONECO.pet),
-        h("p", { class: "lab", text: "Fantasia dos deuses" }), chips("deus", BONECO.deus),
         null)),
     v ? h("div", { class: "actions", style: "justify-content:center" },
       h("button", { class: "btn gold", type: "button", onclick: async () => {
@@ -4670,7 +4784,7 @@ function vExplorador() {
         S.salvandoExp = false;
       } }, "Salvar meu explorador"), msg)
       : h("p", { class: "small", style: "text-align:center", text: "Emita seu passaporte para salvar o seu explorador." }),
-    vSalvaExplorador(), vCaravanaBonecos(), vRetrato());
+    vEscavacao(), vSalvaExplorador(), vCaravanaBonecos(), vRetrato());
 }
 // ---------- Explorador: salvar como imagem, os exploradores da caravana e o retrato da turma ----------
 const bonecoImg = (b, lado) => svgParaImg(h("g", null, desenhaBoneco(b)), lado);

@@ -61,7 +61,7 @@ p{margin:0}
 @keyframes treme{25%{transform:translate(2px,-1px)}50%{transform:translate(-2px,1px)}75%{transform:translate(1px,2px)}}
 
 /* 1. ENTRADA: a parede rachada de Abu Simbel no escuro total; a tocha é o dedo */
-#entrada .foto{background-image:url(img/fundo-abu-janela.webp);background-position:56% 50%}
+#entrada .foto{background-image:url(img/fundo-abu-fenda.webp);background-position:56% 50%}
 #escuro{position:absolute;inset:0;width:100%;height:100%;touch-action:none;z-index:2}
 #entrada .texto{bottom:max(34px,env(safe-area-inset-bottom));z-index:7;pointer-events:none;transition:opacity 1s}
 #entrada .topoTxt{top:max(30px,env(safe-area-inset-top));bottom:auto}
@@ -69,7 +69,7 @@ p{margin:0}
 #entrada.entra .foto{transform:scale(3.4);transform-origin:56% 53%;filter:brightness(1.6) sepia(.4)}
 
 /* 2. PERGUNTA: teto astronômico */
-#pergunta .foto{background-image:url(img/fundo-astronomico-2.webp);filter:brightness(.42) sepia(.25)}
+#pergunta .foto{background-image:url(img/fundo-nut-canto.webp);filter:brightness(.42) sepia(.25)}
 #pergunta .sombra{background:radial-gradient(ellipse at 50% 42%,rgba(255,170,80,.18),transparent 55%),radial-gradient(ellipse at 50% 50%,transparent 35%,rgba(0,0,0,.85))}
 #pergunta .texto{top:50%;transform:translateY(-50%)}
 
@@ -89,7 +89,7 @@ p{margin:0}
 #respostaBox{position:absolute;inset:0;z-index:8;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:16px;
   padding:max(40px,env(safe-area-inset-top)) 18px max(40px,env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(0,0,0,0) 0,rgba(0,0,0,.55) 30%,rgba(0,0,0,.85));animation:aparece 1.6s ease both}
 @keyframes aparece{from{opacity:0}}
-.resposta{margin-top:18vh;font:700 clamp(54px,17vw,84px)/1 var(--f-tit);letter-spacing:.12em;
+.resposta{margin-top:18vh;font:700 clamp(40px,12vw,64px)/1.05 var(--f-tit);text-align:center;letter-spacing:.12em;
   background:linear-gradient(180deg,#FFF0C4,#E2B45A 45%,#8E6020 55%,#D9A851);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 10px #000) drop-shadow(0 0 30px rgba(240,180,80,.45))}
 .botoes{display:flex;flex-direction:column;gap:10px;width:min(100%,440px)}
 
@@ -117,7 +117,7 @@ p{margin:0}
   <div class="texto">
     <p class="rotulo">Diante do santuário</p>
     <h2>Faça a sua pergunta</h2>
-    <p class="txt">O deus respondia só sim ou não. Pense numa pergunta assim, com o coração, e diga baixinho, só para você.</p>
+    <p class="txt">Pense numa pergunta ou num tema da sua vida, com o coração, e diga baixinho, só para você. A barca vai parar diante do deus que tem algo a te dizer.</p>
     <p class="miudo">Ninguém lê a sua pergunta. Ela não fica guardada.</p>
     <button class="btn" type="button" id="chamar">Chamar a barca do deus</button>
   </div>
@@ -128,7 +128,7 @@ p{margin:0}
   <div class="foto"></div><div class="sombra"></div>
   <div class="texto topoTxt"><p class="rotulo" id="barcaCap">A barca do deus</p></div>
   <div class="texto">
-    <p class="txt" id="barcaTxt">Segure para os sacerdotes erguerem a barca. Quando ela se mover sozinha, o deus respondeu.</p>
+    <p class="txt" id="barcaTxt">Segure para os sacerdotes erguerem a barca. Quando ela parar, um deus terá vindo até você.</p>
     <button class="segura" type="button" id="segura" aria-label="Segure para carregar a barca"><svg viewBox="0 0 120 120"><circle id="anel" cx="60" cy="60" r="56" stroke-dasharray="352" stroke-dashoffset="352"/></svg>Segure</button>
   </div>
   <div id="respostaBox" hidden>
@@ -136,14 +136,14 @@ p{margin:0}
     <div class="lamina" id="leitura"></div>
     <div class="lamina amuleto" id="amuleto"></div>
     <details class="lamina">
-      <summary>Como o deus respondia ▾</summary>
-      <p>Nas grandes festas, os sacerdotes carregavam nos ombros a barca de Amon, com a estátua do deus escondida dentro de um santuário fechado. Diante dela, as pessoas faziam perguntas. Se a barca avançava, era sim. Se recuava, era não.</p>
+      <summary>Como era o oráculo ▾</summary>
+      <p>Nas grandes festas, os sacerdotes carregavam nos ombros a barca de Amon, com a estátua do deus escondida dentro de um santuário fechado. Diante dela, as pessoas faziam perguntas. Se a barca avançava, era sim; se recuava, era não. Aqui a barca escolhe um deus, e o que vem é uma mensagem para olhar, como nos oráculos antigos.</p>
       <p>Amon quer dizer “o oculto”: o deus que ninguém vê, mas que move tudo. Em Tebas, a antiga Luxor, ele virou Amon-Rá, o rei dos deuses, e Karnak foi construído para ele.</p>
       <p>O oráculo mais famoso de Amon ficava no oásis de Siwa, no deserto. Em 331 a.C., Alexandre, o Grande, atravessou a areia para consultá-lo, e saiu de lá chamado de filho de Amon.</p>
       <p>A barca desta parede é a do deus sol com cabeça de carneiro, navegando pela noite, protegida pela serpente Mehen. Foi fotografada no Vale dos Reis.</p>
     </details>
     <div class="botoes">
-      <button class="btn" type="button" onclick="location.reload()">Fazer outra pergunta</button>
+      <button class="btn" type="button" onclick="location.reload()">Consultar de novo</button>
     </div>
   </div>
 </section>
@@ -265,26 +265,25 @@ $("segura").addEventListener("pointerdown", e => {
 });
 ["pointerup", "pointercancel"].forEach(t => $("segura").addEventListener(t, solta));
 function responde() {
-  const sim = (crypto.getRandomValues(new Uint8Array(1))[0] & 1) === 1;
-  cena3.classList.remove("carrega"); cena3.classList.add(sim ? "sim" : "nao");
-  $("barcaTxt").textContent = sim ? "A barca avança na sua direção." : "A barca recua para o escuro.";
-  vibra(sim ? [80, 60, 200] : [200, 80, 60]); gongo();
+    cena3.classList.remove("carrega"); cena3.classList.add("sim");
+  $("barcaTxt").textContent = "A barca parou. O santuário vai se abrir.";
+  vibra([80, 60, 200]); gongo();
   const sorte = n => crypto.getRandomValues(new Uint32Array(1))[0] % n;
   const Dd = ORACULO.deuses[sorte(ORACULO.deuses.length)], M = ORACULO.amuletos[sorte(ORACULO.amuletos.length)];
   const F = ORACULO.falas[Dd.id], Hh = ORACULO.horas[sorte(12)], dia = sorte(3);
-  $("leitura").innerHTML = `<div class="topo"><img src="deuses/${Dd.id}.webp" alt="${Dd.nome}"><div><small>${sim ? "Sim" : "Não"}, e quem traz a resposta é</small><b>${Dd.nome}</b><i>${Dd.titulo}</i></div></div>
+  $("leitura").innerHTML = `<div class="topo"><img src="deuses/${Dd.id}.webp" alt="${Dd.nome}"><div><small>Quem veio até você</small><b>${Dd.nome}</b><i>${Dd.titulo}</i></div></div>
     <h4>A imagem nas paredes</h4><p>${F.imagem}</p>
     <h4>O mito</h4><p>${Dd.mito}</p>
     <h4>O que ${Dd.nome} rege</h4><p>${Dd.rege.charAt(0).toUpperCase() + Dd.rege.slice(1)}.</p>
     <div class="luzsombra"><p><b>Na luz:</b> ${Dd.luz}</p><p><b>Na sombra:</b> ${Dd.sombra}</p></div>
-    <h4>A resposta à sua pergunta</h4><p>${sim ? F.sim : F.nao}</p>
+    <h4>A mensagem de ${Dd.nome}</h4><p>${ORACULO.mensagens[Dd.id]}</p>
     <h4>A hora da noite · ${Hh.n}ª hora · ${Hh.nome}</h4><p>${Hh.txt}</p><p>A barca de ${Dd.nome} encontrou você nesta hora: a sua pergunta vive ${Hh.tema}.</p>
     <div class="devolve"><h4 style="margin-top:0">A pergunta que ${Dd.nome} te devolve</h4><p class="perg">${Dd.pergunta}</p></div>
     <h4>Para hoje, no Egito</h4><p>${Dd.hoje[dia]}</p>
     <h4>Palavras de poder</h4><p class="heka">Dua ${F.nome[0]}</p><p class="miudoL">“Louvor a ${F.nome[1]}.” Assim começavam os hinos nas paredes dos templos: dua quer dizer adorar. Diga três vezes, baixinho, e entregue a sua pergunta ao deus.</p>`;
-  try { localStorage.setItem("cdi-oraculo-egito", JSON.stringify({ ts: Date.now(), sim, deus: Dd.id, amuleto: M.id, hora: Hh.n, dia })); } catch (e) {}
+  try { localStorage.setItem("cdi-oraculo-egito", JSON.stringify({ ts: Date.now(), deus: Dd.id, amuleto: M.id, hora: Hh.n, dia })); } catch (e) {}
   $("amuleto").innerHTML = `<span class="glifo">${M.h}</span><div><h4 style="margin:0">Seu amuleto para a viagem</h4><b style="font:500 21px var(--f-tit)">${M.nome} · ${M.sentido}</b><p>${M.texto}</p></div>`;
-  setTimeout(() => { $("segura").hidden = true; $("barcaTxt").hidden = true; $("barcaCap").textContent = "O deus respondeu"; $("resposta").textContent = sim ? "SIM" : "NÃO"; $("respostaBox").hidden = false; }, 2600);
+  setTimeout(() => { $("segura").hidden = true; $("barcaTxt").hidden = true; $("barcaCap").textContent = "A barca parou diante de"; $("resposta").textContent = Dd.nome; $("respostaBox").hidden = false; }, 2600);
 }
 
 // dentro do app, o oráculo abre numa janela: o botão fecha a janela em vez de recarregar

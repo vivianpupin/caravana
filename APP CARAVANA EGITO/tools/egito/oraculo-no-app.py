@@ -10,7 +10,7 @@ NOVO_CARD = '''function vOraculoCard() {
   return h("button", { type: "button", class: "oraculocard amon", onclick: () => abrirOraculo() },
     h("img", { class: "orcdeus", src: "deuses/" + (d ? L.deus : "amon") + ".webp", alt: "" }),
     h("span", { class: "orctx" }, h("small", { text: "Templo de Amon" }), h("b", { text: "Oráculo de Amon" }),
-      h("span", { text: d ? `Sua última resposta: ${L.sim ? "sim" : "não"}, trazida por ${d}. Toque para perguntar de novo.` : "Acenda a tocha, faça a sua pergunta e espere a barca do deus." })));
+      h("span", { text: d ? `Sua última leitura: ${d}. Toque para consultar de novo.` : "Acenda a tocha, pense na sua pergunta e veja qual deus a barca traz." })));
 }
 '''
 NOVO_ABRIR = '''function abrirOraculo() {
