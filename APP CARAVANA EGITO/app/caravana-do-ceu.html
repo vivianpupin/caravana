@@ -1134,7 +1134,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .contato .quadro span{font:500 9px "Courier Prime",monospace;color:#E8C07A;text-align:left;line-height:1.2}
 .permissoes{animation:permEntra .5s ease both;position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;padding:24px;background:#1B1511;isolation:isolate;overflow:auto}
 @keyframes permEntra{from{opacity:0}to{opacity:1}}
-.permissoes::before{content:"";position:fixed;inset:-40px;background:url(img/abertura-agra.webp) 50% 35%/cover;filter:blur(7px) brightness(.72) saturate(1.1);z-index:-1}
+.permissoes::before{content:"";position:fixed;inset:-40px;background:url(img/abertura-cairo.webp) 50% 35%/cover;filter:blur(7px) brightness(.72) saturate(1.1);z-index:-1}
 .pcartao{width:100%;max-width:320px;border:1px solid rgba(232,192,122,.35);border-radius:16px;padding:14px 16px 6px;background:rgba(27,21,17,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#F1E2BC;text-align:center}
 .pcartao .psimb{display:none}
 .pcartao h2{font-family:Cinzel,var(--display),serif;font-weight:600;letter-spacing:.08em;color:#E8C07A;margin:0 0 2px;font-size:17px}
@@ -1872,7 +1872,7 @@ video.mgrande{max-height:70vh;background:#000}
 <div class="app">
   <header class="top">
     <span class="topside" aria-hidden="true"><img class="topsim" src="img/simbolo-claro.png" alt=""></span>
-    <div class="brand"><div><b>Caravana do Céu</b><span>Índia Sagrada · 2026</span></div></div>
+    <div class="brand"><div><b>Caravana do Céu</b><span>Travessia do Velho Mundo · 2027</span></div></div>
     <div class="topside right"><button class="me" id="me" type="button" hidden></button></div>
   </header>
   <main id="main"></main>
@@ -1909,7 +1909,7 @@ const S = {
 };
 // o app sempre abre no início do Roteiro (só a notificação leva direto para outra aba)
 S.tab = "travessia";
-{ const hj = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }); if (hj >= "2026-11-04" && hj <= "2026-11-16") S.tab = "travessia"; }
+{ const hj = new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Cairo" }); if (hj >= "2027-10-08" && hj <= "2027-10-20") S.tab = "travessia"; }
 try { S.local = JSON.parse(localStorage.getItem("cdi-ins") || "{}") || {}; } catch (e) {}
 try { S.checks = JSON.parse(localStorage.getItem("cdi-checks") || "{}") || {}; } catch (e) {}
 try { S.lidos = JSON.parse(localStorage.getItem("cdi-lidos") || "{}") || {}; } catch (e) { S.lidos = {}; }
@@ -2001,40 +2001,28 @@ function campoFoto(onId, status) {
 
 // ---------- selos ----------
 const minhas = () => ({ ...S.local, ...((eu() && eu().insignias) || {}) });
-// o último selo (Travessia) se completa sozinho no dia do translado, 16/11
-const aberto = l => !!(l && (l.aberto || minhas()[l.id] || (l.id === "travessia" && hojeIso() >= "2026-11-16")));
+// o último selo (Travessia) se completa sozinho no último dia, 20/10
+const aberto = l => !!(l && (l.aberto || minhas()[l.id] || (l.id === "travessia" && hojeIso() >= "2027-10-20")));
 const conquistasDe = v => S.locais.filter(l => l.insignia && (l.aberto || (v.insignias || {})[l.id])).length;
 const insigniaLocais = () => S.locais.filter(l => l.insignia).sort(byOrdem);
 const localDe = id => S.locais.find(l => l.id === id);
 // selos que saíram da travessia (a visita não acontece mais): somem do passaporte e do mapa; o saber ligado a eles fica livre
-const REMOVIDOS = ["galta-ji", "beatles-ashram"];
+const REMOVIDOS = [];
 // saberes que saíram do app
-const SABERES_REMOVIDOS = ["beatles"];
+const SABERES_REMOVIDOS = [];
 const ajustaSaberes = arr => arr.filter(x => !SABERES_REMOVIDOS.includes(x.id)).map(x => SABERES_AJUSTES[x.id] ? SABERES_AJUSTES[x.id](x) : x);
 // ajustes em saberes que já estão no banco: Hanuman passa a ser o saber do selo de Sankat Mochan
-const SABERES_AJUSTES = { "senhor-sentidos": x => ({ ...x, texto: "O nome vem de Hrishikesha, um dos nomes de Vishnu: hrishika são os sentidos, isha é o senhor. A tradição local conta que Vishnu apareceu aqui ao sábio Raibhya, depois de sua longa penitência.\n\nRishi quer dizer “aquele que vê”. São os sábios antigos que receberam os hinos dos Vedas em meditação. Por séculos, eles se retiraram nas margens desta curva do Ganges, ao pé do Himalaia.\n\nOs sete mais lembrados, os Saptarishis, moram também no céu: são as sete estrelas da Ursa Maior. Um deles, Vasishtha, meditou numa caverna aqui perto, onde também vamos meditar.\n\nBem junto da estrela de Vasishtha brilha uma estrelinha menor: Arundhati, sua esposa. Nos casamentos hindus, os noivos são levados a olhar para ela, para que a união seja firme como a desse casal.\n\nRishikesh é uma cidade sagrada: não se vende carne nem álcool. O ritmo é de prática, de rio e de silêncio.", fonte: "Tradição local de Rishikesh; Skanda Purana (Kedar Khanda); tradição védica dos Saptarishis; ritos de casamento dos Grihya Sutras." }), hanuman: x => ({ ...x, localId: "sankat-mochan", texto: String(x.texto || "").replace(/^Os macacos de Galta Ji[^\n]*\n\n/, "Em Varanasi, o templo de Sankat Mochan é dedicado a Hanuman. O nome quer dizer aquele que livra das aflições.\n\n") }) };
+const SABERES_AJUSTES = {};
 const EXTRAS = [
   // o primeiro carimbo: cada pessoa ganha o seu ao completar as missões de preparação, antes de viajar
   { id: "embarque", nome: "Embarque", insignia: "embarque", cidadeId: "", dia: 0, ordem: 0, aberto: false, preparo: true,
-    descricao: "O primeiro carimbo do passaporte, de quem se preparou para a travessia: passaporte emitido, explorador montado, mensagem lançada na garrafa e lugar garantido no trem da Caravana.", dica: "Complete as missões de preparação, na tela inicial, para ganhar este carimbo." },
-  { id: "sankat-mochan", nome: "Sankat Mochan", insignia: "sankat-mochan", cidadeId: "varanasi", dia: 7, ordem: 7.6, codigo: "hanuman", lat: 25.2826, lng: 82.9987, busca: "Sankat Mochan Hanuman Temple Varanasi", aberto: false,
-    descricao: "O templo de Hanuman em Varanasi, aquele que livra das dificuldades.", dica: "O devoto que carregou uma montanha espera entre as árvores." },
-  { id: "ganesha", nome: "Moti Dungri · Ganesha", insignia: "ganesha", cidadeId: "jaipur", dia: 4, ordem: 3.9, codigo: "ganapati", lat: 26.8950, lng: 75.8176, busca: "Moti Dungri Ganesh Temple Jaipur", aberto: false,
-    descricao: "O templo de Ganesha aos pés do forte de Moti Dungri, onde se pede a bênção que abre os caminhos.", dica: "Antes de tudo, saudar quem remove os obstáculos." },
-  { id: "govind-dev-ji", nome: "Darshan de Krishna", insignia: "govind-dev-ji", cidadeId: "jaipur", dia: 3, ordem: 3.5, codigo: "govinda", lat: 26.9294, lng: 75.8235, busca: "Govind Dev Ji Temple Jaipur", aberto: false,
-    descricao: "O templo de Krishna dentro do Palácio da Cidade de Jaipur, onde as cortinas se abrem para o darshan, o encontro com o olhar da divindade.", dica: "As cortinas se abrem e Krishna olha de volta." },
-  { id: "diwali", nome: "Diwali", insignia: "diwali", cidadeId: "varanasi", dia: 5, ordem: 5.5, codigo: "deepavali", lat: 25.2869, lng: 83.0066, busca: "Assi Ghat Varanasi", aberto: false,
-    descricao: "O Festival das Luzes: lamparinas acesas nas portas, nos ghats e no rio para celebrar a vitória da luz.", dica: "A noite em que a Índia inteira se acende." },
-  { id: "durga-kund", nome: "Durga Kund", insignia: "durga-kund", cidadeId: "varanasi", dia: 7, ordem: 7.5, codigo: "durga", lat: 25.2889, lng: 82.9998, busca: "Durga Kund Mandir Varanasi", aberto: false,
-    descricao: "O templo vermelho da Deusa Durga, ao lado de um tanque sagrado de pedra.", dica: "A Mãe montada no leão espera ao lado das águas." },
-  { id: "travessia", nome: "Travessia Índia Sagrada", insignia: "travessia", cidadeId: "delhi", dia: 12, ordem: 20, codigo: "caravana", lat: 28.6315, lng: 77.2244, busca: "The Lalit New Delhi", aberto: false,
-    descricao: "O carimbo final, para quem atravessou a Índia Sagrada com a Caravana do Céu.", dica: "O último carimbo, que só se ganha no fim da travessia." }
+    descricao: "O primeiro carimbo do passaporte, de quem se preparou para a Travessia do Velho Mundo: passaporte emitido, explorador montado, intenção guardada e lugar garantido na Caravana.", dica: "Complete as missões de preparação, na tela inicial, para ganhar este carimbo." }
 ];
 // junta os selos do banco com os novos (o que vier do banco com o mesmo id tem preferência) e tira os que saíram
 const ajustaLocais = arr => { const v = arr.filter(x => !REMOVIDOS.includes(x.id)), ids = new Set(v.map(x => x.id)); return [...v, ...EXTRAS.filter(x => !ids.has(x.id))]; };
 const lib = x => !x.localId || REMOVIDOS.includes(x.localId) || aberto(localDe(x.localId)) || S.isOwner;
 const cidadeDe = id => S.cidades.find(c => c.id === id);
-const hojeIso = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+const hojeIso = () => new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Cairo" });
 const diaDe = n => (S.roteiro?.dias || []).find(d => d.n === n);
 function disponivel(l) {
   if (S.isOwner || l.aberto) return true;
@@ -2051,9 +2039,9 @@ async function selar(l, palavra) {
 }
 
 // ---------- relógios ----------
-const IST = () => new Date().toLocaleTimeString("pt-BR", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit" });
+const IST = () => new Date().toLocaleTimeString("pt-BR", { timeZone: "Africa/Cairo", hour: "2-digit", minute: "2-digit" });
 const BRT = () => new Date().toLocaleTimeString("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit" });
-const faltam = () => Math.ceil((new Date("2026-11-04T00:00:00+05:30").getTime() - Date.now()) / 86400000);
+const faltam = () => Math.ceil((new Date("2027-10-08T00:00:00+03:00").getTime() - Date.now()) / 86400000);
 
 // ---------- navegação ----------
 // barra de abas: esmaece a borda enquanto houver mais abas escondidas à direita
@@ -2308,27 +2296,27 @@ function contador(n, rotulo) {
 
 // ---------- Frases que se revezam na abertura ----------
 const FRASES = [
-  "Treze dias no coração espiritual da humanidade.",
+  "Treze dias atravessando o Egito de norte a sul.",
   "Uma caravana é feita de quem caminha junto.",
   "Caminhos abertos e chuva de bênçãos. É o meu destino, é o que vou encontrar.",
   "Cada manhã, uma nova partida.",
   "Eu vim pra Terra pra me vestir de quem eu sou.",
-  "Leva-me da escuridão para a luz.",
-  "Um país que nunca parou de rezar.",
+  "Explorando nossa origem nos damos conta de que somos infinitos.",
+  "Da mítica Atlântida às escolas iniciáticas do Antigo Egito.",
   "Água, mapas e céu aberto para cada dia da travessia.",
-  "Que todos os seres de todos os mundos sejam felizes.",
+  "De pirâmides, templos, desertos e o icônico Mar Vermelho.",
   "Siga a rota, ganhe os carimbos, encontre a caravana.",
   "Que eu pise com passos firmes no labirinto da mente.",
   "Vento me leva, vento me eleva pra atravessar todos os mundos.",
-  "Onde o sagrado está vivo nas ruas, nos rios e nos gestos.",
+  "Um enigma ainda vivo, inscrito nas pedras, nos templos e nos símbolos.",
   "Partimos de madrugada, quando as estrelas orientam a rota.",
   "Especiarias, mapas e força para a longa jornada.",
   "Eu vou seguindo meu caminho no silêncio do meu ser.",
   "Tudo o que você precisa para a travessia, num só lugar.",
   "Eu trarei do silêncio minha paz.",
-  "Ninguém volta da Índia do mesmo jeito que foi.",
+  "Você não volta da Caravana. Você chega em casa diferente.",
   "Nunca foi sobre estar sozinha, sempre foi sobre estar rodeada do que se vê e do invisível.",
-  "Quando você se move em direção a si mesmo, está indo em direção a Krishna.",
+  "O Egito te ensina que o tempo é outra coisa.",
   "Eu não sou daqui, eu vim de longe, lá das estrelas.",
   "Que todo esse percorrer seja um estado de celebração e reencontro.",
   "A Luz de todas as Luzes é você.",
@@ -2362,8 +2350,8 @@ function vTravessia() {
   return h("section", { class: "view" }, cartaoCelular(), avisoFixado(),
     h("div", { class: "hero" },
       h("img", { class: "logo", src: "img/simbolo-marrom.png", alt: "" }),
-      h("h1", null, "Travessia da", h("br"), "Índia Sagrada"),
-      h("p", { class: "route sa", lang: "sa", text: "लोकाः समस्ताः सुखिनो भवन्तु" }),
+      h("h1", null, "Travessia do", h("br"), "Velho Mundo"),
+      h("p", { class: "route", text: "Cairo · Deserto Branco · Aswan · Luxor · Hurghada" }),
       h("span", { class: "line" }),
       h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] })),
     h("div", { class: "clock" },
@@ -2371,8 +2359,8 @@ function vTravessia() {
             : dHoje ? h("div", null, h("b", { text: "Dia " + dHoje.n }), h("span", { text: "de " + dias.length + (dHoje.cidade ? " · " + dHoje.cidade : "") }))
             : hoje > dias[dias.length - 1].iso ? h("div", null, h("b", { text: String(dias.length) }), h("span", { text: "Travessia concluída" }))
             : h("div", null, h("b", { text: String(dias.length) }), h("span", { text: "dias de travessia" })),
-      h("div", null, h("b", { class: "hora", "data-tz": "Asia/Kolkata", text: horaEm("Asia/Kolkata") }), h("span", { text: "Agora na Índia" })),
-      h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +8h30" }))),
+      h("div", null, h("b", { class: "hora", "data-tz": "Africa/Cairo", text: horaEm("Africa/Cairo") }), h("span", { text: "Agora no Egito" })),
+      h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +6h" }))),
     vGarrafaVolta(),
     vMissoes(),
     vOnlineLider(),
@@ -2404,7 +2392,7 @@ const MISSOES = [
   ["pombo", "Mandar um pombo-correio", "Uma cartinha para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")]
 ];
 // pistas: tudo o que vai para a Galeria antes da viagem é pista; a missão só aparece quando existe alguma
-const INICIO_VIAGEM = Date.parse("2026-11-04T00:00:00+05:30");
+const INICIO_VIAGEM = Date.parse("2027-10-08T00:00:00+03:00");
 const ehPista = f => !!f && (f.ts || 0) < INICIO_VIAGEM; // tudo o que está na Galeria antes da viagem vale como pista
 const pistas = () => (S.mural || []).filter(ehPista);
 const pistasVistas = () => { try { return JSON.parse(localStorage.getItem("cdi-pistas") || "{}"); } catch (e) { return {}; } };
@@ -2432,7 +2420,7 @@ function vMissoes() {
   const v = eu(), l = localDe("embarque"); if (!l) return null;
   const MS = missoesAtivas(), feitas = MS.filter(missaoFeita).length, tudo = feitas === MS.length;
   // as missões são de antes de embarcar: o cartão some quando a viagem começa
-  if (hojeIso() >= "2026-11-04") return null;
+  if (hojeIso() >= "2027-10-08") return null;
   setTimeout(confereEmbarque, 0);
   return h("div", { class: "missoes" },
     h("div", { class: "missoestopo" },
@@ -2448,7 +2436,7 @@ function vMissoes() {
         h("span", { class: "missaoir", "aria-hidden": "true", text: "›" }))); })));
 }
 // ---------- mensagem na garrafa: fica guardada só neste celular e volta no último dia ----------
-const ABRE_INTENCAO = "2026-11-16";
+const ABRE_INTENCAO = "2027-10-20";
 function lerIntencao() { try { return JSON.parse(localStorage.getItem("cdi-intencao") || "null"); } catch (e) { return null; } }
 // a garrafa desenhada no mesmo traço do pombo-correio: vidro, rolha, a cartinha com a fita vermelha e o rio balançando
 function garrafaSvg(cheia) {
@@ -3028,7 +3016,7 @@ function vSaberes() {
 // ---------- Dados de passaporte (códigos) ----------
 const MESP = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
 const dataDoc = ts => { const d = new Date(ts); return nn(d.getDate()) + " " + MESP[d.getMonth()] + " " + d.getFullYear(); };
-function numPassaporte(id) { const v = S.viajantes.find(x => x.id === id); return "CDC26IN" + (v && v.lider ? "000" : String(numeros()[id] || 0).padStart(3, "0")); }
+function numPassaporte(id) { const v = S.viajantes.find(x => x.id === id); return "CDC27EG" + (v && v.lider ? "000" : String(numeros()[id] || 0).padStart(3, "0")); }
 function campo(pt, en, valor, cls) { return h("div", { class: "fd" + (cls ? " " + cls : "") }, h("span", { class: "fl", text: pt + " / " + en }), h("span", { class: "fv", text: valor })); }
 function camposPassaporte(v) {
   return [
@@ -3043,7 +3031,7 @@ function camposPassaporte(v) {
 }
 function mrzDe(v, ok) {
   const nome = norm(v ? v.nome : "viajante").toUpperCase().replace(/[^A-Z]+/g, "<");
-  const l1 = ("P<CDC" + "<<" + nome + "<<INDIA<SAGRADA").padEnd(44, "<").slice(0, 44);
+  const l1 = ("P<CDC" + "<<" + nome + "<<VELHO<MUNDO").padEnd(44, "<").slice(0, 44);
   const l2 = (numPassaporte(S.uid) + "<<CDC<261104<F<261116<<CARIMBOS" + nn(ok || 0)).padEnd(44, "<").slice(0, 44);
   return l1 + "\n" + l2;
 }
@@ -3188,8 +3176,8 @@ async function montaVideoPassaporte(cv, aoFim) {
     x.textAlign = "center"; x.globalAlpha = ease(t / 1.2);
     if (simbolo) { const sw = 96, sh = sw * simbolo.height / simbolo.width; x.shadowColor = "rgba(255,190,100,.55)"; x.shadowBlur = 20; x.drawImage(simbolo, CX - sw / 2, 120, sw, sh); x.shadowBlur = 0; }
     x.fillStyle = "#FFF1D6"; x.font = '500 66px "Cinzel",Georgia,serif'; x.shadowColor = "rgba(255,190,100,.55)"; x.shadowBlur = 18;
-    x.fillText("Travessia da", CX, 330); x.fillText("Índia Sagrada", CX, 408); x.shadowBlur = 0;
-    x.fillStyle = "#C9A56A"; x.font = '600 32px "Poppins","Noto Sans Devanagari",sans-serif'; x.fillText("लोकाः समस्ताः सुखिनो भवन्तु", CX, 470);
+    x.fillText("Travessia do", CX, 330); x.fillText("Velho Mundo", CX, 408); x.shadowBlur = 0;
+    x.fillStyle = "#C9A56A"; x.font = '600 32px "Poppins","Noto Sans Devanagari",sans-serif'; x.fillText("Egito · 2027", CX, 470);
     x.globalAlpha = 1;
     // livro: flutua e se aproxima
     const tl = t - T0, abre = ease(tl / TCAPA), flutua = Math.sin(t * 1.6) * 8, esc = .68 + .18 * ease(t / 2.2);
@@ -3368,7 +3356,7 @@ function abrirLivro(pagina) {
   document.body.append(sheet);
   pinta(); book.focus({ preventScroll: true });
 }
-const SIGLA = { delhi: "DEL", agra: "AGR", jaipur: "JAI", varanasi: "VNS", rishikesh: "RSK" };
+const SIGLA = { cairo: "CAI", deserto: "WDS", aswan: "ASW", nilo: "NIL", luxor: "LXR", hurghada: "HRG" };
 const paginaDoSelo = id => 2 + Math.floor(insigniaLocais().findIndex(l => l.id === id) / 2);
 
 // ---------- Passaporte ----------
@@ -3403,14 +3391,14 @@ function rosacea(R, r, d, voltas) {
 }
 // carimbos de fundo (retangulares, sem os redondos): tinta desbotada, falhada e arrastada
 const CARIMBOS_FUNDO = [
-  { t: ["ENTRADA · ARRIVAL", "DELHI", "04 NOV 2026"], cor: "#2F4F8A", f: "ret", r: -12 },
-  { t: ["IMMIGRATION", "INDIA", "VISTO · VISA"], cor: "#A8281B", f: "chanfro", r: 8 },
-  { t: ["AGRA", "ताज महल"], cor: "#5B3F7A", f: "ret2", r: -4 },
-  { t: ["JAIPUR", "PINK CITY", "07 NOV"], cor: "#A8281B", f: "chanfro", r: 14 },
-  { t: ["VARANASI", "काशी", "08 NOV 2026"], cor: "#2F4F8A", f: "ret", r: -9 },
+  { t: ["ENTRADA · ARRIVAL", "CAIRO", "08 OUT 2027"], cor: "#2F4F8A", f: "ret", r: -12 },
+  { t: ["IMMIGRATION", "EGYPT", "VISTO · VISA"], cor: "#A8281B", f: "chanfro", r: 8 },
+  { t: ["GIZÉ", "PIRÂMIDES"], cor: "#5B3F7A", f: "ret2", r: -4 },
+  { t: ["WHITE DESERT", "SAHARA", "11 OUT"], cor: "#A8281B", f: "chanfro", r: 14 },
+  { t: ["ASWAN", "RIO NILO", "13 OUT 2027"], cor: "#2F4F8A", f: "ret", r: -9 },
   { t: ["CARAVANA DO CÉU", "✦ VISTO ✦"], cor: "#3F6B4A", f: "ret2", r: 5, simb: 1 },
-  { t: ["RISHIKESH", "ऋषिकेश", "HIMALAIA"], cor: "#5B3F7A", f: "chanfro", r: -15 },
-  { t: ["SAÍDA · DEPARTURE", "DELHI", "16 NOV 2026"], cor: "#A8281B", f: "ret", r: 10 }
+  { t: ["LUXOR", "TEBAS", "VALE DOS REIS"], cor: "#5B3F7A", f: "chanfro", r: -15 },
+  { t: ["SAÍDA · DEPARTURE", "CAIRO", "20 OUT 2027"], cor: "#A8281B", f: "ret", r: 10 }
 ];
 function carimboBorrado(c, simbolo) {
   const W = 360, H = 200, cv = document.createElement("canvas"); cv.width = W + 40; cv.height = H + 40; const x = cv.getContext("2d");
@@ -3487,7 +3475,7 @@ function vPassaporte() {
   const gente = S.viajantes.slice().sort((a, b) => (b.lider ? 1 : 0) - (a.lider ? 1 : 0) || totalViagens(b) - totalViagens(a) || (nums[a.id] || 0) - (nums[b.id] || 0));
   perfis(gente.map(g => g.id));
   const nomeMrz = norm(v ? v.nome : "viajante").toUpperCase().replace(/[^A-Z]+/g, "<");
-  const mrz1 = ("P<CDC<INDIA<<" + nomeMrz).padEnd(44, "<").slice(0, 44);
+  const mrz1 = ("P<CDC<EGITO<<" + nomeMrz).padEnd(44, "<").slice(0, 44);
   const mrz2 = ((v && v.lider ? "LIDER" : nn(nums[S.uid] || 0) + "<<<") + "<04NOV26<<16NOV26<<CARIMBOS" + nn(ok)).padEnd(44, "<").slice(0, 44);
   return h("section", { class: "view" },
     h("img", { class: "cover", src: "img/passaporte-capa.webp", alt: "Passaporte da Travessia · Caravana do Céu" }),
@@ -4985,7 +4973,7 @@ function minhaPos() {
   const p = S.posicoes.find(x => x.id === S.uid); return p && isFinite(+p.lat) ? { lat: +p.lat, lng: +p.lng } : null;
 }
 // sem localização ligada, o mapa abre na cidade do hotel de hoje (ou em Delhi)
-function centroPadrao() { const c = COORD_CIDADE[(HOTEIS[hotelAgora()] || {}).cid] || COORD_CIDADE.delhi; return { lat: c[0], lng: c[1] }; }
+function centroPadrao() { const c = COORD_CIDADE[(HOTEIS[hotelAgora()] || {}).cid] || COORD_CIDADE.cairo; return { lat: c[0], lng: c[1] }; }
 function mapaPerto() {
   const W = 600, H = 600, svg = pergaminho(W, H, "perto"), eu0 = minhaPos(), centro = S.pertoCentro || eu0 || centroPadrao();
   const temEu = !!eu0;
@@ -5229,10 +5217,10 @@ const FILTROS = [
 ];
 const GRAOS = [["auto", "Do filtro"], ["nenhum", "Sem grão"], ["leve", "Leve"], ["medio", "Médio"], ["forte", "Forte"], ["super8", "Super 8"]];
 const FORMATOS = [["original", "Original"], ["reels", "Reels 9:16"]];
-const PATCHES = [["caravana", "Caravana"], ["india", "Índia + Caravana"], ["colecao", "Coleção"], ["nenhum", "Sem patch"]];
-const SELOS_COLECAO = ["embarque", "india", "taj-mahal", "ganesha", "jaipur", "govind-dev-ji", "varanasi", "diwali", "ganga-aarti", "manikarnika", "durga-kund", "sankat-mochan", "batismo", "rishikesh", "kunjapuri", "caverna", "travessia"];
+const PATCHES = [["caravana", "Caravana"], ["india", "Egito + Caravana"], ["colecao", "Coleção"], ["nenhum", "Sem patch"]];
+const SELOS_COLECAO = ["embarque", "egito", "cairo", "piramides-gize", "sarcofago-tut", "piramide-khufu", "saqqara", "mumias", "sahara", "deserto-branco", "aswan", "rio-nilo", "abu-simbel", "luxor", "vale-dos-reis", "mar-vermelho"];
 const seloLiberado = id => S.isOwner || aberto(localDe(id));
-const PATCH_CIDADE = { Delhi: "india", Agra: "taj-mahal", Jaipur: "jaipur", Varanasi: "varanasi", Rishikesh: "rishikesh" };
+const PATCH_CIDADE = { Cairo: "cairo", "Deserto Branco": "deserto-branco", Aswan: "aswan", "Abu Simbel": "abu-simbel", Luxor: "luxor", Hurghada: "mar-vermelho" };
 const MOLDURAS = [["polaroid", "Polaroid"], ["postal", "Cartão-postal"], ["ingresso", "Ingresso"], ["arco", "Janela de palácio"], ["guirlanda", "Guirlanda de flores"], ["bandeirinhas", "Bandeirinhas de oração"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
 const imgCache = {};
 // se a imagem falhar (sem internet), não guarda o erro: na próxima vez tenta de novo
@@ -5762,8 +5750,7 @@ const ADESIVOS = {
   get "Meu explorador"() { return [["eu", "Meu explorador"], ["x:eu-sempet", "Só eu"], ["x:balao:Mais um chai?", "Mais um chai?"], ["x:eu-carimbo", "Carimbo do explorador"],
     ["x:meu-pet", "Meu bichinho"], ["x:deus:shiva", "Shiva · Om Namah Shivaya"]]; },
   // os selos (pins) da travessia, os mesmos do passaporte: só os que já foram liberados
-  "Selos": [["india", "Índia"], ["taj-mahal", "Taj Mahal"], ["ganesha", "Ganesha"], ["jaipur", "Jaipur"], ["govind-dev-ji", "Govind Dev Ji"], ["varanasi", "Varanasi"], ["diwali", "Diwali"], ["ganga-aarti", "Ganga Aarti"],
-    ["durga-kund", "Durga Kund"], ["sankat-mochan", "Sankat Mochan"], ["batismo", "Batismo no Ganges"], ["rishikesh", "Rishikesh"], ["kunjapuri", "Kunjapuri"], ["caverna", "Caverna"], ["travessia", "Travessia"]].map(([id, n]) => ["img:insignias/" + id + ".webp", n]),
+  "Selos": [["egito", "Egito"], ["cairo", "Cairo"], ["piramides-gize", "Pirâmides de Gizé"], ["sarcofago-tut", "Sarcófago de Tutankhamon"], ["piramide-khufu", "Pirâmide de Khufu"], ["saqqara", "Saqqara"], ["mumias", "Múmias Reais"], ["sahara", "Deserto do Sahara"], ["deserto-branco", "Deserto Branco"], ["aswan", "Aswan"], ["rio-nilo", "Rio Nilo"], ["abu-simbel", "Abu Simbel"], ["luxor", "Luxor"], ["vale-dos-reis", "Vale dos Reis"], ["mar-vermelho", "Mar Vermelho"]].map(([id, n]) => ["img:insignias/" + id + ".webp", n]),
   // os enfeites que aparecem na Cabine de fotos, soltos para colar na foto
   "Caravana": [["img:img/simbolo-dourado.png", "Símbolo dourado"], ["img:img/simbolo-marrom.png", "Símbolo"], ["patch", "Patch bordado"], ["carimbo", "Carimbo"],
     ["postmark", "Carimbo do correio"], ["seloPostal", "Selo postal"], ["data", "Data da câmera"], ["linha", "Caravana do Céu · Índia 2026"], ["fita", "Fita adesiva"],
@@ -6212,7 +6199,7 @@ async function colaPatches(c, F, ox, oy, w, hh) {
   const tipo = F.patch || "nenhum"; S.fotoPatchRect = null; if (tipo === "nenhum") return;
   const caixa = S.fotoPatchRect = { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 };
   const dourado = await carregaImgOu("img/simbolo-dourado.png"), base = Math.min(w, hh) * .3, pad = Math.min(w, hh) * .04;
-  const lugar = PATCH_CIDADE[F.cidade] || "india";
+  const lugar = PATCH_CIDADE[F.cidade] || "egito";
   // Do lugar: só o selo da cidade, grande. Coleção: os selos que a pessoa já ganhou, espalhados como um álbum
   // (selo só aparece depois de liberado no passaporte; antes disso entra o patch da Caravana)
   // o selo de Manikarnika (o ghat das cremações) fica só no passaporte, não entra nas fotos
@@ -6231,7 +6218,7 @@ async function colaPatches(c, F, ox, oy, w, hh) {
     }
     return;
   }
-  const lista = tipo === "india" && seloLiberado("india") ? ["india", "caravana"] : ["caravana"];
+  const lista = tipo === "india" && seloLiberado("egito") ? ["egito", "caravana"] : ["caravana"];
   const pos = [[w - pad, hh - pad, .1, 1], [w - pad - base * .62, hh - pad - base * .28, -.14, .92], [pad, pad, -.08, .9]];
   const ordem = lista.slice().reverse();
   for (let i = ordem.length - 1; i >= 0; i--) {
@@ -7863,19 +7850,19 @@ function sino() {
 }
 // frases da abertura: uma história ou lenda do lugar para cada dia da travessia
 const FRASES_DIA = {
-  1: "As portas da Índia se abrem: Delhi te recebe com o peso de sete cidades que já existiram nesse chão.",
-  2: "Um imperador transformou a dor da perda num monumento que atravessou quase quatro séculos. O Taj Mahal lembra o que só o amor sabe fazer: dar forma eterna ao que o tempo levaria.",
-  3: "Jaipur foi erguida como um espelho do céu. Seguindo o Vastu Shastra, a arquitetura sagrada da Índia, um marajá astrônomo desenhou a cidade como uma mandala de nove quadras, uma para cada planeta da astrologia indiana. Caminhar por ela é caminhar dentro de um mapa do cosmos.",
-  4: "Hoje é dia de abrir os caminhos do coração: receberemos as bênçãos de Ganesha, diretamente de sua casa terrena, e celebraremos a vida com a leveza e a alegria de Krishna, num darshan com o próprio deus que desce à Terra para dançar entre os humanos.",
-  5: "Para os hindus, Kashi é a cidade mais sagrada da Terra. Conta a lenda que ela não está apoiada no chão, e sim no tridente de Shiva, e que, quando o mundo se desfizer no fim dos tempos, só ela vai permanecer. Hoje ela se acende inteira para o Diwali.",
-  6: "Neste dia, a própria Lakshmi caminha pela cidade sagrada e entra onde encontra a porta limpa e a lamparina acesa. A lamparina acesa é o sinal de quem está desperto e pronto para receber a luz do conhecimento, que afasta a escuridão da ignorância.",
-  7: "Um mergulho nas águas do Ganges lava os karmas de muitas vidas, e uma intenção feita em Kashi ganha a força da própria cidade de Shiva. Conta a lenda que Varanasi é um grande portal entre mundos: uma intenção sentida verdadeiramente aqui ressoa na alma e perpassa todos os planos da existência.",
-  8: "Hoje o vento que toca seus cabelos desce do Himalaia, a mais alta cordilheira da Terra. Para os hindus, estas montanhas são a morada dos deuses: é no alto delas que Shiva medita desde o princípio dos tempos.",
-  9: "Rishi quer dizer vidente, aquele que viu. Os Vedas, os textos sagrados mais antigos da Índia, não foram escritos: foram ouvidos pelos rishis em meditação profunda, nas cavernas e florestas do Himalaia, e passados de boca em boca por milênios. Hoje você respira o ar em que essa escuta aconteceu.",
-  10: "Por estas margens passaram sábios que a Índia ainda reverencia. Vasishtha, mestre de Rama, meditou numa caverna à beira deste rio. Hoje você caminha onde eles caminharam e se senta onde eles silenciaram.",
-  11: "Perto daqui, conta a lenda, Shiva bebeu o veneno que surgiu quando deuses e demônios agitaram o oceano primordial. Para salvar o mundo, guardou o veneno na garganta, que ficou azul, e se recolheu nestas montanhas para meditar.",
-  12: "No primeiro dia, você chegou com uma mala e com uma ideia de quem era. Antes de voltar, olhe com calma para quem está voltando: o que a Índia mudou em você?",
-  13: "Lokah Samastah Sukhino Bhavantu: que todos os seres de todos os mundos sejam felizes. É com esse desejo que a travessia se despede."
+  1: "Você acaba de pousar na cidade mais antiga que ainda existe — 5.000 anos de história te esperam do lado de fora.",
+  2: "Você está prestes a ver a única das Sete Maravilhas do Mundo Antigo que ainda existe.",
+  3: "Aqui nasceu a ideia de eternidade. Aqui um homem decidiu pela primeira vez que não ia morrer com o corpo.",
+  4: "O Sahara é o maior deserto quente do planeta — 9,2 milhões de km². Hoje você dorme dentro dele.",
+  5: "Quatro desertos em um dia — cada um com sua geologia, cor e memória de milhões de anos.",
+  6: "Aswan é onde o Egito encontra a África profunda — e onde o Nilo parece mais sagrado.",
+  7: "Ramsés II mandou esculpir 4 estátuas de si mesmo de 20 metros numa montanha. Por ego? Não — para marcar a fronteira sul do seu império com uma mensagem: não ouse entrar.",
+  8: "Luxor é uma cidade de 500.000 habitantes construída sobre o maior conjunto arqueológico ao ar livre do mundo. O chão que você pisa pode ter tumbas embaixo.",
+  9: "Os faraós pararam de construir pirâmides porque ficavam sendo saqueadas. A solução: esconder os túmulos dentro de uma montanha, em segredo. Não funcionou.",
+  10: "O Mar Vermelho conectava o Egito à Índia, à Arábia, à África Oriental. Por aqui passava o ouro que financiou os templos que você acabou de ver.",
+  11: "Os recifes de coral do Mar Vermelho têm até 5.000 anos e visibilidade de 30 metros — você vai ver cores que não existem em nenhuma tela.",
+  12: "Amanhã você volta. Hoje o Egito ainda é seu.",
+  13: "Você não volta da Caravana. Você chega em casa diferente."
 };
 const fraseDoDia = d => FRASES_DIA[d.n] || "";
 function aberturaDoDia(forcar) {
@@ -7884,7 +7871,7 @@ function aberturaDoDia(forcar) {
   if (!d) return;
   if (!forcar) { if (lsGet("cdi-abertura") === hoje) return; lsSet("cdi-abertura", hoje); }
   // fundo de cada cidade, no mesmo estilo escuro e desfocado da tenda
-  const cid = ["Delhi", "Agra", "Jaipur", "Varanasi", "Rishikesh"].find(k => String(d.cidade || "").includes(k));
+  const cid = ({ "Cairo": "Cairo", "Deserto Branco": "Deserto", "Aswan": "Aswan", "Abu Simbel": "AbuSimbel", "Luxor": "Luxor", "Hurghada": "Hurghada" })[d.cidade];
   const ov = h("div", { class: "abertura" + (cid ? " ab-" + cid.toLowerCase() : ""), role: "dialog", "aria-label": `Dia ${d.n}, ${d.cidade}`, style: cid ? `--abimg:url(img/abertura-${cid.toLowerCase()}.webp)` : "" },
     h("div", { class: "abfundo", "aria-hidden": "true" }),
     h("div", { class: "abconteudo" },
@@ -7906,7 +7893,7 @@ function aberturaDoDia(forcar) {
 // abre sozinha no primeiro acesso do dia (e ao voltar para o app num dia novo); ?abertura=6 mostra o dia 6 para conferir
 // primeira vez que a pessoa abre o app: boas-vindas e depois direto para a emissão do passaporte
 function boasVindas(pronto) {
-  const ov = h("div", { class: "abertura ab-varanasi", id: "boasvindas", role: "dialog", "aria-label": "Boas-vindas", style: "--abimg:url(img/abertura-varanasi.webp)" },
+  const ov = h("div", { class: "abertura ab-varanasi", id: "boasvindas", role: "dialog", "aria-label": "Boas-vindas", style: "--abimg:url(img/abertura-cairo.webp)" },
     h("div", { class: "abfundo", "aria-hidden": "true" }),
     h("div", { class: "abconteudo" },
       h("img", { class: "absimb", src: "img/simbolo-dourado.png", alt: "" }),
@@ -7969,7 +7956,7 @@ const HINDI = [
   ["Vamos!", "Chalo!", "चलो!", "TCHA-lô"],
   ["Socorro / ajuda", "Madad!", "मदद!", "MA-dad"]
 ];
-const INICIO = "2026-11-04", FIM = "2026-11-16";
+const INICIO = "2027-10-08", FIM = "2027-10-20";
 try { localStorage.removeItem("cdi-sim"); } catch (e) {}
 const hojeTrip = () => hojeIso();
 const ehHora = x => /^\d\d:\d\d$/.test(x || "");
@@ -8205,8 +8192,8 @@ const ASSINATURA = "Vanessa & Vivian";
 // cartas antigas vinham assinadas só por Vivian ou pela Caravana: agora quem assina são as duas, com Caravana do Céu embaixo
 const assinaturaDe = c => { const a = String(c.assinatura || "").replace(/\s*·\s*Caravana do Céu\s*$/i, "").trim(); return !a || /^(Vivian|Caravana do Céu)$/i.test(a) ? ASSINATURA : a; };
 const cartasAbertas = () => [...S.cartas, ...S.cartasP.filter(c => c.para === S.uid).map(c => ({ ...c, pessoal: true }))].filter(c => c && !c.rascunho && c.envio && c.envio <= Date.now()).sort((a, b) => a.envio - b.envio);
-const dataCarta = ts => new Date(ts).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" });
-const horaCarta = ts => new Date(ts).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" });
+const dataCarta = ts => new Date(ts).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "Africa/Cairo" });
+const horaCarta = ts => new Date(ts).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Cairo" });
 const primeiroNome = () => { const v = eu(); return v && v.nome ? v.nome.split(" ")[0] : "viajante"; };
 function pomboSvg(cls) {
   return h("svg", { class: cls, viewBox: "0 0 64 48", "aria-hidden": "true" },
@@ -8610,8 +8597,8 @@ function abrirCarta(c, chegou) {
 function editarCarta(c) {
   closeSheets();
   c = c || {};
-  const ini = c.envio || Date.parse("2026-11-16T07:00:00+05:30");
-  const dia = new Date(ini).toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+  const ini = c.envio || Date.parse("2027-10-20T07:00:00+03:00");
+  const dia = new Date(ini).toLocaleDateString("en-CA", { timeZone: "Africa/Cairo" });
   const tit = h("input", { type: "text", id: "cc-tit", maxlength: "80", placeholder: "Título (ex.: Uma carta do Ganges)", value: c.titulo || "" });
   const ta = h("textarea", { id: "cc-txt", rows: "10", placeholder: "Escreva a carta…" }); ta.value = c.texto || (c.id ? "" : "");
   const ass = h("input", { type: "text", id: "cc-ass", value: c.assinatura || ASSINATURA });
@@ -8626,7 +8613,7 @@ function editarCarta(c) {
   const grava = async modo => {
     if (gravando) return;
     if (!ta.value.trim()) { st.textContent = "Escreva a carta antes."; st.className = "msg err"; return; }
-    const envio = modo === "agora" ? Date.now() : Date.parse(`${d.value}T${hr.value || "07:00"}:00+05:30`);
+    const envio = modo === "agora" ? Date.now() : Date.parse(`${d.value}T${hr.value || "07:00"}:00+03:00`);
     if (!isFinite(envio)) { st.textContent = "Confira a data e a hora."; st.className = "msg err"; return; }
     const dados = { titulo: tit.value.trim(), texto: ta.value.trim(), assinatura: ass.value.trim() || ASSINATURA, local: loc.value.trim(), envio, rascunho: modo === "rascunho", ts: Date.now() };
     const pv = c.id ? c.para || "" : para.value, col = pv ? "cartasPessoais" : "cartas";
@@ -8738,7 +8725,7 @@ async function baixarOffline(st) {
 function vOffline() {
   const st = h("span", { class: "msg", role: "status" });
   return h("div", { class: "offline" },
-    h("div", null, h("b", { text: "Levar sem internet" }), h("span", { text: "Salve o roteiro, as frases em hindi e os saberes abertos num arquivo para ler no ônibus ou no templo, sem sinal." })),
+    h("div", null, h("b", { text: "Levar sem internet" }), h("span", { text: "Salve o roteiro, as frases úteis e os saberes abertos num arquivo para ler no ônibus ou no templo, sem sinal." })),
     h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: () => baixarOffline(st) }, "Salvar no celular"), st));
 }
 // Mural da caravana
@@ -9254,14 +9241,14 @@ function vOnlineLider() {
 }
 // Tempo agora e previsão, no lugar onde a pessoa está (ou na cidade do dia da travessia)
 const TEMPO = { 0: ["☀️", "Céu limpo"], 1: ["🌤️", "Quase limpo"], 2: ["⛅", "Parcialmente nublado"], 3: ["☁️", "Nublado"], 45: ["🌫️", "Neblina"], 48: ["🌫️", "Neblina"], 51: ["🌦️", "Garoa"], 53: ["🌦️", "Garoa"], 55: ["🌦️", "Garoa"], 61: ["🌧️", "Chuva fraca"], 63: ["🌧️", "Chuva"], 65: ["🌧️", "Chuva forte"], 71: ["🌨️", "Neve"], 73: ["🌨️", "Neve"], 75: ["🌨️", "Neve"], 80: ["🌦️", "Pancadas"], 81: ["🌧️", "Pancadas"], 82: ["⛈️", "Pancadas fortes"], 95: ["⛈️", "Trovoadas"], 96: ["⛈️", "Trovoadas"], 99: ["⛈️", "Trovoadas"] };
-const COORD_CIDADE = { delhi: [28.6139, 77.209, "Delhi"], agra: [27.1767, 78.0081, "Agra"], jaipur: [26.9124, 75.7873, "Jaipur"], varanasi: [25.3176, 82.9739, "Varanasi"], rishikesh: [30.0869, 78.2676, "Rishikesh"] };
+const COORD_CIDADE = { cairo: [30.0444, 31.2357, "Cairo"], deserto: [27.35, 28.16, "Deserto Branco"], aswan: [24.0889, 32.8998, "Aswan"], nilo: [24.4521, 32.9284, "Rio Nilo"], luxor: [25.6872, 32.6396, "Luxor"], hurghada: [27.2579, 33.8116, "Hurghada"] };
 function lugarDoTempo() {
   const eu0 = S.aoVivo[S.uid] && Date.now() - S.aoVivo[S.uid].ts < 3600000 ? S.aoVivo[S.uid] : null;
   const hoje = hojeIso(), d = (S.roteiro?.dias || []).find(x => x.iso === hoje);
   // durante a viagem, com a localização ligada: o nome da cidade onde a pessoa está; na estrada, "a caminho de" a cidade do dia.
   // antes e depois da viagem, a localização de casa não entra: aparece o primeiro destino (ou a cidade do dia)
   if (eu0 && d) { const c = COORD_CIDADE[pertoCidade(eu0)], perto = c && km(eu0, { lat: c[0], lng: c[1] }) < 60; return { lat: eu0.lat, lng: eu0.lng, nome: perto ? c[2] : "A caminho de " + d.cidade.split(" ")[0], aqui: true }; }
-  const id = d ? norm(d.cidade.split(" ")[0]) : "delhi", c = COORD_CIDADE[id] || COORD_CIDADE.delhi;
+  const c = cidadeDoDia(d || { cidade: "Cairo" });
   return { lat: c[0], lng: c[1], nome: c[2], aqui: false, primeiro: !d };
 }
 function buscaTempo() {
@@ -9289,7 +9276,8 @@ function vTempo() {
 
 // Previsão do dia do roteiro, na cidade onde a caravana vai estar (disponível até 16 dias antes)
 S.prevDia = {};
-const cidadeDoDia = d => COORD_CIDADE[norm(String(d.cidade).split(/[ ·→]/)[0])] || COORD_CIDADE.delhi;
+const CIDADE_DO_DIA = { "cairo": "cairo", "deserto branco": "deserto", "aswan": "aswan", "abu simbel": "aswan", "luxor": "luxor", "hurghada": "hurghada" };
+function cidadeDoDia(d) { return COORD_CIDADE[CIDADE_DO_DIA[norm(d && d.cidade)]] || COORD_CIDADE.cairo; }
 function vPrevDia(d) {
   const c = cidadeDoDia(d), chave = d.iso + c[2], hoje = hojeIso();
   const dias = Math.round((Date.parse(d.iso) - Date.parse(hoje)) / 864e5);
@@ -9299,7 +9287,7 @@ function vPrevDia(d) {
   const P = S.prevDia[chave];
   if (!P && !S.prevDia["_" + chave]) {
     S.prevDia["_" + chave] = 1;
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c[0]}&longitude=${c[1]}&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max&timezone=Asia%2FKolkata&start_date=${d.iso}&end_date=${d.iso}`)
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c[0]}&longitude=${c[1]}&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max&timezone=Africa%2FCairo&start_date=${d.iso}&end_date=${d.iso}`)
       .then(r => r.ok ? r.json() : Promise.reject()).then(j => { S.prevDia[chave] = j.daily; render(); }).catch(() => {});
     return null;
   }
@@ -9313,11 +9301,11 @@ function vPrevDia(d) {
 
 // ---------- Me leve ao hotel ----------
 const HOTEIS = {
-  "The Lalit New Delhi": { en: "The Lalit New Delhi", end: "Barakhamba Avenue, Connaught Place, New Delhi", hi: "द ललित होटल, बाराखंबा एवेन्यू, कनॉट प्लेस, नई दिल्ली", cid: "delhi" },
-  "Radisson Agra": { en: "Radisson Hotel Agra", end: "Taj East Gate Road, Agra", hi: "रेडिसन होटल, ताज ईस्ट गेट रोड, आगरा", cid: "agra" },
-  "Umaid Bhawan": { en: "Umaid Bhawan Heritage Hotel", end: "Bani Park, Jaipur", hi: "उम्मेद भवन होटल, बनी पार्क, जयपुर", cid: "jaipur" },
-  "Ganges View": { en: "Hotel Ganges View", end: "Assi Ghat, Varanasi", hi: "होटल गंगेस व्यू, अस्सी घाट, वाराणसी", cid: "varanasi" },
-  "Yog Niketan": { en: "Yog Niketan Ashram", end: "Muni Ki Reti, Rishikesh", hi: "योग निकेतन आश्रम, मुनि की रेती, ऋषिकेश", cid: "rishikesh" }
+  // nomes e endereços a confirmar com a operadora (o roteiro só cita o Malkata House e o The Makadi Spa)
+  "Hotel em frente às Pirâmides": { en: "Hotel facing the Giza Pyramids", end: "Giza, Cairo", ar: "", cid: "cairo" },
+  "Hotel próximo ao aeroporto do Cairo": { en: "Hotel near Cairo International Airport", end: "Cairo", ar: "", cid: "cairo" },
+  "Malkata House, Luxor": { en: "Malkata House", end: "West Bank, Luxor", ar: "", cid: "luxor" },
+  "The Makadi Spa · All Inclusive": { en: "The Makadi Spa Hotel", end: "Makadi Bay, Hurghada", ar: "", cid: "hurghada" }
 };
 function hotelAgora() {
   const dias = S.roteiro?.dias || [], hoje = hojeIso();
@@ -9326,19 +9314,19 @@ function hotelAgora() {
     const dHoje = dias.find(d => d.iso === hoje), nomeH = dHoje && HOTEIS[dHoje.hotel]?.cid === c ? dHoje.hotel : Object.keys(HOTEIS).find(k => HOTEIS[k].cid === c);
     if (nomeH) return nomeH; } }
   const d = dias.find(x => x.iso === hoje) || dias.find(x => x.iso > hoje) || dias[dias.length - 1];
-  return d && HOTEIS[d.hotel] ? d.hotel : "The Lalit New Delhi";
+  return d && HOTEIS[d.hotel] ? d.hotel : "Hotel em frente às Pirâmides";
 }
 function abrirMotorista(nome) {
   closeSheets();
   const H = HOTEIS[nome], url = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(H.en + ", " + H.end);
   const box = h("div", { role: "dialog", "aria-label": "Mostrar ao motorista", class: "motorista" },
-    h("p", { class: "mhi", lang: "hi", text: "कृपया मुझे यहाँ ले चलिए" }),
+    h("p", { class: "mhi", lang: "ar", dir: "rtl", text: "من فضلك خذني إلى هنا" }),
     h("p", { class: "men", text: "Please take me here" }),
-    h("div", { class: "mdest" }, h("p", { class: "mhi2", lang: "hi", text: H.hi }), h("p", { class: "men2", text: H.en }), h("p", { class: "mend", text: H.end })),
+    h("div", { class: "mdest" }, H.ar ? h("p", { class: "mhi2", lang: "ar", dir: "rtl", text: H.ar }) : null, h("p", { class: "men2", text: H.en }), h("p", { class: "mend", text: H.end })),
     h("div", { class: "actions", style: "justify-content:center" },
       h("a", { class: "btn gold", href: url, target: "_blank", rel: "noopener" }, "Abrir rota no Google Maps"),
       h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")),
-    h("p", { class: "small", style: "text-align:center", text: "Vire a tela para o motorista. Em hindi: “Por favor, me leve até aqui”." }));
+    h("p", { class: "small", style: "text-align:center", text: "Vire a tela para o motorista. Em árabe: “Por favor, me leve até aqui”." }));
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
 }

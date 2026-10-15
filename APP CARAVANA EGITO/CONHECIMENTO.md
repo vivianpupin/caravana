@@ -207,3 +207,18 @@ Dez conquistas com ícones de traço fino em círculo. Encaixam como as conquist
 - **Ao entrar no app**: a pessoa lê uma história em quadrinhos cheia de mistério sobre a Caravana, a viagem e o próprio app, quadro a quadro, com enigmas que precisa decifrar.
 - **Página principal**: mapa-mundo estilo videogame (Donkey Kong Country 3 em HD) com os lugares da viagem e o viajante avançando.
 - Prova feita: https://claude.ai/artifact/62PmnbMEFxFTAkTe4e2Umm (gibi do Dia 1 em quadros, 3 enigmas que acendem o símbolo da Caravana). Respostas que usei, a confirmar com a Vivian: enigma 1 = o Sol; enigma 2 = o ankh (a chave da vida); enigma 3 = os passos.
+
+## 9. Conteúdo do Egito já dentro do app (15/10/2026)
+
+Fonte: `referencias/roteiro-html/egito_2027_roteiro_4.html` (roteiro interativo da Vivian, com 51 artes). Tudo é gerado por dois scripts, que podem ser rodados de novo quando o roteiro mudar:
+- `tools/egito/montar-conteudo.py`: roteiro dos 13 dias (`app/dados/travessia.json`), 6 cidades, 15 carimbos, 64 saberes e a carta final (`tools/site/seed.json`), artes dos 13 deuses, 15 brasões, 17 pinos dos checks, passagem, medalhão, mapa da rota e os fundos das aberturas (fotos do PDF).
+- `tools/egito/trocar-india-por-egito.py`: no código do app, datas (08 a 20/10/2027), fuso do Cairo, cidades, hotéis, carimbos, passaporte (CDC27EG), aberturas dos dias, título "Travessia do Velho Mundo", rota e frases da tela inicial.
+- Depois: empacotar o shim (precisa do firebase@10.14.1) e `python3 tools/gerar-site.py`.
+
+Decisões tomadas sem a Vivian (conferir):
+- Ficaram fora do roteiro do app os opcionais (entrada na Pirâmide de Khufu, túmulo de Tutankhamon, balão).
+- Tirei a frase "21 de outubro de 2027, você vai estar lá": a Caravana passa por Abu Simbel em 14/10 e o fenômeno solar é em 21/10.
+- Hotéis do Cairo e do deserto sem nome (o roteiro não diz qual); "Me leve ao hotel" está em árabe, mas sem o endereço em árabe.
+- Carta final ficou como rascunho para a Vivian escrever.
+
+Ainda com cara de Índia (próximas rodadas): tradutor e frases em hindi, câmbio em rúpias, oráculo dos planetas, guardiões das passagens (deuses hindus), habilidades, explorador (sari, fantasias de deuses hindus), nomes das câmeras e filtros, mapa em pergaminho (contorno da Índia), retrato da Caravana, figurinhas do chat, gibi de abertura e mapa estilo videogame.

@@ -10,7 +10,7 @@ head = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#2E2116">
-<meta name="description" content="O aplicativo da Caravana do Céu · Travessia da Índia Sagrada 2026">
+<meta name="description" content="O aplicativo da Caravana do Céu · Travessia do Velho Mundo · Egito 2027">
 <link rel="icon" href="img/icone-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
