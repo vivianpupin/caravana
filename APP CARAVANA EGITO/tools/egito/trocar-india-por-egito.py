@@ -125,5 +125,17 @@ for velho, novo in [
     troca(velho, novo)
 troca('"Salve o roteiro, as frases em hindi e os saberes abertos num arquivo', '"Salve o roteiro, as frases úteis e os saberes abertos num arquivo')
 
+# rota escrita no passaporte
+troca('"DEL · AGR · JAI · VNS · RSK · DEL"', '"CAI · WDS · ASW · NIL · LXR · HRG"', True)
+troca('(SIGLA[l.cidadeId] || "IND")', '(SIGLA[l.cidadeId] || "EGY")')
+
+# marcas d'água e textos gravados nas artes (passaporte, retrato, ingresso, adesivos)
+troca("ÍNDIA SAGRADA · TRAVESSIA 2026", "VELHO MUNDO · TRAVESSIA 2027", True)
+troca('"TRAVESSIA DA ÍNDIA SAGRADA · 2026"', '"TRAVESSIA DO VELHO MUNDO · 2027"')
+troca('"CARAVANA DO CÉU · TRAVESSIA DA ÍNDIA SAGRADA · 2026"', '"CARAVANA DO CÉU · TRAVESSIA DO VELHO MUNDO · 2027"')
+troca('"ADMIT ONE · ÍNDIA SAGRADA 2026"', '"ADMIT ONE · VELHO MUNDO 2027"')
+troca('x.fillText("ÍNDIA SAGRADA"', 'x.fillText("DO VELHO MUNDO"')
+troca('"04 — 16 NOV 2026"', '"08 — 20 OUT 2027"')
+
 arq.write_text(t, encoding="utf-8")
 print("ok")

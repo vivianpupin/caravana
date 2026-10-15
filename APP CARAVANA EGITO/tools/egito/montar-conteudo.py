@@ -35,6 +35,8 @@ INSIGNIAS = {"egito": 36, "cairo": 37, "piramides-gize": 38, "sarcofago-tut": 39
              "mumias": 42, "sahara": 43, "deserto-branco": 44, "aswan": 45, "rio-nilo": 46, "abu-simbel": 47,
              "luxor": 48, "vale-dos-reis": 49, "mar-vermelho": 50}
 for n, i in INSIGNIAS.items(): webp(IMG / f"img{i:03d}.png", app / "insignias" / f"{n}.webp")
+# versão maior dos patches, da folha que a Vivian mandou para o passaporte
+exec((raiz / "tools" / "egito" / "recortar-patches.py").read_text(encoding="utf-8"), {"__file__": str(raiz / "tools" / "egito" / "recortar-patches.py")})
 CHECKS = {"cairo": 5, "ver-piramides": 6, "sarcofago-tut": 7, "piramide-khufu": 8, "saqqara": 11, "mumias": 12,
           "historias-esquecidas": 13, "deserto-branco": 17, "acampar-sahara": 18, "aswan": 19, "cruzeiro-nilo": 20,
           "abu-simbel": 24, "luxor": 28, "lua-cheia": 30, "rituais": 31, "hurghada": 34, "mar-vermelho": 35}
@@ -113,7 +115,7 @@ cidades = {
     "hurghada": {"nome": "Hurghada", "frase": "O Mar Vermelho, rota do mundo antigo", "lat": 27.2579, "lng": 33.8116, "ordem": 6},
 }
 L = lambda nome, cid, dia, ordem, lat, lng, busca, desc, dica, cod: {"nome": nome, "cidadeId": cid, "dia": dia, "ordem": ordem,
-    "lat": lat, "lng": lng, "busca": busca, "descricao": desc, "dica": dica, "codigo": cod, "aberto": False}
+    "insignia": None, "lat": lat, "lng": lng, "busca": busca, "descricao": desc, "dica": dica, "codigo": cod, "aberto": False}
 locais = {
     "egito": L("Egito", "cairo", 1, 1, 29.9773, 31.1325, "Giza Pyramids", "Terra dos Faraós. Aqui começa a Travessia do Velho Mundo.", "O primeiro carimbo chega na abertura da caravana.", "ankh"),
     "cairo": L("Cairo", "cairo", 1, 1.5, 30.0444, 31.2357, "Cairo", "Onde o antigo encontra o eterno: 5.000 anos de história do lado de fora.", "A cidade que nunca dorme.", "cairo"),
@@ -131,6 +133,7 @@ locais = {
     "vale-dos-reis": L("Vale dos Reis", "luxor", 9, 9, 25.7402, 32.6014, "Valley of the Kings", "Onde os faraós descansam para a eternidade.", "Tumbas escavadas na montanha.", "faraos"),
     "mar-vermelho": L("Mar Vermelho", "hurghada", 10, 10, 26.9900, 33.9000, "Makadi Bay Hurghada", "O mar sagrado do Oriente e o azul mais claro que você já viu.", "Depois de templos e desertos, o mar.", "punt"),
 }
+for k, v in locais.items(): v["insignia"] = k  # cada carimbo usa o patch de mesmo nome (app/insignias)
 # saber de cada "Por que esse lugar é único": vai para o carimbo do dia, ou para o carimbo do assunto
 SABER_LOCAL = {1: "cairo", 2: "piramides-gize", 3: "saqqara", 4: "deserto-branco", 5: "deserto-branco", 6: "aswan", 7: "abu-simbel",
                8: "luxor", 9: "vale-dos-reis", 10: "mar-vermelho", 11: "mar-vermelho", 12: "mar-vermelho", 13: "egito"}

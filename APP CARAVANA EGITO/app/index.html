@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "15/10 · 18:28";</script>
+<script>window.__VERSAO = "15/10 · 18:33";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3057,7 +3057,7 @@ function camposPassaporte(v) {
     campo("Nome", "Name", (v.nome || "").toUpperCase(), "big"),
     h("div", { class: "fdrow" }, campo(v.lider ? "Função" : "Viajante", v.lider ? "Role" : "Traveller", v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0))),
     campo("Origem", "Place of origin", (v.cidade || "—").toUpperCase()),
-    campo("Rota", "Route", "DEL · AGR · JAI · VNS · RSK · DEL"),
+    campo("Rota", "Route", "CAI · WDS · ASW · NIL · LXR · HRG"),
     h("div", { class: "fd" }, h("span", { class: "fl", text: "Medalhas da Caravana / Caravan medals" }), medalhasDe(v, 40))
   ];
 }
@@ -3075,7 +3075,7 @@ function papelPass(x, W, H, tom) {
   x.lineWidth = .8;
   for (let k = 0; k < 9; k++) { x.strokeStyle = k % 2 ? "rgba(63,122,110,.10)" : "rgba(160,110,60,.10)"; x.beginPath();
     for (let X = 0; X <= W; X += 6) { const Y = 40 + k * 70 + Math.sin(X / W * Math.PI * 4 + k) * 12; X ? x.lineTo(X, Y) : x.moveTo(X, Y); } x.stroke(); }
-  x.fillStyle = "rgba(90,63,34,.07)"; x.font = "7px Georgia"; for (let Y = 18; Y < H; Y += 26) x.fillText("CARAVANA DO CÉU · ÍNDIA SAGRADA · TRAVESSIA 2026 · ".repeat(4), -((Y * 7) % 60), Y);
+  x.fillStyle = "rgba(90,63,34,.07)"; x.font = "7px Georgia"; for (let Y = 18; Y < H; Y += 26) x.fillText("CARAVANA DO CÉU · VELHO MUNDO · TRAVESSIA 2027 · ".repeat(4), -((Y * 7) % 60), Y);
 }
 function paginaDados(v, foto, W, H) {
   const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d"); papelPass(x, W, H, 1);
@@ -3090,7 +3090,7 @@ function paginaDados(v, foto, W, H) {
   campo("CATEGORIA", tituloViajante(v).toUpperCase(), 224);
   campo("ORIGEM", (v.cidade || "—").toUpperCase(), 286);
   x.fillStyle = "#8A6B43"; x.font = '500 12px "Poppins",sans-serif'; x.fillText("ROTA", 30, 340);
-  x.fillStyle = "#282722"; x.font = '600 21px "Courier Prime",monospace'; x.fillText("DEL · AGR · JAI · VNS · RSK · DEL", 30, 366, W - 60);
+  x.fillStyle = "#282722"; x.font = '600 21px "Courier Prime",monospace'; x.fillText("CAI · WDS · ASW · NIL · LXR · HRG", 30, 366, W - 60);
   x.fillStyle = "rgba(40,39,34,.75)"; x.font = '500 15px "Courier Prime",monospace'; mrzDe(v, 0).split("\n").forEach((l, i) => x.fillText(l, 30, H - 58 + i * 22, W - 60));
   return c;
 }
@@ -3330,7 +3330,7 @@ function dadosLivro(v) {
     h("div", { class: "livgrade" },
       c("Nº passaporte", numPassaporte(S.uid)), c("Viagens", String(totalViagens(v))),
       c("Origem", (v.cidade || "—").toUpperCase()),
-      c("Rota / Route", "DEL · AGR · JAI · VNS · RSK · DEL", "todo")),
+      c("Rota / Route", "CAI · WDS · ASW · NIL · LXR · HRG", "todo")),
     h("div", { class: "livmed" }, h("span", { class: "ldr", text: "Medalhas" }), medalhasDe(v, 22)));
 }
 function paginasLivro() {
@@ -3341,7 +3341,7 @@ function paginasLivro() {
     return h("div", { class: "pgselo" + (on ? " on" : "") },
       h("div", { class: "pgart" }, h("img", { src: badgeSrc(l), alt: "" })),
       h("p", { class: "pgnome", text: l.nome.toUpperCase() }),
-      h("p", { class: "pgdia", text: on ? "ENTRADA · " + (SIGLA[l.cidadeId] || "IND") + " · " + (ts ? dataDoc(ts) : "LIBERADO") : d ? "AGUARDANDO · DIA " + nn(d.n) : "AGUARDANDO" }),
+      h("p", { class: "pgdia", text: on ? "ENTRADA · " + (SIGLA[l.cidadeId] || "EGY") + " · " + (ts ? dataDoc(ts) : "LIBERADO") : d ? "AGUARDANDO · DIA " + nn(d.n) : "AGUARDANDO" }),
       habDoLocal(l.id).map(id => h("p", { class: "pghab", text: "✦ " + habTexto(id, (v || {}).genero).nome })));
   };
   const pages = [
@@ -3456,7 +3456,7 @@ function fundoPassaporte() {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none">
   <defs>
     <pattern id="fp-onda" width="240" height="64" patternUnits="userSpaceOnUse">${ondas.map((d, k) => `<path d="${d}" fill="none" stroke="${k % 2 ? "rgba(63,122,110,.11)" : "rgba(160,110,60,.10)"}" stroke-width=".7"/>`).join("")}</pattern>
-    <pattern id="fp-micro" width="300" height="22" patternUnits="userSpaceOnUse"><text x="0" y="14" font-family="Georgia,serif" font-size="5.2" letter-spacing="1.2" fill="rgba(90,63,34,.10)">CARAVANA DO CÉU · ÍNDIA SAGRADA · TRAVESSIA 2026 · REPÚBLICA DA CARAVANA · CARAVANA DO CÉU · ÍNDIA SAGRADA ·</text></pattern>
+    <pattern id="fp-micro" width="300" height="22" patternUnits="userSpaceOnUse"><text x="0" y="14" font-family="Georgia,serif" font-size="5.2" letter-spacing="1.2" fill="rgba(90,63,34,.10)">CARAVANA DO CÉU · VELHO MUNDO · TRAVESSIA 2027 · REPÚBLICA DA CARAVANA · CARAVANA DO CÉU · ÍNDIA SAGRADA ·</text></pattern>
     <pattern id="fp-simb" width="120" height="150" patternUnits="userSpaceOnUse"><image href="img/simbolo-marrom.png" x="44" y="50" width="32" height="40" opacity=".045"/></pattern>
   </defs>
   <rect width="100%" height="100%" fill="url(#fp-onda)"/>
@@ -4563,7 +4563,7 @@ async function retratoCaravana(cen, pose) {
   if (cen !== "embarque") {
   if (simb) { const sw = 110, sh = sw * simb.height / simb.width; x.drawImage(simb, W / 2 - sw / 2, 110, sw, sh); }
   x.textAlign = "center"; x.fillStyle = "#F1E2BC"; x.font = '600 74px Cinzel, Georgia, serif'; x.fillText("CARAVANA DO CÉU", W / 2, 330);
-  x.font = '400 34px Poppins, sans-serif'; x.fillStyle = "#E8C07A"; x.fillText("TRAVESSIA DA ÍNDIA SAGRADA · 2026", W / 2, 390); }
+  x.font = '400 34px Poppins, sans-serif'; x.fillStyle = "#E8C07A"; x.fillText("TRAVESSIA DO VELHO MUNDO · 2027", W / 2, 390); }
   const lista = comBoneco(), n = lista.length; if (!n) return cv;
   // cada cidade tem a sua pose
   const pulo = pose === "pulando", abraco = pose === "abraco", bananeira = pose === "bananeira", fila = pose === "fila", fogueira = pose === "fogueira";
@@ -4609,7 +4609,7 @@ async function retratoCaravana(cen, pose) {
     for (let i = 0; i < gd.data.length; i += 4) { const v = 128 + (sorte(i * .37 + 5) - .5) * 190; gd.data[i] = gd.data[i + 1] = gd.data[i + 2] = v; gd.data[i + 3] = 255; }
     gx.putImageData(gd, 0, 0);
     x.save(); x.globalCompositeOperation = "overlay"; x.globalAlpha = .22; x.fillStyle = x.createPattern(gr, "repeat"); x.fillRect(0, 0, W, H); x.restore();
-    x.textAlign = "center"; x.font = '400 30px Poppins, sans-serif'; x.fillStyle = "rgba(241,226,188,.85)"; x.fillText("CARAVANA DO CÉU · TRAVESSIA DA ÍNDIA SAGRADA · 2026", W / 2, H - 22);
+    x.textAlign = "center"; x.font = '400 30px Poppins, sans-serif'; x.fillStyle = "rgba(241,226,188,.85)"; x.fillText("CARAVANA DO CÉU · TRAVESSIA DO VELHO MUNDO · 2027", W / 2, H - 22);
     return cv;
   }
   if (fogueira) {
@@ -5743,7 +5743,7 @@ function molduraIngresso(c, W, H, u, ox, oy, w, hh, tmp) {
   c.setLineDash([10 * u, 10 * u]); c.strokeStyle = "rgba(233,210,160,.7)"; c.beginPath(); c.moveTo(stubX, raio + 8 * u); c.lineTo(stubX, H - raio - 8 * u); c.stroke(); c.setLineDash([]);
   c.save(); c.translate(stubX + 115 * u, H / 2); c.rotate(-Math.PI / 2); c.textAlign = "center"; c.fillStyle = "#E8C07A";
   c.font = `700 ${38 * u}px Cinzel, Georgia, serif`; c.fillText("CARAVANA DO CÉU", 0, -30 * u);
-  c.font = `500 ${24 * u}px Poppins, sans-serif`; c.fillStyle = "#F4E6C4"; c.fillText("ADMIT ONE · ÍNDIA SAGRADA 2026", 0, 14 * u);
+  c.font = `500 ${24 * u}px Poppins, sans-serif`; c.fillStyle = "#F4E6C4"; c.fillText("ADMIT ONE · VELHO MUNDO 2027", 0, 14 * u);
   c.font = `600 ${22 * u}px "Courier Prime", monospace`; c.fillStyle = "#C9A063"; c.fillText("Nº 0" + (4 + (w | 0) % 90) + " · 04–16 NOV", 0, 52 * u); c.restore();
 }
 function molduraArco(c, W, H, u, ox, oy, w, hh, tmp) {
@@ -5887,7 +5887,7 @@ async function adesivoNovo(k) {
     x.fillStyle = "#E9C77A"; x.beginPath(); x.roundRect(10, 10, 700, 320, 24); x.fill(); x.globalCompositeOperation = "destination-out"; for (const y of [10, 330]) { x.beginPath(); x.arc(520, y, 26, 0, 7); x.fill(); } x.globalCompositeOperation = "source-over";
     x.setLineDash([10, 9]); x.strokeStyle = "#7A5A2A"; x.lineWidth = 4; x.beginPath(); x.moveTo(520, 40); x.lineTo(520, 300); x.stroke(); x.setLineDash([]);
     x.strokeStyle = "#7A5A2A"; x.lineWidth = 4; x.strokeRect(34, 34, 652, 272);
-    encaixa(x, im, 128, 172, 170, 260); x.fillStyle = "#3B2A1C"; x.textAlign = "center"; x.font = '700 44px Cinzel, Georgia, serif'; x.fillText("TRAVESSIA", 360, 130); x.font = '600 26px Poppins, sans-serif'; x.fillText("ÍNDIA SAGRADA", 360, 172); x.font = '500 22px "Courier Prime",monospace'; x.fillText("04 — 16 NOV 2026", 360, 214);
+    encaixa(x, im, 128, 172, 170, 260); x.fillStyle = "#3B2A1C"; x.textAlign = "center"; x.font = '700 44px Cinzel, Georgia, serif'; x.fillText("TRAVESSIA", 360, 130); x.font = '600 26px Poppins, sans-serif'; x.fillText("DO VELHO MUNDO", 360, 172); x.font = '500 22px "Courier Prime",monospace'; x.fillText("08 — 20 OUT 2027", 360, 214);
     x.save(); x.translate(610, 170); x.rotate(-Math.PI / 2); x.font = '700 30px "Courier Prime",monospace'; x.fillText("ADMIT ONE", 0, 10); x.restore(); return cv; }
   if (k === "eu-procura") { const im = await bonecoCv({ ...b, pet: "nenhum" }, 500), [cv, x] = telaA(460, 620);
     x.fillStyle = "#E8D6AE"; x.fillRect(10, 10, 440, 600); x.strokeStyle = "#5A3A22"; x.lineWidth = 5; x.strokeRect(26, 26, 408, 568);
