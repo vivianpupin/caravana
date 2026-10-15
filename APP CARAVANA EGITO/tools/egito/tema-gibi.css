@@ -249,3 +249,30 @@ html[data-tab="travessia"] .eyebrow:not(.rule){background:none;border:0;box-shad
 .oraculocard.escriba{background:linear-gradient(90deg,rgba(14,8,3,.92) 30%,rgba(14,8,3,.5)),url(img/fundo-cartucho.webp) center 40%/cover #1E140B;min-height:96px}
 .oraculocard.escriba .escglifo{color:#D4A84F;font-size:48px;flex:none;width:64px;text-align:center}
 .escav>.small{color:#F3E4BC;text-shadow:0 1px 3px #000,0 0 12px rgba(0,0,0,.7)}
+
+/* ===== botões limpos (sem papiro envelhecido): areia clara, fio marrom, cantos suaves ===== */
+.btn,.opt,.tradmodo button,.daychips button,.me:not(.bubble),.hero .route{background:#F7EDD6;border:1.5px solid #8C6A3A;border-radius:6px;color:#3B2A1C;box-shadow:0 1px 0 rgba(255,255,255,.6),0 2px 5px rgba(90,55,15,.18)}
+.btn:active,.opt:active{transform:translateY(1px);box-shadow:0 1px 2px rgba(90,55,15,.2)}
+.btn.gold,.opt[aria-pressed="true"]{background:#DDB566;border-color:#8C6A3A;color:#2A1C0E}
+.btn.gold:hover{background:#E3BE72}
+.btn.ghost{background:none;border-color:transparent;box-shadow:none}
+.eyebrow:not(.rule),.tag.date{background:#E7C987;border:1px solid #8C6A3A;box-shadow:none}
+.tag{background:#EFE0BE;border:1px solid #8C6A3A}
+.tag.today{background:#B5402A;color:#FBF4E2}
+.daychips button[aria-current="true"],.tradmodo button[aria-selected="true"]{background:#3B2A1C;color:#F3D99A;border-color:#3B2A1C}
+input[type=text],input[type=number],input[type=email],select,textarea{background:#FBF4E2;border:1.5px solid #8C6A3A;border-radius:6px}
+nav.tabs button[aria-current="page"] .ic{background:#DDB566;border:1px solid #8C6A3A;box-shadow:none}
+.missoesbarra{background:#EFE0BE}
+
+/* ===== Explorador: claro, cor de areia, com a procissão dourada (fundo 4) bem suave por trás ===== */
+html[data-tab="explorador"] body{background:#EBD9B0}
+html[data-tab="explorador"] body::before{background:url(img/fundo-porta-dourada.webp) center 30%/cover no-repeat;filter:sepia(.25) saturate(.8) brightness(1.15);opacity:.32}
+html[data-tab="explorador"] body::after{background:radial-gradient(ellipse at 50% 40%,transparent 55%,rgba(120,80,30,.18))}
+html[data-tab="explorador"] :is(.view>.head h1,.view>.head h2,.view>.lede,.view>p.small,.view>.small,.escav>.small){color:#3B2A1C;text-shadow:none}
+html[data-tab="explorador"] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule,.escav>.eyebrow.rule){color:#B5402A;text-shadow:none}
+html[data-tab="explorador"] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule,.escav>.eyebrow.rule)::after{background:#3B2A1C;box-shadow:none}
+html[data-tab="explorador"] .controls .lab{color:#B5402A;text-shadow:none}
+/* a prévia do explorador é um pedaço de papiro */
+.builder .preview{background:linear-gradient(rgba(246,236,208,.55),rgba(236,220,182,.65)),url(img/fundo-pergaminho.webp) center/cover #EEDDB4!important;border:1px solid rgba(90,60,25,.45)!important;box-shadow:0 4px 14px rgba(90,55,15,.2)!important}
+.builder .preview{flex-wrap:wrap}
+.builder .preview .bonecosvg.big{width:auto;height:150px}
