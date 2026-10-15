@@ -2010,6 +2010,44 @@ main::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:3;opac
 /* abertura do dia: frase longa em letra de legenda, cidade em letra de capa */
 .lidoscont{color:#F3E4BC;text-shadow:0 1px 2px #000}
 
+
+/* ===== paleta e texturas tiradas das fotos da Vivian (Vale dos Reis, Dendera, Abu Simbel) =====
+   azul-lápis dos tetos, ouro das estrelas, vermelho-ocre das paredes, azul-cinza de Dendera e calcário.
+   Nada de cor chapada: todo quadro é pedra, toda faixa é teto pintado. */
+:root{
+  --ink:#17140F; --soft:#4A3A26; --faint:#8A7656;
+  --terra:#8E3B24; --mostarda:#D4A84F; --gold:#D4A84F; --azul:#5E7A8A; --lapis:#1C2230;
+  --panel:#E8D9BA; --panel2:#E2D0AC; --panel3:#D6C29C;
+  --shadow:4px 4px 0 #17140F;
+}
+/* quadros e botões: calcário entalhado (relevo de Dendera), clareado para ler */
+.panel,.sab,details.guide,.missoes,.clock div,.day,.sheet>*{
+  background:linear-gradient(rgba(240,229,203,.74),rgba(232,217,186,.8)),url(img/textura-calcario.webp) center/360px auto #E8D9BA!important}
+.btn,.tradmodo button,.opt,.daychips button,.hero .route,.me:not(.bubble){
+  background:linear-gradient(rgba(240,229,203,.62),rgba(232,217,186,.7)),url(img/textura-calcario.webp) center/260px auto #E8D9BA}
+.btn.gold,.opt[aria-pressed="true"],.eyebrow:not(.rule),.tag.date{
+  background:linear-gradient(rgba(212,168,79,.78),rgba(190,145,60,.82)),url(img/textura-calcario-escuro.webp) center/220px auto #D4A84F}
+.tag{background:linear-gradient(rgba(214,194,156,.7),rgba(214,194,156,.7)),url(img/textura-calcario-escuro.webp) center/200px auto}
+.tag.today{background:linear-gradient(rgba(142,59,36,.86),rgba(142,59,36,.86)),url(img/textura-calcario-escuro.webp) center/200px auto;color:#F0E5CB}
+.daychips button[aria-current="true"],.tradmodo button[aria-selected="true"]{
+  background:linear-gradient(rgba(28,34,48,.82),rgba(28,34,48,.88)),url(img/textura-lapis.webp) center/240px auto;color:var(--mostarda)}
+.missoesbarra{background:linear-gradient(rgba(214,194,156,.7),rgba(214,194,156,.7)),url(img/textura-calcario-escuro.webp) center/200px auto}
+.missoesbarra i{background:repeating-linear-gradient(-45deg,var(--terra) 0 6px,#A4482C 6px 12px)}
+input[type=text],input[type=number],input[type=email],select,textarea{background:linear-gradient(rgba(246,238,218,.82),rgba(246,238,218,.82)),url(img/textura-calcario.webp) center/300px auto}
+nav.tabs button[aria-current="page"] .ic{background:linear-gradient(rgba(212,168,79,.8),rgba(212,168,79,.8)),url(img/textura-calcario-escuro.webp) center/120px auto}
+
+/* cada aba tem a sua parede: o fundo muda junto com a página */
+html[data-tab="passaporte"] body::before{background-image:url(img/fundo-abu-janela.webp);background-position:center}
+html[data-tab="ensinamentos"] body::before{background-image:url(img/fundo-zodiaco.webp);background-position:center}
+html[data-tab="explorador"] body::before{background-image:url(img/fundo-dendera-colunas.webp);background-position:center 30%}
+html[data-tab="fotos"] body::before{background-image:url(img/fundo-serpente-vermelha.webp);background-position:center}
+html[data-tab="mapa"] body::before{background-image:url(img/fundo-dendera-nut.webp);background-position:center}
+html[data-tab="conversa"] body::before{background-image:url(img/fundo-hathor.webp);background-position:center}
+html[data-tab="cambio"] body::before{background-image:url(img/fundo-isis.webp);background-position:center}
+html[data-tab="tradutor"] body::before{background-image:url(img/fundo-lampada.webp);background-position:center}
+/* passaporte: a página de dados também é pedra clara, não papel branco */
+.datapage,.panel.datapage{background:linear-gradient(rgba(244,236,214,.8),rgba(236,224,196,.84)),url(img/textura-calcario.webp) center/360px auto #ECE0C4!important}
+.fotoadd{background:linear-gradient(rgba(214,194,156,.75),rgba(214,194,156,.75)),url(img/textura-calcario-escuro.webp) center/200px auto}
 </style>
 
 <div class="app">
@@ -2264,6 +2302,7 @@ function render() {
   marcaChat(); marcaPombos(); convidaAvisos(); registraApp(); checaHabilidades();
   for (const b of document.querySelectorAll("#tabs button")) {
     if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+    document.documentElement.dataset.tab = S.tab;
   }
   const act = document.activeElement, actId = act && act.id, sel = act && "selectionStart" in act ? [act.selectionStart, act.selectionEnd] : null;
   const draft = act && actId && act.value !== undefined ? act.value : null;
