@@ -117,7 +117,7 @@ Onde cada coisa da Índia mora no código (procurar pelo nome; números de linha
 6. Habilidades, nomes das câmeras e filtros, explorador e chat (escolhas da Vivian).
 7. Firebase e Netlify novos, repositório próprio.
 
-## 7. O que já se sabe do Egito (PDF "EGYTP 2027 _ CARAVANA", páginas 1 a 10 de 26)
+## 7. O que já se sabe do Egito (PDF "EGYTP 2027 _ CARAVANA", páginas 1 a 15 de 26)
 
 Fonte: prints que a Vivian mandou em 15/10/2026, guardados em `referencias/pdf-egito-2027/`.
 
@@ -176,3 +176,12 @@ Dez conquistas com ícones de traço fino em círculo. Encaixam como as conquist
 - Cairo: "O poder dos primeiros homens e figuras misteriosas como o arquiteto das estrelas: Imhotep – Hermes Trimegistro!" e o texto "O Cairo é o ponto de entrada para tudo aquilo que desafia o tempo!…" (página 10).
 - Página 5: "Os mistérios que envolvem o Egito atravessam o tempo como um enigma ainda vivo…" até "É para esse território que a Caravana segue!"
 - Identidade extra: títulos "ZERANDŌ A VIDA" em letra condensada de traço irregular; itinerário em fundo preto com faixa de pintura de tumba no alto, destaques em amarelo-ouro e linha laranja ondulada com ponto e X (como mapa de tesouro); Cairo em fundo azul granulado com texto de máquina de escrever e trilha pontilhada laranja.
+
+### Textos das páginas 11 a 15
+
+- **Página 11** (relevo de sacerdote com pele de leopardo): "Vamos nos aprofundar nos deuses, símbolos e histórias do Egito Antigo."
+- **Página 12 · SAHARA**: "Partimos do Cairo em direção ao Deserto do Sahara, em veículos 4x4 conduzidos por beduínos locais. Atravessamos o Oásis Bahariya, seguimos pelo Deserto Negro, passamos pela Crystal Mountain e pelo Vale de Agabat, até chegar ao Deserto Branco! Montamos nosso acampamento e erguemos as tendas no meio do deserto. Apreciamos o pôr do sol na imensidão do Sahara, e um jantar típico beduíno preparado na areia, ao redor da fogueira, em um dos céus mais estrelados do planeta!"
+- **Página 13 · ACAMPAMENTO BEDUÍNO NO DESERTO DO SAHARA** (título amarelo e branco em bold): rochas-cogumelo do Deserto Branco; três fotos embaixo (fogueira com barracas, tenda beduína estampada por dentro, marcas de pneu na areia).
+- **Página 14 · ASWAN**: "Ensinamentos que perpetuaram nas paredes milenares do Egito. Mostrando o ser humano como canal ENTRE A TERRA E O MUNDO DOS DEUSES!" · "Aswan marca a entrada no sul do Egito, uma região estratégica que, durante o império, controlava rotas comerciais e a conexão com o restante da África. É aqui que temos o primeiro contato real com o Nilo, entendendo na prática o eixo que sustentou toda a civilização egípcia. Visitamos o Templo de Philae, dedicado à deusa Ísis, um dos templos mais preservados do Egito, construído em uma ilha no meio do rio. Embarcamos no cruzeiro pelo Nilo e passamos a nos deslocar pelo próprio curso do rio, entre cidades, templos e paisagens que atravessaram milênios."
+- **Página 15 · NILE CRUIZE** (assim no PDF): "QUEM NUNCA SONHOU EM CONHECER O RIO NILO?" · "Presente no imaginário de tanta gente.. ..das aulas de história na infância? Pois é, navegaremos por ele, do sul ao norte do Egito, acompanhando suas águas repletas de jacarés (hoje nem tantos assim...) Faremos um Cruzeiro no Nilo, bem no estilo de "Morte no Nilo", sucesso de Agatha Christie, e veremos uma bela LUA CHEIA nascendo, diretamente das águas de Luxor, A Terra dos Faraós! Visitaremos a Vila Núbia, uma comunidade viva à beira do rio que, até hoje, preserva costumes, arquitetura e modo de vida como seus ancestrais!"
+- Detalhe visual recorrente: em cada cidade, uma trilha pontilhada com um ponto grande (o caminho da caravana chegando ao lugar), ao lado do nome da cidade em letra fina espaçada; o subtítulo vem em letra de máquina de escrever.
