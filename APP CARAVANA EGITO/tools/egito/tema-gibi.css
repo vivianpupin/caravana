@@ -371,3 +371,15 @@ svg.felucca{overflow:visible}
 html[data-tab="pombo"] body::before{background:url(img/fundo-papiro-escuro.webp) center/cover no-repeat;filter:none}
 html[data-tab="pombo"] body::after{background:radial-gradient(ellipse at 50% 45%,transparent 60%,rgba(60,35,10,.25))}
 html[data-tab="pombo"] :is(.view>.head h1,.pombohead h1,.pombohead .lede,.view>p.small){color:var(--ink);text-shadow:none}
+/* etiquetas de viagem na tampa da maleta */
+.etiquetas-eg{position:absolute;inset:0;pointer-events:none;z-index:1}
+.etq{position:absolute;display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,.55)) sepia(.25) saturate(.85);opacity:.93}
+.etq svg{display:block;width:100%;height:auto}
+.etq.e1{left:15%;top:7%;width:22%;transform:rotate(-12deg)}
+.etq.e2{left:62%;top:5%;width:20%;transform:rotate(9deg)}
+.etq.e3{left:40%;top:15%;width:17%;transform:rotate(-4deg)}
+/* maleta sobre o papiro: o fundo branco da foto da maleta some (multiplica com o papel) */
+html[data-tab="fotos"] body::before{background:url(img/fundo-papiro-escuro.webp) center/cover no-repeat;filter:none}
+html[data-tab="fotos"] body::after{background:radial-gradient(ellipse at 50% 45%,transparent 60%,rgba(60,35,10,.25))}
+html[data-tab="fotos"] .malafoto.foto .estantefundo{mix-blend-mode:multiply}
+html[data-tab="fotos"] :is(.view>.head h1,.view>.head h2,.view>.lede,.view>p.small){color:var(--ink);text-shadow:none}
