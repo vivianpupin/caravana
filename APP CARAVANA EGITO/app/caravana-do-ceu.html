@@ -2255,6 +2255,13 @@ html[data-tab="fotos"] body::before{background:url(img/fundo-papiro-escuro.webp)
 html[data-tab="fotos"] body::after{background:radial-gradient(ellipse at 50% 45%,transparent 60%,rgba(60,35,10,.25))}
 html[data-tab="fotos"] .malafoto.foto .estantefundo{mix-blend-mode:multiply}
 html[data-tab="fotos"] :is(.view>.head h1,.view>.head h2,.view>.lede,.view>p.small){color:var(--ink);text-shadow:none}
+
+/* Burton 1922: linhas gravadas do vidro fosco (terços e cruz) por cima da imagem ao vivo */
+.cf-campo .cfvf .grade{position:absolute;inset:0;background:
+  linear-gradient(90deg,transparent calc(33.33% - .5px),rgba(240,236,220,.28) calc(33.33% - .5px),rgba(240,236,220,.28) calc(33.33% + .5px),transparent calc(33.33% + .5px),transparent calc(66.66% - .5px),rgba(240,236,220,.28) calc(66.66% - .5px),rgba(240,236,220,.28) calc(66.66% + .5px),transparent calc(66.66% + .5px)),
+  linear-gradient(180deg,transparent calc(33.33% - .5px),rgba(240,236,220,.28) calc(33.33% - .5px),rgba(240,236,220,.28) calc(33.33% + .5px),transparent calc(33.33% + .5px),transparent calc(66.66% - .5px),rgba(240,236,220,.28) calc(66.66% - .5px),rgba(240,236,220,.28) calc(66.66% + .5px),transparent calc(66.66% + .5px));
+  box-shadow:inset 0 0 40px rgba(0,0,0,.55)}
+
 </style>
 
 <div class="app">
@@ -6975,7 +6982,7 @@ const FOTO_CAM = {
   super8: { visor: [.292, .097, .713, .507], botao: [.498, .598, .09], selfie: [.8, .76] },
   quatro: { visor: [.255, .31, .73, .625], botao: [.512, .786, .09], selfie: [.8, .88], luzes: [.356, .433, .512, .589].map(y => [.146, y]) },
   // a de madeira mostra a imagem de cabeça para baixo no vidro fosco, como as câmeras de campo de verdade
-  campo: { visor: [.15, .127, .559, .489], botao: [.694, .815, .09], selfie: [.24, .78] },
+  campo: { visor: [.1235, .1042, .8765, .7465], botao: [.70, .865, .085], selfie: [.13, .86] },
   couro: { visor: [.327, .137, .796, .664], botao: [.24, .875, .1], selfie: [.66, .8] },
 };
 // compartimentos da mala (fração da imagem): 3 colunas × 2 fileiras
@@ -7001,9 +7008,7 @@ const IMG_FIXA = new Map();
 function imgFixa(src, cls) { let i = IMG_FIXA.get(src); if (!i) { i = new Image(); i.decoding = "sync"; i.alt = ""; i.src = src; if (i.decode) i.decode().catch(() => {}); IMG_FIXA.set(src, i); } i.className = cls; return i; }
 setTimeout(() => { for (const f of ["maleta-foto.jpg", "carteira-foto.jpg"]) if (temFoto("img/cameras/" + f)) imgFixa("img/cameras/" + f, ""); }, 800);
 // etiquetas de viagem coladas na tampa da maleta (estilo das malas de expedição dos anos 1920)
-function etiquetasEgito() {
-  return h("div", { class: "etiquetas-eg", "aria-hidden": "true" }, [["cairo", "e1"], ["aswan", "e2"], ["luxor", "e3"], ["gize", "e4"]].map(([k, c]) => h("img", { class: "etq " + c, src: "img/adesivos/" + k + ".webp", alt: "" })));
-}
+function etiquetasEgito() { return null; }
 function vEstante() {
   setTimeout(preparaCameras, 300); // já deixa as fotos das câmeras prontas enquanto a pessoa olha a maleta
   const mala = (() => { const foto = temFoto("img/cameras/maleta-foto.jpg"), papel = foto || temFoto("img/cameras/mala-papel.webp"), oito = papel || temFoto("img/cameras/mala-oito.webp"), cheia = oito || temFoto("img/cameras/mala-cheia.jpg"), vazia = temFoto("img/cameras/mala.jpg");
@@ -7094,7 +7099,7 @@ function mudaExpo(d) {
 }
 // botões de cinema em cada câmera: [filtro, nome]
 const CINE_BOTOES = { rajastao: [["cam-kodak-cor", "Color"]], campo: [["cam-cinematic", "Cinematic"]], super8: [["cam-magic", "Magic Lassi"], ["cam-noturno", "Blue Lassi"], ["cam-mango", "Mango Lassi"], ["cam-rose", "Rose Lassi"], ["cam-pista", "Pistache"], ["cam-masala", "Masala"], ["cam-indigo", "Índigo"]] };
-const FILME_CAM = { campo: "Placa de vidro · obturador lento · 1900", couro: "Filme 35 mm desbotado · 1955", quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
+const FILME_CAM = { campo: "Placa de vidro · obturador lento · 1922", couro: "Filme 35 mm desbotado · 1955", quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
 function vCameraFisica(c) {
   const F0 = S.foto || (S.foto = fotoDaCamera(c));
   if (!F0.img && podeCamera() && !S.camFalhou) { const C = iniciaVivo(F0); S.foto = { ...F0, img: C.frame, vivo: true }; }
@@ -7186,13 +7191,14 @@ function vCameraFisica(c) {
         instantanea: [h("i", { class: "circulo" }), h("i", { class: "moldura", style: "inset:10%;border-color:rgba(255,255,255,.4)" })],
         quatro: [h("i", { class: "cruz" }), h("i", { class: "info", text: "1 · 2 · 3 · 4" })],
         super8: [h("i", { class: "info", text: "● REC  18 fps" })],
+        campo: [h("i", { class: "grade" })],
       }[c.id] || []))),
     fc.selfie ? h("button", { type: "button", class: "cfselfie" + (frente ? " on" : ""), "aria-label": frente ? "Voltar para a câmera de trás" : "Selfie", onclick: virar, style: `left:${fc.selfie[0] * 100}%;top:${fc.selfie[1] * 100}%` }) : null,
     (fc.luzes || []).map(([x, y]) => h("span", { class: "cfluz cfluzfoto", style: `left:${x * 100}%;top:${y * 100}%` })),
     F.vivo ? h("button", { type: "button", class: "cfbotaofoto", "aria-label": c.filma && S.camModo === "filme" ? "Filmar" : "Tirar foto", onclick: dispara, onpointerdown: e => apertaFilmar(e, c, F), style: `left:${(fc.botao[0] - fc.botao[2]) * 100}%;top:calc(${fc.botao[1] * 100}% - ${fc.botao[2] * 100 * 9 / 16}%);width:${fc.botao[2] * 200}%` }) : null)) : null;
   const corpo = h("div", { class: "cfcorpo cf-" + c.id + (fotoCorpo ? " comfoto" : "") + (S.gravando ? " gravando" : "") + (c.filma && S.camModo === "filme" ? " modofilme" : "") }, palco,
     c.rajadas && !fotoCorpo ? h("div", { class: "cfluzes", "aria-hidden": "true" }, [1, 2, 3, 4].map(n => h("span", { class: "cfluz" }, String(n)))) : null,
-    h("div", { class: "cfgravado", "aria-hidden": "true", text: { quatro: "CARAVANA", rajastao: "35", descartavel: "BAZAR", instantanea: "KASHI", super8: "8" }[c.id] || "" }),
+    h("div", { class: "cfgravado", "aria-hidden": "true", text: { quatro: "CARAVANA", rajastao: "35", descartavel: "BAZAR", instantanea: "NILO", super8: "8" }[c.id] || "" }),
     h("div", { class: "cftopo" },
       voltaMaleta("topo"),
       h("span", { class: "cfmarca" }, h("img", { src: "img/simbolo-dourado.png", alt: "" }), h("span", null, h("b", { text: c.nome }), h("small", { text: FILME_CAM[c.id] || "" }))),

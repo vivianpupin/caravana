@@ -279,3 +279,5 @@ O roteiro contratado, dia a dia (sem os valores). Complementa o roteiro da Vivia
 - Elas ficam coladas na tampa da maleta (perspectiva + luz da foto) e viram a categoria "Etiquetas do Egito" no estúdio.
 - `tools/egito/estudio-egito.py` troca a Índia pelo Egito no estúdio e na câmera: carimbos de tinta e redondos, selos "EGITO · 2027", textos, foto de exemplo dos filtros (Luxor). O Shiva saiu do "Meu explorador".
 - Ainda falta trocar o conteúdo grande da Índia: deuses-guardiões, ensinamentos, cobras e escadas, conversor de rúpias, carta final e textos da IA.
+- A maleta ficou SEM etiquetas na tampa (a Vivian achou feio); as etiquetas ficam só no estúdio.
+- Burton 1922 (out/2026): o corpo virou a traseira de uma câmera de campo de placa de vidro, gerada por `tools/egito/camera-burton.py`. Ela tem moldura de mogno (madeira da foto real antiga, guardada em `referencias/cameras/campo-corpo-armario.jpg`), vidro fosco grande com as linhas dos terços, molas e cantoneiras de latão, o pano preto de focar caído por cima e a pera de borracha do obturador como botão de foto.

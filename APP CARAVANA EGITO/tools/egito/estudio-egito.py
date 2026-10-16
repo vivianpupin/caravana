@@ -53,16 +53,19 @@ R = [
  ('27 POSES · ISO 400 · ÍNDIA 2026', '27 POSES · ISO 400 · EGITO 2027'),
  ('CARAVANA DO CÉU · ÍNDIA SAGRADA ·', 'CARAVANA DO CÉU · EGITO ·'),
  ('// Adesivos: logos da Caravana, bichos da Índia (os mesmos do Explorador), coisas da Índia, brilhos e frases', '// Adesivos: logos da Caravana, bichos (os mesmos do Explorador), coisas do Egito, etiquetas, brilhos e frases'),
+ # Burton 1922: o corpo novo é a traseira da câmera de placa (tools/egito/camera-burton.py): vidro fosco grande e a pera de borracha
+ ('campo: { visor: [.15, .127, .559, .489], botao: [.694, .815, .09], selfie: [.24, .78] },', 'campo: { visor: [.1235, .1042, .8765, .7465], botao: [.70, .865, .085], selfie: [.13, .86] },'),
+ ('campo: "Placa de vidro · obturador lento · 1900"', 'campo: "Placa de vidro · obturador lento · 1922"'),
+ ('super8: [h("i", { class: "info", text: "● REC  18 fps" })],', 'super8: [h("i", { class: "info", text: "● REC  18 fps" })],\n        campo: [h("i", { class: "grade" })],'),
+ ('instantanea: "KASHI"', 'instantanea: "NILO"'),
 ]
 for a, b in R:
     if b in t: continue
     if a in t: t = t.replace(a, b)
     else: print("não achei:", a[:70])
-# maleta: as mesmas etiquetas, coladas na tampa
+# maleta: a Vivian achou feio com etiquetas na tampa; elas ficam só no estúdio
 a = t.index("function etiquetasEgito() {"); b = t.index("function vEstante() {")
-t = t[:a] + '''function etiquetasEgito() {
-  return h("div", { class: "etiquetas-eg", "aria-hidden": "true" }, [["cairo", "e1"], ["aswan", "e2"], ["luxor", "e3"], ["gize", "e4"]].map(([k, c]) => h("img", { class: "etq " + c, src: "img/adesivos/" + k + ".webp", alt: "" })));
-}
+t = t[:a] + '''function etiquetasEgito() { return null; }
 ''' + t[b:]
 p.write_text(t); print("estúdio do Egito")
 
