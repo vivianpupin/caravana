@@ -314,3 +314,12 @@ html[data-tab="explorador"] .controls .lab{color:#B5402A;text-shadow:none}
 .mapahero .mmundo{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);max-width:none}
 .mmundo>img{filter:drop-shadow(0 6px 10px rgba(70,40,10,.35))}
 @media (min-width:600px){.mapahero .mmundo{width:100%;margin-left:0;margin-right:0}}
+
+/* cabeçalho e menu inteiros em marrom escuro, sem filete nem sombra; o botão do passaporte também escuro */
+.top{background:#24180F!important;border-bottom:0!important;box-shadow:none!important}
+nav.tabs{background:#24180F!important;border-top:0!important;box-shadow:none!important}
+@media (min-width:900px){nav.tabs{border-right:0!important}}
+.top .me:not(.bubble),.me:not(.bubble){background:#3A2716!important;border:1px solid rgba(212,168,79,.35)!important;box-shadow:none!important;color:#E9C46A!important}
+.me:not(.bubble) b{color:#E9C46A!important}
+/* o mapa sem sombra nem linha na borda */
+.mmundo>img{filter:none!important}
