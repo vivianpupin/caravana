@@ -320,3 +320,4 @@ Tudo seguindo o roteiro oficial (`app/dados/travessia.json`, 8 a 20/10/2027). Po
 - Para atualizar, publicar o mesmo arquivo de novo. Isso não gasta créditos da Netlify.
 - Fundo único: o fundo de areia do passaporte vale para todas as abas (não muda ao trocar de aba).
 - Fundo de areia mais claro e com menos contraste; folha de dados do passaporte com relevo suave e rótulos escuros (pedido da Vivian: difícil de ler).
+- Tom do fundo escolhido: opção 2 (areia bem clara, cor 236/220/188, contraste .5).
