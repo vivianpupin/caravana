@@ -142,20 +142,16 @@ p{margin:0}
 .sai{animation:sai .8s cubic-bezier(.2,.8,.2,1) both}
 @keyframes sai{from{opacity:0;transform:translateY(-40px) scale(.9)}}
 
-/* a bolsa e os amuletos aparecem dentro do portal da tumba (foto da Vivian): a imagem fica limpa em cima, o texto mora na porta */
-#senetCena.portal .foto{background:url(img/fundo-porta-dourada.webp) 50% 100%/cover #0E0905;filter:brightness(.85) contrast(1.05)}
-#senetCena.portal .sombra{background:linear-gradient(180deg,rgba(0,0,0,.25),transparent 30%),radial-gradient(ellipse 42% 30% at 46% 72%,rgba(255,190,110,.12),transparent 70%);animation:none}
-#senetCena.portal .nevoa{display:none}
-#senetCena.portal #senetCap{display:none}
-#senetCena.portal .rolar{padding-top:calc(58vh - 10px)}
-#senetCena.portal #bolsaBox{width:min(80vw,300px);margin-right:7vw;gap:10px}
-#senetCena.portal .bolsa{width:110px;height:156px}
-#senetCena.portal #bolsaTxt{color:#F3E2B6;text-shadow:0 1px 3px #000;text-align:center}
-#senetCena.portal .amuletos{width:100%}
-#senetCena.portal .amuletos .lamina{background:rgba(14,8,3,.62)!important;border:0;box-shadow:none;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);padding:12px 12px 14px;gap:10px}
-#senetCena.portal .amuletos .lamina p{font-size:13.5px;line-height:1.5}
-#senetCena.portal .amuletos .glifo{width:54px;height:54px;font-size:28px!important}
-#senetCena.portal #bolsaBox>details.lamina{background:rgba(14,8,3,.62);border:0}
+/* a bolsa e os amuletos sobre papiro liso, sem foto nem enfeite (como as telas do app da Índia) */
+#senetCena.portal .foto{background:url(img/fundo-papiro-escuro.webp) center/cover #9C7442;filter:none}
+#senetCena.portal .sombra,#senetCena.portal .nevoa{display:none}
+#senetCena.portal #senetCap{color:#3B2A1C!important;text-shadow:none;opacity:1;font-weight:700}
+#senetCena.portal #senetCap::before,#senetCena.portal #senetCap::after{background:linear-gradient(90deg,transparent,#3B2A1C)}
+#senetCena.portal #bolsaTxt{color:#2E1E10;text-shadow:none;text-align:center}
+#senetCena.portal .amuletos .lamina,#senetCena.portal #bolsaBox>details.lamina{background:rgba(246,234,206,.9)!important;color:#1E140B;border:1px solid rgba(70,42,16,.35);box-shadow:0 4px 12px rgba(60,35,10,.25)}
+#senetCena.portal .amuletos .lamina h4{color:#8E3B24!important}
+#senetCena.portal .amuletos .lamina b{color:#1E140B}
+#senetCena.portal .grao{display:none}
 /* narrativa da leitura */
 .luzsombra{display:flex;flex-direction:column;gap:6px;padding:10px 12px;background:rgba(142,59,36,.08);border-left:2px solid var(--verm)}
 .devolve{padding:12px 14px;margin-top:6px;background:rgba(212,168,79,.16);border:1px solid rgba(142,98,30,.35)}
