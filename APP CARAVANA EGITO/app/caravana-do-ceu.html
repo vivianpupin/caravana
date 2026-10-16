@@ -2233,6 +2233,8 @@ nav.tabs{background:#24180F!important;border-top:0!important;box-shadow:none!imp
 /* friso de sinais no fim de cada página e embaixo do título da página inicial */
 .view::after{content:"𓋹 𓂀 𓆣 𓊽 𓅃 𓆸 𓍶 𓃢 𓇳 𓇼";display:block;text-align:center;margin:26px 0 6px;font:20px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.35em;color:rgba(60,36,14,.32);pointer-events:none}
 .mapahero h1::after{content:"𓇼 𓋹 𓇼";display:block;margin-top:6px;font:16px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.5em;color:rgba(60,36,14,.45)}
+/* os lados retos do mapa somem no papiro (sem linha de corte) */
+.mmundo>img{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%)}
 </style>
 
 <div class="app">
@@ -2370,7 +2372,7 @@ const minhas = () => ({ ...S.local, ...((eu() && eu().insignias) || {}) });
 // o último selo (Travessia) se completa sozinho no último dia, 20/10
 const aberto = l => !!(l && (l.aberto || minhas()[l.id] || (l.id === "travessia" && hojeIso() >= "2027-10-20")));
 const conquistasDe = v => S.locais.filter(l => l.insignia && (l.aberto || (v.insignias || {})[l.id])).length;
-const insigniaLocais = () => S.locais.filter(l => l.insignia).sort(byOrdem);
+const insigniaLocais = () => S.locais.filter(l => l.insignia && l.id !== "embarque").sort(byOrdem);
 const localDe = id => S.locais.find(l => l.id === id);
 // selos que saíram da travessia (a visita não acontece mais): somem do passaporte e do mapa; o saber ligado a eles fica livre
 const REMOVIDOS = [];
@@ -3866,7 +3868,7 @@ function vPassaporte() {
       h("img", { src: "img/passaporte-capa.webp", alt: "" }),
       h("span", null, h("b", { text: "Folhear meu passaporte" }), h("span", { text: "Abra o passaporte e vire as páginas com seus carimbos." }))),
     h("div", { class: "pages" }, fundoPassaporte(),
-      h("div", { class: "ph" }, h("p", { class: "eyebrow", text: "Os carimbos da Índia Sagrada" })),
+      h("div", { class: "ph" }, h("p", { class: "eyebrow", text: "Os carimbos do Egito" })),
       ls.length ? trilhaSelos(ls, mins) : carregando()),
     gente.length ? h("div", { class: "panel" },
       h("p", { class: "eyebrow", text: "A caravana" }),
