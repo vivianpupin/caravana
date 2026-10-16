@@ -2039,7 +2039,7 @@ html[data-tab="conversa"] body::before{background-image:url(img/fundo-vale-livro
 
 /* abas do dia a dia (passaporte, tradutor, câmbio): papel de gibi envelhecido, sem foto, para ler rápido */
 html[data-tab="passaporte"] body::before,html[data-tab="tradutor"] body::before,html[data-tab="cambio"] body::before,html[data-tab="ensinamentos"] body::before{
-  background:url(img/fundo-papel-gibi.webp) center/cover no-repeat;filter:none}
+  background:url(img/fundo-papiro-escuro.webp) center/cover no-repeat;filter:none}
 html[data-tab="passaporte"] body::after,html[data-tab="tradutor"] body::after,html[data-tab="cambio"] body::after,html[data-tab="ensinamentos"] body::after{background:radial-gradient(ellipse at 50% 45%,transparent 60%,rgba(60,35,10,.25))}
 :is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"],html[data-tab="ensinamentos"]) .view>.head h1,
 :is(html[data-tab="passaporte"],html[data-tab="tradutor"],html[data-tab="cambio"],html[data-tab="ensinamentos"]) .view>.head h2,
@@ -2058,10 +2058,10 @@ html[data-tab="passaporte"] body::after,html[data-tab="tradutor"] body::after,ht
 .orframe{display:block;width:100%;height:100%;border:0}
 
 /* ===== página inicial: cartografia antiga, clara (pergaminho), com o mapa-mundo da rota e o explorador ===== */
-html[data-tab="travessia"] body::before{background:url(img/fundo-pergaminho.webp) center/cover no-repeat;filter:none}
+html[data-tab="travessia"] body::before{background:url(img/fundo-papiro-escuro.webp) center/cover no-repeat;filter:none}
 html[data-tab="travessia"] body::after{background:radial-gradient(ellipse at 50% 40%,transparent 60%,rgba(90,55,15,.22))}
 html[data-tab="travessia"] .hero h1{color:#3B2A1C;text-shadow:none;filter:none;font-size:clamp(24px,6.6vw,36px)}
-html[data-tab="travessia"] .hero .intro{color:#5A4127;text-shadow:none}
+html[data-tab="travessia"] .hero .intro{color:#2E1E10;text-shadow:0 1px 0 rgba(255,235,190,.35)}
 html[data-tab="travessia"] :is(.view>.head h1,.view>.head h2,.view>.lede,.view>p.small,.view>.small,.view>p:not([class])){color:var(--ink);text-shadow:none}
 html[data-tab="travessia"] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule){color:var(--terra);text-shadow:none}
 html[data-tab="travessia"] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{background:#3B2A1C;box-shadow:none}
@@ -2193,7 +2193,7 @@ html[data-tab="explorador"] .controls .lab{color:#B5402A;text-shadow:none}
 <div class="app">
   <header class="top">
     <span class="topside" aria-hidden="true"><img class="topsim" src="img/simbolo-claro.png" alt=""></span>
-    <div class="brand"><div><b>Caravana do Céu</b><span>Travessia do Velho Mundo · 2027</span></div></div>
+    <div class="brand"><div><b>Caravana do Céu</b><span>Egito · 2027</span></div></div>
     <div class="topside right"><button class="me" id="me" type="button" hidden></button></div>
   </header>
   <main id="main"></main>

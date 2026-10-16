@@ -37,7 +37,7 @@ troca('"Asia/Kolkata"', '"Africa/Cairo"', True)
 troca("timezone=Asia%2FKolkata", "timezone=Africa%2FCairo", True)
 troca('"Agora na Índia"', '"Agora no Egito"')
 troca("// o último selo (Travessia) se completa sozinho no dia do translado, 16/11", "// o último selo (Travessia) se completa sozinho no último dia, 20/10")
-troca('<span>Índia Sagrada · 2026</span>', '<span>Travessia do Velho Mundo · 2027</span>')
+troca('<span>Índia Sagrada · 2026</span>', '<span>Egito · 2027</span>')
 
 # carimbos: só fica o Embarque como extra; os do Egito vêm do banco (tools/site/seed.json)
 troca_bloco("const EXTRAS = [", "\n];\n", '''const EXTRAS = [
