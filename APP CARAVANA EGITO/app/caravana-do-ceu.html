@@ -2898,15 +2898,15 @@ function vTravessia() {
       h("img", { class: "logo moeda", src: "img/logo-egito-240.png", alt: "Caravana do Céu · Travessia do Velho Mundo" }),
       h("h1", null, "Travessia do Velho Mundo"),
       vCartuchoNome(),
-      vMapaMundo(dias, hoje, f, abrir),
-      h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] })),
-    h("div", { class: "clock" },
-      f > 0 ? h("div", null, h("b", { text: f }), h("span", { text: f === 1 ? "dia para embarcar" : "dias para embarcar" }))
-            : dHoje ? h("div", null, h("b", { text: "Dia " + dHoje.n }), h("span", { text: "de " + dias.length + (dHoje.cidade ? " · " + dHoje.cidade : "") }))
-            : hoje > dias[dias.length - 1].iso ? h("div", null, h("b", { text: String(dias.length) }), h("span", { text: "Travessia concluída" }))
-            : h("div", null, h("b", { text: String(dias.length) }), h("span", { text: "dias de travessia" })),
-      h("div", null, h("b", { class: "hora", "data-tz": "Africa/Cairo", text: horaEm("Africa/Cairo") }), h("span", { text: "Agora no Egito" })),
-      h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +6h" }))),
+      h("div", { class: "clock" },
+        f > 0 ? h("div", null, h("b", { text: f }), h("span", { text: f === 1 ? "dia para embarcar" : "dias para embarcar" }))
+              : dHoje ? h("div", null, h("b", { text: "Dia " + dHoje.n }), h("span", { text: "de " + dias.length + (dHoje.cidade ? " · " + dHoje.cidade : "") }))
+              : hoje > dias[dias.length - 1].iso ? h("div", null, h("b", { text: String(dias.length) }), h("span", { text: "Travessia concluída" }))
+              : h("div", null, h("b", { text: String(dias.length) }), h("span", { text: "dias de travessia" })),
+        h("div", null, h("b", { class: "hora", "data-tz": "Africa/Cairo", text: horaEm("Africa/Cairo") }), h("span", { text: "Agora no Egito" })),
+        h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +6h" }))),
+      h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] }),
+      vMapaMundo(dias, hoje, f, abrir)),
     vGarrafaVolta(),
     vMissoes(),
     vOnlineLider(),
