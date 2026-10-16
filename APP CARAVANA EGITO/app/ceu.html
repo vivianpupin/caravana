@@ -230,7 +230,7 @@ function desenha() {
       if (!naTela(t[0], 400) && !naTela(t[1], 400)) continue; x.moveTo(t[0][0], t[0][1]); x.lineTo(t[1][0], t[1][1]); algum = true; }
     x.stroke();
     const cc = RAIO[k], p = P(cc.c); if (!algum || !naTela(p, 30) || dot(cc.c, Q.z) < -.02) continue;
-    if (eg && desenhos) desenhaGlifo(c.g, cc, p, escuro);
+    if (eg && desenhos) desenhaArte(k, c.g, cc, p, escuro);
     if (eg || CEN[k].rank <= 2 || fov < 70 * RAD || c) rotulos.push({ k, p, c, eg });
   }
   // estrelas (até magnitude 6)
@@ -286,12 +286,18 @@ function chao() { // a parte da tela abaixo do horizonte: ur·X + uu·Y + uf < 0
   if (lin.length === 2) { x.strokeStyle = "rgba(226,184,90,.75)"; x.lineWidth = 1.5; x.beginPath(); x.moveTo(lin[0][0], lin[0][1]); x.lineTo(lin[1][0], lin[1][1]); x.stroke(); }
 }
 // ---------- os desenhos egípcios ----------
-function desenhaGlifo(g, cc, p, escuro) { // o hieróglifo da constelação, grande e transparente, girando com o céu
-  const r = Math.min(Math.max(H, W), Q.F * Math.tan(Math.min(cc.r, 1.2))), tam = r * 1.5; if (tam < 26) return;
-  const nv = [-cc.c[0] * cc.c[2], -cc.c[1] * cc.c[2], 1 - cc.c[2] * cc.c[2]], ln = Math.hypot(...nv) || 1, q = P(cc.c.map((v, i) => v + nv[i] / ln * .05)); // um pouco ao norte
+// as figuras egípcias das constelações, pintadas como nos tetos das tumbas (img/ceu/): cada uma sobre as suas estrelas, girando com o céu
+const ARTE = { Ori: ["sah", 2.5], CMa: ["sopdet", 2.6], UMa: ["meskhetiu", 2.3], Dra: ["reret", 1.7], Leo: ["leao", 2.4, 1], Sco: ["serket", 2.3], Tau: ["touro", 1.9], Ari: ["carneiro", 2.1] };
+for (const [k, [n]] of Object.entries(ARTE)) { const i = new Image(); i.onload = () => { ARTE[k].img = i; sujo = true; }; i.src = `img/ceu/${n}.webp`; }
+function desenhaArte(k, g, cc, p, escuro) {
+  const A = ARTE[k], r = Q.F * Math.tan(Math.min(cc.r, 1.2)); if (r < 14) return;
+  const nv = [-cc.c[0] * cc.c[2], -cc.c[1] * cc.c[2], 1 - cc.c[2] * cc.c[2]], ln = Math.hypot(...nv) || 1, q = P(cc.c.map((v, i) => v + nv[i] / ln * .05)); // o norte do céu fica para cima
   const ang = q ? Math.atan2(q[0] - p[0], -(q[1] - p[1])) : 0;
-  x.save(); x.translate(p[0], p[1]); x.rotate(ang); x.globalAlpha = .3 + .12 * escuro; x.textAlign = "center"; x.textBaseline = "middle";
-  x.font = `${Math.round(tam)}px 'Noto Sans Egyptian Hieroglyphs', serif`; x.lineWidth = Math.max(1.5, tam / 60); x.strokeStyle = "#F3D58E"; x.strokeText(g, 0, 0); x.fillStyle = "rgba(217,138,46,.55)"; x.fillText(g, 0, 0); x.restore(); x.textBaseline = "alphabetic"; }
+  x.save(); x.translate(p[0], p[1]); x.rotate(ang);
+  if (A && A.img) { const im = A.img, esc = r * A[1] / Math.max(im.width, im.height); if (A[2]) x.scale(-1, 1);
+    x.globalAlpha = .5 + .12 * escuro; x.imageSmoothingQuality = "high"; x.drawImage(im, -im.width * esc / 2, -im.height * esc / 2, im.width * esc, im.height * esc); }
+  else { x.globalAlpha = .3; x.textAlign = "center"; x.textBaseline = "middle"; x.font = `${Math.round(r * 1.5)}px 'Noto Sans Egyptian Hieroglyphs', serif`; x.fillStyle = "#E2B85A"; x.fillText(g, 0, 0); }
+  x.restore(); x.textBaseline = "alphabetic"; }
 function estrelinha(cx, cy, r) { x.beginPath(); for (let k = 0; k < 10; k++) { const a = -Math.PI / 2 + k * Math.PI / 5, rr = k % 2 ? r * .42 : r; x.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); } x.closePath(); x.fill(); }
 // Nut desenhada como nas pinturas egípcias (img/nut-ceu.svg): o corpo em arco ao longo da Via Láctea, as mãos no oeste, onde
 // ela engole Rá ao entardecer, e os pés no leste, onde ele renasce. O desenho gira e acompanha o céu, como a arte dos apps de céu.
