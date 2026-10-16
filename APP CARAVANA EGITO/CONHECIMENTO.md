@@ -318,3 +318,4 @@ Tudo seguindo o roteiro oficial (`app/dados/travessia.json`, 8 a 20/10/2027). Po
   - Capacidades: db, user (com nome), assets (viajantes podem subir fotos), room, downloads e sample (cartas da IA).
 - O banco foi preenchido com `tools/site/seed.json` (6 cidades, 15 locais, 64 saberes e o rascunho da carta final).
 - Para atualizar, publicar o mesmo arquivo de novo. Isso não gasta créditos da Netlify.
+- Fundo único: o fundo de areia do passaporte vale para todas as abas (não muda ao trocar de aba).
