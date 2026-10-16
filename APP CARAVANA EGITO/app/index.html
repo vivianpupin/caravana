@@ -2929,7 +2929,6 @@ function vTravessia() {
     h("div", { class: "hero mapahero" },
       h("img", { class: "logo moeda", src: "img/logo-egito-240.png", alt: "Caravana do Céu · Travessia do Velho Mundo" }),
       h("h1", null, "Travessia do Velho Mundo"),
-      vCartuchoNome(),
       h("div", { class: "clock" },
         f > 0 ? h("div", null, h("b", { text: f }), h("span", { text: f === 1 ? "dia para embarcar" : "dias para embarcar" }))
               : dHoje ? h("div", null, h("b", { text: "Dia " + dHoje.n }), h("span", { text: "de " + dias.length + (dHoje.cidade ? " · " + dHoje.cidade : "") }))

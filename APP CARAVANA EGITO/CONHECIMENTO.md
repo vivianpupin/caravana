@@ -358,3 +358,5 @@ Tudo seguindo o roteiro oficial (`app/dados/travessia.json`, 8 a 20/10/2027). Po
 - **Dados:** `app/ceu-dados.js`, gerado por `tools/egito/ceu-dados.py` a partir do d3-celestial (licença BSD, Olaf Frohn). Para regerar: `npm pack d3-celestial` e rodar o script com a pasta `package/data`.
 - **Onde abrir:** só na **Maleta**, no cartão do merkhet (o prumo de fio com que os sacerdotes observavam as estrelas), depois da mala de câmeras. Saiu da página inicial e dos Saberes. A janela do app libera câmera, localização e sensores para essa página.
 - A Vivian não quis o botão do céu da noite no Deserto Branco: só o céu de agora.
+
+- **Página inicial (16/10/2026):** na ordem da Índia: moeda, título, grade (dias para embarcar, hora no Egito, hora de Brasília), frase que troca e mapa. A Vivian pediu para tirar o cartucho do nome da página inicial (a função `vCartuchoNome` continua no código, sem uso).
