@@ -389,9 +389,14 @@ html[data-tab="fotos"] :is(.view>.head h1,.view>.head h2,.view>.lede,.view>p.sma
   box-shadow:inset 0 0 40px rgba(0,0,0,.55)}
 /* fundo de areia (textura do PSD "cima" da Vivian, em pé e no tom de areia: tools/egito/fundo-areia.py) no lugar do papiro escuro */
 /* o mesmo fundo de areia do passaporte em TODAS as abas (pedido da Vivian): o fundo não muda ao trocar de aba */
-html[data-tab] body{background:#C4A476}
+html[data-tab] body{background:#E2CDA6}
 html[data-tab] body::before{background:url(img/fundo-areia.webp) center/cover no-repeat!important;filter:none!important;opacity:1!important}
-html[data-tab] body::after{background:radial-gradient(ellipse at 50% 45%,transparent 60%,rgba(60,35,10,.25))!important}
+html[data-tab] body::after{background:radial-gradient(ellipse at 50% 45%,transparent 65%,rgba(60,35,10,.12))!important}
 html[data-tab] :is(.view>.head h1,.view>.head h2,.view>.lede,.view>p.small,.view>.small,.view>p:not([class])){color:var(--ink);text-shadow:none}
 html[data-tab] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule){color:var(--terra);text-shadow:none}
 html[data-tab] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{background:var(--ink);box-shadow:none}
+/* passaporte mais legível: folha de dados com o relevo de pedra bem suave e rótulos escuros e um pouco maiores */
+.datapage,.panel.datapage{background:linear-gradient(rgba(250,244,228,.93),rgba(244,234,210,.93)),url(img/textura-calcario.webp) center/360px auto #F4EAD2!important}
+.datapage .fl{color:#5A4127;font-size:9px;font-weight:700}
+.datapage .fv{color:#1E140B}
+.datapage .top2 b,.datapage .top2 span{color:#2E1E10}
