@@ -336,3 +336,4 @@ Tudo seguindo o roteiro oficial (`app/dados/travessia.json`, 8 a 20/10/2027). Po
 - Cartucho (atualizado) nas cores da referência da Vivian: terracota com contorno ocre, sinais em marrom escuro, branco, ocre e verde, e a barra do nó ocre com amarração vermelha e verde. Vale para a oficina e para a página inicial.
 - Cartucho: a Vivian voltou para a versão clara (papiro creme, corda azul com filete vermelho, sinais coloridos). A versão terracota e as texturas de parede foram descartadas.
 - Cartucho da página inicial: pequeno (32px de largura), no canto de cima à esquerda.
+- Oficina do escriba: ganhou 'A leitura do seu nome'. Ela junta o que cada sinal evocava para os egípcios (`SENT`: imagem e qualidade de cada sinal), qual sinal abre e qual fecha o cartucho, e explica o ren. Há uma nota avisando que é uma leitura poética, não uma previsão antiga. A lista dos sinais também mostra a qualidade de cada um.

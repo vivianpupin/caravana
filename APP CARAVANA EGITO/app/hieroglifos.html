@@ -100,6 +100,8 @@ h1{color:#2E1E10;text-shadow:none}
 input{background:#FBF4E2!important}
 .alfa button{background:linear-gradient(rgba(250,240,214,.85),rgba(240,226,190,.9)),url(img/papiro.webp) center/200px!important}
 .quadro{background:linear-gradient(rgba(250,242,222,.88),rgba(244,232,204,.9)),url(img/papiro.webp) center/400px #F3E4BC!important;box-shadow:0 6px 16px rgba(90,55,15,.25)!important}
+.sentTit{margin:0;font:500 26px/1.15 var(--f-tit);color:#2E1E10}
+.sentTxt p{margin:0 0 8px;font:16px/1.6 var(--f-tit);color:#2E1E10}
 </style>
 </head><body>
 <main class="pag">
@@ -122,6 +124,13 @@ input{background:#FBF4E2!important}
   <div class="parede" id="parede">
     <div class="cart" id="c1"></div><div class="cart vazio2" id="c2"></div>
     <p class="legendaP" id="legP">o cartucho espera o seu nome</p></div>
+
+  <div class="quadro" id="sentidoBox" hidden>
+    <p class="cap" style="box-shadow:none">A leitura do seu nome</p>
+    <h2 class="sentTit" id="sentTit"></h2>
+    <div class="sentTxt" id="sentTxt"></div>
+    <p class="nota">Esta leitura junta o que cada sinal evocava para os egípcios. Eles não liam o destino nas letras do nome: o nome era um desejo e uma proteção. É um jeito poético de olhar para o seu.</p>
+  </div>
 
   <div class="quadro" id="leituraBox" hidden>
     <p class="cap" style="box-shadow:none">O que cada sinal é</p>
@@ -157,6 +166,48 @@ const COR = { A: "#2B2420", B: "#B5402A", C: "#C27A2C", Ç: "#2F6FA8", D: "#B540
   J: "#D9962A", K: "#C27A2C", L: "#D9862A", M: "#2B2420", N: "#2F6FA8", O: "#C9922E", P: "#3E8A5C", Q: "#D9862A", R: "#B5402A", S: "#2F6FA8",
   T: "#8A5A2A", U: "#C9922E", V: "#B07A2A", W: "#C9922E", X: "#2F8A8A", Y: "#3E8A5C", Z: "#8A5A2A", CH: "#2F8A8A", KH: "#8A3A22", TH: "#2F6FA8" };
 const cor = k => COR[k] || "#2B2420";
+// o que cada sinal evocava para os egípcios (a imagem por trás do som) e a qualidade que ele empresta ao nome
+const SENT = {
+  A: ["o abutre de Nekhbet e de Mut, as deusas-mães que abriam as asas sobre o faraó", "proteção e cuidado de mãe"],
+  B: ["o pé que caminha, o sinal dos que partem e chegam", "o caminho e a coragem de partir"],
+  C: ["o cesto com alça, onde se guardava a colheita", "o que se guarda e se colhe com paciência"],
+  D: ["a mão aberta que oferece, nas cenas de oferenda aos deuses", "a generosidade de quem dá e recebe"],
+  E: ["o junco florido das margens do Nilo, que renasce a cada cheia", "a renovação e o crescer de novo"],
+  F: ["a víbora com chifres do deserto, atenta e silenciosa", "o instinto e a atenção"],
+  G: ["o suporte que segura o jarro de água", "a força de quem sustenta os outros"],
+  H: ["o pátio da casa, o abrigo de junco", "o lar e o acolhimento"],
+  J: ["a naja, a serpente que protegia a testa do faraó", "a coragem e a proteção"],
+  L: ["o leão deitado, o guardião das portas e das esfinges", "a força serena de quem guarda"],
+  M: ["a coruja, que enxerga no escuro", "a intuição e o olhar profundo"],
+  N: ["a água corrente, o Nilo e o Nun, o oceano de onde tudo nasceu", "o fluir e a origem"],
+  O: ["o filhote de codorna, ave pequena dos campos", "a leveza e a alegria dos começos"],
+  P: ["a esteira de junco onde se sentava e se oferecia", "a base firme e a hospitalidade"],
+  Q: ["a encosta de areia, o morro que se sobe", "a perseverança de quem sobe devagar"],
+  R: ["a boca, a palavra que cria: os deuses criavam falando", "a voz e o poder da palavra"],
+  S: ["o pano dobrado, o tecido guardado com cuidado", "o cuidado com o que é precioso"],
+  T: ["o pão, a oferenda de todo dia", "a partilha e o sustento"],
+  X: ["o lago de águas calmas dos jardins", "a calma e a profundidade"],
+  Y: ["dois juncos lado a lado", "crescer junto, a parceria"],
+  Z: ["o ferrolho que fecha e abre a porta", "a guarda dos segredos e o tempo certo de abrir"],
+  KH: ["a placenta, o começo da vida", "a origem e o que nasce"],
+  TH: ["a corda de amarrar", "os laços e os vínculos"]
+};
+SENT.Ç = SENT.S; SENT.I = SENT.E; SENT.K = SENT.C; SENT.U = SENT.O; SENT.W = SENT.O; SENT.V = SENT.F; SENT.CH = SENT.X;
+function leituraDoNome(nome, ks) {
+  const vistos = [], qual = [];
+  ks.forEach(k => { const s = SENT[k]; if (s && !vistos.includes(s)) { vistos.push(s); qual.push(s[1]); } });
+  const lista = q => q.length < 2 ? q.join("") : q.slice(0, -1).join(", ") + " e " + q[q.length - 1];
+  const prim = (nome || "").trim().split(/\s+/)[0];
+  const ps = [];
+  ps.push(`No seu cartucho${prim ? ", " + prim + "," : ""} o seu nome se escreve com ${ks.length} ${ks.length === 1 ? "sinal" : "sinais"}. Para um escriba, cada um deles trazia uma imagem, e juntas elas formam o desenho do seu nome.`);
+  const de = q => q.replace(/^o /, "do ").replace(/^a /, "da ").replace(/^os /, "dos ").replace(/^as /, "das ");
+  ps.push(`Ele fala ${lista(qual.slice(0, 4).map(q => /^(o|a|os|as) /.test(q) ? de(q) : "de " + q))}.`);
+  if (SENT[ks[0]]) ps.push(`O primeiro sinal, ${SENT[ks[0]][0]}, abre o cartucho: é por ele que o seu nome começa a ser dito.`);
+  const ult = SENT[ks[ks.length - 1]];
+  if (ks.length > 1 && ult) ps.push(`E o último, ${ult[0]}, fecha o laço do cartucho, que não tem começo nem fim.`);
+  ps.push("Para os egípcios, o nome, o ren, era uma das partes da alma. Enquanto alguém dissesse o nome de uma pessoa em voz alta, ela continuava viva. Por isso os faraós guardavam o nome dentro do cartucho.");
+  return ps;
+}
 const ALFA = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 const tira = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase();
 // quebra o nome em sons: "CH" vira um sinal só, C antes de E/I soa como S, letras repetidas seguidas viram uma
@@ -206,7 +257,7 @@ function cabe(caixa, n) { const r = caixa.getBoundingClientRect(); return Math.m
 function desenha(ks, anima) {
   const id = ++escrevendo; lista = ks.slice(); $("c1").replaceChildren(); $("c2").replaceChildren();
   $("legP").hidden = ks.length > 0; $("c2").classList.toggle("vazio2", ks.length <= 4);
-  if (!ks.length) { $("leituraBox").hidden = true; return; }
+  if (!ks.length) { $("leituraBox").hidden = true; $("sentidoBox").hidden = true; return; }
   const [p1, p2] = partes(ks), todos = [];
   [[$("c1"), p1], [$("c2"), p2]].forEach(([caixa, grupo]) => { const fs = cabe(caixa, grupo.length);
         grupo.forEach(k => { const s = document.createElement("span"); s.className = "sinal"; s.textContent = S[k][0]; s.style.color = cor(k); s.title = S[k][1]; s.style.fontSize = fs + "px"; caixa.append(s); todos.push(s);
@@ -217,9 +268,12 @@ function desenha(ks, anima) {
       if (i === todos.length - 1 && anima) setTimeout(() => { if (id !== escrevendo) return; gongo(); vibra([30, 50, 80]); todos.forEach(x => x.classList.add("brilha")); }, 700); };
     anima ? setTimeout(mostra, 400 + i * 780) : s.classList.add("brilha");
   });
-  const L = $("leitura"); L.replaceChildren(...ks.map(k => { const li = document.createElement("li"); li.innerHTML = `<span class="h" style="color:${cor(k)}">${S[k][0]}</span><span><b>${S[k][1]}</b><small>soa como ${S[k][2]}</small></span>`; return li; }));
+  const L = $("leitura"); L.replaceChildren(...ks.map(k => { const li = document.createElement("li"); li.innerHTML = `<span class="h" style="color:${cor(k)}">${S[k][0]}</span><span><b>${S[k][1]}</b><small>soa como ${S[k][2]}${SENT[k] ? " · " + SENT[k][1] : ""}</small></span>`; return li; }));
   $("notaVogais").textContent = "Os egípcios quase não escreviam as vogais: o leitor completava de cabeça. Os faraós tinham dois cartuchos, o nome de trono e o nome de nascimento; quando o seu nome é longo, o escriba continua no segundo.";
   $("leituraBox").hidden = false;
+  $("sentTit").textContent = ($("nome").value || "").trim() || "O seu nome";
+  $("sentTxt").replaceChildren(...leituraDoNome($("nome").value, ks).map(x => { const p = document.createElement("p"); p.textContent = x; return p; }));
+  $("sentidoBox").hidden = false;
 }
 document.querySelectorAll(".cart").forEach(c => c.onclick = () => $("nome").focus());
 $("gravar").onclick = () => { audio(); desenha(sons($("nome").value), true); try { localStorage.setItem("cdi-cartucho", JSON.stringify({ nome: $("nome").value, sinais: lista })); } catch (e) {} };
