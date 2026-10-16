@@ -2197,6 +2197,42 @@ nav.tabs{background:#24180F!important;border-top:0!important;box-shadow:none!imp
 .me:not(.bubble) b{color:#E9C46A!important}
 /* o mapa sem sombra nem linha na borda */
 .mmundo>img{filter:none!important}
+
+/* símbolos egípcios: aparecem gravados aqui e ali, sem explicação */
+.marca .glifo.eg{width:auto;height:auto;display:block;font:44px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.08em;filter:url(#cravado);
+  text-shadow:0 -1px 0 rgba(0,0,0,.85),-1px -1px 1px rgba(0,0,0,.55),0 1px 0 rgba(255,228,190,.38)}
+:is(.panel,.day,.sab,details.guide,.missoes){position:relative}
+:is(.panel,.day,.sab,details.guide,.missoes)::after{position:absolute;right:8px;bottom:4px;font:22px/1 "Noto Sans Egyptian Hieroglyphs",serif;color:rgba(70,42,16,.26);pointer-events:none}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+1)::after{content:"𓋹"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+2)::after{content:"𓂀"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+3)::after{content:"𓆣"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+4)::after{content:"𓊽"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+5)::after{content:"𓅃"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+6)::after{content:"𓆸"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+7)::after{content:"𓍶"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+8)::after{content:"𓃢"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+9)::after{content:"𓇳"}
+/* friso de sinais no fim de cada página e embaixo do título da página inicial */
+.view::after{content:"𓋹 𓂀 𓆣 𓊽 𓅃 𓆸 𓍶 𓃢 𓇳 𓇼";display:block;text-align:center;margin:26px 0 6px;font:20px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.35em;color:rgba(60,36,14,.45);pointer-events:none}
+.mapahero h1::after{content:"𓇼 𓋹 𓇼";display:block;margin-top:6px;font:16px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.5em;color:rgba(60,36,14,.45)}
+
+/* símbolos egípcios: aparecem gravados aqui e ali, sem explicação */
+.marca .glifo.eg{width:auto;height:auto;display:block;font:44px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.08em;filter:url(#cravado);
+  text-shadow:0 -1px 0 rgba(0,0,0,.85),-1px -1px 1px rgba(0,0,0,.55),0 1px 0 rgba(255,228,190,.38)}
+:is(.panel,.day,.sab,details.guide,.missoes){position:relative}
+:is(.panel,.day,.sab,details.guide,.missoes)::after{position:absolute;right:8px;bottom:4px;font:22px/1 "Noto Sans Egyptian Hieroglyphs",serif;color:rgba(70,42,16,.16);pointer-events:none}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+1)::after{content:"𓋹"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+2)::after{content:"𓂀"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+3)::after{content:"𓆣"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+4)::after{content:"𓊽"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+5)::after{content:"𓅃"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+6)::after{content:"𓆸"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+7)::after{content:"𓍶"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+8)::after{content:"𓃢"}
+:is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+9)::after{content:"𓇳"}
+/* friso de sinais no fim de cada página e embaixo do título da página inicial */
+.view::after{content:"𓋹 𓂀 𓆣 𓊽 𓅃 𓆸 𓍶 𓃢 𓇳 𓇼";display:block;text-align:center;margin:26px 0 6px;font:20px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.35em;color:rgba(60,36,14,.32);pointer-events:none}
+.mapahero h1::after{content:"𓇼 𓋹 𓇼";display:block;margin-top:6px;font:16px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.5em;color:rgba(60,36,14,.45)}
 </style>
 
 <div class="app">
@@ -9606,6 +9642,7 @@ function vAvisoLeitura() {
 
 // ---------- Mural de pensamentos (pintura rupestre) ----------
 // Figuras de pintura rupestre: [caminho, preenchido?]
+const SIMBOLOS_EG = [..."𓃢𓁢𓋹𓊽𓂀𓁹𓅃𓆓𓅓𓄿𓆣𓆸𓈗𓇳𓇼𓍶𓌀𓎬𓋾𓀭𓀠𓂓𓈌𓆫𓆉𓆈𓆙𓃠𓅞𓆊𓄣𓄤𓆄𓏊𓁦𓁟𓁷𓆏𓅱𓃭"];
 const GLIFOS = [
   // sinais da arte rupestre (os sinais geométricos das cavernas antigas)
   // asterisco
@@ -9711,7 +9748,7 @@ function vPedra() {
         const n = hashN(p.id || p.ts), cor = CORES_TERRA[hashN(p.autor) % CORES_TERRA.length], meu = p.autor === S.uid;
         const dir = i % 2 === 1, recuo = [0, 4, 8, 3, 6][(n >>> 3) % 5], rot = (dir ? 1 : -1) * (1 + (n % 3) * .8);
         return h("figure", { class: "marca", style: `${dir ? `margin-left:auto;margin-right:${recuo}%` : `margin-left:${recuo}%`};margin-top:${i ? -18 : 0}px;transform:rotate(${rot}deg);color:${cor};text-align:${dir ? "right" : "left"};align-items:${dir ? "flex-end" : "flex-start"}` },
-          h("svg", { class: "glifo", viewBox: "0 0 64 40", "aria-hidden": "true" }, GLIFOS[n % GLIFOS.length].map(([d, cheio]) => h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 2.2, "stroke-linecap": "round", "stroke-linejoin": "round" }))),
+          h("span", { class: "glifo eg", "aria-hidden": "true", text: SIMBOLOS_EG[n % SIMBOLOS_EG.length] + SIMBOLOS_EG[(n >>> 5) % SIMBOLOS_EG.length] }),
           h("blockquote", { text: p.texto }),
           h("figcaption", null, nomeDe(p.autor).split(" ")[0] + " · " + new Date(p.ts).toLocaleDateString("pt-BR", { day: "numeric", month: "short" }),
             meu || S.isOwner ? h("button", { class: "apaga", type: "button", "aria-label": "Apagar", onclick: () => { if (confirm("Apagar esta marca?")) S.db.doc("pensamentos/" + p.id).delete().catch(() => {}); } }, "×") : null));
