@@ -344,13 +344,17 @@ Tudo seguindo o roteiro oficial (`app/dados/travessia.json`, 8 a 20/10/2027). Po
   - "Apontar para o céu" liga a bússola e o giroscópio, e o mapa acompanha o celular (no iPhone pede permissão).
   - Sem sensores, arrasta-se com o dedo.
   - "Câmera" mostra a câmera de trás por baixo do céu desenhado.
-- **O que aparece:**
-  - Cerca de 120 estrelas reais (posições J2000).
-  - Constelações egípcias em dourado, com hieróglifo: Sah (Órion, Osíris), Sopdet (Sírius, Ísis), Meskhetiu (Ursa Maior), Reret, o Leão e o Escorpião de Dendera.
-  - As outras constelações aparecem em cinza.
-  - Nut como a Via Láctea, o horizonte e os pontos cardeais com frases egípcias.
+- **O que aparece (céu inteiro, como o Sky Tonight; a Vivian não queria "gato pingado"):**
+  - As 5.044 estrelas até magnitude 6 (catálogo Hipparcos/HYG), com a cor e o tamanho de cada uma; as mais fortes ganham nome e a estrela egípcia de cinco pontas.
+  - As linhas das 88 constelações, com nome em português. As egípcias e as do zodíaco de Dendera ficam em ouro, com o desenho em hieróglifo girando com o céu: Sah 𓀭 (Órion), Sopdet (Sírius), Meskhetiu 𓄗, Reret 𓃯, Leão 𓃬, Serket 𓆫, Touro 𓃒, Carneiro 𓃝.
+  - A Via Láctea de verdade (cinco níveis de brilho), difusa.
+  - **Nut desenhada como nos tetos das tumbas (Ramsés VI):** corpo laranja com contorno escuro ao longo da Via Láctea, estrelas no corpo, braços e pernas perpendiculares para o lado do horizonte, a cabeça é o hieróglifo de perfil 𓁶 pendendo no oeste, o disco vermelho de Rá na boca e outro nascendo perto das pernas. O nome dela em hieróglifos (𓏌𓏏𓇯). Botão "Desenhos de Nut" liga e desliga os desenhos.
+  - Nomes em hieróglifos pelo céu: Rá 𓂋𓂝𓇳, Iah 𓇋𓂝𓎛𓇹, Sah 𓋴𓄿𓎛𓇼, Sopdet 𓋴𓊪𓂧𓏏𓇼.
+  - O horizonte e os pontos cardeais com frases egípcias; abaixo do horizonte, o chão escuro.
   - Rá (Sol), Iah (Lua, com a fase) e os planetas com nomes egípcios. As posições vêm das fórmulas de Paul Schlyter.
   - Quando o Sol ou a Lua estão fora da tela, uma seta mostra onde estão.
-- Tocar num astro, numa constelação ou numa estrela com história abre uma ficha em papiro.
-- **Onde abrir:** o cartão "O Céu de Nut" aparece na página inicial e nos Saberes. A janela do app libera câmera, localização e sensores para essa página.
+  - A faixa do alto é o teto estrelado das tumbas (`img/fundo-ceu-nut-estrelas.webp`).
+- Pinçar com dois dedos aproxima. Tocar num astro, numa constelação, numa estrela ou na Nut abre uma ficha em papiro (a da Nut com a foto do teto).
+- **Dados:** `app/ceu-dados.js`, gerado por `tools/egito/ceu-dados.py` a partir do d3-celestial (licença BSD, Olaf Frohn). Para regerar: `npm pack d3-celestial` e rodar o script com a pasta `package/data`.
+- **Onde abrir:** só na **Maleta**, no cartão do merkhet (o prumo de fio com que os sacerdotes observavam as estrelas), depois da mala de câmeras. Saiu da página inicial e dos Saberes. A janela do app libera câmera, localização e sensores para essa página.
 - A Vivian não quis o botão do céu da noite no Deserto Branco: só o céu de agora.

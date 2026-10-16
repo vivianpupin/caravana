@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "16/10 · 10:38";</script>
+<script>window.__VERSAO = "16/10 · 10:56";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1903,8 +1903,7 @@ video.mgrande{max-height:70vh;background:#000}
 .marca .apaga{background:none;border:0;color:inherit;opacity:.7;font-size:18px;padding:0 4px;cursor:pointer}
 .rocha .vazia{grid-column:1/-1;text-align:center;color:#E0B889;font:18px/1.6 "Rock Salt","Caveat",cursive;margin:auto}
 </style>
-<style id="tema-gibi">
-/* ===== Tema gibi do Egito: papel de revista em quadrinhos dos anos 40, tinta preta, mostarda, vermelho-tijolo e azul desbotado =====
+<style id="tema-gibi">/* ===== Tema gibi do Egito: papel de revista em quadrinhos dos anos 40, tinta preta, mostarda, vermelho-tijolo e azul desbotado =====
    Este bloco entra depois do visual da Índia e só repinta: as funções e a disposição das telas continuam as mesmas. */
 :root{
   --bg:#E6D2A3; --panel:#F3E4BC; --panel2:#EFDDB0; --panel3:#E2CB96;
@@ -2363,6 +2362,10 @@ html[data-tab] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{backgroun
 .oraculocard.ceucard{background:radial-gradient(1.2px 1.2px at 78% 22%,#fff,transparent),radial-gradient(1px 1px at 88% 60%,#fff,transparent),radial-gradient(1.6px 1.6px at 66% 75%,#FFE9B0,transparent),radial-gradient(1px 1px at 92% 34%,#fff,transparent),radial-gradient(1.3px 1.3px at 58% 30%,#fff,transparent),radial-gradient(1px 1px at 72% 48%,#cfd8ff,transparent),radial-gradient(1px 1px at 96% 82%,#fff,transparent),linear-gradient(115deg,transparent 45%,rgba(190,180,255,.10) 60%,transparent 75%),radial-gradient(ellipse at 70% 120%,#24305A,#0E1430 55%,#070A16)}
 .oraculocard.ceucard .escglifo{color:#F3D58E}
 
+/* o Céu de Nut na Maleta: o merkhet, o prumo dos sacerdotes, desenhado no cartão estrelado */
+.oraculocard.merkhetcard{margin:18px 0 6px}
+.oraculocard.merkhetcard .merkhet{flex:none;width:96px;height:100px;align-self:center;filter:drop-shadow(0 3px 6px rgba(0,0,0,.55))}
+.oraculocard.merkhetcard .merkhet svg{width:100%;height:100%;display:block}
 </style>
 
 <div class="app">
@@ -2937,7 +2940,6 @@ function vTravessia() {
       h("div", null, h("b", { class: "hora", "data-tz": "Africa/Cairo", text: horaEm("Africa/Cairo") }), h("span", { text: "Agora no Egito" })),
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +6h" }))),
     vGarrafaVolta(),
-    vCeuCard(),
     vMissoes(),
     vOnlineLider(),
     vTempo(),
@@ -3397,10 +3399,17 @@ function preCarregaPlanetas() {
   GRAHAS.forEach(x => { const i = new Image(); i.src = "img/planetas/" + x.id + ".webp"; PLANETAS_PRE.push(i.decode ? i.decode().catch(() => {}) : Promise.resolve()); });
   return PLANETAS_PRE;
 }
+// na Maleta, junto das câmeras: o merkhet, o instrumento dos sacerdotes egípcios para observar as estrelas, abre o Céu de Nut
+const MERKHET_SVG = `<svg viewBox="10 4 104 110" aria-hidden="true"><defs><linearGradient id="mkm" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#C98B4A"/><stop offset="1" stop-color="#7A4A1E"/></linearGradient><linearGradient id="mko" x1="0" x2="1"><stop offset="0" stop-color="#F6DC93"/><stop offset=".5" stop-color="#D3A043"/><stop offset="1" stop-color="#8E6522"/></linearGradient></defs>
+<g fill="#F3D58E"><path d="M98 14l1.6 4.6 4.8.1-3.9 2.9 1.4 4.7-3.9-2.8-3.9 2.8 1.4-4.7-3.9-2.9 4.8-.1z"/><path d="M76 8l1 2.8 3 .1-2.4 1.8.9 2.9-2.5-1.7-2.4 1.7.9-2.9-2.4-1.8 3-.1z"/><path d="M108 40l.8 2.2 2.3.1-1.9 1.4.7 2.2-1.9-1.3-1.9 1.3.7-2.2-1.9-1.4 2.3-.1z"/></g>
+<path d="M14 40c0-3 2-5 5-5h54c4 0 7 2 9 5l3 4c1 2 0 3-2 3H19c-3 0-5-2-5-4z" fill="url(#mkm)" stroke="#3B2210" stroke-width="1.6"/>
+<path d="M84 42l18-12" stroke="#3B2210" stroke-width="5" stroke-linecap="round"/><path d="M84 42l18-12" stroke="url(#mko)" stroke-width="3" stroke-linecap="round"/>
+<path d="M22 37h52M28 44h40" stroke="#3B2210" stroke-width=".9" opacity=".6"/><g fill="#3B2210" opacity=".8"><circle cx="34" cy="40.5" r="1.4"/><path d="M42 39h3v3h-3zM50 38.6l2 3.4h-4z"/><circle cx="60" cy="40.5" r="1.4"/></g>
+<path d="M30 47v46" stroke="#E9D7AE" stroke-width="1.1"/><path d="M30 93c-5 0-7 4-7 8 0 5 3 9 7 9s7-4 7-9c0-4-2-8-7-8z" fill="url(#mko)" stroke="#3B2210" stroke-width="1.6"/><path d="M27 99c1-2 3-3 5-2" stroke="#FFF2C8" stroke-width="1.2" fill="none" opacity=".8"/></svg>`;
 function vCeuCard() {
-  return h("button", { type: "button", class: "oraculocard amon escriba ceucard", onclick: () => abrirPagina("ceu.html", "O Céu de Nut") },
-    h("span", { class: "escglifo", text: "𓇯" }), h("span", { class: "orctx" }, h("small", { text: "Observatório da caravana" }), h("b", { text: "O Céu de Nut" }),
-      h("span", { text: "Aponte o celular para o céu e veja as estrelas, a Lua, o Sol e os planetas com os nomes que os egípcios davam." })));
+  return h("button", { type: "button", class: "oraculocard amon escriba ceucard merkhetcard", onclick: () => abrirPagina("ceu.html", "O Céu de Nut") },
+    (() => { const e = h("span", { class: "merkhet" }); e.innerHTML = MERKHET_SVG; return e; })(), h("span", { class: "orctx" }, h("small", { text: "Merkhet · o observatório" }), h("b", { text: "O Céu de Nut" }),
+      h("span", { text: "Com este prumo de fio, os sacerdotes liam as estrelas. Aponte o celular para o céu e veja estrelas, Lua, Sol e planetas com os nomes egípcios." })));
 }
 function vOraculoCard() {
   let L = null; try { L = JSON.parse(localStorage.getItem("cdi-oraculo-egito") || "null"); } catch (e) {}
@@ -3493,7 +3502,6 @@ function vSaberes() {
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Para ler pelo caminho" }), h("h1", { text: "Saberes da travessia" }))),
     h("p", { class: "lede", text: "Cada carimbo guarda uma história. Ela se abre quando o passaporte é carimbado no lugar sagrado." }),
     vOraculoCard(),
-    vCeuCard(),
     sab.length ? h("p", { class: "lidoscont", text: `Você já leu ${sab.filter(x => S.lidos[x.id] && lib(x)).length} de ${sab.length}` }) : null,
     sab.length ? h("div", { class: "sabgrid" }, sab.map(x => {
       const l = x.localId && localDe(x.localId), ok = lib(x);
@@ -7148,6 +7156,7 @@ function vEstante() {
       h("div", { class: "itens" }, lin.map(c => h("button", { type: "button", class: "camitem", onclick: () => escolheCamera(c.id) },
         imgCam(c), h("span", { class: "etiqueta", text: c.nome })))),
       h("div", { class: "tabua" })))),
+    vCeuCard(),
     vDiarioViajante(),
     ehLider(S.uid) ? chaveLogoLider() : null);
 }
