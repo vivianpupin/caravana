@@ -293,56 +293,25 @@ function desenhaGlifo(g, cc, p, escuro) { // o hieróglifo da constelação, gra
   x.save(); x.translate(p[0], p[1]); x.rotate(ang); x.globalAlpha = .3 + .12 * escuro; x.textAlign = "center"; x.textBaseline = "middle";
   x.font = `${Math.round(tam)}px 'Noto Sans Egyptian Hieroglyphs', serif`; x.lineWidth = Math.max(1.5, tam / 60); x.strokeStyle = "#F3D58E"; x.strokeText(g, 0, 0); x.fillStyle = "rgba(217,138,46,.55)"; x.fillText(g, 0, 0); x.restore(); x.textBaseline = "alphabetic"; }
 function estrelinha(cx, cy, r) { x.beginPath(); for (let k = 0; k < 10; k++) { const a = -Math.PI / 2 + k * Math.PI / 5, rr = k % 2 ? r * .42 : r; x.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); } x.closePath(); x.fill(); }
-// Nut como nos tetos das tumbas do Vale dos Reis (Ramsés VI): o corpo laranja, com contorno escuro, estendido ao longo da
-// Via Láctea; a cabeça pende no oeste, onde ela engole Rá ao entardecer, e o disco vermelho renasce perto das pernas, no leste.
-// Os braços e as pernas descem até tocar o horizonte. Tudo é posto no céu (graus ao longo do corpo e graus para baixo).
+// Nut desenhada como nas pinturas egípcias (img/nut-ceu.svg): o corpo em arco ao longo da Via Láctea, as mãos no oeste, onde
+// ela engole Rá ao entardecer, e os pés no leste, onde ele renasce. O desenho gira e acompanha o céu, como a arte dos apps de céu.
+const NUT = { img: null }; (() => { const i = new Image(); i.onload = () => { const c = document.createElement("canvas"); c.width = 2400; c.height = 1248; c.getContext("2d").drawImage(i, 0, 0, 2400, 1248); NUT.img = c; sujo = true; }; i.src = "img/nut-ceu.svg"; })();
 function desenhaNut(escuro) {
-  const n = EQUADOR.length, alts = EQUADOR.map(v => dot(v, Q.z)); let c0 = 0; alts.forEach((v, i) => { if (v > alts[c0]) c0 = i; });
+  if (!NUT.img) return; const n = EQUADOR.length, alts = EQUADOR.map(v => dot(v, Q.z)); let c0 = 0; alts.forEach((v, i) => { if (v > alts[c0]) c0 = i; });
   if (alts[c0] < Math.sin(20 * RAD)) return; // a Via Láctea está baixa demais
-  const corpo = []; for (let k = -27; k <= 27; k++) corpo.push(EQUADOR[(c0 + k + n) % n]); // o corpo: 108° do céu, centrado no ponto mais alto
-  const az = v => Math.atan2(dot(v, Q.h.e), dot(v, Q.h.n));
-  if (Math.sin(az(corpo[0])) > Math.sin(az(corpo[corpo.length - 1]))) corpo.reverse(); // a cabeça no lado do oeste
-  const S = (corpo.length - 1) * 2, norm = v => { const l = Math.hypot(...v); return v.map(q => q / l); };
-  // braços e pernas saem perpendiculares ao corpo, para o lado do horizonte (como nas pinturas, o corpo reto e os membros em pé)
-  const sg = dot(POLO_GAL, Q.z) > 0 ? -1 : 1, lado = POLO_GAL.map(q => q * sg);
-  const ponto = (s, t) => { // s: graus ao longo do corpo a partir da cabeça; t: graus para o lado dos membros
-    const f = Math.max(0, Math.min(S, s)) / 2, i = Math.min(corpo.length - 2, Math.floor(f)), u = f - i, a = corpo[i], b = corpo[i + 1];
-    let v = norm([0, 1, 2].map(k => a[k] * (1 - u) + b[k] * u)); const ex = s < 0 ? s : s > S ? s - S : 0;
-    if (ex) { const tg = norm([0, 1, 2].map(k => b[k] - a[k])); v = norm([0, 1, 2].map(k => v[k] * Math.cos(ex * RAD) + tg[k] * Math.sin(ex * RAD))); }
-    return P([0, 1, 2].map(k => v[k] * Math.cos(t * RAD) + lado[k] * Math.sin(t * RAD))); };
-  const aH = 30, aP = 30, T = 2.8;
-  const forma = (pts, cor) => { if (pts.some(p => !p)) return; x.beginPath(); pts.forEach((p, i) => i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1])); x.closePath();
-    x.fillStyle = cor; x.fill(); x.stroke(); };
-  const disco = (s, t, r, cor) => { const c = ponto(s, t), e = ponto(s + r, t); if (!c || !e) return; x.fillStyle = cor; x.beginPath(); x.arc(c[0], c[1], Math.hypot(e[0] - c[0], e[1] - c[1]), 0, 7); x.fill(); x.stroke(); return c; };
-  const faixa = (s0, s1, t0, t1, passo = 1) => { const a = [], b = []; for (let t = t0; t <= t1 + .001; t += passo) { a.push(ponto(s0, t)); b.unshift(ponto(s1, t)); } return a.concat(b); };
-  nx.setTransform(DPR, 0, 0, DPR, 0, 0); nx.clearRect(0, 0, W, H); const xs = x; x = nx;
-  const pele = "#D98A2E", traco = "#5A2410", cabelo = "#1F3570", sol = "#B8321F";
-  x.strokeStyle = traco; x.lineWidth = 1.6; x.lineJoin = "round";
-  // braços (no oeste) e pernas (no leste), descendo até o horizonte, com as mãos e os pés espalmados no chão
-  forma(faixa(1.2, 3.6, 0, aH, 2), pele); forma(faixa(4.4, 6.8, 0, aH, 2), pele);
-  forma([ponto(3.6, aH - 1.6), ponto(-2.2, aH - .5), ponto(-2.2, aH), ponto(3.6, aH)], pele);
-  forma([ponto(6.8, aH - 1.6), ponto(1, aH - .5), ponto(1, aH), ponto(6.8, aH)], pele);
-  forma(faixa(S - 7.2, S - 4.6, 0, aP, 2), pele); forma(faixa(S - 3.8, S - 1.2, 0, aP, 2), pele);
-  forma([ponto(S - 7.2, aP - 1.8), ponto(S - 1.4, aP - .4), ponto(S - 1.4, aP), ponto(S - 7.2, aP)], pele);
-  forma([ponto(S - 3.8, aP - 1.8), ponto(S + 2.2, aP - .4), ponto(S + 2.2, aP), ponto(S - 3.8, aP)], pele);
-  // o corpo: uma faixa arredondada nas pontas, com a linha de estrelas
-  const cima = [], baixo = []; for (let s = .6; s <= S - .6 + .001; s += Math.min(2, S / 40)) { cima.push(ponto(s, -T)); baixo.unshift(ponto(s, T)); }
-  if (!cima.some(p => !p) && !baixo.some(p => !p)) forma(cima.concat(baixo), pele);
-  else { x.fillStyle = pele; for (let s = 0; s < S; s += 2) { const q = [ponto(s, -T), ponto(s + 2.2, -T), ponto(s + 2.2, T), ponto(s, T)]; if (q.some(p => !p)) continue; x.beginPath(); q.forEach((p, i) => i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1])); x.fill(); } }
-  // os seios, a cabeça pendendo com o cabelo azul e Rá entrando pela boca
-  disco(19, T, 1.8, pele);
-  // a cabeça é o hieróglifo da cabeça de perfil (𓁶), pendendo para o chão, com o rosto virado para os braços
-  { const c = ponto(11, T + 5.5), cima = ponto(11, T), e = ponto(15.5, T + 5.5); if (c && cima && e) { const ang = Math.atan2(cima[0] - c[0], -(cima[1] - c[1])), tam = Math.hypot(e[0] - c[0], e[1] - c[1]) * 2.6;
-    const lad = (e[0] - c[0]) * Math.cos(ang) + (e[1] - c[1]) * Math.sin(ang); // para que lado fica o resto do corpo
-    x.save(); x.translate(c[0], c[1]); x.rotate(ang); if (lad < 0) x.scale(-1, 1); x.font = `${Math.round(tam)}px 'Noto Sans Egyptian Hieroglyphs', serif`; x.textAlign = "center"; x.textBaseline = "middle";
-    x.lineWidth = Math.max(2, tam / 14); x.strokeStyle = traco; x.strokeText("𓁶", 0, 0); x.fillStyle = pele; x.fillText("𓁶", 0, 0); x.restore(); x.lineWidth = 1.6; x.strokeStyle = traco; } }
-  disco(5.6, T + 6.6, 1.7, sol); disco(S - 11, T + 2.6, 2, sol);
-  x.fillStyle = "#FFE08A"; x.strokeStyle = traco; x.lineWidth = .8;
-  for (let s = 21; s < S - 15; s += 6) { const p = ponto(s, 0), e = ponto(s + 1.3, 0); if (p && e && naTela(p, 20)) { estrelinha(p[0], p[1], Math.hypot(e[0] - p[0], e[1] - p[1])); x.stroke(); } }
-  x = xs; x.save(); x.globalAlpha = .62 * Math.max(.6, escuro); x.drawImage(ncv, 0, 0, W, H); x.restore();
-  // o nome dela em hieróglifos (nwt, com o sinal do céu) sobre o corpo
-  const meio = ponto(S / 2, -T - 2.5); if (naTela(meio, 0)) { x.textAlign = "center"; x.font = "30px 'Noto Sans Egyptian Hieroglyphs', serif"; x.fillStyle = "rgba(243,213,142,.95)"; x.fillText("𓏌𓏏𓇯", meio[0], meio[1] - 14);
-    x.font = "600 14px Cinzel, Georgia, serif"; x.fillText("NUT", meio[0], meio[1] + 4); alvos.push({ p: meio, tipo: "nut" }); }
+  const C0 = EQUADOR[c0], p0 = P(C0); if (!p0) return;
+  const az = v => Math.atan2(dot(v, Q.h.e), dot(v, Q.h.n)), oeste = Math.sin(az(EQUADOR[(c0 - 10 + n) % n])) < Math.sin(az(EQUADOR[(c0 + 10) % n]));
+  const A = P(EQUADOR[(c0 + (oeste ? -1 : 1) + n) % n]), B = P(EQUADOR[(c0 + (oeste ? 1 : -1) + n) % n]); if (!A || !B) return;
+  const lb = Math.hypot(B[0] - A[0], B[1] - A[1]) || 1, ex = [(B[0] - A[0]) / lb, (B[1] - A[1]) / lb], ppd = Q.F * RAD; // tamanho pela escala do centro da tela (sem a distorção das bordas)
+  const sg = dot(POLO_GAL, Q.z) > 0 ? -1 : 1, D = P([0, 1, 2].map(k => C0[k] * Math.cos(5 * RAD) + POLO_GAL[k] * sg * Math.sin(5 * RAD))); if (!D) return;
+  let ey = [D[0] - p0[0], D[1] - p0[1]]; const pr = ey[0] * ex[0] + ey[1] * ex[1]; ey = [ey[0] - pr * ex[0], ey[1] - pr * ex[1]]; const le = Math.hypot(...ey) || 1; ey = [ey[0] / le, ey[1] / le];
+  const s = ppd * 95 / 780, a = ex[0] * s, b = ex[1] * s, c = ey[0] * s, d = ey[1] * s, e = p0[0] - (a * 510 + c * 90), f = p0[1] - (b * 510 + d * 90);
+  x.save(); x.setTransform(DPR * a, DPR * b, DPR * c, DPR * d, DPR * e, DPR * f); x.globalAlpha = .52 * Math.max(.6, escuro); x.imageSmoothingQuality = "high"; x.drawImage(NUT.img, 0, 0, 1000, 520); x.restore();
+  // o nome dela em hieróglifos (nwt, com o sinal do céu) acima das costas
+  const m = [a * 510 + c * -40 + e, b * 510 + d * -40 + f];
+  if (naTela(m, 0)) { x.textAlign = "center"; x.font = "28px 'Noto Sans Egyptian Hieroglyphs', serif"; x.fillStyle = "rgba(243,213,142,.95)"; x.fillText("𓏌𓏏𓇯", m[0], m[1] - 12);
+    x.font = "600 14px Cinzel, Georgia, serif"; x.fillText("NUT", m[0], m[1] + 6); }
+  alvos.push({ p: naTela(p0, 0) ? p0 : m, tipo: "nut" });
 }
 function desenhaLua(p, fase) { const r = 14; x.save(); x.fillStyle = "rgba(40,44,60,.9)"; x.beginPath(); x.arc(p[0], p[1], r, 0, 7); x.fill();
   const f = Math.cos(fase * RAD), cresc = fase < 180; x.fillStyle = "#F4F0E2"; x.beginPath();
