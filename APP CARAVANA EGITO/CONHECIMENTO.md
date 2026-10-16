@@ -288,3 +288,4 @@ O roteiro contratado, dia a dia (sem os valores). Complementa o roteiro da Vivia
   - Os 12 deuses ficam em medalhões num anel de bronze, em volta do disco do teto de Dendera (foto da Vivian, `tools/egito/roda-centro.py` → `img/roda-centro.webp`).
   - A roda gira devagar. A pessoa segura o botão, a roda acelera e a luz pula de deus em deus com vibração e um "tim". Ao soltar, a roda freia, para num deus e ele sobe para o alto.
   - Depois vêm a leitura do deus, o amuleto dele e a bolsa de três amuletos.
+  - A tela da roda também fica sobre o fundo de areia, com os textos escuros.
