@@ -2321,11 +2321,6 @@ html[data-tab] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{backgroun
 .cartnome::after{left:-7px;right:-7px;bottom:-6px;height:6px;border-radius:2px;background:#2F6FA8;box-shadow:inset 0 -2px 0 #B5402A,0 2px 4px rgba(60,35,10,.25)}
 .cartnome .sinais{font-size:25px;gap:3px;line-height:1.1}
 
-/* cartucho nas cores da referência da Vivian: terracota com contorno ocre, sinais escuros, brancos, ocre e verdes, e a barra do nó ocre com amarração vermelha e verde */
-.cartnome{background:#B0664A;border:3px solid #C9A24E;box-shadow:0 0 0 1px #5A3A1E,inset 0 0 0 1px #5A3A1E,inset 0 0 10px rgba(60,25,10,.35),0 3px 8px rgba(60,35,10,.3)}
-.cartnome::after{height:8px;bottom:-7px;left:-9px;right:-9px;border-radius:2px;background:linear-gradient(90deg,#C9A24E 0 22%,#7A2E22 22% 31%,#73B583 31% 40%,#7A2E22 40% 49%,#73B583 49% 58%,#7A2E22 58% 67%,#73B583 67% 78%,#C9A24E 78%);box-shadow:0 0 0 1px #5A3A1E}
-.cartnome .sinais{-webkit-text-stroke:.6px currentColor;text-shadow:0 1px 0 rgba(40,15,5,.45)}
-
 </style>
 
 <div class="app">
@@ -2801,9 +2796,9 @@ setInterval(() => {
 const CART_SINAIS = { A: "𓄿", B: "𓃀", C: "𓎡", Ç: "𓋴", D: "𓂧", E: "𓇋", F: "𓆑", G: "𓎼", H: "𓉔", I: "𓇋", J: "𓆓", K: "𓎡", L: "𓃭", M: "𓅓", N: "𓈖", O: "𓅱",
   P: "𓊪", Q: "𓈎", R: "𓂋", S: "𓋴", T: "𓏏", U: "𓅱", V: "𓆑", W: "𓅱", X: "𓈙", Y: "𓇌", Z: "𓊃", CH: "𓈙", KH: "𓐍", TH: "𓍿" };
 // as mesmas tintas egípcias da oficina do escriba (hieroglifos.html)
-const CART_COR = { A: "#F4EEE2", B: "#4A2418", C: "#D9AE55", Ç: "#4A2418", D: "#4A2418", E: "#73B583", F: "#4A2418", G: "#D9AE55", H: "#4A2418", I: "#73B583",
-  J: "#4A2418", K: "#D9AE55", L: "#F4EEE2", M: "#4A2418", N: "#73B583", O: "#D9AE55", P: "#73B583", Q: "#4A2418", R: "#F4EEE2", S: "#4A2418",
-  T: "#D9AE55", U: "#D9AE55", V: "#4A2418", W: "#D9AE55", X: "#73B583", Y: "#73B583", Z: "#4A2418", CH: "#73B583", KH: "#D9AE55", TH: "#4A2418" };
+const CART_COR = { A: "#2B2420", B: "#B5402A", C: "#C27A2C", Ç: "#2F6FA8", D: "#B5402A", E: "#3E8A5C", F: "#B07A2A", G: "#B5402A", H: "#2F6FA8", I: "#3E8A5C",
+  J: "#D9962A", K: "#C27A2C", L: "#D9862A", M: "#2B2420", N: "#2F6FA8", O: "#C9922E", P: "#3E8A5C", Q: "#D9862A", R: "#B5402A", S: "#2F6FA8",
+  T: "#8A5A2A", U: "#C9922E", V: "#B07A2A", W: "#C9922E", X: "#2F8A8A", Y: "#3E8A5C", Z: "#8A5A2A", CH: "#2F8A8A", KH: "#8A3A22", TH: "#2F6FA8" };
 function cartSons(nome) {
   const t = String(nome || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/[^A-ZÇ]/g, ""), out = [];
   for (let i = 0; i < t.length; i++) { let k = t[i];
