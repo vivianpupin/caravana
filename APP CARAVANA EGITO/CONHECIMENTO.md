@@ -335,3 +335,4 @@ Tudo seguindo o roteiro oficial (`app/dados/travessia.json`, 8 a 20/10/2027). Po
 - Cartucho no formato dos faraós: oval alongado em pé, corda dupla (azul com filete vermelho) e a barra do nó embaixo, colada e mais larga que o cartucho. Na página inicial ele tem 52px de largura.
 - Cartucho (atualizado) nas cores da referência da Vivian: terracota com contorno ocre, sinais em marrom escuro, branco, ocre e verde, e a barra do nó ocre com amarração vermelha e verde. Vale para a oficina e para a página inicial.
 - Cartucho: a Vivian voltou para a versão clara (papiro creme, corda azul com filete vermelho, sinais coloridos). A versão terracota e as texturas de parede foram descartadas.
+- Cartucho da página inicial: pequeno (32px de largura), no canto de cima à esquerda.
