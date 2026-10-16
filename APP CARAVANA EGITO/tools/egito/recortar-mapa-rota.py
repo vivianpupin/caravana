@@ -1,6 +1,6 @@
 # Recorta o mapa "a rota da Caravana" do print do material (referencias/mapa-game/mapa-rota-caravana-pdf.png)
 # mantendo EXATAMENTE as bordas rasgadas originais (em cima e embaixo) e os lados retos do slide.
-# Tira só o selo do canto e a barra de rolagem do print, cobrindo com papel liso do próprio mapa.
+# Tira o título "a rota da Caravana", o selo do canto e a barra de rolagem do print, cobrindo com papel liso do próprio mapa.
 import pathlib
 import numpy as np
 from PIL import Image
@@ -12,8 +12,10 @@ yy, xx = np.mgrid[0:H, 0:W]
 pat = a[522:632, 420:530].copy()
 lin = np.concatenate([pat, pat[:, ::-1]], axis=1); bloco = np.concatenate([lin, lin[::-1]], axis=0)
 camada = np.tile(bloco, (int(np.ceil(H / bloco.shape[0])), int(np.ceil(W / bloco.shape[1])), 1))[:H, :W]
-alvo = (((xx - 1258) ** 2 + (yy - 73) ** 2 < 54 ** 2) | ((xx >= W - 30) & (yy < 150))).astype(float)
-peso = ndimage.gaussian_filter(alvo, 7)[..., None]
+rgb = a; claro = (rgb.mean(2) > 215) & ((rgb.max(2) - rgb.min(2)) < 40) & (xx > 830) & (xx < 1260) & (yy > 80) & (yy < 220)
+titulo = ndimage.binary_dilation(claro, iterations=14)
+alvo = (((xx - 1258) ** 2 + (yy - 73) ** 2 < 54 ** 2) | ((xx >= W - 30) & (yy < 150)) | titulo).astype(float)
+peso = np.clip(ndimage.gaussian_filter(alvo, 7) * 1.7, 0, 1)[..., None]
 a = a * (1 - peso) + camada * peso
 lum = a.mean(2)
 lab, n = ndimage.label(lum < 72)
