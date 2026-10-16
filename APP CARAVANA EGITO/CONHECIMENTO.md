@@ -360,3 +360,4 @@ Tudo seguindo o roteiro oficial (`app/dados/travessia.json`, 8 a 20/10/2027). Po
 - A Vivian não quis o botão do céu da noite no Deserto Branco: só o céu de agora.
 
 - **Página inicial (16/10/2026):** na ordem da Índia: moeda, título, grade (dias para embarcar, hora no Egito, hora de Brasília), frase que troca e mapa. A Vivian pediu para tirar o cartucho do nome da página inicial (a função `vCartuchoNome` continua no código, sem uso).
+- **Página inicial menos poluída (16/10/2026):** a Vivian achou o Egito espremido perto da Índia. A parede de hieróglifos ficou mais clara e só atrás da moeda e do título; a grade virou cartões claros arredondados, sem borda, com a legenda em Poppins (como na Índia); e há mais espaço entre título, grade, frase e mapa.
