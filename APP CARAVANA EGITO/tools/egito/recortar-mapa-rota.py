@@ -23,6 +23,21 @@ ids = set(np.unique(np.concatenate([lab[0], lab[-1]]))) - {0}; tam = np.bincount
 fundo = np.isin(lab, [i for i in ids if tam[i] > 3000])          # só o fundo escuro de cima e de baixo
 m = ndimage.binary_opening(~fundo, iterations=1)
 lab2, _ = ndimage.label(m); m = ndimage.binary_fill_holes(lab2 == np.argmax(np.bincount(lab2.ravel())[1:]) + 1)
+# onde o papel encostava no topo do slide (canto de cima à direita), a borda era reta: rasga ali também,
+# com a mesma cara das bordas rasgadas originais (recortes irregulares e beirada queimada)
+toca = m[:4].any(0)
+if toca.any():
+    r = np.random.default_rng(9); xs = np.arange(W)
+    serra = np.zeros(W)
+    for esc, amp in ((140, 46), (40, 22), (10, 9), (4, 4)):
+        k = r.random(W // esc + 3); serra += amp * np.interp(xs / esc, np.arange(len(k)), k)
+    rampa = ndimage.gaussian_filter1d(toca.astype(float), 25)        # entra suave a partir do rasgo que já existia
+    borda = (10 + serra) * np.clip(rampa * 1.4, 0, 1)
+    m &= ~(yy < borda[None, :])
+    dist = ndimage.distance_transform_edt(m)
+    perto = (yy < borda[None, :] + 40) & m
+    queima = np.clip(1 - dist / 22, 0, 1) * perto
+    a = a * (1 - queima[..., None] * .55) + np.array([70, 40, 18.]) * queima[..., None] * .55
 alpha = ndimage.gaussian_filter(m.astype(float), .8) * 255
 Image.fromarray(np.dstack([np.clip(a, 0, 255).astype("uint8"), alpha.clip(0, 255).astype("uint8")]), "RGBA").crop((0, 0, 1320, 1242)).save(raiz / "app/img/mapa-rota.webp", "WEBP", quality=92)
 print("ok")
