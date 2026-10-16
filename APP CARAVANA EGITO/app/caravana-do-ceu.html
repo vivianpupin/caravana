@@ -2235,6 +2235,16 @@ nav.tabs{background:#24180F!important;border-top:0!important;box-shadow:none!imp
 .mapahero h1::after{content:"𓇼 𓋹 𓇼";display:block;margin-top:6px;font:16px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.5em;color:rgba(60,36,14,.45)}
 /* os lados retos do mapa somem no papiro (sem linha de corte) */
 .mmundo>img{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%)}
+
+/* Mensageiro do Nilo: a felucca balança na água em vez de bater asas */
+.felucca .asa{animation:none!important;transform:none!important}
+svg.felucca{overflow:visible}
+.pombo.felucca{animation:navega 4s ease-in-out infinite}
+@keyframes navega{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-3px) rotate(1.5deg)}}
+.nilonota{font-style:italic;opacity:.85}
+html[data-tab="pombo"] body::before{background:url(img/fundo-papiro-escuro.webp) center/cover no-repeat;filter:none}
+html[data-tab="pombo"] body::after{background:radial-gradient(ellipse at 50% 45%,transparent 60%,rgba(60,35,10,.25))}
+html[data-tab="pombo"] :is(.view>.head h1,.pombohead h1,.pombohead .lede,.view>p.small){color:var(--ink);text-shadow:none}
 </style>
 
 <div class="app">
@@ -2256,7 +2266,7 @@ nav.tabs{background:#24180F!important;border-top:0!important;box-shadow:none!imp
     <button data-tab="cambio"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 8h6M9 10.8h6M10.5 8c2.2 0 3.2 1.2 3.2 2.8S12.7 13.6 10.5 13.6H9.5l4.2 3.4"/></svg></span>Câmbio</button>
     <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
     <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Pedra</button>
-    <button data-tab="pombo"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.6c-.3-1.2-.2-2.3.5-2.9l3.1.2-2.4 1.2c-.4.4-.8 1-1.2 1.5z"/><path d="M12 6.6l.1 9.4"/><path d="M12 9.4C9.4 7.2 6.4 6.9 2.8 8.4M12 9.4c2.6-2.2 5.6-2.5 9.2-1M5 8l-.6 2.4M7.4 7.5l-.4 2.6M9.8 8.1l-.3 2.3M19 8l.6 2.4M16.6 7.5l.4 2.6M14.2 8.1l.3 2.3"/><path d="M12.1 16l-3 4.2M12.1 16l.1 4.8M12.1 16l3 4.2"/></svg></span>Pombo</button>
+    <button data-tab="pombo"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16.5h18l-2.2 3H5.2z"/><path d="M11.5 16.5V3.5"/><path d="M11.8 3.5L19.5 14.5H6.5c2.4-3 4.5-7 5.3-11z"/><path d="M2.5 21.5c1.5.7 3 .7 4.5 0s3-.7 4.5 0 3 .7 4.5 0 3-.7 4.5 0"/></svg></span>Nilo</button>
   </nav>
 </div>
 
@@ -2811,7 +2821,7 @@ const MISSOES = [
   ["guardiao", "Conhecer o seu guardião", "A história do guardião da sua passagem, onde vocês se encontram na viagem e o mantra dele.", v => false, () => abrirGuardiao(0)],
   ["intencao", "Mensagem na garrafa", "Escreva e lance a garrafa no rio.", v => !!lerIntencao(), () => abrirIntencao()],
   ["camera", "Testar uma câmera da maleta", "Tire uma foto com uma das câmeras antigas.", v => false, () => go("fotos")],
-  ["pombo", "Mandar um pombo-correio", "Uma cartinha para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")]
+  ["pombo", "Mandar um mensageiro do Nilo", "Uma cartinha em papiro para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")]
 ];
 // pistas: tudo o que vai para a Galeria antes da viagem é pista; a missão só aparece quando existe alguma
 const INICIO_VIAGEM = Date.parse("2027-10-08T00:00:00+03:00");
@@ -8796,18 +8806,22 @@ const dataCarta = ts => new Date(ts).toLocaleDateString("pt-BR", { day: "numeric
 const horaCarta = ts => new Date(ts).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Cairo" });
 const primeiroNome = () => { const v = eu(); return v && v.nome ? v.nome.split(" ")[0] : "viajante"; };
 function pomboSvg(cls) {
-  return h("svg", { class: cls, viewBox: "0 0 64 48", "aria-hidden": "true" },
-    h("path", { d: "M6 30 Q18 22 32 24 Q42 19 49 14 Q53 11 57 14 Q59 17 56 20 L62 22 L55 23 Q51 32 38 35 Q26 38 14 36 L3 41 L7 32 Z", fill: "#8E8A82" }),
-    h("path", { class: "asa", d: "M20 27 Q27 5 45 3 Q39 14 37 27 Z", fill: "#6F6A62" }),
-    h("circle", { cx: 53.5, cy: 16, r: 1.2, fill: "#2B1F14" }),
-    h("rect", { x: 26, y: 34, width: 14, height: 6, rx: 3, fill: "#EBD6A6", stroke: "#8A6A3F", "stroke-width": .8 }),
-    h("path", { d: "M33 33.5 V40.5", stroke: "#8A2A1F", "stroke-width": 1.6 }));
+  // felucca com vela latina levando um rolo de papiro lacrado (o nome da função ficou do pombo-correio da Índia)
+  return h("svg", { class: cls + " felucca", viewBox: "0 0 64 48", "aria-hidden": "true" },
+    h("path", { d: "M4 38 Q16 41 32 41 Q48 41 60 37", fill: "none", stroke: "#4F8FA8", "stroke-width": 1.6, "stroke-linecap": "round", opacity: .7 }),
+    h("path", { d: "M8 33 L56 33 Q52 40 40 40 L22 40 Q11 40 8 33 Z", fill: "#7A4A26", stroke: "#3A2412", "stroke-width": .8 }),
+    h("path", { d: "M10 33 L54 33", stroke: "#B5402A", "stroke-width": 1.2 }),
+    h("path", { d: "M30 33 L31 6", stroke: "#3A2412", "stroke-width": 1.4 }),
+    h("path", { class: "asa", d: "M31 5 L54 30 L18 30 Q28 18 31 5 Z", fill: "#F3E9D2", stroke: "#8A6A3F", "stroke-width": .8 }),
+    h("path", { d: "M24 22 L44 22 M21 26 L49 26", stroke: "#D9C79F", "stroke-width": .6 }),
+    h("rect", { x: 36, y: 34, width: 12, height: 4.6, rx: 2.3, fill: "#E9D6A8", stroke: "#8A6A3F", "stroke-width": .7 }),
+    h("circle", { cx: 42, cy: 36.3, r: 1.7, fill: "#9C4A2A" }));
 }
 function pergaminhoCarta(c) {
   return h("article", { class: "pergaminho" },
     h("span", { class: "rolo top", "aria-hidden": "true" }),
     h("div", { class: "pgm" },
-      h("p", { class: "pgmdata", text: (c.local || "Índia") + " · " + dataCarta(c.envio || Date.now()) }),
+      h("p", { class: "pgmdata", text: (c.local || "Egito") + " · " + dataCarta(c.envio || Date.now()) }),
       c.pessoal ? h("p", { class: "pgmso", text: "Só para você" }) : null,
       c.titulo ? h("h3", { class: "pgmtit", text: c.titulo }) : null,
       h("p", { class: "pgmpara", text: "Para " + primeiroNome() + "," }),
@@ -9035,12 +9049,21 @@ function vJogo() {
     cab, qual === "chaupar" ? vChaupar() : vMoksha());
 }
 // ---------- Pombo-correio entre os viajantes: cartinhas, presentes e oferendas ----------
-const PRESENTES = [["lotus", "Flor de lótus"], ["guirlanda", "Guirlanda de cravos"], ["diya", "Lamparina"], ["chai", "Um chai"], ["ladoo", "Doce ladoo"], ["incenso", "Incenso"],
-  ["pena", "Pena de pavão"], ["sino", "Sino do templo"], ["coco", "Coco de oferenda"], ["rakhi", "Fio de proteção"], ["abraco", "Um abraço"], ["coracao", "Meu coração"]];
-const presenteDe = id => PRESENTES.find(x => x[0] === id);
+const PRESENTES = [["lotus", "Flor de lótus"], ["diya", "Lamparina"], ["karkade", "Chá de hibisco"], ["tamaras", "Tâmaras"], ["incenso", "Incenso"],
+  ["penamaat", "Pena de Maat"], ["sistro", "Sistro"], ["ankh", "Ankh da vida"], ["escaravelho", "Escaravelho"], ["olho", "Olho de Hórus"], ["abraco", "Um abraço"], ["coracao", "Meu coração"]];
+const PRESENTES_ANTIGOS = [["guirlanda", "Guirlanda de cravos"], ["chai", "Um chai"], ["ladoo", "Doce ladoo"], ["pena", "Pena de pavão"], ["sino", "Sino do templo"], ["coco", "Coco de oferenda"], ["rakhi", "Fio de proteção"]];
+const presenteDe = id => PRESENTES.find(x => x[0] === id) || PRESENTES_ANTIGOS.find(x => x[0] === id);
 function desenhaPresente(id) {
   const P = (d, fill, x) => h("path", { d, fill, ...(x || {}) }), C = (cx, cy, r, fill, x) => h("circle", { cx, cy, r, fill, ...(x || {}) });
   if (id === "diya" || id === "chai") return desenhaItem(id);
+  const O = "#D4A84F", L = (d, c, w) => P(d, "none", { stroke: c, "stroke-width": w || 2, "stroke-linecap": "round", "stroke-linejoin": "round" });
+  if (id === "karkade") return [P("M10 16 L30 16 L28 33 Q20 36 12 33 Z", "#F3E9D2", { stroke: "#8A6A3F", "stroke-width": 1 }), P("M11.5 19 L28.5 19 L27 31 Q20 33.5 13 31 Z", "#A3122A"), L("M30 20 Q36 21 34 27 Q33 30 28.5 29", "#8A6A3F", 1.4), P("M15 10 q2 -4 0 -7 M20 10 q2 -4 0 -7 M25 10 q2 -4 0 -7", "none", { stroke: "#B9A88A", "stroke-width": 1, opacity: .7 })];
+  if (id === "tamaras") return [h("ellipse", { cx: 20, cy: 31, rx: 15, ry: 4.5, fill: "#C9A063" }), ...[[13, 25, -20], [20, 23, 0], [27, 25, 20], [16, 19, -10], [24, 19, 10]].map(([x, y, r]) => h("ellipse", { cx: x, cy: y, rx: 3.4, ry: 5.6, fill: "#6E2E16", stroke: "#3E1608", "stroke-width": .7, transform: `rotate(${r} ${x} ${y})` })), C(19, 17.5, 1, "#C27A4A")];
+  if (id === "penamaat") return [L("M20 36 L20 6", "#8A6A3F", 1.4), P("M20 6 Q30 12 27 24 Q24 33 20 36 Q16 33 13 24 Q10 12 20 6 Z", "#F3EAD4", { stroke: "#9C8458", "stroke-width": 1 }), L("M20 12 L25 15 M20 18 L26 21 M20 24 L25 27 M20 12 L15 15 M20 18 L14 21 M20 24 L15 27", "#C9B48C", .8)];
+  if (id === "sistro") return [L("M20 25 L20 37", "#8A6420", 2.4), P("M13 25 Q12 5 20 5 Q28 5 27 25 L24 25 Q24.5 9 20 9 Q15.5 9 16 25 Z", O, { stroke: "#8A6420", "stroke-width": .8 }), L("M12 13 L28 13 M12 19 L28 19", "#8A6420", 1.2), ...[13, 19].flatMap(y => [C(11, y, 1.3, O), C(29, y, 1.3, O)])];
+  if (id === "ankh") return [h("ellipse", { cx: 20, cy: 11, rx: 5, ry: 6.4, fill: "none", stroke: O, "stroke-width": 3.2 }), L("M10 19.5 L30 19.5", O, 3.4), L("M20 18 L20 36", O, 3.4)];
+  if (id === "escaravelho") return [h("ellipse", { cx: 20, cy: 23, rx: 10, ry: 12, fill: "#2659A8", stroke: "#0E2756", "stroke-width": 1.2 }), h("ellipse", { cx: 20, cy: 11, rx: 5, ry: 3.4, fill: "#2659A8", stroke: "#0E2756", "stroke-width": 1.2 }), L("M20 14 L20 35 M10.5 17 Q20 14 29.5 17", "#0E2756", 1.2), L("M10 20 L5 17 M10 26 L4 27 M11 31 L6 35 M30 20 L35 17 M30 26 L36 27 M29 31 L34 35", "#0E2756", 1.3), P("M15 19 Q14 25 16 29", "none", { stroke: "#9FC3EE", "stroke-width": 1.4, opacity: .7 })];
+  if (id === "olho") return [P("M5 18 Q20 7 35 18 Q20 24 5 18 Z", "#F3EAD4", { stroke: "#1E2A4A", "stroke-width": 2 }), C(20, 17, 4, "#1E2A4A"), L("M35 18 L38 18", "#1E2A4A", 2), L("M17 22 L15 33 M24 22 Q27 30 33 30 Q35 27 32 25", "#1E2A4A", 2), L("M8 11 Q20 3 33 10", "#1E2A4A", 2)];
   if (id === "lotus") return [P("M20 31 Q9 30 5 21 Q13 21 20 31Z", "#E98AA6"), P("M20 31 Q31 30 35 21 Q27 21 20 31Z", "#E98AA6"), P("M20 31 Q11 24 12 13 Q19 19 20 31Z", "#F2A7BC"), P("M20 31 Q29 24 28 13 Q21 19 20 31Z", "#F2A7BC"), P("M20 31 Q14 20 20 7 Q26 20 20 31Z", "#F7C3D1"), P("M8 33 Q20 37 32 33", "none", { stroke: "#5F8A4A", "stroke-width": 2.2, "stroke-linecap": "round" })];
   if (id === "guirlanda") return [P("M7 9 Q20 44 33 9", "none", { stroke: "#3F7A3A", "stroke-width": 1, opacity: .6 }), ...Array.from({ length: 11 }, (_, k) => { const t = k / 10, x = 7 + 26 * t, y = 9 + 4 * 25 * t * (1 - t) * 1.08; return C(x, y, 3.1, k % 2 ? "#F2A51F" : "#E2711D", { stroke: "#B5541A", "stroke-width": .4 }); }), C(20, 36, 2.4, "#C0392B")];
   if (id === "ladoo") return [h("ellipse", { cx: 20, cy: 30, rx: 16, ry: 5, fill: "#5F8A4A" }), h("ellipse", { cx: 20, cy: 29, rx: 13, ry: 3.6, fill: "#79A15F" }), C(14, 24, 5.4, "#F2A33A"), C(26, 24, 5.4, "#F2A33A"), C(20, 16.5, 5.4, "#F5B54E"), ...[[12, 22], [16, 25], [24, 22], [28, 25], [18, 15], [22, 17]].map(([x, y]) => C(x, y, .6, "#C9741A"))];
@@ -9060,7 +9083,7 @@ function marcaPombos() {
   const n = naoLidos().length, bt = document.querySelector('#tabs button[data-tab="pombo"]'); if (!bt) return;
   let pin = bt.querySelector(".pinmsg"); if (!pin) { pin = h("span", { class: "pinmsg", "aria-hidden": "true" }); bt.append(pin); }
   pin.textContent = n > 9 ? "9+" : n ? String(n) : ""; pin.hidden = !n;
-  bt.setAttribute("aria-label", n ? `Pombo-correio, ${n} ${n > 1 ? "cartinhas novas" : "cartinha nova"}` : "Pombo-correio");
+  bt.setAttribute("aria-label", n ? `Mensageiro do Nilo, ${n} ${n > 1 ? "cartinhas novas" : "cartinha nova"}` : "Mensageiro do Nilo");
 }
 // chegou cartinha nova: o pombo pousa na tela (uma vez por cartinha)
 function checaPombos() {
@@ -9077,7 +9100,7 @@ function abrirPombo(p, chegou) {
   const de = nomeDe(p.autor).split(" ")[0], pr = p.presente && presenteDe(p.presente), meu = p.autor === S.uid;
   const agradecer = async ev => { ev.currentTarget.disabled = true; ev.currentTarget.textContent = "🙏 Gratidão enviada"; try { await S.db.doc("pombos/" + p.id).update({ agradecido: true }); } catch (e) {} };
   const box = h("div", { role: "dialog", "aria-label": "Cartinha de " + de, class: "pombobox" + (chegou ? " chegou" : "") },
-    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: meu ? "Sua cartinha" : `${de} te mandou um pombo-correio!` })) : null,
+    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: meu ? "Sua cartinha" : `Chegou um papiro de ${de} pelo Nilo!` })) : null,
     h("div", { class: "pbenv" },
       h("article", { class: "cartinha" },
         h("p", { class: "ctdata", text: new Date(p.ts).toLocaleDateString("pt-BR", { day: "numeric", month: "long" }) }),
@@ -9104,7 +9127,7 @@ function escreverPombo(para) {
     onclick: ev => { const b = ev.currentTarget, on = presente !== id; presente = on ? id : null; presentes.querySelectorAll(".pbpresente").forEach(x => { x.classList.remove("on"); x.setAttribute("aria-pressed", "false"); }); if (on) { b.classList.add("on"); b.setAttribute("aria-pressed", "true"); } } },
     presenteSvg(id), h("span", { text: nome }))));
   const soltar = async ev => {
-    if (!quem) { st.textContent = "Escolha para quem o pombo vai voar."; st.className = "msg err"; return; }
+    if (!quem) { st.textContent = "Escolha para quem o mensageiro vai levar."; st.className = "msg err"; return; }
     if (!ta.value.trim() && !presente) { st.textContent = "Escreva uma cartinha ou escolha um presente."; st.className = "msg err"; return; }
     const bt = ev.currentTarget; bt.disabled = true;
     try {
@@ -9112,17 +9135,17 @@ function escreverPombo(para) {
       if (noSite() && r && r.id) fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ pombo: r.id }), keepalive: true }).catch(() => {});
       // o envelope fecha e o pombo sai voando com ele
       asas(); const caixa = bt.closest(".pombobox"); caixa.classList.add("partiu"); caixa.scrollTop = 0; caixa.style.overflow = "hidden";
-      caixa.append(h("div", { class: "partida" }, pomboSvg("pombo"), h("p", { text: `Seu pombo levantou voo até ${nomeDe(quem).split(" ")[0]}!` })));
+      caixa.append(h("div", { class: "partida" }, pomboSvg("pombo"), h("p", { text: `O barco partiu pelo Nilo levando o seu papiro até ${nomeDe(quem).split(" ")[0]}!` })));
       setTimeout(() => { closeSheets(); render(); }, 2600);
-    } catch (e) { bt.disabled = false; st.textContent = "O pombo não conseguiu sair agora. Tente de novo em instantes."; st.className = "msg err"; }
+    } catch (e) { bt.disabled = false; st.textContent = "O barco não conseguiu sair agora. Tente de novo em instantes."; st.className = "msg err"; }
   };
   const box = h("div", { role: "dialog", "aria-label": "Escrever uma cartinha", class: "pombobox" },
-    h("div", { class: "pbtopo" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Pombo-correio" }), h("h2", { text: "Uma cartinha para alguém da caravana" }))),
+    h("div", { class: "pbtopo" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Mensageiro do Nilo" }), h("h2", { text: "Um papiro para alguém da caravana" }))),
     h("p", { class: "pbpasso", text: "1 · Para quem?" }), pessoas,
     h("p", { class: "pbpasso", text: "2 · Sua cartinha" }), h("div", { class: "pbpapel" }, ta),
     h("p", { class: "pbpasso", text: "3 · Um presente ou oferenda (se quiser)" }), presentes,
     st,
-    h("div", { class: "foot2" }, h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Agora não"), h("button", { class: "btn gold", type: "button", onclick: soltar }, "🕊️ Soltar o pombo")));
+    h("div", { class: "foot2" }, h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Agora não"), h("button", { class: "btn gold", type: "button", onclick: soltar }, "Lacrar e enviar pelo Nilo")));
   const sheet = h("div", { class: "sheet pombosheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
 }
@@ -9140,14 +9163,15 @@ function vPombo() {
   return h("section", { class: "view pomboview" },
     h("div", { class: "pombohead" },
       h("div", { class: "ceupombo", "aria-hidden": "true" }, pomboSvg("pombo voando")),
-      h("p", { class: "eyebrow", text: "Correio da caravana" }), h("h1", { text: "Pombo-correio" }),
-      h("p", { class: "lede", text: "Escreva uma cartinha, escolha um presente ou uma oferenda e solte o pombo. Ele voa até a pessoa da caravana e pousa no celular dela." }),
+      h("p", { class: "eyebrow", text: "Correio da caravana" }), h("h1", { text: "Mensageiro do Nilo" }),
+      h("p", { class: "lede", text: "No Egito antigo, as cartas eram escritas em papiro, enroladas e lacradas com um selo de argila, e viajavam pelo Nilo com um mensageiro. Escreva a sua, escolha um presente ou uma oferenda, e o barco leva até a pessoa da caravana." }),
       pode ? h("button", { class: "btn gold", type: "button", onclick: () => escreverPombo() }, "✉️ Escrever uma cartinha") : h("p", { class: "small", text: "Emita seu passaporte para mandar e receber cartinhas." })),
     // a líder escreve as cartas da travessia aqui (antes ficava na página inicial)
     S.isOwner ? vCorrespondencia() : null,
+    h("p", { class: "small nilonota", text: "Os pombos-correio só chegaram ao Egito séculos depois, na Idade Média. Repare nos pombais de barro, cheios de furinhos, pelo campo: eles ainda estão lá." }),
     h("div", { class: "panel caixacorreio" },
       h("p", { class: "eyebrow", text: "Sua caixa de correio" }),
-      chegaram.length ? h("div", { class: "envlista" }, chegaram.map(envelope)) : h("p", { class: "small", text: "Nenhum pombo pousou aqui ainda. Quando alguém te mandar uma cartinha, ela aparece nesta caixa." })),
+      chegaram.length ? h("div", { class: "envlista" }, chegaram.map(envelope)) : h("p", { class: "small", text: "Nenhum barco chegou aqui ainda. Quando alguém te mandar um papiro, ele aparece nesta caixa." })),
     foram.length ? h("div", { class: "panel" },
       h("p", { class: "eyebrow", text: "Cartinhas que você mandou" }),
       h("ul", { class: "enviadas" }, foram.map(p => { const pr = p.presente && presenteDe(p.presente);
@@ -9187,7 +9211,7 @@ function abrirCarta(c, chegou) {
   if (chegou) asas();
   closeSheets(); marcaCarta(c.id); setTimeout(render, 0);
   const box = h("div", { role: "dialog", "aria-label": "Carta: " + (c.titulo || "correspondência"), class: "correiobox" + (chegou ? " chegou" : "") },
-    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: c.pessoal ? "Chegou uma carta só para você!" : "Chegou uma carta por pombo-correio!" })) : null,
+    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: c.pessoal ? "Chegou uma carta só para você!" : "Chegou uma carta pelo mensageiro do Nilo!" })) : null,
     pergaminhoCarta(c),
     h("div", { class: "foot2" }, S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editarCarta(c) }, "Editar") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Guardar a carta")));
@@ -9199,10 +9223,10 @@ function editarCarta(c) {
   c = c || {};
   const ini = c.envio || Date.parse("2027-10-20T07:00:00+03:00");
   const dia = new Date(ini).toLocaleDateString("en-CA", { timeZone: "Africa/Cairo" });
-  const tit = h("input", { type: "text", id: "cc-tit", maxlength: "80", placeholder: "Título (ex.: Uma carta do Ganges)", value: c.titulo || "" });
+  const tit = h("input", { type: "text", id: "cc-tit", maxlength: "80", placeholder: "Título (ex.: Uma carta do Nilo)", value: c.titulo || "" });
   const ta = h("textarea", { id: "cc-txt", rows: "10", placeholder: "Escreva a carta…" }); ta.value = c.texto || (c.id ? "" : "");
   const ass = h("input", { type: "text", id: "cc-ass", value: c.assinatura || ASSINATURA });
-  const loc = h("input", { type: "text", id: "cc-loc", placeholder: "De onde (ex.: Varanasi)", value: c.local || "" });
+  const loc = h("input", { type: "text", id: "cc-loc", placeholder: "De onde (ex.: Luxor)", value: c.local || "" });
   const d = h("input", { type: "date", id: "cc-dia", value: dia });
   const hr = h("input", { type: "time", id: "cc-hora", value: horaCarta(ini) });
   const para = h("select", { id: "cc-para", "aria-label": "Para quem" }, h("option", { value: "", text: "Toda a caravana" }),
@@ -9234,7 +9258,7 @@ function editarCarta(c) {
     h("label", { class: "lab", for: "cc-txt", text: "Carta" }), ta,
     h("p", { class: "small", text: "Para toda a caravana, cada viajante recebe com o próprio nome no começo. Só para uma pessoa, a carta chega lacrada com selo de cera e só ela lê." }),
     h("div", { class: "ccrow" }, h("div", null, h("label", { class: "lab", for: "cc-loc", text: "Enviada de" }), loc), h("div", null, h("label", { class: "lab", for: "cc-ass", text: "Assinatura" }), ass)),
-    h("div", { class: "ccrow" }, h("div", null, h("label", { class: "lab", for: "cc-dia", text: "Dia da entrega" }), d), h("div", null, h("label", { class: "lab", for: "cc-hora", text: "Hora na Índia" }), hr)),
+    h("div", { class: "ccrow" }, h("div", null, h("label", { class: "lab", for: "cc-dia", text: "Dia da entrega" }), d), h("div", null, h("label", { class: "lab", for: "cc-hora", text: "Hora no Egito" }), hr)),
     h("div", { class: "actions" },
       h("button", { class: "btn gold", type: "button", onclick: () => grava("agora") }, "Enviar agora"),
       h("button", { class: "btn", type: "button", onclick: () => grava("programar") }, "Programar para o dia e hora"),
@@ -9258,7 +9282,7 @@ function vCorrespondencia() {
   const enviadasP = pessoais.filter(c => !c.rascunho && c.envio && c.envio <= Date.now()).sort((a, b) => b.envio - a.envio);
   if (!abertas.length && !S.isOwner) return h("section", { class: "correio" },
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: "Cartas da travessia" }))),
-    h("p", { class: "small", text: "Quando a líder mandar uma carta, o pombo-correio traz até aqui." }));
+    h("p", { class: "small", text: "Quando a líder mandar uma carta, o mensageiro do Nilo traz até aqui." }));
   const env = (c, fut, entregue) => !S.isOwner || c.id === "final" ? env1(c, fut, entregue) : h("div", { class: "envlinha" }, env1(c, fut, entregue),
     h("button", { type: "button", class: "envapaga", "aria-label": "Apagar carta", title: "Apagar carta", onclick: () => apagarCarta(c) }, "🗑"));
   const env1 = (c, fut, entregue) => h("button", { type: "button", class: "envelope" + (fut && !entregue ? " fut" : ""), onclick: () => fut ? editarCarta(c) : abrirCarta(c) },
@@ -9798,9 +9822,9 @@ async function abrirResumo() {
   const enviar = h("button", { class: "btn gold", type: "button", onclick: async () => {
     const texto = ta.value.trim().replace(/^Querida caravana\.\.\s*/i, "").replace(/\n*Caravana do Céu\s*$/i, "").trim();
     if (!texto) return;
-    try { await S.db.collection("cartas").add({ titulo: "A mensagem da travessia", texto, assinatura: "Caravana do Céu", local: "Delhi", envio: Date.now(), rascunho: false, ts: Date.now() }); st.textContent = "Mensagem enviada! Ela chega agora para toda a caravana pelo pombo-correio."; st.className = "msg ok"; }
+    try { await S.db.collection("cartas").add({ titulo: "A mensagem da travessia", texto, assinatura: "Caravana do Céu", local: "Delhi", envio: Date.now(), rascunho: false, ts: Date.now() }); st.textContent = "Mensagem enviada! Ela chega agora para toda a caravana pelo mensageiro do Nilo."; st.className = "msg ok"; }
     catch (e) { st.textContent = "Não consegui enviar. Tente de novo."; st.className = "msg err"; }
-  } }, "Enviar para todos pelo pombo-correio");
+  } }, "Enviar para todos pelo mensageiro do Nilo");
   const gerar = h("button", { class: "btn", type: "button" }, sample ? "Escrever a mensagem" : "Copiar e abrir o Claude");
   gerar.onclick = async () => {
     if (!sample) {
