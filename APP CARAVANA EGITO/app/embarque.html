@@ -3,10 +3,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0E0B08">
-<title>Passagem para a Índia · Caravana do Céu</title>
-<meta name="description" content="Sua passagem para a Travessia da Índia Sagrada · Brasil → Delhi">
-<meta property="og:title" content="Sua passagem para a Índia chegou ✦">
-<meta property="og:description" content="Caravana do Céu · Travessia da Índia Sagrada · Brasil → Delhi">
+<title>Passagem para o Egito · Caravana do Céu</title>
+<meta name="description" content="Sua passagem para a Travessia do Velho Mundo · Brasil → Cairo">
+<meta property="og:title" content="Sua passagem para o Egito chegou ✦">
+<meta property="og:description" content="Caravana do Céu · Travessia do Velho Mundo · Brasil → Cairo">
 <meta property="og:image" content="https://caravanaindiaapp.netlify.app/img/bilhete-og.jpg">
 <meta property="og:type" content="website">
 <link rel="icon" href="/img/icone-192.png">
@@ -135,7 +135,7 @@ body{min-height:100vh;min-height:100dvh;justify-content:space-between;gap:10px}
 </style>
 </head><body>
 
-<article class="bilhete" aria-label="Passagem para a Índia">
+<article class="bilhete" aria-label="Passagem para o Egito">
   <header class="faixa">
     <svg class="medalha gasto" viewBox="0 0 200 200" aria-hidden="true">
       <circle cx="100" cy="100" r="94" fill="none" stroke="currentColor" stroke-width="6"/>
@@ -143,22 +143,22 @@ body{min-height:100vh;min-height:100dvh;justify-content:space-between;gap:10px}
       <g fill="none" stroke="currentColor" stroke-width="3"><path d="M100 0l7 10-7 10-7-10z"/><path d="M100 180l7 10-7 10-7-10z"/><path d="M0 100l10-7 10 7-10 7z"/><path d="M180 100l10-7 10 7-10 7z"/></g>
       <image href="/img/simbolo-dourado.png" x="52" y="56" width="96" height="88"/>
     </svg>
-    <div class="gasto"><small>Caravana do Céu</small><b>TRAVESSIA DA ÍNDIA SAGRADA</b></div>
+    <div class="gasto"><small>Caravana do Céu</small><b>TRAVESSIA DO VELHO MUNDO · EGITO</b></div>
     <span class="serie" id="serie">Nº 0000</span>
   </header>
   <div class="papel">
     <div class="corpo">
       <div class="tipo">Passagem de embarque</div>
       <div class="rota">
-        <div><b>BRASIL</b><small>ब्राज़ील</small></div>
+        <div><b>BRASIL</b><small>البرازيل</small></div>
         <em aria-hidden="true">✈</em>
-        <div><b>DELHI</b><small>दिल्ली</small></div>
+        <div><b>CAIRO</b><small>القاهرة</small></div>
       </div>
       <div class="campos">
         <div class="campo inteiro"><span>Viajante</span><b id="nome">—</b></div>
         <div class="campo"><span>Passaporte</span><b id="pass">Nº —</b></div>
         <div class="campo gcampo"><span>Guardião da travessia</span>
-          <div class="gselo"><i class="gfoto" aria-hidden="true"><img id="gimg" src="/deuses/ganesha.webp" alt=""></i><div><b id="gnome">—</b><em id="gfrase"></em></div></div></div>
+          <div class="gselo"><i class="gfoto" aria-hidden="true"><img id="gimg" src="/deuses/amon.webp" alt=""></i><div><b id="gnome">—</b><em id="gfrase"></em></div></div></div>
       </div>
       <div class="carimbo c1" aria-hidden="true"><svg viewBox="0 0 120 120">
         <defs><path id="cimo" d="M60,60 m-41,0 a41,41 0 1,1 82,0"/><path id="cbaixo" d="M60,60 m-45,0 a45,45 0 1,0 90,0"/></defs>
@@ -168,7 +168,7 @@ body{min-height:100vh;min-height:100dvh;justify-content:space-between;gap:10px}
         <text x="16" y="64" font-size="8" fill="currentColor" text-anchor="middle">✦</text><text x="104" y="64" font-size="8" fill="currentColor" text-anchor="middle">✦</text>
         <rect x="6" y="49" width="108" height="22" fill="#E8D8B6" stroke="currentColor" stroke-width="2.2"/>
         <text x="60" y="65.5" font-family="Cinzel,serif" font-weight="700" font-size="13.5" letter-spacing="1" fill="currentColor" text-anchor="middle">AUTORIZADO</text>
-        <text x="60" y="44" font-family="Courier Prime,monospace" font-weight="700" font-size="8" fill="currentColor" text-anchor="middle">Nº 2026</text>
+        <text x="60" y="44" font-family="Courier Prime,monospace" font-weight="700" font-size="8" fill="currentColor" text-anchor="middle">Nº 2027</text>
       </svg></div>
     </div>
     <div class="picote"><i></i></div>
@@ -176,7 +176,7 @@ body{min-height:100vh;min-height:100dvh;justify-content:space-between;gap:10px}
       <div class="qr" id="qr" aria-hidden="true"></div>
       <p>CANHOTO DO VIAJANTE<b id="nome2">—</b>Guarde esta passagem.<br>Ela abre a sua travessia.</p>
       <span class="vert" id="serie2">Nº 0000</span>
-      <div class="carimbo c3">ॐ SHANTI</div>
+      <div class="carimbo c3">☥ EM HOTEP</div>
     </div>
     <div class="raspa" id="raspa" hidden>
       <span>PALAVRA-CHAVE</span>
@@ -218,11 +218,9 @@ body{min-height:100vh;min-height:100dvh;justify-content:space-between;gap:10px}
   try { const qr = qrcode(0, "M"); qr.addData(location.href); qr.make();
     document.getElementById("qr").innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true }); } catch (e) {}
   // guardião da travessia: escolhido pela líder no link, ou sorteado pelo número do passaporte
-  const G = [["ganesha", "Ganesha", "abre os caminhos"], ["hanuman", "Hanuman", "a coragem e a devoção"], ["lakshmi", "Lakshmi", "a abundância e a graça"], ["shiva", "Shiva", "a transformação"],
-    ["durga", "Durga", "a força que protege"], ["saraswati", "Saraswati", "a sabedoria e as artes"], ["krishna", "Krishna", "o amor e a alegria"], ["ganga", "Ganga", "a purificação"],
-    ["parvati", "Parvati", "a devoção e o amor"], ["vishnu", "Vishnu", "a preservação e o equilíbrio"], ["surya", "Surya", "a luz e a vitalidade"], ["kali", "Kali", "o tempo que liberta"], ["brahma", "Brahma", "a criação"]];
+  const G = [["ra", "Rá", "o sol que renasce"], ["thoth", "Thoth", "a palavra e a sabedoria"], ["isis", "Ísis", "o cuidado e a magia"], ["osiris", "Osíris", "o que renasce"], ["horus", "Hórus", "a visão e a coragem"], ["anubis", "Anúbis", "o guardião das passagens"], ["hathor", "Hathor", "a alegria e o amor"], ["maat", "Maat", "a verdade e o equilíbrio"], ["ptah", "Ptah", "a criação pela palavra"], ["amon", "Amon", "o oculto"], ["sobek", "Sobek", "a força do Nilo"], ["imhotep", "Imhotep", "a sabedoria que constrói"]];
   const pedido = String(q.get("g") || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  const g = G.find(x => x[0] === pedido) || G[(+num || 0) % 8];
+  const g = G.find(x => x[0] === pedido) || G[(+num || 0) % G.length];
   document.getElementById("gimg").src = "/deuses/" + g[0] + ".webp";
   document.getElementById("gnome").textContent = g[1];
   document.getElementById("gfrase").textContent = g[2];

@@ -1698,7 +1698,7 @@ body:has(.sheet) .navmais{display:none!important}
 .mantra{background:#F4E9D2;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
 .mantra h4{font-family:var(--display);font-size:20px;font-weight:500;margin:4px 0 0}
 .inota{display:block;font-size:13.5px;font-weight:400;color:var(--soft);line-height:1.45;margin-top:3px}
-.mdev{font-family:"Poppins","Noto Sans Devanagari",sans-serif;font-size:20px;line-height:1.7;color:#3B2A1C;margin:4px 0 0}
+.mdev{font-family:"Noto Sans Egyptian Hieroglyphs","Poppins",sans-serif;font-size:30px;line-height:1.7;color:#3B2A1C;margin:4px 0 0}
 .mlin{font-family:var(--display);font-style:italic;font-size:14.5px;line-height:1.6;color:#5A4128;margin:0}
 .mtrad{font-size:14.5px;line-height:1.55;color:#3C3A33;margin:0}
 .mnota{font-size:12px;color:var(--faint);margin:0}
@@ -2281,7 +2281,7 @@ html[data-tab="fotos"] :is(.view>.head h1,.view>.head h2,.view>.lede,.view>p.sma
     <button data-tab="fotos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12.5" rx="1.6"/><path d="M9 7.5V5.6a1.1 1.1 0 0 1 1.1-1.1h3.8A1.1 1.1 0 0 1 15 5.6v1.9"/><path d="M3 12.5h18"/><path d="M7.5 7.5v12.5M16.5 7.5v12.5"/><rect x="10.6" y="11.4" width="2.8" height="2.4" rx=".4"/></svg></span>Maleta</button>
     <button data-tab="mapa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span>Mapa</button>
     <button data-tab="conversa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span>Chat</button>
-    <button data-tab="cambio"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 8h6M9 10.8h6M10.5 8c2.2 0 3.2 1.2 3.2 2.8S12.7 13.6 10.5 13.6H9.5l4.2 3.4"/></svg></span>Câmbio</button>
+    <button data-tab="cambio"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M14.6 8.6c-.5-.9-1.4-1.4-2.4-1.4-1.6 0-2.6 1.1-2.6 2.7v6.6M8.4 12.3h4.8M8 16.5h7.2"/></svg></span>Câmbio</button>
     <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
     <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Pedra</button>
     <button data-tab="pombo"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16.5h18l-2.2 3H5.2z"/><path d="M11.5 16.5V3.5"/><path d="M11.8 3.5L19.5 14.5H6.5c2.4-3 4.5-7 5.3-11z"/><path d="M2.5 21.5c1.5.7 3 .7 4.5 0s3-.7 4.5 0 3 .7 4.5 0 3-.7 4.5 0"/></svg></span>Nilo</button>
@@ -2836,7 +2836,7 @@ function vTravessia() {
 const MISSOES = [
   ["passaporte", "Emitir o passaporte", "Seu número de viajante e a página dos carimbos.", v => !!v, () => go("passaporte")],
   ["explorador", "Montar o explorador", "O bonequinho que anda com você pelo mapa.", v => !!(v && v.boneco), () => go("explorador")],
-  ["guardiao", "Conhecer o seu guardião", "A história do guardião da sua passagem, onde vocês se encontram na viagem e o mantra dele.", v => false, () => abrirGuardiao(0)],
+  ["guardiao", "Conhecer o seu guardião", "A história do guardião da sua passagem, onde vocês se encontram na viagem e as palavras de poder dele.", v => false, () => abrirGuardiao(0)],
   ["intencao", "Mensagem na garrafa", "Escreva e lance a garrafa no rio.", v => !!lerIntencao(), () => abrirIntencao()],
   ["camera", "Testar uma câmera da maleta", "Tire uma foto com uma das câmeras antigas.", v => false, () => go("fotos")],
   ["pombo", "Mandar um mensageiro do Nilo", "Uma cartinha em papiro para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")]
@@ -2954,71 +2954,42 @@ function abrirIntencao() {
 // ---------- o guardião da passagem: história, perguntas, onde encontrá-lo na viagem e o mantra ----------
 // o guardião vem da passagem (link /embarque/...), que o deixa guardado ao tocar em EMBARCAR; se não vier, a pessoa escolhe
 const GUARDIOES = {
-  ganesha: { nome: "Ganesha", frase: "abre os caminhos", intro: "Você vai atravessar a Índia com o deus mais querido do país. Ganesha é chamado antes de todo começo: casamento, casa nova, viagem. Ninguém começa nada sem ele.",
-    cartas: [["🐘", "Por que a cabeça de elefante?", "Parvati moldou um menino com argila e o pôs para guardar a porta enquanto se banhava. Shiva chegou, não foi reconhecido e, num impulso, cortou a cabeça do menino. Arrependido, devolveu a vida ao filho com a cabeça do primeiro ser que encontrou: um elefante."],
-      ["🐭", "Um ratinho como montaria", "O maior dos deuses anda montado num ratinho, o Mushika. O rato entra em qualquer fresta, e Ganesha também: não existe obstáculo pequeno ou apertado demais para ele."],
-      ["🍬", "O doce preferido", "Ganesha adora modak, um docinho de arroz recheado de coco e açúcar. Em muitas imagens ele aparece com um na mão, e é o que se oferece a ele nos templos."]],
-    onde: "No templo de Moti Dungri, em Jaipur, no dia 4 da travessia.", mantra: "Om Gam Ganapataye Namaha", trad: "Om, saudações a Ganapati, o senhor dos começos." },
-  hanuman: { nome: "Hanuman", frase: "a coragem e a devoção", intro: "O seu guardião é o herói mais amado do Ramayana! Hanuman é força, coragem e lealdade, e tudo isso a serviço de quem ele ama.",
-    cartas: [["🌊", "Um salto sobre o mar", "Quando Sita foi raptada e levada para a ilha de Lanka, Hanuman, filho do deus do vento, atravessou o oceano num único salto para encontrá-la."],
-      ["⛰️", "A montanha nas mãos", "Lakshmana, irmão de Rama, caiu ferido, e só uma erva do Himalaia podia salvá-lo. Hanuman voou até lá, não soube reconhecer a planta e trouxe a montanha inteira. Por isso aparece segurando uma montanha."],
-      ["❤️", "Rama no coração", "Numa das histórias mais lindas, Hanuman abre o próprio peito para mostrar que Rama e Sita moram dentro do seu coração."]],
-    onde: "No templo de Sankat Mochan, em Varanasi, no dia 7 da travessia.", mantra: "Om Hanumate Namaha", trad: "Om, saudações a Hanuman." },
-  lakshmi: { nome: "Lakshmi", frase: "a abundância e a graça", intro: "A deusa da prosperidade e da beleza vai com você! Lakshmi é abundância no sentido mais largo: comida na mesa, saúde, amor, alegria partilhada.",
-    cartas: [["🌊", "Nascida do oceano de leite", "Deuses e demônios agitaram o oceano cósmico em busca do néctar da imortalidade. Das ondas surgiram muitos tesouros, e um deles foi Lakshmi."],
-      ["🪷", "Sempre sobre um lótus", "O lótus nasce na lama e se abre limpo e perfeito. Por isso Lakshmi aparece sentada ou de pé sobre ele: a beleza que nasce de qualquer lugar."],
-      ["🪔", "A noite em que ela visita as casas", "No Diwali, as famílias acendem lamparinas e deixam portas e janelas iluminadas para receber Lakshmi. E você vai estar na Índia exatamente nessa festa!"]],
-    onde: "No Diwali, em Varanasi, no dia 5 da travessia.", mantra: "Om Shreem Mahalakshmyai Namaha", trad: "Om, saudações à grande Lakshmi." },
-  shiva: { nome: "Shiva", frase: "a transformação", intro: "O seu guardião é Shiva, o grande yogi do Himalaia! Ele é silêncio profundo e, ao mesmo tempo, a força que transforma tudo.",
-    cartas: [["🏔️", "A casa no Himalaia", "Shiva medita no monte Kailash, no alto do Himalaia. Os peregrinos dão a volta na montanha a pé, sem nunca subir nela, por respeito."],
-      ["👁️", "O terceiro olho", "Na testa ele tem um terceiro olho, que enxerga além das aparências. Nos cabelos, uma lua crescente e o rio Ganga, que ele segurou quando ela desceu do céu."],
-      ["💃", "O rei da dança", "Como Nataraja, Shiva dança dentro de um círculo de fogo. É a dança que encerra um ciclo do mundo para que outro possa começar."]],
-    onde: "Em Varanasi, a cidade de Shiva, do dia 5 ao dia 7 da travessia.", mantra: "Om Namah Shivaya", trad: "Om, eu me curvo a Shiva." },
-  durga: { nome: "Durga", frase: "a força que protege", intro: "Que guardiã! Durga é a Deusa guerreira, a força que protege quem está ao lado. Com ela, a coragem não falta.",
-    cartas: [["✨", "Nascida da luz de todos", "Um demônio que nenhum deus conseguia vencer ameaçava o mundo. Os deuses uniram as suas forças, e dessa luz nasceu Durga. Cada um lhe deu uma arma."],
-      ["🦁", "Montada num leão", "Durga monta um leão: coragem com rumo, força que não perde a calma."],
-      ["🪔", "Nove noites de festa", "A vitória de Durga é celebrada todo ano no Navaratri, nove noites de música e dança, e no Dussehra, o dia da vitória."]],
-    onde: "No templo de Durga Kund, em Varanasi, no dia 7 da travessia.", mantra: "Om Dum Durgayei Namaha", trad: "Om, saudações a Durga." },
-  saraswati: { nome: "Saraswati", frase: "a sabedoria e as artes", intro: "A sua guardiã é Saraswati, a deusa do saber, da música e da palavra! Quem ama aprender, criar e cantar está em boa companhia.",
-    cartas: [["🎶", "A vina nas mãos", "Saraswati toca a vina, um instrumento de cordas indiano. O som dela representa a harmonia entre o que se sabe e o que se sente."],
-      ["🦢", "O cisne que escolhe", "Ao lado dela vem um cisne branco que, diz a tradição, sabe separar o leite da água: é a imagem do discernimento."],
-      ["🤍", "Sempre de branco", "Ela veste branco, a cor da clareza. Estudantes pedem a ela inspiração antes das provas, e músicos a saúdam antes de tocar."]],
-    onde: "Nos templos e escolas por onde a caravana passar, procure a deusa de branco com a vina.", mantra: "Om Aim Saraswatyai Namaha", trad: "Om, saudações a Saraswati." },
-  krishna: { nome: "Krishna", frase: "o amor e a alegria", intro: "O seu guardião é Krishna, o deus da flauta! Ele é alegria, amor e sabedoria na mesma pessoa, e é impossível não se encantar com ele.",
-    cartas: [["🧈", "O menino que roubava manteiga", "Krishna cresceu entre pastores em Vrindavan e, pequeno, vivia roubando manteiga das vizinhas. As histórias dessa infância são contadas com carinho até hoje."],
-      ["🪈", "A flauta e o pavão", "Quando ele tocava a flauta, as gopis largavam tudo para ouvir. Na cabeça, usa uma pena de pavão."],
-      ["📜", "O conselho mais famoso da Índia", "No Bhagavad Gita, antes de uma grande batalha, Krishna ensina o guerreiro Arjuna a agir de coração inteiro, sem se prender ao resultado."]],
-    onde: "No darshan de Krishna, no templo Govind Dev Ji, em Jaipur, no dia 3 da travessia.", mantra: "Om Namo Bhagavate Vasudevaya", trad: "Om, eu me curvo a Vasudeva, o divino que habita em tudo." },
-  ganga: { nome: "Ganga", frase: "a purificação", intro: "A sua guardiã é Ganga, o rio sagrado em forma de deusa! Para a Índia, ela é mãe: lava, acolhe e renova.",
-    cartas: [["☁️", "Ela morava no céu", "Ganga vivia no céu até que o rei Bhagiratha pediu, por anos, que ela descesse à Terra. Para que a queda não destruísse o mundo, Shiva a recebeu nos cabelos."],
-      ["🐊", "Montada num makara", "Ganga é representada sobre um makara, uma criatura das águas que mistura peixe e crocodilo."],
-      ["🔥", "Fogo sobre a água", "Toda noite, em Varanasi, sacerdotes oferecem ao rio grandes lamparinas acesas, ao som de sinos e cânticos. É o Ganga Aarti, e você vai estar lá."]],
-    onde: "No Ganga Aarti, em Varanasi, no dia 6, e no batismo em Rishikesh, no dia 10.", mantra: "Har Har Gange", trad: "O canto que se ouve nos ghats, saudando o rio." },
-  parvati: { nome: "Parvati", frase: "a devoção e o amor", intro: "A sua guardiã é Parvati, a deusa das montanhas! Doce e firme ao mesmo tempo, ela é o amor que não desiste.",
-    cartas: [["🏔️", "Filha do Himalaia", "Parvati é filha do rei das montanhas. O nome dela quer dizer, justamente, a da montanha."],
-      ["🐘", "A mãe de Ganesha", "Foi ela quem moldou Ganesha com argila. Com Shiva, forma a família divina mais amada da Índia."],
-      ["🕉️", "Uma deusa em duas vidas", "Parvati é a reencarnação de Sati, a primeira esposa de Shiva. Onde partes do corpo de Sati caíram nasceram templos da Deusa, como Kunjapuri."]],
-    onde: "No templo de Kunjapuri, perto de Rishikesh, no dia 10 da travessia.", mantra: "Om Parvatyai Namaha", trad: "Om, saudações a Parvati." },
-  vishnu: { nome: "Vishnu", frase: "a preservação e o equilíbrio", intro: "O seu guardião é Vishnu, aquele que cuida para que o mundo continue em equilíbrio! Calmo, firme e sempre presente.",
-    cartas: [["🐍", "Descansando sobre uma serpente", "Entre um ciclo do mundo e outro, Vishnu repousa sobre a serpente Shesha, boiando no oceano cósmico."],
-      ["🪷", "O lótus do umbigo", "Do umbigo de Vishnu nasce um lótus, e dele aparece Brahma, o criador."],
-      ["✨", "Muitas formas", "Sempre que o mundo perde o rumo, Vishnu desce em outra forma, um avatar. Rama e Krishna são dois deles."]],
-    onde: "Rishikesh leva o nome dele: Hrishikesha, o senhor dos sentidos. Dia 8 da travessia.", mantra: "Om Namo Narayanaya", trad: "Om, eu me curvo a Narayana, Vishnu." },
-  surya: { nome: "Surya", frase: "a luz e a vitalidade", intro: "O seu guardião é Surya, o próprio Sol! Luz, calor e energia para cada dia da travessia.",
-    cartas: [["🐎", "Sete cavalos", "Surya atravessa o céu num carro dourado puxado por sete cavalos, um para cada dia da semana."],
-      ["💧", "Água para o sol", "Toda manhã, muita gente na Índia oferece água ao sol nascente com as mãos em concha."],
-      ["🧘", "A saudação ao sol", "O Surya Namaskar, a saudação ao sol do yoga, é dedicado a ele: o corpo inteiro cumprimentando o dia."]],
-    onde: "No amanhecer de Kunjapuri, quando o sol nasce atrás dos picos do Himalaia, no dia 10.", mantra: "Om Suryaya Namaha", trad: "Om, saudações ao Sol." },
-  kali: { nome: "Kali", frase: "o tempo que liberta", intro: "A sua guardiã é Kali, a face mais intensa da Deusa! Ela assusta à primeira vista, mas é proteção feroz e liberdade.",
-    cartas: [["⏳", "O nome dela é tempo", "Kali vem de kala, o tempo. Ela é o tempo que tudo transforma e, por isso, liberta do medo."],
-      ["🌑", "Escura como a noite", "A pele escura é o céu antes da criação, onde tudo cabe."],
-      ["🛡️", "A guerreira que não deixa cair uma gota", "Contra um demônio que se multiplicava a cada gota de sangue derramada, Kali não deixou nenhuma tocar o chão e o venceu."]],
-    onde: "Em Varanasi, a cidade onde a morte é vista como passagem, do dia 5 ao dia 7.", mantra: "Om Krim Kalikayai Namaha", trad: "Om, saudações a Kali." },
-  brahma: { nome: "Brahma", frase: "a criação", intro: "O seu guardião é Brahma, o criador do mundo! Ele combina com quem gosta de começar coisas novas.",
-    cartas: [["🪷", "Nascido de um lótus", "Brahma nasceu no lótus que brota do umbigo de Vishnu, e dali criou o mundo."],
-      ["👀", "Quatro cabeças", "Ele tem quatro cabeças, uma para cada direção, e das suas bocas teriam saído os quatro Vedas, os textos mais antigos da Índia."],
-      ["🏛️", "Um deus quase sem templos", "Apesar de ser o criador, Brahma tem pouquíssimos templos. O mais famoso fica em Pushkar, no Rajastão."]],
-    onde: "O roteiro não passa por Pushkar, mas Brahma aparece nas paredes de muitos templos, com as suas quatro faces.", mantra: "Om Brahmaye Namaha", trad: "Om, saudações a Brahma." }
+  ra: { nome: "Rá", frase: "o sol que renasce", intro: "O seu guardião é Rá, o sol! Para os egípcios ele não só nascia: ele atravessava a noite inteira lutando e vencia, todos os dias. É o deus de quem sabe recomeçar.",
+    cartas: [["☀️", "Uma barca para o dia e outra para a noite", "Rá cruza o céu de dia numa barca e, ao pôr do sol, troca de barca para atravessar as doze horas da noite no mundo de baixo."], ["🐍", "A serpente de toda noite", "Toda noite a serpente Apófis tenta engolir a barca do sol. E toda manhã Rá vence e nasce de novo no horizonte."], ["🪲", "Três rostos do sol", "De manhã ele é Khepri, o escaravelho que empurra o sol. Ao meio-dia é Rá. No fim da tarde, Atum, o velho sol que se deita."]],
+    onde: "No Vale dos Reis, no dia 9. Nas paredes das tumbas, a barca de Rá atravessa as horas da noite, pintada em cores que ainda brilham depois de três mil anos.", mantra: "Dua Ra-Horakhty", trad: "Louvor a Rá-Hórus dos dois horizontes." },
+  thoth: { nome: "Thoth", frase: "a palavra e a sabedoria", intro: "O seu guardião é Thoth, o escriba dos deuses! Foi ele quem deu a escrita aos egípcios. Com cabeça de íbis, ele anota tudo o que acontece no céu e na terra.",
+    cartas: [["🪶", "O inventor dos hieróglifos", "Os egípcios chamavam a escrita de medu-netjer, as palavras dos deuses, porque ela tinha vindo de Thoth."], ["🌙", "O senhor da Lua", "Thoth também é a Lua, que mede o tempo. Os sacerdotes contavam os meses pelas fases dela."], ["⚖️", "O que anota a pesagem", "Na pesagem do coração, é Thoth quem escreve o resultado, com o seu junco de escriba."]],
+    onde: "No dia 3, no Museu Egípcio, nos papiros da pesagem do coração. E em quase todos os templos da viagem, sempre com o junco e a paleta de escriba.", mantra: "Dua Djehuty, neb medu-netjer", trad: "Louvor a Thoth, senhor das palavras divinas." },
+  isis: { nome: "Ísis", frase: "o cuidado e a magia", intro: "A sua guardiã é Ísis, a grande mágica! Ela juntou os pedaços de Osíris pelo Egito inteiro e, com a sua magia, trouxe o amado de volta à vida.",
+    cartas: [["🧩", "Os pedaços espalhados", "Quando Seth despedaçou Osíris, Ísis procurou cada parte pelo Egito, juntou todas e o fez viver de novo por tempo suficiente para gerar Hórus."], ["🪑", "Um trono na cabeça", "O hieróglifo do nome dela é um trono, e é ele que ela leva na cabeça em muitas imagens."], ["🏛️", "O último templo", "O templo dela em Philae foi o último do Egito a funcionar, séculos depois dos outros já estarem fechados."]],
+    onde: "Em Philae, em Aswan, no dia 6: o templo de Ísis numa ilha no meio do Nilo, onde se chega de barco.", mantra: "Dua Aset, weret hekau", trad: "Louvor a Ísis, a grande de magia." },
+  osiris: { nome: "Osíris", frase: "o que renasce", intro: "O seu guardião é Osíris, o deus que morreu e voltou! Ele foi rei do Egito, ensinou a plantar e virou o senhor do mundo dos mortos. É a força de tudo o que brota de novo.",
+    cartas: [["🌱", "Sementes no corpo", "Os egípcios faziam figuras de Osíris de barro com sementes de cevada. Quando brotavam, era a prova de que a vida volta."], ["💚", "A pele verde", "Osíris aparece com a pele verde, a cor das plantas novas, ou preta, a cor da terra fértil que a cheia do Nilo deixava."], ["👑", "Todo faraó vira Osíris", "Quando o faraó morria, ele se tornava Osíris. Por isso as estátuas dos reis aparecem com os braços cruzados, como ele."]],
+    onde: "Em Philae, no dia 6, ao lado de Ísis, e no Vale dos Reis, no dia 9, onde cada faraó vira Osíris para atravessar a noite.", mantra: "Dua Wsir, Khentyamentiu", trad: "Louvor a Osíris, o primeiro dos ocidentais." },
+  horus: { nome: "Hórus", frase: "a visão e a coragem", intro: "O seu guardião é Hórus, o falcão que vê longe! Filho de Ísis e Osíris, ele lutou para recuperar o trono do pai. Todo faraó era chamado de Hórus vivo.",
+    cartas: [["👁️", "O olho curado", "Na luta contra Seth, Hórus perdeu um olho. Thoth o curou, e esse olho, o udjat, virou o amuleto de proteção mais usado do Egito."], ["🦅", "O falcão no céu", "O nome dele quer dizer o que está no alto. Um olho é o Sol, o outro é a Lua."], ["⚔️", "A luta pelo trono", "A briga de Hórus e Seth durou oitenta anos, segundo o mito, e acabou num tribunal dos deuses."]],
+    onde: "Em Edfu, no dia 8: o templo de Hórus, um dos mais inteiros do Egito, com um grande falcão de granito na porta.", mantra: "Dua Heru, nedj-it-ef", trad: "Louvor a Hórus, o que defende o pai." },
+  anubis: { nome: "Anúbis", frase: "o guardião das passagens", intro: "O seu guardião é Anúbis, o que conduz pelos caminhos escuros! Com cabeça de chacal, ele guiava as almas até o salão da pesagem do coração.",
+    cartas: [["🐺", "Por que um chacal?", "Os chacais rondavam os cemitérios na beira do deserto. Os egípcios fizeram do bicho temido um protetor dos mortos."], ["🏺", "O primeiro embalsamador", "Foi Anúbis quem preparou o corpo de Osíris. Os sacerdotes que faziam múmias usavam uma máscara dele."], ["⚖️", "O que segura a balança", "Na pesagem do coração, é Anúbis quem ajusta a balança, com a pena de Maat do outro lado."]],
+    onde: "No dia 9, no Vale dos Reis e no templo de Hatshepsut, que tem uma capela só para ele.", mantra: "Dua Inpu, khenty seh-netjer", trad: "Louvor a Anúbis, o que preside a tenda divina." },
+  hathor: { nome: "Hathor", frase: "a alegria e o amor", intro: "A sua guardiã é Hathor, a senhora da alegria! Deusa da música, da dança e do amor, ela também recebia o sol no fim do dia.",
+    cartas: [["🐄", "A vaca do céu", "Hathor aparece como uma vaca, como uma mulher com chifres e o disco do sol, ou com orelhas de vaca."], ["🎶", "O sistro", "O instrumento dela é o sistro, um chocalho de metal. O som afastava o mal e alegrava os deuses."], ["🍺", "A leoa que adormeceu", "Para acalmar a fúria da leoa Sekhmet, os deuses tingiram cerveja de vermelho. Ela bebeu, dormiu e acordou como a doce Hathor."]],
+    onde: "Em Abu Simbel, no dia 7: o templo menor, de Nefertari, é dedicado a Hathor. Ela também tem uma capela no templo de Hatshepsut, no dia 9.", mantra: "Dua Hut-Heru, nebet Iunet", trad: "Louvor a Hathor, senhora de Dendera." },
+  maat: { nome: "Maat", frase: "a verdade e o equilíbrio", intro: "A sua guardiã é Maat, o equilíbrio do mundo! Mais que uma deusa, ela era a própria ordem das coisas: o sol nascer, o Nilo encher, as pessoas serem justas.",
+    cartas: [["🪶", "A pena", "O sinal de Maat é uma pena de avestruz, que ela leva na cabeça. É essa pena que vai na balança contra o coração."], ["👑", "O dever do faraó", "O trabalho mais importante do faraó era manter Maat e afastar o caos, que os egípcios chamavam de isfet."], ["📜", "As confissões", "Diante da balança, o morto dizia: não menti, não roubei, não fiz ninguém chorar. Eram as confissões de Maat."]],
+    onde: "No dia 9, no Vale dos Reis: Maat abre as asas na entrada de muitas tumbas, guardando o caminho do faraó.", mantra: "Dua Maat, sat Ra", trad: "Louvor a Maat, a filha de Rá." },
+  ptah: { nome: "Ptah", frase: "a criação pela palavra", intro: "O seu guardião é Ptah, o criador! Ele fez o mundo pensando com o coração e falando com a língua. É o patrono dos artesãos e de tudo o que se faz com as mãos.",
+    cartas: [["💬", "Criar falando", "Em Mênfis contavam que Ptah pensou o mundo no coração e, ao dizer o nome de cada coisa, ela passava a existir."], ["🔨", "O deus dos artesãos", "Escultores, ourives e construtores pediam ajuda a Ptah. O sumo sacerdote dele era chamado de mestre dos artesãos."], ["🌑", "A estátua que fica no escuro", "Em Abu Simbel, duas vezes por ano o sol entra até o fundo do templo e ilumina três estátuas. A de Ptah, deus ligado ao mundo de baixo, fica na sombra."]],
+    onde: "Em Abu Simbel, no dia 7, sentado no fundo do santuário, ao lado de Amon, Rá e do próprio Ramsés.", mantra: "Dua Ptah, nefer-her", trad: "Louvor a Ptah, o de belo rosto." },
+  amon: { nome: "Amon", frase: "o oculto", intro: "O seu guardião é Amon, o oculto! O nome dele quer dizer o escondido. Ele é o sopro, o vento: o que não se vê mas move tudo.",
+    cartas: [["🌬️", "O deus do sopro", "Amon era o ar e o vento. Em Tebas, ele se juntou a Rá e virou Amon-Rá, o rei dos deuses."], ["🏛️", "O maior templo", "Para ele foi construído Karnak, o maior conjunto de templos da Antiguidade, aumentado por quase dois mil anos."], ["⛵", "O deus que respondia", "Nas festas, a estátua de Amon saía numa barca carregada pelos sacerdotes e respondia às perguntas do povo."]],
+    onde: "Em Luxor, no dia 8, no templo de Luxor, e no dia 9 em Karnak, a casa de Amon, entre as colunas gigantes.", mantra: "Dua Imen-Ra, nesu-netjeru", trad: "Louvor a Amon-Rá, rei dos deuses." },
+  sobek: { nome: "Sobek", frase: "a força do Nilo", intro: "O seu guardião é Sobek, o deus crocodilo! Temido e amado, ele vivia onde a água do Nilo trazia vida. É a força crua de quem protege.",
+    cartas: [["🐊", "Crocodilos com brincos", "Em alguns templos, os sacerdotes criavam crocodilos sagrados, enfeitados com joias, e os mumificavam quando morriam."], ["🌊", "O senhor das águas", "Sobek era ligado à cheia do Nilo, que tornava a terra fértil."], ["🏛️", "Um templo dividido em dois", "Em Kom Ombo, o templo tem duas metades iguais: uma de Sobek e outra de Hórus, o Velho."]],
+    onde: "Em Kom Ombo, no dia 7, onde há um templo para ele e um museu de crocodilos mumificados.", mantra: "Dua Sobek-Ra", trad: "Louvor a Sobek, o crocodilo que é também o sol." },
+  imhotep: { nome: "Imhotep", frase: "a sabedoria que constrói", intro: "O seu guardião é Imhotep, o sábio que virou deus! Ele foi uma pessoa de verdade: arquiteto, médico e conselheiro do faraó Djoser. Séculos depois, os egípcios passaram a adorá-lo.",
+    cartas: [["🏗️", "A primeira pirâmide", "Imhotep desenhou a Pirâmide de Degraus de Djoser, em Saqqara, a primeira grande construção de pedra do mundo."], ["⚕️", "O médico", "Ele foi lembrado como grande médico. Os gregos o comparavam ao seu deus da cura, Asclépio."], ["📜", "Um escriba como nós", "Os escribas derramavam um pouco de água para Imhotep antes de começar a escrever."]],
+    onde: "Em Saqqara, no dia 3, diante da Pirâmide de Djoser, que ele construiu, e no museu que leva o nome dele.", mantra: "Dua Imhotep, sa Ptah", trad: "Louvor a Imhotep, filho de Ptah." }
 };
 // o link da passagem pode trazer o guardião (?g=ganesha)
 try { const g0 = new URLSearchParams(location.search).get("g"); if (g0 && GUARDIOES[g0]) localStorage.setItem("cdi-guardiao", g0); } catch (e) {}
@@ -3063,10 +3034,10 @@ function abrirGuardiao(passo) {
   } else if (passo === 2) box.append(topo, h("p", { class: "eyebrow", style: "text-align:center;margin-top:6px", text: "Onde vocês se encontram" }), h("h2", { style: "text-align:center", text: G.nome + " na travessia" }),
     h("img", { class: "quizdeus", style: "width:110px", src: "deuses/" + g + ".webp", alt: "" }),
     h("p", { class: "lede", style: "text-align:center;margin:0 auto", text: G.onde }),
-    h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirGuardiao(3) }, "Aprender o mantra")), fecha);
+    h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirGuardiao(3) }, "Aprender as palavras de poder")), fecha);
   else {
     marcaMissao("guardiao");
-    box.append(topo, h("p", { class: "eyebrow", style: "text-align:center;margin-top:6px", text: "O mantra de " + G.nome }),
+    box.append(topo, h("p", { class: "eyebrow", style: "text-align:center;margin-top:6px", text: "As palavras de poder de " + G.nome }),
       h("p", { class: "guardmantra", text: G.mantra }), h("p", { class: "small", style: "text-align:center", text: G.trad }),
       h("p", { class: "guardhist", style: "text-align:center" }, "Repita três vezes, devagar.", h("br"), "Essa força te acompanha durante toda a travessia!"),
       h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirGuardiao(0) }, "↺ Ver de novo")), fecha);
@@ -4111,12 +4082,12 @@ function vHabilidadesLider() {
 // Só a líder: ver e trocar a palavra-chave que abre o app (fica guardada no Firebase, em privado/acesso)
 // ---------- Só a líder: liga o guardião de cada passagem ao passaporte de cada viajante ----------
 // a lista é a mesma da página Passagens ("Nome, número[, guardião]"); sem guardião escrito, vale o sorteio da passagem (número % 8)
-const G_SORTEIO = ["ganesha", "hanuman", "lakshmi", "shiva", "durga", "saraswati", "krishna", "ganga"];
+const G_SORTEIO = Object.keys(GUARDIOES);
 const normNome = t => String(t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z ]/g, " ").replace(/\s+/g, " ").trim();
 function lerPassagens(txt) {
   return String(txt || "").split("\n").map(l => l.split(",").map(x => x.trim())).filter(([nome]) => nome).map(([nome, num, g]) => {
     const pedido = normNome(g).replace(/ /g, ""), n = String(num || "").replace(/\D/g, "");
-    return { nome, num: n, pedido: normNome(g).replace(/ /g, ""), g: GUARDIOES[pedido] ? pedido : G_SORTEIO[(+n || 0) % 8] };
+    return { nome, num: n, pedido: normNome(g).replace(/ /g, ""), g: GUARDIOES[pedido] ? pedido : G_SORTEIO[(+n || 0) % G_SORTEIO.length] };
   });
 }
 // procura o viajante na lista: nome completo igual, depois primeiro + último nome, depois só o primeiro nome (se não houver dois iguais)
@@ -4844,6 +4815,17 @@ const DEUS = {
   kali: { pele: "#2F3550", roupa: "dhoti", roupaCor: "#A3231A", acessorio: "espada", chapeu: "sem", cabelo: "longo", cabeloCor: "#141018", colar: "flores", testa: "bindi", bracos: 4 },
   surya: { roupa: "dhoti", roupaCor: "#E0761C", acessorio: "lotus", chapeu: "sol", colar: "ouro", testa: "tilak" },
   ganga: { roupa: "sari", roupaCor: "#8FB8C9", acessorio: "kalash", chapeu: "coroa", colar: "ouro", testa: "bindi", bracos: 4 },
+  // fantasias do Egito (figurinhas do chat), montadas com as peças que o bonequinho já tem
+  "eg-ra": { roupa: "dhoti", roupaCor: "#E8B321", acessorio: "ankh", chapeu: "sol", colar: "usekh", testa: "nada", barba: "nao" },
+  "eg-farao": { roupa: "dhoti", roupaCor: "#E8E0CF", acessorio: "ankh", chapeu: "nemes", colar: "usekh", testa: "nada" },
+  "eg-isis": { roupa: "vestido", roupaCor: "#E8E0CF", acessorio: "ankh", chapeu: "coroa", colar: "usekh", testa: "nada" },
+  "eg-hathor": { roupa: "vestido", roupaCor: "#B0301F", acessorio: "sino", chapeu: "sol", colar: "usekh", testa: "nada" },
+  "eg-osiris": { pele: "#5E8A4E", roupa: "yogi", roupaCor: "#E8E0CF", acessorio: "ankh", chapeu: "coroaalta", colar: "usekh", testa: "nada" },
+  "eg-amon": { pele: "#4F74A8", roupa: "dhoti", roupaCor: "#E8B321", acessorio: "ankh", chapeu: "pena", colar: "usekh", testa: "nada" },
+  "eg-maat": { roupa: "vestido", roupaCor: "#2F5D7C", acessorio: "ankh", chapeu: "pena", colar: "usekh", testa: "nada" },
+  "eg-ptah": { pele: "#5E8A4E", roupa: "yogi", roupaCor: "#E8E0CF", acessorio: "ankh", chapeu: "sem", cabelo: "careca", colar: "usekh", testa: "nada", barba: "sim" },
+  "eg-imhotep": { roupa: "yogi", roupaCor: "#E8E0CF", acessorio: "mapa", chapeu: "sem", cabelo: "careca", colar: "nenhum", testa: "nada", barba: "nao" },
+  "eg-nefertari": { roupa: "vestido", roupaCor: "#E8E0CF", acessorio: "lotus", chapeu: "coroa", colar: "usekh", testa: "nada" },
 };
 // O que cada deus segura nas mãos extras (em pares: esquerda, direita), como na iconografia tradicional
 const MAOS = {
@@ -5136,11 +5118,11 @@ function verExplorador(id) {
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
   document.body.append(sheet);
 }
-const SELO_CENARIO = { agra: "taj-mahal", varanasi: "varanasi", rishikesh: "rishikesh", jaipur: "jaipur", delhi: "india" };
-const POSES = { embarque: "turma", agra: "turma", varanasi: "pulando", jaipur: "abraco", rishikesh: "fogueira", delhi: "fila" };
+const SELO_CENARIO = { cairo: "piramides-gize", deserto: "deserto-branco", aswan: "aswan", abusimbel: "abu-simbel", luxor: "luxor", hurghada: "mar-vermelho" };
+const POSES = { embarque: "turma", cairo: "turma", deserto: "fogueira", aswan: "abraco", abusimbel: "fila", luxor: "turma", hurghada: "abraco" };
 // Embarque: aberto desde já, para a turma fazer o retrato antes de viajar (aparece quando a imagem img/abertura-embarque.webp estiver no app)
 const TEM_EMBARQUE = true;
-const CENARIOS = [["embarque", "Embarque"], ["agra", "Taj Mahal"], ["varanasi", "Varanasi"], ["rishikesh", "Rishikesh"], ["jaipur", "Jaipur"], ["delhi", "Delhi"]];
+const CENARIOS = [["embarque", "Embarque"], ["cairo", "Pirâmides"], ["deserto", "Deserto Branco"], ["aswan", "Aswan"], ["abusimbel", "Abu Simbel"], ["luxor", "Luxor"], ["hurghada", "Mar Vermelho"]];
 async function retratoCaravana(cen, pose) {
   const W = 1080, H = 1920, cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
   const fundo = await carregaImg("img/abertura-" + cen + ".webp"), k = Math.max(W / fundo.width, H / fundo.height);
@@ -5297,7 +5279,7 @@ function vRetrato() {
 }
 
 // ---------- Ao vivo: GPS, quem está online, reações ----------
-const REACOES = [["oi", "👋", "Oi!"], ["namaste", "🙏", "Namaste"], ["amor", "❤️", "Amor"], ["chai", "☕", "Bora um chai?"], ["vem", "📍", "Vem cá!"], ["uau", "✨", "Uau!"], ["risada", "😂", "Haha"], ["espera", "⏳", "Me espera!"]];
+const REACOES = [["oi", "👋", "Oi!"], ["namaste", "🙏", "Shukran!"], ["amor", "❤️", "Amor"], ["chai", "☕", "Bora um karkadé?"], ["vem", "📍", "Vem cá!"], ["uau", "✨", "Uau!"], ["risada", "😂", "Haha"], ["espera", "⏳", "Me espera!"]];
 S.online = new Set(); S.aoVivo = {}; S.baloes = {}; S.gpsOn = false; S.gpsMsg = null;
 function posicoesAtuais() {
   const m = {};
@@ -5506,7 +5488,7 @@ function exploradoresNoMapa(svg, P, filtro) {
 }
 function mapaIndia(cids) {
   const W = 600, H = 640, svg = pergaminho(W, H, "india");
-  svg.setAttribute("aria-label", "Mapa da expedição pela Índia");
+  svg.setAttribute("aria-label", "Mapa da expedição pelo Egito");
   const pts = cids.filter(c => isFinite(+c.lat)); if (!pts.length) return svg;
   const P = projetor(pts, W, H, 95); S.proj = P;
   camadasGeo(svg, P, true);
@@ -5525,7 +5507,7 @@ function mapaIndia(cids) {
       ls.length ? h("text", { x: right ? x + 16 : x - 16, y: y + 18, "text-anchor": right ? "start" : "end", class: "ccnt", text: `${ok} de ${ls.length} ${ls.length === 1 ? "carimbo" : "carimbos"}` }) : null));
   });
   exploradoresNoMapa(svg, P, () => true);
-  escala(svg, P); molduraECompasso(svg, W, H, "india", "EXPEDIÇÃO", "Índia Sagrada · 2026"); marcarClick(svg, "india");
+  escala(svg, P); molduraECompasso(svg, W, H, "india", "EXPEDIÇÃO", "Egito · 2027"); marcarClick(svg, "india");
   return svg;
 }
 function mapaCidade(c, ls) {
@@ -5563,7 +5545,7 @@ function mapaCidade(c, ls) {
       h("text", { class: "lbl", x: lb.tx, y: lb.ty, "text-anchor": lb.anchor, text: l.nome })));
   });
   exploradoresNoMapa(svg, P, p => p.cidadeId === c.id);
-  escala(svg, P); molduraECompasso(svg, W, H, c.id, c.nome.toUpperCase(), c.frase ? (c.frase.length > 44 ? c.frase.slice(0, c.frase.lastIndexOf(" ", 42)) + "…" : c.frase) : "Índia Sagrada"); marcarClick(svg, c.id);
+  escala(svg, P); molduraECompasso(svg, W, H, c.id, c.nome.toUpperCase(), c.frase ? (c.frase.length > 44 ? c.frase.slice(0, c.frase.lastIndexOf(" ", 42)) + "…" : c.frase) : "Egito · 2027"); marcarClick(svg, c.id);
   return svg;
 }
 function marcarClick(svg, cidadeId) {
@@ -8112,15 +8094,15 @@ function avisoFixado() {
     h("p", { class: "t", text: a.texto }));
 }
 // figurinhas do chat: o bonequinho de quem manda, vestido de deus, com a frase do deus (como figurinha de WhatsApp)
-const FIGURINHAS = [["surya", "Surya", "Bom dia!"], ["ganesha", "Ganesha", "Caminho aberto!"], ["shiva", "Shiva", "Om Namah Shivaya"], ["krishna", "Krishna", "Bora dançar!"],
-  ["hanuman", "Hanuman", "Força!"], ["lakshmi", "Lakshmi", "Tô rica!"], ["durga", "Durga", "Poderosa!"], ["kali", "Kali", "Sai da frente!"],
-  ["parvati", "Parvati", "Te amo!"], ["saraswati", "Saraswati", "Aprendi!"], ["vishnu", "Vishnu", "Tudo sob controle"], ["ganga", "Ganga", "Gratidão"]];
+const FIGURINHAS = [["eg-ra", "Rá", "Bom dia!"], ["eg-farao", "Faraó", "Aqui quem manda sou eu"], ["eg-isis", "Ísis", "Te cuido!"], ["eg-hathor", "Hathor", "Bora dançar!"],
+  ["eg-osiris", "Osíris", "Renasci!"], ["eg-amon", "Amon", "É segredo…"], ["eg-maat", "Maat", "Justo!"], ["eg-ptah", "Ptah", "Mãos à obra!"],
+  ["eg-imhotep", "Imhotep", "Tive uma ideia!"], ["eg-nefertari", "Nefertari", "Linda!"]];
 // pequenininhas, do tamanho de um emoji: só o rosto do bonequinho com a fantasia, no meio do texto (no texto vira :ganesha:)
 // expressões: o rostinho de quem manda, com a cara de cada emoji (na notificação vira o emoji de verdade)
 const EXPRESSOES = [["amor", "🥰"], ["preocupada", "😟"], ["emocionada", "🥹"], ["susto", "😱"], ["revira", "🙄"], ["beijo", "😙"], ["desdem", "😒"],
   ["rindo", "😂"], ["decepcionada", "😞"], ["oculos", "😎"], ["brava", "😡"], ["explodiu", "🤯"], ["vergonha", "😳"]];
 // figurinhas de coisas da Índia (desenhadas no mesmo estilo) e o símbolo da Caravana
-const ITENS_FIG = [["diya", "Lamparina"], ["chai", "Chai"], ["vaca", "Vaquinha"], ["macaco", "Macaco"], ["simbolo", "Caravana do Céu"]];
+const ITENS_FIG = [["diya", "Lamparina"], ["chai", "Karkadé"], ["vaca", "Vaquinha de Hathor"], ["macaco", "Babuíno de Thoth"], ["simbolo", "Caravana do Céu"]];
 const desenhaItem = id => {
   const P = (d, fill, x) => h("path", { d, fill, ...(x || {}) });
   if (id === "diya") return [h("circle", { cx: 20, cy: 15, r: 10, fill: "rgba(252,214,110,.35)" }),
@@ -8338,7 +8320,7 @@ function vConversa() {
   const ico = d => h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "1.7", "stroke-linecap": "round", "stroke-linejoin": "round" }, d.map(p => h("path", { d: p })));
   return h("section", { class: "view chatview" },
     h("div", { class: "chathead" },
-      h("div", { class: "chatlinha" }, h("p", { class: "eyebrow", role: "heading", "aria-level": "1", style: "margin:0", text: "Conversa entre um chai e outro" }), botaoAvisos()),
+      h("div", { class: "chatlinha" }, h("p", { class: "eyebrow", role: "heading", "aria-level": "1", style: "margin:0", text: "Conversa entre um karkadé e outro" }), botaoAvisos()),
       S.celMsg ? h("p", { class: "small", role: "status", style: "margin:8px 0 0", text: S.celMsg }) : null,
       avisoFixado()),
     log,
@@ -8540,32 +8522,32 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden) abre
 
 // ---------- Hoje, mantra do dia, diário, carta ----------
 const MANTRAS = {
-  1: { dev: ["ॐ गं गणपतये नमः"], nome: "Om Gam Ganapataye Namaha", linhas: ["Om Gam Ganapataye Namaha"], trad: "Saudações a Ganesha, o que remove os obstáculos e abre os caminhos.", nota: "Para começar a travessia." },
-  2: { dev: ["त्वमेव माता च पिता त्वमेव", "त्वमेव बन्धुश्च सखा त्वमेव", "त्वमेव विद्या द्रविणं त्वमेव", "त्वमेव सर्वं मम देव देव"], nome: "Twameva", linhas: ["Twameva mata cha pita twameva", "Twameva bandhu cha sakha twameva", "Twameva vidya dravinam twameva", "Twameva sarvam mama deva deva"], trad: "Tu és minha mãe, tu és o meu pai. És minha família e o meu amigo. És o conhecimento e a minha riqueza. És tudo o que tenho. A Luz de todas as Luzes é você.", nota: "No dia do Taj Mahal, um canto de amor e entrega." },
-  3: { dev: ["गोविन्द जय जय गोपाल जय जय", "राधा रमण हरि गोविन्द जय जय"], nome: "Govinda Jaya", linhas: ["Govinda jaya jaya, Gopala jaya jaya", "Radha Ramana Hari, Govinda jaya jaya"], trad: "Glória a Govinda, glória a Gopala, nomes de Krishna, o amado de Radha.", nota: "Para o aarti de Govind Dev Ji, o templo de Krishna em Jaipur." },
-  4: { dev: ["जय सीता राम", "जय जय हनुमान"], nome: "Baba Hanuman", linhas: ["Jaya Sita Ram", "Jai Jai Hanuman"], trad: "Vitória a Sita e Rama! Vitória a Hanuman!", nota: "Para a força do caminho." },
-  5: { dev: ["ॐ नमः शिवाय", "शिवाय नमः"], nome: "Om Namah Shivaya", linhas: ["Om Namah Shivaya", "Shivaya Namaha"], trad: "Eu me curvo a Shiva, o Ser interior que existe em todos.", nota: "Na chegada a Kashi, a cidade de Shiva." },
-  6: { dev: ["ॐ त्र्यम्बकं यजामहे", "सुगन्धिं पुष्टिवर्धनम्", "उर्वारुकमिव बन्धनान्", "मृत्योर्मुक्षीय माऽमृतात्"], nome: "Maha Mrityunjaya", linhas: ["Om tryambakam yajamahe", "sugandhim pushti vardhanam", "urvarukam iva bandhanan", "mrityor mukshiya mamritat"], trad: "Adoramos Shiva, o de três olhos, perfumado, que nutre todos os seres. Que ele nos solte da morte como o fruto maduro se solta do caule, e não nos afaste da imortalidade.", nota: "No dia dos ghats e do fogo de Manikarnika." },
-  7: { dev: ["ॐ सर्वमङ्गलमाङ्गल्ये", "शिवे सर्वार्थसाधिके", "शरण्ये त्र्यम्बके गौरि", "नारायणि नमोऽस्तु ते"], nome: "Sarva Mangala Mangalye", linhas: ["Om sarva mangala mangalye", "shive sarvartha sadhike", "sharanye tryambake gauri", "narayani namostute"], trad: "Ó tu, a mais auspiciosa de todas as bênçãos, que realizas todos os propósitos, refúgio de todos, Gauri de três olhos, Narayani: saudações a ti.", nota: "Para Durga Kund, o templo da Mãe." },
-  8: { dev: ["असतो मा सद्गमय", "तमसो मा ज्योतिर्गमय", "मृत्योर्मा अमृतं गमय"], nome: "Asatoma", linhas: ["Asato ma sadgamaya", "Tamaso ma jyotirgamaya", "Mrityorma amritam gamaya"], trad: "Leva-me do irreal para o real. Leva-me da escuridão para a luz. Leva-me da morte para a imortalidade.", nota: "Rumo ao Himalaia." },
-  9: { dev: ["ॐ पूर्णमदः पूर्णमिदं", "पूर्णात्पूर्णमुदच्यते", "पूर्णस्य पूर्णमादाय", "पूर्णमेवावशिष्यते"], nome: "Purnamadah", linhas: ["Om purnam adah purnam idam", "purnat purnam udachyate", "purnasya purnam adaya", "purnam evavashishyate"], trad: "Aquilo é pleno, isto é pleno. Do pleno nasce o pleno. Tirando o pleno do pleno, o pleno permanece.", nota: "Na capital do yoga." },
-  10: { dev: ["ॐ भूर्भुवः स्वः", "तत्सवितुर्वरेण्यं", "भर्गो देवस्य धीमहि", "धियो यो नः प्रचोदयात्"], nome: "Gayatri", linhas: ["Om bhur bhuvah svaha", "tat savitur varenyam", "bhargo devasya dhimahi", "dhiyo yo nah prachodayat"], trad: "Meditamos na luz gloriosa do Sol divino, que ilumina a terra, o espaço e o céu. Que ela desperte o nosso entendimento.", nota: "Para o nascer do sol em Kunjapuri." },
-  11: { dev: ["ॐ तारे तुत्तारे तुरे स्वाहा"], nome: "Mantra de Tara", linhas: ["Om Tare Tuttare Ture Svaha"], trad: "Ó Tara, eu te peço que me ajude a transcender o mundo e o meu próprio ego. Eu me entrego a ti, leva-me pelas tuas correntezas.", nota: "No dia de práticas e das águas do Ganges." },
-  12: { dev: ["लोकाः समस्ताः सुखिनो भवन्तु"], nome: "Lokah Samastah", linhas: ["Lokah Samastah Sukhino Bhavantu"], trad: "Que todos os seres de todos os mundos sejam felizes.", nota: "No encerramento da Caravana." },
-  13: { dev: ["गुरुर्ब्रह्मा गुरुर्विष्णुः", "गुरुर्देवो महेश्वरः", "गुरुः साक्षात् परब्रह्म", "तस्मै श्री गुरवे नमः"], nome: "Guru Stotram", linhas: ["Guru Brahma Guru Vishnu", "Guru Devo Maheshwara", "Guru Sakshat Parabrahma", "Tasmai Shri Gurave Namaha"], trad: "Ó Guru, ó força maior que perpassa o espaço e o tempo, és quem cria e mantém, quem dilui a ignorância. Por tantas vidas tem vindo junto a mim, como uma doce lembrança a me chamar.", nota: "Para a partida." }
+  1: { dev: ["𓅓𓊵𓏏𓊪"], nome: "Em hotep", linhas: ["Em hotep"], trad: "Em paz. Era assim que os egípcios davam as boas-vindas e se despediam.", nota: "Para chegar ao Egito." },
+  2: { dev: ["𓋹𓍑𓋴"], nome: "Ankh, udja, seneb", linhas: ["Ankh, udja, seneb"], trad: "Vida, prosperidade, saúde! Os egípcios escreviam isso depois do nome do faraó, como um desejo de bem.", nota: "Diante das pirâmides." },
+  3: { dev: ["𓇼𓀢𓊹"], nome: "Dua netjer", linhas: ["Dua netjer"], trad: "Graças a deus. Era o jeito egípcio de agradecer.", nota: "No dia de Saqqara e do museu." },
+  4: { dev: ["𓇯"], nome: "Nut, a mãe do céu", linhas: ["Ó minha mãe Nut,", "estende-te sobre mim,", "para que eu esteja entre as estrelas que não se apagam."], trad: "Pedido pintado na tampa de muitos sarcófagos: a deusa do céu se abre sobre quem dorme embaixo dela.", nota: "Para a noite no deserto." },
+  5: { dev: ["𓆣"], nome: "Kheper", linhas: ["Kheper-i, kheper kheperu"], trad: "Eu vim a ser, e tudo veio a ser. É a fala do criador no começo do mundo, na forma de Khepri, o escaravelho do sol que nasce.", nota: "Para o nascer do sol no deserto." },
+  6: { dev: ["𓈗"], nome: "Hino ao Nilo", linhas: ["Salve, Hapi,", "que brotas da terra", "e vens fazer o Egito viver!"], trad: "Começo do Hino ao Nilo, cantado pelos egípcios para a cheia que trazia a vida.", nota: "Para o dia no Nilo, em Aswan." },
+  7: { dev: ["𓄤"], nome: "Nefertari", linhas: ["Nefertari, merit-en-Mut"], trad: "Nefertari, a mais bela, amada de Mut. Em Abu Simbel, Ramsés escreveu que fez o templo para ela, aquela por quem o sol brilha.", nota: "Para Abu Simbel." },
+  8: { dev: ["𓂀"], nome: "Udja", linhas: ["Udjat"], trad: "O olho inteiro: o olho de Hórus que Thoth curou. Udja quer dizer estar inteiro, são, a salvo.", nota: "Para Edfu, a casa de Hórus." },
+  9: { dev: ["𓄣"], nome: "O coração", linhas: ["Ó meu coração de minha mãe,", "não te levantes contra mim."], trad: "Do Livro dos Mortos: o pedido ao próprio coração antes da pesagem, para que ele fale a verdade a nosso favor.", nota: "Para o Vale dos Reis." },
+  10: { dev: ["𓇅𓈗"], nome: "Uadj-ur", linhas: ["Uadj-ur"], trad: "O Grande Verde: era assim que os egípcios chamavam o mar.", nota: "Para chegar ao Mar Vermelho." },
+  11: { dev: ["𓆸"], nome: "Sekhet Iaru", linhas: ["Sekhet Iaru"], trad: "O Campo de Juncos: o paraíso egípcio, um lugar de água, juncos e descanso, como a vida boa à beira do Nilo.", nota: "Para o dia no mar." },
+  12: { dev: ["𓋴𓋹𓂋𓈖"], nome: "Seankh ren", linhas: ["Seankh ren"], trad: "Fazer viver o nome. Para os egípcios, dizer o nome de alguém em voz alta era mantê-lo vivo.", nota: "No encerramento da Caravana: diga o nome de quem caminhou com você." },
+  13: { dev: ["𓋹𓆓𓏏𓎛𓎛"], nome: "Ankh djet neheh", linhas: ["Ankh djet neheh"], trad: "Vida para sempre e sempre. O desejo mais bonito que um egípcio podia escrever.", nota: "Para a volta para casa." }
 };
 const PERGUNTAS = {
   1: "Qual é a intenção que você traz para esta travessia?",
-  2: "O que o Taj Mahal despertou em você?",
-  3: "O que ficou da estrada até o Rajastão?",
-  4: "Qual cor, cheiro ou som de Jaipur você quer guardar?",
-  5: "Como foi o seu primeiro encontro com o Ganges?",
-  6: "O que você sentiu diante dos ghats de Kashi?",
-  7: "O que você deixou no rio hoje?",
-  8: "O que muda em você ao trocar Varanasi pelas montanhas?",
-  9: "Qual prática ou lugar de hoje você quer levar para casa?",
-  10: "Como foi ver o sol nascer sobre os Himalaias?",
-  11: "O que o dia de práticas te mostrou?",
+  2: "O que você sentiu diante das pirâmides?",
+  3: "Que rosto, objeto ou múmia do museu ficou com você?",
+  4: "Como foi a noite sob o céu do deserto?",
+  5: "O que o silêncio do deserto te contou?",
+  6: "O que você entregou ao Nilo hoje?",
+  7: "O que você sentiu diante de Ramsés em Abu Simbel?",
+  8: "Qual templo de hoje falou mais alto com você?",
+  9: "Se o seu coração fosse pesado hoje, o que pesaria nele?",
+  10: "O que você quer deixar no mar?",
+  11: "O que o Mar Vermelho te ensinou sobre leveza?",
   12: "O que você leva desta caravana para a sua vida?",
   13: "Uma palavra para esta travessia."
 };
@@ -8780,7 +8762,7 @@ function vHoje(d, abrir) {
         prox[1] ? h("p", { class: "hjitem dep" }, h("b", { text: prox[1].hora }), h("span", { text: prox[1].texto })) : null)
       : h("div", { class: "hjprox" }, h("p", { class: "hjl", text: prim ? "Amanhã" : "Programação encerrada" }),
         prim ? h("p", { class: "hjitem" }, h("b", { text: prim.hora }), h("span", { text: prim.texto })) : h("p", { class: "hjitem", text: "Boa volta para casa!" })),
-    m ? h("button", { class: "hjmantra", type: "button", onclick: () => { S.diaAberto = 0; abrir(d.n); } }, h("span", { text: "Mantra do dia" }), h("b", { text: m.nome })) : null,
+    m ? h("button", { class: "hjmantra", type: "button", onclick: () => { S.diaAberto = 0; abrir(d.n); } }, h("span", { text: "Palavras do dia" }), h("b", { text: m.nome })) : null,
     ls.length ? h("div", { class: "hjselos" }, ls.map(l => h("button", { type: "button", onclick: () => abrirSelo(l) },
       h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" }), h("span", { text: aberto(l) ? "Carimbado" : S.isOwner ? "Carimbar" : "A carimbar" })))) : null,
     h("button", { class: "btn gold", type: "button", onclick: () => { S.diaAberto = 0; abrir(d.n); } }, "Ver o dia completo"));
@@ -8788,12 +8770,12 @@ function vHoje(d, abrir) {
 function vMantra(n) {
   const m = MANTRAS[n]; if (!m) return null;
   return h("div", { class: "mantra" },
-    h("p", { class: "eyebrow rule", text: "Mantra do dia" }),
+    h("p", { class: "eyebrow rule", text: "Palavras de poder do dia" }),
     h("h4", { text: m.nome }),
-    h("p", { class: "mdev", lang: "sa" }, m.dev.flatMap((l, i) => i ? [h("br"), l] : [l])),
+    h("p", { class: "mdev", lang: "egy" }, m.dev.flatMap((l, i) => i ? [h("br"), l] : [l])),
     h("p", { class: "mlin" }, m.linhas.flatMap((l, i) => i ? [h("br"), l] : [l])),
     h("p", { class: "mtrad", text: m.trad }),
-    h("p", { class: "mnota", text: m.nota + " · Do livreto da Caravana" }));
+    h("p", { class: "mnota", text: m.nota }));
 }
 // Diário de bordo
 S.diario = {};
@@ -8819,7 +8801,7 @@ function vDiario(d, liberado) {
     d.n === 13 && leituraAberta() ? h("button", { class: "btn gold", type: "button", onclick: () => abrirLeitura() }, "Abrir a mensagem do meu diário") : null);
 }
 // Correspondência: cartas da líder, em pergaminho, por pombo-correio
-const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou a Delhi com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com a Índia viva dentro de cada um!\n\nDezessete carimbos, cinco cidades, um rio sagrado.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
+const CARTA_RASCUNHO = "Treze dias atrás, a caravana chegou ao Cairo com as malas cheias e o coração aberto. Hoje ela volta com o passaporte carimbado e com o Egito vivo dentro de cada um!\n\nAs pirâmides, o deserto, o Nilo, os templos e o mar.. e uma roda que foi se formando pelo caminho, dia após dia.\n\nQue tudo o que foi vivido aqui siga florescendo nos gestos simples de cada dia.\n\nGratidão por fazerem parte desta travessia!";
 const ASSINATURA = "Vanessa & Vivian";
 // cartas antigas vinham assinadas só por Vivian ou pela Caravana: agora quem assina são as duas, com Caravana do Céu embaixo
 const assinaturaDe = c => { const a = String(c.assinatura || "").replace(/\s*·\s*Caravana do Céu\s*$/i, "").trim(); return !a || /^(Vivian|Caravana do Céu)$/i.test(a) ? ASSINATURA : a; };
@@ -8854,13 +8836,13 @@ function pergaminhoCarta(c) {
 }
 // ---------- Moksha Patam: a cobra e escada original da Índia (joga sem internet, passando o celular) ----------
 // escadas são virtudes que elevam; cobras são vícios que derrubam; a casa 100 é Moksha, a libertação
-const MP_ESCADAS = { 4: [14, "Fé", "Shraddha", "Quem confia no caminho dá o primeiro passo sem ver o fim da estrada."], 9: [31, "Generosidade", "Dana", "O que se dá sem esperar volta abre espaço para subir."],
-  21: [42, "Devoção", "Bhakti", "O coração entregue encurta qualquer distância."], 28: [84, "Conhecimento", "Jnana", "Quem enxerga a verdade pula muitas casas de uma vez."],
-  51: [67, "Compaixão", "Karuna", "Sentir a dor do outro como sua eleva os dois."], 72: [91, "Gratidão", "Kritajnata", "Agradecer pelo que já se tem leva mais longe."] };
-const MP_COBRAS = { 17: [7, "Raiva", "Krodha", "Um instante de raiva desfaz o que levou tempo para construir."], 54: [34, "Ganância", "Lobha", "Querer sempre mais faz perder o que já se tinha."],
-  62: [19, "Orgulho", "Ahamkara", "O ego se acha alto demais e cai de mais alto ainda."], 64: [60, "Inveja", "Irshya", "Olhar a casa do outro tira os olhos do próprio caminho."],
-  87: [24, "Ilusão", "Moha", "Confundir o passageiro com o eterno é a queda mais longa."], 93: [73, "Preguiça", "Tamas", "Quem adia o caminho volta para trás sem perceber."],
-  95: [75, "Vaidade", "Mada", "Admirar o próprio reflexo é parar de caminhar."], 98: [79, "Apego", "Raga", "Tão perto de Moksha, quem segura demais escorrega."] };
+const MP_ESCADAS = { 4: [14, "Verdade", "Maat", "Quem fala a verdade anda leve: o coração não pesa na balança."], 9: [31, "Generosidade", "Dei pão ao faminto", "Dei pão ao faminto, água ao sedento e roupa a quem estava nu, diziam os egípcios nas tumbas. O que se dá eleva."],
+  21: [42, "Gratidão", "Dua", "Agradecer pelo que já se tem leva mais longe."], 28: [84, "Sabedoria", "Sia", "Sia era o entendimento que os deuses tinham no coração. Quem enxerga, pula muitas casas de uma vez."],
+  51: [67, "Compaixão", "Não fiz ninguém chorar", "Uma das confissões diante da balança. Cuidar do outro eleva os dois."], 72: [91, "Paz", "Hotep", "Em paz se atravessa o que, com pressa, derruba."] };
+const MP_COBRAS = { 17: [7, "Raiva", "Apófis", "Um instante de raiva desfaz o que levou tempo para construir."], 54: [34, "Ganância", "Apófis", "Querer sempre mais faz perder o que já se tinha."],
+  62: [19, "Orgulho", "Apófis", "Quem se acha alto demais cai de mais alto ainda."], 64: [60, "Inveja", "Apófis", "Olhar a casa do outro tira os olhos do próprio caminho."],
+  87: [24, "Mentira", "Isfet", "A mentira é o caos que os egípcios chamavam de isfet: a queda mais longa."], 93: [73, "Preguiça", "Apófis", "Quem adia o caminho volta para trás sem perceber."],
+  95: [75, "Vaidade", "Apófis", "Admirar o próprio reflexo é parar de caminhar."], 98: [79, "Apego", "Apófis", "Tão perto do Campo de Juncos, quem segura demais escorrega."] };
 const mpPct = v => Math.min(95, Math.max(5, v / 10));
 const mpXY = n => { const r = Math.floor((n - 1) / 10), c = r % 2 ? 9 - (n - 1) % 10 : (n - 1) % 10; return [c * 100 + 50, (9 - r) * 100 + 50]; };
 function mpTabuleiro() {
@@ -8871,7 +8853,7 @@ function mpTabuleiro() {
   const [mx, my] = mpXY(100);
   cel.push(h("rect", { x: mx - 50, y: my - 50, width: 100, height: 100, fill: "#F6D98A" }), h("circle", { cx: mx, cy: my - 4, r: 34, fill: "rgba(255,240,190,.9)" }),
     h("g", { transform: `translate(${mx - 30} ${my - 36}) scale(1.5)` }, desenhaPresente("lotus")),
-    h("text", { x: mx, y: my + 42, "font-size": 15, "text-anchor": "middle", "font-family": "Poppins,sans-serif", fill: "#8A3F32", "font-weight": 700, "letter-spacing": 1 }, "MOKSHA"));
+    h("text", { x: mx, y: my + 42, "font-size": 15, "text-anchor": "middle", "font-family": "Poppins,sans-serif", fill: "#8A3F32", "font-weight": 700, "letter-spacing": 1 }, "JUNCOS"));
   // escadas douradas
   const esc = Object.entries(MP_ESCADAS).map(([a, [b]]) => { const [x1, y1] = mpXY(+a), [x2, y2] = mpXY(b), dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), px = -dy / L * 17, py = dx / L * 17, g = h("g", null);
     const deg = Math.max(2, Math.floor(L / 42));
@@ -8897,8 +8879,8 @@ const MP_FACES = { 1: [[50, 50]], 2: [[28, 28], [72, 72]], 3: [[26, 26], [50, 50
 const mpDado = v => h("svg", { class: "mpdado", viewBox: "0 0 100 100" }, h("rect", { x: 4, y: 4, width: 92, height: 92, rx: 20, fill: "#FFF9EE", stroke: "#8A5A22", "stroke-width": 5 }), (MP_FACES[v] || MP_FACES[1]).map(([x, y]) => h("circle", { cx: x, cy: y, r: 9, fill: v === 1 ? "#C0392B" : "#3B2A1C" })));
 function vMoksha(cabecaExtra) {
   const st = S.mp || (S.mp = mpEstado());
-  const cabeca = h("div", { class: "mphead" }, h("p", { class: "eyebrow", text: "Jogo da travessia" }), h("h1", { text: "Moksha Patam" }),
-    h("p", { class: "lede", text: "O jogo de cobras e escadas nasceu na Índia para ensinar o caminho: as escadas são virtudes que elevam, as cobras são vícios que derrubam, e a casa 100 é Moksha, a libertação. Funciona sem internet: é só passar o celular." }));
+  const cabeca = h("div", { class: "mphead" }, h("p", { class: "eyebrow", text: "Jogo da travessia" }), h("h1", { text: "Escadas de Maat" }),
+    h("p", { class: "lede", text: "As escadas são as virtudes de Maat, que elevam; as serpentes são Apófis, o caos que toda noite tenta engolir a barca do sol e derruba quem cai na boca dele. A casa 100 é o Campo de Juncos, o paraíso egípcio. Funciona sem internet: é só passar o celular." }));
   if (!st || !st.jog) {
     const gente = [eu(), ...S.viajantes.filter(v => v.id !== S.uid && !v.lider), ...S.viajantes.filter(v => v.id !== S.uid && v.lider)].filter(Boolean);
     const sel = S.mpSel || (S.mpSel = eu() ? [S.uid] : []);
@@ -8920,7 +8902,7 @@ function vMoksha(cabecaExtra) {
     const j = st.jog[st.vez], peca = document.querySelector(`.mppeca[data-i="${st.vez}"]`), off = [[-14, -12], [14, -12], [-14, 14], [14, 14]][st.vez];
     const poe = n => { if (!peca) return; const [x, y] = mpXY(n); peca.style.left = mpPct(x + off[0]) + "%"; peca.style.top = mpPct(y + off[1]) + "%"; };
     let msg = "";
-    if (j.pos + v > 100) msg = `${nomeJ(j.id)} tirou ${v}, mas precisa do número exato para chegar a Moksha.`;
+    if (j.pos + v > 100) msg = `${nomeJ(j.id)} tirou ${v}, mas precisa do número exato para chegar ao Campo de Juncos.`;
     else {
       for (let k = 1; k <= v; k++) { j.pos++; poe(j.pos); await new Promise(r => setTimeout(r, 230)); }
       const e = MP_ESCADAS[j.pos], c = MP_COBRAS[j.pos];
@@ -8934,11 +8916,11 @@ function vMoksha(cabecaExtra) {
   const carta = S.mpCarta;
   return h("div", { class: "mpwrap", style: "display:flex;flex-direction:column;gap:14px" },
     h("div", { class: "mpbox" }, h("div", { class: "mptab" }, mpTabuleiro(), pecas),
-      st.fim ? h("div", { class: "mpfim" }, h("div", { class: "mplotus", "aria-hidden": "true" }, "🪷"), h("h2", { text: nomeJ(st.fim) + " alcançou Moksha!" }), h("p", { text: "A libertação: o fim da roda, a casa onde não se cai mais." }),
+      st.fim ? h("div", { class: "mpfim" }, h("div", { class: "mplotus", "aria-hidden": "true" }, "🪷"), h("h2", { text: nomeJ(st.fim) + " chegou ao Campo de Juncos!" }), h("p", { text: "O paraíso egípcio: campos de juncos à beira d'água, onde quem tem o coração leve vive em paz para sempre." }),
           h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => { st.jog.forEach(j => j.pos = 0); st.vez = 0; st.fim = null; st.msg = ""; mpGuarda(st); render(); } }, "Jogar de novo"),
             h("button", { class: "btn ghost", type: "button", onclick: () => { S.mp = null; mpGuarda(null); render(); } }, "Trocar jogadores"))) : null,
       carta ? h("div", { class: "mpcarta " + carta.tipo, role: "dialog", onclick: () => { S.mpCarta = null; render(); } },
-        h("p", { class: "eyebrow", text: carta.tipo === "escada" ? "Escada · virtude" : "Cobra · vício" }),
+        h("p", { class: "eyebrow", text: carta.tipo === "escada" ? "Escada de Maat · virtude" : "Apófis · a serpente do caos" }),
         h("h3", null, carta.d[1], h("small", { text: " · " + carta.d[2] })),
         h("p", { class: "mpfrase", text: carta.d[3] }),
         h("p", { class: "small", text: `${carta.quem} ${carta.tipo === "escada" ? "subiu" : "desceu"} da casa ${carta.de} para a ${carta.d[0]}.` }),
@@ -9059,15 +9041,15 @@ function vChaupar() {
     h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn ghost", type: "button", onclick: () => { if (confirm("Encerrar esta partida?")) { S.ch = null; chGuarda(null); render(); } } }, "Encerrar partida")));
 }
 function vJogo() {
-  const qual = S.jogoSel || lsGet("cdi-jogo") || "chaupar";
+  const qual = "moksha"; // o Chaupar era um jogo da Índia: no Egito fica só o das Escadas de Maat
   const troca = id => { S.jogoSel = id; try { localStorage.setItem("cdi-jogo", id); } catch (e) {} render(); };
   const cab = qual === "chaupar"
     ? h("div", { class: "mphead" }, h("p", { class: "eyebrow", text: "Jogo da travessia" }), h("h1", { text: "Chaupar" }),
         h("p", { class: "lede", text: "O jogo de dados do Mahabharata, em que Yudhishthira perdeu o reino para Shakuni. Aqui ninguém perde nada: é estratégia, sorte e provocação entre amigos. Funciona sem internet, passando o celular." }))
-    : h("div", { class: "mphead" }, h("p", { class: "eyebrow", text: "Jogo da travessia" }), h("h1", { text: "Moksha Patam" }),
-        h("p", { class: "lede", text: "O jogo de cobras e escadas nasceu na Índia para ensinar o caminho: as escadas são virtudes que elevam, as cobras são vícios que derrubam, e a casa 100 é Moksha, a libertação." }));
+    : h("div", { class: "mphead" }, h("p", { class: "eyebrow", text: "Jogo da travessia" }), h("h1", { text: "Escadas de Maat" }),
+        h("p", { class: "lede", text: "As escadas são as virtudes de Maat, que elevam; as serpentes são Apófis, o caos que toda noite tenta engolir a barca do sol e derruba quem cai na boca dele. A casa 100 é o Campo de Juncos, o paraíso egípcio." }));
   return h("section", { class: "view jogoview" },
-    h("div", { class: "fcats", role: "tablist", style: "justify-content:center" }, [["chaupar", "Chaupar"], ["moksha", "Moksha Patam"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(qual === id), onclick: () => troca(id) }, n))),
+    h("div", { class: "fcats", role: "tablist", style: "justify-content:center", hidden: "" }, [["moksha", "Escadas de Maat"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(qual === id), onclick: () => troca(id) }, n))),
     cab, qual === "chaupar" ? vChaupar() : vMoksha());
 }
 // ---------- Pombo-correio entre os viajantes: cartinhas, presentes e oferendas ----------
@@ -9312,7 +9294,7 @@ function vCorrespondencia() {
   const env1 = (c, fut, entregue) => h("button", { type: "button", class: "envelope" + (fut && !entregue ? " fut" : ""), onclick: () => fut ? editarCarta(c) : abrirCarta(c) },
     h("span", { class: "rolinho", "aria-hidden": "true" }, h("i")),
     h("span", { class: "ctx" }, h("b", { text: (c.para || c.pessoal ? "💌 " : "") + (c.titulo || "Carta da líder") }),
-      h("span", { text: (c.para && S.isOwner ? "Só para " + nomeDe(c.para).split(" ")[0] + " · " : c.pessoal ? "Só para você · " : "") + (fut && !entregue ? (c.rascunho ? "Rascunho · ninguém vê ainda" : `Programada · ${dataCarta(c.envio)}, ${horaCarta(c.envio)} na Índia`) : (c.local ? c.local + " · " : "") + dataCarta(c.envio)) })));
+      h("span", { text: (c.para && S.isOwner ? "Só para " + nomeDe(c.para).split(" ")[0] + " · " : c.pessoal ? "Só para você · " : "") + (fut && !entregue ? (c.rascunho ? "Rascunho · ninguém vê ainda" : `Programada · ${dataCarta(c.envio)}, ${horaCarta(c.envio)} no Egito`) : (c.local ? c.local + " · " : "") + dataCarta(c.envio)) })));
   return h("section", { class: "correio" },
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: "Cartas da travessia" }))),
     abertas.length ? h("div", { class: "envs" }, abertas.map(c => env(c, false))) : null,
@@ -9350,9 +9332,9 @@ function htmlOffline() {
   const dias = S.roteiro?.dias || [], par = t => String(t || "").split(/\n\s*\n/).map(p => `<p>${esc(p.trim())}</p>`).join("");
   const sab = S.ens.filter(x => x.categoria !== "Guia da travessia" && lib(x)).sort(byOrdem);
   const guia = S.ens.filter(x => x.categoria === "Guia da travessia").sort(byOrdem);
-  return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Caravana do Céu · Índia 2026</title>
+  return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Caravana do Céu · Egito 2027</title>
 <style>body{margin:0;background:#F6EFE3;color:#282722;font:16px/1.6 Georgia,serif}main{max-width:640px;margin:0 auto;padding:20px 16px 60px}h1{font-size:28px;margin:.2em 0}h2{font-size:22px;margin:1.6em 0 .3em;border-top:1px solid #C7B493;padding-top:14px}h3{font-size:18px;margin:1em 0 .2em}.e{font:600 11px/1.4 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A3F32}.s{font:14px/1.5 system-ui,sans-serif;color:#6B6556}ul{padding-left:0;list-style:none}li{padding:4px 0;border-bottom:1px dotted #D8CBB0;font-family:system-ui,sans-serif;font-size:15px}li b{display:inline-block;min-width:52px;color:#8A3F32}.m{background:#EFE3C8;border-radius:12px;padding:12px 14px;margin:10px 0}.m i{display:block;color:#3F4938}nav a{display:inline-block;margin:0 10px 6px 0;color:#8A3F32;font-family:system-ui,sans-serif;font-size:14px}</style></head><body><main>
-<p class="e">Caravana do Céu · Índia Sagrada · 4 a 16 nov 2026</p><h1>Travessia da Índia Sagrada</h1><p class="s">Cópia para ler sem internet. Salva em ${esc(new Date().toLocaleDateString("pt-BR"))}.</p>
+<p class="e">Caravana do Céu · Egito · 8 a 20 out 2027</p><h1>Travessia do Velho Mundo</h1><p class="s">Cópia para ler sem internet. Salva em ${esc(new Date().toLocaleDateString("pt-BR"))}.</p>
 <nav>${dias.map(d => `<a href="#d${d.n}">Dia ${d.n}</a>`).join("")}<a href="#hindi">Árabe</a><a href="#saberes">Saberes</a><a href="#guia">Guia</a></nav>
 ${dias.map(d => { return `<h2 id="d${d.n}">Dia ${d.n} · ${esc(d.data)} · ${esc(d.titulo)}</h2><p class="s">${esc(d.rota)}<br>Hospedagem: ${esc(d.hotel)}${d.guia ? " · " + esc(d.guia) : ""}</p>
 <ul>${d.agenda.flatMap(p => p.itens).map(i => `<li><b>${esc(i.hora || "·")}</b> ${esc(i.texto)}</li>`).join("")}</ul>
@@ -9377,7 +9359,7 @@ function vOffline() {
     h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: () => baixarOffline(st) }, "Salvar no celular"), st));
 }
 // Mural da caravana
-const CIDADES_MURAL = ["Delhi", "Agra", "Jaipur", "Varanasi", "Rishikesh"];
+const CIDADES_MURAL = ["Cairo", "Deserto Branco", "Aswan", "Abu Simbel", "Luxor", "Hurghada"];
 function abasFotos() {
   const a = S.fotoAba || "estudio";
   return h("div", { class: "fcats", role: "tablist", style: "margin-top:-4px" },
@@ -9594,7 +9576,7 @@ function abrirFotoMural(f) {
 const entradasDe = diario => (S.roteiro?.dias || []).filter(d => String((diario || {})[d.n] || "").trim()).map(d => ({ n: d.n, cidade: d.cidade, pergunta: PERGUNTAS[d.n], texto: String(diario[d.n]).trim() }));
 const leituraAberta = () => hojeIso() >= FIM && !!S.leitura && !!eu() && !eu().lider;
 function promptLeitura(nome, ent) {
-  return `Você escreve na voz da Caravana do Céu, uma caravana espiritual brasileira que acaba de atravessar a Índia Sagrada (4 a 16 de novembro de 2026: Delhi, Agra e o Taj Mahal, Jaipur e o templo de Galta Ji, Varanasi e o Ganges, Rishikesh e o Himalaia).
+  return `Você escreve na voz da Caravana do Céu, uma caravana espiritual brasileira que acaba de fazer a Travessia do Velho Mundo pelo Egito (8 a 20 de outubro de 2027: Cairo e as pirâmides de Gizé, Saqqara e o Museu Egípcio, o Deserto Branco, Aswan e Philae, Abu Simbel, Kom Ombo, Edfu, Luxor, o Vale dos Reis e Karnak, e o Mar Vermelho em Hurghada).
 
 Escreva uma Carta Especial da Caravana para ${nome}, a partir do Diário de Bordo que ${nome} escreveu dia a dia durante a travessia. O objetivo é que ${nome} sinta: alguém me viu por inteiro.
 
@@ -9603,16 +9585,16 @@ Como ler (faça isso em silêncio, antes de escrever):
 2. Encontre um fio central e formule como identidade, no formato "Você não é X. Você é Y."
 3. Nomeie o dom de ${nome}: o jeito raro com que usa o que tem, incluindo uma camada que ${nome} mesma subestimou.
 4. Mostre o que a travessia moveu em ${nome}, ligando as palavras de cada dia ao lugar em que foram escritas.
-5. Escolha uma metáfora-mestra da natureza (rio, fogo, semente, montanha, lamparina) e desenvolva em duas ou três frases; retome-a no fecho.
+5. Escolha uma metáfora-mestra da natureza (rio, deserto, sol, semente, lamparina) e desenvolva em duas ou três frases; retome-a no fecho.
 
 Como escrever:
 - Português do Brasil, falando direto com ${nome} ("você") e usando o nome dela ou dele ao longo do texto.
 - Comece com "Para ${nome}," numa linha sozinha.
 - Entre 350 e 600 palavras, em parágrafos curtos. Se houver poucas respostas, escreva mais curto e não preencha com suposições.
-- Cite entre asteriscos, em itálico, apenas frases que ${nome} escreveu de fato, dizendo o dia e o lugar (por exemplo: no dia 6, em Varanasi, você escreveu *...*). Nunca invente uma citação.
+- Cite entre asteriscos, em itálico, apenas frases que ${nome} escreveu de fato, dizendo o dia e o lugar (por exemplo: no dia 6, em Aswan, você escreveu *...*). Nunca invente uma citação.
 - Use negrito com dois asteriscos em no máximo uma frase-tese por parágrafo.
 - Mais bênção do que confronto, mas com precisão; reconheça o que ${nome} conquistou antes de apontar o que ainda prende.
-- Termine com uma pergunta-espelho curta, sozinha numa linha, e depois um pequeno ritual para fazer ao chegar em casa, ligado ao que ${nome} viveu na Índia.
+- Termine com uma pergunta-espelho curta, sozinha numa linha, e depois um pequeno ritual para fazer ao chegar em casa, ligado ao que ${nome} viveu no Egito.
 - Assine "Caravana do Céu" na última linha.
 - Evite clichês de autoajuda ("acredite em você", "saia da zona de conforto", "gratidão"), previsões sobre o futuro, termos clínicos e frases de efeito em sequência.
 - Se o diário mostrar sofrimento agudo, acolha com delicadeza e sugira procurar apoio profissional.
@@ -9638,7 +9620,7 @@ function abrirLeitura(texto, titulo) {
   closeSheets();
   texto = texto || S.leitura; if (!texto) return;
   if (!titulo) { try { localStorage.setItem("cdi-leitura-vista", "1"); } catch (e) {} }
-  const corpo = h("div", { class: "pgm leitura" }, h("p", { class: "pgmdata", text: titulo || "Diário de bordo · Delhi, 16 de novembro de 2026" }), ...textoRico(texto));
+  const corpo = h("div", { class: "pgm leitura" }, h("p", { class: "pgmdata", text: titulo || "Diário de bordo · Egito, 20 de outubro de 2027" }), ...textoRico(texto));
   const box = h("div", { role: "dialog", "aria-label": "Mensagem do diário de bordo", class: "correiobox" },
     h("article", { class: "pergaminho" }, h("span", { class: "rolo top", "aria-hidden": "true" }), corpo, h("span", { class: "rolo bot", "aria-hidden": "true" })),
     h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: () => { closeSheets(); render(); } }, "Guardar a mensagem")));
@@ -9812,7 +9794,7 @@ function vPedra() {
 function promptResumo() {
   const pn = S.pedra.slice().sort((a, b) => a.ts - b.ts).map(p => `- ${nomeReal(p.autor).split(" ")[0]} (${new Date(p.ts).toLocaleDateString("pt-BR")}): ${p.texto}`);
   const ch = S.chat.filter(m => !m.tipo && m.texto).sort((a, b) => a.ts - b.ts).map(m => `- ${nomeReal(m.autor).split(" ")[0]}: ${m.texto}`);
-  return `Você escreve na voz da Caravana do Céu, uma caravana espiritual brasileira que atravessou a Índia Sagrada de 4 a 16 de novembro de 2026: Delhi, Agra e o Taj Mahal, Jaipur e o templo de Galta Ji, Varanasi e o Ganges no Diwali, Rishikesh e o Himalaia.
+  return `Você escreve na voz da Caravana do Céu, uma caravana espiritual brasileira que fez a Travessia do Velho Mundo pelo Egito de 8 a 20 de outubro de 2027: Cairo e as pirâmides de Gizé, Saqqara e o Museu Egípcio, o Deserto Branco, Aswan e Philae, Abu Simbel, Kom Ombo, Edfu, Luxor, o Vale dos Reis e Karnak, e o Mar Vermelho em Hurghada.
 
 Escreva a Mensagem da Travessia: uma carta para o grupo inteiro, a partir de tudo o que as pessoas escreveram no Mural de pensamentos e no chat da caravana. O objetivo é que cada pessoa sinta: fomos vistos por inteiro, juntos.
 
@@ -9820,7 +9802,7 @@ Como ler (em silêncio, antes de escrever):
 1. Separe as frases mais reveladoras, na grafia exata de quem escreveu; as palavras que se repetem entre pessoas diferentes; e as tensões que apareceram no caminho.
 2. Encontre o fio central da caravana e formule como identidade coletiva, no formato "Esta caravana não foi X. Foi Y."
 3. Mostre o movimento da travessia de cidade em cidade: o que se abriu em cada etapa, ligando as falas aos lugares.
-4. Escolha uma metáfora-mestra da natureza (rio, fogo, semente, montanha, lamparina), desenvolva em duas ou três frases e retome no fecho.
+4. Escolha uma metáfora-mestra da natureza (rio, deserto, sol, semente, lamparina), desenvolva em duas ou três frases e retome no fecho.
 
 Como escrever:
 - Português do Brasil, falando com o grupo ("vocês"), carinhoso e preciso, com reticências e exclamações na medida da Caravana.
@@ -9846,7 +9828,7 @@ async function abrirResumo() {
   const enviar = h("button", { class: "btn gold", type: "button", onclick: async () => {
     const texto = ta.value.trim().replace(/^Querida caravana\.\.\s*/i, "").replace(/\n*Caravana do Céu\s*$/i, "").trim();
     if (!texto) return;
-    try { await S.db.collection("cartas").add({ titulo: "A mensagem da travessia", texto, assinatura: "Caravana do Céu", local: "Delhi", envio: Date.now(), rascunho: false, ts: Date.now() }); st.textContent = "Mensagem enviada! Ela chega agora para toda a caravana pelo mensageiro do Nilo."; st.className = "msg ok"; }
+    try { await S.db.collection("cartas").add({ titulo: "A mensagem da travessia", texto, assinatura: "Caravana do Céu", local: "Egito", envio: Date.now(), rascunho: false, ts: Date.now() }); st.textContent = "Mensagem enviada! Ela chega agora para toda a caravana pelo mensageiro do Nilo."; st.className = "msg ok"; }
     catch (e) { st.textContent = "Não consegui enviar. Tente de novo."; st.className = "msg err"; }
   } }, "Enviar para todos pelo mensageiro do Nilo");
   const gerar = h("button", { class: "btn", type: "button" }, sample ? "Escrever a mensagem" : "Copiar e abrir o Claude");
@@ -9988,23 +9970,23 @@ function vHotelHoje() {
     h("details", { class: "outros" }, h("summary", { text: "Outros hotéis da travessia" }),
       h("div", { class: "opts" }, Object.keys(HOTEIS).filter(k => k !== nome).map(k => h("button", { type: "button", class: "opt", onclick: () => abrirMotorista(k) }, HOTEIS[k].en)))));
 }
-// ---------- Conversor de rúpias ----------
+// ---------- Conversor de libras egípcias ----------
 S.cambio = null;
-try { S.cambio = JSON.parse(localStorage.getItem("cdi-cambio") || "null"); } catch (e) {}
+try { S.cambio = JSON.parse(localStorage.getItem("cdi-cambio-egp") || "null"); } catch (e) {}
 function buscaCambio() {
   if (S.cambioBuscando || (S.cambio && Date.now() - S.cambio.ts < 6 * 3600000)) return;
   S.cambioBuscando = true;
-  fetch("https://open.er-api.com/v6/latest/INR").then(r => r.ok ? r.json() : Promise.reject()).then(j => {
+  fetch("https://open.er-api.com/v6/latest/EGP").then(r => r.ok ? r.json() : Promise.reject()).then(j => {
     const t = j && j.rates && j.rates.BRL; if (!t) return;
-    S.cambio = { brl: t, ts: Date.now() }; try { localStorage.setItem("cdi-cambio", JSON.stringify(S.cambio)); } catch (e) {}
+    S.cambio = { brl: t, ts: Date.now() }; try { localStorage.setItem("cdi-cambio-egp", JSON.stringify(S.cambio)); } catch (e) {}
     if (S.tab === "cambio") render();
   }).catch(() => {}).finally(() => { S.cambioBuscando = false; });
 }
 function vCambio() {
   return h("section", { class: "view" },
-    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Dinheiro na Índia" }), h("h1", { text: "Conversor de rúpias" }))),
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Dinheiro no Egito" }), h("h1", { text: "Conversor de libras" }))),
     vRupias(),
-    h("p", { class: "small", text: "Dica para os mercados: na Índia, negociar o preço faz parte da compra. Pergunte quanto custa e ofereça mais ou menos a metade do valor pedido. O vendedor vai baixar um pouco, você sobe um pouco, e vocês fecham num valor entre os dois. Negocie com calma e bom humor. Se não chegarem a um acordo, agradeça e siga andando: muitas vezes o vendedor chama de volta com um preço melhor. Em lojas com preço fixo na etiqueta não se negocia. Guarde notas pequenas para gorjetas e tuk-tuks." }));
+    h("p", { class: "small", text: "Dica para os mercados, como o Khan el-Khalili: no Egito, negociar o preço faz parte da compra. Pergunte quanto custa e ofereça mais ou menos a metade do valor pedido. O vendedor vai baixar um pouco, você sobe um pouco, e vocês fecham num valor entre os dois. Negocie com calma e bom humor. Se não chegarem a um acordo, agradeça e siga andando: muitas vezes o vendedor chama de volta com um preço melhor. Em lojas com preço fixo na etiqueta não se negocia. Guarde notas pequenas para as gorjetas, que no Egito se chamam bakshish." }));
 }
 function vRupias() {
   buscaCambio();
@@ -10016,11 +9998,11 @@ function vRupias() {
   const rapido = v => { S.convInr = v; inr.value = v; if (taxa) brl.value = (v * taxa).toFixed(2); };
   return h("div", { class: "conversor" },
     h("div", { class: "convrow" },
-      h("label", { class: "convcampo" }, h("span", { text: "₹ Rúpias" }), inr),
+      h("label", { class: "convcampo" }, h("span", { text: "£E Libras egípcias" }), inr),
       h("span", { class: "convigual", "aria-hidden": "true", text: "=" }),
       h("label", { class: "convcampo" }, h("span", { text: "R$ Reais" }), brl)),
-    h("div", { class: "opts" }, [50, 100, 500, 1000, 2000].map(v => h("button", { type: "button", class: "opt", onclick: () => rapido(v) }, "₹ " + v))),
-    h("p", { class: "small", text: taxa ? `₹ 100 ≈ R$ ${(100 * taxa).toFixed(2).replace(".", ",")} · cotação de ${new Date(S.cambio.ts).toLocaleDateString("pt-BR")}${Date.now() - S.cambio.ts > 86400000 ? " (sem internet, usando a última guardada)" : ""}` : "Buscando a cotação do dia…" }));
+    h("div", { class: "opts" }, [50, 100, 500, 1000, 2000].map(v => h("button", { type: "button", class: "opt", onclick: () => rapido(v) }, "£E " + v))),
+    h("p", { class: "small", text: taxa ? `£E 100 ≈ R$ ${(100 * taxa).toFixed(2).replace(".", ",")} · cotação de ${new Date(S.cambio.ts).toLocaleDateString("pt-BR")}${Date.now() - S.cambio.ts > 86400000 ? " (sem internet, usando a última guardada)" : ""}` : "Buscando a cotação do dia…" }));
 }
 
 // ---------- dados ----------

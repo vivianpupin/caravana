@@ -289,3 +289,25 @@ O roteiro contratado, dia a dia (sem os valores). Complementa o roteiro da Vivia
   - A roda gira devagar. A pessoa segura o botão, a roda acelera e a luz pula de deus em deus com vibração e um "tim". Ao soltar, a roda freia, para num deus e ele sobe para o alto.
   - Depois vêm a leitura do deus, o amuleto dele e a bolsa de três amuletos.
   - A tela da roda também fica sobre o fundo de areia, com os textos escuros.
+
+## Limpeza da Índia (out/2026, `tools/egito/sem-india.py`)
+Tudo seguindo o roteiro oficial (`app/dados/travessia.json`, 8 a 20/10/2027). Pode rodar de novo.
+- **Guardiões**: os 12 deuses do Egito (Rá, Thoth, Ísis, Osíris, Hórus, Anúbis, Hathor, Maat, Ptah, Amon, Sobek, Imhotep).
+  - Cada um tem 3 cartas e o lugar do roteiro onde a pessoa vai encontrá-lo.
+  - No lugar do mantra, cada um tem as palavras de poder "Dua …" (louvor), as mesmas do oráculo.
+  - O sorteio usa os 12 deuses. A passagem (`embarque.html`) e a lista de passagens também foram trocadas.
+- **Palavras de poder do dia**: entram no lugar dos mantras hindus do livreto. São frases egípcias de verdade, uma por dia (Em hotep, Ankh udja seneb, Dua netjer, Nut, Kheper, Hino ao Nilo, Nefertari, Udjat, coração do Livro dos Mortos, Uadj-ur, Sekhet Iaru, Seankh ren, Ankh djet neheh), com hieróglifos.
+  - **A confirmar com a Vivian**: se ela tiver um livreto do Egito, os textos dele substituem estes.
+- **Perguntas do diário**: uma por dia do roteiro.
+- **Carta final**: rascunho novo. "Diário de bordo · Egito, 20 de outubro de 2027". Os textos que a IA escreve ganharam a rota do Egito.
+- **Cópia sem internet**: "Travessia do Velho Mundo · 8 a 20 out 2027".
+- **Mural da caravana**: Cairo, Deserto Branco, Aswan, Abu Simbel, Luxor e Hurghada.
+- **Retrato da caravana**: os cenários são as aberturas do Egito, cada um liberado pelo selo da cidade.
+- **Jogo**: "Escadas de Maat", em que as virtudes de Maat sobem e Apófis derruba. A casa 100 é o Campo de Juncos. O Chaupar (jogo da Índia) saiu da lista, mas o código continua.
+- **Conversor**: libra egípcia (EGP), com a dica de negociar no Khan el-Khalili.
+- **Figurinhas do chat**: o bonequinho vestido de Rá, Faraó, Ísis, Hathor, Osíris, Amon, Maat, Ptah, Imhotep e Nefertari. Mudaram os nomes de "Chai" (agora Karkadé) e de "Namaste" (agora Shukran).
+- **O que ainda fala da Índia de propósito ou é código parado**:
+  - A medalha "Índia Sagrada 2026" (de quem foi na viagem da Índia) é de propósito.
+  - O Oráculo dos Planetas (GRAHAS) é código parado.
+  - Sobram ainda comentários de código.
+  - O endereço do site em `passagens.html` (BASE) ainda é o da Índia: trocar quando houver o site do Egito.
