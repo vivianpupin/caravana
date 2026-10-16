@@ -2243,13 +2243,13 @@ svg.felucca{overflow:visible}
 html[data-tab="pombo"] body::before{background:url(img/fundo-papiro-escuro.webp) center/cover no-repeat;filter:none}
 html[data-tab="pombo"] body::after{background:radial-gradient(ellipse at 50% 45%,transparent 60%,rgba(60,35,10,.25))}
 html[data-tab="pombo"] :is(.view>.head h1,.pombohead h1,.pombohead .lede,.view>p.small){color:var(--ink);text-shadow:none}
-/* etiquetas de viagem na tampa da maleta */
-.etiquetas-eg{position:absolute;inset:0;pointer-events:none;z-index:1}
-.etq{position:absolute;display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,.55)) sepia(.25) saturate(.85);opacity:.93}
-.etq svg{display:block;width:100%;height:auto}
-.etq.e1{left:15%;top:7%;width:22%;transform:rotate(-12deg)}
-.etq.e2{left:62%;top:5%;width:20%;transform:rotate(9deg)}
-.etq.e3{left:40%;top:15%;width:17%;transform:rotate(-4deg)}
+/* etiquetas de viagem coladas no forro da tampa: inclinadas com a tampa, na sombra da maleta, gastas */
+.etiquetas-eg{position:absolute;inset:0;pointer-events:none;z-index:1;perspective:520px}
+.etq{position:absolute;display:block;height:auto;transform-origin:50% 100%;filter:brightness(.6) saturate(.75) sepia(.3) blur(.3px) drop-shadow(0 1px 1px rgba(0,0,0,.75));opacity:.88;mix-blend-mode:hard-light}
+.etq.e1{left:31%;top:12.5%;width:10.5%;transform:rotateX(28deg) rotate(-11deg)}
+.etq.e2{left:62%;top:9.5%;width:12%;transform:rotateX(28deg) rotate(8deg)}
+.etq.e3{left:24%;top:23%;width:9.5%;transform:rotateX(24deg) rotate(6deg)}
+.etq.e4{left:66%;top:22%;width:8.5%;transform:rotateX(24deg) rotate(-8deg)}
 /* maleta sobre o papiro: o fundo branco da foto da maleta some (multiplica com o papel) */
 html[data-tab="fotos"] body::before{background:url(img/fundo-papiro-escuro.webp) center/cover no-repeat;filter:none}
 html[data-tab="fotos"] body::after{background:radial-gradient(ellipse at 50% 45%,transparent 60%,rgba(60,35,10,.25))}
@@ -2621,7 +2621,7 @@ function vCadastro() {
   return h("section", { class: "welcome" },
     h("img", { class: "cover", src: "img/passaporte-capa.webp", alt: "Passaporte da Travessia · Caravana do Céu" }),
     h("p", { class: "eyebrow", text: "Emissão do passaporte" }),
-    h("h1", { text: "Seu passaporte da Índia Sagrada" }),
+    h("h1", { text: "Seu passaporte do Egito" }),
     h("p", { class: "lede", text: "Com ele você recebe seu número de viajante, conversa com a caravana e ganha os carimbos de cada lugar sagrado da travessia." }),
     h("form", { onsubmit: async e => {
       e.preventDefault();
@@ -3813,7 +3813,7 @@ function fundoPassaporte() {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none">
   <defs>
     <pattern id="fp-onda" width="240" height="64" patternUnits="userSpaceOnUse">${ondas.map((d, k) => `<path d="${d}" fill="none" stroke="${k % 2 ? "rgba(63,122,110,.11)" : "rgba(160,110,60,.10)"}" stroke-width=".7"/>`).join("")}</pattern>
-    <pattern id="fp-micro" width="300" height="22" patternUnits="userSpaceOnUse"><text x="0" y="14" font-family="Georgia,serif" font-size="5.2" letter-spacing="1.2" fill="rgba(90,63,34,.10)">CARAVANA DO CÉU · VELHO MUNDO · TRAVESSIA 2027 · REPÚBLICA DA CARAVANA · CARAVANA DO CÉU · ÍNDIA SAGRADA ·</text></pattern>
+    <pattern id="fp-micro" width="300" height="22" patternUnits="userSpaceOnUse"><text x="0" y="14" font-family="Georgia,serif" font-size="5.2" letter-spacing="1.2" fill="rgba(90,63,34,.10)">CARAVANA DO CÉU · VELHO MUNDO · TRAVESSIA 2027 · REPÚBLICA DA CARAVANA · CARAVANA DO CÉU · EGITO ·</text></pattern>
     <pattern id="fp-simb" width="120" height="150" patternUnits="userSpaceOnUse"><image href="img/simbolo-marrom.png" x="44" y="50" width="32" height="40" opacity=".045"/></pattern>
   </defs>
   <rect width="100%" height="100%" fill="url(#fp-onda)"/>
@@ -4143,7 +4143,7 @@ function vGuardioesLider() {
     const pal = S.palavraAtual || "", linhas = ta.value.split("\n");
     lista.replaceChildren(...linhas.map((linha, i) => { const [x] = lerPassagens(linha); if (!x) return null;
       const link = location.origin + "/embarque/" + slug(x.nome) + (x.num || x.pedido ? "/" + (x.num || "0").padStart(2, "0") : "") + (x.pedido ? "/" + x.pedido : "") + (pal ? "#k=" + esconde(pal) : "");
-      const texto = x.nome.split(" ")[0] + ", sua passagem para a Índia chegou ✈️\n" + link;
+      const texto = x.nome.split(" ")[0] + ", sua passagem para o Egito chegou ✈️\n" + link;
       const b1 = h("button", { type: "button", class: "btn gold", onclick: e => copia(texto, e.currentTarget) }, "Copiar mensagem");
       return h("div", { class: "passitem" }, h("b", { text: x.nome + (x.num ? " · Nº " + x.num.padStart(2, "0") : "") + " · " + GUARDIOES[x.g].nome }), h("pre", { text: texto }),
         h("div", { class: "actions" }, b1,
@@ -5833,7 +5833,7 @@ const PATCHES = [["caravana", "Caravana"], ["india", "Egito + Caravana"], ["cole
 const SELOS_COLECAO = ["embarque", "egito", "cairo", "piramides-gize", "sarcofago-tut", "piramide-khufu", "saqqara", "mumias", "sahara", "deserto-branco", "aswan", "rio-nilo", "abu-simbel", "luxor", "vale-dos-reis", "mar-vermelho"];
 const seloLiberado = id => S.isOwner || aberto(localDe(id));
 const PATCH_CIDADE = { Cairo: "cairo", "Deserto Branco": "deserto-branco", Aswan: "aswan", "Abu Simbel": "abu-simbel", Luxor: "luxor", Hurghada: "mar-vermelho" };
-const MOLDURAS = [["polaroid", "Polaroid"], ["postal", "Cartão-postal"], ["ingresso", "Ingresso"], ["arco", "Janela de palácio"], ["guirlanda", "Guirlanda de flores"], ["bandeirinhas", "Bandeirinhas de oração"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
+const MOLDURAS = [["polaroid", "Polaroid"], ["postal", "Cartão-postal"], ["ingresso", "Ingresso"], ["arco", "Portal do templo"], ["super8", "Película Super 8"], ["carimbo", "Carimbo"], ["nenhuma", "Sem moldura"]];
 const imgCache = {};
 // se a imagem falhar (sem internet), não guarda o erro: na próxima vez tenta de novo
 function carregaImg(src) { return imgCache[src] ||= new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = e => { delete imgCache[src]; no(e); }; i.src = src; }); }
@@ -6178,11 +6178,11 @@ function emFormato(canvas, foto, fmt) {
   if (S.fotoGeo) Object.assign(S.fotoGeo, { fx: (W - pw) / 2, fy: (H - ph) / 2, fs: esc });
 }
 // fita de filtros: cada um com a miniatura da própria foto; desliza para o lado
-// foto de exemplo (Taj Mahal entre os arcos) para os quadradinhos de filtro enquanto a câmera está ao vivo:
+// foto de exemplo (Luxor) para os quadradinhos de filtro enquanto a câmera está ao vivo:
 // assim cada quadradinho sempre mostra o que o filtro faz, mesmo com a câmera escura ou ainda ligando
 function amostraFiltro() {
   if (S.amostraFiltro) return S.amostraFiltro.complete && S.amostraFiltro.naturalWidth ? S.amostraFiltro : null;
-  const im = S.amostraFiltro = new Image(); im.src = "img/abertura-agra.webp";
+  const im = S.amostraFiltro = new Image(); im.src = "img/abertura-luxor.webp";
   im.onload = () => { S.fotoThumbsDe = null; if (S.tab === "fotos" && S.camSel === "celular") render(); };
   return null;
 }
@@ -6306,12 +6306,12 @@ async function cartaoPostal(c, W, H, u, ox, oy, w, hh, F, dourado) {
   for (let x = -sw / 2; x <= sw / 2; x += d) c.arc(x, -sh / 2, d * .38, 0, 7); c.fill(); c.fillRect(-sw / 2, -sh / 2, sw, sh); c.shadowColor = "transparent";
   c.fillStyle = "#8A3F32"; c.fillRect(-sw / 2 + 14 * u, -sh / 2 + 14 * u, sw - 28 * u, sh - 28 * u);
   const sb = simboloEm(dourado, "#E8C07A", sh * .42); c.drawImage(sb, -sb.width / 2, -sh / 2 + 34 * u);
-  c.fillStyle = "#F4E6C4"; c.textAlign = "center"; c.font = `600 ${24 * u}px Cinzel, Georgia, serif`; c.fillText("ÍNDIA", 0, sh / 2 - 58 * u); c.font = `500 ${20 * u}px Poppins, sans-serif`; c.fillText("2026 · ₹ 26", 0, sh / 2 - 30 * u); c.restore();
+  c.fillStyle = "#F4E6C4"; c.textAlign = "center"; c.font = `600 ${24 * u}px Cinzel, Georgia, serif`; c.fillText("EGITO", 0, sh / 2 - 58 * u); c.font = `500 ${20 * u}px Poppins, sans-serif`; c.fillText("2027 · مصر", 0, sh / 2 - 30 * u); c.restore();
   c.save(); c.strokeStyle = "rgba(40,30,70,.55)"; c.lineWidth = 3 * u; const px = sx - 40 * u, py = sy + sh * .75;
   c.beginPath(); c.arc(px, py, 70 * u, 0, 7); c.stroke(); c.beginPath(); c.arc(px, py, 56 * u, 0, 7); c.stroke();
   c.fillStyle = "rgba(40,30,70,.6)"; c.textAlign = "center"; c.font = `600 ${15 * u}px Poppins, sans-serif`; c.fillText("CARAVANA", px, py - 6 * u); c.fillText("DO CÉU", px, py + 14 * u);
   for (let k = 0; k < 4; k++) { c.beginPath(); for (let x = 0; x < 200 * u; x += 4 * u) c.lineTo(px + 76 * u + x, py - 30 * u + k * 20 * u + Math.sin(x / (14 * u)) * 5 * u); c.stroke(); } c.restore();
-  const texto = F.legenda || ("Saudações da Índia" + (F.cidade ? " · " + F.cidade : ""));
+  const texto = F.legenda || ("Saudações do Egito" + (F.cidade ? " · " + F.cidade : ""));
   c.fillStyle = "#2E2A3A"; c.textAlign = "center"; c.font = `600 ${64 * u}px Caveat, "Segoe Print", cursive`; c.save(); c.translate(ox + w / 2, oy + hh + 112 * u); c.rotate(-.015); c.fillText(texto, 0, 0, w - 60 * u); c.restore(); c.textAlign = "start";
 }
 function molduraIngresso(c, W, H, u, ox, oy, w, hh, tmp) {
@@ -6339,37 +6339,38 @@ function molduraArco(c, W, H, u, ox, oy, w, hh, tmp) {
   arco(12 * u); c.fillStyle = "#C9A063"; c.fill();
   c.save(); arco(0); c.clip(); c.drawImage(tmp, ox, oy); c.restore();
 }
-// Adesivos: logos da Caravana, bichos da Índia (os mesmos do Explorador), coisas da Índia, brilhos e frases
+// Adesivos: logos da Caravana, bichos (os mesmos do Explorador), coisas do Egito, etiquetas, brilhos e frases
 // carimbos de tinta para colar na foto: os do fundo do passaporte e outros da viagem
 const CARIMBOS_ADESIVO = [...CARIMBOS_FUNDO,
-  { t: ["NAMASTÊ", "नमस्ते"], cor: "#A8281B", f: "ret2", r: 0 },
-  { t: ["JAI HO!", "जय हो"], cor: "#2F4F8A", f: "chanfro", r: 0 },
-  { t: ["OM SHANTI", "ॐ शान्ति"], cor: "#5B3F7A", f: "ret", r: 0 },
-  { t: ["CHAI", "APROVADO", "MASALA"], cor: "#8A4A1C", f: "ret", r: 0 },
-  { t: ["MA GANGA", "गंगा", "RISHIKESH"], cor: "#2F4F8A", f: "ret", r: 0 },
-  { t: ["DIWALI", "दीवाली", "NOV 2026"], cor: "#A8281B", f: "chanfro", r: 0 },
-  { t: ["KASHI", "VARANASI", "CIDADE DA LUZ"], cor: "#3F6B4A", f: "ret", r: 0 },
-  { t: ["TAJ MAHAL", "AGRA"], cor: "#5B3F7A", f: "ret2", r: 0 },
+  { t: ["SALAM", "سلام"], cor: "#A8281B", f: "ret2", r: 0 },
+  { t: ["YALLA!", "يلا"], cor: "#2F4F8A", f: "chanfro", r: 0 },
+  { t: ["SHUKRAN", "شكرا"], cor: "#5B3F7A", f: "ret", r: 0 },
+  { t: ["KARKADÉ", "APROVADO", "HIBISCO"], cor: "#8A4A1C", f: "ret", r: 0 },
+  { t: ["ABU SIMBEL", "RAMSÉS II", "NÚBIA"], cor: "#2F4F8A", f: "ret", r: 0 },
+  { t: ["MÃE DO MUNDO", "مصر", "OUT 2027"], cor: "#A8281B", f: "chanfro", r: 0 },
+  { t: ["RIO NILO", "FELUCA", "ASWAN"], cor: "#3F6B4A", f: "ret", r: 0 },
+  { t: ["KARNAK", "LUXOR"], cor: "#5B3F7A", f: "ret2", r: 0 },
   { t: ["VISTO", "APROVADO", "CARAVANA DO CÉU"], cor: "#A8281B", f: "ret", r: 0 },
   { t: ["CORREIO", "AÉREO", "PAR AVION"], cor: "#2F4F8A", f: "chanfro", r: 0 }];
 const CARIMBOS_REDONDOS = [
-  { t: ["CARAVANA DO CÉU", "ÍNDIA · 2026"], cor: "#3F6B4A", simb: 1 },
-  { t: ["DELHI · AGRA · JAIPUR", "VARANASI · RISHIKESH"], cor: "#2F4F8A", centro: "✦" },
-  { t: ["CORREIOS DA ÍNDIA", "POSTA · 2026"], cor: "#A8281B", centro: "ॐ" },
+  { t: ["CARAVANA DO CÉU", "EGITO · 2027"], cor: "#3F6B4A", simb: 1 },
+  { t: ["CAIRO · GIZÉ · ASWAN", "LUXOR · ABU SIMBEL"], cor: "#2F4F8A", centro: "✦" },
+  { t: ["CORREIOS DO EGITO", "POSTA · 2027"], cor: "#A8281B", centro: "☥" },
   { t: ["EXPLORADORES DO CÉU", "TRAVESSIA"], cor: "#5B3F7A", simb: 1 }];
 const ADESIVOS = {
   // o explorador da pessoa em várias situações (desenhado com as escolhas dela)
-  get "Meu explorador"() { return [["eu", "Meu explorador"], ["x:eu-sempet", "Só eu"], ["x:balao:Mais um chai?", "Mais um chai?"], ["x:eu-carimbo", "Carimbo do explorador"],
-    ["x:meu-pet", "Meu bichinho"], ["x:deus:shiva", "Shiva · Om Namah Shivaya"]]; },
+  get "Meu explorador"() { return [["eu", "Meu explorador"], ["x:eu-sempet", "Só eu"], ["x:balao:Mais um karkadé?", "Mais um karkadé?"], ["x:eu-carimbo", "Carimbo do explorador"],
+    ["x:meu-pet", "Meu bichinho"]]; },
   // os selos (pins) da travessia, os mesmos do passaporte: só os que já foram liberados
   "Selos": [["egito", "Egito"], ["cairo", "Cairo"], ["piramides-gize", "Pirâmides de Gizé"], ["sarcofago-tut", "Sarcófago de Tutankhamon"], ["piramide-khufu", "Pirâmide de Khufu"], ["saqqara", "Saqqara"], ["mumias", "Múmias Reais"], ["sahara", "Deserto do Sahara"], ["deserto-branco", "Deserto Branco"], ["aswan", "Aswan"], ["rio-nilo", "Rio Nilo"], ["abu-simbel", "Abu Simbel"], ["luxor", "Luxor"], ["vale-dos-reis", "Vale dos Reis"], ["mar-vermelho", "Mar Vermelho"]].map(([id, n]) => ["img:insignias/" + id + ".webp", n]),
   // os enfeites que aparecem na Cabine de fotos, soltos para colar na foto
   "Caravana": [["img:img/simbolo-dourado.png", "Símbolo dourado"], ["img:img/simbolo-marrom.png", "Símbolo"], ["patch", "Patch bordado"], ["carimbo", "Carimbo"],
-    ["postmark", "Carimbo do correio"], ["seloPostal", "Selo postal"], ["data", "Data da câmera"], ["linha", "Caravana do Céu · Índia 2026"], ["fita", "Fita adesiva"],
-    ["estrela", "Estrela"], ["flor", "Flor de cravo"], ["guirlanda", "Guirlanda"], ["lungta", "Bandeirinhas de oração"],
-    ["x:item:diya", "Lamparina"], ["x:item:chai", "Chai"], ["x:om", "Om"], ["x:lotus", "Lótus"], ["x:tuktuk", "Tuk-tuk"], ["mao:Namastê", "Namastê"], ["mao:Hare Krishna", "Hare Krishna"]],
+    ["postmark", "Carimbo do correio"], ["seloPostal", "Selo postal"], ["data", "Data da câmera"], ["linha", "Caravana do Céu · Egito 2027"], ["fita", "Fita adesiva"],
+    ["estrela", "Estrela"], ["x:item:diya", "Lamparina"], ["x:lotus", "Lótus"], ["mao:Salam aleikum", "Salam aleikum"], ["mao:Shukran!", "Shukran!"], ["mao:Yalla!", "Yalla!"]],
+  // etiquetas de viagem envelhecidas, como as das malas de expedição
+  "Etiquetas do Egito": [["img:img/adesivos/cairo.webp", "Cairo 1922"], ["img:img/adesivos/gize.webp", "Gizé"], ["img:img/adesivos/desertobranco.webp", "Deserto Branco"], ["img:img/adesivos/aswan.webp", "Aswan · Nilo"], ["img:img/adesivos/abusimbel.webp", "Abu Simbel"], ["img:img/adesivos/luxor.webp", "Luxor"], ["img:img/adesivos/hurghada.webp", "Hurghada"], ["img:img/adesivos/correio.webp", "Selo do Egito"]],
   // carimbos e cartão-postal soltos, para colar em qualquer moldura
-  "Carimbos": [["postalCombo", "Selo e carimbo do correio"], ["seloPostal", "Selo postal"], ["postmark", "Carimbo do correio"], ["carimbo", "Carimbo da Caravana"], ["mao:Saudações da Índia", "Saudações da Índia"],
+  "Carimbos": [["postalCombo", "Selo e carimbo do correio"], ["seloPostal", "Selo postal"], ["postmark", "Carimbo do correio"], ["carimbo", "Carimbo da Caravana"], ["mao:Saudações do Egito", "Saudações do Egito"],
     ...[0, 1, 5, 6, 8, 10, 14].map(i => ["x:cb:" + i, CARIMBOS_ADESIVO[i].t.join(" · ")]), ...CARIMBOS_REDONDOS.map((c, i) => ["x:cr:" + i, c.t.join(" · ")])],
 };
 const adesivoCache = {};
@@ -6458,11 +6459,11 @@ async function adesivoNovo(k) {
     x.setTransform(1, 0, 0, 1, 0, 0); encaixa(x, im, 230, 236, 190, 230); tintaFalhada(x, 460, 460, 1600); return cv; }
   if (k === "eu-selo") { const im = await bonecoCv(b, 500), [cv, x] = telaA(380, 470);
     serrilha(x, 16, 16, 348, 438, 9, "#FBF6EA"); x.fillStyle = "#2F5D7C"; x.fillRect(38, 38, 304, 394); x.fillStyle = "#E9DCC2"; x.fillRect(50, 50, 280, 300);
-    encaixa(x, im, 190, 205, 250, 290); x.fillStyle = "#F4E6C4"; x.textAlign = "center"; x.font = '600 36px Cinzel, Georgia, serif'; x.fillText("ÍNDIA", 190, 392); x.font = '500 22px Poppins, sans-serif'; x.fillText("2026 · ₹ 26", 190, 420); return cv; }
+    encaixa(x, im, 190, 205, 250, 290); x.fillStyle = "#F4E6C4"; x.textAlign = "center"; x.font = '600 36px Cinzel, Georgia, serif'; x.fillText("EGITO", 190, 392); x.font = '500 22px Poppins, sans-serif'; x.fillText("2027 · مصر", 190, 420); return cv; }
   if (k === "eu-polaroid") { const im = await bonecoCv(b), [cv, x] = telaA(460, 560);
     x.shadowColor = "rgba(0,0,0,.35)"; x.shadowBlur = 16; x.shadowOffsetY = 6; x.fillStyle = "#FBF8F1"; x.fillRect(20, 14, 420, 520); x.shadowColor = "transparent";
     const g = x.createLinearGradient(0, 40, 0, 420); g.addColorStop(0, "#F2B26B"); g.addColorStop(1, "#C9655A"); x.fillStyle = g; x.fillRect(44, 38, 372, 380);
-    encaixa(x, im, 230, 236, 300, 360); x.fillStyle = "#3B2A1C"; x.font = '700 54px Caveat,"Segoe Print",cursive'; x.textAlign = "center"; x.fillText("Eu na Índia", 230, 492); return cv; }
+    encaixa(x, im, 230, 236, 300, 360); x.fillStyle = "#3B2A1C"; x.font = '700 54px Caveat,"Segoe Print",cursive'; x.textAlign = "center"; x.fillText("Eu no Egito", 230, 492); return cv; }
   if (k === "eu-ingresso") { const im = await bonecoCv({ ...b, pet: "nenhum" }, 500), [cv, x] = telaA(720, 340);
     x.fillStyle = "#E9C77A"; x.beginPath(); x.roundRect(10, 10, 700, 320, 24); x.fill(); x.globalCompositeOperation = "destination-out"; for (const y of [10, 330]) { x.beginPath(); x.arc(520, y, 26, 0, 7); x.fill(); } x.globalCompositeOperation = "source-over";
     x.setLineDash([10, 9]); x.strokeStyle = "#7A5A2A"; x.lineWidth = 4; x.beginPath(); x.moveTo(520, 40); x.lineTo(520, 300); x.stroke(); x.setLineDash([]);
@@ -6473,7 +6474,7 @@ async function adesivoNovo(k) {
     x.fillStyle = "#E8D6AE"; x.fillRect(10, 10, 440, 600); x.strokeStyle = "#5A3A22"; x.lineWidth = 5; x.strokeRect(26, 26, 408, 568);
     x.fillStyle = "#3B2A1C"; x.textAlign = "center"; x.font = '700 64px Cinzel, Georgia, serif'; x.fillText("PROCURA-SE", 230, 100);
     x.fillStyle = "#F4E6C4"; x.fillRect(80, 124, 300, 330); x.strokeStyle = "#5A3A22"; x.lineWidth = 3; x.strokeRect(80, 124, 300, 330); encaixa(x, im, 230, 290, 260, 310);
-    x.fillStyle = "#3B2A1C"; x.font = '600 26px Poppins, sans-serif'; x.fillText("Visto pela última vez", 230, 500); x.fillText("tomando chai na Índia", 230, 534); x.font = '700 28px "Courier Prime",monospace'; x.fillText("RECOMPENSA: 1 CHAI", 230, 578);
+    x.fillStyle = "#3B2A1C"; x.font = '600 26px Poppins, sans-serif'; x.fillText("Visto pela última vez", 230, 500); x.fillText("tomando karkadé no Egito", 230, 534); x.font = '700 28px "Courier Prime",monospace'; x.fillText("RECOMPENSA: 1 CHAI", 230, 578);
     const r = rng("procura"); x.globalCompositeOperation = "multiply"; for (let i = 0; i < 40; i++) { x.fillStyle = `rgba(120,80,30,${r() * .12})`; x.beginPath(); x.arc(r() * 460, r() * 620, r() * 40, 0, 7); x.fill(); } return cv; }
   if (k.startsWith("expr:")) { const g = desenhaBoneco({ ...b, expr: k.slice(5), pet: "nenhum", nariz: "nenhum", ...(k === "expr:oculos" ? { oculos: "nenhum" } : {}) }); g.querySelectorAll("[data-expr]").forEach(e => g.append(e)); return svgParaImg(g, 600); }
   if (k.startsWith("deus:")) { const id = k.slice(5), f = FIGURINHAS.find(x => x[0] === id) || [id, id, ""];
@@ -6522,15 +6523,15 @@ function imgAdesivo(k) {
       x.strokeStyle = "rgba(160,130,90,.3)"; x.setLineDash([4, 5]); x.strokeRect(20, 26, 380, 58); return cv; }
     if (k === "data") { const d = new Date(), txt = String(d.getDate()).padStart(2, "0") + " " + String(d.getMonth() + 1).padStart(2, "0") + " '" + String(d.getFullYear()).slice(2); // como a data das descartáveis: 10 10 '26
       const [cv, x] = tela(460, 120); x.font = '700 76px "Courier Prime", monospace'; x.fillStyle = "#FF8A1C"; x.shadowColor = "rgba(255,120,20,.9)"; x.shadowBlur = 16; x.textBaseline = "middle"; x.fillText(txt, 14, 62); return cv; }
-    if (k === "linha") { const [cv, x] = tela(1100, 120); x.font = '600 58px Cinzel, Georgia, serif'; x.textAlign = "center"; x.textBaseline = "middle"; x.shadowColor = "rgba(0,0,0,.55)"; x.shadowBlur = 12; x.fillStyle = "#F1E2BC"; x.fillText("CARAVANA DO CÉU · ÍNDIA 2026", 550, 62); return cv; }
+    if (k === "linha") { const [cv, x] = tela(1100, 120); x.font = '600 58px Cinzel, Georgia, serif'; x.textAlign = "center"; x.textBaseline = "middle"; x.shadowColor = "rgba(0,0,0,.55)"; x.shadowBlur = 12; x.fillStyle = "#F1E2BC"; x.fillText("CARAVANA DO CÉU · EGITO 2027", 550, 62); return cv; }
     if (k === "postmark") { const [cv, x] = tela(520, 300); x.strokeStyle = "rgba(40,30,70,.75)"; x.fillStyle = "rgba(40,30,70,.8)"; x.lineWidth = 6;
       x.beginPath(); x.arc(150, 150, 130, 0, 7); x.stroke(); x.beginPath(); x.arc(150, 150, 104, 0, 7); x.stroke();
-      x.textAlign = "center"; x.font = '600 34px Poppins, sans-serif'; x.fillText("CARAVANA", 150, 140); x.fillText("DO CÉU", 150, 180); x.font = '500 22px Poppins, sans-serif'; x.fillText("ÍNDIA · 2026", 150, 222);
+      x.textAlign = "center"; x.font = '600 34px Poppins, sans-serif'; x.fillText("CARAVANA", 150, 140); x.fillText("DO CÉU", 150, 180); x.font = '500 22px Poppins, sans-serif'; x.fillText("EGITO · 2027", 150, 222);
       for (let k2 = 0; k2 < 4; k2++) { x.beginPath(); for (let X = 0; X < 230; X += 5) x.lineTo(285 + X, 90 + k2 * 40 + Math.sin(X / 16) * 8); x.stroke(); } return cv; }
     if (k === "seloPostal") { const dourado = await carregaImgOu("img/simbolo-dourado.png"), [cv, x] = tela(300, 360), sw = 260, sh = 320;
       x.translate(150, 180); x.fillStyle = "#FBF6EA"; x.beginPath(); const d = 18; for (let X = -sw / 2; X <= sw / 2; X += d) { x.moveTo(X + 7, -sh / 2); x.arc(X, -sh / 2, 7, 0, 7); } x.fill(); x.fillRect(-sw / 2, -sh / 2, sw, sh);
       x.fillStyle = "#8A3F32"; x.fillRect(-sw / 2 + 18, -sh / 2 + 18, sw - 36, sh - 36); const sb = simboloEm(dourado, "#E8C07A", 130); x.drawImage(sb, -sb.width / 2, -sh / 2 + 44);
-      x.fillStyle = "#F4E6C4"; x.textAlign = "center"; x.font = '600 34px Cinzel, Georgia, serif'; x.fillText("ÍNDIA", 0, sh / 2 - 70); x.font = '500 26px Poppins, sans-serif'; x.fillText("2026 · ₹ 26", 0, sh / 2 - 36); return cv; }
+      x.fillStyle = "#F4E6C4"; x.textAlign = "center"; x.font = '600 34px Cinzel, Georgia, serif'; x.fillText("EGITO", 0, sh / 2 - 70); x.font = '500 26px Poppins, sans-serif'; x.fillText("2027 · مصر", 0, sh / 2 - 36); return cv; }
     if (k === "postalCombo") { const selo = await imgAdesivo("seloPostal"), marca = await imgAdesivo("postmark"), [cv, x] = tela(720, 420);
       x.save(); x.translate(560, 200); x.rotate(.06); x.shadowColor = "rgba(0,0,0,.35)"; x.shadowBlur = 14; x.shadowOffsetY = 4; x.drawImage(selo, -selo.width * .5 * 1.05, -selo.height * .5 * 1.05, selo.width * 1.05, selo.height * 1.05); x.restore();
       x.globalAlpha = .9; x.drawImage(marca, 10, 100, marca.width * .95, marca.height * .95); return cv; }
@@ -6620,7 +6621,7 @@ async function montaTira(canvas) {
       for (let i = 0; i < 6; i++) { const x0 = R() * W, y0 = R() * H, r = 40 + R() * 120, g = c.createRadialGradient(x0, y0, 0, x0, y0, r); g.addColorStop(0, "rgba(150,110,60,.18)"); g.addColorStop(1, "rgba(150,110,60,0)"); c.fillStyle = g; c.fillRect(0, 0, W, H); }
       fotos.forEach((ft, i) => { c.save(); c.beginPath(); c.roundRect(m, m + i * (fh + gap), fw, fh, 18); c.clip(); c.drawImage(sepia(ft, fw, fh), m, m + i * (fh + gap)); c.restore(); });
       c.textAlign = "center"; c.fillStyle = "rgba(90,40,30,.75)"; c.font = '600 30px "Courier Prime", monospace'; c.fillText("NOV · 1926 · 2026", W / 2, H - 92);
-      c.font = '600 22px Cinzel, Georgia, serif'; c.fillStyle = "rgba(60,40,20,.75)"; c.fillText("CARAVANA DO CÉU · ÍNDIA", W / 2, H - 52); c.textAlign = "start";
+      c.font = '600 22px Cinzel, Georgia, serif'; c.fillStyle = "rgba(60,40,20,.75)"; c.fillText("CARAVANA DO CÉU · EGITO", W / 2, H - 52); c.textAlign = "start";
     } else if (e === "serrilhada") {
       // cópias antigas de laboratório: borda branca serrilhada, levemente tortas sobre papel kraft
       W = 1080; H = 1920; canvas.width = W; canvas.height = H; papelKraft(c, W, H);
@@ -6645,7 +6646,7 @@ async function montaTira(canvas) {
         c.fillText("CARAVANA 400  ✦  SAFETY FILM", x + fw - 400, y + faixa - 50);
         if (i === 0) { c.save(); c.strokeStyle = "rgba(200,30,30,.85)"; c.lineWidth = 7; c.beginPath(); c.ellipse(x + fw / 2, y + 75 + fh / 2, fw / 2 + 30, fh / 2 + 36, -.03, 0, 7); c.stroke(); c.restore(); }
       });
-      c.fillStyle = "rgba(200,30,30,.85)"; c.font = '700 64px Caveat, "Segoe Print", cursive'; c.save(); c.translate(W - 360, H - 60); c.rotate(-.06); c.fillText("Índia · 2026", 0, 0); c.restore();
+      c.fillStyle = "rgba(200,30,30,.85)"; c.font = '700 64px Caveat, "Segoe Print", cursive'; c.save(); c.translate(W - 360, H - 60); c.rotate(-.06); c.fillText("Egito · 2027", 0, 0); c.restore();
     }
   } else
   if (e === "bollywood" || e === "guirlanda" || e === "bichos") {
@@ -6666,9 +6667,9 @@ async function montaTira(canvas) {
         c.save(); c.translate(esq ? m - 30 + lar / 2 : W - m + 30 - lar / 2, y + alt / 2); if (esq) c.scale(-1, 1); c.shadowColor = "rgba(0,0,0,.4)"; c.shadowBlur = 14; c.drawImage(im, -lar / 2, -alt / 2, lar, alt); c.restore(); } }
     c.textAlign = "center"; const by = H - rod / 2;
     if (e === "bollywood") { simb(dourado, "#FFE3A3", 70, W / 2, by - 26);
-      c.font = '600 28px Cinzel, Georgia, serif'; c.fillStyle = "#FFF1D6"; c.fillText("CARAVANA DO CÉU · ÍNDIA 2026", W / 2, by + 44); }
+      c.font = '600 28px Cinzel, Georgia, serif'; c.fillStyle = "#FFF1D6"; c.fillText("CARAVANA DO CÉU · EGITO 2027", W / 2, by + 44); }
     else { const cor = e === "bichos" ? "#E8C07A" : "#3B2A1C"; simb(e === "bichos" ? dourado : marrom, cor, 70, W / 2, by - 26);
-      c.font = '600 28px Cinzel, Georgia, serif'; c.fillStyle = cor; c.fillText("CARAVANA DO CÉU · ÍNDIA 2026", W / 2, by + 44); }
+      c.font = '600 28px Cinzel, Georgia, serif'; c.fillStyle = cor; c.fillText("CARAVANA DO CÉU · EGITO 2027", W / 2, by + 44); }
     c.textAlign = "start";
   } else
   if (e === "cabine" || e === "carimbada") {
@@ -6946,7 +6947,7 @@ const CAMERAS_C = [
     svg: `<svg viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg"><defs> <linearGradient id="rjtopo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FAFAF7"/><stop offset=".45" stop-color="#D6D3CC"/><stop offset="1" stop-color="#9E9A92"/></linearGradient> <linearGradient id="rjmetal" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8F8B84"/><stop offset=".2" stop-color="#E9E6E0"/><stop offset=".5" stop-color="#B9B5AE"/><stop offset=".8" stop-color="#ECE9E3"/><stop offset="1" stop-color="#8F8B84"/></linearGradient> <linearGradient id="rjsombra" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".45"/></linearGradient> <pattern id="rjcouro" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#1E1B18"/><path d="M0 1.5h2M3 4.5h2.5M1 3.2h1M4 .8h1.5" stroke="#2E2A26" stroke-width="1.1" stroke-linecap="round"/><circle cx="5" cy="3" r=".6" fill="#0F0D0B"/></pattern></defs> <rect x="28" y="12" width="34" height="14" rx="3" fill="url(#rjmetal)"/><rect x="31" y="8" width="28" height="6" rx="2" fill="url(#rjmetal)"/> <circle cx="45" cy="9" r="6" fill="#B8432F"/><circle cx="43.5" cy="7.5" r="2" fill="#fff" opacity=".45"/> <rect x="160" y="10" width="40" height="16" rx="4" fill="url(#rjmetal)"/><path d="M164 13h32" stroke="#777" stroke-width=".8" stroke-dasharray="1.2 1.6"/> <rect x="10" y="22" width="220" height="38" rx="12" fill="url(#rjtopo)"/> <rect x="10" y="22" width="220" height="5" rx="2.5" fill="#fff" opacity=".7"/> <rect x="10" y="50" width="220" height="90" rx="14" fill="url(#rjcouro)"/> <rect x="10" y="50" width="220" height="90" rx="14" fill="url(#rjsombra)"/> <rect x="10" y="50" width="220" height="4" fill="#000" opacity=".35"/> <rect x="150" y="30" width="30" height="17" rx="3" fill="#2B3540"/><rect x="152" y="32" width="26" height="13" rx="2" fill="#4D6476"/><rect x="153" y="33" width="9" height="11" fill="#9FC0D4" opacity=".55"/> <rect x="188" y="30" width="22" height="17" rx="3" fill="#2B3540"/><rect x="190" y="32" width="18" height="13" rx="2" fill="#E8E2D2"/><path d="M190 38.5h18" stroke="#BDB5A2" stroke-width=".7"/> <text x="78" y="44" font-family="Cinzel,Georgia,serif" font-size="11" font-weight="600" fill="#4A463F" text-anchor="middle" letter-spacing="1.5">RAJASTÃO 35</text> <defs> <radialGradient id="rjvid" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#6E5A9E"/><stop offset=".35" stop-color="#2B3A6A"/><stop offset=".7" stop-color="#0E1424"/><stop offset="1" stop-color="#05070C"/></radialGradient> <radialGradient id="rjcob" cx="65%" cy="70%" r="45%"><stop offset="0" stop-color="#7FE0B8" stop-opacity=".55"/><stop offset="1" stop-color="#7FE0B8" stop-opacity="0"/></radialGradient> <linearGradient id="rjaro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2F0EB"/><stop offset=".5" stop-color="#A9A59E"/><stop offset="1" stop-color="#5E5B56"/></linearGradient> <linearGradient id="rjaro2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2A2A2A"/><stop offset="1" stop-color="#0A0A0A"/></linearGradient> </defs> <circle cx="92" cy="94.52" r="43.68" fill="rgba(0,0,0,.35)"/> <circle cx="92" cy="92" r="42" fill="url(#rjaro)"/> <circle cx="92" cy="92" r="39.06" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="2.1" stroke-dasharray="1.68 1.68"/> <circle cx="92" cy="92" r="34.44" fill="url(#rjaro2)"/> <circle cx="92" cy="92" r="31.08" fill="#151515" stroke="#3A3A3A" stroke-width="0.84"/> <circle cx="92" cy="92" r="26.04" fill="url(#rjvid)"/> <circle cx="92" cy="92" r="26.04" fill="url(#rjcob)"/> <circle cx="92" cy="92" r="12.6" fill="#05070C" opacity=".75"/> <ellipse cx="83.6" cy="81.5" rx="7.56" ry="4.2" fill="#fff" opacity=".75" transform="rotate(-35 83.6 81.5)"/> <circle cx="101.24" cy="100.4" r="2.1" fill="#fff" opacity=".5"/> <path d="M67.64 92 A 24.36 24.36 0 0 1 92 67.64" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="1.68"/> <image href="img/simbolo-dourado.png" x="180" y="80" width="30" height="30"/> <text x="195" y="124" font-family="Cinzel,serif" font-size="6.5" fill="#C9A063" text-anchor="middle" letter-spacing="1">CARAVANA</text> </svg>` },
   { id: "descartavel", nome: "Khalili 400", frase: "Câmera de papelão com flash estourado e data no canto.",
     preset: { filtro: "cam-fuji", moldura: "nenhuma", formato: "original", grao: "auto", recorte: 9 / 16, reels: "preto", adesivos: [{ k: "data", x: .78, y: .9, s: .32, r: 0 }] },
-    svg: `<svg viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg"><defs> <linearGradient id="dsplas" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3530"/><stop offset="1" stop-color="#141210"/></linearGradient> <linearGradient id="dsmos" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2BF55"/><stop offset="1" stop-color="#D99A2B"/></linearGradient> <linearGradient id="dster" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A44B3A"/><stop offset="1" stop-color="#7A3326"/></linearGradient> <linearGradient id="dsflash" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#F4EEDD"/><stop offset="1" stop-color="#D8CFB8"/></linearGradient> <pattern id="dsfres" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 2h4" stroke="#C9BFA6" stroke-width=".8"/></pattern></defs> <rect x="150" y="6" width="44" height="18" rx="5" fill="url(#dsplas)"/><rect x="154" y="9" width="36" height="4" rx="2" fill="#5A534C"/> <circle cx="36" cy="16" r="9" fill="url(#dsplas)"/><circle cx="36" cy="16" r="6" fill="#2B2724"/><circle cx="34" cy="14" r="2" fill="#fff" opacity=".25"/> <rect x="8" y="20" width="224" height="122" rx="14" fill="url(#dsplas)"/> <rect x="16" y="28" width="208" height="106" rx="8" fill="url(#dsmos)"/> <rect x="16" y="28" width="208" height="26" rx="8" fill="url(#dster)"/><rect x="16" y="46" width="208" height="8" fill="url(#dster)"/> <rect x="16" y="108" width="208" height="26" rx="8" fill="url(#dster)"/><rect x="16" y="108" width="208" height="8" fill="url(#dster)"/> <path d="M16 54h208M16 108h208" stroke="#F6E7C3" stroke-width="2"/> <text x="120" y="45" font-family="Poppins,Arial,sans-serif" font-weight="800" font-size="13" fill="#FBEFD3" text-anchor="middle" letter-spacing="1.2">DESCARTÁVEL DO BAZAR</text> <text x="120" y="126" font-family="Courier Prime,Courier,monospace" font-weight="700" font-size="8.2" fill="#FBEFD3" text-anchor="middle" letter-spacing=".6">27 POSES · ISO 400 · ÍNDIA 2026</text> <rect x="160" y="60" width="54" height="40" rx="5" fill="url(#dsplas)"/><rect x="164" y="64" width="46" height="32" rx="3" fill="url(#dsflash)"/><rect x="164" y="64" width="46" height="32" rx="3" fill="url(#dsfres)" opacity=".7"/><rect x="166" y="66" width="16" height="6" rx="2" fill="#fff" opacity=".8"/> <rect x="26" y="62" width="26" height="18" rx="4" fill="#141210"/><rect x="29" y="65" width="20" height="12" rx="2" fill="#30485A"/><rect x="30" y="66" width="7" height="10" fill="#9FC0D4" opacity=".45"/> <defs> <radialGradient id="dsvid" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#6E5A9E"/><stop offset=".35" stop-color="#2B3A6A"/><stop offset=".7" stop-color="#0E1424"/><stop offset="1" stop-color="#05070C"/></radialGradient> <radialGradient id="dscob" cx="65%" cy="70%" r="45%"><stop offset="0" stop-color="#7FE0B8" stop-opacity=".55"/><stop offset="1" stop-color="#7FE0B8" stop-opacity="0"/></radialGradient> <linearGradient id="dsaro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4540"/><stop offset=".5" stop-color="#24211E"/><stop offset="1" stop-color="#0C0B0A"/></linearGradient> <linearGradient id="dsaro2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2A2A2A"/><stop offset="1" stop-color="#0A0A0A"/></linearGradient> </defs> <circle cx="104" cy="82.56" r="27.04" fill="rgba(0,0,0,.35)"/> <circle cx="104" cy="81" r="26" fill="url(#dsaro)"/> <circle cx="104" cy="81" r="24.18" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="1.3" stroke-dasharray="1.04 1.04"/> <circle cx="104" cy="81" r="21.32" fill="url(#dsaro2)"/> <circle cx="104" cy="81" r="19.24" fill="#151515" stroke="#3A3A3A" stroke-width="0.52"/> <circle cx="104" cy="81" r="16.12" fill="url(#dsvid)"/> <circle cx="104" cy="81" r="16.12" fill="url(#dscob)"/> <circle cx="104" cy="81" r="7.8" fill="#05070C" opacity=".75"/> <ellipse cx="98.8" cy="74.5" rx="4.68" ry="2.6" fill="#fff" opacity=".75" transform="rotate(-35 98.8 74.5)"/> <circle cx="109.72" cy="86.2" r="1.3" fill="#fff" opacity=".5"/> <path d="M88.92 81 A 15.079999999999998 15.079999999999998 0 0 1 104 65.92" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="1.04"/> <image href="img/simbolo-dourado.png" x="30" y="84" width="20" height="20"/> </svg>` },
+    svg: `<svg viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg"><defs> <linearGradient id="dsplas" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3530"/><stop offset="1" stop-color="#141210"/></linearGradient> <linearGradient id="dsmos" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2BF55"/><stop offset="1" stop-color="#D99A2B"/></linearGradient> <linearGradient id="dster" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A44B3A"/><stop offset="1" stop-color="#7A3326"/></linearGradient> <linearGradient id="dsflash" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#F4EEDD"/><stop offset="1" stop-color="#D8CFB8"/></linearGradient> <pattern id="dsfres" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 2h4" stroke="#C9BFA6" stroke-width=".8"/></pattern></defs> <rect x="150" y="6" width="44" height="18" rx="5" fill="url(#dsplas)"/><rect x="154" y="9" width="36" height="4" rx="2" fill="#5A534C"/> <circle cx="36" cy="16" r="9" fill="url(#dsplas)"/><circle cx="36" cy="16" r="6" fill="#2B2724"/><circle cx="34" cy="14" r="2" fill="#fff" opacity=".25"/> <rect x="8" y="20" width="224" height="122" rx="14" fill="url(#dsplas)"/> <rect x="16" y="28" width="208" height="106" rx="8" fill="url(#dsmos)"/> <rect x="16" y="28" width="208" height="26" rx="8" fill="url(#dster)"/><rect x="16" y="46" width="208" height="8" fill="url(#dster)"/> <rect x="16" y="108" width="208" height="26" rx="8" fill="url(#dster)"/><rect x="16" y="108" width="208" height="8" fill="url(#dster)"/> <path d="M16 54h208M16 108h208" stroke="#F6E7C3" stroke-width="2"/> <text x="120" y="45" font-family="Poppins,Arial,sans-serif" font-weight="800" font-size="13" fill="#FBEFD3" text-anchor="middle" letter-spacing="1.2">DESCARTÁVEL DO BAZAR</text> <text x="120" y="126" font-family="Courier Prime,Courier,monospace" font-weight="700" font-size="8.2" fill="#FBEFD3" text-anchor="middle" letter-spacing=".6">27 POSES · ISO 400 · EGITO 2027</text> <rect x="160" y="60" width="54" height="40" rx="5" fill="url(#dsplas)"/><rect x="164" y="64" width="46" height="32" rx="3" fill="url(#dsflash)"/><rect x="164" y="64" width="46" height="32" rx="3" fill="url(#dsfres)" opacity=".7"/><rect x="166" y="66" width="16" height="6" rx="2" fill="#fff" opacity=".8"/> <rect x="26" y="62" width="26" height="18" rx="4" fill="#141210"/><rect x="29" y="65" width="20" height="12" rx="2" fill="#30485A"/><rect x="30" y="66" width="7" height="10" fill="#9FC0D4" opacity=".45"/> <defs> <radialGradient id="dsvid" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#6E5A9E"/><stop offset=".35" stop-color="#2B3A6A"/><stop offset=".7" stop-color="#0E1424"/><stop offset="1" stop-color="#05070C"/></radialGradient> <radialGradient id="dscob" cx="65%" cy="70%" r="45%"><stop offset="0" stop-color="#7FE0B8" stop-opacity=".55"/><stop offset="1" stop-color="#7FE0B8" stop-opacity="0"/></radialGradient> <linearGradient id="dsaro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4540"/><stop offset=".5" stop-color="#24211E"/><stop offset="1" stop-color="#0C0B0A"/></linearGradient> <linearGradient id="dsaro2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2A2A2A"/><stop offset="1" stop-color="#0A0A0A"/></linearGradient> </defs> <circle cx="104" cy="82.56" r="27.04" fill="rgba(0,0,0,.35)"/> <circle cx="104" cy="81" r="26" fill="url(#dsaro)"/> <circle cx="104" cy="81" r="24.18" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="1.3" stroke-dasharray="1.04 1.04"/> <circle cx="104" cy="81" r="21.32" fill="url(#dsaro2)"/> <circle cx="104" cy="81" r="19.24" fill="#151515" stroke="#3A3A3A" stroke-width="0.52"/> <circle cx="104" cy="81" r="16.12" fill="url(#dsvid)"/> <circle cx="104" cy="81" r="16.12" fill="url(#dscob)"/> <circle cx="104" cy="81" r="7.8" fill="#05070C" opacity=".75"/> <ellipse cx="98.8" cy="74.5" rx="4.68" ry="2.6" fill="#fff" opacity=".75" transform="rotate(-35 98.8 74.5)"/> <circle cx="109.72" cy="86.2" r="1.3" fill="#fff" opacity=".5"/> <path d="M88.92 81 A 15.079999999999998 15.079999999999998 0 0 1 104 65.92" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="1.04"/> <image href="img/simbolo-dourado.png" x="30" y="84" width="20" height="20"/> </svg>` },
   { id: "instantanea", nome: "Luxor 600", frase: "A foto sai na hora, com moldura branca e cor lilás.",
     preset: { filtro: "cam-instant", moldura: "nenhuma", molduraFinal: "polaroid", formato: "original", grao: "auto", reels: "nenhum" },
     svg: `<svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg"><defs> <linearGradient id="inrosa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6E6EA"/><stop offset="1" stop-color="#E2C6CE"/></linearGradient> <linearGradient id="inbase" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9B6BF"/><stop offset="1" stop-color="#B98F9B"/></linearGradient> <linearGradient id="inbrilho" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".15" stop-color="#fff" stop-opacity=".55"/><stop offset=".3" stop-color="#fff" stop-opacity="0"/></linearGradient> <linearGradient id="inflash" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E9E0CC"/></linearGradient></defs> <rect x="14" y="14" width="172" height="152" rx="26" fill="url(#inrosa)"/> <path d="M14 104 h172 v36 a26 26 0 0 1 -26 26 h-120 a26 26 0 0 1 -26 -26z" fill="url(#inbase)"/> <rect x="14" y="14" width="172" height="152" rx="26" fill="url(#inbrilho)"/> <rect x="96" y="14" width="7" height="152" fill="#8A3F32"/><rect x="103" y="14" width="5" height="152" fill="#D9A53A"/> <rect x="28" y="28" width="42" height="26" rx="6" fill="#F7F2E8" stroke="#CDBDB0"/><rect x="31" y="31" width="36" height="20" rx="4" fill="url(#inflash)"/><path d="M31 41h36" stroke="#D8CBB0" stroke-width=".8"/> <rect x="140" y="28" width="32" height="24" rx="6" fill="#2B2622"/><rect x="143" y="31" width="26" height="18" rx="4" fill="#3E566A"/><rect x="144" y="32" width="9" height="16" fill="#9FC0D4" opacity=".45"/> <defs> <radialGradient id="invid" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#6E5A9E"/><stop offset=".35" stop-color="#2B3A6A"/><stop offset=".7" stop-color="#0E1424"/><stop offset="1" stop-color="#05070C"/></radialGradient> <radialGradient id="incob" cx="65%" cy="70%" r="45%"><stop offset="0" stop-color="#7FE0B8" stop-opacity=".55"/><stop offset="1" stop-color="#7FE0B8" stop-opacity="0"/></radialGradient> <linearGradient id="inaro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3330"/><stop offset=".5" stop-color="#211D1B"/><stop offset="1" stop-color="#0B0A09"/></linearGradient> <linearGradient id="inaro2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2A2A2A"/><stop offset="1" stop-color="#0A0A0A"/></linearGradient> </defs> <circle cx="100" cy="94.4" r="41.6" fill="rgba(0,0,0,.35)"/> <circle cx="100" cy="92" r="40" fill="url(#inaro)"/> <circle cx="100" cy="92" r="37.2" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="2" stroke-dasharray="1.6 1.6"/> <circle cx="100" cy="92" r="32.8" fill="url(#inaro2)"/> <circle cx="100" cy="92" r="29.6" fill="#151515" stroke="#3A3A3A" stroke-width="0.8"/> <circle cx="100" cy="92" r="24.8" fill="url(#invid)"/> <circle cx="100" cy="92" r="24.8" fill="url(#incob)"/> <circle cx="100" cy="92" r="12" fill="#05070C" opacity=".75"/> <ellipse cx="92" cy="82" rx="7.199999999999999" ry="4" fill="#fff" opacity=".75" transform="rotate(-35 92 82)"/> <circle cx="108.8" cy="100" r="2" fill="#fff" opacity=".5"/> <path d="M76.8 92 A 23.2 23.2 0 0 1 100 68.8" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="1.6"/> <circle cx="38" cy="96" r="11" fill="#B8432F"/><circle cx="38" cy="96" r="11" fill="none" stroke="#7A2A1E" stroke-width="2"/><circle cx="35" cy="93" r="3" fill="#fff" opacity=".4"/> <rect x="46" y="150" width="108" height="6" rx="3" fill="#2B2622"/> <image href="img/simbolo-dourado.png" x="148" y="112" width="26" height="26"/> </svg>` },
@@ -7001,11 +7002,7 @@ function imgFixa(src, cls) { let i = IMG_FIXA.get(src); if (!i) { i = new Image(
 setTimeout(() => { for (const f of ["maleta-foto.jpg", "carteira-foto.jpg"]) if (temFoto("img/cameras/" + f)) imgFixa("img/cameras/" + f, ""); }, 800);
 // etiquetas de viagem coladas na tampa da maleta (estilo das malas de expedição dos anos 1920)
 function etiquetasEgito() {
-  const e = (cls, svg) => { const s = h("span", { class: "etq " + cls, "aria-hidden": "true" }); s.innerHTML = svg; return s; };
-  return h("div", { class: "etiquetas-eg" },
-    e("e1", `<svg viewBox="0 0 120 80"><ellipse cx="60" cy="40" rx="58" ry="38" fill="#E9D3A0" stroke="#7A2E1A" stroke-width="3"/><ellipse cx="60" cy="40" rx="50" ry="31" fill="none" stroke="#7A2E1A" stroke-width="1.2"/><path d="M38 52 L52 28 L66 52 Z M56 52 L68 33 L80 52 Z" fill="#B5402A"/><text x="60" y="66" text-anchor="middle" font-family="Georgia" font-weight="700" font-size="13" fill="#3A1A0C" letter-spacing="2">CAIRO</text><text x="60" y="22" text-anchor="middle" font-family="Georgia" font-size="7" fill="#3A1A0C" letter-spacing="1.5">EGYPT · 1922</text></svg>`),
-    e("e2", `<svg viewBox="0 0 110 80"><rect x="2" y="2" width="106" height="76" rx="6" fill="#2F4F6E" stroke="#E9C46A" stroke-width="3"/><path d="M14 56 Q55 48 96 56" stroke="#7FB2D0" stroke-width="2" fill="none"/><path d="M48 52 L50 22 L68 50 Z" fill="#F3E9D2"/><path d="M40 52 L72 52 L68 57 L44 57 Z" fill="#6B3A1A"/><text x="55" y="72" text-anchor="middle" font-family="Georgia" font-weight="700" font-size="11" fill="#E9C46A" letter-spacing="2">ASWAN · NILO</text></svg>`),
-    e("e3", `<svg viewBox="0 0 110 80"><path d="M6 6 H104 V64 L92 74 H18 L6 64 Z" fill="#C9A24E" stroke="#3A1A0C" stroke-width="3"/><rect x="24" y="16" width="8" height="34" fill="#3A1A0C"/><rect x="40" y="16" width="8" height="34" fill="#3A1A0C"/><rect x="56" y="16" width="8" height="34" fill="#3A1A0C"/><rect x="72" y="16" width="8" height="34" fill="#3A1A0C"/><rect x="18" y="12" width="68" height="5" fill="#3A1A0C"/><text x="55" y="64" text-anchor="middle" font-family="Georgia" font-weight="700" font-size="11" fill="#3A1A0C" letter-spacing="2">LUXOR</text></svg>`));
+  return h("div", { class: "etiquetas-eg", "aria-hidden": "true" }, [["cairo", "e1"], ["aswan", "e2"], ["luxor", "e3"], ["gize", "e4"]].map(([k, c]) => h("img", { class: "etq " + c, src: "img/adesivos/" + k + ".webp", alt: "" })));
 }
 function vEstante() {
   setTimeout(preparaCameras, 300); // já deixa as fotos das câmeras prontas enquanto a pessoa olha a maleta
@@ -7049,7 +7046,7 @@ function faixaCota(esgotou) {
   if (!esgotou) return;
   const f = S.isOwner
     ? h("div", { class: "faixacota lider", role: "alert" }, h("b", { text: "O app atingiu o limite grátis de hoje." }),
-        h("span", { text: "Chat, mural e mapa voltam sozinhos por volta das 13h30 (horário da Índia), ou na hora se você ativar o plano Blaze." }),
+        h("span", { text: "Chat, mural e mapa voltam sozinhos por volta das 13h30 (horário do Egito), ou na hora se você ativar o plano Blaze." }),
         h("a", { href: "https://console.firebase.google.com/project/app-caravana-70c8a/usage/details", target: "_blank", rel: "noopener" }, "Abrir o Firebase"))
     : h("div", { class: "faixacota", role: "status" }, h("b", { text: "A conversa está pausada por um tempo." }),
         h("span", { text: "Mensagens e fotos novas não estão sendo enviadas agora. Tente de novo mais tarde; o que já está no app continua aqui." }));
@@ -7911,7 +7908,7 @@ function vFotos() {
         msg)) :
       h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
         h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "Escolha uma foto" }),
-        h("span", { text: "Filtros da Caravana, adesivos com bichinhos da Índia, firulas, molduras de cartão-postal, ingresso, guirlanda e mais. Depois é só salvar ou enviar para a Galeria da Caravana." })),
+        h("span", { text: "Filtros da Caravana, adesivos com bichinhos e símbolos do Egito, etiquetas de viagem, molduras de cartão-postal, ingresso e mais. Depois é só salvar ou enviar para a Galeria da Caravana." })),
     fi);
 }
 
