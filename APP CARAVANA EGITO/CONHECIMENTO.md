@@ -311,3 +311,10 @@ Tudo seguindo o roteiro oficial (`app/dados/travessia.json`, 8 a 20/10/2027). Po
   - O Oráculo dos Planetas (GRAHAS) é código parado.
   - Sobram ainda comentários de código.
   - O endereço do site em `passagens.html` (BASE) ainda é o da Índia: trocar quando houver o site do Egito.
+
+## App dentro do Claude (out/2026)
+- Página privada da Vivian: https://claude.ai/artifact/ET3RYJJd67HwEF7MTDiNHu
+  - Página: `app/caravana-do-ceu.html`, mais as imagens, deuses, selos, dados, oráculo, gibi e hieróglifos como arquivos de apoio (256 arquivos, publicados em duas levas).
+  - Capacidades: db, user (com nome), assets (viajantes podem subir fotos), room, downloads e sample (cartas da IA).
+- O banco foi preenchido com `tools/site/seed.json` (6 cidades, 15 locais, 64 saberes e o rascunho da carta final).
+- Para atualizar, publicar o mesmo arquivo de novo. Isso não gasta créditos da Netlify.
