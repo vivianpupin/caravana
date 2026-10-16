@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "16/10 · 09:31";</script>
+<script>window.__VERSAO = "16/10 · 09:33";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2246,7 +2246,7 @@ nav.tabs{background:#24180F!important;border-top:0!important;box-shadow:none!imp
 :is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+9)::after{content:"𓇳"}
 /* friso de sinais no fim de cada página e embaixo do título da página inicial */
 .view::after{content:"𓋹 𓂀 𓆣 𓊽 𓅃 𓆸 𓍶 𓃢 𓇳 𓇼";display:block;text-align:center;margin:26px 0 6px;font:20px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.35em;color:rgba(60,36,14,.45);pointer-events:none}
-.mapahero h1::after{content:"𓇼 𓋹 𓇼";display:block;margin-top:6px;font:16px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.5em;color:rgba(60,36,14,.45)}
+.mapahero h1::after{content:none}
 
 /* símbolos egípcios: aparecem gravados aqui e ali, sem explicação */
 .marca .glifo.eg{width:auto;height:auto;display:block;font:44px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.08em;filter:url(#cravado);
@@ -2264,7 +2264,7 @@ nav.tabs{background:#24180F!important;border-top:0!important;box-shadow:none!imp
 :is(.panel,.day,.sab,details.guide,.missoes):nth-of-type(9n+9)::after{content:"𓇳"}
 /* friso de sinais no fim de cada página e embaixo do título da página inicial */
 .view::after{content:"𓋹 𓂀 𓆣 𓊽 𓅃 𓆸 𓍶 𓃢 𓇳 𓇼";display:block;text-align:center;margin:26px 0 6px;font:20px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.35em;color:rgba(60,36,14,.32);pointer-events:none}
-.mapahero h1::after{content:"𓇼 𓋹 𓇼";display:block;margin-top:6px;font:16px/1 "Noto Sans Egyptian Hieroglyphs",serif;letter-spacing:.5em;color:rgba(60,36,14,.45)}
+.mapahero h1::after{content:none}
 
 /* Mensageiro do Nilo: a felucca balança na água em vez de bater asas */
 .felucca .asa{animation:none!important;transform:none!important}
@@ -2310,6 +2310,17 @@ html[data-tab] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{backgroun
 .mmexp{transition:transform .5s ease}
 .mmexp[data-lado="e"]{transform:translate(-92%,-96%)}
 .mmexp[data-lado="d"]{transform:translate(-8%,-96%)}
+/* página inicial: sem o balão "Você está aqui" em cima do explorador */
+.mapahero .mmfala{display:none}
+/* cartucho com o nome da pessoa em hieróglifos (abre a oficina do escriba para gravar o nome) */
+.cartnome{display:flex;flex-direction:column;align-items:center;gap:4px;margin:2px auto 6px;border:0;background:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cartnome .moldura{position:relative;display:flex;align-items:center;justify-content:center;gap:2px;min-width:120px;max-width:min(86vw,360px);padding:6px 26px 6px 18px;border-radius:999px;
+  border:3px double #5A3A1A;background:linear-gradient(rgba(250,238,210,.75),rgba(236,220,188,.8));box-shadow:0 2px 6px rgba(90,55,15,.25),inset 0 0 8px rgba(120,80,30,.18)}
+.cartnome .moldura::after{content:"";position:absolute;right:7px;top:18%;bottom:18%;width:3px;border-radius:2px;background:#5A3A1A}
+.cartnome .sinais{font:26px/1.15 "Noto Sans Egyptian Hieroglyphs",serif;color:#3B2410;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.cartnome .sinais.vazio{font:italic 14px var(--ui);color:#7A5A3A;letter-spacing:0}
+.cartnome small{font:600 10px var(--ui);letter-spacing:.2em;text-transform:uppercase;color:#8E3B24}
+.cartnome:active .moldura{transform:scale(.98)}
 
 </style>
 
@@ -2781,6 +2792,27 @@ setInterval(() => {
   setTimeout(() => { el.textContent = FRASES[S.fraseIdx]; el.classList.remove("sai"); }, 450);
 }, 10000);
 
+// ---------- Cartucho com o nome da pessoa (página inicial): o nome em hieróglifos dentro do cartucho do faraó ----------
+// o que a pessoa gravou na oficina do escriba (hieroglifos.html guarda em cdi-cartucho); se ainda não gravou, escreve o primeiro nome dela
+const CART_SINAIS = { A: "𓄿", B: "𓃀", C: "𓎡", Ç: "𓋴", D: "𓂧", E: "𓇋", F: "𓆑", G: "𓎼", H: "𓉔", I: "𓇋", J: "𓆓", K: "𓎡", L: "𓃭", M: "𓅓", N: "𓈖", O: "𓅱",
+  P: "𓊪", Q: "𓈎", R: "𓂋", S: "𓋴", T: "𓏏", U: "𓅱", V: "𓆑", W: "𓅱", X: "𓈙", Y: "𓇌", Z: "𓊃", CH: "𓈙" };
+function cartSons(nome) {
+  const t = String(nome || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/[^A-ZÇ]/g, ""), out = [];
+  for (let i = 0; i < t.length; i++) { let k = t[i];
+    if (k === "C" && t[i + 1] === "H") { k = "CH"; i++; } else if (k === "C" && /[EI]/.test(t[i + 1] || "")) k = "Ç";
+    if (out.length && out[out.length - 1] === k) continue; if (CART_SINAIS[k]) out.push(k); }
+  return out;
+}
+function vCartuchoNome() {
+  let g = null; try { g = JSON.parse(localStorage.getItem("cdi-cartucho") || "null"); } catch (e) {}
+  const v = eu(), primeiro = v && v.nome ? String(v.nome).split(" ")[0] : "";
+  const ks = g && g.sinais && g.sinais.length ? g.sinais : cartSons(primeiro), sinais = ks.map(k => CART_SINAIS[k] || "").join("");
+  const nome = g && g.nome ? g.nome : primeiro;
+  return h("button", { type: "button", class: "cartnome", "aria-label": nome ? `O nome ${nome} em hieróglifos. Toque para gravar o seu cartucho` : "Grave o seu nome em hieróglifos",
+      onclick: () => abrirPagina("hieroglifos.html" + (nome && !(g && g.sinais) ? "?nome=" + encodeURIComponent(nome) : ""), "Seu nome em hieróglifos") },
+    h("span", { class: "moldura" }, h("span", { class: "sinais" + (sinais ? "" : " vazio"), text: sinais || "Seu nome aqui" })),
+    h("small", { text: g && g.sinais ? "Seu cartucho · toque para mudar" : "Grave o seu nome em hieróglifos" }));
+}
 // ---------- Mapa-mundo da travessia, estilo mapa de videogame ----------
 // Sobre o mapa antigo da rota: uma trilha de pontinhos que acendem conforme a viagem avança, cada parada é uma "fase"
 // com o selo do lugar, e o explorador da pessoa anda pela trilha da última parada vista até a de hoje.
@@ -2850,6 +2882,7 @@ function vTravessia() {
     h("div", { class: "hero mapahero" },
       h("img", { class: "logo moeda", src: "img/logo-egito-240.png", alt: "Caravana do Céu · Travessia do Velho Mundo" }),
       h("h1", null, "Travessia do Velho Mundo"),
+      vCartuchoNome(),
       vMapaMundo(dias, hoje, f, abrir),
       h("p", { class: "intro", id: "frase-giro", "aria-live": "polite", text: FRASES[S.fraseIdx % FRASES.length] })),
     h("div", { class: "clock" },
