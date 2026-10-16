@@ -88,7 +88,8 @@ p{margin:0}
 
 
 /* 3. O SENET: tabuleiro de bronze envelhecido, em pé, sobre fundo escuro limpo (estilo da moeda da caravana) */
-#senetCena .foto{background:url(img/fundo-nut-sol.webp) center/cover #0E0905;inset:0;filter:brightness(.55) saturate(.9) contrast(1.05)}
+#senetCena .foto{background:url(img/fundo-ceu-nut-estrelas.webp) center/cover #0E0905;inset:0;filter:brightness(.42) sepia(.2)}
+#senetCena .lado .txt,#senetCena .contador{text-shadow:0 0 6px #000,0 0 12px #000,0 1px 2px #000}
 #senetCena .sombra{background:radial-gradient(ellipse 60% 45% at 38% 38%,rgba(255,170,80,.18),transparent 65%),radial-gradient(ellipse at 40% 40%,transparent 35%,rgba(0,0,0,.88) 85%);animation:tremeluz 3.2s ease-in-out infinite}
 @keyframes tremeluz{0%,100%{opacity:1}30%{opacity:.86}55%{opacity:.97}75%{opacity:.82}}
 .rolar{position:absolute;inset:0;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:max(26px,env(safe-area-inset-top)) 14px max(30px,env(safe-area-inset-bottom));z-index:7}
