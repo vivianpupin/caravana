@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>O Céu de Nut</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&family=Cinzel:wght@500;700&family=Lora:ital,wght@0,500;1,400&family=Poppins:wght@400;600&display=swap">
+<style>
+/* O Céu de Nut: o céu de agora, no lugar onde a pessoa está, com os nomes que os egípcios davam às estrelas.
+   Com o celular apontado para o céu (bússola e giroscópio) o mapa acompanha; sem sensores, arrasta-se com o dedo. */
+:root{--ouro:#E2B85A;--ouro2:#F3D58E;--papel:#F3E4BC;--tinta:#1E140B;--azul:#1B2440;--f-tit:"Cinzel",Georgia,serif;--f-txt:"Lora",Georgia,serif;--f-ui:"Poppins",system-ui,sans-serif;--f-h:"Noto Sans Egyptian Hieroglyphs",serif;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#070A16;color:var(--papel);font:14px/1.5 var(--f-ui);user-select:none;-webkit-user-select:none}
+#fundo{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 120%,#24305A 0%,#0E1430 45%,#060914 100%)}
+video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s}
+video.on{opacity:.75}
+canvas{position:fixed;inset:0;width:100%;height:100%;touch-action:none}
+.topo{position:fixed;left:0;right:0;top:0;z-index:3;padding:max(12px,env(safe-area-inset-top)) 56px 10px 16px;background:linear-gradient(rgba(6,9,20,.92),rgba(6,9,20,0));pointer-events:none}
+.topo small{display:block;font:600 10.5px var(--f-ui);letter-spacing:.28em;text-transform:uppercase;color:var(--ouro)}
+.topo h1{margin:2px 0 0;font:500 24px/1.1 var(--f-tit);color:#F6E6BF;letter-spacing:.04em}
+.topo p{margin:4px 0 0;font:italic 13px var(--f-txt);color:#CFC2A2}
+.base{position:fixed;left:0;right:0;bottom:0;z-index:3;padding:10px 12px max(14px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px;background:linear-gradient(rgba(6,9,20,0),rgba(6,9,20,.92) 40%)}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid rgba(226,184,90,.45);background:rgba(20,16,10,.6);color:#F3E4BC;font:600 12px var(--f-ui);cursor:pointer}
+.chip i{font-style:normal;font-size:15px;font-family:var(--f-h)}
+.chip.baixo{opacity:.55}
+.botoes{display:flex;gap:8px}
+.btn{flex:1;font:600 13px var(--f-ui);letter-spacing:.04em;color:#24170A;border:1px solid #5C3E14;border-radius:3px;padding:11px 10px;cursor:pointer;
+  background:linear-gradient(180deg,#F2D48C 0%,#C9973F 48%,#9C6E25 52%,#C49340 100%);box-shadow:0 4px 12px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,245,210,.7)}
+.btn.escuro{background:rgba(20,16,10,.7);color:#F3E4BC;border-color:rgba(226,184,90,.5)}
+.aviso{font:12px var(--f-ui);color:#CFC2A2;text-align:center;margin:0}
+.ficha{position:fixed;left:12px;right:12px;bottom:calc(150px + env(safe-area-inset-bottom));z-index:4;max-width:460px;margin:0 auto;padding:14px 16px;border-radius:4px;color:var(--tinta);
+  background:linear-gradient(rgba(246,234,206,.96),rgba(236,220,186,.96)),url(img/papiro.webp) center/cover;box-shadow:0 12px 30px rgba(0,0,0,.6);border:1px solid rgba(90,60,25,.6)}
+.ficha[hidden]{display:none}
+.ficha small{font:600 10.5px var(--f-ui);letter-spacing:.2em;text-transform:uppercase;color:#8E3B24}
+.ficha h2{margin:2px 0 4px;font:500 20px/1.2 var(--f-tit)}
+.ficha .glifo{float:right;font:34px/1 var(--f-h);color:#6B4512;margin-left:8px}
+.ficha p{margin:0 0 6px;font:14.5px/1.55 var(--f-txt)}
+.ficha .onde{font:12.5px var(--f-ui);color:#5B4630}
+.ficha button{position:absolute;top:6px;right:8px;border:0;background:none;font:22px/1 var(--f-ui);color:#5B4630;cursor:pointer}
+.fechaApp{position:fixed;top:max(10px,env(safe-area-inset-top));right:12px;z-index:6;width:38px;height:38px;border-radius:50%;border:1px solid rgba(212,168,79,.6);background:rgba(10,6,3,.6);color:#F0D08A;font:22px/1 var(--f-ui);cursor:pointer}
+</style>
+</head><body>
+<div id="fundo"></div>
+<video id="video" playsinline muted autoplay></video>
+<canvas id="ceu" aria-label="O céu de agora, com as estrelas, o Sol, a Lua e os planetas"></canvas>
+<div class="topo"><small>Observatório da caravana</small><h1>O Céu de Nut</h1><p id="sub">O céu de agora, com os nomes que os egípcios davam às estrelas</p></div>
+<div class="ficha" id="ficha" hidden><button type="button" aria-label="Fechar" onclick="fichaFecha()">×</button><div id="fichaCorpo"></div></div>
+<div class="base">
+  <div class="chips" id="chips"></div>
+  <div class="botoes">
+    <button class="btn" type="button" id="apontar">Apontar para o céu</button>
+    <button class="btn escuro" type="button" id="camera">Câmera</button>
+  </div>
+  <p class="aviso" id="aviso">Arraste com o dedo para olhar o céu, ou toque em “Apontar para o céu” e levante o celular.</p>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const RAD = Math.PI / 180, DEG = 180 / Math.PI;
+const rev = x => ((x % 360) + 360) % 360;
+// ---------- onde e quando ----------
+let LAT = 30.04, LON = 31.24, lugar = "Cairo"; // sem localização, o céu do Cairo
+try { navigator.geolocation && navigator.geolocation.getCurrentPosition(p => { LAT = p.coords.latitude; LON = p.coords.longitude; lugar = "onde você está"; }, () => {}, { timeout: 8000, maximumAge: 600000 }); } catch (e) {}
+const agora = () => new Date();
+const diasJ2000 = d => d.getTime() / 86400000 + 2440587.5 - 2451545.0;
+// ---------- estrelas (J2000: AR em horas, declinação em graus, magnitude) ----------
+const E = {
+  sirius: [6.752, -16.716, -1.46, "Sopdet"], canopus: [6.399, -52.696, -.74], arcturus: [14.261, 19.182, -.05, "Arcturo"], vega: [18.616, 38.784, .03, "Vega"],
+  capella: [5.278, 45.998, .08, "Capela"], rigel: [5.242, -8.202, .13, "Rigel"], procyon: [7.655, 5.225, .34, "Prócion"], betelgeuse: [5.919, 7.407, .5, "Betelgeuse"],
+  achernar: [1.629, -57.237, .46], altair: [19.846, 8.868, .77, "Altair"], aldebaran: [4.599, 16.509, .85, "Aldebarã"], antares: [16.49, -26.432, .96, "Antares"],
+  spica: [13.42, -11.161, .97, "Espiga"], pollux: [7.755, 28.026, 1.14, "Pólux"], fomalhaut: [22.961, -29.622, 1.16, "Fomalhaut"], deneb: [20.69, 45.28, 1.25, "Deneb"],
+  regulus: [10.139, 11.967, 1.35, "Régulo"], castor: [7.577, 31.888, 1.58], bellatrix: [5.419, 6.35, 1.64], alnilam: [5.604, -1.202, 1.69], alnitak: [5.679, -1.943, 1.74],
+  mintaka: [5.533, -.299, 2.23], saiph: [5.796, -9.67, 2.07], polaris: [2.53, 89.264, 1.98, "Polar"], dubhe: [11.062, 61.751, 1.79], merak: [11.031, 56.382, 2.37],
+  phecda: [11.897, 53.695, 2.44], megrez: [12.257, 57.033, 3.31], alioth: [12.9, 55.96, 1.77], mizar: [13.399, 54.925, 2.27], alkaid: [13.792, 49.313, 1.86],
+  schedar: [.675, 56.537, 2.24], caph: [.153, 59.15, 2.28], gcas: [.945, 60.717, 2.15], ruchbah: [1.43, 60.235, 2.68], segin: [1.907, 63.67, 3.35],
+  sadr: [20.37, 40.257, 2.23], gienah: [20.77, 33.97, 2.48], dcyg: [19.75, 45.131, 2.87], albireo: [19.512, 27.96, 3.08],
+  shaula: [17.56, -37.104, 1.62], sargas: [17.622, -42.998, 1.86], dschubba: [16.006, -22.622, 2.29], acrab: [16.091, -19.806, 2.62], pisco: [15.981, -26.114, 2.89],
+  tausco: [16.598, -28.216, 2.82], epssco: [16.836, -34.293, 2.29], musco: [16.864, -38.047, 3], zetasco: [16.91, -42.36, 3.6], etasco: [17.202, -43.239, 3.33],
+  iotasco: [17.793, -40.127, 2.99], kapsco: [17.708, -39.03, 2.39],
+  denebola: [11.818, 14.572, 2.13], algieba: [10.333, 19.842, 2.08], zosma: [11.235, 20.524, 2.56], chertan: [11.237, 15.43, 3.33], etaleo: [10.122, 16.763, 3.48],
+  muleo: [9.879, 26.007, 3.88], epsleo: [9.764, 23.774, 2.98], zetaleo: [10.278, 23.417, 3.44],
+  elnath: [5.438, 28.608, 1.65], gtau: [4.33, 15.628, 3.65], dtau: [4.382, 17.543, 3.76], etau: [4.477, 19.18, 3.53], ztau: [5.627, 21.143, 3], alcyone: [3.791, 24.105, 2.87, "Plêiades"],
+  mirzam: [6.378, -17.956, 1.98], adhara: [6.977, -28.972, 1.5], wezen: [7.14, -26.393, 1.83], aludra: [7.402, -29.303, 2.45],
+  sheliak: [18.835, 33.363, 3.5], sulafat: [18.982, 32.69, 3.25], zlyr: [18.746, 37.605, 4.3], dlyr: [18.908, 36.899, 4.3],
+  tarazed: [19.771, 10.613, 2.72], alshain: [19.922, 6.407, 3.71],
+  alhena: [6.628, 16.399, 1.93], mebsuta: [6.732, 25.131, 3], tejat: [6.383, 22.514, 2.87],
+  acrux: [12.443, -63.099, .77], mimosa: [12.795, -59.689, 1.25], gacrux: [12.519, -57.113, 1.59], dcru: [12.252, -58.749, 2.79],
+  thuban: [14.073, 64.376, 3.65, "Thuban"], eltanin: [17.943, 51.489, 2.24], rastaban: [17.507, 52.301, 2.79],
+  kausaus: [18.403, -34.384, 1.85], kausmed: [18.35, -29.828, 2.7], kausbor: [18.466, -25.422, 2.81], nunki: [18.921, -26.297, 2.05], ascella: [19.043, -29.88, 2.6],
+  phisgr: [18.761, -26.991, 3.17], tausgr: [19.116, -27.671, 3.32], alnasl: [18.097, -30.424, 2.99],
+  mirach: [1.163, 35.621, 2.05], almach: [2.065, 42.33, 2.1], dand: [.655, 30.861, 3.27],
+  mirfak: [3.405, 49.861, 1.79], algol: [3.136, 40.956, 2.12, "Algol"], dper: [3.715, 47.788, 3], gper: [3.08, 53.506, 2.93], eper: [3.964, 40.01, 2.88],
+  hamal: [2.12, 23.462, 2], sheratan: [1.911, 20.808, 2.64],
+  denalg: [21.784, -16.127, 2.87], dabih: [20.35, -14.781, 3.05], algedi: [20.3, -12.545, 3.57], nashira: [21.668, -16.662, 3.69], zcap: [21.444, -22.411, 3.74], ocap: [20.864, -26.919, 4.1],
+  sadalsuud: [21.526, -5.571, 2.9], sadalmelik: [22.096, -.32, 2.95], skat: [22.911, -15.821, 3.27], rasalhague: [17.582, 12.56, 2.08],
+  markab: [23.079, 15.205, 2.48], scheat: [23.063, 28.083, 2.42], algenib: [.22, 15.184, 2.83], alpheratz: [.14, 29.091, 2.06]
+};
+// constelações: as egípcias com o nome egípcio; as outras com o nome que usamos hoje
+const C = [
+  { id: "sah", nome: "Sah", sub: "Órion · Osíris", g: "𓋹", eg: 1, l: [["betelgeuse", "bellatrix"], ["betelgeuse", "alnitak"], ["bellatrix", "mintaka"], ["alnitak", "alnilam"], ["alnilam", "mintaka"], ["alnitak", "saiph"], ["mintaka", "rigel"]],
+    txt: "Para os egípcios, as estrelas de Órion eram Sah, a alma de Osíris no céu. Quando o faraó morria, os Textos das Pirâmides diziam que ele subia para se tornar uma estrela ao lado de Sah. As três estrelas do cinturão são famosas pela comparação com as três pirâmides de Gizé." },
+  { id: "sopdet", nome: "Sopdet", sub: "Sírius · Ísis", g: "𓇼", eg: 1, l: [["sirius", "mirzam"], ["sirius", "wezen"], ["wezen", "adhara"], ["wezen", "aludra"]],
+    txt: "Sírius, a estrela mais brilhante do céu, era Sopdet, ligada a Ísis. Quando ela voltava a aparecer no horizonte antes do Sol, depois de semanas escondida, anunciava a cheia do Nilo e o começo do ano egípcio. Ela segue Sah pelo céu, como Ísis seguia Osíris." },
+  { id: "meskhetiu", nome: "Meskhetiu", sub: "Ursa Maior", g: "𓄗", eg: 1, l: [["dubhe", "merak"], ["merak", "phecda"], ["phecda", "megrez"], ["megrez", "dubhe"], ["megrez", "alioth"], ["alioth", "mizar"], ["mizar", "alkaid"]],
+    txt: "As sete estrelas da Ursa Maior eram Meskhetiu, a perna de um touro. Elas ficam perto do polo e nunca se põem: eram as Imperecíveis, as estrelas que não morrem. Os sacerdotes as usavam para alinhar os templos com o norte." },
+  { id: "reret", nome: "Reret", sub: "a deusa hipopótamo · Dragão", g: "𓃯", eg: 1, l: [["eltanin", "rastaban"], ["rastaban", "thuban"]],
+    txt: "Perto do polo, os egípcios viam Reret, uma deusa hipopótamo que segurava Meskhetiu. Thuban, uma estrela desta região, era a estrela polar na época em que as pirâmides foram construídas." },
+  { id: "leao", nome: "O Leão", sub: "Leão · no zodíaco de Dendera", g: "𓃭", eg: 1, l: [["regulus", "etaleo"], ["etaleo", "algieba"], ["algieba", "zetaleo"], ["zetaleo", "muleo"], ["muleo", "epsleo"], ["algieba", "zosma"], ["zosma", "denebola"], ["denebola", "chertan"], ["chertan", "regulus"]],
+    txt: "O leão aparece no teto do templo de Dendera, no zodíaco que você vai ver na viagem. Os egípcios ligavam o leão ao Sol e à força das cheias de verão." },
+  { id: "escorpiao", nome: "O Escorpião", sub: "Escorpião · Serket", g: "𓊢", eg: 1, l: [["acrab", "dschubba"], ["dschubba", "pisco"], ["dschubba", "antares"], ["antares", "tausco"], ["tausco", "epssco"], ["epssco", "musco"], ["musco", "zetasco"], ["zetasco", "etasco"], ["etasco", "sargas"], ["sargas", "iotasco"], ["iotasco", "kapsco"], ["kapsco", "shaula"]],
+    txt: "O escorpião também está no zodíaco de Dendera. No Egito, o escorpião era de Serket, a deusa que protegia contra picadas e venenos. Antares, a estrela vermelha, é o coração dele." },
+  { id: "cisne", nome: "Cisne", sub: "o Cruzeiro do Norte", l: [["deneb", "sadr"], ["sadr", "albireo"], ["dcyg", "sadr"], ["sadr", "gienah"]], txt: "O Cisne voa ao longo da Via Láctea, o corpo de Nut. Deneb, a cauda, é uma das estrelas mais luminosas que conhecemos." },
+  { id: "lira", nome: "Lira", sub: "Vega", l: [["vega", "zlyr"], ["vega", "dlyr"], ["zlyr", "sheliak"], ["dlyr", "sulafat"], ["sheliak", "sulafat"]], txt: "Vega, a estrela da Lira, forma com Deneb e Altair o grande triângulo das noites de outubro." },
+  { id: "aguia", nome: "Águia", sub: "Altair", l: [["tarazed", "altair"], ["altair", "alshain"]], txt: "Altair, a estrela da Águia, fecha o triângulo com Vega e Deneb." },
+  { id: "touro", nome: "Touro", sub: "Aldebarã e as Plêiades", l: [["aldebaran", "etau"], ["etau", "dtau"], ["dtau", "gtau"], ["gtau", "aldebaran"], ["aldebaran", "ztau"], ["etau", "elnath"]], txt: "Aldebarã é o olho vermelho do Touro. Ao lado, o pequeno grupo das Plêiades." },
+  { id: "gemeos", nome: "Gêmeos", sub: "Castor e Pólux", l: [["castor", "pollux"], ["pollux", "alhena"], ["castor", "mebsuta"], ["mebsuta", "tejat"]], txt: "Castor e Pólux, os dois irmãos." },
+  { id: "cassiopeia", nome: "Cassiopeia", sub: "o W do norte", l: [["caph", "schedar"], ["schedar", "gcas"], ["gcas", "ruchbah"], ["ruchbah", "segin"]], txt: "O W de Cassiopeia gira em volta do polo, do outro lado da Ursa Maior." },
+  { id: "pegaso", nome: "Pégaso", sub: "o grande quadrado", l: [["markab", "scheat"], ["scheat", "alpheratz"], ["alpheratz", "algenib"], ["algenib", "markab"]], txt: "O grande quadrado de Pégaso domina as noites de outono." },
+  { id: "sagitario", nome: "Sagitário", sub: "o arqueiro de Dendera", l: [["alnasl", "kausmed"], ["kausmed", "kausaus"], ["kausaus", "ascella"], ["ascella", "phisgr"], ["phisgr", "kausmed"], ["kausmed", "kausbor"], ["kausbor", "phisgr"], ["phisgr", "nunki"], ["nunki", "tausgr"], ["tausgr", "ascella"]],
+    txt: "O arqueiro aparece no zodíaco de Dendera. Nesta direção fica o centro da nossa galáxia, onde a Via Láctea, o corpo de Nut, é mais brilhante." },
+  { id: "capricornio", nome: "Capricórnio", sub: "a cabra-peixe de Dendera", l: [["algedi", "dabih"], ["dabih", "ocap"], ["ocap", "zcap"], ["zcap", "denalg"], ["denalg", "nashira"], ["nashira", "algedi"]], txt: "A cabra com cauda de peixe também está no teto de Dendera." },
+  { id: "aquario", nome: "Aquário", sub: "o que derrama a água", l: [["sadalsuud", "sadalmelik"], ["sadalsuud", "skat"]], txt: "No zodíaco de Dendera, o que derrama água lembra Hapi, o deus da cheia do Nilo." },
+  { id: "andromeda", nome: "Andrômeda", sub: "e a galáxia vizinha", l: [["alpheratz", "dand"], ["dand", "mirach"], ["mirach", "almach"]], txt: "Perto de Mirach, num céu bem escuro como o do deserto, dá para ver uma manchinha: a galáxia de Andrômeda, a 2,5 milhões de anos-luz." },
+  { id: "perseu", nome: "Perseu", sub: "Algol, a estrela que pisca", l: [["gper", "mirfak"], ["mirfak", "dper"], ["mirfak", "algol"], ["dper", "eper"]], txt: "Algol muda de brilho a cada três dias. Um calendário egípcio de dias de sorte e de azar, o Calendário do Cairo, pode ter registrado esse ritmo, segundo alguns pesquisadores." },
+  { id: "aries", nome: "Áries", sub: "o carneiro de Amon", l: [["hamal", "sheratan"]], txt: "O carneiro era o animal de Amon. No zodíaco de Dendera, Áries aparece como carneiro." },
+  { id: "cruzeiro", nome: "Cruzeiro do Sul", sub: "não aparece no Egito", l: [["acrux", "gacrux"], ["mimosa", "dcru"]], txt: "O Cruzeiro do Sul fica baixo demais para ser visto do Egito. É a constelação do céu de casa, no Brasil." }
+];
+// estrelas e astros com história própria (ao tocar)
+const HIST = {
+  sirius: ["Sopdet", "Sírius · Ísis", "𓇼", "A estrela mais brilhante do céu. Sopdet era a deusa da estrela que trazia a cheia do Nilo e o ano-novo egípcio."],
+  thuban: ["Thuban", "a estrela polar das pirâmides", "𓇼", "Há 4.500 anos, quando as pirâmides de Gizé foram construídas, Thuban era a estrela do polo, o ponto fixo em volta do qual o céu girava."],
+  polaris: ["A estrela polar de hoje", "Polaris", "𓇼", "Hoje é Polaris que marca o norte. No tempo dos faraós, era Thuban. O eixo da Terra gira devagar, como um pião, e troca a estrela do polo ao longo dos milênios."],
+  betelgeuse: ["Betelgeuse", "o ombro de Sah", "𓇼", "A estrela vermelha no ombro de Órion, Sah, a alma de Osíris."],
+  rigel: ["Rigel", "o pé de Sah", "𓇼", "A estrela azul no pé de Órion, Sah."],
+  antares: ["Antares", "o coração do escorpião", "𓇼", "A estrela vermelha no coração do escorpião de Serket."],
+  alcyone: ["As Plêiades", "o pequeno grupo de estrelas", "𓇼", "Um aglomerado de estrelas jovens. Muitos povos as viam como irmãs."]
+};
+// ---------- Sol, Lua e planetas (elementos de Paul Schlyter, precisão de alguns minutos de arco) ----------
+function elementos(nome, d) {
+  const E = {
+    sol: [0, 0, 282.9404 + 4.70935e-5 * d, 1, .016709 - 1.151e-9 * d, 356.047 + .9856002585 * d],
+    lua: [125.1228 - .0529538083 * d, 5.1454, 318.0634 + .1643573223 * d, 60.2666, .0549, 115.3654 + 13.0649929509 * d],
+    mercurio: [48.3313 + 3.24587e-5 * d, 7.0047 + 5e-8 * d, 29.1241 + 1.01444e-5 * d, .387098, .205635 + 5.59e-10 * d, 168.6562 + 4.0923344368 * d],
+    venus: [76.6799 + 2.4659e-5 * d, 3.3946 + 2.75e-8 * d, 54.891 + 1.38374e-5 * d, .72333, .006773 - 1.302e-9 * d, 48.0052 + 1.6021302244 * d],
+    marte: [49.5574 + 2.11081e-5 * d, 1.8497 - 1.78e-8 * d, 286.5016 + 2.92961e-5 * d, 1.523688, .093405 + 2.516e-9 * d, 18.6021 + .5240207766 * d],
+    jupiter: [100.4542 + 2.76854e-5 * d, 1.303 - 1.557e-7 * d, 273.8777 + 1.64505e-5 * d, 5.20256, .048498 + 4.469e-9 * d, 19.895 + .0830853001 * d],
+    saturno: [113.6634 + 2.3898e-5 * d, 2.4886 - 1.081e-7 * d, 339.3939 + 2.97661e-5 * d, 9.55475, .055546 - 9.499e-9 * d, 316.967 + .0334442282 * d]
+  }[nome];
+  return { N: E[0], i: E[1], w: E[2], a: E[3], e: E[4], M: rev(E[5]) };
+}
+function orbita(el) { // posição na órbita, em coordenadas eclípticas retangulares
+  const { N, i, w, a, e, M } = el; let Ea = M + DEG * e * Math.sin(M * RAD) * (1 + e * Math.cos(M * RAD));
+  for (let k = 0; k < 5; k++) Ea = Ea - (Ea - DEG * e * Math.sin(Ea * RAD) - M) / (1 - e * Math.cos(Ea * RAD));
+  const xv = a * (Math.cos(Ea * RAD) - e), yv = a * Math.sqrt(1 - e * e) * Math.sin(Ea * RAD), v = Math.atan2(yv, xv) * DEG, r = Math.hypot(xv, yv);
+  const x = r * (Math.cos(N * RAD) * Math.cos((v + w) * RAD) - Math.sin(N * RAD) * Math.sin((v + w) * RAD) * Math.cos(i * RAD));
+  const y = r * (Math.sin(N * RAD) * Math.cos((v + w) * RAD) + Math.cos(N * RAD) * Math.sin((v + w) * RAD) * Math.cos(i * RAD));
+  const z = r * Math.sin((v + w) * RAD) * Math.sin(i * RAD);
+  return [x, y, z];
+}
+function eclParaEq([x, y, z], d) { const ec = (23.4393 - 3.563e-7 * d) * RAD; const ye = y * Math.cos(ec) - z * Math.sin(ec), ze = y * Math.sin(ec) + z * Math.cos(ec);
+  return [rev(Math.atan2(ye, x) * DEG) / 15, Math.atan2(ze, Math.hypot(x, ye)) * DEG]; }
+function astros(d) {
+  const s = orbita(elementos("sol", d)), sol = eclParaEq(s, d), out = { sol };
+  const l = orbita(elementos("lua", d)); out.lua = eclParaEq(l, d);
+  for (const p of ["mercurio", "venus", "marte", "jupiter", "saturno"]) { const h = orbita(elementos(p, d)); out[p] = eclParaEq([h[0] + s[0], h[1] + s[1], h[2] + s[2]], d); }
+  // fase da Lua: ângulo entre Sol e Lua no céu
+  const ls = Math.atan2(s[1], s[0]), ll = Math.atan2(l[1], l[0]); out.faseLua = rev((ll - ls) * DEG);
+  return out;
+}
+const ASTRO = {
+  sol: ["Rá", "o Sol", "𓇳", "#FFD36A", "Rá atravessa o céu de dia na sua barca. À noite, segue pelas doze horas do mundo de baixo e, toda manhã, renasce no horizonte do leste."],
+  lua: ["Iah", "a Lua · Khonsu e Thoth", "𓇹", "#F4F0E2", "A Lua era Iah, e também Khonsu, o viajante, e Thoth, que mede o tempo. Os egípcios contavam os meses pelas fases dela."],
+  mercurio: ["Sebegu", "Mercúrio", "𓇼", "#D9CBB0", "Mercúrio, sempre perto do Sol, era Sebegu, ligado a Seth."],
+  venus: ["Seba-djai", "Vênus · a estrela que atravessa", "𓇼", "#FFF6D8", "Vênus, a estrela da manhã e da tarde, era a estrela que atravessa, ligada à ave Bennu, a fênix do renascimento."],
+  marte: ["Hor-desher", "Marte · Hórus vermelho", "𓇼", "#E8704A", "Marte era Hor-desher, o Hórus vermelho. Os egípcios notaram que às vezes ele parece andar para trás no céu."],
+  jupiter: ["Hor-wep-shetawy", "Júpiter · Hórus que ilumina os dois países", "𓇼", "#F3E2B0", "Júpiter era Hórus que ilumina as Duas Terras, o Alto e o Baixo Egito."],
+  saturno: ["Hor-ka-pet", "Saturno · Hórus, touro do céu", "𓇼", "#E6D29A", "Saturno, o mais lento dos planetas visíveis, era Hórus, o touro do céu."]
+};
+// ---------- do céu para a tela ----------
+function altaz(raH, dec, lstDeg) {
+  const H = (lstDeg - raH * 15) * RAD, d = dec * RAD, f = LAT * RAD;
+  const sa = Math.sin(f) * Math.sin(d) + Math.cos(f) * Math.cos(d) * Math.cos(H), alt = Math.asin(sa);
+  const az = Math.atan2(-Math.sin(H) * Math.cos(d), Math.cos(f) * Math.sin(d) - Math.sin(f) * Math.cos(d) * Math.cos(H));
+  return [alt, az]; // radianos; az a partir do norte, para leste
+}
+const vet = (alt, az) => [Math.cos(alt) * Math.sin(az), Math.cos(alt) * Math.cos(az), Math.sin(alt)]; // leste, norte, cima
+const lst = (d, data) => rev(280.46061837 + 360.98564736629 * d + LON);
+// câmera: por sensor (matriz do celular) ou por arrastar (rumo e altura)
+let modo = "dedo", rumo = 160 * RAD, altura = 40 * RAD, fov = 95 * RAD, R = null;
+function base() {
+  if (modo === "sensor" && R) return { r: [R[0], R[3], R[6]], u: [R[1], R[4], R[7]], f: [-R[2], -R[5], -R[8]] };
+  const f = vet(altura, rumo), r = [Math.cos(rumo), -Math.sin(rumo), 0];
+  const u = [r[1] * f[2] - r[2] * f[1], r[2] * f[0] - r[0] * f[2], r[0] * f[1] - r[1] * f[0]]; return { r, u, f };
+}
+const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+// ---------- desenho ----------
+const cv = $("ceu"), x = cv.getContext("2d"); let W = 0, H = 0, DPR = 1;
+function mede() { DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * DPR; cv.height = H * DPR; x.setTransform(DPR, 0, 0, DPR, 0, 0); }
+mede(); addEventListener("resize", mede);
+let alvos = [], cena = null;
+function tela(v, B, F) { const z = dot(v, B.f); if (z <= .02) return null; return [W / 2 + F * dot(v, B.r) / z, H / 2 - F * dot(v, B.u) / z, z]; }
+function desenha() {
+  const data = agora(), d = diasJ2000(data), L = lst(d, data), B = base(), F = (H / 2) / Math.tan(fov / 2), A = astros(d + 1.5);
+  const solAA = altaz(A.sol[0], A.sol[1], L), dia = solAA[0] * DEG;
+  x.clearRect(0, 0, W, H); alvos = [];
+  // brilho do dia: o céu clareia quando Rá está acima do horizonte
+  if (dia > -12) { x.fillStyle = `rgba(110,140,190,${Math.min(.75, (dia + 12) / 24)})`; x.fillRect(0, 0, W, H); }
+  // Nut, a Via Láctea (o equador da galáxia)
+  x.save(); x.lineCap = "round";
+  for (const [lw, a] of [[70, .045], [38, .06], [16, .08]]) { x.strokeStyle = `rgba(200,190,255,${a})`; x.lineWidth = lw; x.beginPath(); let ant = null;
+    for (let l = 0; l <= 360; l += 3) { const lr = l * RAD, dp = 27.12825 * RAD, ap = 192.85948, ln = 122.93192 * RAD;
+      const sd = Math.sin(dp) * 0 + Math.cos(dp) * Math.cos(ln - lr), dec = Math.asin(sd), ra = rev(ap + Math.atan2(Math.sin(ln - lr), -Math.sin(dp) * Math.cos(ln - lr)) * DEG) / 15;
+      const [al, az] = altaz(ra, dec * DEG, L), p = tela(vet(al, az), B, F); if (!p) { ant = null; continue; } if (ant) x.lineTo(p[0], p[1]); else x.moveTo(p[0], p[1]); ant = p; } x.stroke(); }
+  x.restore();
+  { const lr = 30 * RAD, dp = 27.12825 * RAD, ln = 122.93192 * RAD; const dec = Math.asin(Math.cos(dp) * Math.cos(ln - lr)) * DEG, ra = rev(192.85948 + Math.atan2(Math.sin(ln - lr), -Math.sin(dp) * Math.cos(ln - lr)) * DEG) / 15;
+    const [al, az] = altaz(ra, dec, L), p = tela(vet(al, az), B, F); if (p && al > 0) { x.font = "600 13px Cinzel, Georgia, serif"; x.fillStyle = "rgba(220,210,255,.7)"; x.textAlign = "center"; x.fillText("NUT · a Via Láctea", p[0], p[1]); alvos.push({ p, tipo: "nut" }); } }
+  // constelações
+  const pos = {};
+  for (const [k, s] of Object.entries(E)) { const [al, az] = altaz(s[0], s[1], L); pos[k] = { al, p: tela(vet(al, az), B, F) }; }
+  for (const c of C) { let cx = 0, cy = 0, n = 0;
+    x.strokeStyle = c.eg ? "rgba(226,184,90,.75)" : "rgba(180,190,220,.45)"; x.lineWidth = c.eg ? 1.6 : 1;
+    for (const [a, b] of c.l) { const A1 = pos[a], B1 = pos[b]; if (!A1.p || !B1.p || (A1.al < -.05 && B1.al < -.05)) continue;
+      x.beginPath(); x.moveTo(A1.p[0], A1.p[1]); x.lineTo(B1.p[0], B1.p[1]); x.stroke(); cx += A1.p[0] + B1.p[0]; cy += A1.p[1] + B1.p[1]; n += 2; }
+    if (n) { const p = [cx / n, cy / n]; x.textAlign = "center";
+      if (c.eg) { x.font = "22px 'Noto Sans Egyptian Hieroglyphs', serif"; x.fillStyle = "rgba(243,213,142,.55)"; x.fillText(c.g, p[0], p[1] - 16); }
+      x.font = (c.eg ? "600 14px" : "500 12px") + " Cinzel, Georgia, serif"; x.fillStyle = c.eg ? "#F3D58E" : "rgba(200,205,225,.75)"; x.fillText(c.nome.toUpperCase(), p[0], p[1] + 4);
+      x.font = "italic 11px Lora, Georgia, serif"; x.fillStyle = "rgba(230,220,190,.75)"; x.fillText(c.sub, p[0], p[1] + 18);
+      alvos.push({ p, tipo: "const", c }); } }
+  // estrelas
+  for (const [k, s] of Object.entries(E)) { const q = pos[k]; if (!q.p || q.al < -.02) continue; const r = Math.max(.8, 3.6 - s[2] * 1.05);
+    const g = x.createRadialGradient(q.p[0], q.p[1], 0, q.p[0], q.p[1], r * 3); g.addColorStop(0, "rgba(255,250,230,1)"); g.addColorStop(.35, "rgba(255,240,200,.55)"); g.addColorStop(1, "rgba(255,240,200,0)");
+    x.fillStyle = g; x.beginPath(); x.arc(q.p[0], q.p[1], r * 3, 0, 7); x.fill();
+    if (s[3] && !C.some(c => c.l.flat().includes(k) && c.eg && k !== "sirius")) { x.font = "500 11px Poppins, sans-serif"; x.fillStyle = "rgba(240,232,210,.8)"; x.textAlign = "left"; x.fillText(s[3], q.p[0] + r + 5, q.p[1] + 4); }
+    if (HIST[k]) alvos.push({ p: q.p, tipo: "estrela", k }); }
+  // horizonte e pontos cardeais
+  x.strokeStyle = "rgba(226,184,90,.65)"; x.lineWidth = 1.5; x.beginPath(); let ant = null;
+  for (let a = 0; a <= 360; a += 2) { const p = tela(vet(0, a * RAD), B, F); if (!p) { ant = null; continue; } if (ant) x.lineTo(p[0], p[1]); else x.moveTo(p[0], p[1]); ant = p; } x.stroke();
+  // chão escuro abaixo do horizonte (sem câmera)
+  if (!camOn) { x.fillStyle = "rgba(20,12,6,.55)"; x.beginPath(); let prim = true;
+    for (let a = 0; a <= 360; a += 4) { const p = tela(vet(0, a * RAD), B, F); if (!p) continue; prim ? x.moveTo(p[0], p[1]) : x.lineTo(p[0], p[1]); prim = false; }
+    const baixo = tela(vet(-89 * RAD, 0), B, F); if (!prim && baixo) { x.lineTo(W, H); x.lineTo(0, H); } x.closePath(); if (!prim && baixo) x.fill(); }
+  for (const [a, n, s] of [[0, "N", "Norte · as estrelas imperecíveis"], [90, "L", "Leste · onde Rá nasce"], [180, "S", "Sul · o Nilo vem daqui"], [270, "O", "Oeste · a terra dos mortos"]]) {
+    const p = tela(vet(.02, a * RAD), B, F); if (!p) continue; x.textAlign = "center"; x.font = "700 18px Cinzel, Georgia, serif"; x.fillStyle = "#F3D58E"; x.fillText(n, p[0], p[1] - 8);
+    x.font = "italic 11px Lora, Georgia, serif"; x.fillStyle = "rgba(243,228,188,.8)"; x.fillText(s, p[0], p[1] + 14); }
+  // Sol, Lua e planetas, com setas quando estão fora da tela
+  const lista = [];
+  for (const k of ["sol", "lua", "venus", "marte", "jupiter", "saturno", "mercurio"]) { const [ra, dec] = A[k], [al, az] = altaz(ra, dec, L), v = vet(al, az), p = tela(v, B, F), a = ASTRO[k];
+    lista.push({ k, al, az });
+    if (p && p[0] > -40 && p[0] < W + 40 && p[1] > -40 && p[1] < H + 40) {
+      if (k === "sol") { const g = x.createRadialGradient(p[0], p[1], 0, p[0], p[1], 46); g.addColorStop(0, "rgba(255,230,140,1)"); g.addColorStop(.3, "rgba(255,190,70,.9)"); g.addColorStop(1, "rgba(255,160,40,0)"); x.fillStyle = g; x.beginPath(); x.arc(p[0], p[1], 46, 0, 7); x.fill(); }
+      else if (k === "lua") desenhaLua(p, A.faseLua);
+      else { x.fillStyle = a[3]; x.beginPath(); x.arc(p[0], p[1], 4.2, 0, 7); x.fill(); }
+      x.textAlign = "center"; x.font = "600 13px Cinzel, Georgia, serif"; x.fillStyle = a[3]; x.fillText(a[0], p[0], p[1] + (k === "sol" ? 40 : k === "lua" ? 30 : 18));
+      x.font = "italic 10.5px Lora, Georgia, serif"; x.fillStyle = "rgba(240,230,205,.8)"; x.fillText(a[1].split(" · ")[0], p[0], p[1] + (k === "sol" ? 54 : k === "lua" ? 44 : 31));
+      alvos.push({ p, tipo: "astro", k });
+    } else if (k === "sol" || k === "lua") seta(v, B, a, k);
+  }
+  cena = { lista, dia };
+}
+function desenhaLua(p, fase) { const r = 14; x.save(); x.fillStyle = "rgba(40,44,60,.9)"; x.beginPath(); x.arc(p[0], p[1], r, 0, 7); x.fill();
+  const f = Math.cos(fase * RAD), cresc = fase < 180; x.fillStyle = "#F4F0E2"; x.beginPath();
+  x.arc(p[0], p[1], r, -Math.PI / 2, Math.PI / 2, !cresc); x.ellipse(p[0], p[1], Math.abs(f) * r, r, 0, Math.PI / 2, -Math.PI / 2, (f > 0) === cresc); x.fill(); x.restore(); }
+function seta(v, B, a, k) { // seta na borda apontando para onde está o Sol ou a Lua
+  const sx = dot(v, B.r), sy = dot(v, B.u), ang = Math.atan2(-sy, sx), m = 46;
+  const cx = W / 2 + Math.cos(ang) * (W / 2 - m), cy = H / 2 + Math.sin(ang) * (H / 2 - m - 70);
+  x.save(); x.translate(cx, cy); x.rotate(ang); x.fillStyle = a[3]; x.beginPath(); x.moveTo(14, 0); x.lineTo(-8, -9); x.lineTo(-4, 0); x.lineTo(-8, 9); x.closePath(); x.fill(); x.restore();
+  x.textAlign = "center"; x.font = "600 12px Cinzel, Georgia, serif"; x.fillStyle = a[3]; x.fillText(a[0], cx - Math.cos(ang) * 26, cy - Math.sin(ang) * 26 + 4);
+  alvos.push({ p: [cx, cy], tipo: "astro", k }); }
+// ---------- lista do que está no céu agora ----------
+const DIR = az => ["norte", "nordeste", "leste", "sudeste", "sul", "sudoeste", "oeste", "noroeste"][Math.round(rev(az * DEG) / 45) % 8];
+function chips() { if (!cena) return; const el = $("chips"); el.replaceChildren();
+  for (const o of cena.lista) { const a = ASTRO[o.k], b = document.createElement("button"); b.type = "button"; b.className = "chip" + (o.al < 0 ? " baixo" : "");
+    b.innerHTML = `<i>${a[2]}</i>${a[0]} · ${o.al < 0 ? "abaixo do horizonte" : Math.round(o.al * DEG) + "° · " + DIR(o.az)}`;
+    b.onclick = () => { if (modo === "dedo") { rumo = o.az; altura = Math.max(-5 * RAD, o.al); } ficha({ tipo: "astro", k: o.k }); }; el.append(b); }
+  $("sub").textContent = `O céu de agora, ${lugar === "Cairo" ? "no Cairo" : lugar} · ${agora().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}` + (cena.dia > -6 ? " · é dia: Rá esconde as estrelas" : "");
+}
+// ---------- ficha ao tocar ----------
+function ficha(a) { let h = "";
+  if (a.tipo === "astro") { const s = ASTRO[a.k], o = cena && cena.lista.find(q => q.k === a.k);
+    h = `<span class="glifo">${s[2]}</span><small>${s[1]}</small><h2>${s[0]}</h2><p>${s[4]}</p>` + (o ? `<p class="onde">${o.al < 0 ? "Agora está abaixo do horizonte." : `Agora: ${Math.round(o.al * DEG)}° acima do horizonte, na direção ${DIR(o.az)}.`}</p>` : ""); }
+  else if (a.tipo === "const") h = `<span class="glifo">${a.c.g || "𓇼"}</span><small>${a.c.sub}</small><h2>${a.c.nome}</h2><p>${a.c.txt}</p>`;
+  else if (a.tipo === "estrela") { const s = HIST[a.k]; h = `<span class="glifo">${s[2]}</span><small>${s[1]}</small><h2>${s[0]}</h2><p>${s[3]}</p>`; }
+  else if (a.tipo === "nut") h = `<span class="glifo">𓇯</span><small>a Via Láctea</small><h2>Nut</h2><p>Nut era a deusa do céu, com o corpo arqueado sobre a Terra e coberto de estrelas. Toda noite ela engolia o Sol, que atravessava o corpo dela e renascia de manhã. Muitos estudiosos acham que a faixa da Via Láctea era vista como o corpo de Nut.</p>`;
+  $("fichaCorpo").innerHTML = h; $("ficha").hidden = false; }
+window.fichaFecha = () => { $("ficha").hidden = true; };
+// ---------- arrastar com o dedo ----------
+let arr = null;
+cv.addEventListener("pointerdown", e => { arr = { x: e.clientX, y: e.clientY, r: rumo, a: altura, t: Date.now() }; cv.setPointerCapture(e.pointerId); });
+cv.addEventListener("pointermove", e => { if (!arr || modo !== "dedo") return; const k = fov / H; rumo = arr.r - (e.clientX - arr.x) * k; altura = Math.max(-80 * RAD, Math.min(89 * RAD, arr.a + (e.clientY - arr.y) * k)); });
+cv.addEventListener("pointerup", e => { if (arr && Math.hypot(e.clientX - arr.x, e.clientY - arr.y) < 8) { // toque: o mais perto
+    let melhor = null, md = 36; for (const a of alvos) { const dd = Math.hypot(a.p[0] - e.clientX, a.p[1] - e.clientY); if (dd < md) { md = dd; melhor = a; } } if (melhor) ficha(melhor); }
+  arr = null; });
+cv.addEventListener("wheel", e => { fov = Math.max(25 * RAD, Math.min(110 * RAD, fov * (e.deltaY > 0 ? 1.08 : .92))); }, { passive: true });
+// ---------- sensores: o celular vira uma janela para o céu ----------
+function matriz(a, b, g) { // W3C: alfa, beta, gama -> matriz de rotação (celular -> mundo)
+  const ca = Math.cos(a), sa = Math.sin(a), cb = Math.cos(b), sb = Math.sin(b), cg = Math.cos(g), sg = Math.sin(g);
+  return [ca * cg - sa * sb * sg, -cb * sa, ca * sg + cg * sa * sb, cg * sa + ca * sb * sg, ca * cb, sa * sg - ca * cg * sb, -cb * sg, sb, cb * cg]; }
+let suave = null;
+function orienta(e) { if (e.beta == null) return; let alfa = e.alpha || 0;
+  if (typeof e.webkitCompassHeading === "number") alfa = 360 - e.webkitCompassHeading; // iPhone: norte de verdade pela bússola
+  const M = matriz(alfa * RAD, e.beta * RAD, e.gamma * RAD); if (!suave) suave = M; else suave = suave.map((v, i) => v * .75 + M[i] * .25); R = suave; modo = "sensor";
+  $("aviso").textContent = "Mova o celular pelo céu. Toque numa estrela, num astro ou numa constelação para ouvir a história."; }
+$("apontar").onclick = async () => {
+  try { if (typeof DeviceOrientationEvent !== "undefined" && DeviceOrientationEvent.requestPermission) { const r = await DeviceOrientationEvent.requestPermission(); if (r !== "granted") throw 0; } } catch (e) { $("aviso").textContent = "Sem permissão para os sensores. Arraste com o dedo para olhar o céu."; return; }
+  if ("ondeviceorientationabsolute" in window) addEventListener("deviceorientationabsolute", orienta); else addEventListener("deviceorientation", orienta);
+  $("aviso").textContent = "Levante o celular e aponte para o céu…";
+  setTimeout(() => { if (modo !== "sensor") $("aviso").textContent = "Este aparelho não mandou a bússola. Arraste com o dedo para olhar o céu."; }, 2500);
+};
+// ---------- câmera ----------
+let camOn = false, stream = null;
+$("camera").onclick = async () => {
+  if (camOn) { stream && stream.getTracks().forEach(t => t.stop()); camOn = false; $("video").classList.remove("on"); $("camera").textContent = "Câmera"; return; }
+  try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }); $("video").srcObject = stream; camOn = true; $("video").classList.add("on"); $("camera").textContent = "Sem câmera"; }
+  catch (e) { $("aviso").textContent = "Não consegui abrir a câmera. O mapa do céu continua funcionando sem ela."; }
+};
+// ---------- laço ----------
+let ultChips = 0;
+(function quadro(t) { desenha(); if (t - ultChips > 5000) { ultChips = t; chips(); } requestAnimationFrame(quadro); })(0);
+// dentro do app, abre numa janela: o × fecha
+if (window.parent !== window) { const f = document.createElement("button"); f.className = "fechaApp"; f.type = "button"; f.setAttribute("aria-label", "Fechar"); f.textContent = "×";
+  f.onclick = () => { stream && stream.getTracks().forEach(t => t.stop()); parent.postMessage("fecha-oraculo", "*"); }; document.body.append(f); }
+</script>
+</body></html>

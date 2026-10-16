@@ -337,3 +337,20 @@ Tudo seguindo o roteiro oficial (`app/dados/travessia.json`, 8 a 20/10/2027). Po
 - Cartucho: a Vivian voltou para a versão clara (papiro creme, corda azul com filete vermelho, sinais coloridos). A versão terracota e as texturas de parede foram descartadas.
 - Cartucho da página inicial: pequeno (32px de largura), no canto de cima à direita.
 - Oficina do escriba: ganhou 'A leitura do seu nome'. Ela junta o que cada sinal evocava para os egípcios (`SENT`: imagem e qualidade de cada sinal), qual sinal abre e qual fecha o cartucho, e explica o ren. Há uma nota avisando que é uma leitura poética, não uma previsão antiga. A lista dos sinais também mostra a qualidade de cada um.
+
+## O Céu de Nut (out/2026, `app/ceu.html`)
+- Observatório do céu de agora, no lugar onde a pessoa está (pela localização do celular; sem localização, o céu do Cairo). Funciona como os apps de céu noturno.
+- **Como se usa:**
+  - "Apontar para o céu" liga a bússola e o giroscópio, e o mapa acompanha o celular (no iPhone pede permissão).
+  - Sem sensores, arrasta-se com o dedo.
+  - "Câmera" mostra a câmera de trás por baixo do céu desenhado.
+- **O que aparece:**
+  - Cerca de 120 estrelas reais (posições J2000).
+  - Constelações egípcias em dourado, com hieróglifo: Sah (Órion, Osíris), Sopdet (Sírius, Ísis), Meskhetiu (Ursa Maior), Reret, o Leão e o Escorpião de Dendera.
+  - As outras constelações aparecem em cinza.
+  - Nut como a Via Láctea, o horizonte e os pontos cardeais com frases egípcias.
+  - Rá (Sol), Iah (Lua, com a fase) e os planetas com nomes egípcios. As posições vêm das fórmulas de Paul Schlyter.
+  - Quando o Sol ou a Lua estão fora da tela, uma seta mostra onde estão.
+- Tocar num astro, numa constelação ou numa estrela com história abre uma ficha em papiro.
+- **Onde abrir:** o cartão "O Céu de Nut" aparece na página inicial e nos Saberes. A janela do app libera câmera, localização e sensores para essa página.
+- A Vivian não quis o botão do céu da noite no Deserto Branco: só o céu de agora.

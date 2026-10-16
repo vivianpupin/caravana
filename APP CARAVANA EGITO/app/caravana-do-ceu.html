@@ -2327,6 +2327,10 @@ html[data-tab] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{backgroun
 /* cartucho da página inicial no canto de cima à direita */
 .cartnome{left:auto;right:8px}
 
+/* cartão do Céu de Nut: o céu noturno de estrelas pintado de Nut */
+.oraculocard.ceucard{background:radial-gradient(1.2px 1.2px at 78% 22%,#fff,transparent),radial-gradient(1px 1px at 88% 60%,#fff,transparent),radial-gradient(1.6px 1.6px at 66% 75%,#FFE9B0,transparent),radial-gradient(1px 1px at 92% 34%,#fff,transparent),radial-gradient(1.3px 1.3px at 58% 30%,#fff,transparent),radial-gradient(1px 1px at 72% 48%,#cfd8ff,transparent),radial-gradient(1px 1px at 96% 82%,#fff,transparent),linear-gradient(115deg,transparent 45%,rgba(190,180,255,.10) 60%,transparent 75%),radial-gradient(ellipse at 70% 120%,#24305A,#0E1430 55%,#070A16)}
+.oraculocard.ceucard .escglifo{color:#F3D58E}
+
 </style>
 
 <div class="app">
@@ -2901,6 +2905,7 @@ function vTravessia() {
       h("div", null, h("b", { class: "hora", "data-tz": "Africa/Cairo", text: horaEm("Africa/Cairo") }), h("span", { text: "Agora no Egito" })),
       h("div", null, h("b", { class: "hora", "data-tz": "America/Sao_Paulo", text: horaEm("America/Sao_Paulo") }), h("span", { text: "Brasília · +6h" }))),
     vGarrafaVolta(),
+    vCeuCard(),
     vMissoes(),
     vOnlineLider(),
     vTempo(),
@@ -3360,6 +3365,11 @@ function preCarregaPlanetas() {
   GRAHAS.forEach(x => { const i = new Image(); i.src = "img/planetas/" + x.id + ".webp"; PLANETAS_PRE.push(i.decode ? i.decode().catch(() => {}) : Promise.resolve()); });
   return PLANETAS_PRE;
 }
+function vCeuCard() {
+  return h("button", { type: "button", class: "oraculocard amon escriba ceucard", onclick: () => abrirPagina("ceu.html", "O Céu de Nut") },
+    h("span", { class: "escglifo", text: "𓇯" }), h("span", { class: "orctx" }, h("small", { text: "Observatório da caravana" }), h("b", { text: "O Céu de Nut" }),
+      h("span", { text: "Aponte o celular para o céu e veja as estrelas, a Lua, o Sol e os planetas com os nomes que os egípcios davam." })));
+}
 function vOraculoCard() {
   let L = null; try { L = JSON.parse(localStorage.getItem("cdi-oraculo-egito") || "null"); } catch (e) {}
   const NOMES = { ra: "Rá", thoth: "Thoth", isis: "Ísis", osiris: "Osíris", horus: "Hórus", anubis: "Anúbis", hathor: "Hathor", maat: "Maat", ptah: "Ptah", amon: "Amon", sobek: "Sobek", imhotep: "Imhotep" };
@@ -3451,6 +3461,7 @@ function vSaberes() {
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Para ler pelo caminho" }), h("h1", { text: "Saberes da travessia" }))),
     h("p", { class: "lede", text: "Cada carimbo guarda uma história. Ela se abre quando o passaporte é carimbado no lugar sagrado." }),
     vOraculoCard(),
+    vCeuCard(),
     sab.length ? h("p", { class: "lidoscont", text: `Você já leu ${sab.filter(x => S.lidos[x.id] && lib(x)).length} de ${sab.length}` }) : null,
     sab.length ? h("div", { class: "sabgrid" }, sab.map(x => {
       const l = x.localId && localDe(x.localId), ok = lib(x);
@@ -5082,7 +5093,7 @@ function vEscavacao() {
 }
 function abrirPagina(src, titulo) {
   closeSheets();
-  const caixa = h("div", { class: "orsheet", role: "dialog", "aria-label": titulo }, h("iframe", { src, title: titulo, class: "orframe", allow: "autoplay" }));
+  const caixa = h("div", { class: "orsheet", role: "dialog", "aria-label": titulo }, h("iframe", { src, title: titulo, class: "orframe", allow: "autoplay; camera; geolocation; accelerometer; gyroscope; magnetometer" }));
   const fecha = e => { if (e.data !== "fecha-oraculo") return; removeEventListener("message", fecha); caixa.remove(); render(); };
   addEventListener("message", fecha); document.body.append(caixa);
 }
