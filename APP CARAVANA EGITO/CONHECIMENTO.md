@@ -330,3 +330,4 @@ Tudo seguindo o roteiro oficial (`app/dados/travessia.json`, 8 a 20/10/2027). Po
 - Cartucho do nome (atualizado): em pé, como nas paredes, no canto de cima à esquerda da página inicial, no estilo do antigo balão (creme com contorno marrom). Sem a frase 'Grave o seu nome'. O mapa subiu para perto do título.
 - Página inicial reorganizada como a da Índia: moeda de 92px, título grande, frase que gira logo abaixo do título em dourado itálico, depois o mapa com respiro; cartucho em pé no canto esquerdo.
 - A frase que muda voltou para baixo do mapa, no estilo de antes. Marcas d'água atrás do título: testadas 4 opções e a Vivian não quis nenhuma.
+- Fundo do título da página inicial: foto 2 da Vivian (parede com cartucho e colunas de hieróglifos, `colunas-cartucho-a.jpg`) em marrom de uma cor só (`tools/egito/fundo-titulo.py` → `img/fundo-titulo.webp`). Começa colada no cabeçalho com o cartucho inteiro e some num degradê suave antes do mapa.

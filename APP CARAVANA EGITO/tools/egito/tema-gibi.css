@@ -429,3 +429,9 @@ html[data-tab] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{backgroun
 .mapahero + .clock,.view>.clock{margin-top:22px}
 .cartnome{top:14px;left:14px;padding:6px 3px 10px;min-width:26px}
 .cartnome .sinais{font-size:15px}
+/* fundo do título: parede de hieróglifos com o cartucho dourado (foto da Vivian, em marrom de uma cor só), sumindo suave antes do mapa */
+.mapahero{position:relative;isolation:isolate}
+.mapahero::before{content:"";position:absolute;left:-16px;right:-16px;top:-22px;height:410px;z-index:-1;pointer-events:none;background:url(img/fundo-titulo.webp) 68% top/auto 112% no-repeat;
+  -webkit-mask:linear-gradient(#000 0%,rgba(0,0,0,.75) 12%,rgba(0,0,0,.48) 26%,rgba(0,0,0,.28) 40%,rgba(0,0,0,.14) 54%,rgba(0,0,0,.05) 66%,transparent 76%);
+  mask:linear-gradient(#000 0%,rgba(0,0,0,.75) 12%,rgba(0,0,0,.48) 26%,rgba(0,0,0,.28) 40%,rgba(0,0,0,.14) 54%,rgba(0,0,0,.05) 66%,transparent 76%)}
+.mapahero h1{text-shadow:0 0 22px rgba(246,236,214,1),0 0 10px rgba(246,236,214,.95),0 0 4px rgba(246,236,214,.9)}
