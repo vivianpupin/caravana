@@ -281,3 +281,10 @@ O roteiro contratado, dia a dia (sem os valores). Complementa o roteiro da Vivia
 - Ainda falta trocar o conteúdo grande da Índia: deuses-guardiões, ensinamentos, cobras e escadas, conversor de rúpias, carta final e textos da IA.
 - A maleta ficou SEM etiquetas na tampa (a Vivian achou feio); as etiquetas ficam só no estúdio.
 - Burton 1922 (out/2026): o corpo virou a traseira de uma câmera de campo de placa de vidro, gerada por `tools/egito/camera-burton.py`. Ela tem moldura de mogno (madeira da foto real antiga, guardada em `referencias/cameras/campo-corpo-armario.jpg`), vidro fosco grande com as linhas dos terços, molas e cantoneiras de latão, o pano preto de focar caído por cima e a pera de borracha do obturador como botão de foto.
+- Etiqueta do Deserto Branco refeita (as rochas-cogumelo pareciam outra coisa): noite azul com lua, dunas brancas, tenda e fogueira.
+- Mapa da página inicial: a borda de cima agora tem o mesmo rasgo fino e a mesma queimadura marrom da borda de baixo (`recortar-mapa-rota.py`). Saiu também o símbolo branco solto no rio.
+- Fundo do app (out/2026): a textura da camada "areia" do PSD "cima" da Vivian, em pé e no tom de areia (`tools/egito/fundo-areia.py` → `img/fundo-areia.webp`). Ela entra no lugar do papiro escuro em todas as abas que usavam o papiro e na bolsa do oráculo.
+- Oráculo (out/2026): o Senet saiu e entrou a Roda dos 12 Deuses, na estrutura do Oráculo dos Planetas do app da Índia.
+  - Os 12 deuses ficam em medalhões num anel de bronze, em volta do disco do teto de Dendera (foto da Vivian, `tools/egito/roda-centro.py` → `img/roda-centro.webp`).
+  - A roda gira devagar. A pessoa segura o botão, a roda acelera e a luz pula de deus em deus com vibração e um "tim". Ao soltar, a roda freia, para num deus e ele sobe para o alto.
+  - Depois vêm a leitura do deus, o amuleto dele e a bolsa de três amuletos.

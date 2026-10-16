@@ -2,7 +2,7 @@
 <html lang="pt-BR"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Oráculo de Amon</title>
+<title>Oráculo dos 12 Deuses</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&family=Cinzel:wght@500;700&family=Lora:ital,wght@0,500;1,400&family=Poppins:wght@400;600&display=swap">
 <style>
 /* O templo de verdade, no escuro: fotos das paredes que a Vivian fotografou, iluminadas só pela tocha.
@@ -144,7 +144,7 @@ p{margin:0}
 @keyframes sai{from{opacity:0;transform:translateY(-40px) scale(.9)}}
 
 /* a bolsa e os amuletos sobre papiro liso, sem foto nem enfeite (como as telas do app da Índia) */
-#senetCena.portal .foto{background:url(img/fundo-papiro-escuro.webp) center/cover #9C7442;filter:none}
+#senetCena.portal .foto{background:url(img/fundo-areia.webp) center/cover #C4A476;filter:none}
 #senetCena.portal .sombra,#senetCena.portal .nevoa{display:none}
 #senetCena.portal #senetCap{color:#3B2A1C!important;text-shadow:none;opacity:1;font-weight:700}
 #senetCena.portal #senetCap::before,#senetCena.portal #senetCap::after{background:linear-gradient(90deg,transparent,#3B2A1C)}
@@ -159,6 +159,29 @@ p{margin:0}
 .heka{font:600 20px var(--f-tit);letter-spacing:.04em;color:#6B4512}
 .miudoL{font:13px/1.55 var(--f-ui)!important;color:#5B4630}
 .fechaApp{position:fixed;top:max(10px,env(safe-area-inset-top));right:12px;z-index:20;width:38px;height:38px;border-radius:50%;border:1px solid rgba(212,168,79,.6);background:rgba(10,6,3,.6);color:#F0D08A;font:22px/1 var(--f-ui);cursor:pointer}
+
+/* 3. A RODA DOS 12 DEUSES: medalhões dos deuses num anel de bronze em volta do disco do teto de Dendera (foto da Vivian) */
+.rodajogo{flex-direction:column;align-items:center;gap:12px}
+.roda{position:relative;width:min(92vw,420px,calc(100vh - 290px));aspect-ratio:1;flex:none;margin-top:6px}
+.roda .anel{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(20,12,5,.2) 60%,rgba(20,12,5,.65) 98%),url(img/bronze.webp) center/240px;
+  -webkit-mask:radial-gradient(closest-side,transparent 63%,#000 63.6%,#000 99%,transparent 100%);mask:radial-gradient(closest-side,transparent 63%,#000 63.6%,#000 99%,transparent 100%);
+  filter:drop-shadow(0 18px 26px rgba(0,0,0,.8))}
+.roda::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;box-shadow:inset 0 0 0 2px rgba(255,220,150,.35),inset 0 0 0 5px rgba(40,24,10,.7),0 0 40px rgba(0,0,0,.6)}
+.roda .miolo{position:absolute;inset:18.5%;width:63%;height:63%;border-radius:50%;filter:brightness(.92) sepia(.12);
+  box-shadow:0 0 0 3px #3A2612,0 0 0 5px rgba(214,170,100,.45),inset 0 0 30px #000}
+.rodagira{position:absolute;inset:0;--g:0deg;transform:rotate(var(--g));will-change:transform}
+.med{position:absolute;width:16.5%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%) rotate(calc(var(--g) * -1));
+  background-color:#C9A46A;background-size:160% auto;background-position:50% 14%;
+  box-shadow:0 0 0 2px #2A1A0A,0 0 0 4px #C99A48,0 0 0 5px #3A2612,0 6px 12px rgba(0,0,0,.8),inset 0 0 12px rgba(60,30,5,.6);
+  filter:brightness(.62) sepia(.25);transition:filter .12s,box-shadow .12s}
+.med.on{filter:brightness(1.12);box-shadow:0 0 0 2px #2A1A0A,0 0 0 4px #FFE3A0,0 0 0 5px #3A2612,0 0 22px 6px rgba(255,200,100,.85),inset 0 0 8px rgba(60,30,5,.4)}
+.med.escolhido{filter:brightness(1.18);animation:pulsa 1.6s ease-in-out infinite}
+@keyframes pulsa{50%{box-shadow:0 0 0 2px #2A1A0A,0 0 0 4px #FFF0C4,0 0 0 5px #3A2612,0 0 36px 12px rgba(255,210,120,.95)}}
+.gl{position:absolute;transform:translate(-50%,-50%) rotate(calc(var(--g) * -1));font:clamp(14px,4.2vw,20px)/1 "Noto Sans Egyptian Hieroglyphs",serif;color:rgba(40,22,8,.85);
+  text-shadow:0 1px 0 rgba(255,225,170,.45),0 -1px 1px rgba(0,0,0,.6)}
+.rodanome{margin:0;min-height:1.3em;font:500 22px/1.2 var(--f-tit);letter-spacing:.06em;color:#F3E2B6;text-shadow:0 2px 10px #000}
+#lancar.vivo{filter:brightness(1.12);box-shadow:0 0 24px rgba(255,200,100,.7),inset 0 1px 0 rgba(255,245,210,.7)}
+#lancar{touch-action:none;-webkit-touch-callout:none}
 @media (prefers-reduced-motion:reduce){.grao,.treme,.bastoes img.voa{animation:none}}
 </style>
 </head><body>
@@ -177,25 +200,27 @@ p{margin:0}
   <div class="faixa">
     <p class="rotulo">Diante do santuário</p>
     <h2>Faça a sua pergunta</h2>
-    <p class="txt">Pense numa pergunta ou num tema da sua vida, com o coração, e diga baixinho, só para você. O tabuleiro de Senet vai mostrar por qual casa a sua pergunta passa.</p>
+    <p class="txt">Pense numa pergunta ou num tema da sua vida, com o coração, e diga baixinho, só para você. A roda dos doze deuses vai parar diante de quem tem algo a te dizer.</p>
     <p class="miudo">Ninguém lê a sua pergunta. Ela não fica guardada.</p>
-    <button class="btn" type="button" id="chamar">Ir ao tabuleiro</button>
+    <button class="btn" type="button" id="chamar">Ir até a roda</button>
   </div>
 </section>
 
-<!-- 3. A BARCA -->
-<section class="cena" id="senetCena" aria-label="O tabuleiro de Senet">
+<!-- 3. A RODA DOS 12 DEUSES -->
+<section class="cena" id="senetCena" aria-label="A Roda dos 12 Deuses">
   <div class="foto"></div><div class="sombra"></div><div class="nevoa"></div>
   <div class="rolar" id="senetRolar">
-    <p class="rotulo" id="senetCap">O jogo da passagem</p>
-    <div class="jogo" id="jogo">
-      <div class="tabuleiro" id="tab" aria-label="Tabuleiro de Senet com 30 casas"></div>
-      <div class="lado">
-        <p class="contador" id="contador">Lançamento 1 de 4</p>
-        <div class="bastoes" id="bastoes" aria-hidden="true"><img alt="" src="img/bastao-escuro.webp"><img alt="" src="img/bastao-escuro.webp"><img alt="" src="img/bastao-escuro.webp"><img alt="" src="img/bastao-escuro.webp"></div>
-        <button class="btn" type="button" id="lancar">Lançar</button>
-        <p class="txt" id="senetTxt">A peça começa na Casa do Renascimento. Lance os bastões quatro vezes.</p>
+    <p class="rotulo" id="senetCap">A Roda dos 12 Deuses</p>
+    <div class="jogo rodajogo" id="jogo">
+      <div class="roda" id="roda" aria-label="Roda dos 12 deuses">
+        <div class="anel" aria-hidden="true"></div>
+        <img class="miolo" src="img/roda-centro.webp" alt="">
+        <div class="rodagira" id="rodaGira" aria-hidden="true"></div>
       </div>
+      <p class="rodanome" id="rodaNome" aria-live="polite">&nbsp;</p>
+      <div class="barra"><i id="rodaBarra"></i></div>
+      <button class="btn" type="button" id="lancar">Segure para concentrar</button>
+      <p class="txt" id="senetTxt">Pense na sua pergunta, segure o botão enquanto se concentra e solte quando sentir que é a hora.</p>
     </div>
     <div id="leituraBox" hidden>
       <div class="lamina" id="leitura"></div>
@@ -206,10 +231,10 @@ p{margin:0}
       <p class="miudo" id="bolsaTxt">Toque na bolsa três vezes. Cada amuleto que sair fala de um tempo.</p>
       <div class="amuletos" id="amuletos"></div>
       <details class="lamina">
-        <summary>Sobre o Senet e os amuletos ▾</summary>
-        <p>O Senet é o jogo de tabuleiro mais antigo do Egito, jogado por mais de três mil anos. Com o tempo, virou uma imagem da viagem da alma: o morto aparece nas tumbas jogando Senet, e Tutankhamon foi enterrado com quatro tabuleiros. Em vez de dados, usavam-se quatro bastões, claros de um lado e escuros do outro.</p>
-        <p>As casas 15 e 26 a 30 aparecem marcadas nos tabuleiros antigos. As outras não têm nome conhecido: aqui, cada uma ganhou um deus guardião.</p>
-        <p>Os amuletos eram usados por vivos e mortos para proteção. Tirá-los de uma bolsa para ler o caminho é um jeito nosso de conversar com eles.</p>
+        <summary>Sobre a roda e os amuletos ▾</summary>
+        <p>Os egípcios não tinham um único deus para tudo: cada neter cuidava de uma parte da vida. Rá do recomeço, Thoth da palavra, Ísis do cuidado, Maat do equilíbrio. Consultar um deus no templo era comum: a estátua saía em procissão e respondia às perguntas do povo.</p>
+        <p>No centro da roda está o disco do teto do templo de Dendera, que você vai ver na viagem. Girar a roda e deixar que ela pare num deus é um jeito nosso de conversar com eles.</p>
+        <p>Os amuletos eram usados por vivos e mortos para proteção. Tirá-los de uma bolsa para ler o caminho também é um jeito nosso de conversar com eles.</p>
       </details>
       <div class="botoes"><button class="btn pedra" type="button" onclick="location.reload()">Consultar de novo</button></div>
     </div>
@@ -317,70 +342,69 @@ function abre() {
 function laco(t) { quadroEntrada(t); desenhaLuz(t); requestAnimationFrame(laco); }
 requestAnimationFrame(laco);
 
-// ---------- 2 e 3. o Senet ----------
+// ---------- 2 e 3. a Roda dos 12 Deuses (a estrutura do Oráculo dos Planetas do app da Índia) ----------
 const SN = ORACULO.senet, NOME = Object.fromEntries(ORACULO.deuses.map(d => [d.id, d])), AM = Object.fromEntries(ORACULO.amuletos.map(a => [a.id, a]));
-const madeira = () => ruido(.12, 900 + Math.random() * 500, 2.5, 1.4, t => Math.pow(1 - t, 5));
-// casas em zigue-zague: fileira de cima 1→10, do meio 11→20 voltando, de baixo 21→30
-const tab = $("tab"), celulas = {};
-for (let c = 0; c < 3; c++) for (let r = 0; r < 10; r++) {
-  const n = c === 1 ? 20 - r : c * 10 + r + 1, el = document.createElement("div"); el.className = "casa";
-  const esp = SN.casas[n]; if (esp) { el.classList.add("especial"); el.innerHTML = `<b>${esp.h}</b>`; }
-  else if (SN.guardioes[n]) el.classList.add("guardada");
-  el.style.gridRow = r + 1; el.style.gridColumn = c + 1; el.dataset.n = n; el.style.setProperty("--i", n); tab.append(el); celulas[n] = el;
-}
-const peca = document.createElement("i"); peca.className = "peca"; tab.append(peca);
-peca.innerHTML = `<img src="img/escaravelho.svg" alt="">`;
-let pos = 15;
-const poe = n => { const c = celulas[n]; peca.style.left = c.offsetLeft + c.offsetWidth / 2 + "px"; peca.style.top = c.offsetTop + c.offsetHeight / 2 + "px"; };
-$("chamar").onclick = () => { audio(); vai("senetCena"); requestAnimationFrame(() => poe(pos)); };
-addEventListener("resize", () => poe(pos));
-// os 4 bastões: cada um cai claro ou escuro; conta-se os claros (1 a 4); nenhum claro vale 5
-let lances = 0, andando = false;
+const D12 = ORACULO.deuses.slice(0, 12), N = D12.length;
+const AMULETO = { ra: "escaravelho", horus: "udjat", ...SN.amuletoGuardiao };
 const sorte = n => crypto.getRandomValues(new Uint32Array(1))[0] % n;
-function lanca() {
-  if (andando || lances >= 4) return; andando = true; audio(); vibra(20);
-  const bs = [...$("bastoes").children], caras = bs.map(() => sorte(2) === 1);
-  bs.forEach((b, i) => { const r = sorte(50) - 25;
-    b.getAnimations().forEach(a => a.cancel());
-    b.animate([{ transform: "translateY(0) rotate(0) scaleX(1)" }, { transform: `translateY(-90px) rotate(${r}deg) scaleX(.25)`, offset: .35 }, { transform: `translateY(-36px) rotate(${-r * 2}deg) scaleX(1)`, offset: .65 }, { transform: "translateY(0) rotate(0) scaleX(1)" }],
-      { duration: 900, delay: i * 60, easing: "cubic-bezier(.3,1.3,.5,1)" });
-    setTimeout(madeira, 160 + i * 90); });
-  setTimeout(() => {
-    bs.forEach((b, i) => { b.src = caras[i] ? "img/bastao-claro.webp" : "img/bastao-escuro.webp"; });
-    const claros = caras.filter(Boolean).length, passos = claros || 5; lances++;
-    $("senetTxt").textContent = claros ? `${claros} ${claros === 1 ? "bastão claro" : "bastões claros"}: a peça anda ${passos}.` : "Nenhum bastão claro: vale 5.";
-    let k = 0;
-    const anda = () => {
-      if (k >= passos || pos >= 30) return chegou();
-      pos++; k++; poe(pos); celulas[pos].classList.add("passou"); madeira(); vibra(8); setTimeout(anda, 380);
-    };
-    setTimeout(anda, 600);
-  }, 1000);
-}
-function chegou() {
-  // a água devolve a peça à Casa do Renascimento
-  if (pos === 27 && lances < 4) { $("senetTxt").textContent = "A peça caiu na Casa da Água e volta para a Casa do Renascimento."; vibra([80, 60, 80]); setTimeout(() => { pos = 15; poe(pos); }, 900); }
-  andando = false;
-  $("contador").textContent = lances < 4 && pos < 30 ? `Lançamento ${lances + 1} de 4` : "";
-  if (lances >= 4 || pos >= 30) { $("lancar").hidden = true; setTimeout(leitura, 1100); }
-}
-$("lancar").onclick = () => { try { lanca(); } catch (e) { andando = false; } };
-$("bastoes").onclick = () => $("lancar").click();
-function leitura() {
-  gongo(); vibra([40, 60, 120]); celulas[pos].classList.add("final");
-  const esp = SN.casas[pos], gid = SN.guardioes[pos], D = gid && NOME[gid];
-  const titulo = esp ? esp.nome : `Casa ${pos}, guardada por ${D.nome}`;
-  const am = esp ? esp.amuleto : SN.amuletoGuardiao[gid], A = AM[am];
-  let html = `<div class="topo">${esp ? `<span class="glifo">${esp.h}</span>` : `<img src="deuses/${gid}.webp" alt="${D.nome}">`}<div><small>A peça parou na</small><b>${titulo}</b><i>${esp ? esp.tema : D.titulo}</i></div></div>`;
-  if (esp) html += `<h4>A casa</h4><p>${esp.txt}</p><h4>A mensagem</h4><p>${esp.msg}</p><div class="devolve"><h4 style="margin-top:0">A pergunta que a casa te devolve</h4><p class="perg">${esp.pergunta}</p></div>`;
-  else { const F = ORACULO.falas[gid];
-    html += `<h4>O guardião</h4><p>${F.imagem}</p><h4>O mito</h4><p>${D.mito}</p><div class="luzsombra"><p><b>Na luz:</b> ${D.luz}</p><p><b>Na sombra:</b> ${D.sombra}</p></div>
-      <h4>A mensagem de ${D.nome}</h4><p>${ORACULO.mensagens[gid]}</p><div class="devolve"><h4 style="margin-top:0">A pergunta que ${D.nome} te devolve</h4><p class="perg">${D.pergunta}</p></div>
-      <h4>Palavras de poder</h4><p class="heka">Dua ${F.nome[0]}</p><p class="miudoL">“Louvor a ${F.nome[1]}.” Diga três vezes, baixinho.</p>`; }
-  html += `<h4>O amuleto da casa</h4><div class="amu1"><span class="glifo">${A.h}</span><p><b>${A.nome} · ${A.sentido}.</b> ${A.texto}</p></div>`;
-  $("leitura").innerHTML = html; $("leituraBox").hidden = false; $("contador").textContent = "";
-  $("senetTxt").textContent = "";
-  try { localStorage.setItem("cdi-oraculo-egito", JSON.stringify({ ts: Date.now(), casa: pos, titulo, deus: gid || null, amuleto: am })); } catch (e) {}
+// "tim" de cristal a cada deus que acende
+function tique(forte) { try { const a = audio(), t = a.currentTime, o = a.createOscillator(), g = a.createGain();
+  o.type = "sine"; o.frequency.value = forte ? 1318 : 1760 + Math.random() * 220;
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(forte ? .12 : .06, t + .005); g.gain.exponentialRampToValueAtTime(.0001, t + (forte ? .35 : .14));
+  o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + .4); } catch (e) {} }
+// vibração: Android vibra normal; no iPhone, um interruptor (input switch) dá o toque do iOS 18+
+function vibrar(p) { try { if (navigator.vibrate && navigator.vibrate(p)) return true; } catch (e) {}
+  try { const lb = document.createElement("label"); lb.style.display = "none"; const ck = document.createElement("input"); ck.type = "checkbox"; ck.setAttribute("switch", ""); lb.append(ck); document.body.append(lb); lb.click(); lb.remove(); } catch (e) {}
+  return false; }
+const GLIFOS = ["𓋹", "𓂀", "𓆣", "𓊽", "𓍶", "𓄤", "𓆸", "𓌀", "𓎬", "𓄣", "𓇳", "𓇯"];
+const giro = $("rodaGira"), RAIO = 40.5;
+const meds = D12.map((d, k) => { const m = document.createElement("div"), a = (k * 360 / N - 90) * Math.PI / 180;
+  m.className = "med"; m.style.left = 50 + Math.cos(a) * RAIO + "%"; m.style.top = 50 + Math.sin(a) * RAIO + "%"; m.style.backgroundImage = `url(deuses/${d.id}.webp)`; giro.append(m); return m; });
+GLIFOS.forEach((g, k) => { const s = document.createElement("span"), a = ((k + .5) * 360 / N - 90) * Math.PI / 180;
+  s.className = "gl"; s.textContent = g; s.style.left = 50 + Math.cos(a) * RAIO + "%"; s.style.top = 50 + Math.sin(a) * RAIO + "%"; giro.append(s); });
+// a roda gira devagar enquanto o oráculo está aberto; acelera enquanto a pessoa segura o botão
+let ang = 0, acelera = 1, ultimoQ = performance.now(), alinhando = null;
+const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+(function gira(agora) { const dt = Math.min(.1, (agora - ultimoQ) / 1000); ultimoQ = agora;
+  if (alinhando) { const k = Math.min(1, (agora - alinhando.t0) / alinhando.dur), e = 1 - Math.pow(1 - k, 3); ang = alinhando.de + (alinhando.para - alinhando.de) * e; if (k >= 1) alinhando = null; }
+  else if (!quieto && acelera) ang += 5 * dt * acelera;
+  giro.style.setProperty("--g", ang + "deg"); requestAnimationFrame(gira); })(ultimoQ);
+const acende = i => { meds.forEach((m, k) => m.classList.toggle("on", k === i)); $("rodaNome").textContent = D12[i].nome; };
+$("chamar").onclick = () => { audio(); vai("senetCena"); };
+{ const bt = $("lancar"); let segurando = false, inicio = 0, pos = 0, vel = 0, raf = 0, feito = false;
+  const passo = () => { if (!segurando) return; const f = Math.min(1, (performance.now() - inicio) / 3000);
+    $("rodaBarra").style.width = f * 100 + "%"; vel += 16 + f * 40; acelera = 1 + f * 6;
+    if (vel > 160 - f * 120) { vel = 0; pos = (pos + 1 + sorte(3)) % N; acende(pos); vibrar(15); tique(); }
+    raf = requestAnimationFrame(passo); };
+  const comeca = e => { e.preventDefault(); if (segurando || feito) return; audio(); segurando = true; bt._ptr = e.pointerId; inicio = performance.now(); vibrar(20); tique(true);
+    bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(passo); };
+  const solta = e => { if (!segurando || (e && e.pointerId != null && bt._ptr != null && e.pointerId !== bt._ptr)) return; segurando = false; cancelAnimationFrame(raf); bt.classList.remove("vivo"); vibrar(30);
+    if (performance.now() - inicio < 600) { bt.textContent = "Segure um pouco mais"; $("rodaBarra").style.width = "0"; acelera = 1; return; }
+    feito = true; bt.disabled = true; bt.textContent = "A roda está parando…";
+    // a luz desacelera e para num deus; a roda freia junto
+    const fim = sorte(N); let passos = N + ((fim - pos + N) % N), d = 70;
+    const anda = () => { pos = (pos + 1) % N; acende(pos); vibrar(18); tique(); passos--; acelera = Math.max(0, acelera * .9);
+      if (passos > 0) { d *= 1.12; setTimeout(anda, d); return; }
+      acelera = 0; meds[fim].classList.add("escolhido"); gongo(); if (!vibrar([40, 60, 120])) { setTimeout(() => vibrar(1), 120); setTimeout(() => vibrar(1), 260); }
+      // o deus escolhido vem para o alto da roda
+      const alvo = -fim * 360 / N, volta = Math.round((ang - alvo) / 360) * 360 + alvo;
+      alinhando = { t0: performance.now(), dur: 1400, de: ang, para: volta + (volta < ang ? 360 : 0) };
+      bt.hidden = true; $("rodaBarra").parentNode.hidden = true; $("senetTxt").textContent = "";
+      setTimeout(() => leitura(D12[fim].id), 1700); };
+    anda(); };
+  bt.addEventListener("pointerdown", comeca); bt.addEventListener("pointerup", solta); bt.addEventListener("pointerleave", solta); bt.addEventListener("pointercancel", solta);
+  bt.addEventListener("contextmenu", e => e.preventDefault()); }
+function leitura(gid) {
+  const D = NOME[gid], F = ORACULO.falas[gid], A = AM[AMULETO[gid]] || AM.ankh;
+  let html = `<div class="topo"><img src="deuses/${gid}.webp" alt="${D.nome}"><div><small>A roda parou em</small><b>${D.nome}</b><i>${D.titulo}</i></div></div>`;
+  html += (F ? `<h4>A imagem</h4><p>${F.imagem}</p>` : "") + `<h4>O que ${D.nome} rege</h4><p>${D.rege.charAt(0).toUpperCase() + D.rege.slice(1)}.</p><h4>O mito</h4><p>${D.mito}</p>
+    <div class="luzsombra"><p><b>Na luz:</b> ${D.luz}</p><p><b>Na sombra:</b> ${D.sombra}</p></div>
+    <h4>A mensagem de ${D.nome}</h4><p>${ORACULO.mensagens[gid]}</p><div class="devolve"><h4 style="margin-top:0">A pergunta que ${D.nome} te devolve</h4><p class="perg">${D.pergunta}</p></div>
+    <h4>Para hoje, no Egito</h4><p>${D.hoje[sorte(D.hoje.length)]}</p>` +
+    (F ? `<h4>Palavras de poder</h4><p class="heka">Dua ${F.nome[0]}</p><p class="miudoL">“Louvor a ${F.nome[1]}.” Diga três vezes, baixinho.</p>` : "") +
+    `<h4>O amuleto de ${D.nome}</h4><div class="amu1"><span class="glifo">${A.h}</span><p><b>${A.nome} · ${A.sentido}.</b> ${A.texto}</p></div>`;
+  $("leitura").innerHTML = html; $("leituraBox").hidden = false;
+  try { localStorage.setItem("cdi-oraculo-egito", JSON.stringify({ ts: Date.now(), titulo: D.nome, deus: gid, amuleto: A.id })); } catch (e) {}
   setTimeout(() => $("leituraBox").scrollIntoView({ behavior: "smooth", block: "start" }), 300);
 }
 // ---------- a bolsa de amuletos ----------
