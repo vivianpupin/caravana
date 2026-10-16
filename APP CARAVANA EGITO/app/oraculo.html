@@ -141,6 +141,21 @@ p{margin:0}
 .amuletos{display:flex;flex-direction:column;gap:12px;width:min(100%,440px)}
 .sai{animation:sai .8s cubic-bezier(.2,.8,.2,1) both}
 @keyframes sai{from{opacity:0;transform:translateY(-40px) scale(.9)}}
+
+/* a bolsa e os amuletos aparecem dentro do portal da tumba (foto da Vivian): a imagem fica limpa em cima, o texto mora na porta */
+#senetCena.portal .foto{background:url(img/fundo-porta-dourada.webp) 50% 100%/cover #0E0905;filter:brightness(.85) contrast(1.05)}
+#senetCena.portal .sombra{background:linear-gradient(180deg,rgba(0,0,0,.25),transparent 30%),radial-gradient(ellipse 42% 30% at 46% 72%,rgba(255,190,110,.12),transparent 70%);animation:none}
+#senetCena.portal .nevoa{display:none}
+#senetCena.portal #senetCap{display:none}
+#senetCena.portal .rolar{padding-top:calc(58vh - 10px)}
+#senetCena.portal #bolsaBox{width:min(80vw,300px);margin-right:7vw;gap:10px}
+#senetCena.portal .bolsa{width:110px;height:156px}
+#senetCena.portal #bolsaTxt{color:#F3E2B6;text-shadow:0 1px 3px #000;text-align:center}
+#senetCena.portal .amuletos{width:100%}
+#senetCena.portal .amuletos .lamina{background:rgba(14,8,3,.62)!important;border:0;box-shadow:none;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);padding:12px 12px 14px;gap:10px}
+#senetCena.portal .amuletos .lamina p{font-size:13.5px;line-height:1.5}
+#senetCena.portal .amuletos .glifo{width:54px;height:54px;font-size:28px!important}
+#senetCena.portal #bolsaBox>details.lamina{background:rgba(14,8,3,.62);border:0}
 /* narrativa da leitura */
 .luzsombra{display:flex;flex-direction:column;gap:6px;padding:10px 12px;background:rgba(142,59,36,.08);border-left:2px solid var(--verm)}
 .devolve{padding:12px 14px;margin-top:6px;background:rgba(212,168,79,.16);border:1px solid rgba(142,98,30,.35)}
@@ -373,7 +388,7 @@ function leitura() {
 }
 // ---------- a bolsa de amuletos ----------
 let tirados = [];
-$("irBolsa").onclick = () => { $("leituraBox").hidden = true; $("bolsaBox").hidden = false; $("senetCap").textContent = "A bolsa de amuletos"; $("jogo").hidden = true; $("senetRolar").scrollTop = 0; };
+$("irBolsa").onclick = () => { $("senetCena").classList.add("portal"); $("leituraBox").hidden = true; $("bolsaBox").hidden = false; $("senetCap").textContent = "A bolsa de amuletos"; $("jogo").hidden = true; $("senetRolar").scrollTop = 0; };
 $("bolsa").onclick = () => {
   if (tirados.length >= 3) return; audio(); vibra(25);
   let a; do { a = ORACULO.amuletos[sorte(ORACULO.amuletos.length)]; } while (tirados.includes(a.id)); tirados.push(a.id);
