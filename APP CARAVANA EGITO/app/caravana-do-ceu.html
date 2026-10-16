@@ -2310,6 +2310,11 @@ html[data-tab] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{backgroun
   mask:linear-gradient(#000 0%,rgba(0,0,0,.85) 22%,rgba(0,0,0,.4) 50%,transparent 92%)}
 .mapahero h1{text-shadow:0 0 22px rgba(246,236,214,1),0 0 10px rgba(246,236,214,.95),0 0 4px rgba(246,236,214,.9)}
 
+/* cartucho da página inicial pintado nas cores do Egito: papiro claro, corda em azul egípcio com filete vermelho, sinais coloridos com contorno escuro */
+.cartnome{background:#F6E9C8;border:3px solid #2F6FA8;box-shadow:inset 0 0 0 1.5px #F6E9C8,inset 0 0 0 3px #B5402A,0 2px 6px rgba(60,35,10,.3)}
+.cartnome::after{background:#2F6FA8;height:3px;box-shadow:0 1.5px 0 #B5402A}
+.cartnome .sinais{text-shadow:none;-webkit-text-stroke:.8px currentColor;paint-order:stroke fill}
+
 </style>
 
 <div class="app">
@@ -2783,21 +2788,26 @@ setInterval(() => {
 // ---------- Cartucho com o nome da pessoa (página inicial): o nome em hieróglifos dentro do cartucho do faraó ----------
 // o que a pessoa gravou na oficina do escriba (hieroglifos.html guarda em cdi-cartucho); se ainda não gravou, escreve o primeiro nome dela
 const CART_SINAIS = { A: "𓄿", B: "𓃀", C: "𓎡", Ç: "𓋴", D: "𓂧", E: "𓇋", F: "𓆑", G: "𓎼", H: "𓉔", I: "𓇋", J: "𓆓", K: "𓎡", L: "𓃭", M: "𓅓", N: "𓈖", O: "𓅱",
-  P: "𓊪", Q: "𓈎", R: "𓂋", S: "𓋴", T: "𓏏", U: "𓅱", V: "𓆑", W: "𓅱", X: "𓈙", Y: "𓇌", Z: "𓊃", CH: "𓈙" };
+  P: "𓊪", Q: "𓈎", R: "𓂋", S: "𓋴", T: "𓏏", U: "𓅱", V: "𓆑", W: "𓅱", X: "𓈙", Y: "𓇌", Z: "𓊃", CH: "𓈙", KH: "𓐍", TH: "𓍿" };
+// as mesmas tintas egípcias da oficina do escriba (hieroglifos.html)
+const CART_COR = { A: "#2B2420", B: "#B5402A", C: "#C27A2C", Ç: "#2F6FA8", D: "#B5402A", E: "#3E8A5C", F: "#B07A2A", G: "#B5402A", H: "#2F6FA8", I: "#3E8A5C",
+  J: "#D9962A", K: "#C27A2C", L: "#D9862A", M: "#2B2420", N: "#2F6FA8", O: "#C9922E", P: "#3E8A5C", Q: "#D9862A", R: "#B5402A", S: "#2F6FA8",
+  T: "#8A5A2A", U: "#C9922E", V: "#B07A2A", W: "#C9922E", X: "#2F8A8A", Y: "#3E8A5C", Z: "#8A5A2A", CH: "#2F8A8A", KH: "#8A3A22", TH: "#2F6FA8" };
 function cartSons(nome) {
   const t = String(nome || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/[^A-ZÇ]/g, ""), out = [];
   for (let i = 0; i < t.length; i++) { let k = t[i];
-    if (k === "C" && t[i + 1] === "H") { k = "CH"; i++; } else if (k === "C" && /[EI]/.test(t[i + 1] || "")) k = "Ç";
+    if (k === "C" && t[i + 1] === "H") { k = "CH"; i++; } else if (k === "K" && t[i + 1] === "H") { k = "KH"; i++; } else if (k === "T" && t[i + 1] === "H") { k = "TH"; i++; } else if (k === "C" && /[EI]/.test(t[i + 1] || "")) k = "Ç";
     if (out.length && out[out.length - 1] === k) continue; if (CART_SINAIS[k]) out.push(k); }
   return out;
 }
 function vCartuchoNome() {
+  if (!eu()) return null; // o cartucho aparece depois que a pessoa emite o passaporte
   let g = null; try { g = JSON.parse(localStorage.getItem("cdi-cartucho") || "null"); } catch (e) {}
   const v = eu(), primeiro = v && v.nome ? String(v.nome).split(" ")[0] : "";
   const ks = (g && g.sinais && g.sinais.length ? g.sinais : cartSons(primeiro)).slice(0, 8), nome = g && g.nome ? g.nome : primeiro;
   return h("button", { type: "button", class: "cartnome", "aria-label": nome ? `O nome ${nome} em hieróglifos. Toque para gravar o seu cartucho` : "Grave o seu nome em hieróglifos",
       onclick: () => abrirPagina("hieroglifos.html" + (nome && !(g && g.sinais) ? "?nome=" + encodeURIComponent(nome) : ""), "Seu nome em hieróglifos") },
-    ks.length ? h("span", { class: "sinais" }, ks.map(k => h("span", { text: CART_SINAIS[k] || "" }))) : h("span", { class: "sinais vazio", text: "seu nome" }));
+    ks.length ? h("span", { class: "sinais" }, ks.map(k => h("span", { text: CART_SINAIS[k] || "", style: "color:" + (CART_COR[k] || "#2B2420") }))) : h("span", { class: "sinais vazio", text: "seu nome" }));
 }
 // ---------- Mapa-mundo da travessia, estilo mapa de videogame ----------
 // Sobre o mapa antigo da rota: uma trilha de pontinhos que acendem conforme a viagem avança, cada parada é uma "fase"
