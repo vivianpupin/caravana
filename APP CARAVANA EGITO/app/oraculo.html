@@ -167,8 +167,23 @@ p{margin:0}
   -webkit-mask:radial-gradient(closest-side,transparent 63%,#000 63.6%,#000 99%,transparent 100%);mask:radial-gradient(closest-side,transparent 63%,#000 63.6%,#000 99%,transparent 100%);
   filter:drop-shadow(0 18px 26px rgba(0,0,0,.8))}
 .roda::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;box-shadow:inset 0 0 0 2px rgba(255,220,150,.35),inset 0 0 0 5px rgba(40,24,10,.7),0 0 40px rgba(0,0,0,.6)}
-.roda .miolo{position:absolute;inset:18.5%;width:63%;height:63%;border-radius:50%;filter:brightness(.92) sepia(.12);
+.roda .miolo{position:absolute;inset:18.5%;border-radius:50%;overflow:hidden;background:#0B0703;
   box-shadow:0 0 0 3px #3A2612,0 0 0 5px rgba(214,170,100,.45),inset 0 0 30px #000}
+/* a parede da tumba (foto da Vivian) de frente: quando a pessoa chega, ela sai do escuro e avança devagar para a porta */
+.miolo img{position:absolute;inset:0;width:100%;height:100%;transform-origin:50% 72%;filter:brightness(.08) sepia(.2);transform:scale(1.32)}
+.roda.chegou .miolo img{animation:chega 3.4s cubic-bezier(.25,.1,.25,1) forwards,respira 9s 3.4s ease-in-out infinite alternate}
+@keyframes chega{to{filter:brightness(.95) sepia(.12);transform:scale(1.04)}}
+@keyframes respira{from{filter:brightness(.95) sepia(.12);transform:scale(1.04)}to{filter:brightness(1) sepia(.12);transform:scale(1.13) translateY(-1.5%)}}
+/* luz dourada saindo da passagem e a tocha que tremula na pedra */
+.miolo .portaluz{position:absolute;left:30%;top:52%;width:40%;height:34%;border-radius:40%;background:radial-gradient(ellipse at 50% 40%,rgba(255,200,110,.55),rgba(255,160,60,.15) 55%,transparent 75%);mix-blend-mode:screen;opacity:0}
+.roda.chegou .miolo .portaluz{animation:portaluz 4s 2.6s ease-in-out infinite alternate}
+@keyframes portaluz{from{opacity:.25}to{opacity:.85}}
+.miolo .tochaluz{position:absolute;inset:-20%;background:radial-gradient(circle at 30% 30%,rgba(255,170,80,.28),transparent 45%);mix-blend-mode:overlay;opacity:0}
+.roda.chegou .miolo .tochaluz{animation:tochaluz 6s 1s ease-in-out infinite}
+@keyframes tochaluz{0%{opacity:.2;transform:translate(0,0)}25%{opacity:.9;transform:translate(25%,6%)}50%{opacity:.5;transform:translate(32%,30%)}75%{opacity:.9;transform:translate(6%,24%)}100%{opacity:.2;transform:translate(0,0)}}
+/* enquanto a roda gira rápido, a pedra treme */
+.miolo.treme{animation:tremepedra .12s linear infinite}
+@keyframes tremepedra{25%{transform:translate(1px,-1px)}50%{transform:translate(-1px,1px)}75%{transform:translate(1px,1px)}}
 .rodagira{position:absolute;inset:0;--g:0deg;transform:rotate(var(--g));will-change:transform}
 .med{position:absolute;width:16.5%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%) rotate(calc(var(--g) * -1));
   background-color:#C9A46A;background-size:160% auto;background-position:50% 14%;
@@ -225,7 +240,7 @@ p{margin:0}
     <div class="jogo rodajogo" id="jogo">
       <div class="roda" id="roda" aria-label="Roda dos 12 deuses">
         <div class="anel" aria-hidden="true"></div>
-        <img class="miolo" src="img/roda-centro.webp" alt="">
+        <div class="miolo" id="miolo"><img src="img/roda-centro.webp" alt=""><i class="portaluz"></i><i class="tochaluz"></i></div>
         <div class="rodagira" id="rodaGira" aria-hidden="true"></div>
       </div>
       <p class="rodanome" id="rodaNome" aria-live="polite">&nbsp;</p>
@@ -381,15 +396,15 @@ const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
   else if (!quieto && acelera) ang += 5 * dt * acelera;
   giro.style.setProperty("--g", ang + "deg"); requestAnimationFrame(gira); })(ultimoQ);
 const acende = i => { meds.forEach((m, k) => m.classList.toggle("on", k === i)); $("rodaNome").textContent = D12[i].nome; };
-$("chamar").onclick = () => { audio(); vai("senetCena"); };
+$("chamar").onclick = () => { audio(); vai("senetCena"); setTimeout(() => { $("roda").classList.add("chegou"); pedraSom(); vibrar([60, 80, 120]); }, 500); };
 { const bt = $("lancar"); let segurando = false, inicio = 0, pos = 0, vel = 0, raf = 0, feito = false;
   const passo = () => { if (!segurando) return; const f = Math.min(1, (performance.now() - inicio) / 3000);
-    $("rodaBarra").style.width = f * 100 + "%"; vel += 16 + f * 40; acelera = 1 + f * 6;
+    $("rodaBarra").style.width = f * 100 + "%"; vel += 16 + f * 40; acelera = 1 + f * 6; $("miolo").classList.toggle("treme", f > .35);
     if (vel > 160 - f * 120) { vel = 0; pos = (pos + 1 + sorte(3)) % N; acende(pos); vibrar(15); tique(); }
     raf = requestAnimationFrame(passo); };
   const comeca = e => { e.preventDefault(); if (segurando || feito) return; audio(); segurando = true; bt._ptr = e.pointerId; inicio = performance.now(); vibrar(20); tique(true);
     bt.textContent = "Concentre-se… e solte"; bt.classList.add("vivo"); raf = requestAnimationFrame(passo); };
-  const solta = e => { if (!segurando || (e && e.pointerId != null && bt._ptr != null && e.pointerId !== bt._ptr)) return; segurando = false; cancelAnimationFrame(raf); bt.classList.remove("vivo"); vibrar(30);
+  const solta = e => { if (!segurando || (e && e.pointerId != null && bt._ptr != null && e.pointerId !== bt._ptr)) return; segurando = false; cancelAnimationFrame(raf); bt.classList.remove("vivo"); $("miolo").classList.remove("treme"); vibrar(30);
     if (performance.now() - inicio < 600) { bt.textContent = "Segure um pouco mais"; $("rodaBarra").style.width = "0"; acelera = 1; return; }
     feito = true; bt.disabled = true; bt.textContent = "A roda está parando…";
     // a luz desacelera e para num deus; a roda freia junto

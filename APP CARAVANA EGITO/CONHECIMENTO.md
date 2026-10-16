@@ -321,3 +321,4 @@ Tudo seguindo o roteiro oficial (`app/dados/travessia.json`, 8 a 20/10/2027). Po
 - Fundo único: o fundo de areia do passaporte vale para todas as abas (não muda ao trocar de aba).
 - Fundo de areia mais claro e com menos contraste; folha de dados do passaporte com relevo suave e rótulos escuros (pedido da Vivian: difícil de ler).
 - Tom do fundo escolhido: opção 2 (areia bem clara, cor 236/220/188, contraste .5).
+- Centro da Roda dos 12 Deuses: agora é a porta da tumba do Vale dos Reis (foto da Vivian, `fundo-porta-dourada`), de frente. O disco de Dendera saiu porque ficava deitado. Quando a pessoa chega, a parede sai do escuro e avança devagar para a porta, com tocha tremulando, luz dourada saindo da passagem e som de pedra. Enquanto a roda gira rápido, a pedra treme.
