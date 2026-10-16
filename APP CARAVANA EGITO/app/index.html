@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "16/10 · 09:27";</script>
+<script>window.__VERSAO = "16/10 · 09:31";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2306,6 +2306,10 @@ html[data-tab] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{backgroun
 .datapage .fl{color:#5A4127;font-size:9px;font-weight:700}
 .datapage .fv{color:#1E140B}
 .datapage .top2 b,.datapage .top2 span{color:#2E1E10}
+/* parado numa cidade, o explorador fica ao lado do ponto, sem cobrir o nome desenhado no mapa */
+.mmexp{transition:transform .5s ease}
+.mmexp[data-lado="e"]{transform:translate(-92%,-96%)}
+.mmexp[data-lado="d"]{transform:translate(-8%,-96%)}
 
 </style>
 
@@ -2783,13 +2787,13 @@ setInterval(() => {
 // mapa da rota da caravana (a arte do material da viagem): paradas e trilha em pixels da imagem img/mapa-rota.webp
 const MAPA_W = 1320, MAPA_H = 1242;
 const PARADAS = [
-  { n: 1, c: "Cairo", x: 406, y: 236, dias: [1, 2, 3], selo: "cairo" },
-  { n: 2, c: "Deserto Branco", x: 367, y: 401, dias: [4, 5], selo: "deserto-branco" },
-  { n: 3, c: "Aswan", x: 613, y: 639, dias: [6], selo: "aswan" },
-  { n: 4, c: "Abu Simbel", x: 680, y: 961, dias: [7], selo: "abu-simbel" },
-  { n: 5, c: "Luxor", x: 863, y: 810, dias: [8, 9], selo: "luxor" },
-  { n: 6, c: "Hurghada", x: 957, y: 355, dias: [10, 11, 12], selo: "mar-vermelho" },
-  { n: 7, c: "Cairo · volta para casa", x: 452, y: 270, dias: [13], selo: "piramides-gize" }];
+  { n: 1, c: "Cairo", x: 406, y: 236, dias: [1, 2, 3], selo: "cairo", lado: "e" },
+  { n: 2, c: "Deserto Branco", x: 367, y: 401, dias: [4, 5], selo: "deserto-branco", lado: "e" },
+  { n: 3, c: "Aswan", x: 613, y: 639, dias: [6], selo: "aswan", lado: "d" },
+  { n: 4, c: "Abu Simbel", x: 680, y: 961, dias: [7], selo: "abu-simbel", lado: "d" },
+  { n: 5, c: "Luxor", x: 863, y: 810, dias: [8, 9], selo: "luxor", lado: "e" },
+  { n: 6, c: "Hurghada", x: 957, y: 355, dias: [10, 11, 12], selo: "mar-vermelho", lado: "e" },
+  { n: 7, c: "Cairo · volta para casa", x: 452, y: 270, dias: [13], selo: "piramides-gize", lado: "e" }];
 const TRECHOS = [[[406,236],[375,288],[345,338],[367,401]],[[367,401],[450,498],[560,598],[613,639]],[[613,639],[698,630],[670,734],[651,847],[680,961]],[[680,961],[760,918],[820,868],[863,810]],[[863,810],[811,743],[782,663],[735,564],[726,470],[755,403],[850,378],[957,355]],[[957,355],[850,378],[755,403],[640,358],[520,298],[452,270]]];
 function vMapaMundo(dias, hoje, f, abrir) {
   const W = MAPA_W, H = MAPA_H, dHoje = dias.find(d => d.iso === hoje), fim = hoje > dias[dias.length - 1].iso;
@@ -2802,7 +2806,7 @@ function vMapaMundo(dias, hoje, f, abrir) {
   const pct = (x, y) => `left:${x / W * 100}%;top:${y / H * 100}%`;
   const meu = S.uid ? bonecoDe(S.uid) : bonecoPadrao("caravana");
   const fala = f > 0 ? (f === 1 ? "Partida amanhã!" : `Partida em ${f} dias`) : fim ? "Travessia concluída!" : "Você está aqui";
-  const ex = h("div", { class: "mmexp", style: pct(PARADAS[antes].x, PARADAS[antes].y) },
+  const ex = h("div", { class: "mmexp", "data-lado": antes === atual ? PARADAS[atual].lado : "", style: pct(PARADAS[antes].x, PARADAS[antes].y) },
     h("span", { class: "mmfala", text: fala }), bonecoCentrado({ ...meu, bicho: "nenhum", pet: "nenhum" }, "bonecosvg"), h("i", { class: "mmsombra" }));
   const box = h("div", { class: "mmundo" },
     h("img", { src: "img/mapa-rota.webp", alt: "Mapa da rota: Cairo, Deserto Branco, Aswan, Abu Simbel, Luxor, Hurghada e volta ao Cairo" }), svg,
@@ -2822,13 +2826,13 @@ function vMapaMundo(dias, hoje, f, abrir) {
       for (let k = 1; k < n; k++) { const pt = s.getPointAtLength(len * k / n), aceso = i < atual;
         const c = document.createElementNS(NS, "circle"); c.setAttribute("cx", pt.x); c.setAttribute("cy", pt.y); c.setAttribute("r", aceso ? 7 : 5.5);
         c.setAttribute("class", aceso ? "mmponto aceso" : "mmponto"); c.style.animationDelay = (k * 60) + "ms"; svg.append(c); } });
-    // o explorador caminha pela trilha, trecho por trecho
+    // o explorador caminha pela trilha, trecho por trecho (no meio da trilha, centrado; ao chegar, vai para o lado sem nome)
     if (antes === atual || matchMedia("(prefers-reduced-motion: reduce)").matches) { ex.setAttribute("style", pct(PARADAS[atual].x, PARADAS[atual].y)); return; }
     ex.classList.add("andando"); let i = antes, t0 = performance.now();
     const passo = t => { if (!ex.isConnected) return; const s = segs[i], len = s.getTotalLength(), k = Math.min(1, (t - t0) / Math.max(900, len * 2.2)), pt = s.getPointAtLength(len * k);
       ex.style.left = pt.x / W * 100 + "%"; ex.style.top = pt.y / H * 100 + "%";
       if (k < 1) return requestAnimationFrame(passo);
-      i++; t0 = t; if (i < atual) return requestAnimationFrame(passo); ex.classList.remove("andando"); vibrar(15); };
+      i++; t0 = t; if (i < atual) return requestAnimationFrame(passo); ex.classList.remove("andando"); ex.dataset.lado = PARADAS[atual].lado; vibrar(15); };
     requestAnimationFrame(passo);
   });
   return box;

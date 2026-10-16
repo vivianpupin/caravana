@@ -400,3 +400,7 @@ html[data-tab] :is(.view>.eyebrow.rule,.view>div>.eyebrow.rule)::after{backgroun
 .datapage .fl{color:#5A4127;font-size:9px;font-weight:700}
 .datapage .fv{color:#1E140B}
 .datapage .top2 b,.datapage .top2 span{color:#2E1E10}
+/* parado numa cidade, o explorador fica ao lado do ponto, sem cobrir o nome desenhado no mapa */
+.mmexp{transition:transform .5s ease}
+.mmexp[data-lado="e"]{transform:translate(-92%,-96%)}
+.mmexp[data-lado="d"]{transform:translate(-8%,-96%)}
