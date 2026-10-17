@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b111b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Sobrevoo Rural</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="lib/maplibre-gl.css">
+<style>
+/* Mapa 3D em tela cheia; busca em cima, ficha do imóvel embaixo (folha que sobe). */
+:root{
+  --noite:#0b111b;        /* fundo, céu */
+  --vidro:rgba(13,20,32,.82);
+  --linha:rgba(220,230,245,.14);
+  --texto:#eef2f7;
+  --apagado:#9aa7b8;
+  --ouro:#d9b56c;         /* destaque, como nos posts */
+  --divisa:#ff4b4b;       /* contorno do imóvel */
+  --agua:#6cc6ff;
+  --estrada:#efe0b5;
+  --energia:#ffd34d;
+  --serif:"Instrument Serif","Iowan Old Style","Georgia",serif;
+  --sans:"Manrope",-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--noite);color:var(--texto);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+[hidden]{display:none!important}
+#mapa{position:fixed;inset:0}
+.maplibregl-ctrl-attrib{font-size:10px;background:rgba(11,17,27,.6)!important;color:var(--apagado)}
+.maplibregl-ctrl-attrib a{color:var(--apagado)}
+.maplibregl-ctrl-top-right{top:calc(env(safe-area-inset-top,0px) + 62px);right:env(safe-area-inset-right,0px)}
+.creditos{position:fixed;left:max(12px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 62px);z-index:4;font-size:9.5px;color:rgba(238,242,247,.6);text-shadow:0 1px 3px #000;pointer-events:none;max-width:60%}
+
+/* Topo */
+.topo{position:fixed;top:0;left:0;right:0;z-index:5;
+  padding:calc(env(safe-area-inset-top,0px) + 10px) max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px));
+  display:flex;gap:10px;align-items:center;
+  background:linear-gradient(var(--noite),rgba(11,17,27,0))}
+.marca{display:flex;align-items:center;gap:8px;flex:none}
+.selo{width:34px;height:34px;flex:none}
+.marca b{font:400 22px/1 var(--serif);letter-spacing:.2px;white-space:nowrap}
+.marca b i{color:var(--ouro)}
+.busca{flex:1;min-width:0;display:flex;align-items:center;background:var(--vidro);border:1px solid var(--linha);border-radius:999px;padding:0 4px 0 14px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.busca input{flex:1;min-width:0;background:none;border:0;padding:10px 0;font-size:15px;outline:none}
+.busca input::placeholder{color:var(--apagado)}
+.busca button{background:none;border:0;padding:8px 10px;color:var(--ouro);font-weight:600;font-size:13px}
+@media (max-width:420px){.marca b{display:none}}
+
+/* Aviso flutuante */
+.aviso{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 66px);z-index:6;
+  background:var(--vidro);border:1px solid var(--linha);border-radius:12px;padding:9px 14px;font-size:13px;max-width:calc(100% - 32px);text-align:center;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+
+/* Etiqueta no imóvel */
+.etiqueta{font:600 11px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:rgba(11,17,27,.78);border:1px solid rgba(255,75,75,.7);border-radius:6px;padding:5px 8px;white-space:nowrap;pointer-events:none}
+.etiqueta span{color:var(--ouro)}
+
+/* Folha de baixo */
+.folha{position:fixed;left:0;right:0;bottom:0;z-index:5;
+  padding:10px max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 14px) max(16px,env(safe-area-inset-left,0px));
+  background:var(--vidro);border-top:1px solid var(--linha);border-radius:22px 22px 0 0;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  max-height:48%;overflow:auto;transition:transform .35s ease}
+.folha.recolhida .corpo{display:none}
+.alca{display:block;margin:0 auto 8px;width:44px;height:5px;border-radius:5px;background:var(--linha);border:0;padding:0}
+.alca-area{display:flex;justify-content:center;padding:2px 0 4px}
+.cab{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.cab>div{min-width:0}
+.olho{font:600 10.5px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--ouro)}
+.nome{display:block;width:100%;background:none;border:0;border-bottom:1px dashed transparent;font:400 30px/1.1 var(--serif);padding:4px 0 2px;outline:none;text-overflow:ellipsis}
+.nome:focus{border-bottom-color:var(--linha)}
+.lugar{color:var(--apagado);font-size:13px}
+.selo-ex{flex:none;font-size:11px;color:var(--apagado);border:1px solid var(--linha);border-radius:999px;padding:3px 9px;margin-bottom:6px}
+
+.numeros{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 12px}
+.num{min-width:0}
+.num small{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--apagado)}
+.num strong{display:block;font:400 24px/1.15 var(--serif);font-variant-numeric:tabular-nums;white-space:nowrap}
+.num strong em{font:500 12px var(--sans);font-style:normal;color:var(--apagado);margin-left:2px}
+@media (max-width:380px){.numeros{grid-template-columns:repeat(2,1fr)}}
+
+.acoes{display:grid;grid-template-columns:1.4fr 1fr;gap:8px}
+.bt{border:1px solid var(--linha);background:rgba(255,255,255,.04);border-radius:14px;padding:12px 12px;font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+.bt.principal{background:var(--ouro);color:#1a1408;border-color:transparent}
+.bt.rec{color:#ffb4b4}
+.bt.rec.gravando{background:var(--divisa);color:#fff}
+.bt:disabled{opacity:.45}
+.acoes2{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.acoes2 .bt{font-size:13px;padding:10px 6px;font-weight:500}
+.bt svg{width:18px;height:18px;flex:none}
+
+.entorno{margin-top:16px;border-top:1px solid var(--linha);padding-top:12px}
+.entorno h3{margin:0 0 8px;font:400 22px/1.1 var(--serif)}
+.entorno h3 i{color:var(--ouro)}
+.linha-e{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--linha)}
+.linha-e:last-child{border-bottom:0}
+.traco{height:3px;border-radius:3px}
+.linha-e b{font-weight:600}
+.linha-e small{display:block;color:var(--apagado);font-size:12px}
+.linha-e .dist{font:400 20px var(--serif);font-variant-numeric:tabular-nums;white-space:nowrap}
+.fonte{color:var(--apagado);font-size:11.5px;margin-top:8px}
+
+/* Modo desenhar */
+.barra-des{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);z-index:7;display:flex;gap:8px;
+  background:var(--vidro);border:1px solid var(--linha);border-radius:16px;padding:8px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.barra-des .bt{padding:10px 14px}
+
+/* Legenda durante o sobrevoo */
+.legenda{position:fixed;left:max(18px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 70px);z-index:4;pointer-events:none;max-width:80%}
+.legenda .olho{display:block;margin-bottom:6px}
+.legenda h2{margin:0;font:400 40px/1 var(--serif);text-wrap:balance;text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.legenda h2 i{color:var(--ouro)}
+.legenda p{margin:6px 0 0;color:#dfe6ef;font-size:13px;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+body.voando .topo,body.voando .folha{opacity:0;pointer-events:none}
+body.voando .parar{display:flex}
+body.voando .maplibregl-ctrl-top-right{opacity:0;pointer-events:none}
+body.voando .creditos{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 30px)}
+.parar{display:none;position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 20px);z-index:7}
+.topo,.folha{transition:opacity .4s ease}
+
+/* Vídeo pronto */
+.janela{position:fixed;inset:0;z-index:20;background:rgba(5,8,13,.8);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.janela>div{background:var(--noite);border:1px solid var(--linha);border-radius:18px;padding:16px;width:min(380px,100%);display:grid;gap:10px}
+.janela video{width:100%;max-height:55vh;border-radius:10px;background:#000}
+.janela h3{margin:0;font:400 26px var(--serif)}
+.janela a.bt{text-decoration:none;color:inherit}
+@media (prefers-reduced-motion:reduce){.folha,.topo{transition:none}}
+</style>
+</head>
+<body>
+<div id="mapa"></div>
+
+<header class="topo">
+  <div class="marca">
+    <svg class="selo" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 36 14 30 35H10L4 14Z" fill="#1d2a1f" stroke="#d9b56c" stroke-width="1.5"/><path d="M8 27c6-6 9-2 13-7s7-5 11-3" fill="none" stroke="#ff4b4b" stroke-width="1.8"/><path d="M10 31c5-3 9-1 13-3s6-3 9-2" fill="none" stroke="#6cc6ff" stroke-width="1.2"/></svg>
+    <b>Sobrevoo <i>Rural</i></b>
+  </div>
+  <form class="busca" id="formBusca" autocomplete="off">
+    <input id="campoBusca" type="search" placeholder="Cidade, endereço ou −21.50, −44.62" enterkeyhint="search" aria-label="Buscar lugar">
+    <button type="submit">Ir</button>
+  </form>
+</header>
+
+<div class="aviso" id="aviso" hidden></div>
+<div class="creditos">Imagem © Esri, Maxar, Earthstar · Relevo AWS/Mapzen · © OpenStreetMap</div>
+
+<div class="legenda" id="legenda" hidden>
+  <span class="olho" id="legOlho">Sobrevoo 3D</span>
+  <h2 id="legTitulo"></h2>
+  <p id="legSub"></p>
+</div>
+
+<section class="folha" id="folha" aria-label="Ficha do imóvel">
+  <div class="alca-area"><button class="alca" id="alca" aria-label="Recolher ou abrir a ficha"></button></div>
+  <div class="cab">
+    <div>
+      <span class="olho">Imóvel rural</span>
+      <input class="nome" id="nome" value="Sítio Boa Vista" aria-label="Nome do imóvel" maxlength="60">
+      <div class="lugar" id="lugar">Carrancas (MG)</div>
+    </div>
+    <span class="selo-ex" id="seloEx">Exemplo</span>
+  </div>
+  <div class="corpo">
+    <div class="numeros">
+      <div class="num"><small>Área</small><strong id="nArea">–</strong></div>
+      <div class="num"><small>Perímetro</small><strong id="nPer">–</strong></div>
+      <div class="num"><small>Altitude</small><strong id="nAlt">–</strong></div>
+      <div class="num"><small>Desnível</small><strong id="nDes">–</strong></div>
+    </div>
+    <div class="acoes">
+      <button class="bt principal" id="btVoo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Sobrevoo 3D</button>
+      <button class="bt rec" id="btGravar"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>Gravar vídeo</button>
+    </div>
+    <div class="acoes2">
+      <button class="bt" id="btDesenhar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18 9 6l7 4 4 9z"/></svg>Desenhar</button>
+      <button class="bt" id="btImportar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>Importar</button>
+      <button class="bt" id="btRelevo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 19 6-9 4 5 3-4 5 8z"/></svg><span id="txRelevo">Relevo 1,5×</span></button>
+    </div>
+    <input type="file" id="arquivo" accept=".kml,.geojson,.json,application/vnd.google-earth.kml+xml,application/json" hidden>
+
+    <div class="entorno">
+      <h3>O que tem <i>em volta</i></h3>
+      <div id="listaEntorno"><div class="fonte">Procurando rios, estradas e rede elétrica…</div></div>
+      <div class="fonte" id="fonteEntorno"></div>
+    </div>
+  </div>
+</section>
+
+<div class="barra-des" id="barraDes" hidden>
+  <button class="bt" id="desDesfazer">Desfazer</button>
+  <button class="bt" id="desCancelar">Cancelar</button>
+  <button class="bt principal" id="desConcluir" disabled>Concluir</button>
+</div>
+
+<button class="bt parar" id="btParar">Parar</button>
+
+<div class="janela" id="janela" hidden>
+  <div>
+    <h3>Vídeo pronto</h3>
+    <video id="videoPronto" controls playsinline muted></video>
+    <button class="bt principal" id="btCompartilhar">Salvar no celular</button>
+    <a class="bt" id="lnBaixar" download="sobrevoo.mp4">Baixar arquivo</a>
+    <button class="bt" id="btFechar">Fechar</button>
+  </div>
+</div>
+
+<script src="lib/maplibre-gl.js"></script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const fmt = (n, d = 0) => n.toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+
+/* ---------- Imóvel de exemplo (Carrancas, MG) ---------- */
+const EXEMPLO = {
+  nome: "Sítio Boa Vista", lugar: "Carrancas (MG)",
+  anel: [[-44.6236,-21.5042],[-44.6203,-21.5031],[-44.6178,-21.5046],[-44.6171,-21.5072],[-44.6189,-21.5091],[-44.6221,-21.5088],[-44.6243,-21.5067],[-44.6236,-21.5042]]
+};
+
+/* ---------- Mapa ---------- */
+const TERRARIUM = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png";
+let exagero = 1.5;
+const map = new maplibregl.Map({
+  container: "mapa",
+  center: [-44.62, -21.506], zoom: 14.6, pitch: 62, bearing: -25, maxPitch: 80,
+  preserveDrawingBuffer: true, attributionControl: false,
+  style: {
+    version: 8,
+    sources: {
+      sat: { type: "raster", tileSize: 256, maxzoom: 19,
+        tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+        attribution: "Imagem © Esri, Maxar, Earthstar Geographics" },
+      dem: { type: "raster-dem", tiles: [TERRARIUM], encoding: "terrarium", tileSize: 256, maxzoom: 15, attribution: "Relevo: Mapzen/AWS" },
+      sombra: { type: "raster-dem", tiles: [TERRARIUM], encoding: "terrarium", tileSize: 256, maxzoom: 15 },
+      imovel: { type: "geojson", data: vazio() },
+      entorno: { type: "geojson", data: vazio(), attribution: "© OpenStreetMap" },
+      desenho: { type: "geojson", data: vazio() }
+    },
+    layers: [
+      { id: "fundo", type: "background", paint: { "background-color": "#1b2a1e" } },
+      { id: "sat", type: "raster", source: "sat", paint: { "raster-saturation": -0.12, "raster-contrast": 0.08 } },
+      { id: "sombra", type: "hillshade", source: "sombra", paint: { "hillshade-exaggeration": 0.35, "hillshade-shadow-color": "#05080d", "hillshade-highlight-color": "#d8e4c8" } },
+      { id: "agua", type: "line", source: "entorno", filter: ["==", ["get", "tipo"], "agua"], paint: { "line-color": "#6cc6ff", "line-width": ["interpolate", ["linear"], ["zoom"], 12, 1.2, 16, 3], "line-opacity": .9 } },
+      { id: "estrada", type: "line", source: "entorno", filter: ["==", ["get", "tipo"], "estrada"], paint: { "line-color": "#efe0b5", "line-width": ["interpolate", ["linear"], ["zoom"], 12, .8, 16, 2.2], "line-opacity": .75 } },
+      { id: "energia", type: "line", source: "entorno", filter: ["==", ["get", "tipo"], "energia"], paint: { "line-color": "#ffd34d", "line-width": 1.6, "line-dasharray": [2, 1.5] } },
+      { id: "imovel-fill", type: "fill", source: "imovel", paint: { "fill-color": "#ff4b4b", "fill-opacity": 0.08 } },
+      { id: "imovel-brilho", type: "line", source: "imovel", paint: { "line-color": "#ff4b4b", "line-width": 9, "line-opacity": 0.22, "line-blur": 4 } },
+      { id: "imovel-linha", type: "line", source: "imovel", paint: { "line-color": "#ff4b4b", "line-width": 2.6 } },
+      { id: "imovel-pontos", type: "circle", source: "imovel", filter: ["==", ["geometry-type"], "Point"], paint: { "circle-radius": 3.5, "circle-color": "#fff", "circle-stroke-color": "#ff4b4b", "circle-stroke-width": 1.5 } },
+      { id: "des-linha", type: "line", source: "desenho", paint: { "line-color": "#d9b56c", "line-width": 2.5, "line-dasharray": [2, 1] } },
+      { id: "des-pontos", type: "circle", source: "desenho", filter: ["==", ["geometry-type"], "Point"], paint: { "circle-radius": 6, "circle-color": "#d9b56c", "circle-stroke-color": "#0b111b", "circle-stroke-width": 2 } }
+    ],
+    terrain: { source: "dem", exaggeration: exagero },
+    sky: { "sky-color": "#0b111b", "horizon-color": "#3a4d66", "fog-color": "#22324a", "sky-horizon-blend": 0.6, "horizon-fog-blend": 0.7, "fog-ground-blend": 0.75, "atmosphere-blend": 0.6 }
+  }
+});
+map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "top-right");
+function vazio() { return { type: "FeatureCollection", features: [] }; }
+
+/* ---------- Geometria ---------- */
+const R = 6371008.8, rad = Math.PI / 180;
+function projetor(lat0) { const k = Math.cos(lat0 * rad); return ([x, y]) => [x * rad * R * k, y * rad * R]; }
+function centro(anel) { let x = 0, y = 0; const n = anel.length - 1; for (let i = 0; i < n; i++) { x += anel[i][0]; y += anel[i][1]; } return [x / n, y / n]; }
+function areaM2(anel) { const p = projetor(centro(anel)[1]); const q = anel.map(p); let a = 0; for (let i = 0; i < q.length - 1; i++) a += q[i][0] * q[i + 1][1] - q[i + 1][0] * q[i][1]; return Math.abs(a) / 2; }
+function perimetroM(anel) { const p = projetor(centro(anel)[1]); const q = anel.map(p); let s = 0; for (let i = 0; i < q.length - 1; i++) s += Math.hypot(q[i + 1][0] - q[i][0], q[i + 1][1] - q[i][1]); return s; }
+function dentro([x, y], anel) { let d = false; for (let i = 0, j = anel.length - 1; i < anel.length; j = i++) { const [xi, yi] = anel[i], [xj, yj] = anel[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) d = !d; } return d; }
+function caixa(anel) { const xs = anel.map(c => c[0]), ys = anel.map(c => c[1]); return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]; }
+function distPontoSeg(p, a, b) { const dx = b[0] - a[0], dy = b[1] - a[1]; const t = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy || 1))); return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy); }
+/* distância em metros entre o imóvel e uma linha (0 se a linha passa dentro) */
+function distImovelLinha(anel, linha) {
+  if (linha.some(c => dentro(c, anel))) return 0;
+  const p = projetor(centro(anel)[1]); const A = anel.map(p), L = linha.map(p);
+  for (let i = 0; i < L.length - 1; i++) for (let j = 0; j < A.length - 1; j++) if (cruza(L[i], L[i + 1], A[j], A[j + 1])) return 0;
+  let m = Infinity;
+  for (const v of L) for (let i = 0; i < A.length - 1; i++) m = Math.min(m, distPontoSeg(v, A[i], A[i + 1]));
+  for (const v of A) for (let i = 0; i < L.length - 1; i++) m = Math.min(m, distPontoSeg(v, L[i], L[i + 1]));
+  return m;
+}
+function cruza(a, b, c, d) { const o = (p, q, r) => Math.sign((q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])); return o(a, b, c) !== o(a, b, d) && o(c, d, a) !== o(c, d, b); }
+const metros = m => m === 0 ? "dentro" : m < 1000 ? fmt(Math.round(m / 10) * 10) + " m" : fmt(m / 1000, 1) + " km";
+
+/* ---------- Altitude (lida direto dos ladrilhos de relevo) ---------- */
+const cacheLad = new Map();
+function ladrilho(z, x, y) {
+  const k = z + "/" + x + "/" + y;
+  if (!cacheLad.has(k)) cacheLad.set(k, new Promise((ok, erro) => {
+    const img = new Image(); img.crossOrigin = "anonymous";
+    img.onload = () => { const c = document.createElement("canvas"); c.width = c.height = 256; const g = c.getContext("2d", { willReadFrequently: true }); g.drawImage(img, 0, 0); ok(g.getImageData(0, 0, 256, 256).data); };
+    img.onerror = erro;
+    img.src = TERRARIUM.replace("{z}", z).replace("{x}", x).replace("{y}", y);
+  }));
+  return cacheLad.get(k);
+}
+async function altitude([lng, lat], z = 14) {
+  const n = 2 ** z, fx = (lng + 180) / 360 * n, s = Math.sin(lat * rad), fy = (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n;
+  const x = Math.floor(fx), y = Math.floor(fy), d = await ladrilho(z, x, y);
+  const px = Math.min(255, Math.floor((fx - x) * 256)), py = Math.min(255, Math.floor((fy - y) * 256)), i = (py * 256 + px) * 4;
+  return d[i] * 256 + d[i + 1] + d[i + 2] / 256 - 32768;
+}
+async function medirRelevo(anel) {
+  const [w, s, e, nn] = caixa(anel), pts = [...anel.slice(0, -1)];
+  const N = 14; for (let i = 0; i <= N; i++) for (let j = 0; j <= N; j++) { const p = [w + (e - w) * i / N, s + (nn - s) * j / N]; if (dentro(p, anel)) pts.push(p); }
+  const alts = (await Promise.all(pts.map(p => altitude(p).catch(() => null)))).filter(v => v != null);
+  if (!alts.length) return null;
+  return { min: Math.min(...alts), max: Math.max(...alts), media: alts.reduce((a, b) => a + b, 0) / alts.length };
+}
+
+/* ---------- Estado do imóvel ---------- */
+let imovel = null, etiqueta = null, buscaEntorno = 0;
+function guardar() { try { localStorage.setItem("sobrevoo.imovel", JSON.stringify(imovel)); } catch (_) {} }
+function lerGuardado() { try { return JSON.parse(localStorage.getItem("sobrevoo.imovel")); } catch (_) { return null; } }
+
+function definirImovel(dados, { voar = true, salvar = true } = {}) {
+  imovel = dados;
+  $("nome").value = dados.nome; $("lugar").textContent = dados.lugar || "Localizando…";
+  $("seloEx").hidden = !dados.exemplo;
+  const anel = dados.anel;
+  map.getSource("imovel").setData({ type: "FeatureCollection", features: [
+    { type: "Feature", geometry: { type: "Polygon", coordinates: [anel] }, properties: {} },
+    ...anel.slice(0, -1).map(c => ({ type: "Feature", geometry: { type: "Point", coordinates: c }, properties: {} }))
+  ] });
+  const ha = areaM2(anel) / 10000;
+  $("nArea").innerHTML = fmt(ha, ha < 100 ? 1 : 0) + "<em>ha</em>";
+  const per = perimetroM(anel);
+  $("nPer").innerHTML = per < 10000 ? fmt(Math.round(per)) + "<em>m</em>" : fmt(per / 1000, 1) + "<em>km</em>";
+  $("nAlt").textContent = "…"; $("nDes").textContent = "…";
+  medirRelevo(anel).then(r => {
+    if (imovel !== dados) return;
+    if (!r) { $("nAlt").textContent = "–"; $("nDes").textContent = "–"; return; }
+    $("nAlt").innerHTML = fmt(Math.round(r.media)) + "<em>m</em>";
+    $("nDes").innerHTML = fmt(Math.round(r.max - r.min)) + "<em>m</em>";
+  });
+  if (etiqueta) etiqueta.remove();
+  const el = document.createElement("div"); el.className = "etiqueta"; atualizarEtiqueta(el);
+  etiqueta = new maplibregl.Marker({ element: el, anchor: "bottom", offset: [0, -6] }).setLngLat(pontoMaisAlto(anel)).addTo(map);
+  if (!dados.lugar) descobrirLugar(dados);
+  carregarEntorno(anel);
+  if (salvar && !dados.exemplo) guardar();
+  if (voar) map.fitBounds(caixa(anel), { padding: margens(), pitch: 62, bearing: map.getBearing(), duration: 1800, freezeElevation: true, maxZoom: 16.5 });
+}
+function pontoMaisAlto(anel) { return anel.reduce((a, c) => c[1] > a[1] ? c : a); }
+function atualizarEtiqueta(el = etiqueta && etiqueta.getElement()) {
+  if (!el || !imovel) return;
+  el.innerHTML = ""; el.append(document.createTextNode($("nome").value || "Imóvel"));
+  const s = document.createElement("span"); s.textContent = " — " + fmt(areaM2(imovel.anel) / 10000, 1) + " ha"; el.append(s);
+}
+$("nome").addEventListener("input", () => { if (!imovel) return; imovel.nome = $("nome").value; atualizarEtiqueta(); if (!imovel.exemplo) guardar(); });
+function margens() { const f = $("folha").getBoundingClientRect(); return { top: 90, left: 40, right: 40, bottom: Math.min(f.height, innerHeight * 0.55) + 30 }; }
+
+async function descobrirLugar(dados) {
+  const [lng, lat] = centro(dados.anel);
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&zoom=10&accept-language=pt-BR&lat=${lat}&lon=${lng}`).then(r => r.json());
+    const a = r.address || {}, cidade = a.city || a.town || a.village || a.municipality || a.county || "";
+    const uf = (a["ISO3166-2-lvl4"] || "").split("-")[1] || a.state || "";
+    dados.lugar = cidade ? `${cidade}${uf ? " (" + uf + ")" : ""}` : `${fmt(lat, 4)}, ${fmt(lng, 4)}`;
+  } catch (_) { dados.lugar = `${fmt(lat, 4)}, ${fmt(lng, 4)}`; }
+  if (imovel === dados) { $("lugar").textContent = dados.lugar; guardar(); }
+}
+
+/* ---------- Entorno: rios, estradas e rede elétrica (OpenStreetMap) ---------- */
+const NOMES_VIA = { track: "estrada de terra", unclassified: "estrada vicinal", residential: "rua", service: "acesso", tertiary: "estrada municipal", secondary: "rodovia estadual", primary: "rodovia", trunk: "rodovia federal", motorway: "rodovia federal" };
+const NOMES_AGUA = { river: "rio", stream: "córrego", canal: "canal", ditch: "vala", drain: "vala" };
+async function carregarEntorno(anel) {
+  const meu = ++buscaEntorno, lista = $("listaEntorno");
+  lista.innerHTML = '<div class="fonte">Procurando rios, estradas e rede elétrica…</div>'; $("fonteEntorno").textContent = "";
+  const [w, s, e, n] = caixa(anel), dl = 0.03; /* ~3 km em volta */
+  const bb = [s - dl, w - dl, n + dl, e + dl].map(v => v.toFixed(5)).join(",");
+  const q = `[out:json][timeout:25];(way["waterway"~"^(river|stream|canal)$"](${bb});way["highway"~"^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|track|service)$"](${bb});way["power"~"^(line|minor_line)$"](${bb}););out geom;`;
+  let dados;
+  try {
+    dados = await fetch("https://overpass-api.de/api/interpreter", { method: "POST", body: "data=" + encodeURIComponent(q), headers: { "Content-Type": "application/x-www-form-urlencoded" } }).then(r => { if (!r.ok) throw r.status; return r.json(); });
+  } catch (_) {
+    if (meu === buscaEntorno) lista.innerHTML = '<div class="fonte">Não deu para consultar o entorno agora. Toque em Importar ou Desenhar de novo para tentar outra vez.</div>';
+    return;
+  }
+  if (meu !== buscaEntorno) return;
+  const feats = [], melhor = {};
+  for (const el of dados.elements || []) {
+    if (!el.geometry) continue;
+    const linha = el.geometry.map(g => [g.lon, g.lat]), t = el.tags || {};
+    const tipo = t.waterway ? "agua" : t.power ? "energia" : "estrada";
+    feats.push({ type: "Feature", geometry: { type: "LineString", coordinates: linha }, properties: { tipo } });
+    const d = distImovelLinha(anel, linha);
+    if (!melhor[tipo] || d < melhor[tipo].d) melhor[tipo] = { d, t };
+  }
+  map.getSource("entorno").setData({ type: "FeatureCollection", features: feats });
+  const linhas = [
+    ["agua", "var(--agua)", "Curso d'água", m => m.t.name || NOMES_AGUA[m.t.waterway] || "curso d'água"],
+    ["estrada", "var(--estrada)", "Estrada", m => [NOMES_VIA[m.t.highway] || "estrada", m.t.surface === "unpaved" || m.t.surface === "dirt" || m.t.surface === "gravel" ? "sem asfalto" : m.t.surface === "asphalt" ? "asfaltada" : "", m.t.name || m.t.ref || ""].filter(Boolean).join(" · ")],
+    ["energia", "var(--energia)", "Rede elétrica", m => m.t.voltage ? fmt(+m.t.voltage / 1000, 1) + " kV" : (m.t.power === "minor_line" ? "rede de distribuição" : "linha de transmissão")]
+  ];
+  lista.innerHTML = "";
+  for (const [tipo, cor, titulo, desc] of linhas) {
+    const m = melhor[tipo], row = document.createElement("div"); row.className = "linha-e";
+    row.innerHTML = `<span class="traco" style="background:${cor}"></span><div><b></b><small></small></div><span class="dist"></span>`;
+    row.querySelector("b").textContent = titulo;
+    row.querySelector("small").textContent = m ? desc(m) : "nenhum mapeado num raio de 3 km";
+    row.querySelector(".dist").textContent = m ? (m.d === 0 ? "passa dentro" : metros(m.d)) : "–";
+    lista.append(row);
+  }
+  $("fonteEntorno").textContent = "Distância até a divisa. Dados do OpenStreetMap: confirme no local, o mapa pode não ter tudo.";
+}
+
+/* ---------- Sobrevoo ---------- */
+let voo = null;
+function cameraDoImovel() {
+  const anel = imovel.anel, c = centro(anel);
+  const cam = map.cameraForBounds(caixa(anel), { padding: { top: 140, bottom: 140, left: 50, right: 50 }, maxZoom: 16.6 });
+  return { centro: c, zoom: (cam ? cam.zoom : 15) - 0.25 };
+}
+function sobrevoar({ gravar = false } = {}) {
+  if (!imovel || voo) return Promise.resolve();
+  const { centro: c, zoom } = cameraDoImovel(), b0 = map.getBearing() - 60;
+  document.body.classList.add("voando"); $("folha").classList.add("recolhida");
+  $("legTitulo").innerHTML = ""; $("legTitulo").append(document.createTextNode($("nome").value || "Imóvel"));
+  $("legSub").textContent = [fmt(areaM2(imovel.anel) / 10000, 1) + " ha", imovel.lugar].filter(Boolean).join(" · ");
+  $("legenda").hidden = false;
+  return new Promise(fim => {
+    voo = { fim, parar: false };
+    map.jumpTo({ center: c, zoom: zoom - 2.2, pitch: 0, bearing: b0 });
+    const fase1 = 4500, fase2 = 16000, t0 = performance.now(), ease = t => t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+    const passo = agora => {
+      if (!voo || voo.parar) return terminar();
+      const t = agora - t0;
+      if (t < fase1) { const k = ease(t / fase1); map.jumpTo({ center: c, zoom: zoom - 2.2 + 2.2 * k, pitch: 66 * k, bearing: b0 + 40 * k }); }
+      else if (t < fase1 + fase2) { const k = (t - fase1) / fase2; map.jumpTo({ center: c, zoom: zoom + 0.15 * Math.sin(k * Math.PI), pitch: 66 - 6 * Math.sin(k * Math.PI), bearing: b0 + 40 + 280 * k }); }
+      else return terminar();
+      requestAnimationFrame(passo);
+    };
+    if (gravar) comecarGravacao();
+    requestAnimationFrame(passo);
+  });
+}
+function terminar() {
+  if (!voo) return; const f = voo.fim; voo = null;
+  document.body.classList.remove("voando"); $("folha").classList.remove("recolhida"); $("legenda").hidden = true;
+  if (gravador) pararGravacao();
+  f();
+}
+$("btVoo").onclick = () => sobrevoar();
+$("btParar").onclick = () => { if (voo) voo.parar = true; };
+
+/* ---------- Gravar vídeo vertical (1080×1920) do sobrevoo ---------- */
+let gravador = null, quadros = null, laco = 0;
+function formatoVideo() {
+  for (const t of ["video/mp4;codecs=avc1.640028", "video/mp4;codecs=avc1.42E01F", "video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"]) if (window.MediaRecorder && MediaRecorder.isTypeSupported(t)) return t;
+  return "";
+}
+function comecarGravacao() {
+  const tipo = formatoVideo(); if (!tipo) { avisar("Este navegador não grava vídeo. Use o Safari ou o Chrome atualizados."); return; }
+  const tela = document.createElement("canvas"); tela.width = 1080; tela.height = 1920; const g = tela.getContext("2d");
+  const src = map.getCanvas(), titulo = $("nome").value || "Imóvel", sub = $("legSub").textContent;
+  const desenhar = () => {
+    const sw = src.width, sh = src.height, esc = Math.max(1080 / sw, 1920 / sh), w = sw * esc, h = sh * esc;
+    g.drawImage(src, (1080 - w) / 2, (1920 - h) / 2, w, h);
+    const gr = g.createLinearGradient(0, 0, 0, 520); gr.addColorStop(0, "rgba(11,17,27,.85)"); gr.addColorStop(1, "rgba(11,17,27,0)"); g.fillStyle = gr; g.fillRect(0, 0, 1080, 520);
+    g.fillStyle = "#d9b56c"; g.font = "600 30px Manrope, sans-serif"; g.letterSpacing = "6px"; g.fillText("SOBREVOO 3D", 80, 190); g.letterSpacing = "0px";
+    g.fillStyle = "#fff"; g.font = "400 104px 'Instrument Serif', Georgia, serif"; g.fillText(titulo, 76, 300, 940);
+    g.fillStyle = "#dfe6ef"; g.font = "500 36px Manrope, sans-serif"; g.fillText(sub, 80, 362, 920);
+    g.fillStyle = "rgba(255,255,255,.55)"; g.font = "500 24px Manrope, sans-serif"; g.fillText("Imagem de satélite e relevo reais · não é drone", 80, 1840);
+    laco = requestAnimationFrame(desenhar);
+  };
+  desenhar();
+  quadros = [];
+  gravador = new MediaRecorder(tela.captureStream(30), { mimeType: tipo, videoBitsPerSecond: 12e6 });
+  gravador.ondataavailable = e => e.data.size && quadros.push(e.data);
+  gravador.onstop = () => mostrarVideo(new Blob(quadros, { type: tipo.split(";")[0] }));
+  gravador.start(500);
+  $("btGravar").classList.add("gravando");
+}
+function pararGravacao() { cancelAnimationFrame(laco); if (gravador && gravador.state !== "inactive") gravador.stop(); gravador = null; $("btGravar").classList.remove("gravando"); }
+let ultimoVideo = null;
+function mostrarVideo(blob) {
+  const ext = blob.type.includes("mp4") ? "mp4" : "webm", nome = ($("nome").value || "sobrevoo").toLowerCase().normalize("NFD").replace(/[^\w]+/g, "-").replace(/^-|-$/g, "") + "." + ext;
+  ultimoVideo = new File([blob], nome, { type: blob.type });
+  const url = URL.createObjectURL(blob); $("videoPronto").src = url; $("lnBaixar").href = url; $("lnBaixar").download = nome;
+  $("btCompartilhar").hidden = !(navigator.canShare && navigator.canShare({ files: [ultimoVideo] }));
+  $("janela").hidden = false;
+}
+$("btGravar").onclick = () => sobrevoar({ gravar: true });
+$("btCompartilhar").onclick = () => navigator.share({ files: [ultimoVideo], title: $("nome").value }).catch(() => {});
+$("btFechar").onclick = () => { $("janela").hidden = true; $("videoPronto").pause(); };
+
+/* ---------- Desenhar a divisa ---------- */
+let pontosDes = null;
+function redesenhar() {
+  const p = pontosDes || [], f = p.map(c => ({ type: "Feature", geometry: { type: "Point", coordinates: c }, properties: {} }));
+  if (p.length > 1) f.push({ type: "Feature", geometry: { type: "LineString", coordinates: p.length > 2 ? [...p, p[0]] : p }, properties: {} });
+  map.getSource("desenho").setData({ type: "FeatureCollection", features: f });
+  $("desConcluir").disabled = p.length < 3;
+}
+function modoDesenho(ligar) {
+  pontosDes = ligar ? [] : null; redesenhar();
+  $("barraDes").hidden = !ligar; $("folha").hidden = ligar;
+  map.getCanvas().style.cursor = ligar ? "crosshair" : "";
+  if (ligar) { map.easeTo({ pitch: 0, bearing: 0, duration: 700, freezeElevation: true }); avisar("Toque nos cantos da divisa, um por um.", 4000); }
+}
+map.on("click", e => { if (!pontosDes) return; pontosDes.push([e.lngLat.lng, e.lngLat.lat]); redesenhar(); });
+$("btDesenhar").onclick = () => modoDesenho(true);
+$("desCancelar").onclick = () => modoDesenho(false);
+$("desDesfazer").onclick = () => { if (pontosDes) { pontosDes.pop(); redesenhar(); } };
+$("desConcluir").onclick = () => {
+  const anel = [...pontosDes, pontosDes[0]]; modoDesenho(false);
+  definirImovel({ nome: "Meu imóvel", anel });
+  map.easeTo({ pitch: 62, duration: 900, freezeElevation: true });
+};
+
+/* ---------- Importar KML / GeoJSON ---------- */
+$("btImportar").onclick = () => $("arquivo").click();
+$("arquivo").onchange = async () => {
+  const arq = $("arquivo").files[0]; $("arquivo").value = ""; if (!arq) return;
+  try {
+    const txt = await arq.text(), r = /\.kml$/i.test(arq.name) || txt.trimStart().startsWith("<") ? lerKML(txt) : lerGeoJSON(JSON.parse(txt));
+    if (!r) throw 0;
+    definirImovel({ nome: r.nome || arq.name.replace(/\.[^.]+$/, ""), anel: r.anel });
+  } catch (_) { avisar("Não achei um polígono nesse arquivo. Use um .kml (Google Earth) ou .geojson com a divisa do imóvel.", 5000); }
+};
+function fecharAnel(a) { const p = a[0], u = a[a.length - 1]; return p[0] === u[0] && p[1] === u[1] ? a : [...a, p]; }
+function lerKML(txt) {
+  const doc = new DOMParser().parseFromString(txt, "application/xml");
+  const pol = doc.getElementsByTagName("Polygon")[0]; if (!pol) return null;
+  const cs = (pol.getElementsByTagName("outerBoundaryIs")[0] || pol).getElementsByTagName("coordinates")[0];
+  const anel = cs.textContent.trim().split(/\s+/).map(t => t.split(",").map(Number)).map(([x, y]) => [x, y]).filter(c => isFinite(c[0]) && isFinite(c[1]));
+  const pm = pol.closest("Placemark"), nm = pm && pm.getElementsByTagName("name")[0];
+  return anel.length > 2 ? { anel: fecharAnel(anel), nome: nm && nm.textContent.trim() } : null;
+}
+function lerGeoJSON(g) {
+  const feats = g.type === "FeatureCollection" ? g.features : g.type === "Feature" ? [g] : [{ geometry: g, properties: {} }];
+  let maior = null;
+  for (const f of feats) {
+    const geo = f.geometry; if (!geo) continue;
+    const aneis = geo.type === "Polygon" ? [geo.coordinates[0]] : geo.type === "MultiPolygon" ? geo.coordinates.map(p => p[0]) : [];
+    for (const a of aneis) { const an = fecharAnel(a.map(c => [c[0], c[1]])), ar = areaM2(an); if (!maior || ar > maior.ar) maior = { anel: an, ar, nome: (f.properties || {}).nome || (f.properties || {}).name || (f.properties || {}).cod_imovel }; }
+  }
+  return maior;
+}
+
+/* ---------- Busca ---------- */
+$("formBusca").onsubmit = async e => {
+  e.preventDefault(); const q = $("campoBusca").value.trim(); if (!q) return; $("campoBusca").blur();
+  const m = q.replace(/−/g, "-").match(/^\s*(-?\d+(?:[.,]\d+)?)\s*[,;\s]\s*(-?\d+(?:[.,]\d+)?)\s*$/);
+  if (m) { const lat = +m[1].replace(",", "."), lng = +m[2].replace(",", "."); map.flyTo({ center: [lng, lat], zoom: 15, pitch: 55, duration: 2500, freezeElevation: true }); avisar("Toque em Desenhar para marcar a divisa.", 4000); return; }
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=br&accept-language=pt-BR&q=${encodeURIComponent(q)}`).then(r => r.json());
+    if (!r.length) return avisar("Não encontrei esse lugar. Tente cidade e estado, ou as coordenadas.", 4000);
+    const [s, n, w, e2] = r[0].boundingbox.map(Number);
+    map.fitBounds([w, s, e2, n], { padding: 60, pitch: 55, maxZoom: 15.5, duration: 2500, freezeElevation: true });
+    avisar("Ache o imóvel e toque em Desenhar para marcar a divisa.", 4500);
+  } catch (_) { avisar("Sem conexão para buscar agora.", 3500); }
+};
+
+/* ---------- Diversos ---------- */
+let tAviso;
+function avisar(txt, ms = 3000) { const a = $("aviso"); a.textContent = txt; a.hidden = false; clearTimeout(tAviso); tAviso = setTimeout(() => a.hidden = true, ms); }
+$("alca").onclick = () => $("folha").classList.toggle("recolhida");
+$("btRelevo").onclick = () => {
+  exagero = exagero === 1 ? 1.5 : exagero === 1.5 ? 2.2 : 1;
+  map.setTerrain({ source: "dem", exaggeration: exagero });
+  $("txRelevo").textContent = "Relevo " + fmt(exagero, exagero === 1 ? 0 : 1) + "×";
+};
+
+map.once("style.load", () => {
+  const salvo = lerGuardado();
+  if (salvo && Array.isArray(salvo.anel) && salvo.anel.length > 3) definirImovel(salvo, { salvar: false });
+  else definirImovel({ ...EXEMPLO, exemplo: true });
+});
+</script>
+</body>
+</html>
