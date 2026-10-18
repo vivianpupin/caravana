@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "18/10 · 07:46";</script>
+<script>window.__VERSAO = "18/10 · 08:00";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2381,6 +2381,13 @@ html[data-tab="travessia"] .mapahero .clock div{background:rgba(255,251,242,.97)
 .mapahero .clock span{display:block;margin-top:4px;font-family:var(--ui);font-size:11.5px;line-height:1.45;letter-spacing:.04em;color:#7A6650}
 .mapahero .intro{margin-top:34px;color:#6B5640}
 .mapahero .mmundo{margin-top:34px!important}
+
+/* o app "sambava" ao rolar: (1) o corpo tinha a margem padrão de 8px e o app ficava 8px mais largo que a tela, e o iPhone
+   deixava a página balançar de lado; (2) o grão por cima da tela inteira, com mistura de cores, era redesenhado a cada passo
+   da rolagem; (3) os fundos fixos agora ficam numa camada própria, que o celular não precisa repintar */
+html,body{margin:0}
+main::after{display:none}
+body::before,body::after{transform:translateZ(0);backface-visibility:hidden;will-change:transform}
 </style>
 
 <div class="app">
