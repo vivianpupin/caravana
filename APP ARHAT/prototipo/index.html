@@ -101,7 +101,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
 .notif .msg { font-weight: 600; }
 
 /* Barra de baixo */
-.nav { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--ceu-3); background: color-mix(in srgb, var(--ceu) 88%, black); padding: 8px 6px 10px; }
+.nav { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--ceu-3); background: color-mix(in srgb, var(--ceu) 88%, black); padding: 8px 6px 10px; }
 .nav button { background: none; border: 0; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; color: var(--areia-2); padding: 4px 0; border-radius: 10px; }
 .nav svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .nav button[aria-current="page"] { color: var(--areia); }
@@ -151,6 +151,26 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
 .trilho span { display: block; height: 100%; width: 0; background: var(--nevoeiro); transition: width .5s linear; }
 ol.roteiro { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; color: var(--areia); }
 ol.roteiro li::marker { color: var(--nevoeiro); font-family: var(--display); }
+.texto { display: flex; flex-direction: column; gap: 14px; line-height: 1.65; }
+.texto p { max-width: 65ch; }
+.texto .afirm { white-space: pre-line; padding: 14px 6px; }
+.texto .afirm.longa { font-size: 18px; line-height: 1.55; }
+.texto .sub { font-family: var(--display); font-size: 19px; color: var(--cristal); }
+.texto .pergunta { font-family: var(--display); font-size: 21px; text-align: center; color: var(--nevoeiro); padding: 6px 0; }
+.texto ul.lista { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.texto ul.lista li::marker { color: var(--nevoeiro); }
+.cita { margin: 0; padding: 4px 0 4px 16px; border-left: 2px solid var(--cristal); font-family: var(--display); font-size: 19px; line-height: 1.45; color: var(--areia); }
+.cita cite { display: block; font-family: var(--corpo); font-style: normal; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--areia-2); margin-top: 8px; }
+.intro-ato { font-size: 14px; color: var(--areia-2); }
+.ler { display: flex; flex-direction: column; gap: 8px; }
+.cap { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; text-align: left; background: var(--ceu-2); border: 1px solid var(--ceu-3); border-radius: 14px; padding: 12px 14px; }
+.cap .t { font-family: var(--display); font-size: 17px; }
+.cap .seta { color: var(--nevoeiro); flex: none; white-space: nowrap; }
+.livro-capa { position: relative; border-radius: 22px; overflow: hidden; min-height: 180px; display: flex; align-items: flex-end; }
+.livro-capa img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.livro-capa::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,20,39,.1), rgba(18,20,39,.9)); }
+.livro-capa .txt { position: relative; z-index: 1; padding: 18px; display: flex; flex-direction: column; gap: 4px; }
+.nav button { font-size: 10.5px; }
 
 /* Diário */
 .diario { background: #0b0c18; }
@@ -242,10 +262,12 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
     <button data-aba="hoje"><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9z"/></svg>Hoje</button>
     <button data-aba="diario"><svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>Diário</button>
     <button data-aba="ceu"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/><circle cx="5" cy="18" r="1"/><circle cx="18" cy="17" r="1.4"/></svg>Céu</button>
+    <button data-aba="livro"><svg viewBox="0 0 24 24"><path d="M12 6c-2-1.5-5-2-8-2v14c3 0 6 .5 8 2 2-1.5 5-2 8-2V4c-3 0-6 .5-8 2z"/><path d="M12 6v14"/></svg>Livro</button>
     <button data-aba="atos"><svg viewBox="0 0 24 24"><path d="M12 2l6 8-2 10H8L6 10z"/><path d="M6 10h12M12 2v18"/></svg>Atos</button>
   </nav>
 </div>
 
+<script src="conteudo.js"></script>
 <script>
 (function () {
   const IMG = { noite: "img/noite.webp", fios: "img/fios.webp", cristal: "img/cristal.png", simbolo: "img/simbolo.png" };
@@ -262,64 +284,10 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
     raiz: '<svg viewBox="0 0 24 24"><path d="M12 3v8M12 11c-3 2-5 5-6 10M12 11c3 2 5 5 6 10M12 11v10"/></svg>'
   };
 
-  // O conteúdo é o do livro Arhat, organizado por ato e momento do dia.
-  const ATOS = [
-    { id: 0, nome: "O Início", sub: "Atravessar o véu do sono", gratis: true, capa: IMG.noite,
-      frase: "Corpo relaxado, mente desperta.",
-      momentos: [
-        { quando: "Ao acordar", hora: "primeiros 5 min", praticas: [
-          { k: "diario", ico: "pena", nome: "Diário dos 5 minutos", det: "Sem levantar e sem abrir os olhos" } ] },
-        { quando: "Noite", hora: "ao deitar", praticas: [
-          { k: "noite", ico: "lua", nome: "Corpo relaxado, mente desperta", det: "Encontre o seu nevoeiro" } ] }
-      ],
-      noite: { afirm: "Vá além disso… Vá além disso…", fonte: "Comando para os pensamentos que chegam",
-        passos: ["Respire fundo. Atenção na respiração e na planta dos pés.", "Deixe os pensamentos passarem. Se um insistir, comande: “Vá além disso”.", "Observe as imagens que se formam na tela mental e deixe que fiquem mais vívidas.", "Quando uma esfera de luz ocupar tudo, é o seu limiar: o nevoeiro. Fique nele até adormecer."] } },
-    { id: 1, nome: "Primeiro Ato", sub: "Ativar as raízes e o senso crítico", gratis: true, capa: IMG.noite,
-      frase: "Eu sou mais do que meu corpo físico.",
-      momentos: [
-        { quando: "Ao acordar", hora: "primeiros 5 min", praticas: [
-          { k: "diario", ico: "pena", nome: "Diário dos 5 minutos", det: "Onde eu estava? O que eu sentia?" } ] },
-        { quando: "Dia", hora: "ao amanhecer e no pôr do sol", praticas: [
-          { k: "resp", ico: "sol", nome: "Respiração Dourada", det: "7 respirações pelo terceiro olho" },
-          { k: "raizes", ico: "raiz", nome: "Ative suas raízes", det: "Mãos próximas, línguas de fogo" },
-          { k: "teste", ico: "mao", nome: "Teste de realidade", det: "“Será que estou sonhando?” 7 a 10 vezes" } ] },
-        { quando: "Noite", hora: "ao deitar", praticas: [
-          { k: "noite", ico: "lua", nome: "A chuva no quarto", det: "Afirmação e nevoeiro" } ] }
-      ],
-      noite: { afirm: "Eu sou mais do que meu corpo físico.", fonte: "Repita mentalmente até dormir",
-        passos: ["Imagine uma chuva caindo no seu quarto, limpando toda a atmosfera.", "Deite-se de barriga para cima.", "Concentre-se na cor do seu nevoeiro e deixe-se envolver por ele.", "Repita a afirmação enquanto se entrega às marés do sono."] } },
-    { id: 2, nome: "Segundo Ato", sub: "Cair no sono consciente", capa: IMG.fios,
-      frase: "Ao cair no sono estou consciente.",
-      momentos: [
-        { quando: "04:00", hora: "despertar no meio da noite", praticas: [
-          { k: "madrugada", ico: "espiral", nome: "Nirvana Shatakam", det: "Testa no joelho, a Terra circulando" } ] },
-        { quando: "Dia", hora: "ao longo do dia", praticas: [
-          { k: "resp", ico: "sol", nome: "Respiração Dourada", det: "7 vezes" },
-          { k: "teste", ico: "mao", nome: "Teste de realidade", det: "7 a 10 vezes" } ] },
-        { quando: "Noite", hora: "ao deitar", praticas: [ { k: "noite", ico: "lua", nome: "Estou consciente", det: "Afirmação em voz alta" } ] }
-      ] },
-    { id: 3, nome: "Terceiro Ato", sub: "A chama da vela e o Dragão", capa: IMG.fios,
-      frase: "Eu tenho clareza do plano astral.",
-      momentos: [
-        { quando: "04:00", hora: "despertar no meio da noite", praticas: [ { k: "madrugada", ico: "vela", nome: "Chama da vela", det: "Estou leve e posso flutuar até o teto" } ] },
-        { quando: "Dia", hora: "ao longo do dia", praticas: [ { k: "resp", ico: "sol", nome: "Respiração do Dragão", det: "Estado vibracional" }, { k: "teste", ico: "mao", nome: "Teste de realidade", det: "7 a 10 vezes" } ] },
-        { quando: "Noite", hora: "ao deitar", praticas: [ { k: "noite", ico: "lua", nome: "O outro cômodo", det: "Caminhar com o corpo sutil" } ] }
-      ] },
-    { id: 4, nome: "Quarto Ato", sub: "A luz azul e o banho da pineal", capa: IMG.noite,
-      frase: "Sou um ser multidimensional.",
-      momentos: [
-        { quando: "04:00", hora: "despertar no meio da noite", praticas: [ { k: "madrugada", ico: "luz", nome: "Que a paz possa inundar minha alma", det: "Círculo de luz azul" } ] },
-        { quando: "Dia", hora: "ao acordar e no pôr do sol", praticas: [ { k: "resp", ico: "sol", nome: "Mãos para o céu", det: "Captar a energia solar" }, { k: "banho", ico: "agua", nome: "Durante o banho", det: "A água entra pela nuca" }, { k: "teste", ico: "mao", nome: "Teste de realidade", det: "7 a 10 vezes" } ] },
-        { quando: "Noite", hora: "ao deitar", praticas: [ { k: "noite", ico: "lua", nome: "Luz dourada", det: "Sou um ser multidimensional" } ] }
-      ] },
-    { id: 5, nome: "Quinto Ato", sub: "Sair do corpo", capa: IMG.fios,
-      frase: "Agora eu me separo facilmente do meu corpo e estou consciente.",
-      momentos: [
-        { quando: "04:00", hora: "despertar no meio da noite", praticas: [ { k: "madrugada", ico: "espiral", nome: "Hermes Trismegisto", det: "Espiral da coroa, 7 vezes" } ] },
-        { quando: "Dia", hora: "ao acordar e no pôr do sol", praticas: [ { k: "resp", ico: "luz", nome: "Pilar de luz", det: "Azul claro, pulsante" }, { k: "teste", ico: "mao", nome: "Teste de realidade", det: "7 a 10 vezes" } ] },
-        { quando: "Noite", hora: "ao deitar", praticas: [ { k: "noite", ico: "lua", nome: "O som do Om", det: "Até o zumbido do astral" } ] }
-      ] }
-  ];
+  // O conteúdo vem do livro (conteudo.js).
+  const { LIVRO } = window.ARHAT;
+  const ATOS = window.ARHAT.ATOS.map(a => Object.assign({}, a, { capa: IMG[a.capa] }));
+  const capitulo = id => LIVRO.find(c => c.id === id);
 
   const CORES = [
     { nome: "Lilás", v: "#a9b2f0" }, { nome: "Azul", v: "#6fa8ff" }, { nome: "Dourado", v: "#f5c75b" },
@@ -329,7 +297,8 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
     { k: 0, nome: "Noite negra, sem lembranças" }, { k: 1, nome: "Noite com sonhos" },
     { k: 2, nome: "Algum grau de lucidez" }, { k: 3, nome: "Sonho lúcido ou viagem astral" }
   ];
-  const ALVOS = ["O Everest, só neve", "Me curar", "O Egito antigo", "Caminhar na Lua", "Os Sadhus dos Himalaias", "Sirius", "O fundo do mar, com as baleias"];
+  const ALVOS = window.ARHAT.ALVOS.map(a => a.curto);
+  const alvoTexto = curto => (window.ARHAT.ALVOS.find(a => a.curto === curto) || { texto: curto }).texto;
 
   // Estado guardado só neste aparelho.
   const guardado = (() => { try { return JSON.parse(localStorage.getItem("arhat") || "{}"); } catch (e) { return {}; } })();
@@ -349,6 +318,20 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
       <button class="chip-nev" data-acao="nevoeiro"><span class="bolinha"></span>nevoeiro ${esc(nomeCor()).toLowerCase()}</button></div>`;
   }
 
+  function blocos(lista) {
+    return `<div class="texto">${lista.map(b => {
+      if (b.p) return `<p>${esc(b.p)}</p>`;
+      if (b.afirm) return `<p class="afirm ${b.afirm.length > 120 ? "longa" : ""}">${esc(b.afirm)}${b.fonte ? `<small>${esc(b.fonte)}</small>` : ""}</p>`;
+      if (b.passos) return `<ol class="roteiro">${b.passos.map(x => `<li>${esc(x)}</li>`).join("")}</ol>`;
+      if (b.lista) return `<ul class="lista">${b.lista.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
+      if (b.sub) return `<h3 class="sub">${esc(b.sub)}</h3>`;
+      if (b.cita) return `<blockquote class="cita">“${esc(b.cita)}”${b.autor ? `<cite>${esc(b.autor)}</cite>` : ""}</blockquote>`;
+      if (b.pergunta) return `<p class="pergunta">${esc(b.pergunta)}</p>`;
+      return "";
+    }).join("")}</div>`;
+  }
+  const botaoCap = c => `<button class="cap" data-cap="${c.id}"><span class="t">${esc(c.titulo)}</span><span class="seta">${c.novo ? '<span class="selo-ex">texto novo</span> ' : ""}›</span></button>`;
+
   // ---------- Telas ----------
   function telaHoje() {
     const a = ATOS[est.ato];
@@ -366,10 +349,13 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
     return `<div class="tela">${topo()}
       <div class="capa"><img src="${a.capa}" alt=""><div class="txt">
         <span class="rotulo">${a.nome} · noite 3</span><h1>${a.frase}</h1></div></div>
+      ${a.intro ? `<p class="intro-ato">${esc(a.intro)}</p>` : ""}
       <button class="notif" data-pratica="teste"><img src="${IMG.simbolo}" alt="">
         <span><span class="linha1"><span>ARHAT</span><span>agora</span></span>
         <span class="msg">Será que estou sonhando?</span><br><span class="suave">Olhe para as suas mãos e conte os dedos.</span></span></button>
       ${momentos}
+      ${a.ensina && a.ensina.length ? `<section class="momento"><div class="momento-cab"><h3>Para ler neste ato</h3><span class="hora">do livro</span></div>
+        <div class="ler">${a.ensina.map(id => botaoCap(capitulo(id))).join("")}</div></section>` : ""}
       <p class="nota-pe">Hoje: ${est.testes} de 7 a 10 testes de realidade</p>
     </div>`;
   }
@@ -567,6 +553,16 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
     </div>`;
   }
 
+  function telaLivro() {
+    const partes = ["Abertura", "Ensinamentos", "Fechamento"];
+    return `<div class="tela">${topo()}
+      <div class="livro-capa"><img src="${IMG.fios}" alt=""><div class="txt"><span class="rotulo" style="color:var(--cristal)">O livro</span><h1>Arhat</h1><span class="suave">Vivian Pupin</span></div></div>
+      <p class="suave">Os textos de abertura e os ensinamentos do livro. As práticas de cada ato estão na aba Hoje.</p>
+      ${partes.map(pt => `<section class="momento"><h2>${pt}</h2><div class="ler">${LIVRO.filter(c => c.parte === pt).map(botaoCap).join("")}</div></section>`).join("")}
+      <section class="momento"><h2>Os cinco atos</h2><div class="ler">${ATOS.map(a => `<button class="cap" data-ato="${a.id}"><span class="t">${esc(a.nome)}</span><span class="seta">${a.gratis || est.pago ? "›" : '<span class="cadeado">jornada</span>'}</span></button>`).join("")}</div></section>
+    </div>`;
+  }
+
   function telaAtos() {
     const lista = ATOS.map(a => {
       const aberto = a.gratis || est.pago;
@@ -592,7 +588,7 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
           <div><b>“Estou protegido.”</b>Quando vier o medo.</div>
           <div><b>Enfrente o pesadelo</b>Em vez de fugir ou acordar, atravesse.</div>
           <div><b>Peça ajuda</b>Os guias estão atentos do outro lado.</div>
-        </div></section>
+        </div>${botaoCap(capitulo("dentro"))}</section>
       <section class="momento"><h2>Alvo da noite</h2><p class="suave">Dê o comando antes de dormir e visualize como se já estivesse lá.</p>
         <div class="alvos">${ALVOS.map(t => `<button class="alvo" data-alvo="${esc(t)}" aria-pressed="${est.alvo === t}">${esc(t)}</button>`).join("")}</div></section>
     </div>`;
@@ -623,28 +619,63 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
       </div></div>`);
   }
 
-  function abrirResp() {
-    abrirSobre(`<div class="tela resp">${voltar}
-      <span class="rotulo">Respiração Dourada</span>
-      <div class="circulo-wrap"><div class="circulo" id="circ"></div></div>
-      <div class="contagem" id="cont">0 / 7</div>
-      <p class="fase" id="fase">Há dois grandes sóis centrais que sustentam a vida deste universo.</p>
-      <button class="btn" id="iniciar">Começar</button></div>`, d => {
-      d.querySelector("#iniciar").onclick = e => {
-        e.target.hidden = true;
-        const circ = d.querySelector("#circ"), cont = d.querySelector("#cont"), fase = d.querySelector("#fase");
+  function acharPratica(k) {
+    const a = ATOS[est.ato];
+    for (const m of a.momentos) for (const p of m.praticas) if (p.k === k) return { a, m, p };
+    return null;
+  }
+
+  function abrirPratica(k) {
+    const achada = acharPratica(k); if (!achada) return;
+    const { a, m, p } = achada;
+    if (k === "teste") return abrirTeste();
+    if (p.irDiario) { aba = "diario"; modoDiario = "gravar"; render(); return; }
+    const respHtml = p.resp ? `<div class="tela resp" style="padding:0;gap:12px">
+        <div class="circulo-wrap"><div class="circulo" id="circ"></div></div>
+        <div class="contagem" id="cont">0 / ${p.resp.n}</div>
+        <p class="fase" id="fase">Toque para respirar junto.</p>
+        <button class="btn" id="iniciar">Começar</button></div>` : "";
+    const player = p.audio ? `<div class="player"><button class="play" id="play" aria-label="Ouvir a prática">▶</button>
+        <div><b>Prática guiada pela Vivian</b><div class="suave">o áudio será gravado por você</div><div class="trilho"><span id="trilho"></span></div></div></div>` : "";
+    const alvo = k === "noite" && est.alvo ? `<div class="cartao"><span class="rotulo">Alvo desta noite</span><p>${esc(alvoTexto(est.alvo))}</p></div>` : "";
+    const fim = k === "noite" ? "Vou dormir" : k === "madrugada" ? "Voltar a dormir" : k === "diario" ? "Abrir o diário" : "Feito";
+    abrirSobre(`<div class="tela">${voltar}
+      <span class="rotulo">${esc(a.nome)} · ${esc(m.quando)}</span><h1>${esc(p.nome)}</h1>
+      ${respHtml}${player}${p.texto ? blocos(p.texto) : ""}${alvo}
+      <button class="btn largo" data-acao="feito" data-k="${p.k}">${fim}</button></div>`, d => {
+      const play = d.querySelector("#play");
+      if (play) play.onclick = () => {
+        const t = d.querySelector("#trilho"); let w = 0; play.textContent = "❚❚";
+        const anda = () => { w += 4; t.style.width = Math.min(w, 100) + "%"; if (w < 100) timers.push(setTimeout(anda, 500)); else play.textContent = "▶"; };
+        anda();
+      };
+      const ini = d.querySelector("#iniciar");
+      if (ini) ini.onclick = () => {
+        ini.hidden = true;
+        const r = p.resp, circ = d.querySelector("#circ"), cont = d.querySelector("#cont"), fase = d.querySelector("#fase");
+        const segura = r.segura ? 3000 : 0;
         let i = 0;
         const ciclo = () => {
-          if (i >= 7) { fase.textContent = "Todo o corpo se ilumina. Estimule a vibração das raízes."; marcar("resp"); return; }
-          i++; cont.textContent = i + " / 7";
-          circ.classList.add("grande");
-          fase.textContent = "Inspire: um filamento dourado desce e entra pelo terceiro olho.";
-          timers.push(setTimeout(() => { circ.classList.remove("grande"); fase.textContent = "Expire: a energia volta e leva o que bloqueia."; }, 4000));
-          timers.push(setTimeout(ciclo, 8000));
+          if (i >= r.n) { fase.textContent = r.fim; marcar(p.k); return; }
+          i++; cont.textContent = i + " / " + r.n;
+          circ.classList.add("grande"); fase.textContent = r.inspire;
+          if (segura) timers.push(setTimeout(() => { fase.textContent = r.segurar; }, 4000));
+          timers.push(setTimeout(() => { circ.classList.remove("grande"); fase.textContent = r.expire; }, 4000 + segura));
+          timers.push(setTimeout(ciclo, 8000 + segura));
         };
         ciclo();
       };
     });
+  }
+
+  function abrirCapitulo(id) {
+    const i = LIVRO.findIndex(c => c.id === id), c = LIVRO[i], prox = LIVRO[i + 1];
+    abrirSobre(`<div class="tela">${voltar}
+      <span class="rotulo">Arhat · ${esc(c.parte)}</span><h1>${esc(c.titulo)}</h1>
+      ${c.novo ? '<p class="exemplo">Texto novo, escrito para o app. Não está no livro impresso: revise antes de publicar.</p>' : ""}
+      ${blocos(c.texto)}
+      ${prox ? `<div class="ler"><span class="rotulo">Próximo</span>${botaoCap(prox)}</div>` : ""}</div>`);
+    const d = document.getElementById("sobre"); if (d) d.scrollTop = 0;
   }
 
   function abrirTeste() {
@@ -667,52 +698,10 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
     });
   }
 
-  function abrirNoite() {
-    const a = ATOS[est.ato]; const n = a.noite || ATOS[1].noite;
-    abrirSobre(`<div class="tela">${voltar}
-      <span class="rotulo">${a.nome} · noite</span>
-      <p class="afirm">“${n.afirm}”<small>${n.fonte}</small></p>
-      <div class="player"><button class="play" id="play" aria-label="Ouvir a prática">▶</button>
-        <div><b>Prática guiada pela Vivian</b><div class="suave">11 min · o áudio será gravado por você</div><div class="trilho"><span id="trilho"></span></div></div></div>
-      <ol class="roteiro">${n.passos.map(p => `<li>${p}</li>`).join("")}</ol>
-      ${est.alvo ? `<p class="suave">Alvo desta noite: <b style="color:var(--cristal)">${esc(est.alvo)}</b></p>` : ""}
-      <button class="btn largo" data-acao="feito-noite">Vou dormir</button></div>`, d => {
-      d.querySelector("#play").onclick = e => {
-        const t = d.querySelector("#trilho"); let w = 0; e.target.textContent = "❚❚";
-        const anda = () => { w += 4; t.style.width = Math.min(w, 100) + "%"; if (w < 100) timers.push(setTimeout(anda, 500)); else e.target.textContent = "▶"; };
-        anda();
-      };
-    });
-  }
-
-  function abrirMadrugada() {
-    const a = ATOS[est.ato];
-    const afirm = {
-      2: ["Eu sou desprovido de dualidade. Minha forma é sem forma. Eu existo em todos os lugares… Eu sou o Espírito Livre.", "Nirvana Shatakam"],
-      3: ["Todo o meu Ser simplesmente está no mesmo instante em que se queima a chama desta vela.", "Chama da vela"],
-      4: ["Que a paz possa inundar minha alma. Que eu me inunde da certeza de que eu sou a resposta.", "Afirmação do Quarto Ato"],
-      5: ["Sai para fora do corpo, atravessa o tempo, torna-te eternidade.", "Hermes Trismegisto"]
-    }[a.id] || ["", ""];
-    abrirSobre(`<div class="tela">${voltar}
-      <span class="rotulo">04:00 · ${a.nome}</span>
-      <p class="afirm">“${afirm[0]}”<small>${afirm[1]}</small></p>
-      <p class="suave">Depois, volte para a cama e deite-se. Visualize-se caminhando em outro cômodo da casa: o tapete, o cheiro, a cor das paredes, a textura da mesa.</p>
-      <button class="btn largo" data-acao="feito-madrugada">Voltar a dormir</button></div>`);
-  }
-
-  function abrirSimples(k) {
-    const txt = {
-      raizes: ["Ative suas raízes", "Aproxime as mãos. Sinta as raízes dançando entre si como línguas de fogo que se entrelaçam. Brinque com elas. Quando estão ativas, vem uma leve vibração ou um amortecimento na região."],
-      banho: ["Durante o banho", "De costas para o chuveiro, deixe a água cair na nuca. Visualize que ela entra pela nuca e sai pelo terceiro olho, limpando e desobstruindo a glândula pineal."]
-    }[k];
-    abrirSobre(`<div class="tela">${voltar}<span class="rotulo">Prática do dia</span><h1>${txt[0]}</h1><p>${txt[1]}</p>
-      <button class="btn largo" data-acao="feito-${k}">Feito</button></div>`);
-  }
-
   // ---------- Navegação ----------
   function render() {
     aplicarCor();
-    telas.innerHTML = { hoje: telaHoje, diario: telaDiario, ceu: telaCeu, atos: telaAtos }[aba]();
+    telas.innerHTML = { hoje: telaHoje, diario: telaDiario, ceu: telaCeu, livro: telaLivro, atos: telaAtos }[aba]();
     telas.scrollTop = 0;
     document.querySelectorAll("#nav button").forEach(b => b.setAttribute("aria-current", b.dataset.aba === aba ? "page" : "false"));
     pintarCeu();
@@ -724,18 +713,13 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
     if (b.dataset.aba) { fecharSobre(); aba = b.dataset.aba; render(); return; }
     if (b.hasAttribute("data-fechar")) { fecharSobre(); render(); return; }
     if (b.dataset.cor) { est.nevoeiro = b.dataset.cor; aplicarCor(); document.querySelectorAll(".cor").forEach(c => c.setAttribute("aria-pressed", c === b)); const cl = document.getElementById("cor-livre"); if (cl) cl.value = b.dataset.cor; return; }
-    if (b.dataset.pratica) {
-      const k = b.dataset.pratica;
-      if (k === "resp") abrirResp(); else if (k === "teste") abrirTeste(); else if (k === "noite") abrirNoite();
-      else if (k === "madrugada") abrirMadrugada(); else if (k === "diario") { aba = "diario"; render(); }
-      else abrirSimples(k);
-      return;
-    }
+    if (b.dataset.pratica) { abrirPratica(b.dataset.pratica); return; }
+    if (b.dataset.cap) { abrirCapitulo(b.dataset.cap); return; }
     if (b.dataset.tipo) { tipoEscolhido = +b.dataset.tipo; document.querySelectorAll(".tipo").forEach(t => t.setAttribute("aria-pressed", t === b)); return; }
     if (b.dataset.alvo) { est.alvo = est.alvo === b.dataset.alvo ? null : b.dataset.alvo; salvar(); document.querySelectorAll(".alvo").forEach(t => t.setAttribute("aria-pressed", t.dataset.alvo === est.alvo)); return; }
     if (b.dataset.ato) {
       const a = ATOS[+b.dataset.ato];
-      if (!a.gratis && !est.pago) { b.closest(".tela").querySelector(".oferta").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+      if (!a.gratis && !est.pago) { fecharSobre(); aba = "atos"; render(); const o = document.querySelector(".oferta"); if (o) o.scrollIntoView({ block: "center" }); return; }
       est.ato = a.id; salvar(); aba = "hoje"; render(); return;
     }
     if (b.dataset.modo) { modoDiario = b.dataset.modo; render(); return; }
@@ -757,7 +741,7 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
     }
     else if (acao === "acordado") { est.testes = Math.min(10, est.testes + 1); if (est.testes >= 7) marcar("teste"); salvar(); fecharSobre(); render(); }
     else if (acao === "comprar") { est.pago = true; salvar(); render(); }
-    else if (acao && acao.startsWith("feito-")) { marcar(acao.slice(6) === "noite" ? "noite" : acao.slice(6)); fecharSobre(); render(); }
+    else if (acao === "feito") { const k = b.dataset.k; marcar(k); fecharSobre(); if (k === "diario") { aba = "diario"; modoDiario = "gravar"; } render(); }
   });
   app.addEventListener("input", e => {
     if (e.target.id === "busca") {
