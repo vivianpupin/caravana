@@ -404,6 +404,20 @@ let cotaEsgotada = false;
 const ehCota = e => !!e && (e.code === "resource-exhausted" || /resource.exhausted|quota/i.test(e.message || ""));
 function marcaCota(v) { if (cotaEsgotada === v) return; cotaEsgotada = v; window.__cotaEsgotada = v; window.dispatchEvent(new CustomEvent("caravana-cota", { detail: v })); }
 const vigia = p => p.catch(e => { if (ehCota(e)) marcaCota(true); throw e; });
+// sem sinal (templo, estrada), o banco guarda o envio no celular e manda sozinho quando a internet volta.
+// o app não fica esperando: depois de alguns segundos sem resposta, o envio conta como aceito ("pendente")
+let pendentes = 0;
+const semEsperar = p => {
+  const v = vigia(p); v.catch(() => {});
+  const espera = navigator.onLine === false ? 300 : 5000;
+  return Promise.race([v.then(() => ({ pendente: false, enviado: v })), new Promise(r => setTimeout(() => r({ pendente: true, enviado: v }), espera))]).then(x => {
+    if (x.pendente) {
+      pendentes++; window.dispatchEvent(new CustomEvent("caravana-pendente", { detail: { n: pendentes } }));
+      v.then(() => { pendentes = Math.max(0, pendentes - 1); window.dispatchEvent(new CustomEvent("caravana-enviado", { detail: { n: pendentes } })); }, () => { pendentes = Math.max(0, pendentes - 1); });
+    }
+    return x;
+  });
+};
 // escuta que se refaz sozinha depois de uma recusa por cota (o Firestore encerra a escuta quando dá erro)
 function ouve(q, conv, cb, err) {
   let off = null, parou = false, t = null;
@@ -418,9 +432,9 @@ function refDoc(r) {
   return {
     id: r.id,
     get: async () => snapDoc(await vigia(r.get())),
-    set: d => vigia(r.set(d)),
-    update: d => vigia(r.update(achata(d))),
-    delete: () => vigia(r.delete()),
+    set: d => semEsperar(r.set(d)),
+    update: d => semEsperar(r.update(achata(d))),
+    delete: () => semEsperar(r.delete()),
     onSnapshot: (cb, err) => ouve(r, snapDoc, cb, err),
   };
 }
@@ -432,7 +446,7 @@ function refCol(q, base) {
     where: (a, op, b) => refCol(q.where(a, op === "eq" ? "==" : op, b), base),
     onSnapshot: (cb, err) => ouve(q, qs => ({ docs: qs.docs.map(snapDoc), size: qs.size, empty: qs.empty }), cb, err),
     get: async () => { const qs = await vigia(q.get()); return { docs: qs.docs.map(snapDoc), size: qs.size, empty: qs.empty }; },
-    add: async d => { const r = await vigia(base.add(d)); return { id: r.id }; },
+    add: async d => { const ref = base.doc(), x = await semEsperar(ref.set(d)); return { id: ref.id, pendente: x.pendente, enviado: x.enviado }; },
     doc: id => refDoc(id ? base.doc(id) : base.doc()),
   };
 }
@@ -492,9 +506,9 @@ async function comprime(blob) {
 const assets = {
   upload: async blob => {
     const data = await comprime(blob);
-    const r = await fs.collection("fotos").add({ data, autor: me.id, ts: Date.now() });
-    fotos[r.id] = data;
-    return { id: r.id, url: data, sizeBytes: data.length, contentType: "image/jpeg" };
+    const r = fs.collection("fotos").doc(); fotos[r.id] = data;
+    const x = await semEsperar(r.set({ data, autor: me.id, ts: Date.now() }));
+    return { id: r.id, url: data, sizeBytes: data.length, contentType: "image/jpeg", pendente: x.pendente };
   },
   list: async () => ({ assets: [], usage: {} }),
   delete: async id => fs.doc("fotos/" + id).delete(),

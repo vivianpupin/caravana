@@ -424,6 +424,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .bubble .ponto b{font-family:var(--display);font-size:18px;font-weight:500}
 .bubble.me .ponto .eyebrow{color:var(--sand)}
 .bubble .chatfoto{display:block;max-width:100%;width:280px;margin-top:4px;border-radius:12px}
+.chatdesce{position:sticky;bottom:10px;align-self:center;margin-top:-30px;z-index:5;border:0;border-radius:999px;padding:8px 16px;background:#8A3F32;color:#E5DAC5;font:600 13px Poppins,sans-serif;box-shadow:0 4px 14px rgba(40,39,34,.35);cursor:pointer}
 .chatnovas{align-self:stretch;display:flex;align-items:center;gap:10px;font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#8A3F32}
 .chatnovas::before,.chatnovas::after{content:"";flex:1;height:1px;background:rgba(138,63,50,.45)}
 .dayline{align-self:center;font-size:11.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
@@ -2168,7 +2169,23 @@ function grudaChat(log, topo) {
   const desce = () => { if (S.chatGrudado !== false) log.scrollTop = log.scrollHeight; };
   desce(); requestAnimationFrame(desce); setTimeout(desce, 300); setTimeout(desce, 900);
   log.querySelectorAll("img").forEach(im => { if (!im.complete) im.addEventListener("load", desce, { once: true }); });
-  log.addEventListener("scroll", () => { S.chatGrudado = log.scrollTop + log.clientHeight >= log.scrollHeight - 80; }, { passive: true });
+  log.addEventListener("scroll", () => { S.chatGrudado = log.scrollTop + log.clientHeight >= log.scrollHeight - 80; botaoNovas(log); }, { passive: true });
+  botaoNovas(log);
+}
+// lendo mensagens antigas e chegaram novas: um botãozinho embaixo leva direto até elas
+function botaoNovas(log) {
+  const doChat = S.chat.filter(m => m.tipo !== "local" && m.tipo !== "aovivo" && m.tipo !== "reacao"), ult = doChat.reduce((a, m) => Math.max(a, m.ts || 0), 0);
+  if (S.chatGrudado !== false || S.chatBaseTs == null || S.chatIrNovas) S.chatBaseTs = ult;
+  const novas = doChat.filter(m => m.ts > S.chatBaseTs && m.autor !== S.uid).sort((a, b) => a.ts - b.ts);
+  let bt = log.querySelector(".chatdesce");
+  if (!novas.length) { bt && bt.remove(); return; }
+  const txt = "↓ " + novas.length + (novas.length > 1 ? " novas" : " nova");
+  if (!bt) { bt = h("button", { type: "button", class: "chatdesce", onclick: () => {
+      const alvo = log.querySelector('[data-mid="' + CSS.escape(novas[0].id) + '"]');
+      if (alvo) log.scrollTo({ top: log.scrollTop + alvo.getBoundingClientRect().top - log.getBoundingClientRect().top - 40, behavior: "smooth" }); else log.scrollTo({ top: log.scrollHeight, behavior: "smooth" });
+      S.chatBaseTs = ult; bt.remove(); } });
+    log.append(bt); }
+  bt.textContent = txt; bt.setAttribute("aria-label", novas.length + (novas.length > 1 ? " mensagens novas" : " mensagem nova") + ". Toque para ver");
 }
 function render() {
   if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
@@ -6209,7 +6226,7 @@ function vTira() {
     if (!S.assets || !eu()) { msg.textContent = "Para enviar, emita seu passaporte e peça à líder um convite de Editor."; msg.className = "msg err"; return; }
     msg.textContent = "Enviando…"; msg.className = "msg";
     try { const r = await S.assets.upload(await blob());
-      if (col === "mural") await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade: "", legenda: "", ts: Date.now() });
+      if (col === "mural") await addMural({ autor: S.uid, fotoId: r.id, cidade: "", legenda: "", ts: Date.now() });
       else await addChat({ autor: S.uid, tipo: "foto", fotoId: r.id, texto: "", ts: Date.now() });
       msg.textContent = col === "mural" ? "Fotos na galeria da caravana." : "Fotos enviadas para a Roda."; msg.className = "msg ok"; }
     catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
@@ -6650,7 +6667,7 @@ function vCameraFisica(c) {
           h("button", { class: "btn", type: "button", onclick: async () => {
             if (!S.assets || !eu()) { msg.textContent = "Para enviar à galeria, emita seu passaporte."; msg.className = "msg err"; return; }
             msg.textContent = "Enviando…"; msg.className = "msg";
-            try { const r = await S.assets.upload(await blob()); await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade: cidadeHoje(), legenda: c.nome, ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
+            try { const r = await S.assets.upload(await blob()); await addMural({ autor: S.uid, fotoId: r.id, cidade: cidadeHoje(), legenda: c.nome, ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
             catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; } } }, "Enviar para a Galeria da Caravana"),
           h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null }; render(); } }, "📸 Outra foto")), msg));
   const fita = h("div", { class: "cffita" }, CAMERAS_C.map(x => h("button", { type: "button", class: "cfitem" + (x.id === c.id ? " on" : ""), onclick: () => { if (x.id !== c.id) { S.camFlash = null; escolheCamera(x.id); } } },
@@ -6922,7 +6939,7 @@ function verFotos(i) {
         msg.textContent = "Enviando…"; msg.className = "msg";
         it.enviando = true; setTimeout(() => { it.enviando = false; }, 1500);
         try { if (/^video/.test(it.blob.type)) { it.enviando = true; try { await enviaFilmeGaleria(it, msg); } finally { it.enviando = false; } return; }
-          const rr = await S.assets.upload(it.blob); await S.db.collection("mural").add({ autor: S.uid, fotoId: rr.id, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
+          const rr = await S.assets.upload(it.blob); await addMural({ autor: S.uid, fotoId: rr.id, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
         catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("rect", { x: "3", y: "5", width: "18", height: "14", rx: "2" }), h("path", { d: "M3 16l5-5 4 4 3-3 6 6" })))),
     msg);
   document.body.append(tela);
@@ -7312,7 +7329,7 @@ function vFotos() {
   const mural = async () => {
     if (!S.assets || !eu()) { msg.textContent = "Para enviar à galeria, emita seu passaporte e peça à líder um convite de Editor."; msg.className = "msg err"; return; }
     msg.textContent = "Enviando para a galeria…"; msg.className = "msg";
-    try { const r = await S.assets.upload(await blobDoCanvas()); await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade: F.cidade || "", legenda: F.legenda || "", ts: Date.now() }); msg.textContent = "Foto na galeria da caravana."; msg.className = "msg ok"; }
+    try { const r = await S.assets.upload(await blobDoCanvas()); await addMural({ autor: S.uid, fotoId: r.id, cidade: F.cidade || "", legenda: F.legenda || "", ts: Date.now() }); msg.textContent = "Foto na galeria da caravana."; msg.className = "msg ok"; }
     catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
   };
   // foto tirada com o celular também vai para os Registros (como nas câmeras da maleta)
@@ -7410,9 +7427,14 @@ async function pararPos() { try { await S.db.doc("posicoes/" + S.uid).delete(); 
 // ---------- Celular: instalar o app e receber notificações (só no site do Netlify) ----------
 const AVISAR = "/.netlify/functions/avisar";
 const noSite = () => !!window.__VERSAO && (location.protocol === "https:" || location.hostname === "localhost");
+// sem sinal: a foto ou mensagem fica guardada no celular e sai sozinha quando a internet volta
+const avisoSemSinal = () => avisoReacao("📶 Sem sinal agora. Fica guardado e envia sozinho quando a internet voltar.");
+async function addMural(d) { const r = await S.db.collection("mural").add(d); if (r && r.pendente) avisoSemSinal(); return r; }
 async function addChat(d) {
   const r = await S.db.collection("chat").add(d);
-  if (noSite() && r && r.id) {
+  if (r && r.pendente) avisoSemSinal();
+  // o aviso no celular dos outros só sai quando a mensagem chegou de fato ao servidor
+  if (noSite() && r && r.id) (r.enviado || Promise.resolve()).then(() => {
     const p = fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: r.id }), keepalive: true });
     // a líder vê na hora para quantos celulares o aviso saiu (ajuda a descobrir quem ainda não ligou os avisos)
     p.then(async x => {
@@ -7422,7 +7444,7 @@ async function addChat(d) {
       else if (j && j.ok) avisoReacao(j.enviados ? `🔔 Aviso enviado para ${j.enviados} ${j.enviados === 1 ? "celular" : "celulares"}` : "🔕 Ninguém recebeu: ainda não há celulares com os avisos ligados.");
       else avisoReacao("⚠️ O aviso não saiu (" + x.status + ").");
     }).catch(() => { if (S.isOwner) avisoReacao("⚠️ Não consegui falar com o servidor de avisos."); });
-  }
+  }).catch(() => {});
   return r;
 }
 const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
@@ -7707,7 +7729,7 @@ function vConversa() {
     const mine = m.autor === S.uid;
     const ehAviso = m.tipo === "aviso" && ehLider(m.autor);
     const fig = m.tipo === "fig" && FIGURINHAS.find(f => f[0] === m.deus);
-    log.append(h("div", { class: "bubble" + (mine ? " me" : "") + (ehAviso ? " aviso" : "") + (fig ? " fig" : "") },
+    log.append(h("div", { "data-mid": m.id, class: "bubble" + (mine ? " me" : "") + (ehAviso ? " aviso" : "") + (fig ? " fig" : "") },
       bonecoRosto(m.autor),
       // tocar na mensagem abre as reações (como no WhatsApp)
       h("div", { class: "b", onclick: e => { if (!S.db || !eu() || e.target.closest("button,a,.reacs,.reacbar") || getSelection().toString()) return; S.reagindo = S.reagindo === m.id ? null : m.id; render(); } },
@@ -8584,11 +8606,11 @@ function escreverPombo(para) {
     const bt = ev.currentTarget; bt.disabled = true;
     try {
       const r = await S.db.collection("pombos").add({ autor: S.uid, para: quem, texto: ta.value.trim().slice(0, 1200), presente: presente || "", ts: Date.now(), lida: false });
-      if (noSite() && r && r.id) fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ pombo: r.id }), keepalive: true }).catch(() => {});
+      if (noSite() && r && r.id) (r.enviado || Promise.resolve()).then(() => fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ pombo: r.id }), keepalive: true })).catch(() => {});
       // o envelope fecha e o pombo sai voando com ele
       asas(); const caixa = bt.closest(".pombobox"); caixa.classList.add("partiu"); caixa.scrollTop = 0; caixa.style.overflow = "hidden";
-      caixa.append(h("div", { class: "partida" }, pomboSvg("pombo"), h("p", { text: `Seu pombo levantou voo até ${nomeDe(quem).split(" ")[0]}!` })));
-      setTimeout(() => { closeSheets(); render(); }, 2600);
+      caixa.append(h("div", { class: "partida" }, pomboSvg("pombo"), h("p", { text: r && r.pendente ? "Seu pombo alçou voo, mas, por causa da instabilidade do sinal, a viagem vai ser mais longa." : `Seu pombo levantou voo até ${nomeDe(quem).split(" ")[0]}!` })));
+      setTimeout(() => { closeSheets(); render(); }, r && r.pendente ? 4200 : 2600);
     } catch (e) { bt.disabled = false; st.textContent = "O pombo não conseguiu sair agora. Tente de novo em instantes."; st.className = "msg err"; }
   };
   const box = h("div", { role: "dialog", "aria-label": "Escrever uma cartinha", class: "pombobox" },
@@ -8961,7 +8983,7 @@ async function enviaFilmeGaleria2(it, msg) {
         const r = await S.db.collection("fotos").add({ data: await b64(filme.slice(i * PEDACO, (i + 1) * PEDACO)), autor: S.uid, ts: Date.now(), parte: i }); partes.push(r.id); }
     } else partes = [(await S.assets.upload(filme)).id];
   } catch (e) { for (const id of [capaId, ...partes]) S.assets.delete(id).catch(() => {}); throw e; }
-  await S.db.collection("mural").add({ autor: S.uid, fotoId: capaId, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now(), video: { partes, tipo: filme.type || "video/mp4" } });
+  await addMural({ autor: S.uid, fotoId: capaId, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now(), video: { partes, tipo: filme.type || "video/mp4" } });
   msg.textContent = "Filme na Galeria da Caravana."; msg.className = "msg ok";
 }
 // o filme só é baixado quando alguém toca para assistir (economiza os dados de todo mundo)
