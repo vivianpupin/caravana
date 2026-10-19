@@ -67,7 +67,7 @@ window.ARHAT = (function () {
     },
     {
       id: 1, nome: "Primeiro Ato", sub: "Captar energia cósmica e desobstruir os centros de energia", gratis: true, capa: "noite",
-      frase: "Eu sou mais do que meu corpo físico.", ensina: ["viagem", "lucido", "senso", "testes"],
+      frase: "Eu sou consciência além deste corpo.", ensina: ["viagem", "lucido", "senso", "testes"],
       intro: "Para sutilizar nossa vibração vamos reativar as raízes receptoras do corpo! Essa prática não apenas ativa nossa memória, mas também nos aproxima gradualmente de nossos conselheiros espirituais.",
       momentos: [
         { quando: "Ao acordar", hora: "primeiros 5 min", praticas: [
@@ -75,12 +75,12 @@ window.ARHAT = (function () {
         { quando: "Dia", hora: "ao amanhecer e no pôr do sol", praticas: [ RESP_DOURADA, TESTE ] },
         { quando: "Noite", hora: "ao deitar", praticas: [
           { k: "noite", ico: "lua", nome: "Preparando o ambiente", det: "A chuva no quarto e a afirmação", audio: true, texto: [
-            { afirm: "Eu sou mais do que meu corpo físico.\nE por isso, posso perceber aquilo que é maior que o mundo físico.\nDesejo profundamente expandir, experimentar, conhecer, compreender, controlar e usar energias e sistemas de energia maiores que possam ser benéficos e construtivos para mim e para aqueles que amo.\nDesejo profundamente a ajuda e a cooperação, a assistência e a compreensão de indivíduos cuja sabedoria, desenvolvimento e experiência são iguais ou superiores aos meus.\nPeço sua orientação e proteção contra qualquer influência ou fonte que possa me fornecer menos do que meus desejos declarados.\nEu sou mais do que meu corpo físico.", fonte: "Robert A. Monroe" },
+            { afirm: "Eu sou consciência além deste corpo.\nPor isso, posso perceber o que existe além do mundo dos sentidos.\nAbro-me para expandir, explorar e compreender as forças sutis que me atravessam,\ne para usá-las com sabedoria, para o meu bem e o de quem eu amo.\nChamo para perto de mim os guias e conselheiros de jornada\ncuja luz e sabedoria me conduzem com amor.\nQue nada menor do que a minha verdade me alcance nesta noite.\nEu sou consciência além deste corpo.", fonte: "Afirmação do Arhat" },
             { passos: [
               "Imagine uma chuva caindo em seu quarto, limpando toda a atmosfera ao seu redor.",
               "Leia a afirmação acima e deite-se na posição supino (barriga para cima).",
               "Concentre-se na cor do seu nevoeiro e deixe-se envolver por ele.",
-              "Repita mentalmente “Eu sou mais do que meu corpo físico” enquanto se entrega às marés do sono.",
+              "Repita mentalmente “Eu sou consciência além deste corpo” enquanto se entrega às marés do sono.",
               "Lembre-se de anotar todas as experiências que recordar."
             ] },
             { p: "A folha em branco a ser preenchida se torna uma janela pela qual se enxergam as infinitas possibilidades do seu Ser." }
