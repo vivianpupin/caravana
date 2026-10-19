@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "15/10 · 17:15";</script>
+<script>window.__VERSAO = "19/10 · 10:13";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -456,6 +456,9 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .bubble .ponto b{font-family:var(--display);font-size:18px;font-weight:500}
 .bubble.me .ponto .eyebrow{color:var(--sand)}
 .bubble .chatfoto{display:block;max-width:100%;width:280px;margin-top:4px;border-radius:12px}
+.chatdesce{position:sticky;bottom:10px;align-self:center;margin-top:-30px;z-index:5;border:0;border-radius:999px;padding:8px 16px;background:#8A3F32;color:#E5DAC5;font:600 13px Poppins,sans-serif;box-shadow:0 4px 14px rgba(40,39,34,.35);cursor:pointer}
+.chatnovas{align-self:stretch;display:flex;align-items:center;gap:10px;font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#8A3F32}
+.chatnovas::before,.chatnovas::after{content:"";flex:1;height:1px;background:rgba(138,63,50,.45)}
 .dayline{align-self:center;font-size:11.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
 .picker{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;background:var(--panel)}
 .picker select,.picker input{flex:1 1 180px;min-width:0}
@@ -1366,6 +1369,9 @@ button,button *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:
 .cf-descartavel .cfdicafilme .longa,.cf-instantanea .cfdicafilme .longa{display:none}
 .cf-descartavel .cfdicafilme .curta,.cf-instantanea .cfdicafilme .curta{display:inline}
 .cf-descartavel .cfdicafilme,.cf-instantanea .cfdicafilme{left:4px;right:4px;bottom:5px;padding:4px 5px;font-size:9.5px}
+.camnegada{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px;text-align:center;background:radial-gradient(ellipse at center,#2A1F17,#0B0806 75%);color:#E8D2A4;font:600 12px/1.4 "Courier Prime",monospace}
+.camnegada.solta{position:static;border-radius:14px;margin-bottom:12px}
+.camnegada button{font:600 12px "Courier Prime",monospace;color:#282722;background:#C7B493;border:0;border-radius:999px;padding:8px 14px}
 .cfligando{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(ellipse at center,#2A1F17,#0B0806 75%);color:#E8D2A4;font:600 11px "Courier Prime",monospace;letter-spacing:.14em;text-transform:uppercase;text-align:center;pointer-events:none;border-radius:inherit}
 .cfligando i{width:22px;height:22px;border-radius:50%;border:2px solid rgba(232,192,122,.25);border-top-color:#E8C07A;animation:giraLiga .9s linear infinite}
 @keyframes giraLiga{to{transform:rotate(360deg)}}
@@ -1966,7 +1972,23 @@ const $ = s => document.querySelector(s);
 const norm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
 const byOrdem = (a, b) => (a.ordem ?? 999) - (b.ordem ?? 999);
 const blob = id => window.__blobUrl ? window.__blobUrl(id) : "/_blob/" + id;
-window.addEventListener("caravana-foto", () => { if (!document.querySelector(".sheet")) render(); });
+// fotos da galeria e do chat: só baixa as que aparecem na tela (antes baixava todas ao abrir, e no chip da Índia isso pesa)
+// e quando chegam, troca só aquela foto, sem redesenhar a tela (a galeria não pula enquanto rola)
+const fotoTardia = id => window.__blobUrl ? { src: window.__blobUrl(id, true), "data-foto": id } : { src: blob(id) };
+const olhoFotos = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return; olhoFotos.unobserve(e.target);
+  const u = window.__blobUrl(e.target.dataset.foto); if (u && e.target.getAttribute("src") !== u) e.target.src = u;
+}), { rootMargin: "600px 0px" }) : null;
+function olhaFotos(raiz) {
+  if (!window.__blobUrl) return;
+  (raiz || document).querySelectorAll("img[data-foto]:not([data-olhada])").forEach(i => { i.dataset.olhada = "1"; if (olhoFotos) olhoFotos.observe(i); else window.__blobUrl(i.dataset.foto); });
+}
+let olhaPend = 0; new MutationObserver(() => { if (!olhaPend) olhaPend = requestAnimationFrame(() => { olhaPend = 0; olhaFotos(); }); }).observe(document.documentElement, { childList: true, subtree: true });
+window.addEventListener("caravana-foto", e => {
+  const ids = (e.detail && e.detail.ids) || null; let resto = !ids;
+  if (ids) for (const id of ids) { const imgs = document.querySelectorAll('img[data-foto="' + CSS.escape(id) + '"]'); if (!imgs.length) { resto = true; continue; } const u = window.__blobUrl(id, true); imgs.forEach(i => { i.src = u; }); }
+  if (resto && !document.querySelector(".sheet")) render();
+});
 const badgeSrc = l => l && l.insignia ? `insignias/${l.insignia}.webp` : null;
 const deusSrc = n => "deuses/" + norm(n) + ".webp";
 const FRESCO = 3 * 60 * 60 * 1000;
@@ -2100,7 +2122,8 @@ function mostraAbaAtiva() {
 }
 function go(tab) {
   try { VOZ.parar(); } catch (e) {}
-  S.tab = tab; if (tab === "conversa") S.chatGrudado = true; try { localStorage.setItem("cdi-tab2", tab); } catch (e) {}
+  S.trocandoCam = null;
+  S.tab = tab; if (tab === "conversa") { S.chatGrudado = true; S.chatAbriuEm = null; } try { localStorage.setItem("cdi-tab2", tab); } catch (e) {}
   render(); $("#main").scrollTop = 0;
   mostraAbaAtiva();
 }
@@ -2118,6 +2141,8 @@ $("#me").addEventListener("click", () => go("passaporte"));
 function marcaChat() {
   let visto = 0; try { visto = +localStorage.getItem("cdi-chat-visto") || 0; } catch (e) {}
   const ult = S.chat.reduce((a, m) => Math.max(a, m.ts || 0), 0);
+  // ao abrir o chat, lembra até onde a pessoa já tinha lido: a conversa abre ali, e não lá embaixo
+  if (S.tab === "conversa" && S.chatAbriuEm == null) { S.chatAbriuEm = visto; S.chatIrNovas = true; }
   if (!visto || S.tab === "conversa") { if (ult > visto) { visto = ult; try { localStorage.setItem("cdi-chat-visto", String(ult)); } catch (e) {} } }
   const n = S.chat.filter(m => m.autor !== S.uid && m.tipo !== "local" && m.tipo !== "aovivo" && m.tipo !== "reacao" && (m.ts || 0) > visto).length;
   const bt = document.querySelector('#tabs button[data-tab="conversa"]'); if (!bt) return;
@@ -2159,15 +2184,55 @@ function ajustaVisorCel() {
   cv.style.maxHeight = Math.max(200, cabe * .8) + "px";
 }
 addEventListener("resize", () => { if (S.camSel) ajustaSelfie(); if (S.camSel === "celular") ajustaVisorCel(); });
+function grudaChat(log, topo) {
+  // abriu o chat com mensagens novas: mostra a partir da primeira que a pessoa ainda não leu
+  const marca = log.querySelector("#chat-novas");
+  if (S.chatIrNovas && marca) {
+    S.chatGrudado = false;
+    const vai = () => { if (S.chatIrNovas && marca.isConnected) log.scrollTop += marca.getBoundingClientRect().top - log.getBoundingClientRect().top - 6; };
+    vai(); requestAnimationFrame(vai); setTimeout(vai, 300); setTimeout(vai, 900);
+    log.querySelectorAll("img").forEach(im => { if (!im.complete) im.addEventListener("load", vai, { once: true }); });
+    const solta = () => { S.chatIrNovas = false; };
+    ["touchstart", "wheel", "pointerdown"].forEach(ev => log.addEventListener(ev, solta, { once: true, passive: true }));
+    setTimeout(solta, 2500);
+  } else if (S.chatIrNovas && S.chat.length) S.chatIrNovas = false;
+  // a pessoa estava lendo mais acima: chegou mensagem nova e a conversa continua no mesmo lugar
+  else if (S.chatGrudado === false && topo != null) log.scrollTop = topo;
+  const desce = () => { if (S.chatGrudado !== false) log.scrollTop = log.scrollHeight; };
+  desce(); requestAnimationFrame(desce); setTimeout(desce, 300); setTimeout(desce, 900);
+  log.querySelectorAll("img").forEach(im => { if (!im.complete) im.addEventListener("load", desce, { once: true }); });
+  log.addEventListener("scroll", () => { S.chatGrudado = log.scrollTop + log.clientHeight >= log.scrollHeight - 80; botaoNovas(log); }, { passive: true });
+  botaoNovas(log);
+}
+// lendo mensagens antigas e chegaram novas: um botãozinho embaixo leva direto até elas
+function botaoNovas(log) {
+  const doChat = S.chat.filter(m => m.tipo !== "local" && m.tipo !== "aovivo" && m.tipo !== "reacao"), ult = doChat.reduce((a, m) => Math.max(a, m.ts || 0), 0);
+  if (S.chatGrudado !== false || S.chatBaseTs == null || S.chatIrNovas) S.chatBaseTs = ult;
+  const novas = doChat.filter(m => m.ts > S.chatBaseTs && m.autor !== S.uid).sort((a, b) => a.ts - b.ts);
+  let bt = log.querySelector(".chatdesce");
+  if (!novas.length) { bt && bt.remove(); return; }
+  const txt = "↓ " + novas.length + (novas.length > 1 ? " novas" : " nova");
+  if (!bt) { bt = h("button", { type: "button", class: "chatdesce", onclick: () => {
+      const alvo = log.querySelector('[data-mid="' + CSS.escape(novas[0].id) + '"]');
+      if (alvo) log.scrollTo({ top: log.scrollTop + alvo.getBoundingClientRect().top - log.getBoundingClientRect().top - 40, behavior: "smooth" }); else log.scrollTo({ top: log.scrollHeight, behavior: "smooth" });
+      S.chatBaseTs = ult; bt.remove(); } });
+    log.append(bt); }
+  bt.textContent = txt; bt.setAttribute("aria-label", novas.length + (novas.length > 1 ? " mensagens novas" : " mensagem nova") + ". Toque para ver");
+}
 function render() {
   if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
   marcaChat(); marcaPombos(); convidaAvisos(); registraApp(); checaHabilidades();
+  // escrevendo no chat e chegou mensagem: troca só a lista de mensagens; a caixa de texto fica como está (o cursor e o teclado não pulam)
+  if (S.tab === "conversa" && document.activeElement && document.activeElement.id === "chat-input" && S._abaDesenhada && S._abaDesenhada.startsWith("conversa|")) {
+    const velho = $("#chatlog"), novo = vConversa().querySelector("#chatlog");
+    if (velho && novo) { const topo = velho.scrollTop; velho.replaceWith(novo); grudaChat(novo, topo); tickRelogios(); return; }
+  }
   for (const b of document.querySelectorAll("#tabs button")) {
     if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
   }
   const act = document.activeElement, actId = act && act.id, sel = act && "selectionStart" in act ? [act.selectionStart, act.selectionEnd] : null;
   const draft = act && actId && act.value !== undefined ? act.value : null;
-  const chatDraft = $("#chat-input")?.value;
+  const chatDraft = $("#chat-input")?.value, chatTopo = $("#chatlog")?.scrollTop;
   const main = $("#main"), scroll = main.scrollTop;
   // o que a pessoa abriu ou deslizou continua igual depois de redesenhar (nada fecha nem pula quando chega novidade de alguém)
   const vista = [S.tab, S.fotoAba, S.camSel, S.diaAberto, S.ensSel].join("|"), mesmaAba = S._abaDesenhada === vista;
@@ -2192,12 +2257,7 @@ function render() {
     // a conversa fica sempre na última mensagem (a não ser que a pessoa tenha subido para ler as antigas);
     // desce de novo quando fotos e figurinhas terminam de carregar, que aumentam a altura depois
     const log = $("#chatlog");
-    if (log) {
-      const desce = () => { if (S.chatGrudado !== false) log.scrollTop = log.scrollHeight; };
-      desce(); requestAnimationFrame(desce); setTimeout(desce, 300); setTimeout(desce, 900);
-      log.querySelectorAll("img").forEach(im => { if (!im.complete) im.addEventListener("load", desce, { once: true }); });
-      log.addEventListener("scroll", () => { S.chatGrudado = log.scrollTop + log.clientHeight >= log.scrollHeight - 80; }, { passive: true });
-    }
+    if (log) grudaChat(log, chatTopo);
   }
   tickRelogios();
   if (S.camSel) requestAnimationFrame(ajustaSelfie);
@@ -2285,6 +2345,9 @@ function vCadastro() {
       const doc = { nome: nome.value.trim(), cidade: cid.value.trim(), genero: S.cadGenero, viagensAntes: (S.cadViagens || {}).n || 0, ts: Date.now(), insignias: { ...S.local } };
       if (S.cadFoto) doc.foto = S.cadFoto;
       if (S.isOwner) doc.lider = true;
+      // quem já tem passaporte (a lista ainda não tinha chegado da internet) não perde selos, missões nem o número: só atualiza nome, cidade e foto
+      const ant = await S.db.doc("viajantes/" + S.uid).get().catch(() => null);
+      if (ant && ant.exists) { const { ts, insignias, ...resto } = doc; try { await S.db.doc("viajantes/" + S.uid).update(resto); S.tab = "passaporte"; render(); } catch (err) { erro.textContent = "Não consegui atualizar seu passaporte. Tente de novo com internet."; } return; }
       try { await S.db.doc("viajantes/" + S.uid).set(doc); S.tab = "passaporte"; }
       catch (err) { erro.textContent = "Não consegui emitir seu passaporte. Peça à líder um convite com permissão para participar."; }
     } },
@@ -2531,7 +2594,7 @@ function abrirIntencao() {
     };
     box.append(ceu("Uma mensagem para o rio", "Responda a pergunta abaixo, coloque na garrafa e lance no rio.", false),
       h("h3", { class: "garrafaperg", text: "Quem sou eu ao final desta travessia?" }), h("p", { class: "small", style: "text-align:center;margin:0", text: "Como você se imagina quando a viagem terminar?" }), h("div", { class: "pbpapel" }, ta),
-      h("p", { class: "small", style: "text-align:center", text: "Ninguém mais lê: ela fica guardada só neste celular." }), msg,
+      msg,
       h("div", { class: "foot2" }, h("button", { class: "btn ghost", type: "button", onclick: fechar }, "Agora não"), h("button", { class: "btn gold", type: "button", onclick: lancar }, "🌊 Lançar a garrafa")));
   } else {
     const d = new Date(I.ts), quando = d.getDate() + " " + MES[d.getMonth()].toLowerCase();
@@ -4737,7 +4800,9 @@ function erroGps(e) {
     : "Não consegui achar a sua localização agora. Confira se a localização do celular está ligada e tente de novo.";
 }
 // economia de bateria: a localização ao vivo pausa das 22h às 6h (hora do celular) e volta sozinha de manhã
-const noite = () => { const hr = new Date().getHours(); return hr >= 22 || hr < 6; };
+// durante a viagem vale a hora da Índia (se o celular ficou no horário de Brasília, o GPS pausava de dia)
+const noite = () => { const hj = hojeIso(), viagem = hj >= "2026-11-04" && hj <= "2026-11-16";
+  const hr = viagem ? +new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour: "numeric", hourCycle: "h23" }) % 24 : new Date().getHours(); return hr >= 22 || hr < 6; };
 function pausaNoite() {
   if (noite()) {
     if (S.gpsWatch != null) { navigator.geolocation.clearWatch(S.gpsWatch); S.gpsWatch = null; S.gpsOn = false; S.gpsNoite = true; S.gpsMsg = "Localização pausada à noite para poupar bateria. Volta sozinha às 6h."; if (S.tab === "mapa") render(); }
@@ -5987,7 +6052,7 @@ async function colaAdesivos(c, F, ox, oy, w, hh, chave = "foto") {
     const alt = a.s * M * (im.height / Math.max(im.width, im.height)), lar = a.s * M * (im.width / Math.max(im.width, im.height)), cx = ox + a.x * w, cy = oy + a.y * hh;
     c.save(); c.translate(cx, cy); c.rotate(a.r || 0); if (a.esp) c.scale(-1, 1);
     c.shadowColor = "rgba(0,0,0,.35)"; c.shadowBlur = M * .012; c.shadowOffsetY = M * .006; c.drawImage(im, -lar / 2, -alt / 2, lar, alt); c.restore();
-    if (S[chave + "Sel"] === i) { c.save(); c.translate(cx, cy); c.rotate(a.r || 0); c.setLineDash([M * .012, M * .01]); c.lineWidth = Math.max(2, M * .004); c.strokeStyle = "rgba(255,255,255,.95)"; c.strokeRect(-lar / 2 - M * .01, -alt / 2 - M * .01, lar + M * .02, alt + M * .02); c.restore(); }
+    if (S[chave + "Sel"] === i && !F.final) { c.save(); c.translate(cx, cy); c.rotate(a.r || 0); c.setLineDash([M * .012, M * .01]); c.lineWidth = Math.max(2, M * .004); c.strokeStyle = "rgba(255,255,255,.95)"; c.strokeRect(-lar / 2 - M * .01, -alt / 2 - M * .01, lar + M * .02, alt + M * .02); c.restore(); }
     R.push({ cx, cy, r: Math.max(lar, alt) / 2 });
   }
 }
@@ -6193,7 +6258,7 @@ function vTira() {
     if (!S.assets || !eu()) { msg.textContent = "Para enviar, emita seu passaporte e peça à líder um convite de Editor."; msg.className = "msg err"; return; }
     msg.textContent = "Enviando…"; msg.className = "msg";
     try { const r = await S.assets.upload(await blob());
-      if (col === "mural") await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade: "", legenda: "", ts: Date.now() });
+      if (col === "mural") await addMural({ autor: S.uid, fotoId: r.id, cidade: "", legenda: "", ts: Date.now() });
       else await addChat({ autor: S.uid, tipo: "foto", fotoId: r.id, texto: "", ts: Date.now() });
       msg.textContent = col === "mural" ? "Fotos na galeria da caravana." : "Fotos enviadas para a Roda."; msg.className = "msg ok"; }
     catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
@@ -6527,7 +6592,7 @@ function vCameraFisica(c) {
   const F0 = S.foto || (S.foto = fotoDaCamera(c));
   if (!F0.img && podeCamera() && !S.camFalhou) { const C = iniciaVivo(F0); S.foto = { ...F0, img: C.frame, vivo: true }; }
   const F = S.foto, canvas = S.fotoCanvas || (S.fotoCanvas = h("canvas", { class: "fotocanvas", "aria-label": "Visor da câmera" })), msg = h("p", { class: "msg", role: "status" });
-  if (F.img && !F.vivo) requestAnimationFrame(() => montaFoto(canvas).then(() => { if (S.guardarDiario) { S.guardarDiario = false; canvas.toBlob(b => b && guardaNoDiario(b, c).then(() => { if (S.camSel === c.id) render(); }), "image/jpeg", .88); } }).catch(() => {}));
+  if (F.img && !F.vivo) requestAnimationFrame(() => (S.guardarDiario && (S.fotoSel = null), montaFoto(canvas)).then(() => { if (S.guardarDiario) { S.guardarDiario = false; canvas.toBlob(b => b && guardaNoDiario(b, c).then(() => { if (S.camSel === c.id) render(); }), "image/jpeg", .88); } }).catch(() => {}));
   const flashOn = false; // sem flash em nenhuma câmera
   // Quatro Tempos: quatro disparos seguidos; cada um vira uma faixa em pé, lado a lado (como a câmera de 4 lentes), com divisórias pretas irregulares
   const rajada = async () => {
@@ -6604,7 +6669,7 @@ function vCameraFisica(c) {
   // com a foto realista: a câmera de perto ocupa a tela, a imagem ao vivo entra no visor da foto e o botão da foto dispara
   const palco = fotoCorpo ? h("div", { class: "cfpalco", "aria-hidden": "false" }, h("img", { class: "cffundo", src: "img/cameras/" + c.id + "-corpo.jpg", alt: "", decoding: "sync" }), h("div", { class: "cfimg" },
     h("img", { src: "img/cameras/" + c.id + "-corpo.jpg", alt: "", decoding: "sync" }),
-    h("div", { class: "cfjanela cfjanelafoto" + (fc.invertido ? " invertido" : "") + (fc.inteira ? " inteira" : ""), style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : null,
+    h("div", { class: "cfjanela cfjanelafoto" + (fc.invertido ? " invertido" : "") + (fc.inteira ? " inteira" : ""), style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : S.camFalhou ? camNegada() : null,
       F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando", "aria-live": "polite" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null,
       c.filma && S.camModo === "filme" && F.vivo ? dicaFilme() : null,
       c.id === "super8" ? h("span", { class: "cfmira", "aria-hidden": "true" }) : null,
@@ -6634,7 +6699,7 @@ function vCameraFisica(c) {
           h("button", { class: "btn", type: "button", onclick: async () => {
             if (!S.assets || !eu()) { msg.textContent = "Para enviar à galeria, emita seu passaporte."; msg.className = "msg err"; return; }
             msg.textContent = "Enviando…"; msg.className = "msg";
-            try { const r = await S.assets.upload(await blob()); await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade: cidadeHoje(), legenda: c.nome, ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
+            try { const r = await S.assets.upload(await blob()); await addMural({ autor: S.uid, fotoId: r.id, cidade: cidadeHoje(), legenda: c.nome, ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
             catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; } } }, "Enviar para a Galeria da Caravana"),
           h("button", { class: "btn ghost", type: "button", onclick: () => { S.camFalhou = false; S.foto = { ...S.foto, img: null }; render(); } }, "📸 Outra foto")), msg));
   const fita = h("div", { class: "cffita" }, CAMERAS_C.map(x => h("button", { type: "button", class: "cfitem" + (x.id === c.id ? " on" : ""), onclick: () => { if (x.id !== c.id) { S.camFlash = null; escolheCamera(x.id); } } },
@@ -6661,10 +6726,10 @@ function trocaModoFilme(c, chaveEl) {
 }
 // filmar funciona dos dois jeitos: segurando o botão (para quando solta) ou tocando uma vez para começar e outra para parar
 function apertaFilmar(e, c, F, sempre) {
+  if (S.gravando) { e.preventDefault(); S.gravando.stop(); return; }
   if (!sempre && (!c.filma || S.camModo !== "filme")) return;
   if (!F || !F.vivo) return;
   e.preventDefault();
-  if (S.gravando) { S.gravando.stop(); return; }
   const t0 = Date.now(); filma(c);
   const solta = () => { document.removeEventListener("pointerup", solta); document.removeEventListener("pointercancel", solta); if (Date.now() - t0 > 700 && S.gravando) S.gravando.stop(); };
   document.addEventListener("pointerup", solta); document.addEventListener("pointercancel", solta);
@@ -6672,6 +6737,10 @@ function apertaFilmar(e, c, F, sempre) {
 // filmando: grava a própria imagem do visor (já com o filtro), sem som, como filme mudo; até 1 minuto
 async function filma(c) {
   if (S.gravando) { S.gravando.stop(); return; }
+  if (filma.iniciando) return; filma.iniciando = true;
+  try { await filma2(c); } finally { filma.iniciando = false; }
+}
+async function filma2(c) {
   const tela = S.fotoCanvas; if (!tela || !tela.captureStream || !window.MediaRecorder) { alert("Este celular não consegue filmar pelo app."); return; }
   const W = 1080, H = 1920, rec = document.createElement("canvas"); rec.width = W; rec.height = H; const x = rec.getContext("2d");
   const marca = document.createElement("canvas"); marca.width = W; marca.height = H; await marcaCaravana(marca, { ox: 0, oy: 0, w: W, hh: H }, c && c.id === "rajastao");
@@ -6681,18 +6750,20 @@ async function filma(c) {
   const tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || "";
   const mr = new MediaRecorder(rec.captureStream(24), tipo ? { mimeType: tipo, videoBitsPerSecond: 3.5e6 } : undefined), partes = [];
   mr.ondataavailable = e => e.data && e.data.size && partes.push(e.data);
-  mr.onstop = async () => { clearInterval(copia); clearTimeout(limite); S.gravando = null; mostraGravando();
-    const b = new Blob(partes, { type: (tipo || "video/webm").split(";")[0] }); if (b.size) { await guardaNoDiario(b, c, capa ? { capa } : null); S.fotosDiario = await lerDiario(); if (S.camSel === c.id) mostraGravando(true);
+  const solta = () => { clearInterval(copia); clearTimeout(limite); mr.stream && mr.stream.getTracks().forEach(t => t.stop()); if (S.gravando === mr) S.gravando = null; mostraGravando(); };
+  mr.onerror = () => { solta(); avisoReacao("Não consegui gravar o filme neste celular."); };
+  mr.onstop = async () => { solta();
+    const b = new Blob(partes, { type: (mr.mimeType || tipo || "video/webm").split(";")[0] }); if (b.size) { const ok = await guardaNoDiario(b, c, capa ? { capa } : null); S.fotosDiario = await lerDiario(); if (S.camSel === c.id) mostraGravando(true);
       // o filme vai para a carteira de Registros (na Maleta, embaixo das câmeras); no celular não há miniatura, então avisa onde ficou
-      avisoReacao("🎞️ Filme guardado nos Registros, na Maleta, embaixo das câmeras."); }
+      avisoReacao(ok ? "🎞️ Filme guardado nos Registros, na Maleta, embaixo das câmeras." : "Não consegui guardar o filme: a memória do celular pode estar cheia."); }
     else avisoReacao("Não consegui gravar o filme neste celular."); };
   // capa do filme: o primeiro quadro, guardado como foto, para a miniatura nunca ficar preta (o iPhone não mostra quadro de vídeo parado)
   let capa = null; setTimeout(() => { const k = document.createElement("canvas"); k.width = 360; k.height = 640; k.getContext("2d").drawImage(rec, 0, 0, 360, 640); k.toBlob(b => { capa = b; }, "image/jpeg", .8); }, 250);
   const limite = setTimeout(() => mr.state === "recording" && mr.stop(), 60000);
   // o iPhone só manda imagem para o filme depois que a tela já foi desenhada algumas vezes: a gravação começa um instante depois, para o 1º quadro não sair preto
-  const comeca = setTimeout(() => { if (mr.state === "inactive" && S.gravando === mr) mr.start(500); }, 250);
+  const comeca = setTimeout(() => { if (mr.state === "inactive" && S.gravando === mr) { try { mr.start(500); } catch (e) { solta(); avisoReacao("Não consegui gravar o filme neste celular."); } } }, 250);
   const para0 = mr.stop.bind(mr);
-  mr.stop = () => { if (mr.state === "inactive") { clearTimeout(comeca); clearInterval(copia); clearTimeout(limite); S.gravando = null; mostraGravando(); return; } para0(); };
+  mr.stop = () => { if (mr.state === "inactive") { clearTimeout(comeca); solta(); return; } para0(); };
   S.gravando = mr; S.gravouEm = Date.now(); cliqueSom(); mostraGravando();
 }
 // começar e parar de filmar muda só o que precisa (REC, textos, botão e a miniatura), sem redesenhar a tela: nada pisca
@@ -6728,7 +6799,7 @@ async function revelaFoto(img, c, extra) {
   S.revelando = (S.revelando || 0) + 1; document.querySelector(".cfmini")?.classList.add("revelando");
   try {
     const out = document.createElement("canvas");
-    const Fx = { ...S.foto, ...(extra || {}), img, vivo: false }; if (Fx.molduraFinal) Fx.moldura = Fx.molduraFinal; // o visor mostra só a cena; a moldura branca aparece na foto revelada
+    const Fx = { ...S.foto, ...(extra || {}), img, vivo: false, final: true }; if (Fx.molduraFinal) Fx.moldura = Fx.molduraFinal; // o visor mostra só a cena; a moldura branca aparece na foto revelada
     await montaFoto(out, Fx);
     // cores Lassi da Super 8: foto limpa, sem riscos, poeira, tremido nem luz vazando da película
     const fF = FILTROS.find(y => y.id === Fx.filtro) || {}, limpa = fF.cinema === 2;
@@ -6737,7 +6808,7 @@ async function revelaFoto(img, c, extra) {
     await marcaCaravana(out, Fx.geo, c && c.id === "rajastao");
     const fim = paraReels(out, Fx.reels);
     const b = await new Promise(ok => fim.toBlob(ok, "image/jpeg", .9));
-    if (b) await guardaNoDiario(b, c);
+    if (b && !(await guardaNoDiario(b, c))) avisoReacao("Não consegui guardar a foto: a memória do celular pode estar cheia.");
     S.fotosDiario = await lerDiario();
   } catch (e) {}
   S.revelando--;
@@ -6864,7 +6935,7 @@ function verQuatro() {
 }
 // leva para a carteira de Registros (na Maleta, embaixo das câmeras), saindo da câmera se estiver numa
 function irRegistros() {
-  document.querySelectorAll(".nomovisor").forEach(e => e.remove());
+  S.trocandoCam = null; document.querySelectorAll(".nomovisor").forEach(e => e.remove());
   fechaVivo(); S.camSel = null; S.foto = null; S.fotoSel = null; S.fotoAba = "estudio";
   if (S.tab !== "fotos") go("fotos"); else render();
   requestAnimationFrame(() => document.querySelector(".diariofotos")?.scrollIntoView({ block: "start", behavior: "smooth" }));
@@ -6900,7 +6971,7 @@ function verFotos(i) {
         msg.textContent = "Enviando…"; msg.className = "msg";
         it.enviando = true; setTimeout(() => { it.enviando = false; }, 1500);
         try { if (/^video/.test(it.blob.type)) { it.enviando = true; try { await enviaFilmeGaleria(it, msg); } finally { it.enviando = false; } return; }
-          const rr = await S.assets.upload(it.blob); await S.db.collection("mural").add({ autor: S.uid, fotoId: rr.id, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
+          const rr = await S.assets.upload(it.blob); await addMural({ autor: S.uid, fotoId: rr.id, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
         catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("rect", { x: "3", y: "5", width: "18", height: "14", rx: "2" }), h("path", { d: "M3 16l5-5 4 4 3-3 6 6" })))),
     msg);
   document.body.append(tela);
@@ -6914,8 +6985,10 @@ async function guardaNoDiario(blob, c, extra) {
   try { const db = await bancoDiario(), item = { id: Date.now() + "-" + Math.random().toString(36).slice(2, 6), ts: Date.now(), camera: c.nome, cidade: cidadeHoje(), blob, ...(extra || {}) };
     await new Promise((ok, no) => { const t = db.transaction("fotos", "readwrite"); t.objectStore("fotos").put(item); t.oncomplete = ok; t.onerror = () => no(t.error); });
     if (c && c.id !== "celular") marcaMissao("camera");
-    S.diarioAnt = S.fotosDiario; S.fotosDiario = null; } catch (e) {}
+    S.diarioAnt = S.fotosDiario; S.fotosDiario = null; return true; } catch (e) { return false; }
 }
+// pede ao celular para não apagar as fotos guardadas no app quando a memória apertar
+try { navigator.storage && navigator.storage.persist && navigator.storage.persist().catch(() => {}); } catch (e) {}
 async function lerDiario() {
   try { const db = await bancoDiario(); return await new Promise((ok, no) => { const q = db.transaction("fotos").objectStore("fotos").getAll(); q.onsuccess = () => { const velhos = new Map((S.fotosDiario || S.diarioAnt || []).map(x => [x.id, x])); ok(q.result.map(x => velhos.get(x.id) || x).sort((a, b) => b.ts - a.ts)); }; q.onerror = () => no(q.error); }); } catch (e) { return []; }
 }
@@ -7061,13 +7134,13 @@ function guardaFluxo(fluxo, frente) {
 }
 function pegaFluxoGuardado(frente) {
   const G = S.fluxoGuardado; if (!G) return null;
-  if (G.frente !== frente || !G.fluxo.getVideoTracks().some(t => t.readyState === "live")) { G.fluxo.getTracks().forEach(t => t.stop()); clearTimeout(G.t); S.fluxoGuardado = null; return null; }
+  if (G.frente !== frente || !G.fluxo.getVideoTracks().some(t => t.readyState === "live" && !t.muted)) { G.fluxo.getTracks().forEach(t => t.stop()); clearTimeout(G.t); S.fluxoGuardado = null; return null; }
   clearTimeout(G.t); S.fluxoGuardado = null; return G.fluxo;
 }
-document.addEventListener("visibilitychange", () => { const G = S.fluxoGuardado; if (document.hidden && G) { G.fluxo.getTracks().forEach(t => t.stop()); clearTimeout(G.t); S.fluxoGuardado = null; } });
+document.addEventListener("visibilitychange", () => { if (document.hidden && S.gravando) S.gravando.stop(); const G = S.fluxoGuardado; if (document.hidden && G) { G.fluxo.getTracks().forEach(t => t.stop()); clearTimeout(G.t); S.fluxoGuardado = null; } });
 // guarda o fluxo com o lado em que ele foi aberto (o Virar troca C.frente antes; sem isso a câmera de trás voltava no lugar da selfie)
 function paraCam() { const C = S.camEst; if (C && C.fluxo) { guardaFluxo(C.fluxo, !!C.fluxoFrente); C.fluxo = null; } }
-function fechaVivo() { paraCam(); if (S.camEst) S.camEst.rodando = false; S.camEst = null; }
+function fechaVivo() { if (S.gravando) S.gravando.stop(); paraCam(); if (S.camEst) S.camEst.rodando = false; S.camEst = null; }
 async function ligaCam() {
   const C = S.camEst; if (!C) return; paraCam();
   const vez = C.vez = (C.vez || 0) + 1, lado = !!C.frente;
@@ -7077,17 +7150,21 @@ async function ligaCam() {
     const fluxo = pegaFluxoGuardado(lado) || await pede(true).catch(() => pede(false));
     // se a câmera já foi fechada ou virada de novo enquanto esperava, desliga este fluxo e sai
     if (S.camEst !== C || C.vez !== vez) { guardaFluxo(fluxo, lado); return; }
-    C.fluxo = fluxo; C.fluxoFrente = lado; C.video.srcObject = fluxo; await C.video.play(); C.acordou = true; C.vivoDesde = performance.now();
+    C.fluxo = fluxo; C.fluxoFrente = lado; fluxo.getVideoTracks().forEach(t => { t.onended = () => { if (S.camEst === C && C.fluxo === fluxo && !document.hidden) { C.fluxo = null; ligaCam(); } }; }); C.video.srcObject = fluxo; await C.video.play(); C.acordou = true; C.vivoDesde = performance.now();
     if (!C.rodando) { C.rodando = true; requestAnimationFrame(quadroCam); }
   } catch (e) { if (S.camEst !== C || C.vez !== vez) return; fechaVivo(); S.camFalhou = true; if (S.foto && S.foto.vivo) S.foto = { ...S.foto, img: null, vivo: false }; render(); }
 }
 const dicaCel = () => S.gravando ? "Gravando… solte ou toque em Stop · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure Film, ou toque uma vez para começar e outra para parar.";
 // clique da câmera do celular: som de obturador, vibração e a piscada no visor, como nas câmeras da maleta; com o temporizador, conta antes
+function camNegada() {
+  return h("div", { class: "camnegada", role: "status" }, h("span", { text: "Libere a câmera nos ajustes do celular para este app." }),
+    h("button", { type: "button", onclick: () => { S.camFalhou = false; render(); } }, "Tentar de novo"));
+}
 function disparaCel() {
   if (S.gravando) return;
   if (S.celConta) { clearInterval(S.celConta); S.celConta = null; document.querySelector(".celcontagem")?.remove(); return; } // tocar de novo cancela a contagem
   const n = S.celTempo || 0;
-  const clica = () => { if (S.camSel !== "celular" || !S.foto || !S.foto.vivo || S.gravando) return;
+  const clica = () => { if (S.camSel !== "celular" || !S.foto || !S.foto.vivo || S.gravando || (S.camEst && S.camEst.revelando)) return;
     cliqueSom(); vibrar(30);
     const fr = document.querySelector(".celvisor .fotoframe");
     if (fr) { const r = fr.getBoundingClientRect(), fl = h("div", { class: "celflash", style: `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px` }); document.body.append(fl); setTimeout(() => fl.remove(), 450); }
@@ -7106,12 +7183,12 @@ async function fotoCelSemPiscar() {
   C.revelando = true; C.pausa = true;
   try {
     for (let i = 0; i < 20 && C.ocupado; i++) await new Promise(r => setTimeout(r, 20)); // espera o quadro ao vivo que estiver no meio terminar
-    const out = document.createElement("canvas"), Fx = { ...S.foto, img: q, vivo: false };
+    const out = document.createElement("canvas"), Fx = { ...S.foto, img: q, vivo: false, final: true };
     const rnd = Math.random; let sem = 7; Math.random = () => { sem = (sem * 16807) % 2147483647; return sem / 2147483647; };
     try { await montaFoto(out, Fx); } finally { Math.random = rnd; montaFoto.img = null; }
     C.pausa = false;
     const b = await new Promise(r => out.toBlob(r, "image/jpeg", .9)); if (!b) return;
-    await guardaNoDiario(b, CAMERAS_C.find(x => x.id === "celular") || { nome: "Celular" });
+    if (!(await guardaNoDiario(b, CAMERAS_C.find(x => x.id === "celular") || { nome: "Celular" }))) { avisoReacao("Não consegui guardar a foto: a memória do celular pode estar cheia."); return; }
     S.fotosDiario = await lerDiario();
     document.querySelector(".celmini")?.replaceWith(miniCel());
     const vez = S.celGuardou = Date.now(), dc = document.querySelector(".estudiocel .celdica");
@@ -7284,11 +7361,11 @@ function vFotos() {
   const mural = async () => {
     if (!S.assets || !eu()) { msg.textContent = "Para enviar à galeria, emita seu passaporte e peça à líder um convite de Editor."; msg.className = "msg err"; return; }
     msg.textContent = "Enviando para a galeria…"; msg.className = "msg";
-    try { const r = await S.assets.upload(await blobDoCanvas()); await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade: F.cidade || "", legenda: F.legenda || "", ts: Date.now() }); msg.textContent = "Foto na galeria da caravana."; msg.className = "msg ok"; }
+    try { const r = await S.assets.upload(await blobDoCanvas()); await addMural({ autor: S.uid, fotoId: r.id, cidade: F.cidade || "", legenda: F.legenda || "", ts: Date.now() }); msg.textContent = "Foto na galeria da caravana."; msg.className = "msg ok"; }
     catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
   };
   // foto tirada com o celular também vai para os Registros (como nas câmeras da maleta)
-  if (F.img && !F.vivo) requestAnimationFrame(() => montaFoto(canvas).then(() => { if (S.guardarCel) { canvas.toBlob(b => { S.guardarCel = false; if (b) guardaNoDiario(b, CAMERAS_C.find(x => x.id === "celular") || { nome: "Celular" }).then(() => lerDiario()).then(l => { S.fotosDiario = l; if (S.camSel === "celular" && S.foto && S.foto.vivo) render(); }); voltaAoVivoCel(); }, "image/jpeg", .9); } }).catch(() => { if (S.guardarCel) { S.guardarCel = false; voltaAoVivoCel(); } }));
+  if (F.img && !F.vivo) requestAnimationFrame(() => (S.guardarCel && (S.fotoSel = null), montaFoto(canvas)).then(() => { if (S.guardarCel) { canvas.toBlob(b => { S.guardarCel = false; if (b) guardaNoDiario(b, CAMERAS_C.find(x => x.id === "celular") || { nome: "Celular" }).then(() => lerDiario()).then(l => { S.fotosDiario = l; if (S.camSel === "celular" && S.foto && S.foto.vivo) render(); }); voltaAoVivoCel(); }, "image/jpeg", .9); } }).catch(() => { if (S.guardarCel) { S.guardarCel = false; voltaAoVivoCel(); } }));
   const redesenha = () => { if (redesenha.pend) return; redesenha.pend = true; requestAnimationFrame(() => { redesenha.pend = false; montaFoto(canvas).catch(() => {}); }); };
   const { painelAdesivos, barraSel } = editorAdesivos(canvas, "foto", () => S.foto, redesenha);
   // intensidade: desliza e a foto muda na hora, sem redesenhar a tela toda
@@ -7306,7 +7383,7 @@ function vFotos() {
       h("div", { class: "celtit" }, h("p", { class: "celeye", text: "Arsenal de Travessia" }), h("h1", { text: "Câmera do celular" }))),
     F.img ? h("div", { class: "estudio" },
       // visor e botão de clique andam juntos: ao rolar a tela, o botão nunca fica escondido atrás da foto
-      h("div", { class: "fotofixa" }, h("div", { class: "celvisor" }, voltaMaleta("topo celvolta"), h("div", { class: "fotoframe" }, canvas, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
+      h("div", { class: "fotofixa" }, h("div", { class: "celvisor" }, voltaMaleta("topo celvolta"), h("div", { class: "fotoframe" }, canvas, !F.img && S.camFalhou ? camNegada() : null, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
         F.vivo ? h("div", { class: "actions camacoes" },
           h("button", { class: "celknob celselfie", type: "button", onclick: e => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); e.currentTarget.textContent = C.frente ? "Trás" : "Selfie"; } } }, C0frente() ? "Trás" : "Selfie"),
           h("button", { class: "habclique celobtur", type: "button", "aria-label": "Tirar foto", onclick: disparaCel }),
@@ -7334,9 +7411,10 @@ function vFotos() {
           h("button", { class: "btn", type: "button", onclick: mural }, "Enviar para a Galeria da Caravana"),
           h("button", { class: "btn ghost", type: "button", onclick: () => fi.click() }, "Trocar foto")),
         msg)) :
+      h("div", { class: "fotovaziabox" }, S.camFalhou && podeCamera() ? h("div", { class: "camnegada solta", role: "status" }, h("span", { text: "A câmera não abriu. Libere a câmera nos ajustes do celular para este app." }), h("button", { type: "button", onclick: () => { S.camFalhou = false; render(); } }, "Tentar de novo")) : null,
       h("button", { class: "fotovazia", type: "button", onclick: () => fi.click() },
         h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "Escolha uma foto" }),
-        h("span", { text: "Filtros da Caravana, adesivos com bichinhos da Índia, firulas, molduras de cartão-postal, ingresso, guirlanda e mais. Depois é só salvar ou enviar para a Galeria da Caravana." })),
+        h("span", { text: "Filtros da Caravana, adesivos com bichinhos da Índia, firulas, molduras de cartão-postal, ingresso, guirlanda e mais. Depois é só salvar ou enviar para a Galeria da Caravana." }))),
     fi);
 }
 
@@ -7381,9 +7459,14 @@ async function pararPos() { try { await S.db.doc("posicoes/" + S.uid).delete(); 
 // ---------- Celular: instalar o app e receber notificações (só no site do Netlify) ----------
 const AVISAR = "/.netlify/functions/avisar";
 const noSite = () => !!window.__VERSAO && (location.protocol === "https:" || location.hostname === "localhost");
+// sem sinal: a foto ou mensagem fica guardada no celular e sai sozinha quando a internet volta
+const avisoSemSinal = () => avisoReacao("📶 Sem sinal agora. Fica guardado e envia sozinho quando a internet voltar.");
+async function addMural(d) { const r = await S.db.collection("mural").add(d); if (r && r.pendente) avisoSemSinal(); return r; }
 async function addChat(d) {
   const r = await S.db.collection("chat").add(d);
-  if (noSite() && r && r.id) {
+  if (r && r.pendente) avisoSemSinal();
+  // o aviso no celular dos outros só sai quando a mensagem chegou de fato ao servidor
+  if (noSite() && r && r.id) (r.enviado || Promise.resolve()).then(() => {
     const p = fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: r.id }), keepalive: true });
     // a líder vê na hora para quantos celulares o aviso saiu (ajuda a descobrir quem ainda não ligou os avisos)
     p.then(async x => {
@@ -7393,7 +7476,7 @@ async function addChat(d) {
       else if (j && j.ok) avisoReacao(j.enviados ? `🔔 Aviso enviado para ${j.enviados} ${j.enviados === 1 ? "celular" : "celulares"}` : "🔕 Ninguém recebeu: ainda não há celulares com os avisos ligados.");
       else avisoReacao("⚠️ O aviso não saiu (" + x.status + ").");
     }).catch(() => { if (S.isOwner) avisoReacao("⚠️ Não consegui falar com o servidor de avisos."); });
-  }
+  }).catch(() => {});
   return r;
 }
 const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
@@ -7670,14 +7753,15 @@ function vConversa() {
     return h("div", { class: "reacs" }, ks.map(e => h("button", { type: "button", class: por[e].includes(S.uid) ? "meu" : "", title: por[e].map(nomeDe).join(", "), onclick: () => reagirMsg(mid, e) }, h("span", { text: e }), h("span", { text: String(por[e].length) }))));
   };
   const log = h("div", { class: "chatlog", id: "chatlog", "aria-live": "polite" });
-  let last = "";
+  let last = "", novasMarcada = false;
   for (const m of msgs) {
     const d = new Date(m.ts), day = d.toLocaleDateString("pt-BR", { day: "numeric", month: "long" });
     if (day !== last) { log.append(h("p", { class: "dayline", text: day })); last = day; }
+    if (!novasMarcada && S.chatAbriuEm && m.ts > S.chatAbriuEm && m.autor !== S.uid) { novasMarcada = true; log.append(h("p", { class: "chatnovas", id: "chat-novas", text: "Mensagens novas" })); }
     const mine = m.autor === S.uid;
     const ehAviso = m.tipo === "aviso" && ehLider(m.autor);
     const fig = m.tipo === "fig" && FIGURINHAS.find(f => f[0] === m.deus);
-    log.append(h("div", { class: "bubble" + (mine ? " me" : "") + (ehAviso ? " aviso" : "") + (fig ? " fig" : "") },
+    log.append(h("div", { "data-mid": m.id, class: "bubble" + (mine ? " me" : "") + (ehAviso ? " aviso" : "") + (fig ? " fig" : "") },
       bonecoRosto(m.autor),
       // tocar na mensagem abre as reações (como no WhatsApp)
       h("div", { class: "b", onclick: e => { if (!S.db || !eu() || e.target.closest("button,a,.reacs,.reacbar") || getSelection().toString()) return; S.reagindo = S.reagindo === m.id ? null : m.id; render(); } },
@@ -7695,7 +7779,7 @@ function vConversa() {
           h("span", { class: "eyebrow vivo", text: "Localização ao vivo" }), h("b", { text: mine ? "Você está compartilhando" : "Acompanhe onde estou" }),
           m.texto ? h("p", { class: "t", text: m.texto }) : null,
           h("div", { class: "actions" }, h("a", { class: "btn", href: m.link, target: "_blank", rel: "noopener" }, "Ver ao vivo no Google Maps"))) :
-        m.tipo === "foto" ? h("div", null, h("img", { class: "chatfoto", src: blob(m.fotoId), alt: m.texto || "Foto", loading: "lazy" }), m.texto ? h("p", { class: "t", text: m.texto }) : null) :
+        m.tipo === "foto" ? h("div", null, h("img", { class: "chatfoto", ...fotoTardia(m.fotoId), alt: m.texto || "Foto", loading: "lazy" }), m.texto ? h("p", { class: "t", text: m.texto }) : null) :
         ehAviso ? h("div", null, h("p", { class: "eyebrow avisolab", text: "📢 Aviso da líder" }), h("p", { class: "t", text: m.texto })) :
         textoChat(m.autor, m.texto),
         linhaReacoes(m.id),
@@ -8554,11 +8638,11 @@ function escreverPombo(para) {
     const bt = ev.currentTarget; bt.disabled = true;
     try {
       const r = await S.db.collection("pombos").add({ autor: S.uid, para: quem, texto: ta.value.trim().slice(0, 1200), presente: presente || "", ts: Date.now(), lida: false });
-      if (noSite() && r && r.id) fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ pombo: r.id }), keepalive: true }).catch(() => {});
+      if (noSite() && r && r.id) (r.enviado || Promise.resolve()).then(() => fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ pombo: r.id }), keepalive: true })).catch(() => {});
       // o envelope fecha e o pombo sai voando com ele
       asas(); const caixa = bt.closest(".pombobox"); caixa.classList.add("partiu"); caixa.scrollTop = 0; caixa.style.overflow = "hidden";
-      caixa.append(h("div", { class: "partida" }, pomboSvg("pombo"), h("p", { text: `Seu pombo levantou voo até ${nomeDe(quem).split(" ")[0]}!` })));
-      setTimeout(() => { closeSheets(); render(); }, 2600);
+      caixa.append(h("div", { class: "partida" }, pomboSvg("pombo"), h("p", { text: r && r.pendente ? "Seu pombo alçou voo, mas, por causa da instabilidade do sinal, a viagem vai ser mais longa." : `Seu pombo levantou voo até ${nomeDe(quem).split(" ")[0]}!` })));
+      setTimeout(() => { closeSheets(); render(); }, r && r.pendente ? 4200 : 2600);
     } catch (e) { bt.disabled = false; st.textContent = "O pombo não conseguiu sair agora. Tente de novo em instantes."; st.className = "msg err"; }
   };
   const box = h("div", { role: "dialog", "aria-label": "Escrever uma cartinha", class: "pombobox" },
@@ -8912,6 +8996,12 @@ async function filmeMenor(blob, aviso) {
 }
 const b64 = b => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = no; r.readAsDataURL(b); });
 async function enviaFilmeGaleria(it, msg) {
+  S.enviandoFilme = (S.enviandoFilme || 0) + 1;
+  try { return await enviaFilmeGaleria2(it, msg); } finally { S.enviandoFilme--; }
+}
+// enquanto filma ou envia um filme, a atualização do app espera (senão recarregava no meio e perdia tudo)
+window.__ocupado = () => !!S.gravando || S.enviandoFilme > 0 || !!S.revelando;
+async function enviaFilmeGaleria2(it, msg) {
   const capa = it.capa || await capaDoFilme(it.blob);
   if (!capa) throw new Error("capa");
   msg.textContent = "Preparando o filme…"; msg.className = "msg";
@@ -8925,7 +9015,7 @@ async function enviaFilmeGaleria(it, msg) {
         const r = await S.db.collection("fotos").add({ data: await b64(filme.slice(i * PEDACO, (i + 1) * PEDACO)), autor: S.uid, ts: Date.now(), parte: i }); partes.push(r.id); }
     } else partes = [(await S.assets.upload(filme)).id];
   } catch (e) { for (const id of [capaId, ...partes]) S.assets.delete(id).catch(() => {}); throw e; }
-  await S.db.collection("mural").add({ autor: S.uid, fotoId: capaId, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now(), video: { partes, tipo: filme.type || "video/mp4" } });
+  await addMural({ autor: S.uid, fotoId: capaId, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now(), video: { partes, tipo: filme.type || "video/mp4" } });
   msg.textContent = "Filme na Galeria da Caravana."; msg.className = "msg ok";
 }
 // o filme só é baixado quando alguém toca para assistir (economiza os dados de todo mundo)
@@ -8944,15 +9034,15 @@ function urlDoFilme(f) {
 const PLAYSVG = '<svg viewBox="0 0 24 24" width="100%" height="100%"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.45)" stroke="rgba(255,255,255,.85)" stroke-width="1.2"/><path d="M10 8l6 4-6 4z" fill="#fff"/></svg>';
 function vidMiniMural(f) {
   const ic = h("span", { class: "vidplay", "aria-hidden": "true" }); ic.innerHTML = PLAYSVG;
-  if (f.capaId) return h("span", { class: "vidmini" }, h("img", { src: blob(f.capaId), alt: "", loading: "lazy" }), ic);
+  if (f.capaId) return h("span", { class: "vidmini" }, h("img", { ...fotoTardia(f.capaId), alt: "", loading: "lazy" }), ic);
   const v = h("video", { src: blob(f.fotoId) + "#t=0.1", muted: true, playsinline: true, preload: "metadata", onloadedmetadata: e => { try { if (e.target.currentTime < .05) e.target.currentTime = .1; } catch (x) {} } });
   v.setAttribute("playsinline", ""); v.muted = true;
   return h("span", { class: "vidmini" }, v, ic);
 }
 function muralMini(f) {
-  if (f.video && f.video.partes) { const ic = h("span", { class: "vidplay", "aria-hidden": "true" }); ic.innerHTML = PLAYSVG; return h("span", { class: "vidmini" }, h("img", { src: blob(f.fotoId), alt: "", loading: "lazy" }), ic); }
+  if (f.video && f.video.partes) { const ic = h("span", { class: "vidplay", "aria-hidden": "true" }); ic.innerHTML = PLAYSVG; return h("span", { class: "vidmini" }, h("img", { ...fotoTardia(f.fotoId), alt: "", loading: "lazy" }), ic); }
   if (f.video) return vidMiniMural(f);
-  return h("img", { src: blob(f.fotoId), alt: "", loading: "lazy", onerror: e => { const i = e.currentTarget; if (i.dataset.v) return; i.dataset.v = 1; f.video = true; i.replaceWith(vidMiniMural(f)); } });
+  return h("img", { ...fotoTardia(f.fotoId), alt: "", loading: "lazy", onerror: e => { const i = e.currentTarget; if (i.dataset.v) return; i.dataset.v = 1; f.video = true; i.replaceWith(vidMiniMural(f)); } });
 }
 function midiaGrandeMural(f, legenda) {
   if (f.video && f.video.partes) {
@@ -9302,10 +9392,10 @@ function buscaTempo() {
   if (S.tempoBuscando === chave) return; S.tempoBuscando = chave;
   fetch(`https://api.open-meteo.com/v1/forecast?latitude=${L.lat}&longitude=${L.lng}&current=temperature_2m,apparent_temperature,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=4`)
     .then(r => r.ok ? r.json() : Promise.reject()).then(j => { S.tempo = { chave, ts: Date.now(), j, L }; S.tempoBuscando = null; if (S.tab === "travessia") render(); })
-    .catch(() => { S.tempoBuscando = null; S.tempoFalhou = true; });
+    .catch(() => { S.tempoBuscando = null; S.tempoFalhou = Date.now(); });
 }
 function vTempo() {
-  if (S.tempoFalhou && !S.tempo) return null;
+  if (S.tempoFalhou && !S.tempo && Date.now() - S.tempoFalhou < 10 * 60000) return null;
   buscaTempo();
   const T = S.tempo; if (!T) return null;
   const c = T.j.current, d = T.j.daily, [ic, desc] = TEMPO[c.weather_code] || ["🌡️", ""];
@@ -9332,7 +9422,7 @@ function vPrevDia(d) {
   if (!P && !S.prevDia["_" + chave]) {
     S.prevDia["_" + chave] = 1;
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c[0]}&longitude=${c[1]}&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max&timezone=Asia%2FKolkata&start_date=${d.iso}&end_date=${d.iso}`)
-      .then(r => r.ok ? r.json() : Promise.reject()).then(j => { S.prevDia[chave] = j.daily; render(); }).catch(() => {});
+      .then(r => r.ok ? r.json() : Promise.reject()).then(j => { S.prevDia[chave] = j.daily; render(); }).catch(() => { setTimeout(() => { delete S.prevDia["_" + chave]; }, 10 * 60000); });
     return null;
   }
   if (!P) return null;
@@ -9457,7 +9547,10 @@ render();
       S.online = new Set(ch.peers.map(p => p.by).filter(Boolean));
       for (const p of ch.peers) { const pr = p.presence || {}; if (p.by && !p.isMe && isFinite(pr.lat)) S.aoVivo[p.by] = { lat: pr.lat, lng: pr.lng, cidadeId: pr.cidadeId, ts: Date.now() }; }
       for (const p of ch.left) if (p.by) delete S.aoVivo[p.by];
-      if (S.tab === "mapa") render();
+      // o sinal de "estou aqui" chega de todo mundo a cada pouco: o mapa só redesenha quando alguém entrou, saiu ou andou
+      const ass = [...S.online].sort().join(",") + "|" + Object.entries(S.aoVivo).map(([k, v]) => k + ":" + (+v.lat).toFixed(4) + "," + (+v.lng).toFixed(4)).sort().join(";");
+      if (ass === S.assPresenca) return; S.assPresenca = ass;
+      if (S.tab === "mapa") renderCalmo();
     }, () => {});
     room.on("reacao", m => {
       const d = m.data || {}; if (!d.para || !m.by) return;
@@ -9509,17 +9602,32 @@ render();
   setInterval(() => {
     if (document.activeElement?.matches?.("input,textarea,select,[contenteditable]") || document.querySelector(".sheet")) return;
     if (S.tab === "mapa") return render();
-    if (S.tab === "travessia") { const k = [hojeIso(), S.isOwner ? S.online.size : 0, (S.cartas || []).length, cartasAbertas().length].join("|"); if (k !== S.chaveHome) { S.chaveHome = k; render(); } }
+    if (S.tab === "travessia") { const k = [hojeIso(), Math.floor(Date.now() / 9e5), S.isOwner ? S.online.size : 0, (S.cartas || []).length, cartasAbertas().length].join("|"); if (k !== S.chaveHome) { S.chaveHome = k; render(); } }
   }, 60000);
 })();
 })();
 </script>
 
 <script>
+// recarrega para a versão nova sem perder o que a pessoa está fazendo: espera terminar de escrever, de filmar ou de enviar,
+// e no máximo uma vez por versão (com wi-fi fraco a página nova pode não chegar a tempo, e ficava recarregando sem parar)
+window.__recarrega = function (v) {
+  try { if (v && sessionStorage.getItem("cdi-recarregou") === v) return; } catch (e) {}
+  const ocupado = () => {
+    if (document.hidden) return false;
+    const a = document.activeElement;
+    if (a && (a.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))) return true;
+    if (document.querySelector(".sheet")) return true;
+    return !!(window.__ocupado && window.__ocupado());
+  };
+  if (ocupado()) { clearTimeout(window.__recarrega.t); window.__recarrega.t = setTimeout(function () { window.__recarrega(v); }, 4000); return; }
+  try { if (v) sessionStorage.setItem("cdi-recarregou", v); } catch (e) {}
+  location.reload();
+};
 if ("serviceWorker" in navigator) {
   // procura versão nova sempre que o app abre ou volta para a tela, e recarrega sozinho quando chega
   const tinha = !!navigator.serviceWorker.controller; let recarregou = false;
-  navigator.serviceWorker.addEventListener("controllerchange", () => { if (tinha && !recarregou) { recarregou = true; location.reload(); } });
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (tinha && !recarregou) { recarregou = true; window.__recarrega(""); } });
   navigator.serviceWorker.register("sw.js").then(r => { r.update(); navigator.serviceWorker.ready.then(g => g.active && g.active.postMessage("completa")).catch(() => {}); document.addEventListener("visibilitychange", () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {});
 }
 // o iPhone às vezes volta para o app sem recarregar: confere a versão publicada e recarrega se mudou
@@ -9528,7 +9636,7 @@ if ("serviceWorker" in navigator) {
   const confere = () => {
     if (checando || document.hidden) return; checando = true;
     fetch("versao.json?t=" + Date.now(), { cache: "no-store" }).then(r => r.ok ? r.json() : null)
-      .then(j => { if (j && j.v && j.v !== window.__VERSAO) location.reload(); })
+      .then(j => { if (j && j.v && j.v !== window.__VERSAO) window.__recarrega(j.v); })
       .catch(() => {}).finally(() => { checando = false; });
   };
   document.addEventListener("visibilitychange", confere);
