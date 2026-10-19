@@ -1,6 +1,7 @@
 // Conteúdo do livro Arhat, de Vivian Pupin, organizado para o app.
 // Blocos de texto: { p } parágrafo · { afirm, fonte } afirmação em destaque · { passos } lista numerada
 // { lista } lista simples · { sub } subtítulo · { cita, autor } citação · { pergunta } pergunta para a pessoa
+// Os ensinamentos do livro estão nas cápsulas diárias (capsulas.js).
 window.ARHAT = (function () {
   const OUTRO_COMODO = [
     { p: "Volte para a cama e deite-se confortavelmente." },
@@ -27,7 +28,7 @@ window.ARHAT = (function () {
   const ATOS = [
     {
       id: 0, nome: "O Início", sub: "Atravessar o véu do sono", gratis: true, capa: "noite",
-      frase: "A Terra Prometida é o mundo dos sonhos.", ensina: ["templos", "tradicoes", "desperto", "segredos"],
+      frase: "A Terra Prometida é o mundo dos sonhos.",
       momentos: [
         { quando: "Ao acordar", hora: "no dia seguinte", praticas: [
           { k: "diario", ico: "pena", nome: "Diário dos 5 minutos", det: "Sem levantar e sem abrir os olhos", texto: [
@@ -67,7 +68,7 @@ window.ARHAT = (function () {
     },
     {
       id: 1, nome: "Primeiro Ato", sub: "Captar energia cósmica e desobstruir os centros de energia", gratis: true, capa: "noite",
-      frase: "Eu sou consciência além deste corpo.", ensina: ["viagem", "lucido", "senso", "testes"],
+      frase: "Eu sou consciência além deste corpo.",
       intro: "Para sutilizar nossa vibração vamos reativar as raízes receptoras do corpo! Essa prática não apenas ativa nossa memória, mas também nos aproxima gradualmente de nossos conselheiros espirituais.",
       momentos: [
         { quando: "Ao acordar", hora: "primeiros 5 min", praticas: [
@@ -89,7 +90,7 @@ window.ARHAT = (function () {
     },
     {
       id: 2, nome: "Segundo Ato", sub: "Cair no sono consciente", capa: "fios",
-      frase: "Ao cair no sono estou consciente.", ensina: ["maravilhas"],
+      frase: "Ao cair no sono estou consciente.",
       momentos: [
         { quando: "04:00", hora: "despertar no meio da noite", praticas: [
           { k: "madrugada", ico: "espiral", nome: "Nirvana Shatakam", det: "Testa no joelho e o outro cômodo", audio: true, texto: [
@@ -114,7 +115,7 @@ window.ARHAT = (function () {
     },
     {
       id: 3, nome: "Terceiro Ato", sub: "A chama da vela e o Dragão", capa: "fios",
-      frase: "Eu tenho clareza do plano astral.", ensina: ["desperto-terra"],
+      frase: "Eu tenho clareza do plano astral.",
       momentos: [
         { quando: "04:00", hora: "despertar no meio da noite", praticas: [
           { k: "madrugada", ico: "vela", nome: "Chama da vela", det: "Estou leve e posso flutuar até o teto", audio: true, texto: [
@@ -153,7 +154,7 @@ window.ARHAT = (function () {
     },
     {
       id: 4, nome: "Quarto Ato", sub: "A luz azul e o banho da pineal", capa: "noite",
-      frase: "Sou um ser multidimensional.", ensina: ["dentro"],
+      frase: "Sou um ser multidimensional.",
       momentos: [
         { quando: "04:00", hora: "despertar no meio da noite", praticas: [
           { k: "madrugada", ico: "luz", nome: "Que a paz possa inundar minha alma", det: "O círculo de luz azul", audio: true, texto: [
@@ -189,7 +190,7 @@ window.ARHAT = (function () {
     },
     {
       id: 5, nome: "Quinto Ato", sub: "Sair do corpo", capa: "fios",
-      frase: "Agora eu me separo facilmente do meu corpo e estou consciente.", ensina: ["yukteswar"],
+      frase: "Agora eu me separo facilmente do meu corpo e estou consciente.",
       momentos: [
         { quando: "04:00", hora: "despertar no meio da noite", praticas: [
           { k: "madrugada", ico: "espiral", nome: "Hermes Trismegisto", det: "Espiral da coroa e os comandos", audio: true, texto: [
@@ -238,157 +239,5 @@ window.ARHAT = (function () {
     { curto: "O fundo do mar", texto: "Quero nadar com os grandes animais do fundo do mar. Baleias e criaturas marinhas desconhecidas que só vivem lá, bem no fundo negro do oceano!" }
   ];
 
-  // Capítulos de leitura: a abertura e os ensinamentos do livro.
-  const LIVRO = [
-    { id: "arhat", titulo: "O Arhat", parte: "Abertura", texto: [
-      { p: "“Arhat”, em sânscrito, refere-se a alguém que alcançou o estado de iluminação ou despertar espiritual." },
-      { afirm: "Aquele que transcende todos os planos,\nque pisou em todos os mundos,\npois passou por todas as iniciações.\nÉ senhor de Si e caminhante do tempo.\nAquele que possui sete corpos,\nE, com a impecabilidade do guerreiro,\ndominou os dragões da dúvida\ne se lançou no mergulho negro do Mistério." },
-      { p: "Para além de tudo que pode ser pensado ou imaginado, sê aquele que enfrenta e busca a Verdade. A busca da Verdade se encontra além dos olhos, das ideias e da sobrevivência." },
-      { p: "Sê aquele que ousa tomar o caminho do contrário, pois tantas vidas já se passaram e todos os personagens já foram experienciados. Falta-lhe apenas o tesouro mais precioso, algo que nem desconfias existir, pois tal conhecimento foi apagado pela sua nação." },
-      { p: "Para além da muralha do esquecimento existe o nevoeiro de outros mundos, aonde aquele que tem convicção encontra sua verdadeira liberdade." },
-      { p: "Sou meramente um contador de histórias e o que descrevo aqui é um caminho capaz de auxiliar qualquer pessoa a se iniciar nesta sabedoria!" }
-    ] },
-    { id: "estrelas", titulo: "Viemos das estrelas", parte: "Abertura", texto: [
-      { p: "De olhos abertos, imerso nesta realidade Terra, é praticamente impossível notar as variadas nuances que realmente nos envolvem, das quais somos feitos." },
-      { p: "Para além de toda a matéria que nos rodeia existem mundos inimagináveis, ciências e novas leis inconcebíveis para a mente humana moderna." },
-      { p: "Nós não somos daqui, viemos de fora, viemos das estrelas, mas, em alguma parte do caminho, nos esquecemos e passamos a viver embriagados em uma realidade limitada que nos prende em uma estreita faixa de vibração que representa apenas uma minúscula parcela do Todo." },
-      { p: "Uma pequena bolha vibratória, Samsāra: a isso chamamos vida. Neste curto espaço está contido tudo que vivenciamos, todas as nossas crenças, nosso passado, nossos amores e dores, tudo que formou e forma nosso “personagem”." },
-      { p: "Muitos vieram para relembrar a humanidade de sua origem! Civilizações despertas deixaram códigos e manuais na tentativa de libertar-nos dessa cegueira. Monólitos imensos repousam sob a Terra para questionar nossa realidade; templos inteiros com mensagens e pinturas nos traçando o caminho, nos mostrando todas as reais potencialidades do homem!" },
-      { p: "Esses povos caminhavam pela linha tênue da Matéria e do Espírito e, independentemente de sua posição geográfica no globo, todos falavam a mesma coisa apesar das roupagens diferentes." },
-      { p: "Diziam que de olhos fechados é possível ir além! É possível acessar estados de consciência que possibilitam enxergar novas realidades e ecossistemas, trazer sabedorias, viver com mais clareza, voar como um pássaro por todas as eras, vislumbrar paisagens magníficas e perder o medo da morte, pois não existe limitação para o Desperto." }
-    ] },
-    { id: "templos", titulo: "Os templos do sonho", parte: "Abertura", novo: true, texto: [
-      { p: "Por milhares de anos, a humanidade construiu templos não para rezar acordada, mas para dormir. Era a incubação dos sonhos: a pessoa se purificava, fazia uma oferenda, deitava-se no chão sagrado e esperava que o divino viesse encontrá-la durante a noite." },
-      { sub: "Grécia: os templos de Asclépio" },
-      { p: "Em Epidauro, Pérgamo e Cós, quem buscava cura ia aos santuários de Asclépio, o deus da medicina. Depois de banhos e oferendas, dormia numa sala sagrada chamada ábaton. O deus aparecia no sonho, às vezes tocando o corpo doente, às vezes indicando o remédio. Pela manhã, os sacerdotes ajudavam a interpretar. Em Epidauro ainda existem as pedras onde foram gravados os relatos das curas, há mais de 2.300 anos." },
-      { sub: "Egito: os sonhos que vinham dos deuses" },
-      { p: "Para os egípcios, o sonho era um lugar onde os deuses falavam. Há mais de 3.200 anos já escreviam livros de sonhos, como o papiro Chester Beatty III, com dezenas de imagens noturnas e seus significados. Em Saqqara, perto de Mênfis, as pessoas dormiam junto aos santuários para pedir orientação e cura, e Imhotep, o arquiteto da primeira pirâmide, passou a ser venerado como o sábio que aparecia nos sonhos dos doentes." },
-      { sub: "Mesopotâmia: o templo pedido em sonho" },
-      { p: "Há mais de 4.000 anos, o rei Gudea, de Lagash, registrou em cilindros de argila o sonho em que um deus lhe mostrou como construir um templo. Os sonhos dos reis eram tratados como mensagens a serem obedecidas." },
-      { sub: "Japão: dormir aos pés de Kannon" },
-      { p: "Na corte japonesa de mil anos atrás, peregrinos passavam noites inteiras em templos como Hasedera, dedicados à deusa da compaixão Kannon, esperando um sonho que respondesse à sua pergunta. Os diários das damas da corte contam essas noites de vigília e os sonhos recebidos." },
-      { p: "Em todos esses lugares, o sonho não era fantasia: era uma porta. O Arhat devolve esse templo para dentro do seu quarto." }
-    ] },
-    { id: "tradicoes", titulo: "Povos que honram os sonhos", parte: "Abertura", novo: true, texto: [
-      { sub: "Índia: os quatro estados da consciência" },
-      { p: "A Mandukya Upanishad ensina que a consciência atravessa quatro estados: a vigília, o sonho, o sono profundo e Turiya, o quarto, que testemunha os outros três. Quem desperta para Turiya está presente acordado, sonhando e dormindo. É a mesma consciência que canta o Nirvana Shatakam." },
-      { sub: "Tibete: a yoga dos sonhos" },
-      { p: "No budismo tibetano, a yoga dos sonhos faz parte dos Seis Yogas de Naropa. O praticante aprende a reconhecer o sonho enquanto sonha e, a partir daí, a perceber que a própria vida desperta também tem a natureza de um sonho. Dormir vira meditação, e a noite, um treino para a hora da morte." },
-      { sub: "Amazônia: os sonhos contados ao amanhecer" },
-      { p: "Entre os Achuar, no Equador e no Peru, a família acorda antes do sol, toma juntos o chá de guayusa e conta os sonhos da noite. É a partir deles que se decide o dia: caçar, viajar ou esperar." },
-      { p: "Entre os Yanomami, os xamãs sonham com os espíritos xapiri e viajam para longe durante a noite. Davi Kopenawa, em A queda do céu, conta que os brancos dormem muito, mas sonham só consigo mesmos, enquanto o sonho do xamã alcança a floresta, os ancestrais e o céu." },
-      { sub: "América do Norte: o sonho como desejo da alma" },
-      { p: "Os povos Haudenosaunee e Wendat acreditavam que os sonhos revelam os desejos ocultos da alma, e que esses desejos precisavam ser atendidos para a pessoa ter saúde. No inverno, faziam festas inteiras em que cada um apresentava seu sonho em forma de enigma, e a comunidade tentava adivinhar e realizar o que a alma pedia." },
-      { sub: "As escrituras" },
-      { p: "Jacó viu em sonho a escada entre a terra e o céu. José, no Egito, decifrou os sonhos do faraó. Na tradição islâmica, o sonho verdadeiro é considerado uma pequena parte da profecia. Em quase todas as escrituras, o divino escolhe a noite para falar." },
-      { cita: "Esses povos caminhavam pela linha tênue da Matéria e do Espírito e, independentemente de sua posição geográfica no globo, todos falavam a mesma coisa apesar das roupagens diferentes." }
-    ] },
-    { id: "como", titulo: "Como fazer o Arhat", parte: "Abertura", texto: [
-      { p: "O livro é estruturado em cinco atos distintos, cada um acompanhado de um roteiro detalhado que delineia técnicas a serem realizadas em momentos específicos do dia." },
-      { p: "Você tem a opção de seguir o Arhat de forma contínua, atravessando os cinco atos sequencialmente (ato 1, 2, 3, 4 e 5), ou então dedicar alguns dias a cada ato para aprimorar suas habilidades e desvendar resultados mais profundos." },
-      { p: "A abordagem ideal envolve imersão contínua no Arhat ao longo de um período determinado: seja uma semana, um mês ou o tempo desejado." },
-      { p: "A transformação de nossa consciência e corpo demanda tempo. Redescobrir a capacidade de transcender para outro plano requer disciplina e prática intensas, portanto, quanto mais tempo fizer o Arhat, mais viverá seus resultados." },
-      { sub: "Dedique-se, pois sem dedicação, nada obterá!" },
-      { p: "Recomenda-se adotar uma alimentação leve e saudável, evitando carnes e bebidas alcoólicas." },
-      { p: "Ao concluir cada ato, anote os experimentos executados. O ato de escrever intensifica o comprometimento com a causa, transformando-o em um poderoso ritual de recordação do oculto, o que contribui significativamente para a melhoria dos resultados alcançados." },
-      { p: "O diagrama de vivências (o céu das suas noites) ajuda a medir sua evolução nos graus de lucidez e fenômenos extrafísicos durante o avanço da prática." }
-    ] },
-    { id: "desperto", titulo: "O Arhat nunca dorme", parte: "Abertura", texto: [
-      { sub: "O ponto aonde nossa consciência mais se aproxima da sua real morada é durante o sono!" },
-      { p: "O Arhat nunca dorme, mas sim, atua conscientemente em ambas as realidades: o dia (matéria) e a noite (espírito). Apenas atravessa de um limiar a outro em uma dança por seus corpos sutis." },
-      { p: "O Desperto, aquele que se libertou da inconsciência e não mais caminha pela escuridão da ignorância, a todo o tempo está consciente." },
-      { afirm: "Caminha pela Terra como se deve ser,\nGuiado pelos ventos de si mesmo." }
-    ] },
-    { id: "segredos", titulo: "Quais os segredos escondidos na noite?", parte: "Ensinamentos", texto: [
-      { p: "Todas as noites podemos conhecer a potencialidade que somos! Existem duas maneiras para isso: a Viagem Astral e o Sonho Lúcido." }
-    ] },
-    { id: "viagem", titulo: "Viagem Astral", parte: "Ensinamentos", texto: [
-      { p: "Durante as noites, quando mergulhamos na inconsciência do sono, nosso corpo de vibração sutil se separa do físico e explora diversos planos, desfrutando da liberdade do sono. Nessa dimensão paralela, podemos manter plena consciência e testemunhar o mundo espiritual com a mesma lucidez com que lemos estas palavras agora." },
-      { p: "Desafiamos as limitações físicas ao voar pelos céus estrelados, sentindo o frescor da noite e o perfume do orvalho; pois nossos sentidos se tornam ainda mais aguçados do que na chamada “realidade”. Vislumbramos as nuances e cores vivas do astral, atravessamos barreiras físicas, viajamos à velocidade do pensamento e nos conectamos com entes queridos que partiram, além de dialogar com nossos guias espirituais." },
-      { p: "Há também quem cultiva a habilidade de auxiliar espíritos no outro plano, oferecendo orientação, esclarecimento e ajuda na transição para uma condição mais equilibrada." },
-      { p: "Nesse processo, compreendemos que nossa experiência cotidiana é apenas uma pequena parte do vasto panorama existencial, e o medo da morte se dissipa à medida que vivenciamos, na prática, a multiplicidade de nossos corpos e a continuidade da existência além do plano físico." },
-      { cita: "A maior expansão da consciência é o choque de realidade que é causado pela viagem astral." }
-    ] },
-    { id: "lucido", titulo: "Sonho Lúcido", parte: "Ensinamentos", texto: [
-      { p: "Nunca sabemos quando estamos vivenciando um sonho: nossa consciência de sonhador aceita histórias absurdas como reais e perdemos a oportunidade de participar de um milagre todas as noites." },
-      { p: "É possível despertar dentro desse universo onírico! Quando essa façanha acontece, o sonhador adquire total domínio sobre o enredo, moldando o tecido dos sonhos conforme desejar e realizando suas mais profundas aspirações com a mesma consciência presente durante a vigília." },
-      { p: "É uma jornada onde se pode explorar eras passadas, desvendar os mistérios de civilizações antigas, interagir com sábios e seres fascinantes, viajar por distantes galáxias e extrair ensinamentos valiosos do próprio inconsciente." },
-      { p: "As possibilidades são verdadeiramente ilimitadas neste mundo, pois enquanto o verdadeiro “Eu” repousa tranquilamente em seu quarto, o sonhador tem total controle sobre a realidade onírica, explorando um universo de experiências sem limitações ou medos, completamente seguro e imortal!" },
-      { sub: "Qual a diferença entre Sonho Lúcido e Viagem Astral?" },
-      { p: "No Sonho Lúcido, mergulhamos profundamente em nosso inconsciente, onde a realidade é completamente maleável e temos o poder de transformá-la conforme desejamos." },
-      { p: "Na Viagem Astral, vislumbramos uma outra frequência à medida que nossa consciência se desloca do corpo físico para o espiritual. No astral, estamos sujeitos às suas leis e precisamos aprender a navegar por ele, o que não é uma tarefa fácil!" },
-      { p: "No início, é como se fôssemos astronautas aprendendo a caminhar na Lua ou mergulhadores explorando as profundezas do mar! É uma jornada de descobertas e desafios que requer paciência e prática para dominar." }
-    ] },
-    { id: "senso", titulo: "Despertando no Sonho", parte: "Ensinamentos", texto: [
-      { p: "Para manter a mesma consciência da vigília durante o sono e despertar no meio dele, é crucial desenvolver a habilidade de permanecer lúcido durante os sonhos. Isso implica estar ciente de que está sonhando enquanto o sonho acontece, o que proporciona um controle maior sobre as experiências oníricas e a capacidade de tomar decisões conscientes dentro do sonho." },
-      { p: "É essencial adquirir algo muito importante para esse processo: o Senso Crítico. Esse senso questiona nossa realidade, mesmo que ela pareça incrivelmente real." },
-      { p: "Durante um sonho, estamos tão imersos naquela experiência que é inconcebível considerar que seja apenas uma criação de nossa mente." },
-      { p: "Nos dias comuns, raramente questionamos se estamos sonhando ou não, mas quem garante que este momento não é um sonho? Desenvolver o Senso Crítico nos ajuda a questionar e a estar mais conscientes de nossos estados de consciência, seja durante o sono ou na vigília." }
-    ] },
-    { id: "desperto-terra", titulo: "O Desperto", parte: "Ensinamentos", texto: [
-      { cita: "O Desperto é aquele que, caminhando pela Terra, entendeu que a vida também é feita do mesmo tecido dos sonhos e despertou neste plano." }
-    ] },
-    { id: "testes", titulo: "Testes de Realidade", parte: "Ensinamentos", texto: [
-      { p: "Pare por um momento sentindo seus pés firmes ao chão. Faça uma inspiração consciente e traga sua atenção para o momento presente. Olhe ao redor e pergunte a si mesmo:" },
-      { afirm: "Será que estou sonhando?" },
-      { p: "Olhe para suas mãos e conte quantos dedos você vê. Em seguida pegue o dedo indicador e puxe-o." },
-      { p: "Se ao puxar seu dedo indicador ele esticar ou se sua mão apresentar mais ou menos de dez dedos, isso é um forte indicativo de que a realidade em que você está não é tão real quanto parece: você está sonhando!" },
-      { p: "Os testes de realidade têm o propósito de nos tirar do piloto automático, trazendo nossa atenção e senso crítico para o momento presente ao questionar a realidade." },
-      { p: "É recomendável realizar esses testes várias vezes ao longo do dia. Tudo o que fazemos durante nossa vida diária é repetido inconscientemente durante o sono. Portanto, surpreendentemente, em algum momento você fará um teste de realidade e descobrirá que está dentro de um sonho! Essa é a sensação mais incrível que alguém pode vivenciar!" },
-      { p: "Sempre é aconselhável fazer mais de um teste, pois à medida que desenvolvemos nossas habilidades oníricas (do grego óneiros: sonho), nosso cérebro pode tentar nos enganar e os testes que antes costumavam funcionar podem falhar. Portanto, realizar diferentes tipos de testes nos permite driblar essa situação: se um não funcionar, é possível que o outro funcione!" },
-      { sub: "Respiração" },
-      { p: "Pare por um momento e sinta seus pés firmes no chão. Faça uma inspiração consciente e traga sua atenção para o momento presente. Em seguida, tampe suas narinas com as mãos e tente respirar pelo nariz. Se a respiração continuar normalmente, isso é um forte indício de que você está dormindo na sua cama e essa realidade é um sonho!" },
-      { sub: "Letras e números" },
-      { p: "Pare por um momento e sinta seus pés firmes no chão. Concentre sua atenção por alguns segundos em qualquer número, palavra ou desenho à sua frente. Se estiver sonhando, você notará que esses elementos começarão a mudar de forma, se misturarão ou até mesmo dançarão, pois o tecido dos sonhos é instável. Esses fenômenos indicarão que você está sonhando!" }
-    ] },
-    { id: "maravilhas", titulo: "As maravilhas de dentro", parte: "Ensinamentos", texto: [
-      { cita: "O mundo externo pode ter suas maravilhas. Porém, nunca se esqueça que dentro residem as mais infinitas maravilhas do universo. De dentro da tela negra de seu Ser emergem infinitos mundos." }
-    ] },
-    { id: "dentro", titulo: "Dentro do sonho", parte: "Ensinamentos", texto: [
-      { cita: "Há segredos que só o aprendiz ao trilhar o caminho do conhecimento irá encontrar, mas há outros, que podem ser passados adiante." },
-      { sub: "Os pesadelos" },
-      { p: "Os pesadelos podem ser uma ferramenta poderosa para despertar dentro de um sonho. Quando confrontado com situações absurdas, o sonhador que desenvolveu um forte Senso Crítico através dos Testes de Realidade pode reconhecer que está sonhando e ganhar lucidez. Esse momento de clareza permite assumir o controle do sonho, transformando um cenário negativo em uma experiência de aprendizado e crescimento dentro do mundo dos sonhos." },
-      { sub: "Peça ajuda" },
-      { p: "Você pode solicitar auxílio extrafísico para sair do corpo! Nossos guias espirituais estão sempre atentos do outro lado e podemos nos conectar com eles ao pedir sinceramente. Ao estarmos abertos para essa interação, podemos não apenas ver, mas também sentir a presença e o apoio dos nossos conselheiros de jornada durante essas experiências." },
-      { sub: "“Clareza, agora!”" },
-      { p: "Durante um sonho lúcido, se sentir que a atmosfera está instável e você está prestes a perder a consciência, uma técnica eficaz é afirmar com convicção: “Clareza, agora!” Essa declaração direta e firme ajuda a restaurar a lucidez e o controle sobre o sonho!" },
-      { p: "É possível utilizar outros comandos para diferentes situações. Por exemplo, se sentir medo, você pode afirmar: “Estou protegido” ou “Estou seguro”. Esses comandos positivos e firmes têm o poder de influenciar instantaneamente a experiência do sonho (e da vida)." },
-      { cita: "Quando se encontrar em um sonho desafiador, em vez de tentar fugir ou acordar imediatamente, treine sua mente para enfrentar e superar a situação. Ao confrontarmos nossos medos e desafios nos sonhos, expandimos nossos horizontes e conquistamos uma maior compreensão de nós mesmos. Isso nos permite abrir horizontes ilimitados e perder o medo de enfrentar desafios não só nos sonhos, mas também na vida real. A coragem e a resiliência cultivadas nesses momentos fortalecem nosso desenvolvimento pessoal e espiritual." },
-      { cita: "Quando acordar de manhã e uma imagem de sonho persistir em sua mente, concentre-se nela e tente estabelecer uma conversa. Lembre-se de que tudo que emerge do mistério de nossa própria psique é um ensinamento valioso, uma oportunidade de compreender melhor a nós mesmos e o mundo ao nosso redor." }
-    ] },
-    { id: "alvos", titulo: "Uma lista de alvos", parte: "Ensinamentos", texto: [
-      { p: "Faça uma lista de alvos para direcionar suas viagens. Dê o comando antes de dormir e visualize como se já estivesse lá:" },
-      { lista: ALVOS.map(a => a.texto) }
-    ] },
-    { id: "yukteswar", titulo: "A alma deve alargar-se", parte: "Ensinamentos", texto: [
-      { cita: "A alma deve alargar-se sobre abismos cosmogônicos enquanto o corpo executa seus deveres diários!", autor: "Sri Yukteswar" }
-    ] },
-    { id: "abrir", titulo: "Arhat significa abrir os olhos", parte: "Fechamento", texto: [
-      { afirm: "Quem olha para a Magia da Vida resgata um conhecimento\nque preenche uma lacuna mantida por eras,\nQue revela do que somos feitos e o caminho para casa!\nSó aquele que decidiu abrir os olhos\nenxerga as portas da Verdade." },
-      { sub: "Arhat significa abrir os olhos." }
-    ] },
-    { id: "leituras", titulo: "Opções de leitura", parte: "Fechamento", texto: [
-      { lista: [
-        "Buhlman, William. Aventuras Além do Corpo.",
-        "Castaneda, Carlos. Uma Estranha Realidade.",
-        "Eby, Carol. Odisséia Astral.",
-        "Garfield, Patricia. Creative Dreaming.",
-        "LaBerge, Stephen. Sonhos Lúcidos.",
-        "Marciniak, Barbara. Mensageiros do Amanhecer.",
-        "Monroe, Robert A. Viagens Fora do Corpo."
-      ] }
-    ] },
-    { id: "diagrama", titulo: "Diagrama de vivências astrais", parte: "Fechamento", texto: [
-      { p: "A cada manhã registre seus avanços no diagrama:" },
-      { lista: [
-        "Noite negra, sem lembranças: pontinho preto fraco",
-        "Noite com sonhos: pontinho preto forte",
-        "Noite com algum grau de lucidez: vários pontinhos",
-        "Sonhos lúcidos ou viagem astral: estrelinha"
-      ] },
-      { p: "No app, o diagrama é o céu das suas noites." }
-    ] }
-  ];
-
-  return { ATOS, ALVOS, LIVRO };
+  return { ATOS, ALVOS };
 })();

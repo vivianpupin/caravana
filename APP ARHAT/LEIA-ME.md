@@ -1,7 +1,9 @@
-# APP ARHAT
+# Arhat
 
-Protótipo do aplicativo Arhat, baseado no livro da Vivian sobre sonho lúcido e viagem astral.
+App de sonho lúcido e viagem astral, baseado no livro Arhat, de Vivian Pupin.
 
-- Só para ver e testar: nada daqui é publicado (o Netlify publica só a pasta `app` da raiz).
-- `prototipo/index.html`: as telas principais (a cor do nevoeiro, Hoje, Diário, Céu das noites, Atos).
-- `prototipo/img`: ilustrações, o cristal e o símbolo enviados pela Vivian.
+Esta pasta é o projeto inteiro do Arhat, pronta para virar um repositório próprio no GitHub e um site próprio na Netlify. Enquanto estiver dentro do repositório da Caravana, nada daqui é publicado (o Netlify da Caravana publica só a pasta `app` da raiz).
+
+- `app/`: o aplicativo (abre no celular e pode ser instalado na tela inicial).
+- `netlify.toml`: só publica quando o commit tiver `[publicar]`.
+- O que a pessoa anota ainda fica só no aparelho. A próxima etapa é a conta na nuvem.
