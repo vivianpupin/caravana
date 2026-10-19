@@ -424,6 +424,8 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .bubble .ponto b{font-family:var(--display);font-size:18px;font-weight:500}
 .bubble.me .ponto .eyebrow{color:var(--sand)}
 .bubble .chatfoto{display:block;max-width:100%;width:280px;margin-top:4px;border-radius:12px}
+.chatnovas{align-self:stretch;display:flex;align-items:center;gap:10px;font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#8A3F32}
+.chatnovas::before,.chatnovas::after{content:"";flex:1;height:1px;background:rgba(138,63,50,.45)}
 .dayline{align-self:center;font-size:11.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
 .picker{border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;background:var(--panel)}
 .picker select,.picker input{flex:1 1 180px;min-width:0}
@@ -2088,7 +2090,7 @@ function mostraAbaAtiva() {
 function go(tab) {
   try { VOZ.parar(); } catch (e) {}
   S.trocandoCam = null;
-  S.tab = tab; if (tab === "conversa") S.chatGrudado = true; try { localStorage.setItem("cdi-tab2", tab); } catch (e) {}
+  S.tab = tab; if (tab === "conversa") { S.chatGrudado = true; S.chatAbriuEm = null; } try { localStorage.setItem("cdi-tab2", tab); } catch (e) {}
   render(); $("#main").scrollTop = 0;
   mostraAbaAtiva();
 }
@@ -2106,6 +2108,8 @@ $("#me").addEventListener("click", () => go("passaporte"));
 function marcaChat() {
   let visto = 0; try { visto = +localStorage.getItem("cdi-chat-visto") || 0; } catch (e) {}
   const ult = S.chat.reduce((a, m) => Math.max(a, m.ts || 0), 0);
+  // ao abrir o chat, lembra até onde a pessoa já tinha lido: a conversa abre ali, e não lá embaixo
+  if (S.tab === "conversa" && S.chatAbriuEm == null) { S.chatAbriuEm = visto; S.chatIrNovas = true; }
   if (!visto || S.tab === "conversa") { if (ult > visto) { visto = ult; try { localStorage.setItem("cdi-chat-visto", String(ult)); } catch (e) {} } }
   const n = S.chat.filter(m => m.autor !== S.uid && m.tipo !== "local" && m.tipo !== "aovivo" && m.tipo !== "reacao" && (m.ts || 0) > visto).length;
   const bt = document.querySelector('#tabs button[data-tab="conversa"]'); if (!bt) return;
@@ -2147,7 +2151,20 @@ function ajustaVisorCel() {
   cv.style.maxHeight = Math.max(200, cabe * .8) + "px";
 }
 addEventListener("resize", () => { if (S.camSel) ajustaSelfie(); if (S.camSel === "celular") ajustaVisorCel(); });
-function grudaChat(log) {
+function grudaChat(log, topo) {
+  // abriu o chat com mensagens novas: mostra a partir da primeira que a pessoa ainda não leu
+  const marca = log.querySelector("#chat-novas");
+  if (S.chatIrNovas && marca) {
+    S.chatGrudado = false;
+    const vai = () => { if (S.chatIrNovas && marca.isConnected) log.scrollTop += marca.getBoundingClientRect().top - log.getBoundingClientRect().top - 6; };
+    vai(); requestAnimationFrame(vai); setTimeout(vai, 300); setTimeout(vai, 900);
+    log.querySelectorAll("img").forEach(im => { if (!im.complete) im.addEventListener("load", vai, { once: true }); });
+    const solta = () => { S.chatIrNovas = false; };
+    ["touchstart", "wheel", "pointerdown"].forEach(ev => log.addEventListener(ev, solta, { once: true, passive: true }));
+    setTimeout(solta, 2500);
+  } else if (S.chatIrNovas && S.chat.length) S.chatIrNovas = false;
+  // a pessoa estava lendo mais acima: chegou mensagem nova e a conversa continua no mesmo lugar
+  else if (S.chatGrudado === false && topo != null) log.scrollTop = topo;
   const desce = () => { if (S.chatGrudado !== false) log.scrollTop = log.scrollHeight; };
   desce(); requestAnimationFrame(desce); setTimeout(desce, 300); setTimeout(desce, 900);
   log.querySelectorAll("img").forEach(im => { if (!im.complete) im.addEventListener("load", desce, { once: true }); });
@@ -2159,14 +2176,14 @@ function render() {
   // escrevendo no chat e chegou mensagem: troca só a lista de mensagens; a caixa de texto fica como está (o cursor e o teclado não pulam)
   if (S.tab === "conversa" && document.activeElement && document.activeElement.id === "chat-input" && S._abaDesenhada && S._abaDesenhada.startsWith("conversa|")) {
     const velho = $("#chatlog"), novo = vConversa().querySelector("#chatlog");
-    if (velho && novo) { velho.replaceWith(novo); grudaChat(novo); tickRelogios(); return; }
+    if (velho && novo) { const topo = velho.scrollTop; velho.replaceWith(novo); grudaChat(novo, topo); tickRelogios(); return; }
   }
   for (const b of document.querySelectorAll("#tabs button")) {
     if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
   }
   const act = document.activeElement, actId = act && act.id, sel = act && "selectionStart" in act ? [act.selectionStart, act.selectionEnd] : null;
   const draft = act && actId && act.value !== undefined ? act.value : null;
-  const chatDraft = $("#chat-input")?.value;
+  const chatDraft = $("#chat-input")?.value, chatTopo = $("#chatlog")?.scrollTop;
   const main = $("#main"), scroll = main.scrollTop;
   // o que a pessoa abriu ou deslizou continua igual depois de redesenhar (nada fecha nem pula quando chega novidade de alguém)
   const vista = [S.tab, S.fotoAba, S.camSel, S.diaAberto, S.ensSel].join("|"), mesmaAba = S._abaDesenhada === vista;
@@ -2191,7 +2208,7 @@ function render() {
     // a conversa fica sempre na última mensagem (a não ser que a pessoa tenha subido para ler as antigas);
     // desce de novo quando fotos e figurinhas terminam de carregar, que aumentam a altura depois
     const log = $("#chatlog");
-    if (log) grudaChat(log);
+    if (log) grudaChat(log, chatTopo);
   }
   tickRelogios();
   if (S.camSel) requestAnimationFrame(ajustaSelfie);
@@ -7682,10 +7699,11 @@ function vConversa() {
     return h("div", { class: "reacs" }, ks.map(e => h("button", { type: "button", class: por[e].includes(S.uid) ? "meu" : "", title: por[e].map(nomeDe).join(", "), onclick: () => reagirMsg(mid, e) }, h("span", { text: e }), h("span", { text: String(por[e].length) }))));
   };
   const log = h("div", { class: "chatlog", id: "chatlog", "aria-live": "polite" });
-  let last = "";
+  let last = "", novasMarcada = false;
   for (const m of msgs) {
     const d = new Date(m.ts), day = d.toLocaleDateString("pt-BR", { day: "numeric", month: "long" });
     if (day !== last) { log.append(h("p", { class: "dayline", text: day })); last = day; }
+    if (!novasMarcada && S.chatAbriuEm && m.ts > S.chatAbriuEm && m.autor !== S.uid) { novasMarcada = true; log.append(h("p", { class: "chatnovas", id: "chat-novas", text: "Mensagens novas" })); }
     const mine = m.autor === S.uid;
     const ehAviso = m.tipo === "aviso" && ehLider(m.autor);
     const fig = m.tipo === "fig" && FIGURINHAS.find(f => f[0] === m.deus);
