@@ -40,10 +40,25 @@ head = """<!doctype html>
 """
 tail = """
 <script>
+// recarrega para a versão nova sem perder o que a pessoa está fazendo: espera terminar de escrever, de filmar ou de enviar,
+// e no máximo uma vez por versão (com wi-fi fraco a página nova pode não chegar a tempo, e ficava recarregando sem parar)
+window.__recarrega = function (v) {
+  try { if (v && sessionStorage.getItem("cdi-recarregou") === v) return; } catch (e) {}
+  const ocupado = () => {
+    if (document.hidden) return false;
+    const a = document.activeElement;
+    if (a && (a.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))) return true;
+    if (document.querySelector(".sheet")) return true;
+    return !!(window.__ocupado && window.__ocupado());
+  };
+  if (ocupado()) { clearTimeout(window.__recarrega.t); window.__recarrega.t = setTimeout(function () { window.__recarrega(v); }, 4000); return; }
+  try { if (v) sessionStorage.setItem("cdi-recarregou", v); } catch (e) {}
+  location.reload();
+};
 if ("serviceWorker" in navigator) {
   // procura versão nova sempre que o app abre ou volta para a tela, e recarrega sozinho quando chega
   const tinha = !!navigator.serviceWorker.controller; let recarregou = false;
-  navigator.serviceWorker.addEventListener("controllerchange", () => { if (tinha && !recarregou) { recarregou = true; location.reload(); } });
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (tinha && !recarregou) { recarregou = true; window.__recarrega(""); } });
   navigator.serviceWorker.register("sw.js").then(r => { r.update(); navigator.serviceWorker.ready.then(g => g.active && g.active.postMessage("completa")).catch(() => {}); document.addEventListener("visibilitychange", () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {});
 }
 // o iPhone às vezes volta para o app sem recarregar: confere a versão publicada e recarrega se mudou
@@ -52,7 +67,7 @@ if ("serviceWorker" in navigator) {
   const confere = () => {
     if (checando || document.hidden) return; checando = true;
     fetch("versao.json?t=" + Date.now(), { cache: "no-store" }).then(r => r.ok ? r.json() : null)
-      .then(j => { if (j && j.v && j.v !== window.__VERSAO) location.reload(); })
+      .then(j => { if (j && j.v && j.v !== window.__VERSAO) window.__recarrega(j.v); })
       .catch(() => {}).finally(() => { checando = false; });
   };
   document.addEventListener("visibilitychange", confere);

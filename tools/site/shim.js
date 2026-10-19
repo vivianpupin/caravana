@@ -171,15 +171,17 @@ if (!pronto) {
     if (me.isOwner) {
       semear();
       const ac = await leDoc("privado/acesso");
-      if (ac === "demorou") return entrar();
-      if (!ac || !ac.exists) return telaCriarPalavra();
+      // sem internet a leitura falha (ou demora): entra assim mesmo; só pede para criar a palavra quando a internet confirmou que ela não existe
+      if (!ac || ac === "demorou") return entrar();
+      if (!ac.exists && !(ac.metadata && ac.metadata.fromCache)) return telaCriarPalavra();
       return entrar();
     }
     // entrou com a palavra antiga: a senha vira a palavra nova só depois de confirmar que é membro
     const novaSenha = () => { if (trocarSenha) { const nova = trocarSenha; trocarSenha = ""; u.updatePassword(senhaDe(nova)).catch(() => {}); } };
     const m = await leDoc("membros/" + u.uid);
     let entrouAntes = false; try { entrouAntes = localStorage.getItem("cdi-entrou") === "1"; } catch (e) {}
-    if (m === "demorou" && entrouAntes) return entrar();
+    // quem já entrou neste celular não fica preso na tela da palavra quando abre o app sem internet
+    if ((m === "demorou" || !m) && entrouAntes) return entrar();
     if (m && m !== "demorou" && m.exists) { novaSenha(); return entrar(); }
     // entrou com e-mail + palavra: a mesma palavra já vira a chave de membro, sem pedir de novo
     if (palavraDigitada) {
@@ -458,15 +460,17 @@ const user = {
 const fotos = {}, pedindo = new Set();
 const VAZIO = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
 let avisoTimer = null;
-window.__blobUrl = id => {
+let chegaram = [];
+// soOlha: só devolve a foto se já estiver aqui (a galeria pede a foto de verdade quando ela aparece na tela)
+window.__blobUrl = (id, soOlha) => {
   if (!id) return VAZIO;
   if (fotos[id]) return fotos[id];
-  if (!pedindo.has(id) && fs) {
+  if (!soOlha && !pedindo.has(id) && fs) {
     pedindo.add(id);
     // foto nunca muda: procura primeiro no celular e só baixa se ainda não tiver (economiza o chip)
     const ref = fs.doc("fotos/" + id);
     ref.get({ source: "cache" }).then(s => s.exists ? s : ref.get()).catch(() => ref.get()).then(s => {
-      if (s.exists) { fotos[id] = s.data().data; clearTimeout(avisoTimer); avisoTimer = setTimeout(() => window.dispatchEvent(new Event("caravana-foto")), 60); }
+      if (s.exists) { fotos[id] = s.data().data; chegaram.push(id); clearTimeout(avisoTimer); avisoTimer = setTimeout(() => { const ids = chegaram; chegaram = []; window.dispatchEvent(new CustomEvent("caravana-foto", { detail: { ids } })); }, 60); }
     }).catch(() => pedindo.delete(id));
   }
   return VAZIO;

@@ -26,11 +26,14 @@ function guardadoPrimeiro(nome, req) {
   return caches.match(req).then(g => { const rede = fetch(req).then(r => guarda(nome, req, r)).catch(() => g); return g || rede; });
 }
 // internet primeiro, mas se o sinal estiver fraco e demorar, abre o guardado sem esperar
-function redePrimeiro(req, ms) {
+// a página nova termina de baixar e fica guardada mesmo quando o guardado já abriu (antes, com wi-fi lento, o celular recarregava e abria a versão velha de novo)
+function redePrimeiro(req, ms, ev) {
   return new Promise(ok => {
     let feito = false; const fim = r => { if (!feito && r) { feito = true; ok(r); } };
     const rede = fetch(req.mode === "navigate" ? new Request(req.url, { cache: "no-store" }) : req, req.mode === "navigate" ? undefined : { cache: "no-store" });
-    rede.then(r => { guarda(CACHE, req.mode === "navigate" ? "./" : req, r); fim(r); })
+    const salva = rede.then(r => { const cp = r && r.ok ? r.clone() : null; fim(r); return cp && caches.open(CACHE).then(c => c.put(req.mode === "navigate" ? "./" : req, cp)); });
+    if (ev) ev.waitUntil(salva.catch(() => {}));
+    salva
       .catch(() => (req.mode === "navigate" ? caches.match("./") : caches.match(req)).then(g => fim(g || Response.error())));
     setTimeout(() => (req.mode === "navigate" ? caches.match("./").then(g => g || caches.match("index.html")) : caches.match(req)).then(fim), ms);
   });
@@ -48,7 +51,7 @@ self.addEventListener("fetch", e => {
     // login do Google (/__/auth/...) e funções do Netlify: sempre direto da internet, nunca do guardado
     if (u.pathname.startsWith("/__/") || u.pathname.includes("/.netlify/")) return;
     if (req.mode === "navigate" && !/^\/(index\.html)?$/.test(u.pathname)) return;
-    if (req.mode === "navigate" || u.pathname.endsWith("/index.html")) return e.respondWith(redePrimeiro(req, 3500));
+    if (req.mode === "navigate" || u.pathname.endsWith("/index.html")) return e.respondWith(redePrimeiro(req, 3500, e));
     if (u.pathname.endsWith("versao.json")) return e.respondWith(fetch(req).catch(() => caches.match(req).then(g => g || new Response("{}"))));
     // arquivos do app já guardados saem direto do celular, sem consultar a internet (a atualização do app troca só os que mudaram)
     const rel = u.pathname.replace(/^\//, "");
