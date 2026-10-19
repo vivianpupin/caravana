@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Arhat</title>
-<meta name="description" content="Arhat: a jornada do sonho lúcido e da viagem astral, de Vivian Pupin.">
+<title>Osirion</title>
+<meta name="description" content="Osirion: sonho lúcido e viagem astral, com o método Arhat, de Vivian Pupin.">
 <meta name="theme-color" content="#121427">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Arhat">
+<meta name="apple-mobile-web-app-title" content="Osirion">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icone-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -78,6 +78,8 @@ p { margin: 0; }
 .topo { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .marca { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-size: 20px; letter-spacing: .3em; }
 .marca img { width: 26px; height: 26px; }
+.marca-nome { display: flex; flex-direction: column; line-height: 1.1; }
+.marca-nome small { font-family: var(--corpo); font-size: 10px; letter-spacing: .08em; color: var(--areia-2); margin-top: 3px; }
 .chip-nev { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--areia-2); background: var(--ceu-2); border: 1px solid var(--ceu-3); border-radius: 999px; padding: 5px 10px 5px 6px; cursor: pointer; font-family: inherit; }
 .bolinha { width: 16px; height: 16px; border-radius: 50%; background: var(--nevoeiro); box-shadow: 0 0 10px var(--nevoeiro); }
 
@@ -325,7 +327,7 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
 </head>
 <body>
 
-<p class="aviso-prot"><b>Versão de teste do Arhat.</b> O que você anotar fica só neste aparelho.</p>
+<p class="aviso-prot"><b>Versão de teste do Osirion.</b> O que você anotar fica só neste aparelho.</p>
 
 <div class="celular" id="app">
   <div class="nevoa" aria-hidden="true"></div>
@@ -333,7 +335,7 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
   <nav class="nav" id="nav" aria-label="Seções">
     <button data-aba="hoje"><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9z"/></svg>Hoje</button>
     <button data-aba="diario"><svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>Diário</button>
-    <button data-aba="ceu"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/><circle cx="5" cy="18" r="1"/><circle cx="18" cy="17" r="1.4"/></svg>Céu</button>
+    <button data-aba="ceu"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/><circle cx="5" cy="18" r="1"/><circle cx="18" cy="17" r="1.4"/></svg>Duat</button>
     <button data-aba="capsulas"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="5"/><path d="M7 12h10"/></svg>Cápsulas</button>
     <button data-aba="atos"><svg viewBox="0 0 24 24"><path d="M12 2l6 8-2 10H8L6 10z"/><path d="M6 10h12M12 2v18"/></svg>Atos</button>
   </nav>
@@ -360,7 +362,7 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
   // O conteúdo vem do livro (conteudo.js).
   const ATOS = window.ARHAT.ATOS.map(a => Object.assign({}, a, { capa: IMG[a.capa] }));
   const CAPS = window.CAPSULAS;
-  const TEMAS = { livro: "Do livro", ciencia: "Ciência do sono", tradicoes: "Tradições do sonho" };
+  const TEMAS = { livro: "Do livro Arhat", ciencia: "Ciência do sono", tradicoes: "Tradições do sonho" };
 
   const CORES = [
     { nome: "Lilás", v: "#a9b2f0" }, { nome: "Azul", v: "#6fa8ff" }, { nome: "Dourado", v: "#f5c75b" },
@@ -394,7 +396,7 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
   const nomeCor = () => (CORES.find(c => c.v === est.nevoeiro) || { nome: "o seu" }).nome;
 
   function topo() {
-    return `<div class="topo"><div class="marca"><img src="${IMG.cristal}" alt="">ARHAT</div>
+    return `<div class="topo"><div class="marca"><img src="${IMG.cristal}" alt=""><span class="marca-nome">OSIRION<small>Sonho lúcido e viagem astral</small></span></div>
       <button class="chip-nev" data-acao="nevoeiro"><span class="bolinha"></span>nevoeiro ${esc(nomeCor()).toLowerCase()}</button></div>`;
   }
 
@@ -424,7 +426,7 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
     const feitos = est.feitos[a.id] || {};
     const momentos = a.momentos.map(m => `
       <section class="momento">
-        <div class="momento-cab"><h3>${m.quando}</h3><span class="hora">${m.hora}</span></div>
+        <div class="momento-cab"><h3>${m.quando === "Noite" ? "Abaton" : m.quando}</h3><span class="hora">${m.quando === "Noite" ? "a prática da noite · " + m.hora : m.hora}</span></div>
         ${m.praticas.map(p => `
           <button class="pratica ${feitos[p.k] ? "ok" : ""}" data-pratica="${p.k}">
             <span class="ico">${ICO[p.ico]}</span>
@@ -438,7 +440,7 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
       ${cartaoCapsula(CAPS[diaDaJornada() - 1], true)}
       ${a.intro ? `<p class="intro-ato">${esc(a.intro)}</p>` : ""}
       <button class="notif" data-pratica="teste"><img src="${IMG.simbolo}" alt="">
-        <span><span class="linha1"><span>ARHAT</span><span>agora</span></span>
+        <span><span class="linha1"><span>OSIRION</span><span>agora</span></span>
         <span class="msg">Será que estou sonhando?</span><br><span class="suave">Olhe para as suas mãos e conte os dedos.</span></span></button>
       ${momentos}
       <p class="nota-pe">Hoje: ${est.testes} de 7 a 10 testes de realidade</p>
@@ -478,8 +480,8 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
     const todas = ex.concat(minhas);
     const cont = [0, 0, 0, 0]; todas.forEach(t => cont[t]++);
     return `<div class="tela">${topo()}
-      <div><span class="rotulo">Diagrama de vivências</span><h1>O céu das suas noites</h1></div>
-      <p class="suave">Cada manhã vira um ponto. Uma estrela é um sonho lúcido ou uma viagem astral. Com os meses, a sua constelação aparece.</p>
+      <div><span class="rotulo">Duat · o mundo da noite</span><h1>O céu das suas noites</h1></div>
+      <p class="suave">Duat era, para os egípcios, o céu por onde o sol viaja à noite até renascer. Aqui é o seu diagrama de vivências: cada manhã vira um ponto. Uma estrela é um sonho lúcido ou uma viagem astral. Com os meses, a sua constelação aparece.</p>
       <div class="ceu-box"><canvas id="ceu" width="720" height="560" aria-label="Céu com ${todas.length} noites registradas"></canvas></div>
       <div class="numeros"><div><b>${todas.length}</b><span>noites</span></div><div><b>${cont[2]}</b><span>com lucidez</span></div><div><b>${cont[3]}</b><span>estrelas</span></div></div>
       <div class="legenda">${TIPOS.map(t => `<div><canvas width="28" height="28" data-ponto="${t.k}"></canvas>${t.nome}</div>`).join("")}</div>
@@ -650,7 +652,7 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
     return `<div class="tela">${topo()}
       <div><span class="rotulo">Cápsulas</span><h1>Um ensinamento por dia</h1></div>
       <p class="suave">Cada dia abre uma cápsula de dois ou três minutos: o livro, a ciência do sono e os povos que honram os sonhos.</p>
-      <div class="legenda-temas"><span class="t-livro"><i></i>Do livro</span><span class="t-ciencia"><i></i>Ciência do sono</span><span class="t-tradicoes"><i></i>Tradições do sonho</span></div>
+      <div class="legenda-temas"><span class="t-livro"><i></i>Do livro Arhat</span><span class="t-ciencia"><i></i>Ciência do sono</span><span class="t-tradicoes"><i></i>Tradições do sonho</span></div>
       <div class="trilha">${nos}</div>
       <button class="btn fantasma largo" data-acao="adiantar">Adiantar um dia (só no protótipo)</button>
     </div>`;
@@ -666,7 +668,7 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
       </button>`;
     }).join("");
     return `<div class="tela">${topo()}
-      <div><span class="rotulo">A jornada</span><h1>Cinco atos para abrir os olhos</h1></div>
+      <div><span class="rotulo">O método Arhat</span><h1>Cinco atos para abrir os olhos</h1></div>
       <p class="suave">Siga em sequência ou fique alguns dias em cada ato. Quanto mais tempo no Arhat, mais você vive os resultados.</p>
       ${lista}
       ${est.pago ? "" : `<div class="oferta"><span class="rotulo" style="color:var(--cristal)">Jornada completa</span>
@@ -705,10 +707,10 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
       <div class="corpo">
         <span class="rotulo">O Início · a primeira manhã</span>
         <h1>Qual é a cor do seu nevoeiro?</h1>
-        <p class="suave">Ontem à noite, antes de adormecer, uma esfera de luz ocupou a sua tela mental. É o seu limiar. Escolha a cor dele: o Arhat inteiro passa a ter essa luz.</p>
+        <p class="suave">Ontem à noite, antes de adormecer, uma esfera de luz ocupou a sua tela mental. É o seu limiar. Escolha a cor dele: o Osirion inteiro passa a ter essa luz.</p>
         <div class="cores" role="group" aria-label="Cores do nevoeiro">${CORES.map(c => `<button class="cor" data-cor="${c.v}" aria-label="${c.nome}" aria-pressed="${c.v === sel}" style="background:${c.v};color:${c.v}"></button>`).join("")}</div>
         <label class="cor-propria" for="cor-livre">Outra cor <input type="color" id="cor-livre" value="${sel}"></label>
-        <button class="btn largo" data-acao="entrar">Entrar no Arhat</button>
+        <button class="btn largo" data-acao="entrar">Entrar no Osirion</button>
       </div></div>`);
   }
 
@@ -738,7 +740,7 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
         <div><b>Prática guiada pela Vivian</b><div class="suave">o áudio será gravado por você</div><div class="trilho"><span id="trilho"></span></div></div></div>` : "";
     const fim = k === "noite" ? "Vou dormir" : k === "madrugada" ? "Voltar a dormir" : k === "diario" ? "Abrir o diário" : "Feito";
     abrirSobre(`<div class="tela">${voltar}
-      <span class="rotulo">${esc(a.nome)} · ${esc(m.quando)}</span><h1>${esc(p.nome)}</h1>
+      <span class="rotulo">${esc(a.nome)} · ${m.quando === "Noite" ? "Abaton, a prática da noite" : esc(m.quando)}</span><h1>${esc(p.nome)}</h1>
       ${respHtml}${player}
       <div class="passo-wrap" id="passo"></div>
       <div class="pontos" id="pontos"></div>
@@ -848,13 +850,13 @@ mark { background: color-mix(in srgb, var(--cristal) 35%, transparent); color: v
         <div class="passo"><h3>As mãos</h3><p class="suave">Conte os dedos. Puxe o indicador. Se esticar, ou se houver mais ou menos de dez dedos, você está sonhando.</p></div>
         <div class="passo"><h3>A respiração</h3><p class="suave">Tampe o nariz e tente respirar por ele. Se o ar passar, é sonho.</p></div>
         <div class="passo"><h3>Letras e números</h3><p class="suave">Olhe a palavra, desvie o olhar, olhe de novo. No sonho ela muda.</p>
-          <div class="letras" id="letras">ARHAT</div><button class="btn fantasma" id="olhar">Olhar de novo</button></div>
+          <div class="letras" id="letras">OSIRION</div><button class="btn fantasma" id="olhar">Olhar de novo</button></div>
       </div>
       <div><span class="rotulo">Hoje</span><div class="contador" style="margin-top:8px">${bolas}</div></div>
       <button class="btn largo" data-acao="acordado">Não estou sonhando, por enquanto</button></div>`, d => {
       d.querySelector("#olhar").onclick = () => {
         const l = d.querySelector("#letras"); l.style.opacity = .1;
-        timers.push(setTimeout(() => { l.style.opacity = 1; l.textContent = "ARHAT"; }, 500));
+        timers.push(setTimeout(() => { l.style.opacity = 1; l.textContent = "OSIRION"; }, 500));
       };
     });
   }
