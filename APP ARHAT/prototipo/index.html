@@ -167,6 +167,33 @@ textarea { width: 100%; min-height: 110px; resize: vertical; background: var(--c
 .entrada .data { font-size: 12px; color: var(--areia-2); display: flex; justify-content: space-between; }
 .entrada p { font-size: 14px; }
 
+/* Calendário do diário */
+.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--ceu-2); border-radius: 12px; padding: 4px; gap: 4px; }
+.seg button { border: 0; background: none; padding: 8px; border-radius: 9px; font-size: 14px; color: var(--areia-2); }
+.seg button[aria-pressed="true"] { background: var(--ceu-3); color: var(--areia); }
+.mes-cab { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.mes-cab button { background: none; border: 1px solid var(--ceu-3); border-radius: 10px; width: 36px; height: 36px; font-size: 16px; }
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+.cal .dsem { font-size: 11px; color: var(--areia-2); padding-bottom: 2px; }
+.cal .dia { aspect-ratio: 1; max-width: 100%; min-width: 0; border: 0; border-radius: 10px; background: var(--ceu-2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 12px; color: var(--areia-2); font-variant-numeric: tabular-nums; padding: 0; }
+.cal .vazio { background: none; }
+.cal .dia.tem { color: var(--areia); }
+.cal .dia.hoje { box-shadow: inset 0 0 0 1px var(--areia-2); }
+.cal .dia[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--nevoeiro); }
+.simb { font-size: 14px; line-height: 1; height: 14px; }
+.simb.t0 { color: rgba(238,229,212,.3); }
+.simb.t1 { color: var(--areia); font-size: 9px; height: 14px; display: inline-grid; place-items: center; }
+.alvo:has(.simb) { display: inline-flex; align-items: center; gap: 6px; }
+.simb.t2 { color: var(--nevoeiro); }
+.simb.t3 { color: var(--cristal); text-shadow: 0 0 8px var(--cristal); }
+.busca { width: 100%; background: var(--ceu-2); border: 1px solid var(--ceu-3); border-radius: 12px; color: var(--areia); font: inherit; padding: 10px 12px; }
+.cartao { background: var(--ceu-2); border: 1px solid var(--ceu-3); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.cartao .data { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--areia-2); }
+.cartao p { font-size: 15px; }
+.selo-ex { font-size: 11px; color: var(--ocre); border: 1px solid color-mix(in srgb, var(--ocre) 50%, transparent); border-radius: 999px; padding: 1px 8px; }
+.guardado { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--areia-2); background: color-mix(in srgb, var(--nevoeiro) 8%, var(--ceu-2)); border-radius: 14px; padding: 12px; }
+.guardado svg { flex: none; width: 20px; height: 20px; stroke: var(--nevoeiro); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
 /* Céu */
 .ceu-box { border-radius: 20px; overflow: hidden; border: 1px solid var(--ceu-3); background: #0b0c18; }
 #ceu { display: block; width: 100%; height: auto; max-width: 100%; }
@@ -414,12 +441,92 @@ textarea { width: 100%; min-height: 110px; resize: vertical; background: var(--c
     });
   }
 
+  // ---------- Diário: gravar e calendário ----------
+  const isoDe = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const deIso = s => { const [a, m, d] = s.split("-").map(Number); return new Date(a, m - 1, d); };
+  const hojeIso = isoDe(new Date());
+  const SIMB = ["·", "●", "⁘", "✦"];
+
+  // Noites de exemplo nas últimas semanas, para o calendário abrir com vida.
+  const EXEMPLOS = [
+    [1, 3, "Estava numa feira em Varanasi e o letreiro mudava cada vez que eu olhava. Puxei o dedo e ele esticou. Fiquei lúcida e voei sobre o Ganges.", "dourado"],
+    [2, 1, "Uma casa antiga com luz laranja. Minha avó me entregava uma chave.", "dourado"],
+    [3, 0, "", ""],
+    [4, 2, "Percebi por um instante que era sonho quando o relógio tinha dois ponteiros iguais. Perdi logo.", "lilás"],
+    [6, 1, "Água subindo devagar num templo de pedra. Eu não tinha medo.", "lilás"],
+    [7, 1, "Viagem de ônibus, gente da caravana, uma estrada de terra vermelha.", "lilás"],
+    [9, 3, "Disse “Clareza, agora!” e tudo ficou nítido. Caminhei pela sala da minha casa e vi o tapete com outras cores.", "lilás"],
+    [10, 0, "", ""],
+    [12, 2, "Ouvi meu nome sendo chamado e senti a vibração no corpo. Um nevoeiro azul.", "azul"],
+    [13, 1, "Um bicho grande no fundo do mar, olhando para mim.", "azul"],
+    [15, 1, "Montanha laranja e duas figuras brancas flutuando.", "azul"],
+    [17, 0, "", ""],
+    [18, 1, "Fragmentos: uma porta, um cheiro de incenso.", ""],
+    [20, 1, "Escola antiga, prova que eu não estudei.", ""]
+  ].map(([dias, tipo, texto, cor]) => {
+    const d = new Date(); d.setDate(d.getDate() - dias);
+    return { iso: isoDe(d), tipo, texto, cor, exemplo: true };
+  });
+
+  function todasEntradas() {
+    return est.diario.map(d => Object.assign({ iso: hojeIso }, d)).concat(EXEMPLOS)
+      .sort((a, b) => (a.iso < b.iso ? 1 : a.iso > b.iso ? -1 : 0));
+  }
+
   let tipoEscolhido = 1, gravando = false;
+  let modoDiario = "gravar", mesVisto = new Date(new Date().getFullYear(), new Date().getMonth(), 1), diaSel = hojeIso, busca = "", filtro = null;
+
+  function cartao(d) {
+    const quando = deIso(d.iso).toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
+    return `<div class="cartao"><div class="data"><span>${esc(quando)}</span>${d.exemplo ? '<span class="selo-ex">exemplo</span>' : ""}</div>
+      <div style="display:flex;align-items:center;gap:8px"><span class="simb t${d.tipo}">${SIMB[d.tipo]}</span><b style="font-size:14px">${esc(TIPOS[d.tipo].nome)}</b></div>
+      ${d.cor ? `<span class="suave">Nevoeiro ${esc(d.cor)}</span>` : ""}
+      <p>${d.texto ? esc(d.texto) : '<span class="suave">Nada ficou. Continue praticando com convicção.</span>'}</p></div>`;
+  }
+
+  function listaCalendario() {
+    const todas = todasEntradas();
+    const termo = busca.trim().toLowerCase();
+    if (termo || filtro !== null) {
+      const achadas = todas.filter(d => (filtro === null || d.tipo === filtro) && (!termo || (d.texto || "").toLowerCase().includes(termo)));
+      return `<span class="rotulo">${achadas.length} ${achadas.length === 1 ? "noite encontrada" : "noites encontradas"}</span>${achadas.map(cartao).join("")}`;
+    }
+    const doDia = todas.filter(d => d.iso === diaSel);
+    const titulo = deIso(diaSel).toLocaleDateString("pt-BR", { day: "numeric", month: "long" });
+    return doDia.length ? doDia.map(cartao).join("")
+      : `<div class="cartao"><div class="data"><span>${esc(titulo)}</span></div><p class="suave">Nenhuma anotação nesta noite.</p></div>`;
+  }
+
+  function telaCalendario() {
+    const porDia = {};
+    todasEntradas().forEach(d => { porDia[d.iso] = Math.max(porDia[d.iso] ?? -1, d.tipo); });
+    const ano = mesVisto.getFullYear(), mes = mesVisto.getMonth();
+    const dias = new Date(ano, mes + 1, 0).getDate(), inicio = new Date(ano, mes, 1).getDay();
+    let celulas = "";
+    for (let i = 0; i < inicio; i++) celulas += '<span class="vazio"></span>';
+    let anotadas = 0;
+    for (let d = 1; d <= dias; d++) {
+      const iso = isoDe(new Date(ano, mes, d)), t = porDia[iso];
+      if (t !== undefined) anotadas++;
+      celulas += `<button class="dia ${t !== undefined ? "tem" : ""} ${iso === hojeIso ? "hoje" : ""}" data-dia="${iso}" aria-pressed="${iso === diaSel && !busca && filtro === null}" aria-label="${d}">
+        <span>${d}</span><span class="simb ${t !== undefined ? "t" + t : ""}">${t !== undefined ? SIMB[t] : ""}</span></button>`;
+    }
+    const nomeMes = mesVisto.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+    return `
+      <div class="mes-cab"><button data-mes="-1" aria-label="Mês anterior">‹</button><h2>${esc(nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1))}</h2><button data-mes="1" aria-label="Próximo mês">›</button></div>
+      <div class="cal">${["D", "S", "T", "Q", "Q", "S", "S"].map(s => `<span class="dsem">${s}</span>`).join("")}${celulas}</div>
+      <p class="suave" style="text-align:center">${anotadas} ${anotadas === 1 ? "noite anotada" : "noites anotadas"} neste mês</p>
+      <input class="busca" id="busca" type="search" placeholder="Buscar nos sonhos: água, avó, Egito…" value="${esc(busca)}" aria-label="Buscar nos sonhos">
+      <div class="alvos">${TIPOS.map(t => `<button class="alvo" data-filtro="${t.k}" aria-pressed="${filtro === t.k}"><span class="simb t${t.k}">${SIMB[t.k]}</span> ${["Sem lembrança", "Sonhos", "Lucidez", "Estrelas"][t.k]}</button>`).join("")}</div>
+      <div id="lista-cal" style="display:flex;flex-direction:column;gap:10px">${listaCalendario()}</div>
+      <div class="guardado"><svg viewBox="0 0 24 24"><path d="M7 18a5 5 0 0 1-.6-10A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/></svg>
+        <span>No app de verdade, cada noite fica guardada na sua conta: troca de celular e não perde nada, e dá para baixar tudo. Neste protótipo, fica só neste aparelho.</span></div>`;
+  }
+
   function telaDiario() {
-    const lista = est.diario.slice().reverse().map(d => `
-      <div class="entrada"><div class="data"><span>${esc(d.data)}</span><span>${esc(TIPOS[d.tipo].nome)}</span></div>
-      ${d.cor ? `<p class="suave">Nevoeiro: ${esc(d.cor)}</p>` : ""}<p>${esc(d.texto || "(sem texto)")}</p></div>`).join("");
-    return `<div class="tela diario">
+    const seg = `<div class="seg" role="group" aria-label="Diário"><button data-modo="gravar" aria-pressed="${modoDiario === "gravar"}">Anotar</button><button data-modo="calendario" aria-pressed="${modoDiario === "calendario"}">Calendário</button></div>`;
+    if (modoDiario === "calendario") return `<div class="tela">${topo()}${seg}${telaCalendario()}</div>`;
+    return `<div class="tela diario">${seg}
       <div class="topo"><span class="rotulo">Os primeiros 5 minutos</span><span class="hora">05:47</span></div>
       <div class="perguntas"><span>Não levante. Não abra os olhos.</span><span style="color:var(--areia)">Onde eu estava?</span><span style="color:var(--areia)">O que eu estava sentindo?</span></div>
       <button class="gravar ${gravando ? "ativo" : ""}" data-acao="gravar">${gravando ? "Ouvindo…" : "Gravar sonho"}</button>
@@ -428,8 +535,7 @@ textarea { width: 100%; min-height: 110px; resize: vertical; background: var(--c
       <textarea id="sonho" placeholder="Eu estava numa casa antiga, a luz era laranja…"></textarea>
       <span class="rotulo">Como foi a noite</span>
       <div class="tipos">${TIPOS.map(t => `<button class="tipo" data-tipo="${t.k}" aria-pressed="${t.k === tipoEscolhido}"><canvas width="28" height="28" data-ponto="${t.k}"></canvas>${t.nome}</button>`).join("")}</div>
-      <button class="btn largo" data-acao="salvar-sonho">Guardar no céu</button>
-      ${lista ? `<div><span class="rotulo">Suas noites</span>${lista}</div>` : ""}
+      <button class="btn largo" data-acao="salvar-sonho">Guardar a noite</button>
     </div>`;
   }
 
@@ -604,22 +710,33 @@ textarea { width: 100%; min-height: 110px; resize: vertical; background: var(--c
       if (!a.gratis && !est.pago) { b.closest(".tela").querySelector(".oferta").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
       est.ato = a.id; salvar(); aba = "hoje"; render(); return;
     }
+    if (b.dataset.modo) { modoDiario = b.dataset.modo; render(); return; }
+    if (b.dataset.mes) { mesVisto = new Date(mesVisto.getFullYear(), mesVisto.getMonth() + +b.dataset.mes, 1); render(); return; }
+    if (b.dataset.dia) { diaSel = b.dataset.dia; busca = ""; filtro = null; render(); return; }
+    if (b.dataset.filtro) { filtro = filtro === +b.dataset.filtro ? null : +b.dataset.filtro; render(); return; }
     const acao = b.dataset.acao;
     if (acao === "nevoeiro") abrirNevoeiro();
     else if (acao === "entrar") { est.nevoeiro = est.nevoeiro || CORES[0].v; salvar(); fecharSobre(); aba = "hoje"; render(); }
     else if (acao === "gravar") { gravando = !gravando; const t = document.getElementById("sonho").value; render(); document.getElementById("sonho").value = t; }
     else if (acao === "salvar-sonho") {
       const texto = document.getElementById("sonho").value.trim();
-      const hoje = new Date().toLocaleDateString("pt-BR", { day: "numeric", month: "long" });
-      est.diario.push({ data: hoje, texto, tipo: tipoEscolhido, cor: tipoEscolhido > 0 ? nomeCor().toLowerCase() : "" });
+      est.diario.push({ iso: hojeIso, texto, tipo: tipoEscolhido, cor: tipoEscolhido > 0 ? nomeCor().toLowerCase() : "" });
       const ato = ATOS[est.ato].id; est.feitos[ato] = est.feitos[ato] || {}; est.feitos[ato].diario = true;
-      salvar(); gravando = false; aba = "ceu"; render();
+      salvar(); gravando = false;
+      modoDiario = "calendario"; diaSel = hojeIso; busca = ""; filtro = null;
+      mesVisto = new Date(new Date().getFullYear(), new Date().getMonth(), 1); render();
     }
     else if (acao === "acordado") { est.testes = Math.min(10, est.testes + 1); if (est.testes >= 7) marcar("teste"); salvar(); fecharSobre(); render(); }
     else if (acao === "comprar") { est.pago = true; salvar(); render(); }
     else if (acao && acao.startsWith("feito-")) { marcar(acao.slice(6) === "noite" ? "noite" : acao.slice(6)); fecharSobre(); render(); }
   });
   app.addEventListener("input", e => {
+    if (e.target.id === "busca") {
+      busca = e.target.value;
+      document.getElementById("lista-cal").innerHTML = listaCalendario();
+      document.querySelectorAll(".cal .dia").forEach(d => d.setAttribute("aria-pressed", !busca && filtro === null && d.dataset.dia === diaSel));
+      return;
+    }
     if (e.target.id === "cor-livre") { est.nevoeiro = e.target.value; aplicarCor(); document.querySelectorAll(".cor").forEach(c => c.setAttribute("aria-pressed", "false")); }
   });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && document.getElementById("sobre") && est.nevoeiro) { fecharSobre(); render(); } });
