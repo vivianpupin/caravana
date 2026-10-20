@@ -134,8 +134,13 @@ if (pronto) {
 }
 // o próprio app tira o "espera" quando já sabe o que mostrar (boas-vindas ou a página certa); 8 s é só segurança
 // quem ainda não viu a boas-vindas do app: o próprio app tira o "espera" quando a boas-vindas já está na tela (antes o app aparecia por trás e piscava)
-const fecharPortao = () => { document.getElementById("portao")?.remove(); let bv = false; try { bv = localStorage.getItem("cdi-bv") === "1"; } catch (e) {}
-  setTimeout(() => document.documentElement.classList.remove("espera"), bv ? 4000 : 9000); };
+// o cartão de entrar fica na tela ("Abrindo a travessia…") até o app já ter a próxima tela pronta; antes ele sumia
+// ao tocar em Entrar e ficava só o fundo escuro vazio por alguns segundos, piscando antes da boas-vindas
+const fecharPortao = () => {
+  if (document.getElementById("portao")) portao(el("p", { textContent: "Abrindo a travessia…" }));
+  window.__fechaPortao = () => { document.getElementById("portao")?.remove(); window.__fechaPortao = null; };
+  let bv = false; try { bv = localStorage.getItem("cdi-bv") === "1"; } catch (e) {}
+  setTimeout(() => { window.__fechaPortao?.(); document.documentElement.classList.remove("espera"); }, bv ? 4000 : 9000); };
 const el = (tag, props = {}, ...kids) => { const e = document.createElement(tag); Object.assign(e, props); e.append(...kids); return e; };
 
 // ---------- estado ----------

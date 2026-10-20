@@ -9565,7 +9565,8 @@ render();
   if (user) { const me = await user.me(); S.me = me; S.uid = me.id; S.isOwner = me.isOwner; perfis([me.id]); }
   // no site o app fica escondido até aqui; na primeira vez entra a tela de boas-vindas, nas outras espera os viajantes
   let viajantesProntos; const vProntos = new Promise(r => { viajantesProntos = r; });
-  const libera = () => document.documentElement.classList.remove("espera");
+  // o app aparece e, no mesmo instante, sai o cartão de entrar (que ficou "Abrindo a travessia…" até aqui)
+  const libera = () => { document.documentElement.classList.remove("espera"); window.__fechaPortao?.(); };
   if (window.__SITE && S.uid) {
     // boas-vindas só para quem ainda não tem passaporte, e uma vez só (marca na hora em que aparece)
     if (!lsGet("cdi-bv")) {
