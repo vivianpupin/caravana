@@ -56,10 +56,12 @@ window.__recarrega = function (v) {
   const ocupado = () => {
     // escolhendo foto na galeria, filmando ou enviando: espera mesmo com a tela escondida (no iPhone a galeria esconde o app)
     if (window.__ocupado && window.__ocupado()) return true;
-    if (document.hidden) return false;
+    // texto começado (chat, pombo, carta) ou uma janela aberta: não perde nada, espera a pessoa terminar
     const a = document.activeElement;
-    if (a && (a.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))) return true;
+    if (a && (a.isContentEditable ? (a.textContent || "").trim() : /^(INPUT|TEXTAREA)$/.test(a.tagName) && a.type !== "file" && String(a.value || "").trim())) return true;
     if (document.querySelector(".sheet")) return true;
+    if (document.hidden) return false;
+    if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) return true;
     return !!(window.__ocupado && window.__ocupado());
   };
   if (ocupado()) { clearTimeout(window.__recarrega.t); window.__recarrega.t = setTimeout(function () { window.__recarrega(v); }, 4000); return; }
