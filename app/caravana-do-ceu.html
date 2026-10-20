@@ -2344,8 +2344,9 @@ function vCadastro() {
       if (S.isOwner) doc.lider = true;
       // quem já tem passaporte (a lista ainda não tinha chegado da internet) não perde selos, missões nem o número: só atualiza nome, cidade e foto
       const ant = await S.db.doc("viajantes/" + S.uid).get().catch(() => null);
-      if (ant && ant.exists) { const { ts, insignias, ...resto } = doc; try { await S.db.doc("viajantes/" + S.uid).update(resto); S.tab = "passaporte"; render(); } catch (err) { erro.textContent = "Não consegui atualizar seu passaporte. Tente de novo com internet."; } return; }
-      try { await S.db.doc("viajantes/" + S.uid).set(doc); S.tab = "passaporte"; }
+      if (ant && ant.exists) { const { ts, insignias, ...resto } = doc; try { await S.db.doc("viajantes/" + S.uid).update(resto); go("travessia"); } catch (err) { erro.textContent = "Não consegui atualizar seu passaporte. Tente de novo com internet."; } return; }
+      // passaporte emitido: vai para a página inicial (Roteiro), no topo
+      try { await S.db.doc("viajantes/" + S.uid).set(doc); go("travessia"); }
       catch (err) { erro.textContent = "Não consegui emitir seu passaporte. Peça à líder um convite com permissão para participar."; }
     } },
       h("label", { for: "cad-nome" }, "Seu nome", nome),
