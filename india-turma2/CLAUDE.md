@@ -9,3 +9,4 @@
 - Este site publica só com `[publicar-turma2]` na mensagem do commit (o `[publicar]` é o site da Turma 1).
 - NUNCA colocar `[publicar-turma2]` (nem `[publicar]`) numa mensagem de commit sem a Vivian dizer "publica" naquele momento.
 - Fluxo: fazer os ajustes, commitar e dar push SEM a marca, mostrar as mudanças por imagem/vídeo e, quando ela pedir, publicar tudo de uma vez num único commit com a marca.
+- Netlify da Turma 2: Base directory `india-turma2`, branch `claude/great-mayer-tdew0z`. A verificação de segredos da Netlify barrava a publicação por causa da apiKey pública do Firebase no `config.js`; o `netlify.toml` desta pasta libera só esse valor (SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES).
