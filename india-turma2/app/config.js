@@ -1,14 +1,13 @@
-// Configuração do Firebase da TURMA 2 (projeto próprio, separado da Turma 1). Não é senha: é o endereço público do banco de dados.
-// Enquanto estiver "COLE_AQUI", o app mostra que ainda não está ligado ao banco (nada vai para o banco da Turma 1).
+// Configuração do Firebase da TURMA 2 (projeto caravana2-1a1fd, separado da Turma 1). Não é senha: é o endereço público do banco de dados.
 window.CARAVANA_CONFIG = {
   lider: "vivianpupin@gmail.com, vanessadeleu@gmail.com",
   firebase: {
-    apiKey: "COLE_AQUI",
-    authDomain: "COLE_AQUI.firebaseapp.com",
-    projectId: "COLE_AQUI",
-    storageBucket: "COLE_AQUI.firebasestorage.app",
-    messagingSenderId: "COLE_AQUI",
-    appId: "COLE_AQUI"
+    apiKey: "AIzaSyAq5lqUHmm8yu7pyDowLnpyO-Dv1bJWzsA",
+    authDomain: "caravana2-1a1fd.firebaseapp.com",
+    projectId: "caravana2-1a1fd",
+    storageBucket: "caravana2-1a1fd.firebasestorage.app",
+    messagingSenderId: "841732601325",
+    appId: "1:841732601325:web:11cfc4cc2579a030a6a3e4"
   }
 };
 // Login pelo próprio endereço do app: liga depois que o endereço

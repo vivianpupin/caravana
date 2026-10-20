@@ -17,15 +17,15 @@
   for = "/sw.js"
   [headers.values]
     Cache-Control = "no-cache"
-# Login do Google pelo próprio endereço do app (troque COLE_AQUI pelo código do projeto Firebase da Turma 2) (o iPhone bloqueia o login quando ele volta de outro site)
+# Login do Google pelo próprio endereço do app (o iPhone bloqueia o login quando ele volta de outro site)
 [[redirects]]
   from = "/__/auth/*"
-  to = "https://COLE_AQUI.firebaseapp.com/__/auth/:splat"
+  to = "https://caravana2-1a1fd.firebaseapp.com/__/auth/:splat"
   status = 200
   force = true
 [[redirects]]
   from = "/__/firebase/*"
-  to = "https://COLE_AQUI.firebaseapp.com/__/firebase/:splat"
+  to = "https://caravana2-1a1fd.firebaseapp.com/__/firebase/:splat"
   status = 200
   force = true
 # Bilhete de embarque de cada viajante: /embarque/ana-paula/07 abre a mesma página com o nome
