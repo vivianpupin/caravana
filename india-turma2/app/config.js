@@ -1,0 +1,54 @@
+// Configuração do Firebase da TURMA 2 (projeto próprio, separado da Turma 1). Não é senha: é o endereço público do banco de dados.
+// Enquanto estiver "COLE_AQUI", o app mostra que ainda não está ligado ao banco (nada vai para o banco da Turma 1).
+window.CARAVANA_CONFIG = {
+  lider: "vivianpupin@gmail.com, vanessadeleu@gmail.com",
+  firebase: {
+    apiKey: "COLE_AQUI",
+    authDomain: "COLE_AQUI.firebaseapp.com",
+    projectId: "COLE_AQUI",
+    storageBucket: "COLE_AQUI.firebasestorage.app",
+    messagingSenderId: "COLE_AQUI",
+    appId: "COLE_AQUI"
+  }
+};
+// Login pelo próprio endereço do app: liga depois que o endereço
+// https://caravanaindiaturma2.netlify.app/__/auth/handler estiver cadastrado no Google Cloud (credenciais OAuth) do projeto da Turma 2.
+const LOGIN_PELO_APP = true;
+if (LOGIN_PELO_APP && location.hostname === "caravanaindiaturma2.netlify.app") window.CARAVANA_CONFIG.firebase.authDomain = location.host;
+
+// Link aberto de dentro do Instagram, Facebook, WhatsApp etc.: o Google não deixa entrar por esses navegadores.
+// Mostra como abrir no Safari ou no Chrome.
+(function () {
+  const ua = navigator.userAgent || "";
+  if (!/Instagram|FBAN|FBAV|FB_IAB|FBIOS|WhatsApp|Line\/|MicroMessenger|TikTok|musical_ly|Snapchat|LinkedInApp|GSA\//i.test(ua)) return;
+  window.CARAVANA_NAVEGADOR_INTERNO = true;
+  const ios = /iPhone|iPad|iPod/i.test(ua);
+  document.addEventListener("DOMContentLoaded", () => {
+    const d = document.createElement("div"); d.id = "fora";
+    d.style.cssText = "position:fixed;inset:0;z-index:200;background:#F5EFE4;display:grid;place-items:center;padding:24px;font-family:Poppins,system-ui,sans-serif;color:#3B2A1C;text-align:center";
+    d.innerHTML = '<div style="max-width:360px;display:flex;flex-direction:column;gap:14px;align-items:center">' +
+      '<img src="img/simbolo-marrom.png" alt="" style="width:60px">' +
+      '<h1 style="font-family:Cinzel,Georgia,serif;font-weight:500;font-size:22px;margin:0">Abra no ' + (ios ? "Safari" : "Chrome") + '</h1>' +
+      '<p style="margin:0;font-size:15px;line-height:1.55">Este link abriu dentro de outro aplicativo, e por aqui o Google não deixa entrar na conta.</p>' +
+      '<p style="margin:0;font-size:15px;line-height:1.55">' + (ios ? "Toque nos três pontinhos ou no ícone de compartilhar e escolha <b>Abrir no Safari</b>." : "Toque nos três pontinhos no canto de cima e escolha <b>Abrir no Chrome</b> (ou no navegador).") + '</p>' +
+      '<button type="button" style="border:0;border-radius:999px;padding:13px 22px;font:600 15px Poppins,system-ui,sans-serif;background:#3F4938;color:#F6EDDA">Copiar o link</button>' +
+      '<p class="ok" style="margin:0;font-size:13px;color:#3F4938;min-height:1em"></p></div>';
+    d.querySelector("button").onclick = () => { const l = location.origin + "/"; (navigator.clipboard ? navigator.clipboard.writeText(l) : Promise.reject()).then(() => { d.querySelector(".ok").textContent = "Link copiado. Cole no " + (ios ? "Safari" : "Chrome") + "."; }, () => { d.querySelector(".ok").textContent = l; }); };
+    document.body.append(d);
+  });
+})();
+
+// Selo "Powered by Netlify" que a Netlify coloca por cima do site: tira da tela assim que aparece.
+(function () {
+  const ehSelo = e => {
+    if (!e || e.nodeType !== 1 || e.id === "portao" || e.id === "fora" || /^(HEAD|BODY|SCRIPT|STYLE|LINK|META)$/.test(e.tagName)) return false;
+    if (/NETLIFY/.test(e.tagName) || /netlify\.com/i.test(e.getAttribute("href") || "") || /netlify\.com/i.test(e.getAttribute("src") || "")) return true;
+    const sr = e.shadowRoot ? e.shadowRoot.textContent || "" : "";
+    return /Powered by\s*Netlify/i.test(sr) || (e.textContent || "").length < 200 && /Powered by\s*Netlify/i.test(e.textContent || "");
+  };
+  const limpa = raiz => { if (!raiz) return; [...raiz.children].forEach(e => { if (ehSelo(e)) e.remove(); }); };
+  const olha = raiz => new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(e => { if (ehSelo(e)) e.remove(); }))).observe(raiz, { childList: true });
+  olha(document.documentElement);
+  document.addEventListener("DOMContentLoaded", () => { limpa(document.documentElement); limpa(document.body); olha(document.body); });
+  window.addEventListener("load", () => { limpa(document.documentElement); limpa(document.body); });
+})();
