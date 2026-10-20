@@ -2013,15 +2013,35 @@ async function fotoPassaporte(file) {
   const b = await new Promise(res => c.toBlob(res, "image/jpeg", 0.88));
   return (await S.assets.upload(b)).id;
 }
-function campoFoto(onId, status) {
-  const fi = h("input", { type: "file", accept: "image/*", id: "foto-pass-" + Math.random().toString(36).slice(2), hidden: true, onchange: async () => {
-    const f = fi.files[0]; if (!f) return; status.textContent = "Enviando sua foto…";
-    try { const id = await fotoPassaporte(f); await onId(id); status.textContent = "Foto pronta."; }
-    catch (e) { status.textContent = e && e.code ? erroFoto(e) : "Não consegui usar essa foto. Tente outra, em JPG ou PNG."; }
-    fi.value = "";
-  } });
-  return fi;
+// o campo que abre a galeria do celular fica fora da tela que redesenha: antes, se chegasse novidade enquanto a pessoa escolhia
+// a foto, a tela era refeita, o campo antigo sumia e a foto escolhida se perdia ("carregava e cancelava")
+function campoFoto(onId, status, chave = "passaporte") {
+  const reg = campoFoto.reg || (campoFoto.reg = {});
+  let r = reg[chave];
+  if (!r) {
+    const fi = h("input", { type: "file", accept: "image/*", hidden: true });
+    r = reg[chave] = { fi, click: () => { r.abriu = Date.now(); fi.click(); } };
+    const avisa = txt => { r.msg = txt; if (r.status) r.status.textContent = txt; };
+    fi.addEventListener("change", async () => {
+      const f = fi.files[0]; r.abriu = 0; if (!f) return;
+      r.enviando = true; avisa("Carregando sua foto…");
+      try { const id = await fotoPassaporte(f); await r.onId(id); avisa("Foto pronta."); }
+      catch (e) { avisa(e && e.code ? erroFoto(e) : "Não consegui usar essa foto. Tente outra, em JPG ou PNG."); }
+      finally { r.enviando = false; fi.value = ""; }
+    });
+    document.body.append(fi);
+  }
+  r.onId = onId; r.status = status; if (r.msg) status.textContent = r.msg;
+  return r;
 }
+// escolhendo ou enviando a foto do passaporte: a atualização do app espera (recarregar no meio perdia a foto)
+const fotoOcupada = () => (S.arquivoAberto && Date.now() - S.arquivoAberto < 120000) || Object.values(campoFoto.reg || {}).some(r => r.enviando || (r.abriu && Date.now() - r.abriu < 5 * 60 * 1000));
+// qualquer campo que abre a galeria do celular: marca enquanto ela está aberta; ao escolher, cancelar ou tocar de novo na tela, solta
+document.addEventListener("click", e => { if (e.target && e.target.matches && e.target.matches('input[type="file"]')) S.arquivoAberto = Date.now(); }, true);
+const soltaArquivo = () => { if (!S.arquivoAberto) return; S.arquivoAberto = 0; if (S.renderEspera) { S.renderEspera = false; setTimeout(render, 0); } };
+document.addEventListener("change", e => { if (e.target && e.target.type === "file") soltaArquivo(); }, true);
+document.addEventListener("cancel", e => { if (e.target && e.target.type === "file") soltaArquivo(); }, true);
+document.addEventListener("pointerdown", soltaArquivo, true);
 
 // ---------- selos ----------
 const minhas = () => ({ ...S.local, ...((eu() && eu().insignias) || {}) });
@@ -2191,6 +2211,8 @@ function botaoNovas(log) {
 }
 function render() {
   if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
+  // galeria do celular aberta (escolhendo foto): não redesenha agora, senão a foto escolhida se perde; redesenha quando ela fecha
+  if (S.arquivoAberto && Date.now() - S.arquivoAberto < 120000) { S.renderEspera = true; return; }
   marcaChat(); marcaPombos(); convidaAvisos(); registraApp(); checaHabilidades();
   // escrevendo no chat e chegou mensagem: troca só a lista de mensagens; a caixa de texto fica como está (o cursor e o teclado não pulam)
   if (S.tab === "conversa" && document.activeElement && document.activeElement.id === "chat-input" && S._abaDesenhada && S._abaDesenhada.startsWith("conversa|")) {
@@ -2304,7 +2326,9 @@ function vCadastro() {
   const nome = h("input", { type: "text", id: "cad-nome", maxlength: "40", autocomplete: "given-name", placeholder: "Como a caravana vai te chamar" });
   const cid = h("input", { type: "text", id: "cad-cidade", maxlength: "40", placeholder: "Ex.: São Paulo" });
   const erro = h("p", { class: "msg err", role: "alert" });
-  if (S.me && S.me.name) nome.value = S.me.name.split(" ")[0];
+  if (S.cadNome != null) nome.value = S.cadNome; else if (S.me && S.me.name) nome.value = S.me.name.split(" ")[0];
+  if (S.cadCidade != null) cid.value = S.cadCidade;
+  nome.addEventListener("input", () => { S.cadNome = nome.value; }); cid.addEventListener("input", () => { S.cadCidade = cid.value; });
   return h("section", { class: "welcome" },
     h("img", { class: "cover", src: "img/passaporte-capa.webp", alt: "Passaporte da Travessia · Caravana do Céu" }),
     h("p", { class: "eyebrow", text: "Emissão do passaporte" }),
@@ -2329,9 +2353,9 @@ function vCadastro() {
       escolhaGenero(() => S.cadGenero, g => { S.cadGenero = g; }),
       campoViagens(S.cadViagens || (S.cadViagens = {}), () => S.cadGenero),
       S.assets ? (() => {
-        const st = h("span", { class: "small", role: "status" }), prev = h("img", { alt: "", hidden: true, class: "cadfoto" });
-        const fi = campoFoto(async id => { S.cadFoto = id; prev.src = blob(id); prev.hidden = false; }, st);
-        return h("div", { class: "cadfotobox" }, prev, h("button", { class: "btn", type: "button", onclick: () => fi.click() }, "Foto para o passaporte"), fi, st);
+        const st = h("span", { class: "small", role: "status" }), prev = h("img", { alt: "", hidden: !S.cadFoto, class: "cadfoto", src: S.cadFoto ? blob(S.cadFoto) : null, "data-foto": S.cadFoto || null });
+        const fi = campoFoto(async id => { S.cadFoto = id; const p = document.querySelector("img.cadfoto") || prev; p.src = blob(id); p.dataset.foto = id; p.hidden = false; }, st);
+        return h("div", { class: "cadfotobox" }, prev, h("button", { class: "btn", type: "button", onclick: () => fi.click() }, "Foto para o passaporte"), st);
       })() : null,
       erro, h("button", { class: "btn gold", type: "submit" }, "Emitir meu passaporte")));
 }
@@ -3570,7 +3594,7 @@ function vPassaporte() {
           h("button", { class: "fotobtn", type: "button", disabled: !fi, "aria-label": v.foto ? "Trocar foto do passaporte" : "Adicionar foto ao passaporte", onclick: () => fi && fi.click() },
             v.foto ? h("img", { src: blob(v.foto), alt: "Sua foto" }) : h("span", { class: "fotoadd" }, h("b", { text: "+" }), fi ? "Adicionar foto" : "Sem foto"),
             v.foto && fi ? h("span", { class: "fototroca", text: "Trocar" }) : null),
-          fi, st);
+          st);
       })(),
         h("div", { class: "fds" }, camposPassaporte(v))),
       h("div", { class: "mrz", "aria-hidden": "true", text: mrzDe(v, ok) }),
@@ -8981,7 +9005,7 @@ async function enviaFilmeGaleria(it, msg) {
   try { return await enviaFilmeGaleria2(it, msg); } finally { S.enviandoFilme--; }
 }
 // enquanto filma ou envia um filme, a atualização do app espera (senão recarregava no meio e perdia tudo)
-window.__ocupado = () => !!S.gravando || S.enviandoFilme > 0 || !!S.revelando;
+window.__ocupado = () => !!S.gravando || S.enviandoFilme > 0 || !!S.revelando || fotoOcupada();
 async function enviaFilmeGaleria2(it, msg) {
   const capa = it.capa || await capaDoFilme(it.blob);
   if (!capa) throw new Error("capa");

@@ -4,6 +4,10 @@
   # Cada publicação gasta créditos do Netlify: só publica quando a mensagem do commit tiver [publicar].
   # Os outros commits ficam guardados no GitHub e entram na próxima publicação.
   ignore = "git log -1 --pretty=%B | grep -qF '[publicar]' && exit 1 || exit 0"
+[build.environment]
+  # as apiKeys do Firebase (Turma 1 em app/config.js e Turma 2 em india-turma2/app/config.js) são públicas:
+  # avisa a verificação de segredos da Netlify para não barrar a publicação por causa delas
+  SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES = "AIzaSyDsbhcih3hK-j7bV6-BV-tJpVnCjnu2_1I,AIzaSyAq5lqUHmm8yu7pyDowLnpyO-Dv1bJWzsA"
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"

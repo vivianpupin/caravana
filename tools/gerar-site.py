@@ -53,6 +53,8 @@ window.__recarrega = function (v) {
     return;
   }
   const ocupado = () => {
+    // escolhendo foto na galeria, filmando ou enviando: espera mesmo com a tela escondida (no iPhone a galeria esconde o app)
+    if (window.__ocupado && window.__ocupado()) return true;
     if (document.hidden) return false;
     const a = document.activeElement;
     if (a && (a.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))) return true;
