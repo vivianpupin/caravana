@@ -5,6 +5,10 @@
   # Cada publicação gasta créditos do Netlify: só publica quando a mensagem do commit tiver [publicar-turma2].
   # O [publicar] da Turma 1 não publica este site, e o [publicar-turma2] não publica o site da Turma 1.
   ignore = "git log -1 --pretty=%B | grep -qF '[publicar-turma2]' && exit 1 || exit 0"
+[build.environment]
+  # a apiKey do Firebase no config.js é pública (identifica o banco, não abre nada sem login):
+  # avisa a verificação de segredos da Netlify para não barrar a publicação por causa dela
+  SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES = "AIzaSyAq5lqUHmm8yu7pyDowLnpyO-Dv1bJWzsA"
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
