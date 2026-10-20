@@ -4678,16 +4678,17 @@ async function retratoCaravana(cen, pose) {
       c2.fillStyle = "rgba(20,10,4,.42)"; c2.beginPath(); c2.ellipse(L.x, L.y, w * .3, w * .06, 0, 0, 7); c2.fill();
       c2.save(); c2.translate(L.x, L.y - sobe); c2.rotate(ang); c2.scale(espelho, 1); c2.drawImage(L.im, -w / 2, -hh, w, hh); c2.restore();
     }
-    // luz da estação nos bonecos: tom âmbar e um pouco mais escuro, como o resto da foto
-    c2.globalCompositeOperation = "source-atop"; c2.fillStyle = "rgba(120,70,25,.32)"; c2.fillRect(0, 0, W, H);
-    const lz = c2.createLinearGradient(W, 900, 0, H); lz.addColorStop(0, "rgba(255,190,110,.18)"); lz.addColorStop(1, "rgba(30,15,5,.25)"); c2.fillStyle = lz; c2.fillRect(0, 0, W, H);
+    // luz da estação nos bonecos: só um toque quente (antes um véu marrom forte deixava os exploradores apagados, como se fossem transparentes)
+    c2.globalCompositeOperation = "source-atop";
+    const lz = c2.createLinearGradient(W, 900, 0, H); lz.addColorStop(0, "rgba(255,190,110,.10)"); lz.addColorStop(1, "rgba(30,15,5,.10)"); c2.fillStyle = lz; c2.fillRect(0, 0, W, H);
     c2.globalCompositeOperation = "source-over";
-    x.drawImage(cam, 0, 0);
-    // grão de filme por cima de tudo (fundo e bonecos juntos)
+    // grão de filme forte só no fundo; os exploradores entram depois, nítidos, e ganham só um grão bem leve junto com a foto
     const gr = document.createElement("canvas"); gr.width = gr.height = 256; const gx = gr.getContext("2d"), gd = gx.createImageData(256, 256);
     for (let i = 0; i < gd.data.length; i += 4) { const v = 128 + (sorte(i * .37 + 5) - .5) * 190; gd.data[i] = gd.data[i + 1] = gd.data[i + 2] = v; gd.data[i + 3] = 255; }
     gx.putImageData(gd, 0, 0);
     x.save(); x.globalCompositeOperation = "overlay"; x.globalAlpha = .22; x.fillStyle = x.createPattern(gr, "repeat"); x.fillRect(0, 0, W, H); x.restore();
+    x.drawImage(cam, 0, 0);
+    x.save(); x.globalCompositeOperation = "overlay"; x.globalAlpha = .06; x.fillStyle = x.createPattern(gr, "repeat"); x.fillRect(0, 0, W, H); x.restore();
     x.textAlign = "center"; x.font = '400 30px Poppins, sans-serif'; x.fillStyle = "rgba(241,226,188,.85)"; x.fillText("CARAVANA DO CÉU · TRAVESSIA DA ÍNDIA SAGRADA · 2026", W / 2, H - 22);
     return cv;
   }
@@ -4764,10 +4765,12 @@ function vRetrato() {
   const livres = CENARIOS.filter(([id]) => id === "embarque" ? TEM_EMBARQUE : S.isOwner || aberto(localDe(SELO_CENARIO[id])));
   if (!livres.length) return h("div", { class: "carvbon" }, h("p", { class: "eyebrow rule", text: "Retrato da Caravana" }),
     h("p", { class: "small", style: "text-align:center", text: "Todos os exploradores juntos, num cenário da travessia. Cada cenário se abre quando a caravana passa pela cidade." }));
-  const cen = livres.some(([id]) => id === S.retratoCen) ? S.retratoCen : livres[0][0], pose = POSES[cen] || "turma", msg = h("p", { class: "msg", role: "status" }), prev = h("div", { class: "retprev" });
-  // o retrato já montado continua na tela mesmo se o app redesenhar
-  const mostra = () => { const R = S.retratoPrev; prev.textContent = ""; if (!R || R.cen !== cen) return;
-    prev.append(h("img", { src: R.url, alt: "Retrato da Caravana" }), h("button", { class: "btn", type: "button", onclick: () => salvarNoRolo(new Promise(ok => R.cv.toBlob(ok, "image/jpeg", .92)), "retrato-da-caravana.jpg", msg) }, "Salvar retrato")); };
+  const cen = livres.some(([id]) => id === S.retratoCen) ? S.retratoCen : livres[0][0], pose = POSES[cen] || "turma", msg = h("p", { class: "msg", role: "status", id: "ret-msg", text: S.montandoRetrato ? "Montando o retrato…" : "" }), prev = h("div", { class: "retprev", id: "ret-prev" });
+  // o retrato já montado continua na tela mesmo se o app redesenhar; e se redesenhar enquanto monta, o retrato vai para a tela nova
+  // (antes ia para a tela antiga, que já tinha saído, e o retrato nunca aparecia)
+  const vivo = (id, el) => document.getElementById(id) || el;
+  const mostra = (alvo = prev) => { const R = S.retratoPrev; alvo.textContent = ""; if (!R || R.cen !== cen) return;
+    alvo.append(h("img", { src: R.url, alt: "Retrato da Caravana" }), h("button", { class: "btn", type: "button", onclick: () => salvarNoRolo(new Promise(ok => R.cv.toBlob(ok, "image/jpeg", .92)), "retrato-da-caravana.jpg", vivo("ret-msg", msg)) }, "Salvar retrato")); };
   mostra();
   return h("div", { class: "carvbon" },
     h("p", { class: "eyebrow rule", text: "Retrato da Caravana" }),
@@ -4779,9 +4782,9 @@ function vRetrato() {
         msg.textContent = "Montando o retrato…"; msg.className = "msg"; prev.textContent = "";
         try {
           const cv = await retratoCaravana(cen, pose); if (cen === "embarque") marcaMissao("retrato");
-          S.retratoPrev = { cen, cv, url: cv.toDataURL("image/jpeg", .9) }; mostra();
-          msg.textContent = "";
-        } catch (e) { msg.textContent = "Não consegui montar o retrato. Tente de novo."; msg.className = "msg err"; }
+          S.retratoPrev = { cen, cv, url: cv.toDataURL("image/jpeg", .9) }; mostra(vivo("ret-prev", prev));
+          vivo("ret-msg", msg).textContent = "";
+        } catch (e) { const m = vivo("ret-msg", msg); m.textContent = "Não consegui montar o retrato. Tente de novo."; m.className = "msg err"; }
         finally { S.montandoRetrato = false; }
       } }, "Montar o retrato")),
     prev, msg);
