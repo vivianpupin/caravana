@@ -1,0 +1,9 @@
+# Achado de Passagens (site próprio no Netlify)
+# No Netlify, este site usa a pasta passagens como "Base directory".
+[build]
+  publish = "app"
+  # Cada publicação gasta créditos do Netlify: só publica quando a mensagem do commit tiver [publicar-passagens].
+  # O [publicar] e o [publicar-turma2] não publicam este site.
+  ignore = "git log -1 --pretty=%B | grep -qF '[publicar-passagens]' && exit 1 || exit 0"
+[functions]
+  directory = "netlify/functions"
