@@ -44,6 +44,14 @@ tail = """
 // e no máximo uma vez por versão (com wi-fi fraco a página nova pode não chegar a tempo, e ficava recarregando sem parar)
 window.__recarrega = function (v) {
   try { if (v && sessionStorage.getItem("cdi-recarregou") === v) return; } catch (e) {}
+  // com o app na tela, a versão nova entra quando a pessoa sair do app (antes recarregava no meio do uso, a tela piscava e voltava para o começo)
+  if (!document.hidden) {
+    if (!window.__recarrega.esperando) {
+      window.__recarrega.esperando = true;
+      document.addEventListener("visibilitychange", function sai() { if (!document.hidden) return; document.removeEventListener("visibilitychange", sai); window.__recarrega.esperando = false; window.__recarrega(v); });
+    }
+    return;
+  }
   const ocupado = () => {
     if (document.hidden) return false;
     const a = document.activeElement;

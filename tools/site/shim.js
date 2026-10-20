@@ -119,16 +119,18 @@ if (pronto) {
   const st = document.createElement("style");
   st.textContent = "html.espera,html.espera body{background:#1d1a16 url(img/textura.jpg) center/cover}html.espera body>*:not(#portao):not(#fora):not(#boasvindas){visibility:hidden}";
   document.head.append(st);
-  // quem já entrou neste celular vê o app na hora (como antes); só quem ainda não entrou espera a tela certa
-  let jaEntrou = false; try { jaEntrou = localStorage.getItem("cdi-entrou") === "1"; } catch (e) {}
-  if (!jaEntrou) document.documentElement.classList.add("espera");
+  // quem já entrou neste celular e já viu a boas-vindas vê o app na hora; os outros esperam a tela certa
+  // (quem entrou mas ainda não viu a boas-vindas também espera: antes o app aparecia e só depois vinha a boas-vindas por cima)
+  let jaEntrou = false, bvVisto = false; try { jaEntrou = localStorage.getItem("cdi-entrou") === "1"; bvVisto = localStorage.getItem("cdi-bv") === "1"; } catch (e) {}
+  if (!jaEntrou || !bvVisto) document.documentElement.classList.add("espera");
   // primeira vez no celular, fora do app instalado: a boas-vindas aparece na hora, sem esperar o login carregar (antes ficava um fundo vazio e piscava)
   const celular0 = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
   const instalado0 = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
   if (!jaEntrou && celular0 && !instalado0 && !window.CARAVANA_NAVEGADOR_INTERNO && location.protocol === "https:")
     document.addEventListener("DOMContentLoaded", () => { try { telaInstalar(); } catch (e) {} });
-  // segurança: nunca deixa a tela escura presa (sem internet a conferência pode demorar)
-  setTimeout(() => { if (!document.getElementById("portao")) document.documentElement.classList.remove("espera"); }, 5000);
+  // segurança: nunca deixa a tela escura presa (sem internet a conferência pode demorar);
+  // na primeira vez espera mais, porque com internet lenta a boas-vindas demora e o app aparecia antes dela
+  setTimeout(() => { if (!document.getElementById("portao")) document.documentElement.classList.remove("espera"); }, bvVisto ? 5000 : 12000);
 }
 // o próprio app tira o "espera" quando já sabe o que mostrar (boas-vindas ou a página certa); 8 s é só segurança
 // quem ainda não viu a boas-vindas do app: o próprio app tira o "espera" quando a boas-vindas já está na tela (antes o app aparecia por trás e piscava)

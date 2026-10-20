@@ -1961,6 +1961,8 @@ const badgeSrc = l => l && l.insignia ? `insignias/${l.insignia}.webp` : null;
 const deusSrc = n => "deuses/" + norm(n) + ".webp";
 const FRESCO = 3 * 60 * 60 * 1000;
 const BLANK = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+// espera a foto chegar da internet (até 20 s) antes de usar: sem isso, salvava uma imagem vazia
+const fotoPronta = id => new Promise(ok => { const t0 = Date.now(), olha = () => { const u = blob(id); if (u !== BLANK || Date.now() - t0 > 20000) ok(u); else setTimeout(olha, 300); }; olha(); });
 const nn = n => String(n).padStart(2, "0");
 const MES = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
 const dataSelo = ts => { const d = new Date(ts); return nn(d.getDate()) + " " + MES[d.getMonth()] + " " + String(d.getFullYear()).slice(2); };
@@ -2232,6 +2234,7 @@ function render() {
   if (S.gravando) requestAnimationFrame(() => mostraGravando());
   if (S.camSel === "celular") { ajustaVisorCel(); requestAnimationFrame(ajustaVisorCel); setTimeout(ajustaVisorCel, 700); }
   if (S.tab === "travessia") alturaFrases();
+  if (S.novoSelo && document.querySelector(".checksel.new")) { const n = S.novoSelo; setTimeout(() => { if (S.novoSelo === n) S.novoSelo = null; }, 1600); }
   const el = actId && document.getElementById(actId);
   if (el && el !== act) { if (draft != null && "value" in el && el.type !== "file" && el.type !== "checkbox") el.value = draft; el.focus({ preventScroll: true }); if (el.isContentEditable) cursorNoFim(el); else if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
 }
@@ -2240,7 +2243,9 @@ function pintaMe() {
   if (!S.uid) { b.hidden = true; return; }
   b.hidden = false;
   b.setAttribute("aria-label", v ? "Meu passaporte" : "Emitir passaporte");
-  b.replaceChildren(h("img", { src: avatar(S.uid), alt: "" }), h("b", { text: v ? (v.lider ? "Líder" : "Nº " + nn(numeros()[S.uid] || 0)) : "Emitir" }));
+  const src = avatar(S.uid), txt = v ? (v.lider ? "Líder" : "Nº " + nn(numeros()[S.uid] || 0)) : "Emitir", im = b.querySelector("img"), tb = b.querySelector("b");
+  if (im && tb && im.getAttribute("src") === src && (im.dataset.foto || "") === ((v && v.foto) || "")) { if (tb.textContent !== txt) tb.textContent = txt; return; }
+  b.replaceChildren(h("img", { src, alt: "", "data-foto": v && v.foto ? v.foto : null }), h("b", { text: txt }));
 }
 function carregando(txt) {
   return h("div", { class: "empty" }, h("h3", { text: S.dbReady ? "Nada por aqui ainda" : "Abrindo a travessia…" }),
@@ -2407,6 +2412,8 @@ function alturaFrases() {
   el.textContent = t; S.fraseAlt = { w: el.offsetWidth, h: m }; el.style.minHeight = m + "px";
 }
 window.addEventListener("resize", () => { S.fraseAlt = null; alturaFrases(); });
+// a altura das frases é medida de novo quando as fontes chegam (medida com a fonte provisória, o Roteiro pulava a cada frase)
+document.fonts?.ready.then(() => { S.fraseAlt = null; alturaFrases(); });
 setInterval(() => {
   S.fraseIdx = (S.fraseIdx + 1) % FRASES.length;
   const el = document.getElementById("frase-giro"); if (!el) return;
@@ -2444,7 +2451,7 @@ function vTravessia() {
     ins.length ? h("div", null,
       h("p", { class: "eyebrow rule", text: `Os ${ins.length} carimbos do passaporte` }),
       h("div", { class: "strip", style: "margin-top:10px" }, ins.map(l => h("button", { type: "button", "aria-label": l.nome, onclick: () => abrirSelo(l) },
-        h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off", loading: "lazy" }))))) : null,
+        h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" }))))) : null,
     h("nav", { class: "daychips", "aria-label": "Dias" }, dias.map(d => h("button", { type: "button", class: d.iso === hoje ? "today" : "", "aria-current": String(S.diaAberto === d.n), onclick: () => { S.diaAberto = 0; abrir(d.n); } },
       h("b", { text: nn(d.n) }), d.cidade))),
     h("div", { class: "days" }, dias.map(d => vDia(d, d.n === S.diaAberto, d.iso === hoje, abrir))),
@@ -2723,7 +2730,7 @@ function vDia(d, open, isToday, abrir) {
       d.deuses ? h("div", { class: "gods" },
         h("p", { class: "eyebrow rule", text: "Mapa dos Deuses" }),
         d.deuses.intro ? h("p", { class: "intro", text: d.deuses.intro }) : null,
-        h("div", { class: "godrow" }, d.deuses.cards.map(c => h("figure", { class: "god", style: "margin:0" }, h("img", { src: deusSrc(c.nome), alt: c.nome, loading: "lazy" }), h("span", { text: c.papel })))),
+        h("div", { class: "godrow" }, d.deuses.cards.map(c => h("figure", { class: "god", style: "margin:0" }, h("img", { src: deusSrc(c.nome), alt: c.nome }), h("span", { text: c.papel })))),
         h("div", { class: "story" }, d.deuses.titulo ? h("h5", { text: d.deuses.titulo }) : null, String(d.deuses.texto || "").split(/\n\s*\n/).map(t => h("p", { text: t.trim() })))) : null,
       ls.length ? h("div", null, h("p", { class: "eyebrow rule", text: ls.length > 1 ? "Carimbos deste dia" : "Carimbo deste dia" }),
         h("div", { class: "seals", style: "margin-top:12px" }, ls.map(l => h("button", { type: "button", onclick: () => abrirSelo(l) },
@@ -3456,7 +3463,7 @@ function celebraSelo(l) {
       h("h2", { class: "celnome", text: l.nome }),
       h("p", { class: "celsub", text: [d ? `Dia ${d.n} · ${d.cidade}` : "", `${qtd} de ${ls.length} carimbos`].filter(Boolean).join("  ·  ") }),
       h("div", { class: "actions", style: "justify-content:center" },
-        h("button", { class: "btn gold", type: "button", onclick: () => { fechar(); S.trilhaChegou = l.id; if (S.tab !== "passaporte") go("passaporte"); else render(); setTimeout(() => document.querySelector(".parada.chegou")?.scrollIntoView({ block: "center", behavior: "smooth" }), 120); } }, "Ver na minha trilha"),
+        h("button", { class: "btn gold", type: "button", onclick: () => { fechar(); S.trilhaChegou = l.id; setTimeout(() => { if (S.trilhaChegou === l.id) S.trilhaChegou = null; }, 3000); if (S.tab !== "passaporte") go("passaporte"); else render(); setTimeout(() => document.querySelector(".parada.chegou")?.scrollIntoView({ block: "center", behavior: "smooth" }), 120); } }, "Ver na minha trilha"),
         h("button", { class: "btn ghost celfecha", type: "button", onclick: fechar }, "Fechar"))));
   document.body.append(ov);
 }
@@ -3537,7 +3544,7 @@ function trilhaSelos(ls, mins) {
         const on = feitos[i], ts = mins[l.id], d = diaDe(l.dia), eProx = i === prox;
         return h("button", { class: "parada " + (on ? "on" : "off") + (eProx ? " prox" : "") + (i % 2 ? " dir" : " esq") + (S.trilhaChegou === l.id ? " chegou" : ""), type: "button", style: `top:${topo + i * passo}px`, onclick: () => abrirSelo(l), "aria-label": l.nome + (on ? ", carimbado" : "") },
           h("span", { class: "pinwrap", style: `--r:${[-7, 5, -3, 8, -5, 3][i % 6]}deg` },
-            h("img", { class: "pin", src: badgeSrc(l), alt: "", loading: "lazy" }),
+            h("img", { class: "pin", src: badgeSrc(l), alt: "" }),
             on ? checkSelo(S.novoSelo === l.id ? "new" : "") : null,
             !on ? h("span", { class: "misterio", "aria-hidden": "true", text: eProx ? "✦" : "?" }) : null),
           eProx ? h("span", { class: "proxtag", text: "próximo destino" }) : null,
@@ -3700,10 +3707,13 @@ async function cameraHabilidade(id) {
   const cxImg = h("img", { class: "habsobre", alt: "" });
   caixaHabilidade(id, (eu() || {}).genero).then(c => { cxImg.src = c.toDataURL("image/png"); });
   const st = h("p", { class: "msg", role: "status", text: "Abrindo a câmera…" });
-  const para = () => { if (fluxo) fluxo.getTracks().forEach(t => t.stop()); fluxo = null; };
+  let pedido = 0;
+  const para = () => { pedido++; if (fluxo) fluxo.getTracks().forEach(t => t.stop()); fluxo = null; };
   const abre = async () => {
-    para();
-    try { fluxo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: frente ? "user" : "environment" }, audio: false });
+    para(); const meu = pedido;
+    try { const novo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: frente ? "user" : "environment" }, audio: false });
+      if (meu !== pedido || !video.isConnected) { novo.getTracks().forEach(t => t.stop()); return; }
+      fluxo = novo;
       video.classList.toggle("espelho", frente); video.srcObject = fluxo; await video.play(); st.textContent = ""; }
     catch (e) { st.textContent = ""; st.append(h("button", { class: "btn gold", type: "button", style: "width:100%", onclick: () => { fecha(); entradaFoto(id, true); } }, "📸 Abrir a câmera do celular")); }
   };
@@ -3850,7 +3860,7 @@ function vGuardioesLider() {
     try { await espera(salva(), 8000); msg.textContent = S.palavraAtual ? "Passagens prontas. Os guardiões entram sozinhos nos passaportes." : "Passagens prontas, mas sem a palavra-chave no link: crie a palavra no cartão acima e gere de novo."; msg.className = S.palavraAtual ? "msg ok" : "msg err"; }
     catch (e) { msg.textContent = "As passagens estão aí embaixo, mas a internet está lenta e a lista ainda não foi guardada. Gere de novo quando a conexão melhorar."; msg.className = "msg err"; }
   };
-  if (ta.value.trim()) setTimeout(desenha, 0);
+  if (ta.value.trim()) desenha();
   const gente = S.viajantes.slice().sort((a, b) => normNome(a.nome) < normNome(b.nome) ? -1 : 1);
   const opcoes = [["", "—"], ...Object.entries(GUARDIOES).map(([id, G]) => [id, G.nome])];
   return h("div", { class: "panel" },
@@ -3917,17 +3927,18 @@ function vGenteLider() {
 // cada celular registra no próprio passaporte se instalou, ligou avisos e localização (para o painel da líder)
 async function registraApp() {
   if (!noSite() || !S.db || !eu() || S.registrando) return;
-  let local = !!S.gpsOn;
-  try { if (!local && navigator.permissions) local = (await navigator.permissions.query({ name: "geolocation" })).state === "granted"; } catch (e) {}
-  const st = { instalado: instalado(), avisos: avisosLigados(), local }, ant = eu().app || {};
-  if (ant.instalado === st.instalado && ant.avisos === st.avisos && ant.local === st.local && Date.now() - (ant.ts || 0) < 6 * 3600 * 1000) return;
   S.registrando = true;
-  try { await S.db.doc("viajantes/" + S.uid).update({ app: { ...st, ts: Date.now() } }); } catch (e) {}
-  S.registrando = false;
+  try {
+    let local = !!S.gpsOn;
+    try { if (!local && navigator.permissions) local = (await navigator.permissions.query({ name: "geolocation" })).state === "granted"; } catch (e) {}
+    const st = { instalado: instalado(), avisos: avisosLigados(), local }, ant = (eu() || {}).app || {};
+    if (ant.instalado === st.instalado && ant.avisos === st.avisos && ant.local === st.local && Date.now() - (ant.ts || 0) < 6 * 3600 * 1000) return;
+    try { await S.db.doc("viajantes/" + S.uid).update({ app: { ...st, ts: Date.now() } }); } catch (e) {}
+  } finally { S.registrando = false; }
 }
 // Só a líder, no site próprio: quem já entrou no app com a palavra da caravana
 document.addEventListener("keydown", e => { if (e.key === "Escape" && document.querySelector(".sheet")) closeSheets(); });
-function closeSheets() { document.querySelectorAll(".sheet").forEach(s => s.remove()); }
+function closeSheets() { document.querySelectorAll(".sheet").forEach(s => { s.querySelectorAll("video").forEach(v => { try { v.srcObject?.getTracks?.().forEach(t => t.stop()); } catch (e) {} }); s.remove(); }); }
 function conteudoInsignia(l) {
   const on = aberto(l), ts = minhas()[l.id], d = diaDe(l.dia), livre = disponivel(l);
   const saberes = S.ens.filter(e => e.localId === l.id);
@@ -4007,7 +4018,7 @@ const BONECO = {
 function bonecoPadrao(id) {
   const r = rng(id || "x"), p = arr => arr[Math.floor(r() * arr.length)], v = arr => p(arr)[0];
   return { pele: p(BONECO.pele), cabeloCor: p(BONECO.cabeloCor), cabelo: v(BONECO.cabelo), chapeu: v(BONECO.chapeu), roupa: v(BONECO.roupa), roupaCor: p(BONECO.roupaCor),
-    acessorio: v(BONECO.acessorio), colar: r() > .6 ? "guirlanda" : "nenhum", testa: r() > .6 ? v(BONECO.testa) : "nada", barba: r() > .75 ? "sim" : "nao", pet: r() > .5 ? v(BONECO.pet) : "nenhum", acessorio2: "nenhum", oculos: r() > .7 ? v(BONECO.oculos) : "nenhum" };
+    acessorio: v(BONECO.acessorio), colar: r() > .6 ? "guirlanda" : "nenhum", testa: r() > .6 ? v(BONECO.testa) : "nada", barba: r() > .75 ? "sim" : "nao", pet: r() > .5 ? v(BONECO.pet) : "nenhum", acessorio2: "nenhum", oculos: r() > .7 ? v(BONECO.oculos) : "nenhum", nariz: "nenhum", pes: "nenhum", ombro: "nenhum", deus: "nenhum" };
 }
 const bonecoDe = id => ({ ...bonecoPadrao(id), ...((S.viajantes.find(v => v.id === id) || {}).boneco || {}) });
 function escurece(hex, f) { const n = parseInt(hex.slice(1), 16); const c = k => Math.round(((n >> k) & 255) * f); return `rgb(${c(16)},${c(8)},${c(0)})`; }
@@ -4519,7 +4530,7 @@ function vExplorador() {
       h("div", { class: "preview" }, bonecoSvg(b, "bonecosvg big"), h("p", { class: "tagname", text: v ? v.nome : "Viajante" }),
         h("div", { class: "actions", style: "flex-direction:column;gap:6px" },
           h("button", { class: "btn", type: "button", onclick: () => { S.bonecoRasc = bonecoPadrao(Math.random().toString(36)); render(); } }, "Sortear"),
-          h("button", { class: "btn ghost", type: "button", onclick: () => { const x = S.bonecoRasc; S.bonecoRasc = { pele: x.pele, cabeloCor: x.cabeloCor, cabelo: x.cabelo, roupa: "basico", chapeu: "sem", roupaCor: x.roupaCor, acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum", barba: "nao", pet: "nenhum", deus: "nenhum" }; render(); } }, "Desmontar"))),
+          h("button", { class: "btn ghost", type: "button", onclick: () => { const x = S.bonecoRasc; S.bonecoRasc = { pele: x.pele, cabeloCor: x.cabeloCor, cabelo: x.cabelo, roupa: "basico", chapeu: "sem", roupaCor: x.roupaCor, acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum", barba: "nao", pet: "nenhum", deus: "nenhum", nariz: "nenhum", pes: "nenhum", ombro: "nenhum" }; render(); } }, "Desmontar"))),
       h("div", { class: "controls" },
         h("p", { class: "lab", text: "Chapéu" }), chips("chapeu", BONECO.chapeu),
         h("p", { class: "lab", text: "Pele" }), cores("pele", BONECO.pele, "Tom de pele"),
@@ -4911,11 +4922,11 @@ function satelite(svg, P, modo) {
   const n = 2 ** z, lon2x = lo => Math.floor((lo + 180) / 360 * n), lat2y = la => { const r = la * Math.PI / 180; return Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n); };
   const x2lon = x => x / n * 360 - 180, y2lat = y => { const k = Math.PI - 2 * Math.PI * y / n; return 180 / Math.PI * Math.atan(.5 * (Math.exp(k) - Math.exp(-k))); };
   const g = h("g", { class: "satelite " + modo });
-  const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/", sub = "abcd"[(Math.random() * 4) | 0];
+  const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/", subs = "abcd";
   const url = (cam, z, x, y) => cam === "ruas" ? `https://tile.openstreetmap.org/${z}/${x}/${y}.png`
-    : cam === "rotulos" ? `https://${sub}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/${z}/${x}/${y}.png`
+    : cam === "rotulos" ? `https://${subs[(x + y) % 4]}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/${z}/${x}/${y}.png`
     : `${ESRI}World_Imagery/MapServer/tile/${z}/${y}/${x}`;
-  const reserva = (cam, z, x, y) => cam === "ruas" ? `https://${sub}.basemaps.cartocdn.com/rastertiles/voyager/${Math.min(z, 18)}/${x}/${y}.png` : cam === "rotulos" ? `${ESRI}Reference/World_Boundaries_and_Places/MapServer/tile/${z}/${y}/${x}` : `${ESRI}World_Imagery/MapServer/tile/${z}/${y}/${x}`;
+  const reserva = (cam, z, x, y) => cam === "ruas" ? `https://${subs[(x + y) % 4]}.basemaps.cartocdn.com/rastertiles/voyager/${Math.min(z, 18)}/${x}/${y}.png` : cam === "rotulos" ? `${ESRI}Reference/World_Boundaries_and_Places/MapServer/tile/${z}/${y}/${x}` : `${ESRI}World_Imagery/MapServer/tile/${z}/${y}/${x}`;
   const camadas = modo === "ruas" ? ["ruas"] : modo === "hibrido" ? ["sat", "rotulos"] : ["sat"];
   const x0 = lon2x(tl.lng), x1 = lon2x(br.lng), y0 = lat2y(tl.lat), y1 = lat2y(br.lat);
   if ((x1 - x0 + 1) * (y1 - y0 + 1) > 64) return;
@@ -6204,7 +6215,8 @@ function emReels(canvas, e) {
 function vTira() {
   const T = S.tira || (S.tira = { imgs: [], ids: [], estilo: "cabine", filtro: "original" });
   const canvas = S.tiraCanvas || (S.tiraCanvas = h("canvas", { class: "fotocanvas", "aria-label": "Prévia da cabine de fotos" }));
-  const msg = h("p", { class: "msg", role: "status" });
+  const msg = h("p", { class: "msg" + (S.tiraMsg ? " " + S.tiraMsg[1] : ""), role: "status", id: "tira-msg", text: S.tiraMsg ? S.tiraMsg[0] : "" });
+  const aviso = (txt, cls) => { S.tiraMsg = [txt, cls]; const m = document.getElementById("tira-msg") || msg; m.textContent = txt; m.className = "msg " + cls; };
   const fi = h("input", { type: "file", accept: "image/*", multiple: true, id: "tira-fotos", hidden: true, onchange: async () => {
     const fs = [...fi.files].slice(0, 4 - T.imgs.length);
     for (const f of fs) { try { T.imgs.push(await abreFoto(f)); T.ids.push(Math.random().toString(36).slice(2)); } catch (e) {} }
@@ -6223,13 +6235,14 @@ function vTira() {
     catch (e) { msg.textContent = e && e.code === "declined" ? "" : "Não consegui salvar. Toque e segure na imagem e escolha Salvar imagem."; msg.className = "msg"; }
   };
   const envia = async col => {
-    if (!S.assets || !eu()) { msg.textContent = "Para enviar, emita seu passaporte e peça à líder um convite de Editor."; msg.className = "msg err"; return; }
-    msg.textContent = "Enviando…"; msg.className = "msg";
+    if (!S.assets || !eu()) { aviso("Para enviar, emita seu passaporte e peça à líder um convite de Editor.", "err"); return; }
+    aviso("Enviando…", "");
     try { const r = await S.assets.upload(await blob());
       if (col === "mural") await addMural({ autor: S.uid, fotoId: r.id, cidade: "", legenda: "", ts: Date.now() });
       else await addChat({ autor: S.uid, tipo: "foto", fotoId: r.id, texto: "", ts: Date.now() });
-      msg.textContent = col === "mural" ? "Fotos na galeria da caravana." : "Fotos enviadas para a Roda."; msg.className = "msg ok"; }
-    catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
+      aviso(col === "mural" ? "Fotos na galeria da caravana." : "Fotos enviadas para a Roda.", "ok"); }
+    catch (e) { aviso(erroFoto(e), "err"); }
+    setTimeout(() => { S.tiraMsg = null; }, 6000);
   };
   if (T.imgs.length) requestAnimationFrame(() => montaTira(canvas).catch(() => {}));
   return h("section", { class: "view" },
@@ -6937,7 +6950,7 @@ function verFotos(i) {
         if (it.enviando) { msg.textContent = "Já está enviando, espere um pouquinho."; msg.className = "msg"; return; }
         if (!S.assets || !eu()) { msg.textContent = "Para enviar à galeria, emita seu passaporte."; msg.className = "msg err"; return; }
         msg.textContent = "Enviando…"; msg.className = "msg";
-        it.enviando = true; setTimeout(() => { it.enviando = false; }, 1500);
+        it.enviando = true;
         try { if (/^video/.test(it.blob.type)) { it.enviando = true; try { await enviaFilmeGaleria(it, msg); } finally { it.enviando = false; } return; }
           const rr = await S.assets.upload(it.blob); await addMural({ autor: S.uid, fotoId: rr.id, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now() }); msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
         catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("rect", { x: "3", y: "5", width: "18", height: "14", rx: "2" }), h("path", { d: "M3 16l5-5 4 4 3-3 6 6" })))),
@@ -7020,7 +7033,7 @@ async function apagaDoDiario(id) { try { const db = await bancoDiario(); await n
 const CARTEIRA_FOTO = [[0.134, 0.103, 0.396, 0.431], [0.595, 0.103, 0.863, 0.431], [0.132, 0.559, 0.396, 0.890], [0.595, 0.559, 0.866, 0.890]];
 const CARTEIRA_JAN = [[0.090, 0.067, 0.383, 0.426], [0.606, 0.067, 0.907, 0.426], [0.087, 0.565, 0.383, 0.928], [0.606, 0.565, 0.910, 0.928]];
 function vDiarioViajante() {
-  if (!S.fotosDiario) { S.fotosDiario = []; lerDiario().then(l => { S.fotosDiario = l; S.fotosDiarioPronto = true; if (S.tab === "fotos") render(); }); }
+  if (!S.fotosDiario) { S.fotosDiario = S.diarioAnt || []; lerDiario().then(l => { S.fotosDiario = l; S.fotosDiarioPronto = true; if (S.tab === "fotos") render(); }); }
   const l = S.fotosDiario;
   const dia = ts => { const d = new Date(ts); return d.getDate() + " " + MES[d.getMonth()].toLowerCase(); };
   const midia = (it, cls) => miniMidia(it, { class: cls, loading: cls === "lista" ? "lazy" : "eager" });
@@ -7108,7 +7121,7 @@ function pegaFluxoGuardado(frente) {
 document.addEventListener("visibilitychange", () => { if (document.hidden && S.gravando) S.gravando.stop(); const G = S.fluxoGuardado; if (document.hidden && G) { G.fluxo.getTracks().forEach(t => t.stop()); clearTimeout(G.t); S.fluxoGuardado = null; } });
 // guarda o fluxo com o lado em que ele foi aberto (o Virar troca C.frente antes; sem isso a câmera de trás voltava no lugar da selfie)
 function paraCam() { const C = S.camEst; if (C && C.fluxo) { guardaFluxo(C.fluxo, !!C.fluxoFrente); C.fluxo = null; } }
-function fechaVivo() { if (S.gravando) S.gravando.stop(); paraCam(); if (S.camEst) S.camEst.rodando = false; S.camEst = null; }
+function fechaVivo() { if (S.gravando) S.gravando.stop(); paraCam(); if (S.camEst) { S.camEst.rodando = false; const v = S.camEst.video; if (v) { try { v.pause(); v.srcObject = null; } catch (e) {} } } S.camEst = null; }
 async function ligaCam() {
   const C = S.camEst; if (!C) return; paraCam();
   const vez = C.vez = (C.vez || 0) + 1, lado = !!C.frente;
@@ -8774,7 +8787,7 @@ function vCorrespondencia() {
 function cartasVistas() { try { return JSON.parse(localStorage.getItem("cdi-cartas") || "{}") || {}; } catch (e) { return S._vistas || (S._vistas = {}); } }
 function marcaCarta(id) { const v = cartasVistas(); if (v[id]) return; v[id] = Date.now(); S._vistas = v; try { localStorage.setItem("cdi-cartas", JSON.stringify(v)); } catch (e) {} }
 function checaCorreio() {
-  if (S.isOwner || !eu() || document.querySelector(".sheet")) return;
+  if (S.isOwner || !eu() || document.querySelector(".sheet,.abertura,#boasvindas,#portao")) return;
   const nova = cartasAbertas().find(c => !cartasVistas()[c.id]); if (!nova) return;
   abrirCarta(nova, true);
 }
@@ -9021,7 +9034,7 @@ function midiaGrandeMural(f, legenda) {
   }
   const vid = () => filmeLimpo(blob(f.fotoId), f.capaId ? blob(f.capaId) : null, "mgrande");
   if (f.video) return vid();
-  return h("img", { class: "mgrande", src: blob(f.fotoId), alt: legenda, onerror: e => { const i = e.currentTarget; if (i.dataset.v) return; i.dataset.v = 1; f.video = true; i.replaceWith(vid()); } });
+  return h("img", { class: "mgrande", src: blob(f.fotoId), "data-foto": f.fotoId, alt: legenda, onerror: e => { const i = e.currentTarget; if (i.dataset.v) return; i.dataset.v = 1; f.video = true; i.replaceWith(vid()); } });
 }
 function abrirFotoMural(f) {
   closeSheets();
@@ -9035,7 +9048,7 @@ function abrirFotoMural(f) {
       h("button", { class: "btn gold", type: "button", onclick: () => {
         // filme: o iPhone só abre a lista de salvar logo depois do toque, então o filme precisa já estar baixado
         if (f.video && f.video.partes && noSite() && !f._filmeBlob) { st.textContent = "Carregando o filme…"; st.className = "msg"; urlDoFilme(f).then(() => { st.textContent = "Filme pronto. Toque de novo em Salvar no dispositivo."; st.className = "msg ok"; }, () => { st.textContent = "Não consegui baixar o filme. Confira a internet."; st.className = "msg err"; }); return; }
-        salvarNoRolo(f._filmeBlob ? Promise.resolve(f._filmeBlob) : (f.video && f.video.partes ? urlDoFilme(f) : Promise.resolve(blob(f.fotoId))).then(u => fetch(u)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + (f.video ? (/webm/.test((f.video && f.video.tipo) || "") ? ".webm" : ".mp4") : ".jpg"), st) ; }}, "Salvar no dispositivo")),
+        salvarNoRolo(f._filmeBlob ? Promise.resolve(f._filmeBlob) : (f.video && f.video.partes ? urlDoFilme(f) : fotoPronta(f.fotoId)).then(u => fetch(u)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + (f.video ? (/webm/.test((f.video && f.video.tipo) || "") ? ".webm" : ".mp4") : ".jpg"), st) ; }}, "Salvar no dispositivo")),
     h("div", { class: "foot2" },
       meu ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (!confirm("Apagar esta foto da galeria?")) return; apagaFotoMural(f).then(closeSheets, () => { st.textContent = "Não consegui apagar a foto."; st.className = "msg err"; }); } }, "Apagar foto") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
@@ -9498,8 +9511,8 @@ function listen(col, key, q, after) {
     // posições chegam de todo mundo a cada minuto: o mapa redesenha no máximo a cada 15 s
     const quer = primeira || avisoNovo || !USA[key] || USA[key].includes(S.tab);
     if (quer && (primeira || avisoNovo || !(S.camSel && S.tab === "fotos"))) { if (key === "posicoes" && !primeira) renderCalmo(); else render(); }
-    primeira = false; refreshSheet();
-  }, () => { S.dbReady = true; if (after) after(); render(); });
+    primeira = false; if (key === "locais" || key === "ens" || key === "viajantes") refreshSheet();
+  }, () => { S.dbReady = true; if (after) after(); render(); if (!S.veuAvisado) { S.veuAvisado = true; window.__veuPronto?.(); } });
 }
 
 fetch("dados/geo.json").then(r => r.ok ? r.json() : null).then(j => { if (j) { S.geo = j; if (S.tab === "mapa") render(); } }).catch(() => {});
