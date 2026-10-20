@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "20/10 · 11:06";</script>
+<script>window.__VERSAO = "20/10 · 11:07";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -7534,13 +7534,15 @@ async function liberarSelo(l) {
   if (abre && noSite()) fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ selo: l.id }), keepalive: true }).catch(() => {});
 }
 const b64u8 = b => { const p = (b + "=".repeat((4 - b.length % 4) % 4)).replace(/-/g, "+").replace(/_/g, "/"), r = atob(p); return Uint8Array.from(r, c => c.charCodeAt(0)); };
-async function ativarAvisos() {
+// a chave dos avisos é buscada uma vez só e já começa a vir quando a tela de permissões abre (o servidor demora para acordar)
+const chaveAvisos = () => S.chaveAvisosP || (S.chaveAvisosP = fetch(AVISAR).then(r => r.json()).catch(e => { S.chaveAvisosP = null; throw e; }));
+async function ativarAvisos(permJa) {
   S.celMsg = "Ativando…"; render();
   try {
-    const perm = await Notification.requestPermission();
+    const perm = permJa || await Notification.requestPermission();
     if (perm !== "granted") { S.celMsg = "O celular não liberou as notificações. Dá para liberar depois nos Ajustes do celular, em Notificações."; render(); return; }
     const reg = await navigator.serviceWorker.ready;
-    const { publicKey } = await fetch(AVISAR).then(r => r.json());
+    const { publicKey } = await chaveAvisos();
     if (!publicKey) throw new Error("sem chave");
     const sub = (await reg.pushManager.getSubscription()) || (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u8(publicKey) }));
     await S.db.doc("push/" + S.uid).set({ sub: JSON.parse(JSON.stringify(sub)), ts: Date.now() });
@@ -7556,7 +7558,8 @@ async function convidaAvisos() {
   const cam = podeCamera() ? await estadoPerm("camera") : "denied", loc = navigator.geolocation ? await estadoPerm("geolocation") : "denied";
   const notOk = avisosLigados(), notPode = instalado() && pushPossivel();
   if (cam === "granted" && loc === "granted" && (notOk || !notPode)) return;
-  setTimeout(() => { if (!document.querySelector(".sheet,.permissoes")) telaPermissoes({ cam, loc, notOk, notPode }); }, 900);
+  // entra na hora, ainda por baixo da abertura: quando a abertura sai, a tela de permissões já está lá (antes aparecia o app e depois ela)
+  if (!document.querySelector(".sheet,.permissoes")) telaPermissoes({ cam, loc, notOk, notPode });
 }
 function telaPermissoes(st) {
   const ok = { cam: st.cam === "granted", loc: st.loc === "granted", not: st.notOk };
@@ -7576,7 +7579,9 @@ function telaPermissoes(st) {
   };
   const pedeCam = async () => { const f = await navigator.mediaDevices.getUserMedia({ video: true, audio: false }); f.getTracks().forEach(t => t.stop()); ok.cam = true; };
   const pedeLoc = () => new Promise(res => navigator.geolocation.getCurrentPosition(() => { ok.loc = true; ligarGps(true); res(); }, () => res(), { timeout: 15000 }));
-  const pedeNot = async () => { await ativarAvisos(); ok.not = avisosLigados(); };
+  // pede ao celular na hora do toque; liberou, ganha o ✓ e o resto (chave, inscrição) termina por trás
+  const pedeNot = async () => { const perm = await Notification.requestPermission(); if (perm === "granted") { ok.not = true; ativarAvisos(perm); } };
+  if (st.notPode && !st.notOk) chaveAvisos().catch(() => {});
   const lista = h("div", { class: "plista" });
   const atualiza = () => { lista.textContent = ""; lista.append(
     linha("cam", "Câmera", "Para fotografar", pedeCam, !podeCamera()),
@@ -9558,7 +9563,8 @@ function listen(col, key, q, after) {
     if (!primeira && ass && ass === assinatura) return; assinatura = ass;
     S[key] = docs; if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = ajustaSaberes(S.ens); guardaCache(key);
     S.dbReady = true; if (after) after(); if (key === "chat") marcaChat();
-    if (!S.veuAvisado) { S.veuAvisado = true; window.__veuPronto?.(); } // primeiros dados chegaram: o véu de abertura sai logo depois
+    // os viajantes chegaram (já se sabe se a pessoa tem passaporte e se precisa da tela de permissões): o véu de abertura sai logo depois
+    if (key === "viajantes" && !S.veuAvisado) { S.veuAvisado = true; window.__veuPronto?.(); }
     // aviso novo da líder: redesenha qualquer aba para ele aparecer em destaque na hora
     let avisoNovo = false;
     if (key === "chat") { const av = avisoAtual(); if (av && avisoEmDestaque(av) && S.avisoVisto !== av.id) { S.avisoVisto = av.id; avisoNovo = !primeira; } }
