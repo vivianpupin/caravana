@@ -11,9 +11,8 @@ head = """<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#2E2116">
 <meta name="description" content="O aplicativo da Caravana do Céu · Travessia da Índia Sagrada 2026 · Turma 2">
-<link rel="icon" href="img/icone-192.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="img/icone-t2-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <script>window.__VERSAO = "%s";</script>
 <script src="config.js"></script>
