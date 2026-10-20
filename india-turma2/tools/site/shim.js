@@ -110,7 +110,7 @@ function portao(...kids) {
   let el = document.getElementById("portao");
   if (!el) { const st = document.createElement("style"); st.textContent = css; document.head.append(st); el = document.createElement("div"); el.id = "portao"; document.body.append(el); }
   const cx = document.createElement("div"); cx.className = "cx";
-  const topo = document.createElement("div"); topo.innerHTML = `<img src="img/simbolo-marrom.png" alt=""><p class="sub">Caravana do Céu</p>${tituloPortao ? "<h1>" + tituloPortao + "</h1>" : ""}`;
+  const topo = document.createElement("div"); topo.innerHTML = `<img src="img/simbolo-marrom.png" alt=""><p class="sub">Caravana do Céu</p>${tituloPortao ? "<h1>" + tituloPortao + "</h1><p class=\"sub\">Turma 2 · 18 a 30 de novembro</p>" : ""}`;
   topo.style.cssText = "display:flex;flex-direction:column;align-items:center;gap:8px";
   cx.append(topo, ...kids); el.replaceChildren(cx); el.classList.remove("inst");
 }
