@@ -28,6 +28,8 @@
 }
 *{box-sizing:border-box}
 html,body{height:100%}
+/* a página fica parada; quem rola é só a coluna do jogo (#app), e sem o "elástico" que puxa a tela além do fim */
+body{position:fixed;inset:0;overflow:hidden}
 /* sem zoom de toque duplo nem pinça: a tela do jogo fica sempre do mesmo tamanho */
 html{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{overscroll-behavior:none}
@@ -40,10 +42,27 @@ button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
 :focus-visible{outline:3px solid var(--gold-soft);outline-offset:3px}
 #app{
-  max-width:560px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;gap:14px;
+  max-width:560px;margin:0 auto;height:100%;display:flex;flex-direction:column;gap:14px;
+  overflow-y:auto;overscroll-behavior:none;-webkit-overflow-scrolling:touch;
   padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
-  padding-block:12px 24px;
+  padding-block:calc(12px + env(safe-area-inset-top, 0px)) calc(24px + env(safe-area-inset-bottom, 0px));
 }
+#app > *{flex-shrink:0}
+#app > .stage{flex-shrink:1}
+/* desenhando: nada rola, a folha ocupa o espaço que sobra */
+body.travado #app{overflow:hidden}
+body.travado .paper{min-height:180px}
+body.travado #app{gap:10px}
+body.travado .head{display:none}
+body.travado .team{padding:8px 10px;flex-direction:row;align-items:baseline;gap:8px;flex-wrap:wrap}
+body.travado .team .nm{font-size:16px}
+body.travado .team .vl{font-size:22px}
+body.travado .team .un,body.travado .team .track,body.travado .team .wins{display:none}
+body.travado .tools{gap:6px}
+body.travado .pen{width:32px;height:32px;flex:none}
+body.travado .tool{padding:6px 9px;font-size:13px;min-height:36px}
+body.travado .btn.big{min-height:58px}
+.sheet{overscroll-behavior:contain}
 h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;line-height:1.05}
 h2{font-size:26px;color:var(--gold)}
 p{margin:0}
@@ -1062,6 +1081,7 @@ function pararTudo() { fecharFolha(); pararRelogio(); clearTimeout(BT.id); clear
 const app = document.getElementById("app");
 let mostrado = null;   // valores que o placar está mostrando (para a contagem subir aos poucos)
 function render() {
+  document.body.classList.remove("travado");
   if (S.tela === "minhas") { app.innerHTML = telaMinhas(); return; }
   const destaque = ["espera", "roleta", "intro", "pergunta", "mimica", "desenho", "verdade", "quemsou"].includes(S.fase) ? S.vez : -1;
   app.innerHTML = `
@@ -1079,7 +1099,9 @@ function render() {
       </div>`).join("")}</div>
     <main class="stage" style="--team:${cor(S.vez)}">${palco()}</main>`;
   pintarTempo();
-  if (S.fase === "desenho" && DZ.fase === "desenho") montarPapel();
+  const desenhando = S.tela === "jogo" && S.fase === "desenho" && DZ.fase === "desenho";
+  document.body.classList.toggle("travado", desenhando);
+  if (desenhando) { app.scrollTop = 0; montarPapel(); }
   contarPlacar();
 }
 // a contagem: o número do placar sobe aos poucos até o valor novo
@@ -1187,7 +1209,7 @@ function seguir() {
   pararTudo();
   const v = vencedor();
   if (v >= 0) return campeao(v);
-  S.dobro = -1; S.vez = outro(); S.fase = "espera"; S.rodadas = (S.rodadas || 0) + 1; salvar(); render(); window.scrollTo(0, 0);
+  S.dobro = -1; S.vez = outro(); S.fase = "espera"; S.rodadas = (S.rodadas || 0) + 1; salvar(); render(); app.scrollTop = 0;
   if (S.rodadas > 2 && T(S.vez).pontos < FINAL && Math.random() < 0.18) return cartaSurpresa();
   giro = setTimeout(sortear, 350);     // os desafios vão vindo um atrás do outro
 }
@@ -1225,7 +1247,7 @@ function novaAventura() {
   S.times.forEach((t) => { t.pontos = 0; t.aj = AJUDAS(); });
   S.quemComeca = 1 - S.quemComeca; S.vez = S.quemComeca; S.fase = "espera"; S.ultimo = ""; S.unidade = sortearUnidade(S.unidade);
   S.dobro = -1; S.rodadas = 0;
-  mostrado = null; salvar(); render(); window.scrollTo(0, 0);
+  mostrado = null; salvar(); render(); app.scrollTop = 0;
 }
 function sair() { pararTudo(); S.fase = "espera"; salvar(); render(); }
 const botaoSeguir = `<button class="btn gold big" data-a="seguir">Próximo desafio</button>`;
@@ -1763,8 +1785,8 @@ document.addEventListener("click", (e) => {
     case "outraUnidade": S.unidade = sortearUnidade(S.unidade); SOM.carta(); salvar(); render(); break;
     case "zerar": fecharFolha(); novaAventura(); toast("Placar zerado"); break;
     case "novaAventura": fecharFolha(); novaAventura(); break;
-    case "minhas": lerOpcoes(); pararTudo(); S.fase = "espera"; S.tela = "minhas"; salvar(); render(); window.scrollTo(0, 0); break;
-    case "voltarJogo": S.tela = "jogo"; salvar(); render(); window.scrollTo(0, 0); break;
+    case "minhas": lerOpcoes(); pararTudo(); S.fase = "espera"; S.tela = "minhas"; salvar(); render(); app.scrollTop = 0; break;
+    case "voltarJogo": S.tela = "jogo"; salvar(); render(); app.scrollTop = 0; break;
     case "apagarMinha": S.usadas = S.usadas.filter((id) => !id.startsWith("m")); S.minhas.splice(+b.dataset.k, 1); salvar(); render(); break;
   }
 });
@@ -1809,7 +1831,11 @@ function passo() {
 /* ================== SEM ZOOM ================== */
 // toque duplo, pinça e o gesto de zoom do iPhone desmontavam a tela do jogo
 ["gesturestart", "gesturechange", "gestureend", "dblclick"].forEach((ev) => document.addEventListener(ev, (e) => e.preventDefault(), { passive: false }));
-document.addEventListener("touchmove", (e) => { if (e.touches.length > 1 || (e.scale && e.scale !== 1)) e.preventDefault(); }, { passive: false });
+// com dois dedos (zoom) nunca; desenhando, a tela não arrasta (só as janelinhas por cima rolam)
+document.addEventListener("touchmove", (e) => {
+  if (e.touches.length > 1 || (e.scale && e.scale !== 1)) return e.preventDefault();
+  if (document.body.classList.contains("travado") && !e.target.closest(".sheet")) e.preventDefault();
+}, { passive: false });
 
 /* ================== INÍCIO ================== */
 function boot(d) {
