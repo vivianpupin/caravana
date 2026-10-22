@@ -586,10 +586,10 @@ const CANTA = ["Amor","Lua","Mar","Coração","Saudade","Bahia","Chuva","Estrada
 const META = 1000000;
 const FINAL = 900000;   // a partir daqui o time só vence acertando a Pergunta Final
 const VALOR_PERGUNTA = { 1: 50000, 2: 100000, 3: 150000 };
-const VALE = { mimica: 25000, desenho: 100000, batata: 100000, canta: 50000, misterio: 100000 };
-const TEMPO_MISTERIO = 60, TEMPO_MIMICA = 60, TEMPO_DESENHO = 75, TEMPO_CANTA = 20, PALAVRAS_CANTA = 3;
+const VALE = { mimica: 25000, desenho: 100000, batata: 100000, canta: 50000 };
+const TEMPO_MIMICA = 60, TEMPO_DESENHO = 75, TEMPO_CANTA = 20, PALAVRAS_CANTA = 3;
 // chance de cada desafio sair na roleta (a pergunta sai mais)
-const PESOS = { pergunta: 44, mimica: 15, desenho: 15, batata: 12, canta: 14, misterio: 14 };   // mistério só entra quando houver segredos guardados
+const PESOS = { pergunta: 44, mimica: 15, desenho: 15, batata: 12, canta: 14 };
 // o que os times juntam: a cada aventura nova sai um diferente
 const UNIDADES = ["pétalas de lótus", "luzes de diya", "xícaras de chai", "tuk-tuks", "vaquinhas sagradas", "elefantes", "pitadas de masala", "buzinadas", "macaquinhos ladrões", "samosas", "bênçãos"];
 function sortearUnidade(atual) { const op = UNIDADES.filter((u) => u !== atual); return op[Math.floor(Math.random() * op.length)]; }
@@ -612,12 +612,6 @@ const DESAFIOS = {
     "Falou? Toque em <b>Passa a batata</b>. Ninguém sabe quando ela explode!",
     "Quem estiver com a batata, travar ou repetir, perde.",
   ] },
-  misterio: { nome: "Mistério da Caravana", regras: [
-    "Escolham quem vai fazer a mímica. <b>Só essa pessoa olha a tela.</b>",
-    "Ela vê um <b>segredo de alguém da Caravana</b> e faz a mímica dele, sem falar.",
-    "O time tem que adivinhar <b>de quem é o segredo</b>. 60 segundos.",
-    "Se o tempo acabar, o outro time pode <b>roubar</b>.",
-  ] },
   canta: { nome: "Canta, se Souber!", regras: [
     "Os <b>dois times</b> jogam. Sai uma palavra.",
     "O primeiro time que <b>cantar</b> um pedaço de música com ela ganha.",
@@ -625,7 +619,6 @@ const DESAFIOS = {
   ] },
 };
 const ICON = {
-  misterio: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9c2-3 5-4 9-4s7 1 9 4c-1 5-4 8-9 8s-8-3-9-8z"/><circle cx="8.5" cy="10.5" r="1.5"/><circle cx="15.5" cy="10.5" r="1.5"/><path d="M12 17v4"/></svg>`,
   pergunta: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.6 6.5 19.5l1-6.3L3 8.9 9 8z"/></svg>`,
   mimica: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2.2"/><path d="M5 9l7 1.5L19 9M12 10.5V15l-3.5 6M12 15l3.5 6"/></svg>`,
   desenho: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5l4 4L8 20H4v-4z"/><path d="M13.5 6.5l4 4"/></svg>`,
@@ -645,7 +638,7 @@ function novoEstado() {
       { nome: "Time Hanuman", pontos: 0, vitorias: 0, aj: AJUDAS() },
     ],
     vez: 0, quemComeca: 0, ultimo: "", desafio: "",
-    usadas: [], usadasMini: {}, minhas: [], misterios: [], dobro: -1, rodadas: 0,
+    usadas: [], usadasMini: {}, minhas: [], dobro: -1, rodadas: 0,
     unidade: sortearUnidade(), tempo: 45, som: true, voz: true,
   };
 }
@@ -703,7 +696,7 @@ function tirar(baralho, nome) {
   usadas.push(x[1]);
   return { cat: x[0], palavra: x[1] };
 }
-function desafiosAtivos() { return Object.keys(PESOS).filter((k) => k !== "misterio" || (S.misterios || []).length); }
+function desafiosAtivos() { return Object.keys(PESOS); }
 function sortearDesafio() {
   const ativos = desafiosAtivos(), total = ativos.reduce((a, k) => a + PESOS[k], 0);
   const tira = () => { let r = Math.random() * total; for (const k of ativos) { if ((r -= PESOS[k]) < 0) return k; } return "pergunta"; };
@@ -810,7 +803,7 @@ const app = document.getElementById("app");
 let mostrado = null;   // valores que o placar está mostrando (para a contagem subir aos poucos)
 function render() {
   if (S.tela === "minhas") { app.innerHTML = telaMinhas(); return; }
-  const destaque = ["espera", "roleta", "intro", "pergunta", "mimica", "desenho", "misterio"].includes(S.fase) ? S.vez : -1;
+  const destaque = ["espera", "roleta", "intro", "pergunta", "mimica", "desenho"].includes(S.fase) ? S.vez : -1;
   app.innerHTML = `
     <header class="head"><h1><small>Caravana do Céu</small>As Aventuras da Caravana</h1>
       <button class="gear" data-a="opcoes" aria-label="Ajustes do jogo">${ICON.gear}</button></header>
@@ -857,7 +850,6 @@ function palco() {
     case "desenho": return palcoDesenho();
     case "batata": return palcoBatata();
     case "canta": return palcoCanta();
-    case "misterio": return palcoMisterio();
   }
   return palcoEspera();
 }
@@ -908,7 +900,7 @@ function palcoIntro() {
   </div>`;
 }
 function valendo() {
-  ({ mimica: mimicaComeca, desenho: desenhoComeca, batata: batataComeca, canta: cantaComeca, misterio: misterioComeca })[S.desafio]();
+  ({ mimica: mimicaComeca, desenho: desenhoComeca, batata: batataComeca, canta: cantaComeca })[S.desafio]();
 }
 
 /* ================== DEPOIS DE CADA DESAFIO ================== */
@@ -1232,52 +1224,6 @@ function explodir() {
     <p class="center">+ <b>${qtd(g)}</b> para o <b style="color:${cor(ganhou)}">${esc(T(ganhou).nome)}</b>${naFinal(ganhou)}</p>${botaoSeguir}`);
 }
 
-/* ================== MISTÉRIO DA CARAVANA ================== */
-let MS = { fase: "segredo", item: null };
-function misterioComeca() {
-  const lista = S.misterios.map((m, i) => ({ ...m, id: "s" + i }));
-  const usadas = (S.usadasMini.misterio = S.usadasMini.misterio || []);
-  let livres = lista.filter((m) => !usadas.includes(m.id));
-  if (!livres.length) { usadas.length = 0; livres = lista; }
-  const m = livres[Math.floor(Math.random() * livres.length)]; usadas.push(m.id);
-  MS = { fase: "segredo", item: m };
-  S.fase = "misterio"; salvar(); render();
-}
-function palcoMisterio() {
-  const m = MS.item;
-  return `<div class="minihead"><button class="sair" data-a="sair">Sair</button><span class="chip">Mistério · ${esc(T(S.vez).nome)}</span></div>
-    ${MS.fase === "mimica" ? barraTempo(TEMPO_MISTERIO) : `<p class="center muted">Só quem vai fazer a mímica olha agora!</p>`}
-    <div class="wordcard">
-      <span class="cat">O segredo de</span><span class="word ${m.nome.length > 16 ? "long" : ""}">${esc(m.nome)}</span>
-      <span class="cat" style="margin-top:8px">Faça a mímica de</span><span style="font-size:22px;font-weight:600;text-wrap:balance">${esc(m.fato)}</span>
-    </div>
-    ${MS.fase === "segredo"
-      ? `<button class="btn team big" data-a="msComecar">Começar a mímica</button>`
-      : `<p class="center muted">O time tem que dizer <b style="color:var(--gold-soft)">de quem é</b> o segredo.</p><button class="btn ok big" data-a="msAcerto" data-p="${S.vez}">Acertaram quem é!</button>`}`;
-}
-function msComecar() { MS.fase = "mimica"; render(); SOM.vinheta(); relogio(TEMPO_MISTERIO, msTempo); }
-function msAcerto(k) {
-  pararRelogio(); const g = ganhar(k, VALE.misterio); render();
-  SOM.certa(); confete(false, k); vibrar(120); falar(T(k).nome + " desvendou o mistério!");
-  folha(`<h2 class="ok">Mistério desvendado!</h2>
-    <div class="answer"><small>Era o segredo de</small>${esc(MS.item.nome)}: ${esc(MS.item.fato)}</div>
-    <p class="center">+ <b>${qtd(g)}</b> para o ${esc(T(k).nome)}${naFinal(k)}</p>${botaoSeguir}`);
-}
-function msTempo() {
-  const o = outro(); SOM.errada(); vibrar([200, 80, 200]);
-  setTimeout(() => { SOM.roubada(); falar("Roubada! " + T(o).nome + ", de quem é o segredo?"); }, 500);
-  folha(`<p class="eyebrow center" style="color:${cor(o)}">Roubada!</p>
-    <h2 style="color:${cor(o)}">${esc(T(o).nome)}, de quem é o segredo?</h2>
-    <div class="ring" id="conta">5</div>
-    <div class="duo"><button class="btn ghost" data-a="msRoubo" data-p="0">Ninguém acertou</button><button class="btn team" style="--team:${cor(o)}" data-a="msRoubo" data-p="1">Roubaram!</button></div>`);
-  contagem(5, document.getElementById("conta"));
-}
-function msRoubo(ok) {
-  fecharFolha();
-  if (ok) return msAcerto(outro());
-  folha(`<h2 class="bad">Ninguém descobriu</h2><div class="answer"><small>Era o segredo de</small>${esc(MS.item.nome)}: ${esc(MS.item.fato)}</div>${botaoSeguir}`);
-}
-
 /* ================== CANTA, SE SOUBER! ================== */
 let CT = { n: 0, palavra: "" };
 function cantaComeca() { CT = { n: 0, palavra: "" }; S.fase = "canta"; cantaProxima(); }
@@ -1320,7 +1266,7 @@ function opcoes() {
     <div class="field"><label for="tm">Tempo para responder as perguntas</label><select id="tm">${opTempo}</select></div>
     <button class="toggle" data-a="tSom">Sons <span class="pill ${S.som ? "on" : ""}">${S.som ? "Ligados" : "Desligados"}</span></button>
     <button class="toggle" data-a="tVoz">Voz do apresentador <span class="pill ${S.voz ? "on" : ""}">${S.voz ? "Ligada" : "Desligada"}</span></button>
-    <button class="btn soft" data-a="minhas">Perguntas e mistérios da turma${S.minhas.length + S.misterios.length ? ` (${S.minhas.length + S.misterios.length})` : ""}</button>
+    <button class="btn soft" data-a="minhas">Perguntas da turma${S.minhas.length ? ` (${S.minhas.length})` : ""}</button>
     <button class="btn ghost" data-a="pedirZerar">Zerar o placar</button>
     <button class="btn gold" data-a="fecharOpcoes">Pronto</button>`, { fora: fecharOpcoes });
 }
@@ -1346,16 +1292,7 @@ function pedirZerar() {
 function telaMinhas() {
   const lista = S.minhas.map((m, k) => `<div class="it"><p>${esc(m.q)}<br><small>✓ ${esc(m.r[0])}</small></p><button data-a="apagarMinha" data-k="${k}" aria-label="Apagar pergunta">Apagar</button></div>`).join("");
   return `<p class="eyebrow">As Aventuras da Caravana</p>
-    <h1 style="font-size:38px;color:var(--gold)">Da turma</h1>
-    <h2>Mistérios da Caravana</h2>
-    <p class="muted">Segredos curiosos dos viajantes. No jogo, alguém faz a mímica do segredo e o time adivinha de quem é. Pergunte a cada viajante, em segredo, uma coisa que ninguém do grupo sabe.</p>
-    <form class="card" id="formMisterio">
-      <div class="field"><label for="sn">Nome do viajante</label><input id="sn" required maxlength="40" autocomplete="off" placeholder="Ex.: Vivian"></div>
-      <div class="field"><label for="sf">O segredo (vira mímica)</label><textarea id="sf" required maxlength="140" placeholder="Ex.: Já foi picada por uma água-viva em lua de mel"></textarea></div>
-      <button class="btn gold" type="submit">Guardar mistério</button>
-    </form>
-    ${S.misterios.length ? `<div class="mine">${S.misterios.map((m, k) => `<div class="it"><p>${esc(m.fato)}<br><small>${esc(m.nome)}</small></p><button data-a="apagarMisterio" data-k="${k}" aria-label="Apagar mistério">Apagar</button></div>`).join("")}</div>` : `<p class="muted">Nenhum mistério ainda. O Mistério da Caravana só entra na roleta depois do primeiro.</p>`}
-    <h2 style="margin-top:12px">Perguntas da turma</h2>
+    <h1 style="font-size:38px;color:var(--gold)">Perguntas da turma</h1>
     <p class="muted">Crie perguntas sobre a própria Caravana: quem é quem, o que aconteceu nos dias, curiosidades dos viajantes. Elas entram no sorteio e ficam guardadas neste celular.</p>
     <form class="card" id="formMinha">
       <div class="field"><label for="mq">Pergunta</label><textarea id="mq" required maxlength="200" placeholder="Ex.: Quantos países a Vivian já visitou?"></textarea></div>
@@ -1428,11 +1365,7 @@ document.addEventListener("click", (e) => {
     case "btPassa": btPassa(); break;
     case "btTravou": explodir(); break;
     case "ctCantou": ctCantou(p); break;
-    case "msComecar": msComecar(); break;
-    case "msAcerto": msAcerto(p); break;
-    case "msRoubo": msRoubo(p === 1); break;
     case "posCarta": fecharFolha(); render(); sortear(); break;
-    case "apagarMisterio": S.usadasMini.misterio = []; S.misterios.splice(+b.dataset.k, 1); salvar(); render(); break;
     case "opcoes": opcoes(); break;
     case "fecharOpcoes": fecharOpcoes(); break;
     case "unidade": document.getElementById("un").value = b.dataset.u; document.querySelectorAll(".chips button").forEach((x) => x.classList.toggle("on", x === b)); break;
@@ -1448,13 +1381,6 @@ document.addEventListener("click", (e) => {
   }
 });
 document.addEventListener("submit", (e) => {
-  if (e.target.id === "formMisterio") {
-    e.preventDefault();
-    const nome = document.getElementById("sn").value.trim(), fato = document.getElementById("sf").value.trim();
-    if (!nome || !fato) return;
-    S.misterios.push({ nome, fato }); salvar(); render(); toast("Mistério guardado");
-    return;
-  }
   if (e.target.id !== "formMinha") return;
   e.preventDefault();
   const v = (id) => document.getElementById(id).value.trim();
