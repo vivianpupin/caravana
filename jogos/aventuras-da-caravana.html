@@ -377,6 +377,34 @@ const BANCO = [
 [2,"Deuses","Quantos dias dura a grande festa de Ganesha, o Ganesh Chaturthi?","10 dias","1 dia","3 dias","30 dias"],
 [2,"Deuses","Segundo a história, por que Kali aparece com a língua de fora?","Ficou envergonhada ao pisar sem querer em Shiva","Estava com calor","Estava provando comida","Estava fazendo careta para assustar crianças"],
 
+[1,"Deuses","Parvati é a esposa de qual deus?","Shiva","Vishnu","Brahma","Hanuman"],
+[1,"Deuses","Parvati é a mãe de quais deuses?","Ganesha e Kartikeya","Rama e Krishna","Shiva e Vishnu","Hanuman e Garuda"],
+[2,"Deuses","O nome Parvati quer dizer:","Filha da montanha","Filha do mar","Rainha do céu","Mãe das flores"],
+[1,"Deuses","De onde a deusa Ganga desceu?","Do céu","De dentro da terra","De uma montanha de gelo","Do mar"],
+[2,"Deuses","A deusa Ganga aparece montada em qual animal?","Um crocodilo","Um cavalo","Um elefante","Uma tartaruga"],
+[1,"Deuses","Surya é o deus de quê?","Do Sol","Da Lua","Da chuva","Do vento"],
+[1,"Deuses","Qual sequência de posturas do yoga homenageia o deus Surya?","A Saudação ao Sol","A Dança da Lua","A Postura da Árvore","O Cachorro olhando para baixo"],
+[1,"Deuses","Brahma é o deus que:","Criou o universo","Destrói o universo","Cuida dos animais","Traz a chuva"],
+[3,"Deuses","Segundo a história, Brahma nasceu de uma flor que saiu do umbigo de qual deus?","Vishnu","Shiva","Ganesha","Indra"],
+[1,"Deuses","De que cor é a pele de Vishnu nas imagens?","Azul","Vermelha","Verde","Dourada"],
+[1,"Deuses","Quem é a esposa de Vishnu?","Lakshmi","Parvati","Kali","Ganga"],
+[2,"Deuses","Vishnu dorme sobre o quê, no oceano?","Uma serpente gigante","Uma tartaruga","Uma nuvem","Uma folha de lótus"],
+[2,"Deuses","Quantos avatares principais de Vishnu as histórias contam?","10","3","7","100"],
+[3,"Deuses","Segundo a história, o primeiro avatar de Vishnu foi um:","Peixe","Leão","Cavalo","Pássaro"],
+[3,"Deuses","Krishna é qual avatar de Vishnu?","O oitavo","O primeiro","O terceiro","O décimo"],
+[3,"Deuses","Em qual cidade Krishna passou a infância?","Vrindavan","Varanasi","Jaipur","Agra"],
+[2,"Deuses","Durga venceu um demônio que tinha a forma de:","Um búfalo","Um tigre","Uma cobra","Um macaco"],
+[2,"Deuses","Qual festa de nove noites celebra a deusa Durga?","Navratri","Holi","Diwali","Kumbh Mela"],
+[1,"Deuses","De que cor é a pele de Kali nas imagens?","Escura, preta ou azul-escura","Branca","Amarela","Verde"],
+[2,"Deuses","Quantos braços Sarasvati costuma ter nas imagens?","4","2","6","10"],
+[3,"Deuses","Qual festa da primavera homenageia a deusa Sarasvati?","Vasant Panchami","Diwali","Holi","Navratri"],
+[1,"Deuses","Hanuman é devoto de qual deus?","Rama","Ganesha","Brahma","Surya"],
+[2,"Deuses","Qual arma Hanuman carrega?","Uma maça, um bastão pesado","Uma espada","Um arco","Um tridente"],
+[1,"Deuses","Qual é o nome da esposa de Shiva?","Parvati","Lakshmi","Sarasvati","Sita"],
+[2,"Deuses","Em qual montanha do Himalaia Shiva mora?","Monte Kailash","Monte Everest","Monte Fuji","Monte Olimpo"],
+[2,"Deuses","Quantas presas inteiras Ganesha tem?","Uma, a outra está quebrada","Duas","Quatro","Nenhuma"],
+[2,"Deuses","Como se chama o irmão de Ganesha?","Kartikeya","Hanuman","Rama","Krishna"],
+[3,"Deuses","Segundo a história, Lakshmi nasceu de onde?","Do oceano de leite, quando os deuses o agitaram","De uma flor no jardim","De uma estrela","De uma montanha"],
 // ---------- Sabores ----------
 [1,"Sabores","Qual bebida indiana é um chá com leite e especiarias?","Chai","Mate","Matcha","Kombucha"],
 [1,"Sabores","Qual tempero dá a cor amarela ao curry?","Cúrcuma","Canela","Páprica","Cominho"],
@@ -612,6 +640,152 @@ const DESENHO = {
   "Ações": ["Meditar","Dormir","Pescar","Dançar","Nadar","Chorar","Cozinhar","Voar","Correr","Ler um livro","Tomar banho","Plantar uma árvore"],
 };
 const BATATA = ["Frutas","Países","Animais","Deuses e deusas da Índia","Comidas indianas","Coisas amarelas","Coisas vermelhas","Novelas da Globo","Times de futebol brasileiros","Marcas de carro","Palavras terminadas em -ão","Cantores e cantoras brasileiros","Capitais do Brasil","Personagens da Disney","Desenhos animados","Coisas que levamos na mala","Profissões","Partes do corpo","Instrumentos musicais","Esportes","Bebidas","Doces brasileiros","Nomes de mulher com A","Nomes de homem com J","Coisas da cozinha","Personagens do Chaves","Super-heróis","Flores","Cidades da Índia","Países da Europa","Peças de roupa","Apresentadores de TV","Coisas que voam","Coisas que têm rodas","Palavras em inglês","Temperos","Jogadores da seleção brasileira","Filmes da Disney","Coisas que tem na praia","Pratos típicos brasileiros"];
+
+// Verdade ou mito: [frase, é verdade?, explicação curta]
+const VERDADES = [
+  ["Na Índia, as vacas podem andar livres pelas ruas das cidades.", true, "Elas são sagradas e ninguém as tira do caminho."],
+  ["O xadrez nasceu na Índia.", true, "O jogo antigo se chamava chaturanga."],
+  ["Na Índia, todo mundo é vegetariano.", false, "Muita gente é, mas muitos indianos comem carne."],
+  ["O Taj Mahal é um templo hindu.", false, "É um mausoléu que um imperador mogol fez para a esposa."],
+  ["A Constituição da Índia reconhece mais de 20 línguas.", true, "São 22 línguas na lista oficial."],
+  ["Curry é o nome de um tempero só.", false, "É uma mistura de vários temperos, e também o nome dos pratos com molho."],
+  ["Na Índia, muita gente come com a mão direita.", true, "A mão esquerda fica para outras coisas."],
+  ["Na Índia, balançar a cabeça de um lado para o outro sempre quer dizer não.", false, "Quase sempre quer dizer sim ou entendi."],
+  ["Os números de 0 a 9 que usamos vieram da Índia.", true, "Por isso se chamam algarismos indo-arábicos."],
+  ["A Índia é o país com mais gente no mundo.", true, "Passou a China em 2023."],
+  ["O yoga foi inventado nos Estados Unidos.", false, "O yoga nasceu na Índia há milhares de anos."],
+  ["Os Beatles estiveram em Rishikesh.", true, "Foram em 1968 aprender meditação."],
+  ["Em Varanasi, é proibido tomar banho no rio Ganges.", false, "Milhares de pessoas se banham nele todos os dias."],
+  ["Jaipur foi pintada de rosa para receber um príncipe.", true, "Foi em 1876, para a visita do Príncipe de Gales."],
+  ["Ganesha tem cabeça de leão.", false, "Ganesha tem cabeça de elefante."],
+  ["Na Índia, buzinar é considerado falta de educação.", false, "Lá a buzina é um jeito de avisar: estou passando!"],
+  ["Muitos caminhões na Índia têm escrito \"Horn OK Please\" na traseira.", true, "É um pedido: buzine antes de ultrapassar."],
+  ["\"Chai\" quer dizer café em hindi.", false, "Chai quer dizer chá."],
+  ["A Índia é o país que mais faz filmes no mundo.", true, "São mais de mil filmes por ano."],
+  ["O Taj Mahal fica em Delhi.", false, "Fica em Agra."],
+  ["O Diwali é a festa da água.", false, "É a festa das luzes."],
+  ["O pavão é a ave nacional da Índia.", true, "E o tigre-de-bengala é o animal nacional."],
+  ["O leão é o animal nacional da Índia.", false, "É o tigre-de-bengala."],
+  ["Ainda existem leões selvagens na Índia.", true, "Eles vivem na floresta de Gir, no oeste do país."],
+  ["Gandhi usava roupas de um tecido que ele mesmo fiava.", true, "O tecido se chama khadi."],
+  ["A Índia já pousou uma nave perto do polo sul da Lua.", true, "Foi a missão Chandrayaan-3, em 2023."],
+  ["O rio Ganges nasce no deserto.", false, "Ele nasce numa geleira do Himalaia."],
+  ["Em Rishikesh não se vende carne nem bebida alcoólica.", true, "É uma cidade sagrada."],
+  ["\"Namastê\" quer dizer bom apetite.", false, "Quer dizer mais ou menos eu me curvo a você."],
+  ["O hindi é escrito com um alfabeto chamado devanágari.", true, "É aquele com uma linha em cima das letras."],
+  ["Na Índia, os carros andam do lado direito da rua, como no Brasil.", false, "Lá se anda do lado esquerdo, e o volante fica à direita."],
+  ["A palavra \"xampu\" veio de uma palavra indiana.", true, "Vem de \"champo\", que quer dizer massagear."],
+  ["A palavra \"pijama\" veio da Índia.", true, "Os ingleses trouxeram a roupa e o nome de lá."],
+  ["O animal de Ganesha é a vaca.", false, "É o ratinho, chamado Mushika."],
+  ["A flor de lótus é um símbolo sagrado na Índia.", true, "Ela nasce na lama e floresce limpinha."],
+  ["Shiva tem a pele cor-de-rosa.", false, "Nas imagens, Shiva costuma ser azul ou cinza-azulado."],
+];
+// Quem sou eu: [categoria, resposta, pistas da mais difícil para a mais fácil]
+const QUEM_SOU = [
+  ["Deus", "Ganesha", ["Sou chamado antes de tudo começar.", "Removo os obstáculos do caminho.", "Tenho uma presa quebrada.", "Adoro um bolinho doce chamado modak.", "Tenho cabeça de elefante."]],
+  ["Deus", "Hanuman", ["Sou filho do deus do vento.", "Sou o maior devoto de Rama.", "Voei carregando uma montanha inteira.", "Quando bebê, quis comer o Sol.", "Sou um macaco."]],
+  ["Deus", "Shiva", ["Danço para o universo girar.", "Seguro o rio Ganges nos cabelos.", "Minha garganta é azul.", "Tenho um tridente e uma cobra no pescoço.", "Varanasi é a minha cidade."]],
+  ["Deus", "Krishna", ["Fui criado por pastores de vacas.", "Ensinei Arjuna no Bhagavad Gita.", "Adorava roubar manteiga.", "Toco flauta.", "Tenho a pele azul."]],
+  ["Deusa", "Lakshmi", ["Sou a esposa de Vishnu.", "No Diwali, me recebem em casa com lamparinas.", "Fico sentada numa flor de lótus.", "Moedas de ouro caem das minhas mãos.", "Sou a deusa da riqueza."]],
+  ["Deusa", "Sarasvati", ["Visto um sári branco.", "Fico sentada numa pedra à beira de um rio.", "Um cisne me acompanha.", "Toco a vina.", "Protejo os estudantes e os artistas."]],
+  ["Deusa", "Durga", ["Os deuses me deram suas armas.", "Venci um demônio búfalo.", "Tenho muitos braços.", "Sou uma mãe guerreira.", "Ando montada num leão."]],
+  ["Deusa", "Kali", ["Meu nome vem da palavra tempo.", "Uso um colar de cabeças.", "Sou a deusa da morte do ego.", "Fiquei envergonhada ao pisar sem querer em Shiva.", "Tenho a pele escura e a língua de fora."]],
+  ["Deus", "Vishnu", ["Durmo sobre uma serpente no oceano.", "Sou o preservador do universo.", "Desço à Terra em forma de avatares.", "Rama e Krishna são formas minhas.", "Uma águia gigante, Garuda, me carrega."]],
+  ["Deus", "Brahma", ["Faço parte da Trimurti.", "Nasci de uma flor de lótus.", "Sarasvati é a minha esposa.", "Sou o criador do universo.", "Tenho quatro cabeças."]],
+  ["Herói", "Rama", ["Sou um príncipe de Ayodhya.", "Minha esposa Sita foi sequestrada.", "Hanuman me ajudou a resgatá-la.", "Uso arco e flecha.", "O Diwali celebra a minha volta para casa."]],
+  ["Deusa", "Parvati", ["Sou filha das montanhas do Himalaia.", "Sou a esposa de Shiva.", "Segundo a história, fiz um filho com uma pasta de cúrcuma.", "Meu outro filho anda num pavão.", "Sou a mãe de Ganesha."]],
+  ["Deusa", "Ganga", ["Desci do céu para a Terra.", "Shiva me segurou nos cabelos para eu não cair com força demais.", "Quem se banha em mim fica purificado.", "Passo por Rishikesh e por Varanasi.", "Sou um rio e uma deusa."]],
+  ["Deus", "Surya", ["Todo dia faço a mesma viagem pelo céu.", "Meu carro é puxado por sete cavalos.", "No yoga, me saúdam com uma sequência de posturas.", "Sem mim não existe dia.", "Sou o Sol."]],
+  ["Personagem", "Buda", ["Fui um príncipe que deixou o palácio.", "Meditei embaixo de uma figueira.", "Dei meu primeiro ensinamento em Sarnath, perto de Varanasi.", "Ensinei o caminho do meio.", "Minha religião se chama budismo."]],
+  ["Personagem", "Gandhi", ["Fui advogado na África do Sul.", "Fiz uma marcha de 24 dias até o mar.", "Fiava o meu próprio tecido.", "Lutei pela independência sem violência.", "Me chamam de Mahatma."]],
+  ["Lugar", "Taj Mahal", ["Levei uns 20 anos para ficar pronto.", "Sou feito de mármore branco.", "Fui um presente de amor de um imperador para a esposa.", "Fico em Agra, à beira do rio Yamuna.", "Sou uma das Sete Maravilhas do mundo moderno."]],
+  ["Lugar", "Varanasi", ["Sou uma das cidades mais antigas do mundo.", "Também me chamam de Benares ou Kashi.", "Tenho escadarias chamadas ghats.", "Toda noite tenho a cerimônia do fogo, a Ganga Aarti.", "Fico à beira do Ganges e sou a cidade de Shiva."]],
+];
+// Complete: [tipo, começo, continuação]
+const COMPLETE = [
+  ["Mantra", "Om Namah…", "Shivaya"],
+  ["Mantra", "Om Gam Ganapataye…", "Namaha"],
+  ["Mantra", "Hare Krishna, Hare Krishna, Krishna Krishna…", "Hare Hare"],
+  ["Mantra", "Hare Rama, Hare Rama, Rama Rama…", "Hare Hare"],
+  ["Mantra", "Om Mani Padme…", "Hum"],
+  ["Mantra", "Om Shanti, Shanti…", "Shanti"],
+  ["Mantra", "Lokah Samastah Sukhino…", "Bhavantu"],
+  ["Mantra", "Om Namo Bhagavate…", "Vasudevaya"],
+  ["Mantra", "Asato ma sat gamaya, tamaso ma…", "jyotir gamaya"],
+  ["Mantra", "Om Bhur Bhuvah…", "Swaha"],
+  ["Música", "Olha que coisa mais linda, mais cheia de graça…", "é ela, menina, que vem e que passa"],
+  ["Música", "E nessa loucura de dizer que não te quero…", "vou negando as aparências, disfarçando as evidências"],
+  ["Música", "Numa folha qualquer eu desenho um sol amarelo…", "e com cinco ou seis retas é fácil fazer um castelo"],
+  ["Música", "Quando olhei a terra ardendo…", "qual fogueira de São João"],
+  ["Música", "Moro num país tropical…", "abençoado por Deus e bonito por natureza"],
+  ["Música", "Parabéns pra você, nesta data querida…", "muitas felicidades, muitos anos de vida"],
+  ["Música", "Todos os dias quando acordo…", "não tenho mais o tempo que passou"],
+  ["Música", "Mas que nada, sai da minha frente…", "eu quero passar"],
+  ["Música", "Brasil, meu Brasil brasileiro…", "meu mulato inzoneiro"],
+  ["Música", "Atirei o pau no gato…", "mas o gato não morreu"],
+  ["Música", "Ciranda, cirandinha, vamos todos cirandar…", "vamos dar a meia-volta, volta e meia vamos dar"],
+  ["Música", "Eu sei que vou te amar…", "por toda a minha vida eu vou te amar"],
+  ["Música", "Hakuna Matata, é lindo dizer…", "Hakuna Matata, sim, vai entender"],
+  ["Música", "Marmelada de banana, bananada de goiaba…", "goiabada de marmelo"],
+  ["Ditado", "Quem com ferro fere…", "com ferro será ferido"],
+  ["Ditado", "Água mole em pedra dura…", "tanto bate até que fura"],
+  ["Ditado", "De grão em grão…", "a galinha enche o papo"],
+  ["Ditado", "Quem não tem cão…", "caça com gato"],
+  ["Ditado", "Em casa de ferreiro…", "espeto de pau"],
+  ["Ditado", "Mais vale um pássaro na mão…", "do que dois voando"],
+];
+// trechos das músicas da Vivian: [tipo, começo, continuação, nome da música]
+const MUSICAS_DA_VIVIAN = [
+  ["Canto", "Em honra aos meus ancestrais…", "a quem já fui, a quem mora em mim", "Canto aos Ancestrais"],
+  ["Canto", "Eu honro essa sabedoria…", "toda essa força que vem do coração", "Canto aos Ancestrais"],
+  ["Canto", "Me liberto das histórias que vivi…", "trazendo um ensinamento e preenchendo meu ser", "Canto aos Ancestrais"],
+  ["Canto", "Todas as vezes que eu me lembrar quem eu fui e quem eu sou…", "a mãe terra vai chamar", "Canto aos Ancestrais"],
+  ["Canto", "Ora ieie ô Oxum, na cachoeira…", "eu vou sumir", "Lua Preta"],
+  ["Canto", "Vou me juntar com as marolas…", "do fundo do mar", "Lua Preta"],
+  ["Canto", "Odoya…", "minha mãe Yemanja", "Lua Preta"],
+  ["Canto", "Eu fui pro mar, eu fui pro mar…", "pedir a força", "Lua Preta"],
+  ["Canto", "Força do canto…", "que sopra em mim", "Lua Preta"],
+  ["Canto", "Eparrei Iansã, troveja, eu toco o céu e a terra…", "sou início e fim", "Lua Preta"],
+  ["Canto", "Pelas pedras passa água…", "cor ferrugem", "Yemanjayna"],
+  ["Canto", "Vem, vem de lá, de outro mundo…", "sutil azul", "Yemanjayna"],
+  ["Canto", "Vento veio avisar, na onda forte…", "vai me levar", "Yemanjayna"],
+  ["Canto", "Brisa leve que bate e entra…", "e toca no peito", "Yemanjayna"],
+  ["Canto", "Minha mãe tá…", "nesse mar", "Yemanjayna"],
+  ["Canto", "Canto forte, meu rezo de cura, num teto de estrela…", "sereia vem me encontrar", "Yemanjayna"],
+  ["Canto", "Água fria purifica…", "minha dor", "Yemanjayna"],
+  ["Canto", "He Ayná, Eskawata kayawai…", "Hei Hei Yemanja", "Yemanjayna"],
+  ["Canto", "O sol vermelho desceu lá nas montanhas, e o vento que trouxe…", "um cheiro de folha", "Sol Vermelho"],
+  ["Canto", "Veio sussurrar que eu fale manso…", "que eu respire manso", "Sol Vermelho"],
+  ["Canto", "Jamais estou só…", "porque me acompanha", "Sol Vermelho"],
+  ["Canto", "Captar o oculto…", "das entrelinhas da vida", "Sol Vermelho"],
+  ["Canto", "Vem de um lugar além dos olhos…", "um lugar onde mora o infinito", "Sol Vermelho"],
+  ["Canto", "Toda alma é naturalmente…", "doce", "Sol Vermelho"],
+  ["Canto", "Eu não sou da mente, não sou da matéria, não temo a morte…", "pois nunca nasci", "Sol Vermelho"],
+  ["Canto", "E das estrelas sou o brilho…", "e o olhar", "Sol Vermelho"],
+  ["Canto", "Defumaê, defuma, na força da floresta…", "defuma", "Defumaê"],
+  ["Canto", "Defumaê, defuma, sou filha…", "da Mãe Terra, defuma", "Defumaê"],
+  ["Canto", "Eu peço pra limpar, o atabaque…", "vem me ajudar", "Defumaê"],
+  ["Canto", "Fumaça sobe…", "bem devagar", "Defumaê"],
+  ["Canto", "Eu chamo os guardiões…", "pra essa roda guardar", "Defumaê"],
+  ["Canto", "Vem lá o vento forte…", "da espada de Iansã", "Defumaê"],
+  ["Canto", "Vem lá meu pai Oxossi…", "com sua flecha brilhar", "Defumaê"],
+  ["Canto", "Eu chamo a Velha Tribo…", "o canto do Jaguar", "Defumaê"],
+  ["Canto", "Eu vejo lá, Pai Oxalá…", "eu vejo lá o amor iluminar", "Defumaê"],
+  ["Canto", "Sou guardada pela cabocla da mata…", "flecha dourada, serena, pele de jaguar", "Defumaê"],
+  ["Canto", "Eu não sou daqui, eu vim de longe…", "lá das estrelas", "Gaia Ô"],
+  ["Canto", "Eu vim dali, daquela aldeia…", "por entre as montanhas do céu", "Gaia Ô"],
+  ["Canto", "Sombras dançando na fogueira…", "o vento carrega meu véu", "Gaia Ô"],
+  ["Canto", "Uê Maia ê ia, Uê Maia ê…", "Inca maraia, ô Gaia ôo", "Gaia Ô"],
+  ["Canto", "A força do segredo que eu trago no peito…", "me expande e me faz voar", "Gaia Ô"],
+  ["Canto", "Eu volto nessa noite na cura da montanha…", "desperto o poder de enxergar", "Gaia Ô"],
+  ["Canto", "O brilho em minha fronte…", "que ativa os mundos em espiral", "Força do Jaguar"],
+  ["Canto", "Eu vou seguindo meu caminho…", "no silêncio do meu ser", "Força do Jaguar"],
+  ["Canto", "Noite negra ilumina…", "esses filhos da floresta", "Força do Jaguar"],
+  ["Canto", "Grande Espírito recebe…", "a minha tribo de poder", "Força do Jaguar"],
+  ["Canto", "Vem a força do Jaguar, desce à Terra…", "vem ser a estrela guia", "Força do Jaguar"],
+  ["Canto", "Planta em mim toda a sabedoria, me transforma num canal…", "do infinito", "Força do Jaguar"],
+  ["Canto", "Na presença da Mãe Terra, força viva…", "a semente cresce em mim", "Força do Jaguar"],
+];
 const CANTA = ["Amor","Lua","Mar","Coração","Saudade","Bahia","Chuva","Estrada","Beijo","Sol","Flor","Dança","Noite","Céu","Menina","Praia","Festa","Carro","Deus","Viagem","Fogo","Estrela","Tempo","Sonho","Felicidade","Paixão","Olhos","Rio","Verão","Carnaval","Avião","Vento","Mãe","Rosa","Azul","Amarelo","Dinheiro","Trem","Rei","Anjo","Café","Sorriso","Morena","Sertão","Cavalo","Janela","Boca","Chorar","Garota","Baby","Primavera","Vida","Mundo","Paz","Telefone","Lágrima","Cidade","Cabelo","Mentira"];
 
 
@@ -619,10 +793,13 @@ const CANTA = ["Amor","Lua","Mar","Coração","Saudade","Bahia","Chuva","Estrada
 const META = 1000000;
 const FINAL = 900000;   // a partir daqui o time só vence acertando a Pergunta Final
 const VALOR_PERGUNTA = { 1: 50000, 2: 100000, 3: 150000 };
-const VALE = { mimica: 100000, desenho: 100000, batata: 100000, canta: 50000 };
+const VALE = { mimica: 100000, desenho: 100000, batata: 100000, canta: 50000, verdade: 50000, complete: 50000, quemsou: 150000 };
+// Quem sou eu: quanto menos pistas o time precisar, mais vale
+const VALE_PISTA = [150000, 120000, 90000, 60000, 30000];
+const FRASES_VERDADE = 3, TRECHOS_COMPLETE = 3, TEMPO_COMPLETE = 20;
 const TEMPO_MIMICA = 60, TEMPO_DESENHO = 75, TEMPO_CANTA = 20, PALAVRAS_CANTA = 3;
 // chance de cada desafio sair na roleta (a pergunta sai mais)
-const PESOS = { pergunta: 44, mimica: 15, desenho: 15, batata: 12, canta: 14 };
+const PESOS = { pergunta: 34, mimica: 12, desenho: 12, batata: 10, canta: 10, verdade: 8, quemsou: 8, complete: 7 };
 // o que os times juntam: a cada aventura nova sai um diferente
 const UNIDADES = ["pétalas de lótus", "luzes de diya", "xícaras de chai", "tuk-tuks", "vaquinhas sagradas", "elefantes", "pitadas de masala", "buzinadas", "macaquinhos ladrões", "samosas", "bênçãos"];
 function sortearUnidade(atual) { const op = UNIDADES.filter((u) => u !== atual); return op[Math.floor(Math.random() * op.length)]; }
@@ -646,6 +823,21 @@ const DESAFIOS = {
     "Falou? Toque em <b>Passa a batata</b>. Ninguém sabe quando ela explode!",
     "Quem estiver com a batata, travar ou repetir, perde.",
   ] },
+  verdade: { nome: "Verdade ou Mito?", regras: [
+    "Vou dizer <b>3 frases</b> sobre a Índia.",
+    "O time grita: <b>verdade!</b> ou <b>mito!</b>, e você toca na resposta.",
+    "Cada acerto vale <b>50 mil</b>.",
+  ] },
+  quemsou: { nome: "Quem Sou Eu?", regras: [
+    "O app dá <b>uma pista por vez</b> sobre um deus, um personagem ou um lugar da Índia.",
+    "O time tenta adivinhar. Errou? Toque em <b>Mais uma pista</b>.",
+    "Quanto menos pistas, mais vale: <b>150 mil</b> na primeira, 30 mil na última.",
+  ] },
+  complete: { nome: "Complete!", regras: [
+    "Os <b>dois times</b> jogam. Aparece o começo de um mantra, de um canto, de uma música ou de um ditado.",
+    "Quem completar primeiro, ganha <b>50 mil</b>.",
+    "São <b>3 trechos</b>, 20 segundos cada.",
+  ] },
   canta: { nome: "Canta, se Souber!", regras: [
     "Os <b>dois times</b> jogam. Sai uma palavra.",
     "O primeiro time que <b>cantar</b> um pedaço de música com ela ganha.",
@@ -653,6 +845,9 @@ const DESAFIOS = {
   ] },
 };
 const ICON = {
+  verdade: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l4 4 8-9"/><path d="M15 15l5 5M20 15l-5 5"/></svg>`,
+  quemsou: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9a3 3 0 1 1 4 2.8c-.7.3-1 .9-1 1.6V15"/><circle cx="12" cy="18.5" r=".6" fill="currentColor"/><circle cx="12" cy="12" r="10"/></svg>`,
+  complete: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M4 12h7M4 17h5"/><path d="M15 17h.01M18 17h.01M21 17h.01"/></svg>`,
   pergunta: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.6 6.5 19.5l1-6.3L3 8.9 9 8z"/></svg>`,
   mimica: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2.2"/><path d="M5 9l7 1.5L19 9M12 10.5V15l-3.5 6M12 15l3.5 6"/></svg>`,
   desenho: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5l4 4L8 20H4v-4z"/><path d="M13.5 6.5l4 4"/></svg>`,
@@ -865,7 +1060,7 @@ const app = document.getElementById("app");
 let mostrado = null;   // valores que o placar está mostrando (para a contagem subir aos poucos)
 function render() {
   if (S.tela === "minhas") { app.innerHTML = telaMinhas(); return; }
-  const destaque = ["espera", "roleta", "intro", "pergunta", "mimica", "desenho"].includes(S.fase) ? S.vez : -1;
+  const destaque = ["espera", "roleta", "intro", "pergunta", "mimica", "desenho", "verdade", "quemsou"].includes(S.fase) ? S.vez : -1;
   app.innerHTML = `
     <header class="head"><h1><small>Caravana do Céu</small>As Aventuras da Caravana</h1>
       <button class="gear" data-a="opcoes" aria-label="Ajustes do jogo">${ICON.gear}</button></header>
@@ -912,6 +1107,9 @@ function palco() {
     case "desenho": return palcoDesenho();
     case "batata": return palcoBatata();
     case "canta": return palcoCanta();
+    case "verdade": return palcoVerdade();
+    case "quemsou": return palcoQuemSou();
+    case "complete": return palcoComplete();
   }
   return palcoEspera();
 }
@@ -947,22 +1145,29 @@ function abrir(d) {
   S.desafio = d; S.ultimo = d; salvar();
   if (d === "pergunta") return perguntaComeca();
   S.fase = "intro"; render(); SOM.vinheta();
-  falar(DESAFIOS[d].nome + "! " + (d === "batata" || d === "canta" ? "Os dois times jogam!" : "Vez do " + T(S.vez).nome));
+  falar(DESAFIOS[d].nome + "! " + (DOIS.includes(d) ? "Os dois times jogam!" : "Vez do " + T(S.vez).nome));
 }
 function palcoIntro() {
-  const d = S.desafio, dois = d === "batata" || d === "canta";
+  const d = S.desafio, dois = DOIS.includes(d);
   return `<div class="hero">
     ${ICON[d].replace("<svg", '<svg class="big"')}
     <div class="kind">${DESAFIOS[d].nome}</div>
     <p class="eyebrow">${dois ? `Os dois times jogam · começa o ${esc(T(S.vez).nome)}` : `Vez do ${esc(T(S.vez).nome)}`}</p>
     <ul>${DESAFIOS[d].regras.map((r) => `<li>${r}</li>`).join("")}</ul>
-    <p class="muted">Vale <b style="color:var(--gold-soft)">${qtd(VALE[d])}</b> ${d === "canta" ? "por música" : d === "batata" ? "para quem sobrar" : "se acertar"}.</p>
+    <p class="muted">Vale <b style="color:var(--gold-soft)">${qtd(VALE[d])}</b> ${d === "canta" ? "por música" : d === "batata" ? "para quem sobrar" : d === "verdade" ? "por frase certa" : d === "complete" ? "por trecho" : d === "quemsou" ? "se acertar na primeira pista" : "se acertar"}.</p>
     <button class="btn team big" data-a="valendo">Valendo!</button>
     <button class="btn link" data-a="sortear">Sortear outro desafio</button>
   </div>`;
 }
 function valendo() {
-  ({ mimica: mimicaComeca, desenho: desenhoComeca, batata: batataComeca, canta: cantaComeca })[S.desafio]();
+  ({ mimica: mimicaComeca, desenho: desenhoComeca, batata: batataComeca, canta: cantaComeca, verdade: verdadeComeca, quemsou: quemSouComeca, complete: completeComeca })[S.desafio]();
+}
+const DOIS = ["batata", "canta", "complete"];   // desafios em que os dois times jogam juntos
+function tirarLista(lista, nome, chave) {
+  const usadas = (S.usadasMini[nome] = S.usadasMini[nome] || []);
+  let livres = lista.filter((x) => !usadas.includes(chave(x)));
+  if (!livres.length) { usadas.length = 0; livres = lista; }
+  const x = livres[Math.floor(Math.random() * livres.length)]; usadas.push(chave(x)); return x;
 }
 
 /* ================== DEPOIS DE CADA DESAFIO ================== */
@@ -1303,6 +1508,99 @@ function explodir() {
     <p class="center">+ <b>${qtd(g)}</b> para o <b style="color:${cor(ganhou)}">${esc(T(ganhou).nome)}</b>${naFinal(ganhou)}</p>${botaoSeguir}`);
 }
 
+/* ================== VERDADE OU MITO? ================== */
+let VM = { n: 0, item: null, resp: null, acertos: 0 };
+function verdadeComeca() { VM = { n: 0, item: null, resp: null, acertos: 0 }; S.fase = "verdade"; verdadeProxima(); }
+function verdadeProxima() {
+  VM.n++; VM.resp = null; VM.item = tirarLista(VERDADES, "verdade", (x) => x[0]);
+  salvar(); render(); SOM.drama(); falar("Verdade ou mito? " + VM.item[0]);
+}
+function palcoVerdade() {
+  const [frase, certo, explica] = VM.item, respondeu = VM.resp !== null, acertou = respondeu && VM.resp === certo;
+  return `<div class="minihead"><button class="sair" data-a="sair">Sair</button><span class="chip">Verdade ou Mito? · ${VM.n} de ${FRASES_VERDADE}</span></div>
+    <div class="wordcard"><span class="cat">${esc(T(S.vez).nome)}, é verdade ou mito?</span><span class="word long">${esc(frase)}</span>
+      ${respondeu ? `<span class="cat" style="color:${acertou ? "var(--right)" : "var(--wrong)"};font-size:20px">${acertou ? "Acertou!" : "Errou!"} É ${certo ? "verdade" : "mito"}</span><span>${esc(explica)}</span>` : ""}</div>
+    ${respondeu
+      ? `<button class="btn gold big" data-a="vmSeguir">${VM.n < FRASES_VERDADE ? "Próxima frase" : "Ver resultado"}</button>`
+      : `<div class="duo"><button class="btn ok big" data-a="vmResp" data-p="1">Verdade</button><button class="btn big" style="background:var(--wrong);color:var(--ink)" data-a="vmResp" data-p="0">Mito</button></div>`}`;
+}
+function vmResp(v) {
+  if (VM.resp !== null) return;
+  VM.resp = v; const ok = v === VM.item[1];
+  if (ok) { VM.acertos++; ganhar(S.vez, VALE.verdade); SOM.ponto(); vibrar(80); falar("Acertou! É " + (VM.item[1] ? "verdade" : "mito")); }
+  else { SOM.errada(); vibrar([200, 80, 200]); falar("Errou! É " + (VM.item[1] ? "verdade" : "mito")); }
+  render();
+}
+function vmSeguir() {
+  if (VM.n < FRASES_VERDADE) return verdadeProxima();
+  if (VM.acertos) { SOM.certa(); confete(VM.acertos === FRASES_VERDADE, S.vez); } else SOM.errada();
+  folha(`<h2 class="${VM.acertos ? "ok" : "bad"}">${VM.acertos === FRASES_VERDADE ? "Gabaritou!" : VM.acertos ? "Fim da rodada" : "Errou todas!"}</h2>
+    <div class="huge">${VM.acertos} de ${FRASES_VERDADE}</div>
+    <p class="center">${VM.acertos ? `+ <b>${qtd(VM.acertos * VALE.verdade * (S.dobro === S.vez ? 2 : 1))}</b> para o ${esc(T(S.vez).nome)}${naFinal(S.vez)}` : "Nenhum ponto desta vez."}</p>${botaoSeguir}`);
+}
+
+/* ================== QUEM SOU EU? ================== */
+let QS = { item: null, pistas: 1 };
+function quemSouComeca() {
+  QS = { item: tirarLista(QUEM_SOU, "quemsou", (x) => x[1]), pistas: 1 };
+  S.fase = "quemsou"; salvar(); render(); SOM.drama(); falar("Quem sou eu? Primeira pista: " + QS.item[2][0]);
+}
+function palcoQuemSou() {
+  const [cat, , pistas] = QS.item, n = QS.pistas, vale = VALE_PISTA[n - 1];
+  return `<div class="minihead"><button class="sair" data-a="sair">Sair</button><span class="chip">Quem Sou Eu? · ${esc(T(S.vez).nome)}</span></div>
+    <div class="wordcard" style="justify-content:flex-start;align-items:stretch;text-align:left">
+      <span class="cat" style="text-align:center">Sou ${({ Deus: "um deus", Deusa: "uma deusa", "Herói": "um herói", Personagem: "uma pessoa famosa", Lugar: "um lugar" })[cat] || esc(cat)}… quem sou eu?</span>
+      <ol style="margin:0;padding-left:26px;display:flex;flex-direction:column;gap:10px;font-size:19px;font-weight:600">
+        ${pistas.slice(0, n).map((p, i) => `<li style="${i === n - 1 ? "color:var(--gold-soft)" : "opacity:.85"}">${esc(p)}</li>`).join("")}
+      </ol>
+    </div>
+    <p class="center muted">Pista ${n} de ${pistas.length} · acertar agora vale <b style="color:var(--gold-soft)">${qtd(vale)}</b></p>
+    <div class="duo">
+      ${n < pistas.length ? `<button class="btn soft big" data-a="qsPista">Mais uma pista</button>` : `<button class="btn ghost big" data-a="qsNinguem">Ninguém acertou</button>`}
+      <button class="btn ok big" data-a="qsAcerto">Acertaram!</button>
+    </div>
+    <button class="btn link" data-a="qsEspiar">Ver a resposta (só quem lê)</button>`;
+}
+function qsPista() { QS.pistas++; SOM.carta(); render(); falar("Pista " + QS.pistas + ": " + QS.item[2][QS.pistas - 1]); }
+function qsAcerto() {
+  const g = ganhar(S.vez, VALE_PISTA[QS.pistas - 1]); render();
+  SOM.certa(); confete(QS.pistas <= 2, S.vez); vibrar(120); falar("Acertou! Era " + QS.item[1]);
+  folha(`<h2 class="ok">Acertaram!</h2><div class="answer"><small>Era</small>${esc(QS.item[1])}</div>
+    <p class="center">Com ${QS.pistas} ${QS.pistas === 1 ? "pista" : "pistas"}: + <b>${qtd(g)}</b> para o ${esc(T(S.vez).nome)}${naFinal(S.vez)}</p>${botaoSeguir}`);
+}
+function qsNinguem() {
+  SOM.errada(); vibrar([200, 80, 200]); falar("Errou! Era " + QS.item[1]);
+  folha(`<h2 class="bad">Errou!</h2><div class="answer"><small>Era</small>${esc(QS.item[1])}</div>
+    <p class="center muted">Nenhum ponto desta vez.</p>${botaoSeguir}`);
+}
+
+/* ================== COMPLETE! ================== */
+let CP = { n: 0, item: null };
+function completeComeca() { CP = { n: 0, item: null }; S.fase = "complete"; completeProxima(); }
+function completeProxima() {
+  CP.n++; CP.item = Math.random() < 0.4 ? tirarLista(MUSICAS_DA_VIVIAN, "completeVivian", (x) => x[1]) : tirarLista(COMPLETE, "complete", (x) => x[1]);
+  render(); SOM.drama(); falar("Complete!");
+  relogio(TEMPO_COMPLETE, () => { SOM.errada(); toast("Tempo! Alguém completou?"); });
+}
+function palcoComplete() {
+  const [tipo, comeco, fim, nome] = CP.item;
+  return `<div class="minihead"><button class="sair" data-a="sair">Sair</button><span class="chip" style="color:var(--gold)">Complete! · ${CP.n} de ${TRECHOS_COMPLETE}</span></div>
+    ${barraTempo(TEMPO_COMPLETE)}
+    <div class="wordcard"><span class="cat">Complete ${tipo === "Mantra" ? "o mantra" : tipo === "Ditado" ? "o ditado" : tipo === "Canto" ? "o canto" : "a música"}${nome ? ` · ${esc(nome)}` : ""}</span><span class="word long">${esc(comeco)}</span>
+      <details style="margin-top:6px"><summary style="cursor:pointer;color:var(--muted);font-weight:600">Ver a resposta</summary><p style="font-size:20px;font-weight:700;color:var(--gold-soft);margin-top:6px">${esc(fim)}</p></details></div>
+    <p class="center muted">Quem completou primeiro?</p>
+    <div class="duo">${[0, 1].map((k) => `<button class="btn team big" style="--team:${cor(k)}" data-a="cpQuem" data-p="${k}">${esc(T(k).nome)}</button>`).join("")}</div>
+    <button class="btn ghost" data-a="cpQuem" data-p="-1">Ninguém completou</button>`;
+}
+function cpQuem(k) {
+  pararRelogio();
+  if (k >= 0) { const g = ganhar(k, VALE.complete); SOM.ponto(); vibrar(60); toast((g ? "+ " + qtd(g) + " para o " : "") + T(k).nome + (g ? "" : " já está na final!")); }
+  else toast("Era: " + CP.item[2]);
+  if (CP.n < TRECHOS_COMPLETE && vencedor() < 0) return completeProxima();
+  render(); SOM.certa(); falar("Fim da rodada!");
+  folha(`<h2>Fim da rodada!</h2><p class="center muted">Confira o placar lá em cima.</p>${botaoSeguir}`);
+}
+
 /* ================== CANTA, SE SOUBER! ================== */
 let CT = { n: 0, palavra: "" };
 function cantaComeca() { CT = { n: 0, palavra: "" }; S.fase = "canta"; cantaProxima(); }
@@ -1445,6 +1743,13 @@ document.addEventListener("click", (e) => {
     case "btPassa": btPassa(); break;
     case "btTravou": explodir(); break;
     case "ctCantou": ctCantou(p); break;
+    case "vmResp": vmResp(p === 1); break;
+    case "vmSeguir": vmSeguir(); break;
+    case "qsPista": qsPista(); break;
+    case "qsAcerto": qsAcerto(); break;
+    case "qsNinguem": qsNinguem(); break;
+    case "qsEspiar": toast("Resposta: " + QS.item[1]); break;
+    case "cpQuem": cpQuem(p); break;
     case "posCarta": fecharFolha(); render(); sortear(); break;
     case "opcoes": opcoes(); break;
     case "fecharOpcoes": fecharOpcoes(); break;
