@@ -1,4 +1,4 @@
-<title>Show do Crore</title>
+<title>As Aventuras da Caravana</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +19,8 @@
   --t1:#27d3c0;          /* Time 2: azul-pavão */
   --right:#35d67f;
   --wrong:#ff4d5e;
+  --paper:#fbf4e2;       /* folha do Imagem e Ação */
+  --pen:#1b1640;
   --display:"Yatra One", Georgia, "Times New Roman", serif;
   --body:"Hind", system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme:dark;
@@ -41,17 +43,17 @@ button{cursor:pointer;border:0;background:none}
 }
 .screen{display:flex;flex-direction:column;gap:18px;flex:1}
 .eyebrow{margin:0;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-soft);font-weight:600}
-h1,h2{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;line-height:1.05}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;line-height:1.05}
 h2{font-size:24px;color:var(--gold)}
 p{margin:0}
 .muted{color:var(--muted)}
 .num{font-variant-numeric:tabular-nums}
 
-/* ===== Marquise com lâmpadas ===== */
+/* ===== Capa com lâmpadas ===== */
 .marquee{
   position:relative;text-align:center;padding:30px 18px 26px;border-radius:22px;
   background:linear-gradient(180deg, var(--panel) 0%, var(--night-2) 100%);
-  display:flex;flex-direction:column;gap:10px;align-items:center;
+  display:flex;flex-direction:column;gap:8px;align-items:center;
 }
 .marquee::before{
   content:"";position:absolute;inset:6px;border-radius:17px;pointer-events:none;
@@ -63,8 +65,8 @@ p{margin:0}
   animation:bulbs 1.2s steps(2) infinite;
 }
 @keyframes bulbs{50%{opacity:.45}}
-.marquee h1{font-size:52px;color:var(--ink)}
-.marquee h1 span{display:block;font-size:76px;color:var(--gold);text-shadow:0 0 24px rgba(246,185,49,.45)}
+.marquee h1{font-size:34px;color:var(--ink)}
+.marquee h1 span{display:block;font-size:68px;color:var(--gold);text-shadow:0 0 24px rgba(246,185,49,.45)}
 .marquee .lead{max-width:30ch;color:var(--muted)}
 
 /* ===== Cartões e formulários ===== */
@@ -87,21 +89,36 @@ p{margin:0}
 .btn.gold{background:var(--gold);color:var(--night);box-shadow:0 6px 0 #b9831a}
 .btn.gold:active{box-shadow:0 2px 0 #b9831a;transform:translateY(4px)}
 .btn.team{background:var(--team);color:var(--night);box-shadow:0 6px 0 rgba(0,0,0,.35)}
+.btn.ok{background:var(--right);color:var(--night);box-shadow:0 6px 0 rgba(0,0,0,.35)}
 .btn.soft{background:var(--panel-2);color:var(--ink)}
 .btn.ghost{border:2px solid var(--panel-2);color:var(--ink);min-height:50px;font-size:17px}
 .btn.big{min-height:68px;font-size:23px}
 .btn.link{min-height:44px;font-size:15px;font-weight:600;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
 .btn[disabled]{opacity:.35;pointer-events:none}
 .stack{display:flex;flex-direction:column;gap:12px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-.how ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;color:var(--ink)}
-.how li::marker{color:var(--gold)}
-.how b{color:var(--gold-soft)}
+.rules{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;text-align:left}
+.rules li::marker{color:var(--gold)}
+.rules b{color:var(--gold-soft)}
 
 .champ{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.champ .tm{background:var(--night);border-radius:14px;padding:12px 14px;border-left:6px solid var(--team)}
-.champ .tm strong{display:block;font-family:var(--display);font-weight:400;font-size:34px;color:var(--team);line-height:1}
+.champ .tm{background:var(--night);border-radius:14px;padding:12px 14px;border-left:6px solid var(--team);text-align:left}
+.champ .tm strong{display:block;font-family:var(--display);font-weight:400;font-size:30px;color:var(--team);line-height:1.1}
 .champ .tm span{font-size:14px;color:var(--muted)}
+
+/* ===== Cardápio de jogos ===== */
+.games{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.game{
+  display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:14px;border-radius:18px;
+  background:var(--panel);border:2px solid var(--panel-2);min-height:150px;
+}
+.game svg{width:34px;height:34px;color:var(--gold)}
+.game h3{font-size:21px;color:var(--ink)}
+.game p{font-size:14px;color:var(--muted);line-height:1.3}
+.game .pr{margin-top:auto;font-size:13px;font-weight:700;color:var(--gold-soft)}
+.game.roleta{background:var(--gold);border-color:var(--gold)}
+.game.roleta svg,.game.roleta h3,.game.roleta p,.game.roleta .pr{color:var(--night)}
 
 /* ===== Placar (topo do jogo) ===== */
 .topbar{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:stretch}
@@ -180,10 +197,45 @@ p{margin:0}
 .help[disabled]{opacity:.3;pointer-events:none}
 
 /* ===== Vez do time ===== */
-.vez{justify-content:center;text-align:center;align-items:center;gap:22px}
-.vez .teamname{font-size:58px;color:var(--team);text-shadow:0 0 30px color-mix(in srgb, var(--team) 50%, transparent)}
-.vez .stack{width:100%}
-.vez .scores{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.vez{justify-content:center;text-align:center;align-items:center;gap:20px}
+.vez .teamname{font-size:56px;color:var(--team);text-shadow:0 0 30px color-mix(in srgb, var(--team) 50%, transparent)}
+.vez .stack,.vez .champ,.vez .card{width:100%}
+
+/* ===== Mímica, Canta e cartas de palavra ===== */
+.minihead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.minihead .sair{font-weight:700;color:var(--muted);padding:8px 4px;font-size:15px}
+.minihead .chip{border-radius:999px;padding:6px 12px;background:var(--panel);font-weight:700;font-size:14px;color:var(--team);white-space:nowrap}
+.wordcard{
+  flex:1;min-height:240px;border-radius:24px;background:var(--panel);border:3px solid var(--gold);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px 18px;text-align:center;
+}
+.wordcard .cat{font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--gold)}
+.wordcard .word{font-family:var(--display);font-size:46px;line-height:1.05;color:var(--ink);text-wrap:balance;overflow-wrap:anywhere}
+.wordcard .word.long{font-size:32px}
+.wordcard.todos{border-color:var(--t1);background:color-mix(in srgb, var(--t1) 16%, var(--panel))}
+.counter{display:flex;justify-content:center;gap:24px;font-weight:600;color:var(--muted)}
+.counter b{display:block;font-family:var(--display);font-weight:400;font-size:40px;color:var(--right);line-height:1}
+
+/* ===== Imagem e Ação (desenho) ===== */
+.drawwrap{flex:1;display:flex;flex-direction:column;gap:10px;min-height:0}
+.paper{position:relative;flex:1;min-height:320px;border-radius:18px;background:var(--paper);overflow:hidden;touch-action:none}
+.paper canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pen{width:38px;height:38px;border-radius:50%;border:3px solid var(--panel);background:var(--c)}
+.pen.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--gold)}
+.tools .sp{flex:1}
+.tool{border-radius:12px;background:var(--panel);padding:8px 12px;font-weight:700;font-size:14px;min-height:40px}
+.peek{position:absolute;left:12px;top:12px;right:12px;border-radius:12px;background:var(--pen);color:var(--paper);padding:10px 14px;font-weight:700;text-align:center}
+
+/* ===== Batata quente ===== */
+.bomb{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0}
+.bomb svg{width:170px;height:170px}
+.bomb.lit svg{animation:shake var(--spd, .6s) ease-in-out infinite}
+@keyframes shake{25%{transform:rotate(-7deg) scale(1.04)}75%{transform:rotate(7deg) scale(1.04)}}
+.holder{font-family:var(--display);font-size:40px;color:var(--team);text-align:center;line-height:1.05}
+
+/* ===== Roleta ===== */
+.spin{font-family:var(--display);font-size:44px;text-align:center;color:var(--gold);min-height:2.3em;display:flex;align-items:center;justify-content:center}
 
 /* ===== Folha (sobreposição) ===== */
 .sheet-wrap{
@@ -228,8 +280,9 @@ p{margin:0}
 .ring{font-family:var(--display);font-size:88px;line-height:1;text-align:center;color:var(--gold)}
 .ring.hot{color:var(--wrong)}
 
-.toggle{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px;border-radius:14px;background:var(--panel);font-weight:600;width:100%;text-align:left}
-.toggle .pill{border-radius:999px;padding:4px 12px;font-size:14px;background:var(--night);color:var(--muted)}
+.toggle{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px;border-radius:14px;background:var(--night);font-weight:600;width:100%;text-align:left}
+.sheet .toggle{background:var(--panel)}
+.toggle .pill{border-radius:999px;padding:4px 12px;font-size:14px;background:var(--panel-2);color:var(--muted)}
 .toggle .pill.on{background:var(--right);color:var(--night)}
 
 .mine{display:flex;flex-direction:column;gap:8px}
@@ -244,9 +297,11 @@ p{margin:0}
   background:var(--gold);color:var(--night);font-weight:700;padding:10px 18px;border-radius:999px;animation:rise .2s ease;
 }
 @media (max-width:380px){
-  .marquee h1{font-size:44px}.marquee h1 span{font-size:62px}
+  .marquee h1 span{font-size:56px}
   .qbox .q{font-size:20px}.opt .in{font-size:16.5px}
-  .vez .teamname{font-size:46px}
+  .vez .teamname{font-size:44px}
+  .game h3{font-size:19px}
+  .wordcard .word{font-size:38px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before{animation:none!important;transition:none!important}
@@ -259,7 +314,7 @@ p{margin:0}
 <script>
 /* ================== PERGUNTAS ==================
    [nível, tema, pergunta, CERTA, errada, errada, errada, cidade?]
-   nível 1 = fácil (₹1 mil a ₹10 mil), 2 = médio (₹50 mil a ₹5 lakh), 3 = difícil (₹25 lakh e ₹1 crore) */
+   nível 1 = fácil (₹1 mil a ₹10 mil), 2 = médio (₹50 mil a ₹250 mil), 3 = difícil (₹500 mil e ₹1 milhão) */
 const BANCO = [
 // ---------- Índia ----------
 [1,"Índia","Qual é a capital da Índia?","Nova Delhi","Mumbai","Calcutá","Bangalore"],
@@ -564,23 +619,94 @@ const BANCO = [
 [3,"Geral","A luz viaja a quantos quilômetros por segundo, mais ou menos?","300 mil","3 mil","30 mil","3 milhões"],
 ];
 
+/* ================== CARTAS DOS JOGOS ================== */
+const MIMICA = {
+  "Índia": ["Ganesha","Hanuman","Taj Mahal","Encantador de serpentes","Tuk-tuk no trânsito","Vaca no meio da estrada","Banho no Ganges","Vestir um sári","Comer com a mão","Tomar chai bem quente","Buzinar sem parar","Macaco roubando comida","Dança de Bollywood","Andar de elefante","Andar de camelo","Pechinchar no mercado","Meditar no Himalaia","Postura de yoga","Shiva dançando","Krishna tocando flauta","Acender lamparina no Diwali","Guerra de pó colorido no Holi","Comer comida muito apimentada","Atravessar a rua em Delhi"],
+  "Filmes": ["Titanic","O Rei Leão","Harry Potter","Homem-Aranha","Tubarão","E.T.","Frozen","Procurando Nemo","Matrix","Star Wars","Jurassic Park","Esqueceram de Mim","Shrek","Mogli","Piratas do Caribe","Karatê Kid","Ghost","Tropa de Elite","Quem Quer Ser um Milionário?","O Auto da Compadecida","Divertida Mente","Avatar","Rocky","O Mágico de Oz"],
+  "TV e novelas": ["Chaves","Chapolin","Show do Milhão","Faustão","Silvio Santos jogando aviãozinho","Caminho das Índias","Xuxa","Big Brother","Castelo Rá-Tim-Bum","Jornal Nacional","Sítio do Picapau Amarelo","Teletubbies","Power Rangers","Os Trapalhões","Previsão do tempo","O Clone"],
+  "Desenhos": ["Pica-Pau","Scooby-Doo","Bob Esponja","Pikachu","Popeye","Tom e Jerry","Os Flintstones","He-Man","Smurfs","Pernalonga","Dragon Ball","Cavaleiros do Zodíaco","Cebolinha","Mickey","Pato Donald","Os Simpsons","Peppa Pig","Papa-Léguas","Taz","Caverna do Dragão"],
+  "Ações": ["Escovar os dentes","Trocar pneu","Perder o voo","Fazer o check-in","Arrumar a mala","Tirar selfie","Dormir no ônibus","Dançar forró","Pescar","Surfar","Tomar banho de chuva","Passar protetor solar","Esquecer o passaporte","Morrer de fome","Cochilar na reunião","Fazer churrasco","Andar de patins","Pular corda","Ver um gol do Brasil","Ser picado por mosquito","Carregar a mala pesada","Procurar sinal de wi-fi"],
+  "Profissões": ["Dentista","Piloto de avião","Bombeiro","Guia de turismo","Motorista de tuk-tuk","Cabeleireiro","DJ","Astronauta","Jogador de futebol","Garçom","Fotógrafo","Professor de yoga","Mágico","Salva-vidas","Cozinheiro","Maestro","Padre","Palhaço"],
+  "Animais": ["Camelo","Elefante","Macaco","Pavão","Cobra","Tigre","Girafa","Pinguim","Canguru","Polvo","Galinha","Caranguejo","Morcego","Tartaruga","Cavalo","Gorila","Coruja","Pato"],
+  "Músicas": ["Ai Se Eu Te Pego","Macarena","Ragatanga","Na Boquinha da Garrafa","Evidências","Aquarela","Garota de Ipanema","Ilariê","Atirei o Pau no Gato","Parabéns pra Você","Brilha, Brilha, Estrelinha","Cabeça, Ombro, Joelho e Pé","Asa Branca","Thriller","YMCA","Dança do Siri"],
+  "Ditados": ["Quem não tem cão caça com gato","De grão em grão a galinha enche o papo","Cavalo dado não se olham os dentes","Água mole em pedra dura tanto bate até que fura","Em casa de ferreiro, espeto de pau","Mais vale um pássaro na mão do que dois voando","Deus ajuda quem cedo madruga","Cão que ladra não morde","Quem vê cara não vê coração","A pressa é inimiga da perfeição","Macaco velho não põe a mão em cumbuca","Quem com ferro fere, com ferro será ferido"],
+};
+const DESENHO = {
+  "Índia": ["Taj Mahal","Elefante","Tuk-tuk","Ganesha","Xícara de chai","Pavão","Camelo","Vaca","Templo","Rio Ganges","Flor de lótus","Lamparina","Cobra saindo do cesto","Turbante","Tigre","Incenso","Mandala","Sári","Himalaia","Macaco"],
+  "Viagem": ["Avião","Mala","Passaporte","Trem","Mapa do tesouro","Bússola","Câmera fotográfica","Barraca de camping","Ônibus","Navio","Selfie","Óculos de sol","Chapéu","Mochila","Guarda-chuva","Bicicleta","Montanha","Praia","Cachoeira","Hotel"],
+  "Coisas": ["Pizza","Sorvete","Violão","Coração","Foguete","Relógio","Celular","Abacaxi","Banana","Bolo de aniversário","Lâmpada","Escova de dentes","Tesoura","Vela","Chave","Coroa","Pipa","Balão","Sapato","Óculos"],
+  "Personagens": ["Bob Esponja","Pikachu","Mickey","Homem-Aranha","Mônica","Chaves","Batman","Papai Noel","Sereia","Fantasma","Palhaço","Pirata","Dinossauro","Robô","Bruxa","Smurf","Minion","Anjo"],
+  "Lugares": ["Cristo Redentor","Torre Eiffel","Pirâmide","Castelo","Vulcão","Arco-íris","Pôr do sol","Lua cheia","Ilha deserta","Farol","Estádio de futebol","Igreja","Roda-gigante","Iglu","Fazenda","Deserto"],
+  "Ações": ["Meditar","Dormir","Pescar","Dançar","Nadar","Chorar","Cozinhar","Voar","Correr","Ler um livro","Tomar banho","Plantar uma árvore"],
+};
+const BATATA = ["Frutas","Países","Animais","Deuses e deusas da Índia","Comidas indianas","Coisas amarelas","Coisas vermelhas","Novelas da Globo","Times de futebol brasileiros","Marcas de carro","Palavras terminadas em -ão","Cantores e cantoras brasileiros","Capitais do Brasil","Personagens da Disney","Desenhos animados","Coisas que levamos na mala","Profissões","Partes do corpo","Instrumentos musicais","Esportes","Bebidas","Doces brasileiros","Nomes de mulher com A","Nomes de homem com J","Coisas da cozinha","Personagens do Chaves","Super-heróis","Flores","Cidades da Índia","Países da Europa","Peças de roupa","Apresentadores de TV","Coisas que voam","Coisas que têm rodas","Palavras em inglês","Temperos","Jogadores da seleção brasileira","Filmes da Disney","Coisas que tem na praia","Pratos típicos brasileiros"];
+const CANTA = ["Amor","Lua","Mar","Coração","Saudade","Bahia","Chuva","Estrada","Beijo","Sol","Flor","Dança","Noite","Céu","Menina","Praia","Festa","Carro","Deus","Viagem","Fogo","Estrela","Tempo","Sonho","Felicidade","Paixão","Olhos","Rio","Verão","Carnaval","Avião","Vento","Mãe","Rosa","Azul","Amarelo","Dinheiro","Trem","Rei","Anjo","Café","Sorriso","Morena","Sertão","Cavalo","Janela","Boca","Chorar","Garota","Baby","Primavera","Vida","Mundo","Paz","Telefone","Lágrima","Cidade","Cabelo","Mentira"];
+
 /* ================== REGRAS ================== */
-const PREMIOS = [1000, 5000, 10000, 50000, 100000, 500000, 2500000, 10000000];
+const PREMIOS = [1000, 5000, 10000, 50000, 100000, 250000, 500000, 1000000];
 const NIVEL   = [1, 1, 1, 2, 2, 2, 3, 3];
-const CIDADES = ["Delhi", "Agra", "Varanasi", "Jaipur", "Rishikesh"];
 const AJUDAS  = () => ({ cartas: 1, guru: 1, voz: 1, pular: 3 });
-const KEY = "show-do-crore-v1";
+const VALE = { mimica: 50000, desenho: 100000, batata: 100000, canta: 50000 };
+const TEMPO_MIMICA = 60, TEMPO_DESENHO = 75, TEMPO_CANTA = 20, PALAVRAS_CANTA = 5;
+const KEY = "aventuras-da-caravana-v1";
+
+const JOGOS = {
+  quiz:    { nome: "Show da Travessia", curto: "Perguntas no estilo Show do Milhão.", premio: "Até ₹1 milhão", dois: false },
+  mimica:  { nome: "Mímica", curto: "Sem falar, só com o corpo. Vale até sentado no carro!", premio: "₹50 mil por acerto", dois: false },
+  desenho: { nome: "Imagem e Ação", curto: "Desenhe com o dedo na tela e o time adivinha.", premio: "₹100 mil por acerto", dois: false },
+  batata:  { nome: "Batata Quente", curto: "Uma palavra por vez. Não deixe explodir na sua mão!", premio: "₹100 mil para quem sobrar", dois: true },
+  canta:   { nome: "Canta, se Souber!", curto: "Quem cantar primeiro uma música com a palavra, ganha.", premio: "₹50 mil por música", dois: true },
+};
+const REGRAS = {
+  quiz: [
+    "O time discute junto e você toca na resposta que eles escolherem.",
+    "São <b>8 perguntas</b>, de ₹1 mil até <b>₹1 milhão</b>. Antes de cada uma, o time pode <b>parar</b> e levar o que já ganhou.",
+    "Se errar, leva só <b>metade</b>. E o outro time tem 5 segundos para <b>roubar</b>.",
+    "Ajudas: <b>Cartas</b>, <b>Guru</b>, <b>Voz do carro</b> e <b>3 pulos</b> por trajeto.",
+  ],
+  mimica: [
+    "Escolham quem vai fazer a mímica. <b>Só essa pessoa olha a tela.</b>",
+    "<b>60 segundos</b> para fazer o time adivinhar o maior número de cartas.",
+    "Não vale falar, fazer barulho nem apontar letras.",
+    "Cada acerto vale <b>₹50 mil</b>. Dá para pular <b>3 vezes</b>.",
+  ],
+  desenho: [
+    "Quem vai desenhar olha a palavra escondido e depois desenha com o dedo na tela.",
+    "<b>75 segundos</b>. Não vale letras, números nem falar.",
+    "Acertou: <b>₹100 mil</b>. Se o tempo acabar, o outro time tem 5 segundos para roubar.",
+    "Às vezes sai <b>TODOS JOGAM</b>: os dois times adivinham ao mesmo tempo.",
+  ],
+  batata: [
+    "O app dá uma categoria, como \"frutas\" ou \"novelas da Globo\".",
+    "Os times se revezam dizendo uma palavra da categoria. Depois de falar, toque em <b>Passa a batata</b>.",
+    "Ninguém sabe quando ela explode! Quem estiver com a batata, travar ou repetir, <b>perde</b>.",
+    "O outro time ganha <b>₹100 mil</b>.",
+  ],
+  canta: [
+    "O app mostra uma palavra. O primeiro time que <b>cantar</b> um pedaço de música com ela ganha.",
+    "Vale música brasileira, de novela, de desenho, de Bollywood…",
+    "<b>5 palavras</b> por rodada, 20 segundos cada. Cada música vale <b>₹50 mil</b>.",
+  ],
+};
+const ICON = {
+  quiz: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.6 6.5 19.5l1-6.3L3 8.9 9 8z"/></svg>`,
+  mimica: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2.2"/><path d="M5 9l7 1.5L19 9M12 10.5V15l-3.5 6M12 15l3.5 6"/></svg>`,
+  desenho: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5l4 4L8 20H4v-4z"/><path d="M13.5 6.5l4 4"/></svg>`,
+  batata: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="14" r="7"/><path d="M15.5 8.5L18 6M18 6l1-3M18 6l3 1"/></svg>`,
+  canta: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>`,
+  roleta: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>`,
+};
 
 function novoEstado() {
   return {
-    tela: "inicio",
+    tela: "inicio", jogo: "quiz",
     times: [
       { nome: "Time Ganesha", pontos: 0, trajetos: 0, aj: AJUDAS() },
       { nome: "Time Hanuman", pontos: 0, trajetos: 0, aj: AJUDAS() },
     ],
     vez: 0, quemComeca: 0, degrau: 0, atual: null,
-    usadas: [], minhas: [],
-    tempo: 45, som: true, voz: true, cidade: "",
+    usadas: [], usadasMini: {}, minhas: [],
+    tempo: 45, som: true, voz: true,
     trajeto: 1, jogando: false, fim: null,
   };
 }
@@ -596,45 +722,48 @@ function carregar() {
 /* ================== FORMATOS ================== */
 function rs(v) {
   const f = (n) => n.toLocaleString("pt-BR", { maximumFractionDigits: 2 });
-  if (v >= 1e7) return "₹" + f(v / 1e7) + " crore";
-  if (v >= 1e5) return "₹" + f(v / 1e5) + " lakh";
+  if (v >= 1e6) { const n = v / 1e6; return "₹" + f(n) + (n < 2 ? " milhão" : " milhões"); }
   if (v >= 1000) return "₹" + f(v / 1000) + " mil";
   return "₹" + f(v);
 }
-function curto(v) {
-  if (v >= 1e7) return [v / 1e7, "crore"];
-  if (v >= 1e5) return [v / 1e5, "lakh"];
-  return [v / 1000, "mil"];
-}
+function curto(v) { return v >= 1e6 ? [v / 1e6, "milhão"] : [v / 1000, "mil"]; }
+function falaValor(v) { return rs(v).replace("₹", "") + (v >= 1e6 ? " de rupias" : " rupias"); }
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const L = ["A", "B", "C", "D"];
 const outro = () => 1 - S.vez;
 const T = (i) => S.times[i];
 const cor = (i) => `var(--t${i})`;
+function embaralhar(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
-/* ================== SORTEIO DAS PERGUNTAS ================== */
+/* ================== SORTEIO ================== */
 function todas() {
-  const minhas = (S.minhas || []).map((m, i) => [m.nivel, "Da turma", m.q, m.r[0], m.r[1], m.r[2], m.r[3], "", "m" + i]);
-  return BANCO.map((b, i) => b.length > 7 ? [...b.slice(0, 8), "b" + i] : [...b, "", "b" + i]).concat(minhas);
+  const minhas = (S.minhas || []).map((m, i) => [m.nivel, "Da turma", m.q, m.r[0], m.r[1], m.r[2], m.r[3], "m" + i]);
+  return BANCO.map((b, i) => [...b.slice(0, 7), "b" + i]).concat(minhas);
 }
 function sortear(nivel) {
   const lista = todas();
-  let livres = lista.filter((x) => x[0] === nivel && !S.usadas.includes(x[8]));
+  let livres = lista.filter((x) => x[0] === nivel && !S.usadas.includes(x[7]));
   if (!livres.length) {
-    const ids = lista.filter((x) => x[0] === nivel).map((x) => x[8]);
+    const ids = lista.filter((x) => x[0] === nivel).map((x) => x[7]);
     S.usadas = S.usadas.filter((id) => !ids.includes(id));
     livres = lista.filter((x) => x[0] === nivel);
   }
   const daTurma = livres.filter((x) => x[1] === "Da turma");
-  const daCidade = S.cidade ? livres.filter((x) => x[7] === S.cidade) : [];
-  let pool = livres;
-  if (daTurma.length && Math.random() < 0.3) pool = daTurma;
-  else if (daCidade.length && Math.random() < 0.4) pool = daCidade;
+  const pool = daTurma.length && Math.random() < 0.3 ? daTurma : livres;
   const p = pool[Math.floor(Math.random() * pool.length)];
-  S.usadas.push(p[8]);
-  return { id: p[8], tema: p[1], q: p[2], r: [p[3], p[4], p[5], p[6]], ordem: embaralhar([0, 1, 2, 3]), elim: [], marcada: null, estado: "" };
+  S.usadas.push(p[7]);
+  return { id: p[7], tema: p[1], q: p[2], r: [p[3], p[4], p[5], p[6]], ordem: embaralhar([0, 1, 2, 3]), elim: [], marcada: null, estado: "" };
 }
-function embaralhar(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+// cartas dos outros jogos: não repetem até acabar o baralho
+function tirar(baralho, nome) {
+  const itens = Array.isArray(baralho) ? baralho.map((p) => ["", p]) : Object.entries(baralho).flatMap(([c, ps]) => ps.map((p) => [c, p]));
+  const usadas = (S.usadasMini[nome] = S.usadasMini[nome] || []);
+  let livres = itens.filter((x) => !usadas.includes(x[1]));
+  if (!livres.length) { usadas.length = 0; livres = itens; }
+  const x = livres[Math.floor(Math.random() * livres.length)];
+  usadas.push(x[1]);
+  return { cat: x[0], palavra: x[1] };
+}
 
 /* ================== SOM ================== */
 let ac = null, ruido = null;
@@ -655,28 +784,33 @@ function tom(f, dur, tipo = "sine", vol = 0.18, quando = 0, ate = null) {
   g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
   o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + 0.05);
 }
-function batida(quando, vol = 0.5) {
+function batida(quando, vol = 0.5, corte = 900, dur = 0.2) {
   const a = audio(); if (!a) return;
   if (!ruido) {
-    ruido = a.createBuffer(1, a.sampleRate * 0.2, a.sampleRate);
-    const d = ruido.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
+    ruido = a.createBuffer(1, a.sampleRate * 1.2, a.sampleRate);
+    const d = ruido.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
   }
-  const s = a.createBufferSource(), g = a.createGain(), fl = a.createBiquadFilter();
-  fl.type = "lowpass"; fl.frequency.value = 900; s.buffer = ruido; g.gain.value = vol;
-  s.connect(fl).connect(g).connect(a.destination); s.start(a.currentTime + quando);
-  tom(90, 0.15, "sine", vol * 0.5, quando, 50);
+  const s = a.createBufferSource(), g = a.createGain(), fl = a.createBiquadFilter(), t = a.currentTime + quando;
+  fl.type = "lowpass"; fl.frequency.value = corte; s.buffer = ruido;
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  s.connect(fl).connect(g).connect(a.destination); s.start(t); s.stop(t + dur + 0.05);
+  tom(90, Math.min(dur, 0.15), "sine", vol * 0.5, quando, 50);
 }
 const SOM = {
   tique(n) { tom(n % 2 ? 1250 : 950, 0.05, "square", 0.05); },
   tiqueForte(n) { tom(n % 2 ? 1500 : 1150, 0.07, "square", 0.09); },
   suspense() { let t = 0, gap = 0.2; while (t < 1.9) { batida(t, 0.35 + t * 0.15); t += gap; gap = Math.max(0.05, gap * 0.86); } },
   certa() { [523, 659, 784, 1047].forEach((f, i) => tom(f, 0.35, "triangle", 0.2, i * 0.11)); tom(1568, 0.6, "triangle", 0.12, 0.45); },
+  ponto() { tom(880, 0.12, "triangle", 0.18); tom(1320, 0.25, "triangle", 0.16, 0.09); },
   errada() { tom(330, 0.35, "sawtooth", 0.14, 0, 220); tom(220, 0.7, "sawtooth", 0.14, 0.32, 110); },
   vinheta() { [392, 523, 659, 784].forEach((f, i) => tom(f, 0.22, "square", 0.07, i * 0.09)); tom(1047, 0.5, "triangle", 0.14, 0.38); },
-  crore() { const n = [523, 659, 784, 1047, 784, 1047, 1319, 1568]; n.forEach((f, i) => tom(f, 0.3, "triangle", 0.2, i * 0.13)); for (let i = 0; i < 8; i++) batida(i * 0.13, 0.3); },
+  milhao() { const n = [523, 659, 784, 1047, 784, 1047, 1319, 1568]; n.forEach((f, i) => tom(f, 0.3, "triangle", 0.2, i * 0.13)); for (let i = 0; i < 8; i++) batida(i * 0.13, 0.3); },
   roubada() { for (let i = 0; i < 6; i++) tom(i % 2 ? 660 : 880, 0.14, "square", 0.08, i * 0.15); },
   carta() { tom(700, 0.12, "triangle", 0.15, 0, 1400); },
   clique() { tom(600, 0.04, "triangle", 0.08); },
+  pavio() { tom(1800, 0.03, "square", 0.04); },
+  bum() { batida(0, 1, 500, 1.1); tom(120, 0.9, "sawtooth", 0.25, 0, 30); },
+  roleta(i) { tom(500 + (i % 6) * 90, 0.05, "triangle", 0.1); },
 };
 function vibrar(p) { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
 function falar(txt) {
@@ -694,108 +828,109 @@ async function telaAcesa() {
 }
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && S.jogando) telaAcesa(); });
 
-/* ================== CRONÔMETRO ================== */
-let relogio = null, resta = 0, pausado = false;
-function iniciarTempo() {
-  pararTempo(); if (!S.tempo) return;
-  resta = S.tempo; pausado = false; pintarTempo();
-  relogio = setInterval(() => {
-    if (pausado) return;
-    resta--; pintarTempo();
-    if (resta <= 10 && resta > 0) SOM.tiqueForte(resta); else if (resta > 0) SOM.tique(resta);
-    if (resta <= 0) { pararTempo(); tempoEsgotado(); }
+/* ================== CRONÔMETRO (o tique-taque) ================== */
+let clk = { id: null, resta: 0, total: 0, pausado: false };
+function relogio(total, fim) {
+  pararRelogio();
+  clk = { id: null, resta: total, total, pausado: false };
+  pintarTempo();
+  clk.id = setInterval(() => {
+    if (clk.pausado) return;
+    clk.resta--; pintarTempo();
+    if (clk.resta <= 10 && clk.resta > 0) SOM.tiqueForte(clk.resta); else if (clk.resta > 0) SOM.tique(clk.resta);
+    if (clk.resta <= 0) { pararRelogio(); fim && fim(); }
   }, 1000);
 }
-function pararTempo() { clearInterval(relogio); relogio = null; }
-function pausar(v) { pausado = v; }
+function pararRelogio() { clearInterval(clk.id); clk.id = null; }
+function pausar(v) { clk.pausado = v; }
 function pintarTempo() {
   const bar = document.querySelector(".timer .bar i"), sec = document.querySelector(".timer .sec");
-  if (!bar) return;
-  const hot = resta <= 10;
-  bar.style.width = (100 * resta / S.tempo) + "%"; bar.classList.toggle("hot", hot);
-  sec.textContent = resta; sec.classList.toggle("hot", hot);
+  if (!bar || !clk.total) return;
+  const hot = clk.resta <= 10;
+  if (!bar.dataset.ok) { bar.dataset.ok = 1; bar.style.transition = "none"; bar.style.width = (100 * clk.resta / clk.total) + "%"; bar.offsetWidth; bar.style.transition = ""; }
+  bar.style.width = (100 * clk.resta / clk.total) + "%"; bar.classList.toggle("hot", hot);
+  sec.textContent = clk.resta; sec.classList.toggle("hot", hot);
 }
+const barraTempo = (total) => `<div class="timer" aria-label="Tempo restante"><div class="bar"><i></i></div><span class="sec">${total}</span></div>`;
 
-/* ================== DESENHO DAS TELAS ================== */
+/* ================== TELAS ================== */
 const app = document.getElementById("app");
 function render() {
-  const f = { inicio: telaInicio, vez: telaVez, pergunta: telaPergunta, fim: telaFim, minhas: telaMinhas }[S.tela] || telaInicio;
+  const f = { inicio: telaInicio, vez: telaVez, pergunta: telaPergunta, fim: telaFim, minhas: telaMinhas,
+    mimica: telaMimica, desenho: telaDesenho, batata: telaBatata, canta: telaCanta }[S.tela] || telaInicio;
   app.innerHTML = f();
-  if (S.tela === "pergunta") pintarTempo();
+  pintarTempo();
+  if (S.tela === "desenho" && DZ.fase === "desenho") montarPapel();
 }
-
+function topo(i) {
+  return [0, 1].map((k) => `<div class="score ${k === i ? "on" : ""}" style="--team:${cor(k)}"><span class="nm">${esc(T(k).nome)}</span><span class="vl">${rs(T(k).pontos)}</span></div>`).join("");
+}
 function placarDuplo() {
   return `<div class="champ">${[0, 1].map((i) => `
     <div class="tm" style="--team:${cor(i)}"><span>${esc(T(i).nome)}</span><strong class="num">${rs(T(i).pontos)}</strong></div>`).join("")}</div>`;
 }
+const toggle = (a, nome, on, sim, nao) => `<button class="toggle" data-a="${a}">${nome} <span class="pill ${on ? "on" : ""}">${on ? sim : nao}</span></button>`;
 
 function telaInicio() {
   const opTempo = [[0, "Sem cronômetro"], [30, "30 segundos"], [45, "45 segundos"], [60, "60 segundos"]]
     .map(([v, t]) => `<option value="${v}" ${S.tempo == v ? "selected" : ""}>${t}</option>`).join("");
-  const opCidade = [["", "Misturar todas"], ...CIDADES.map((c) => [c, c])]
-    .map(([v, t]) => `<option value="${v}" ${S.cidade === v ? "selected" : ""}>${t}</option>`).join("");
+  const cards = Object.entries(JOGOS).map(([k, j]) => `<button class="game" data-a="jogo" data-j="${k}">${ICON[k]}<h3>${j.nome}</h3><p>${j.curto}</p><span class="pr">${j.premio}</span></button>`).join("");
   return `<div class="screen">
     <header class="marquee">
-      <p class="eyebrow">Caravana do Céu · Índia</p>
-      <h1>Show do <span>Crore</span></h1>
-      <p class="lead">O jogo de perguntas da estrada. Dois times, oito perguntas, até ₹1 crore.</p>
+      <p class="eyebrow">Caravana do Céu</p>
+      <h1>As Aventuras da <span>Caravana</span></h1>
+      <p class="lead">na Índia Sagrada · jogos de times para a estrada</p>
     </header>
+    ${S.jogando ? `<section class="stack"><h2>Placar do trajeto ${S.trajeto}</h2>${placarDuplo()}</section>` : ""}
+    <section class="stack">
+      <h2>${S.jogando ? "Escolha o próximo jogo" : "Escolha um jogo para começar"}</h2>
+      <div class="games">${cards}
+        <button class="game roleta" data-a="roleta">${ICON.roleta}<h3>Roleta</h3><p>O app sorteia o jogo.</p><span class="pr">Surpresa!</span></button>
+      </div>
+      ${S.jogando ? `<button class="btn ghost" data-a="pedirFim">Encerrar o trajeto</button>` : ""}
+    </section>
     <section class="card">
+      <h2>Os times</h2>
       <div class="row2">
         <div class="field"><label for="t0"><i class="swatch" style="background:var(--t0)"></i>Time 1</label><input id="t0" value="${esc(T(0).nome)}" maxlength="22" autocomplete="off"></div>
         <div class="field"><label for="t1"><i class="swatch" style="background:var(--t1)"></i>Time 2</label><input id="t1" value="${esc(T(1).nome)}" maxlength="22" autocomplete="off"></div>
       </div>
-      <div class="row2">
-        <div class="field"><label for="tm">Tempo para responder</label><select id="tm">${opTempo}</select></div>
-        <div class="field"><label for="cd">Próxima cidade</label><select id="cd">${opCidade}</select></div>
-      </div>
-    </section>
-    <div class="stack">
-      <button class="btn gold big" data-a="comecar">${S.jogando ? "Continuar o trajeto" : "Começar o trajeto"}</button>
-      ${S.jogando ? `<button class="btn ghost" data-a="pedirNovo">Começar um trajeto novo</button>` : ""}
+      <div class="field"><label for="tm">Tempo por pergunta no Show da Travessia</label><select id="tm">${opTempo}</select></div>
+      ${toggle("tSom", "Sons", S.som, "Ligados", "Desligados")}
+      ${toggle("tVoz", "Voz do apresentador", S.voz, "Ligada", "Desligada")}
       <button class="btn soft" data-a="minhas">Perguntas da turma${S.minhas.length ? ` (${S.minhas.length})` : ""}</button>
-    </div>
-    ${S.jogando ? `<section class="stack"><h2>Placar deste trajeto</h2>${placarDuplo()}</section>` : ""}
-    <section class="card how">
-      <h2>Como jogar</h2>
-      <ul>
-        <li>Os times se revezam. Na sua vez, o time discute junto e você toca na resposta que eles escolherem.</li>
-        <li>São <b>8 perguntas</b> que vão de ₹1 mil até <b>₹1 crore</b>. Antes de cada uma, o time pode <b>parar</b> e levar o que já ganhou.</li>
-        <li>Se errar, o time leva só <b>metade</b>. E o outro time tem 5 segundos para <b>roubar</b> a pergunta.</li>
-        <li>Cada time tem, por trajeto: <b>Cartas</b> (eliminam alternativas), <b>Guru</b> (perguntar a alguém de fora), <b>Voz do carro</b> (todo mundo vota) e <b>3 pulos</b>.</li>
-        <li>No fim do trajeto, ganha quem somou mais rupias.</li>
-      </ul>
     </section>
     <section class="stack">
       <h2>Campeonato da Caravana</h2>
       <div class="champ">${[0, 1].map((i) => `<div class="tm" style="--team:${cor(i)}"><span>${esc(T(i).nome)}</span><strong class="num">${T(i).trajetos}</strong><span>${T(i).trajetos === 1 ? "trajeto vencido" : "trajetos vencidos"}</span></div>`).join("")}</div>
+      <p class="muted">Cada trajeto de carro é uma partida. Ganha o trajeto quem somar mais rupias em todos os jogos.</p>
       <button class="btn link" data-a="pedirZerar">Zerar o campeonato</button>
     </section>
   </div>`;
 }
 
 function telaVez() {
-  const i = S.vez;
+  const i = S.vez, j = JOGOS[S.jogo];
   return `<div class="screen vez" style="--team:${cor(i)}">
-    <p class="eyebrow">Trajeto ${S.trajeto} · agora é a vez do</p>
+    <p class="eyebrow">${j.nome} · ${j.dois ? "começa o" : "vez do"}</p>
     <h1 class="teamname">${esc(T(i).nome)}</h1>
-    <p class="muted">Juntem as cabeças! Se vocês errarem, o ${esc(T(outro()).nome)} pode roubar.</p>
+    <section class="card"><ul class="rules">${REGRAS[S.jogo].map((r) => `<li>${r}</li>`).join("")}</ul></section>
     ${placarDuplo()}
     <div class="stack">
       <button class="btn team big" data-a="valendo">Valendo!</button>
-      <button class="btn ghost" data-a="pedirFim">Encerrar o trajeto</button>
-      <button class="btn link" data-a="inicio">Voltar ao início</button>
+      <div class="duo"><button class="btn ghost" data-a="inicio">Trocar de jogo</button><button class="btn ghost" data-a="roleta">Roleta</button></div>
+      <button class="btn link" data-a="pedirFim">Encerrar o trajeto</button>
     </div>
   </div>`;
 }
 
+/* ================== SHOW DA TRAVESSIA (quiz) ================== */
 const ICONES = {
   cartas: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="11" height="15" rx="2"/><path d="M10 4.5 17.5 3a2 2 0 0 1 2.3 1.6l2 11a2 2 0 0 1-1.6 2.3L16 18.6"/></svg>`,
   guru: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="6" r="3"/><path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6M7 20h10M9 16l-3 4M15 16l3 4"/></svg>`,
   voz: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 20V10M10 20V4M15 20v-8M20 20v-5"/></svg>`,
   pular: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l7 6-7 6zM13 6l7 6-7 6z"/></svg>`,
 };
-
 function telaPergunta() {
   // depois de um acerto o degrau já subiu, mas a tela continua mostrando a pergunta respondida
   const i = S.vez, c = S.atual, aj = T(i).aj, d = c.estado === "certa" ? S.degrau - 1 : S.degrau;
@@ -811,17 +946,14 @@ function telaPergunta() {
   }).join("");
   const ajuda = (k, nome, resto) => `<button class="help" data-a="aj-${k}" ${resto > 0 && !travado ? "" : "disabled"}>${ICONES[k]}<span>${nome}</span><span class="left">${k === "pular" ? resto + " restantes" : resto ? "1 vez" : "usada"}</span></button>`;
   return `<div class="screen" style="--team:${cor(i)}">
-    <div class="topbar">
-      ${[0, 1].map((k) => `<div class="score ${k === i ? "on" : ""}" style="--team:${cor(k)}"><span class="nm">${esc(T(k).nome)}</span><span class="vl">${rs(T(k).pontos)}</span></div>`).join("")}
-      <button class="menu-btn" data-a="menu" aria-label="Opções do jogo">⋯</button>
-    </div>
+    <div class="topbar">${topo(i)}<button class="menu-btn" data-a="menu" aria-label="Opções do jogo">⋯</button></div>
     <div class="ladder" aria-label="Escada de prêmios">${escada}</div>
     <div class="stakes">
       <span>Parar: <b>${rs(garantido)}</b></span>
       <span>Acertar: <b>${rs(PREMIOS[d])}</b></span>
       <span>Errar: <b>${rs(Math.floor(garantido / 2))}</b></span>
     </div>
-    ${S.tempo ? `<div class="timer" aria-label="Tempo restante"><div class="bar"><i></i></div><span class="sec">${S.tempo}</span></div>` : ""}
+    ${S.tempo ? barraTempo(S.tempo) : ""}
     <div class="qbox">
       <div class="tag">Pergunta ${d + 1} · ${esc(c.tema)}</div>
       <p class="q">${esc(c.q)}</p>
@@ -836,83 +968,14 @@ function telaPergunta() {
     ${d > 0 ? `<button class="btn ghost" data-a="pedirParar" ${travado ? "disabled" : ""}>Parar e levar ${rs(garantido)}</button>` : ""}
   </div>`;
 }
-
-function telaFim() {
-  const f = S.fim || { vencedor: -1 };
-  const v = f.vencedor;
-  return `<div class="screen vez" style="--team:${v >= 0 ? cor(v) : "var(--gold)"}">
-    <p class="eyebrow">Fim do trajeto ${f.trajeto || ""}</p>
-    ${v >= 0 ? `<h1 class="teamname">${esc(T(v).nome)}</h1><p>venceu este trajeto com <b class="num">${rs(f.pontos[v])}</b>!</p>` : `<h1 class="teamname">Empate!</h1><p>Os dois times terminaram com o mesmo valor.</p>`}
-    <div class="champ" style="width:100%">${[0, 1].map((i) => `<div class="tm" style="--team:${cor(i)}"><span>${esc(T(i).nome)}</span><strong class="num">${rs(f.pontos[i])}</strong><span>${T(i).trajetos} ${T(i).trajetos === 1 ? "trajeto vencido" : "trajetos vencidos"} no campeonato</span></div>`).join("")}</div>
-    <div class="stack">
-      <button class="btn gold big" data-a="novoTrajeto">Novo trajeto</button>
-      <button class="btn link" data-a="inicio">Voltar ao início</button>
-    </div>
-  </div>`;
+function iniciarTempo() { if (S.tempo) relogio(S.tempo, tempoEsgotado); else pararRelogio(); }
+function quizValendo() {
+  S.degrau = 0; S.atual = sortear(NIVEL[0]); S.tela = "pergunta";
+  SOM.vinheta(); falar("Valendo " + falaValor(PREMIOS[0]) + "!"); salvar(); render(); iniciarTempo();
 }
-
-function telaMinhas() {
-  const lista = S.minhas.map((m, k) => `<div class="it"><p>${esc(m.q)}<br><small>✓ ${esc(m.r[0])}</small></p><button data-a="apagarMinha" data-k="${k}" aria-label="Apagar pergunta">Apagar</button></div>`).join("");
-  return `<div class="screen">
-    <p class="eyebrow">Show do Crore</p>
-    <h1 style="font-size:40px;color:var(--gold)">Perguntas da turma</h1>
-    <p class="muted">Crie perguntas sobre a própria Caravana: quem é quem, o que aconteceu nos dias, curiosidades dos viajantes. Elas entram no sorteio junto com as outras e ficam guardadas neste celular.</p>
-    <form class="card" id="formMinha">
-      <div class="field"><label for="mq">Pergunta</label><textarea id="mq" required maxlength="200" placeholder="Ex.: Quantos países a Vivian já visitou?"></textarea></div>
-      <div class="field"><label for="mr0">Resposta certa</label><input id="mr0" required maxlength="80" autocomplete="off"></div>
-      <div class="field"><label for="mr1">Resposta errada 1</label><input id="mr1" required maxlength="80" autocomplete="off"></div>
-      <div class="field"><label for="mr2">Resposta errada 2</label><input id="mr2" required maxlength="80" autocomplete="off"></div>
-      <div class="field"><label for="mr3">Resposta errada 3</label><input id="mr3" required maxlength="80" autocomplete="off"></div>
-      <div class="field"><label for="mn">Dificuldade</label><select id="mn"><option value="1">Fácil (₹1 mil a ₹10 mil)</option><option value="2" selected>Média (₹50 mil a ₹5 lakh)</option><option value="3">Difícil (₹25 lakh e ₹1 crore)</option></select></div>
-      <button class="btn gold" type="submit">Guardar pergunta</button>
-    </form>
-    ${S.minhas.length ? `<section class="stack"><h2>Guardadas (${S.minhas.length})</h2><div class="mine">${lista}</div></section>` : `<p class="muted">Nenhuma pergunta da turma ainda.</p>`}
-    <button class="btn soft" data-a="inicio">Voltar ao início</button>
-  </div>`;
-}
-
-/* ================== FOLHAS (pop-ups) ================== */
-let folhaAberta = null;
-function folha(html, opts = {}) {
-  fecharFolha();
-  const w = document.createElement("div");
-  w.className = "sheet-wrap"; w.innerHTML = `<div class="sheet" role="dialog" aria-modal="true">${html}</div>`;
-  if (opts.fora) w.addEventListener("click", (e) => { if (e.target === w) { fecharFolha(); opts.fora(); } });
-  document.body.appendChild(w); folhaAberta = w;
-  const b = w.querySelector("button"); if (b) b.focus({ preventScroll: true });
-}
-function fecharFolha() { if (folhaAberta) { folhaAberta.remove(); folhaAberta = null; } clearInterval(contaFolha); }
-let contaFolha = null;
-function contagem(seg, el, fim) {
-  clearInterval(contaFolha); let n = seg; el.textContent = n;
-  contaFolha = setInterval(() => {
-    n--; el.textContent = Math.max(n, 0); el.classList.toggle("hot", n <= 5);
-    if (n > 0) SOM.tiqueForte(n);
-    if (n <= 0) { clearInterval(contaFolha); SOM.errada(); fim && fim(); }
-  }, 1000);
-}
-function toast(t) {
-  const d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d);
-  setTimeout(() => d.remove(), 1800);
-}
-
-/* ================== FLUXO DO JOGO ================== */
-function lerConfig() {
-  const t0 = document.getElementById("t0"), t1 = document.getElementById("t1");
-  if (t0) T(0).nome = t0.value.trim() || "Time 1";
-  if (t1) T(1).nome = t1.value.trim() || "Time 2";
-  const tm = document.getElementById("tm"); if (tm) S.tempo = +tm.value;
-  const cd = document.getElementById("cd"); if (cd) S.cidade = cd.value;
-}
-function comecar() {
-  lerConfig(); audio(); telaAcesa();
-  if (!S.jogando) {
-    if (S.fim) { S.times.forEach((t) => { t.pontos = 0; t.aj = AJUDAS(); }); S.trajeto++; S.quemComeca = 1 - S.quemComeca; S.fim = null; }
-    S.jogando = true; S.vez = S.quemComeca; S.degrau = 0; S.atual = null;
-  }
-  S.tela = S.atual ? "pergunta" : "vez";
-  SOM.vinheta(); salvar(); render();
-  if (S.tela === "pergunta") retomar();
+function proxima() {
+  S.atual = sortear(NIVEL[S.degrau]); salvar(); render(); iniciarTempo();
+  falar("Pergunta valendo " + falaValor(PREMIOS[S.degrau]));
 }
 // volta para o ponto exato em que a pergunta parou (o celular pode ter travado ou recarregado)
 function retomar() {
@@ -920,21 +983,8 @@ function retomar() {
   if (!c.estado) return iniciarTempo();
   if (c.estado === "errada") return oferecerRoubada();
   if (c.estado === "revelada" || S.degrau === PREMIOS.length) return passar();
-  if (c.estado === "certa") folha(`<h2 class="ok">Certa resposta!</h2>
-    <div class="huge num">${rs(PREMIOS[S.degrau - 1])}</div>
-    <button class="btn gold big" data-a="continuar">Continuar para ${rs(PREMIOS[S.degrau])}</button>
-    <button class="btn ghost" data-a="parar">Parar e levar ${rs(PREMIOS[S.degrau - 1])}</button>`);
+  if (c.estado === "certa") folhaAcerto();
 }
-function valendo() {
-  S.degrau = 0; S.atual = sortear(NIVEL[0]); S.tela = "pergunta";
-  SOM.vinheta(); falar("Valendo " + falaValor(PREMIOS[0]) + "!"); salvar(); render(); iniciarTempo();
-}
-function falaValor(v) { const s = rs(v).replace("₹", ""); return s.endsWith("mil") ? s + " rupias" : s + " de rupias"; }
-function proxima() {
-  S.atual = sortear(NIVEL[S.degrau]); salvar(); render(); iniciarTempo();
-  falar("Pergunta valendo " + falaValor(PREMIOS[S.degrau]));
-}
-
 function marcar(p) {
   const c = S.atual; if (c.estado || c.elim.includes(p)) return;
   SOM.clique(); pausar(true); c.marcada = p; render();
@@ -946,9 +996,16 @@ function marcar(p) {
 }
 function desmarcar() { fecharFolha(); S.atual.marcada = null; pausar(false); render(); }
 function confirmar() {
-  fecharFolha(); pararTempo();
+  fecharFolha(); pararRelogio();
   const c = S.atual; c.estado = "suspense"; render(); SOM.suspense(); vibrar([40, 60, 40, 60, 40]);
   setTimeout(revelar, 2000);
+}
+function folhaAcerto() {
+  folha(`<h2 class="ok">Certa resposta!</h2>
+    <div class="huge num">${rs(PREMIOS[S.degrau - 1])}</div>
+    <p class="center muted">A próxima vale ${rs(PREMIOS[S.degrau])}. Se errar, o time fica com ${rs(Math.floor(PREMIOS[S.degrau - 1] / 2))}.</p>
+    <button class="btn gold big" data-a="continuar">Continuar para ${rs(PREMIOS[S.degrau])}</button>
+    <button class="btn ghost" data-a="parar">Parar e levar ${rs(PREMIOS[S.degrau - 1])}</button>`);
 }
 function revelar() {
   const c = S.atual, certa = c.ordem[c.marcada] === 0;
@@ -956,17 +1013,12 @@ function revelar() {
     c.estado = "certa"; S.degrau++; render(); SOM.certa(); vibrar(120);
     if (S.degrau === PREMIOS.length) {
       T(S.vez).pontos += PREMIOS[PREMIOS.length - 1]; salvar();
-      confete(true); SOM.crore(); falar("Um crore de rupias! Vocês são milionários!");
-      folha(`<p class="eyebrow center">${esc(T(S.vez).nome)}</p><div class="huge">₹1 crore!</div>
-        <p class="center">Acertaram as 8 perguntas. Dez milhões de rupias para o placar!</p>
+      confete(true, S.vez); SOM.milhao(); falar("Um milhão de rupias! Vocês são milionários!");
+      folha(`<p class="eyebrow center">${esc(T(S.vez).nome)}</p><div class="huge">₹1 milhão!</div>
+        <p class="center">Acertaram as 8 perguntas. Um milhão de rupias para o placar!</p>
         <button class="btn gold big" data-a="passar">Passar a vez</button>`);
     } else {
-      confete(false); falar("Certa resposta!"); salvar();
-      folha(`<h2 class="ok">Certa resposta!</h2>
-        <div class="huge num">${rs(PREMIOS[S.degrau - 1])}</div>
-        <p class="center muted">A próxima vale ${rs(PREMIOS[S.degrau])}. Se errar, o time fica com ${rs(Math.floor(PREMIOS[S.degrau - 1] / 2))}.</p>
-        <button class="btn gold big" data-a="continuar">Continuar para ${rs(PREMIOS[S.degrau])}</button>
-        <button class="btn ghost" data-a="parar">Parar e levar ${rs(PREMIOS[S.degrau - 1])}</button>`);
+      confete(false, S.vez); falar("Certa resposta!"); salvar(); folhaAcerto();
     }
   } else {
     c.estado = "errada"; render(); SOM.errada(); vibrar([200, 80, 200]); falar("Que pena! Errou!");
@@ -974,7 +1026,7 @@ function revelar() {
   }
 }
 function tempoEsgotado() {
-  const c = S.atual; if (!c || c.estado) return;
+  const c = S.atual; if (!c || c.estado || S.tela !== "pergunta") return;
   fecharFolha(); c.estado = "errada"; render(); SOM.errada(); vibrar([200, 80, 200]); falar("Acabou o tempo!");
   toast("Acabou o tempo!"); setTimeout(oferecerRoubada, 900);
 }
@@ -1000,9 +1052,8 @@ function roubar(p) {
   c.estado = "revelada"; salvar(); render();
   if (roubou) { SOM.certa(); confete(false, o); falar(T(o).nome + " roubou!"); }
   else if (p >= 0) SOM.errada();
-  const certa = c.r[0];
   folha(`<h2 class="${roubou ? "ok" : "bad"}">${roubou ? `${esc(T(o).nome)} roubou!` : "Ninguém acertou"}</h2>
-    <div class="answer"><small>A resposta certa era</small>${esc(certa)}</div>
+    <div class="answer"><small>A resposta certa era</small>${esc(c.r[0])}</div>
     ${roubou ? `<p class="center">+ <b class="num">${rs(valor)}</b> para o ${esc(T(o).nome)}</p>` : ""}
     <p class="center muted">O ${esc(T(S.vez).nome)} leva ${metade ? `<b class="num">${rs(metade)}</b>, metade do que tinha garantido` : "nada desta vez"}.</p>
     <button class="btn gold big" data-a="passar">Passar a vez</button>`);
@@ -1015,18 +1066,11 @@ function pedirParar() {
     <button class="btn ghost" data-a="naoParar">Não, vamos arriscar</button>`, { fora: () => pausar(false) });
 }
 function parar() {
-  fecharFolha(); pararTempo();
+  fecharFolha(); pararRelogio();
   const g = PREMIOS[S.degrau - 1]; T(S.vez).pontos += g; salvar(); SOM.vinheta(); falar("Parou com " + falaValor(g));
   folha(`<h2>Parou!</h2><div class="huge num">${rs(g)}</div><p class="center">vão para o ${esc(T(S.vez).nome)}.</p>
     <button class="btn gold big" data-a="passar">Passar a vez</button>`);
 }
-function passar() {
-  fecharFolha(); pararTempo();
-  S.vez = outro(); S.degrau = 0; S.atual = null; S.tela = "vez"; salvar(); render(); SOM.vinheta();
-  falar("Agora é a vez do " + T(S.vez).nome);
-}
-
-/* ----- Ajudas ----- */
 function ajCartas() {
   pausar(true); T(S.vez).aj.cartas = 0; salvar(); render();
   const valores = embaralhar([0, 1, 2, 3]);
@@ -1072,33 +1116,292 @@ function ajPular() {
   S.atual = sortear(NIVEL[S.degrau]); salvar(); render(); iniciarTempo();
 }
 function voltarJogo() { fecharFolha(); pausar(false); }
+function menu() {
+  pausar(true);
+  folha(`<h2>Opções</h2>
+    ${toggle("tSomM", "Sons do programa", S.som, "Ligados", "Desligados")}
+    ${toggle("tVozM", "Voz do apresentador", S.voz, "Ligada", "Desligada")}
+    <button class="btn ghost" data-a="sairQuiz">Sair desta rodada</button>
+    <button class="btn gold" data-a="voltarJogo">Voltar ao jogo</button>`, { fora: () => pausar(false) });
+}
 
-/* ----- Trajeto e campeonato ----- */
+/* ================== MÍMICA ================== */
+let MM = { acertos: 0, pulos: 3, carta: null };
+function mimicaValendo() {
+  MM = { acertos: 0, pulos: 3, carta: tirar(MIMICA, "mimica") };
+  S.tela = "mimica"; salvar(); render(); SOM.vinheta(); vibrar(80);
+  relogio(TEMPO_MIMICA, mimicaFim);
+}
+function telaMimica() {
+  const c = MM.carta, longa = c.palavra.length > 18;
+  return `<div class="screen" style="--team:${cor(S.vez)}">
+    <div class="minihead"><button class="sair" data-a="sairMini">Sair</button><span class="chip">${esc(T(S.vez).nome)}</span></div>
+    ${barraTempo(TEMPO_MIMICA)}
+    <div class="wordcard"><span class="cat">${esc(c.cat)}</span><span class="word ${longa ? "long" : ""}">${esc(c.palavra)}</span></div>
+    <div class="counter"><span><b class="num">${MM.acertos}</b>acertos</span><span><b class="num" style="color:var(--gold)">${MM.pulos}</b>pulos</span></div>
+    <div class="duo"><button class="btn soft big" data-a="mmPular" ${MM.pulos ? "" : "disabled"}>Pular</button><button class="btn ok big" data-a="mmAcerto">Acertaram!</button></div>
+  </div>`;
+}
+function mmAcerto() { MM.acertos++; SOM.ponto(); vibrar(60); MM.carta = tirar(MIMICA, "mimica"); salvar(); render(); }
+function mmPular() { if (!MM.pulos) return; MM.pulos--; SOM.carta(); MM.carta = tirar(MIMICA, "mimica"); salvar(); render(); }
+function mimicaFim() {
+  const v = MM.acertos * VALE.mimica; T(S.vez).pontos += v; salvar();
+  SOM.errada(); vibrar([200, 80, 200]);
+  setTimeout(() => { if (MM.acertos) { SOM.certa(); confete(MM.acertos >= 4, S.vez); } }, 700);
+  falar("Acabou o tempo! " + MM.acertos + (MM.acertos === 1 ? " acerto" : " acertos"));
+  folha(`<h2>Acabou o tempo!</h2>
+    <p class="center">O ${esc(T(S.vez).nome)} fez</p>
+    <div class="huge num">${MM.acertos} ${MM.acertos === 1 ? "acerto" : "acertos"}</div>
+    <p class="center">+ <b class="num">${rs(v)}</b> no placar</p>
+    <button class="btn gold big" data-a="passar">Passar a vez</button>`);
+}
+
+/* ================== IMAGEM E AÇÃO ================== */
+let DZ = { fase: "palavra", carta: null, todos: false, traços: [], cor: "", espiar: false };
+const CORES = ["#1b1640", "#e23b3b", "#2a6fdb", "#1f9d55", "#f08a00"];
+function desenhoValendo() {
+  DZ = { fase: "palavra", carta: tirar(DESENHO, "desenho"), todos: Math.random() < 0.2, traços: [], cor: CORES[0], espiar: false };
+  S.tela = "desenho"; salvar(); render(); SOM.vinheta();
+  if (DZ.todos) falar("Todos jogam!");
+}
+function telaDesenho() {
+  const c = DZ.carta, i = S.vez;
+  if (DZ.fase === "palavra") return `<div class="screen" style="--team:${cor(i)}">
+    <div class="minihead"><button class="sair" data-a="sairMini">Sair</button><span class="chip">${esc(T(i).nome)} desenha</span></div>
+    <p class="center muted" style="text-align:center">Só quem vai desenhar olha agora!</p>
+    <div class="wordcard ${DZ.todos ? "todos" : ""}">
+      ${DZ.todos ? `<span class="cat" style="color:var(--t1)">Todos jogam! Os dois times adivinham</span>` : ""}
+      <span class="cat">${esc(c.cat)}</span><span class="word ${c.palavra.length > 16 ? "long" : ""}">${esc(c.palavra)}</span>
+    </div>
+    <div class="duo"><button class="btn soft" data-a="dzTrocar">Outra palavra</button><button class="btn team" data-a="dzDesenhar">Desenhar!</button></div>
+  </div>`;
+  const acertos = DZ.todos
+    ? `<div class="duo">${[0, 1].map((k) => `<button class="btn team" style="--team:${cor(k)}" data-a="dzAcerto" data-p="${k}">${esc(T(k).nome)} acertou</button>`).join("")}</div>`
+    : `<button class="btn ok big" data-a="dzAcerto" data-p="${i}">Acertaram!</button>`;
+  return `<div class="screen drawwrap" style="--team:${cor(i)}">
+    <div class="minihead"><button class="sair" data-a="sairMini">Sair</button><span class="chip">${DZ.todos ? "Todos jogam" : esc(T(i).nome)} · ${esc(c.cat)}</span></div>
+    ${barraTempo(TEMPO_DESENHO)}
+    <div class="paper" id="papel"><canvas id="tela" aria-label="Área de desenho"></canvas>${DZ.espiar ? `<div class="peek">${esc(c.palavra)}</div>` : ""}</div>
+    <div class="tools">
+      ${CORES.map((k) => `<button class="pen ${DZ.cor === k ? "on" : ""}" style="--c:${k}" data-a="dzCor" data-c="${k}" aria-label="Cor"></button>`).join("")}
+      <span class="sp"></span>
+      <button class="tool" data-a="dzEspiar">Espiar</button><button class="tool" data-a="dzDesfazer">Desfazer</button><button class="tool" data-a="dzLimpar">Limpar</button>
+    </div>
+    ${acertos}
+  </div>`;
+}
+function dzDesenhar() { DZ.fase = "desenho"; render(); SOM.vinheta(); relogio(TEMPO_DESENHO, dzTempo); }
+let ctx2 = null, papel = null, traco = null;
+function montarPapel() {
+  const cv = document.getElementById("tela"); if (!cv) return;
+  const r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  cv.width = r.width * dpr; cv.height = r.height * dpr;
+  ctx2 = cv.getContext("2d"); ctx2.setTransform(dpr, 0, 0, dpr, 0, 0); ctx2.lineCap = "round"; ctx2.lineJoin = "round";
+  papel = cv; redesenhar();
+  const pt = (e) => { const b = cv.getBoundingClientRect(); return [(e.clientX - b.left) / b.width, (e.clientY - b.top) / b.height]; };
+  cv.onpointerdown = (e) => { e.preventDefault(); cv.setPointerCapture(e.pointerId); traco = { cor: DZ.cor, pts: [pt(e)] }; DZ.traços.push(traco); redesenhar(); };
+  cv.onpointermove = (e) => { if (!traco) return; e.preventDefault(); traco.pts.push(pt(e)); redesenhar(); };
+  cv.onpointerup = cv.onpointercancel = () => { traco = null; };
+}
+function redesenhar() {
+  if (!ctx2 || !papel) return;
+  const w = papel.clientWidth, h = papel.clientHeight;
+  ctx2.clearRect(0, 0, w, h);
+  for (const t of DZ.traços) {
+    ctx2.strokeStyle = t.cor; ctx2.lineWidth = 5; ctx2.beginPath();
+    t.pts.forEach(([x, y], k) => (k ? ctx2.lineTo(x * w, y * h) : ctx2.moveTo(x * w, y * h)));
+    if (t.pts.length === 1) ctx2.lineTo(t.pts[0][0] * w + 0.1, t.pts[0][1] * h);
+    ctx2.stroke();
+  }
+}
+function dzAcerto(k) {
+  pararRelogio(); T(k).pontos += VALE.desenho; salvar();
+  SOM.certa(); confete(false, k); vibrar(120); falar(T(k).nome + " acertou!");
+  folha(`<h2 class="ok">${esc(T(k).nome)} acertou!</h2>
+    <div class="answer"><small>Era</small>${esc(DZ.carta.palavra)}</div>
+    <p class="center">+ <b class="num">${rs(VALE.desenho)}</b> no placar</p>
+    <button class="btn gold big" data-a="passar">Passar a vez</button>`);
+}
+function dzTempo() {
+  SOM.errada(); vibrar([200, 80, 200]);
+  if (DZ.todos) {
+    falar("Acabou o tempo!");
+    return folha(`<h2 class="bad">Ninguém acertou</h2><div class="answer"><small>Era</small>${esc(DZ.carta.palavra)}</div>
+      <button class="btn gold big" data-a="passar">Passar a vez</button>`);
+  }
+  const o = outro();
+  setTimeout(() => { SOM.roubada(); falar("Roubada! " + T(o).nome + ", cinco segundos!"); }, 500);
+  folha(`<p class="eyebrow center" style="color:${cor(o)}">Roubada!</p>
+    <h2 style="color:${cor(o)}">${esc(T(o).nome)}, o que é o desenho?</h2>
+    <div class="ring" id="conta">5</div>
+    <div class="answer"><small>A resposta é (só o apresentador olha)</small>${esc(DZ.carta.palavra)}</div>
+    <div class="duo"><button class="btn ghost" data-a="dzRoubo" data-p="0">Ninguém acertou</button><button class="btn team" style="--team:${cor(o)}" data-a="dzRoubo" data-p="1">Roubaram!</button></div>`);
+  contagem(5, document.getElementById("conta"));
+}
+function dzRoubo(ok) {
+  fecharFolha();
+  if (ok) return dzAcerto(outro());
+  folha(`<h2 class="bad">Ninguém acertou</h2><div class="answer"><small>Era</small>${esc(DZ.carta.palavra)}</div>
+    <button class="btn gold big" data-a="passar">Passar a vez</button>`);
+}
+
+/* ================== BATATA QUENTE ================== */
+let BT = { fase: "pronto", cat: "", segura: 0, explode: 0, id: null };
+function batataValendo() {
+  BT = { fase: "pronto", cat: tirar(BATATA, "batata").palavra, segura: S.vez, explode: 0, id: null };
+  S.tela = "batata"; salvar(); render(); SOM.vinheta(); falar("Batata quente! Categoria: " + BT.cat);
+}
+const BOMBA = `<svg viewBox="0 0 120 120" aria-hidden="true"><ellipse cx="58" cy="72" rx="40" ry="34" fill="#c98a3a"/><ellipse cx="46" cy="60" rx="12" ry="8" fill="#e0a85a"/><circle cx="40" cy="82" r="3" fill="#8a5a22"/><circle cx="70" cy="64" r="3" fill="#8a5a22"/><circle cx="74" cy="88" r="3" fill="#8a5a22"/><path d="M84 46 Q92 30 104 26" stroke="#ffe09a" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="105" cy="24" r="7" fill="#ff8a1f"/><circle cx="105" cy="24" r="3.5" fill="#ffe09a"/></svg>`;
+function telaBatata() {
+  const k = BT.segura;
+  return `<div class="screen" style="--team:${cor(k)}">
+    <div class="minihead"><button class="sair" data-a="sairMini">Sair</button><span class="chip" style="color:var(--gold)">Batata Quente</span></div>
+    <div class="wordcard" style="flex:none;min-height:0"><span class="cat">Categoria</span><span class="word ${BT.cat.length > 18 ? "long" : ""}">${esc(BT.cat)}</span></div>
+    <div class="bomb ${BT.fase === "queimando" ? "lit" : ""}" id="bomba">${BOMBA}</div>
+    ${BT.fase === "pronto" ? `
+      <p class="center muted" style="text-align:center">Começa o ${esc(T(k).nome)}. A batata explode numa hora que ninguém sabe!</p>
+      <div class="duo"><button class="btn soft" data-a="btTrocar">Outra categoria</button><button class="btn gold" data-a="btAcender">Acender o pavio!</button></div>` : `
+      <p class="eyebrow" style="text-align:center">A batata está com o</p>
+      <div class="holder">${esc(T(k).nome)}</div>
+      <button class="btn team big" data-a="btPassa">Falou! Passa a batata</button>
+      <button class="btn ghost" data-a="btTravou">Travou ou repetiu</button>`}
+  </div>`;
+}
+function btAcender() {
+  BT.fase = "queimando"; BT.explode = Date.now() + (18 + Math.random() * 27) * 1000;
+  render(); falar("Valendo!"); chiar();
+}
+function chiar() {
+  clearTimeout(BT.id);
+  const resta = BT.explode - Date.now();
+  if (resta <= 0) return explodir();
+  const gap = Math.max(90, Math.min(650, resta / 14));
+  SOM.pavio();
+  const b = document.getElementById("bomba"); if (b) b.style.setProperty("--spd", Math.max(0.12, gap / 1000) + "s");
+  BT.id = setTimeout(chiar, gap);
+}
+function btPassa() { SOM.clique(); vibrar(30); BT.segura = 1 - BT.segura; render(); chiar(); }
+function explodir() {
+  clearTimeout(BT.id); BT.fase = "fim";
+  const perdeu = BT.segura, ganhou = 1 - perdeu;
+  T(ganhou).pontos += VALE.batata; salvar();
+  SOM.bum(); vibrar([400, 100, 400]); falar("Bum! " + T(ganhou).nome + " ganhou!");
+  setTimeout(() => confete(false, ganhou), 400);
+  folha(`<div class="huge bad">BUM!</div>
+    <p class="center">A batata explodiu com o <b style="color:${cor(perdeu)}">${esc(T(perdeu).nome)}</b>.</p>
+    <p class="center">+ <b class="num">${rs(VALE.batata)}</b> para o <b style="color:${cor(ganhou)}">${esc(T(ganhou).nome)}</b></p>
+    <button class="btn gold big" data-a="passar">Próximo jogo</button>`);
+}
+
+/* ================== CANTA, SE SOUBER! ================== */
+let CT = { n: 0, palavra: "", ganhos: [0, 0] };
+function cantaValendo() {
+  CT = { n: 0, palavra: "", ganhos: [0, 0] };
+  S.tela = "canta"; cantaProxima();
+}
+function cantaProxima() {
+  CT.n++; CT.palavra = tirar(CANTA, "canta").palavra;
+  salvar(); render(); SOM.vinheta(); falar("Cante uma música com a palavra: " + CT.palavra);
+  relogio(TEMPO_CANTA, () => { SOM.errada(); toast("Tempo! Alguém cantou?"); });
+}
+function telaCanta() {
+  return `<div class="screen">
+    <div class="topbar">${topo(-1)}<button class="menu-btn" data-a="sairMini" aria-label="Sair">×</button></div>
+    <p class="eyebrow" style="text-align:center">Palavra ${CT.n} de ${PALAVRAS_CANTA} · cante uma música com</p>
+    ${barraTempo(TEMPO_CANTA)}
+    <div class="wordcard"><span class="word">${esc(CT.palavra)}</span></div>
+    <p class="center muted" style="text-align:center">Quem cantou primeiro?</p>
+    <div class="duo">${[0, 1].map((k) => `<button class="btn team big" style="--team:${cor(k)}" data-a="ctCantou" data-p="${k}">${esc(T(k).nome)}</button>`).join("")}</div>
+    <button class="btn ghost" data-a="ctCantou" data-p="-1">Ninguém cantou</button>
+  </div>`;
+}
+function ctCantou(k) {
+  pararRelogio();
+  if (k >= 0) { T(k).pontos += VALE.canta; CT.ganhos[k]++; SOM.ponto(); vibrar(60); toast("+ " + rs(VALE.canta) + " para o " + T(k).nome); }
+  if (CT.n < PALAVRAS_CANTA) return cantaProxima();
+  salvar(); render(); SOM.certa(); confete(false);
+  falar("Fim da rodada!");
+  folha(`<h2>Fim da rodada!</h2>
+    <div class="champ">${[0, 1].map((i) => `<div class="tm" style="--team:${cor(i)}"><span>${esc(T(i).nome)}</span><strong class="num">${CT.ganhos[i]}</strong><span>+ ${rs(CT.ganhos[i] * VALE.canta)}</span></div>`).join("")}</div>
+    <button class="btn gold big" data-a="passar">Próximo jogo</button>`);
+}
+
+/* ================== FIM DE CADA VEZ E DO TRAJETO ================== */
+function comecarTrajeto() {
+  if (S.jogando) return;
+  if (S.fim) { S.times.forEach((t) => { t.pontos = 0; t.aj = AJUDAS(); }); S.trajeto++; S.quemComeca = 1 - S.quemComeca; S.fim = null; }
+  S.jogando = true; S.vez = S.quemComeca; S.degrau = 0; S.atual = null;
+}
+function escolherJogo(j) {
+  lerConfig(); audio(); telaAcesa(); comecarTrajeto();
+  S.jogo = j;
+  if (j === "quiz" && S.atual) { S.tela = "pergunta"; salvar(); render(); return retomar(); }
+  S.tela = "vez"; salvar(); render(); window.scrollTo(0, 0); SOM.vinheta();
+  falar(JOGOS[j].nome + "! " + (JOGOS[j].dois ? "Começa o " : "Vez do ") + T(S.vez).nome);
+}
+function valendo() {
+  telaAcesa();
+  ({ quiz: quizValendo, mimica: mimicaValendo, desenho: desenhoValendo, batata: batataValendo, canta: cantaValendo })[S.jogo]();
+  window.scrollTo(0, 0);
+}
+function passar() {
+  fecharFolha(); pararRelogio(); clearTimeout(BT.id);
+  S.vez = outro(); S.degrau = 0; S.atual = null; S.tela = "vez"; salvar(); render(); window.scrollTo(0, 0); SOM.vinheta();
+  falar((JOGOS[S.jogo].dois ? "Agora começa o " : "Agora é a vez do ") + T(S.vez).nome);
+}
+function sairMini() {
+  fecharFolha(); pararRelogio(); clearTimeout(BT.id);
+  if (S.tela === "pergunta") S.atual = null;
+  S.tela = "vez"; salvar(); render();
+}
+function roleta() {
+  lerConfig(); audio();
+  const nomes = Object.keys(JOGOS), alvo = nomes[Math.floor(Math.random() * nomes.length)];
+  folha(`<p class="eyebrow center">Roleta da Aventura</p><div class="spin" id="spin"></div>`);
+  let i = 0, gap = 60;
+  const gira = () => {
+    const el = document.getElementById("spin"); if (!el) return;
+    const k = gap > 260 ? alvo : nomes[i % nomes.length];
+    el.textContent = JOGOS[k].nome; SOM.roleta(i); i++;
+    if (gap > 260) { SOM.certa(); setTimeout(() => { fecharFolha(); escolherJogo(alvo); }, 900); return; }
+    gap *= 1.12; setTimeout(gira, gap);
+  };
+  gira();
+}
 function pedirFim() {
+  pausar(true);
   folha(`<h2>Encerrar o trajeto?</h2><p class="center muted">Vence o time com mais rupias e ele ganha um ponto no Campeonato da Caravana.</p>
     <button class="btn gold big" data-a="encerrar">Encerrar e ver o vencedor</button>
-    <button class="btn ghost" data-a="fechar">Continuar jogando</button>`, { fora: () => {} });
+    <button class="btn ghost" data-a="fechar">Continuar jogando</button>`, { fora: () => pausar(false) });
 }
 function encerrar() {
-  fecharFolha(); pararTempo();
-  if (S.atual && !S.atual.estado && S.degrau > 0) T(S.vez).pontos += PREMIOS[S.degrau - 1];
+  fecharFolha(); pararRelogio(); clearTimeout(BT.id);
+  if (S.tela === "pergunta" && S.atual && !S.atual.estado && S.degrau > 0) T(S.vez).pontos += PREMIOS[S.degrau - 1];
   const p = [T(0).pontos, T(1).pontos], v = p[0] === p[1] ? -1 : p[0] > p[1] ? 0 : 1;
   if (v >= 0) T(v).trajetos++;
   S.fim = { vencedor: v, pontos: p, trajeto: S.trajeto };
-  S.jogando = false; S.atual = null; S.tela = "fim"; salvar(); render();
-  SOM.crore(); confete(true, v >= 0 ? v : undefined);
+  S.jogando = false; S.atual = null; S.tela = "fim"; salvar(); render(); window.scrollTo(0, 0);
+  SOM.milhao(); confete(true, v >= 0 ? v : undefined);
   falar(v >= 0 ? T(v).nome + " venceu o trajeto!" : "Empate!");
 }
+function telaFim() {
+  const f = S.fim || { vencedor: -1, pontos: [0, 0] };
+  const v = f.vencedor;
+  return `<div class="screen vez" style="--team:${v >= 0 ? cor(v) : "var(--gold)"}">
+    <p class="eyebrow">Fim do trajeto ${f.trajeto || ""}</p>
+    ${v >= 0 ? `<h1 class="teamname">${esc(T(v).nome)}</h1><p>venceu este trajeto com <b class="num">${rs(f.pontos[v])}</b>!</p>` : `<h1 class="teamname">Empate!</h1><p>Os dois times terminaram com o mesmo valor.</p>`}
+    <div class="champ">${[0, 1].map((i) => `<div class="tm" style="--team:${cor(i)}"><span>${esc(T(i).nome)}</span><strong class="num">${rs(f.pontos[i])}</strong><span>${T(i).trajetos} ${T(i).trajetos === 1 ? "trajeto vencido" : "trajetos vencidos"} no campeonato</span></div>`).join("")}</div>
+    <div class="stack">
+      <button class="btn gold big" data-a="novoTrajeto">Novo trajeto</button>
+      <button class="btn link" data-a="inicio">Voltar ao início</button>
+    </div>
+  </div>`;
+}
 function novoTrajeto() {
-  fecharFolha();
+  fecharFolha(); pararRelogio(); clearTimeout(BT.id);
   S.times.forEach((t) => { t.pontos = 0; t.aj = AJUDAS(); });
   S.trajeto++; S.quemComeca = 1 - S.quemComeca; S.jogando = false; S.atual = null; S.degrau = 0; S.fim = null;
-  S.tela = "inicio"; salvar(); render();
-}
-function pedirNovo() {
-  folha(`<h2>Trajeto novo?</h2><p class="center muted">O placar deste trajeto volta a zero e ninguém ganha ponto no campeonato.</p>
-    <button class="btn gold" data-a="novoTrajeto">Sim, começar do zero</button>
-    <button class="btn ghost" data-a="fechar">Cancelar</button>`, { fora: () => {} });
+  S.tela = "inicio"; salvar(); render(); window.scrollTo(0, 0);
 }
 function pedirZerar() {
   folha(`<h2>Zerar o campeonato?</h2><p class="center muted">Os trajetos vencidos e o placar voltam a zero. As perguntas da turma continuam guardadas.</p>
@@ -1106,31 +1409,76 @@ function pedirZerar() {
     <button class="btn ghost" data-a="fechar">Cancelar</button>`, { fora: () => {} });
 }
 function zerar() {
-  const keep = { minhas: S.minhas, usadas: S.usadas, nomes: S.times.map((t) => t.nome), tempo: S.tempo, cidade: S.cidade, som: S.som, voz: S.voz };
-  S = novoEstado(); S.minhas = keep.minhas; S.usadas = keep.usadas; S.tempo = keep.tempo; S.cidade = keep.cidade; S.som = keep.som; S.voz = keep.voz;
-  S.times.forEach((t, i) => (t.nome = keep.nomes[i]));
+  const k = S;
+  S = novoEstado();
+  Object.assign(S, { minhas: k.minhas, usadas: k.usadas, usadasMini: k.usadasMini, tempo: k.tempo, som: k.som, voz: k.voz });
+  S.times.forEach((t, i) => (t.nome = k.times[i].nome));
   fecharFolha(); salvar(); render(); toast("Campeonato zerado");
 }
 
-function menu() {
-  pausar(true);
-  const opCidade = [["", "Misturar todas"], ...CIDADES.map((c) => [c, c])].map(([v, t]) => `<option value="${v}" ${S.cidade === v ? "selected" : ""}>${t}</option>`).join("");
-  folha(`<h2>Opções</h2>
-    <button class="toggle" data-a="tSom">Sons do programa <span class="pill ${S.som ? "on" : ""}">${S.som ? "Ligados" : "Desligados"}</span></button>
-    <button class="toggle" data-a="tVoz">Voz do apresentador <span class="pill ${S.voz ? "on" : ""}">${S.voz ? "Ligada" : "Desligada"}</span></button>
-    <div class="field"><label for="cd2">Próxima cidade (mais perguntas dela)</label><select id="cd2" data-a="cidade">${opCidade}</select></div>
-    <button class="btn ghost" data-a="pedirFim">Encerrar o trajeto</button>
-    <button class="btn ghost" data-a="inicio">Voltar ao início</button>
-    <button class="btn gold" data-a="voltarJogo">Voltar ao jogo</button>`, { fora: () => pausar(false) });
+/* ================== PERGUNTAS DA TURMA ================== */
+function telaMinhas() {
+  const lista = S.minhas.map((m, k) => `<div class="it"><p>${esc(m.q)}<br><small>✓ ${esc(m.r[0])}</small></p><button data-a="apagarMinha" data-k="${k}" aria-label="Apagar pergunta">Apagar</button></div>`).join("");
+  return `<div class="screen">
+    <p class="eyebrow">Show da Travessia</p>
+    <h1 style="font-size:40px;color:var(--gold)">Perguntas da turma</h1>
+    <p class="muted">Crie perguntas sobre a própria Caravana: quem é quem, o que aconteceu nos dias, curiosidades dos viajantes. Elas entram no sorteio do Show da Travessia e ficam guardadas neste celular.</p>
+    <form class="card" id="formMinha">
+      <div class="field"><label for="mq">Pergunta</label><textarea id="mq" required maxlength="200" placeholder="Ex.: Quantos países a Vivian já visitou?"></textarea></div>
+      <div class="field"><label for="mr0">Resposta certa</label><input id="mr0" required maxlength="80" autocomplete="off"></div>
+      <div class="field"><label for="mr1">Resposta errada 1</label><input id="mr1" required maxlength="80" autocomplete="off"></div>
+      <div class="field"><label for="mr2">Resposta errada 2</label><input id="mr2" required maxlength="80" autocomplete="off"></div>
+      <div class="field"><label for="mr3">Resposta errada 3</label><input id="mr3" required maxlength="80" autocomplete="off"></div>
+      <div class="field"><label for="mn">Dificuldade</label><select id="mn"><option value="1">Fácil (₹1 mil a ₹10 mil)</option><option value="2" selected>Média (₹50 mil a ₹250 mil)</option><option value="3">Difícil (₹500 mil e ₹1 milhão)</option></select></div>
+      <button class="btn gold" type="submit">Guardar pergunta</button>
+    </form>
+    ${S.minhas.length ? `<section class="stack"><h2>Guardadas (${S.minhas.length})</h2><div class="mine">${lista}</div></section>` : `<p class="muted">Nenhuma pergunta da turma ainda.</p>`}
+    <button class="btn soft" data-a="inicio">Voltar ao início</button>
+  </div>`;
+}
+function apagarMinha(k) {
+  S.usadas = S.usadas.filter((id) => !id.startsWith("m"));
+  S.minhas.splice(k, 1); salvar(); render();
+}
+
+/* ================== FOLHAS (pop-ups) ================== */
+let folhaAberta = null, contaFolha = null;
+function folha(html, opts = {}) {
+  fecharFolha();
+  const w = document.createElement("div");
+  w.className = "sheet-wrap"; w.innerHTML = `<div class="sheet" role="dialog" aria-modal="true">${html}</div>`;
+  if (opts.fora) w.addEventListener("click", (e) => { if (e.target === w) { fecharFolha(); opts.fora(); } });
+  document.body.appendChild(w); folhaAberta = w;
+  const b = w.querySelector("button"); if (b) b.focus({ preventScroll: true });
+}
+function fecharFolha() { if (folhaAberta) { folhaAberta.remove(); folhaAberta = null; } clearInterval(contaFolha); }
+function contagem(seg, el, fim) {
+  clearInterval(contaFolha); let n = seg; el.textContent = n;
+  contaFolha = setInterval(() => {
+    n--; el.textContent = Math.max(n, 0); el.classList.toggle("hot", n <= 5);
+    if (n > 0) SOM.tiqueForte(n);
+    if (n <= 0) { clearInterval(contaFolha); SOM.errada(); fim && fim(); }
+  }, 1000);
+}
+function toast(t) {
+  const d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d);
+  setTimeout(() => d.remove(), 1800);
+}
+function lerConfig() {
+  const t0 = document.getElementById("t0"), t1 = document.getElementById("t1");
+  if (t0) T(0).nome = t0.value.trim() || "Time 1";
+  if (t1) T(1).nome = t1.value.trim() || "Time 2";
+  const tm = document.getElementById("tm"); if (tm) S.tempo = +tm.value;
 }
 
 /* ================== CLIQUES ================== */
 document.addEventListener("click", (e) => {
-  const b = e.target.closest("[data-a]"); if (!b || b.tagName === "SELECT") return;
+  const b = e.target.closest("[data-a]"); if (!b) return;
   const a = b.dataset.a, p = b.dataset.p !== undefined ? +b.dataset.p : null;
   switch (a) {
-    case "comecar": comecar(); break;
-    case "valendo": telaAcesa(); valendo(); break;
+    case "jogo": escolherJogo(b.dataset.j); break;
+    case "roleta": roleta(); break;
+    case "valendo": valendo(); break;
     case "marcar": marcar(p); break;
     case "confirmar": confirmar(); break;
     case "desmarcar": desmarcar(); break;
@@ -1149,24 +1497,43 @@ document.addEventListener("click", (e) => {
     case "desvotar": votos[p] = Math.max(0, votos[p] - 1); pintarVotos(); break;
     case "voltarJogo": voltarJogo(); break;
     case "menu": menu(); break;
-    case "tSom": S.som = !S.som; salvar(); menu(); break;
-    case "tVoz": S.voz = !S.voz; salvar(); menu(); break;
+    case "sairQuiz": sairMini(); break;
+    case "tSom": lerConfig(); S.som = !S.som; salvar(); render(); break;
+    case "tVoz": lerConfig(); S.voz = !S.voz; salvar(); render(); break;
+    case "tSomM": S.som = !S.som; salvar(); menu(); break;
+    case "tVozM": S.voz = !S.voz; salvar(); menu(); break;
+    case "mmAcerto": mmAcerto(); break;
+    case "mmPular": mmPular(); break;
+    case "dzTrocar": DZ.carta = tirar(DESENHO, "desenho"); SOM.carta(); render(); break;
+    case "dzDesenhar": dzDesenhar(); break;
+    case "dzCor": DZ.cor = b.dataset.c; document.querySelectorAll(".pen").forEach((x) => x.classList.toggle("on", x === b)); break;
+    case "dzDesfazer": DZ.traços.pop(); redesenhar(); break;
+    case "dzLimpar": DZ.traços = []; redesenhar(); break;
+    case "dzEspiar": {
+      const pp = document.getElementById("papel"); if (!pp || pp.querySelector(".peek")) break;
+      const d = document.createElement("div"); d.className = "peek"; d.textContent = DZ.carta.palavra; pp.appendChild(d);
+      setTimeout(() => d.remove(), 1800); break;
+    }
+    case "dzAcerto": dzAcerto(p); break;
+    case "dzRoubo": dzRoubo(p === 1); break;
+    case "btTrocar": BT.cat = tirar(BATATA, "batata").palavra; SOM.carta(); render(); break;
+    case "btAcender": btAcender(); break;
+    case "btPassa": btPassa(); break;
+    case "btTravou": BT.explode = 0; explodir(); break;
+    case "ctCantou": ctCantou(p); break;
+    case "sairMini": sairMini(); break;
     case "pedirFim": pedirFim(); break;
     case "encerrar": encerrar(); break;
     case "novoTrajeto": novoTrajeto(); break;
-    case "pedirNovo": lerConfig(); pedirNovo(); break;
     case "pedirZerar": lerConfig(); pedirZerar(); break;
     case "zerar": zerar(); break;
     case "fechar": fecharFolha(); pausar(false); break;
     case "minhas": lerConfig(); S.tela = "minhas"; salvar(); render(); window.scrollTo(0, 0); break;
     case "apagarMinha": apagarMinha(+b.dataset.k); break;
-    case "inicio": fecharFolha(); pararTempo(); S.tela = "inicio"; salvar(); render(); window.scrollTo(0, 0); break;
+    case "inicio": fecharFolha(); pararRelogio(); clearTimeout(BT.id); S.tela = "inicio"; salvar(); render(); window.scrollTo(0, 0); break;
   }
 });
-document.addEventListener("change", (e) => {
-  if (e.target.id === "cd2") { S.cidade = e.target.value; salvar(); toast(S.cidade ? "Mais perguntas sobre " + S.cidade : "Perguntas misturadas"); }
-  if (["t0", "t1", "tm", "cd"].includes(e.target.id)) { lerConfig(); salvar(); }
-});
+document.addEventListener("change", (e) => { if (["t0", "t1", "tm"].includes(e.target.id)) { lerConfig(); salvar(); } });
 document.addEventListener("submit", (e) => {
   if (e.target.id !== "formMinha") return;
   e.preventDefault();
@@ -1175,19 +1542,16 @@ document.addEventListener("submit", (e) => {
   if (!m.q || m.r.some((x) => !x)) return;
   S.minhas.push(m); salvar(); render(); toast("Pergunta guardada");
 });
-function apagarMinha(k) {
-  S.usadas = S.usadas.filter((id) => !id.startsWith("m"));
-  S.minhas.splice(k, 1); salvar(); render();
-}
+window.addEventListener("resize", () => { if (S.tela === "desenho" && DZ.fase === "desenho") montarPapel(); });
 
 /* ================== CONFETE ================== */
 const cv = document.getElementById("confetti"), cx = cv.getContext("2d");
 let pedacos = [], animando = false;
 function confete(muito, time) {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const css = getComputedStyle(document.documentElement);
-  const cores = [css.getPropertyValue("--gold").trim(), css.getPropertyValue("--gold-soft").trim(),
-    css.getPropertyValue(time === 1 ? "--t1" : "--t0").trim(), css.getPropertyValue(time === 0 ? "--t0" : "--t1").trim(), css.getPropertyValue("--ink").trim()];
+  const css = getComputedStyle(document.documentElement), g = (n) => css.getPropertyValue(n).trim();
+  const cores = time === undefined ? [g("--gold"), g("--gold-soft"), g("--t0"), g("--t1"), g("--ink")]
+    : [g("--gold"), g("--gold-soft"), g("--t" + time), g("--t" + time), g("--ink")];
   cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio;
   const n = muito ? 260 : 110;
   for (let i = 0; i < n; i++) pedacos.push({
@@ -1209,11 +1573,10 @@ function passo() {
 /* ================== INÍCIO ================== */
 function boot(d) {
   if (d && d.S) S = Object.assign(novoEstado(), d.S); else carregar();
-  if (S.tela === "pergunta" && !S.atual) S.tela = "vez";
-  if (S.tela === "pergunta" && S.atual && S.atual.estado === "suspense") { S.atual.estado = ""; S.atual.marcada = null; }
+  if (S.atual && S.atual.estado === "suspense") { S.atual.estado = ""; S.atual.marcada = null; }
+  // ao reabrir, os jogos de tempo não continuam sozinhos: volta para o início com o placar guardado
+  if (!["inicio", "fim", "minhas"].includes(S.tela)) S.tela = "inicio";
   render();
-  // ao reabrir no meio de uma pergunta, o tempo só volta a contar depois de "Continuar o trajeto"
-  if (S.tela === "pergunta") { S.tela = "inicio"; render(); }
 }
 try { window.claude?.hot?.snapshot?.(() => ({ S })); } catch (e) {}
 window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
