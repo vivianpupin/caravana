@@ -28,6 +28,9 @@
 }
 *{box-sizing:border-box}
 html,body{height:100%}
+/* sem zoom de toque duplo nem pinça: a tela do jogo fica sempre do mesmo tamanho */
+html{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overscroll-behavior:none}
 body{
   margin:0;background:var(--night);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.4;
   background-image:radial-gradient(120% 70% at 50% -10%, var(--night-2) 0%, var(--night) 70%);
@@ -1802,6 +1805,11 @@ function passo() {
 }
 
 
+
+/* ================== SEM ZOOM ================== */
+// toque duplo, pinça e o gesto de zoom do iPhone desmontavam a tela do jogo
+["gesturestart", "gesturechange", "gestureend", "dblclick"].forEach((ev) => document.addEventListener(ev, (e) => e.preventDefault(), { passive: false }));
+document.addEventListener("touchmove", (e) => { if (e.touches.length > 1 || (e.scale && e.scale !== 1)) e.preventDefault(); }, { passive: false });
 
 /* ================== INÍCIO ================== */
 function boot(d) {
