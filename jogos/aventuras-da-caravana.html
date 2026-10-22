@@ -589,7 +589,7 @@ const TEMPO_MIMICA = 60, TEMPO_DESENHO = 75, TEMPO_CANTA = 20, PALAVRAS_CANTA = 
 // chance de cada desafio sair na roleta (a pergunta sai mais)
 const PESOS = { pergunta: 44, mimica: 15, desenho: 15, batata: 12, canta: 14 };
 // o que os times juntam: a cada aventura nova sai um diferente
-const UNIDADES = ["pétalas de lótus", "luzes de diya", "xícaras de chai", "tuk-tuks", "vaquinhas sagradas", "elefantes", "pitadas de masala"];
+const UNIDADES = ["pétalas de lótus", "luzes de diya", "xícaras de chai", "tuk-tuks", "vaquinhas sagradas", "elefantes", "pitadas de masala", "buzinadas", "macaquinhos ladrões", "samosas", "bênçãos"];
 function sortearUnidade(atual) { const op = UNIDADES.filter((u) => u !== atual); return op[Math.floor(Math.random() * op.length)]; }
 const KEY = "aventuras-da-caravana-v2";
 
@@ -1370,7 +1370,7 @@ function passo() {
 /* ================== INÍCIO ================== */
 function boot(d) {
   if (d && d.S) S = Object.assign(novoEstado(), d.S); else carregar();
-  if (!S.unidade || !UNIDADES.includes(S.unidade) && ["estrelas", "flores de marigold", "buzinadas", "macaquinhos ladrões", "samosas", "bênçãos"].includes(S.unidade)) S.unidade = sortearUnidade();   // opções que saíram da lista
+  if (!S.unidade || ["estrelas", "flores de marigold"].includes(S.unidade)) S.unidade = sortearUnidade();   // opções que saíram da lista
   // ao reabrir, o desafio que estava no meio não continua sozinho: volta para o placar
   S.fase = "espera"; S.tela = S.tela === "minhas" ? "minhas" : "jogo";
   render();
