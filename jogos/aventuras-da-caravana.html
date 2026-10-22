@@ -906,7 +906,7 @@ function seguir() {
   const v = vencedor();
   if (v >= 0) return campeao(v);
   S.vez = outro(); S.fase = "espera"; salvar(); render(); window.scrollTo(0, 0);
-  setTimeout(sortear, 350);     // os desafios vão vindo um atrás do outro
+  giro = setTimeout(sortear, 350);     // os desafios vão vindo um atrás do outro
 }
 function campeao(v) {
   T(v).vitorias++; S.fase = "espera"; salvar(); render();
@@ -1208,6 +1208,9 @@ function ctCantou(k) {
 /* ================== AJUSTES ================== */
 function opcoes() {
   pausar(true);
+  // a roleta e a batata não podem continuar correndo com os ajustes abertos
+  if (S.fase === "roleta") { clearTimeout(giro); S.fase = "espera"; }
+  if (S.fase === "batata" && BT.id) { BT.resta = BT.explode - Date.now(); clearTimeout(BT.id); BT.id = null; }
   const opTempo = [[0, "Sem cronômetro"], [30, "30 segundos"], [45, "45 segundos"], [60, "60 segundos"]]
     .map(([v, t]) => `<option value="${v}" ${S.tempo == v ? "selected" : ""}>${t}</option>`).join("");
   folha(`<h2>Ajustes</h2>
@@ -1228,15 +1231,18 @@ function lerOpcoes() {
   const v = (id) => document.getElementById(id);
   if (v("t0")) T(0).nome = v("t0").value.trim() || "Time 1";
   if (v("t1")) T(1).nome = v("t1").value.trim() || "Time 2";
-  if (v("un")) S.unidade = v("un").value.trim() || "estrelas";
+  if (v("un")) S.unidade = v("un").value.replace(/[<>&"]/g, "").trim() || sortearUnidade();
   if (v("tm")) S.tempo = +v("tm").value;
 }
-function fecharOpcoes() { lerOpcoes(); fecharFolha(); pausar(false); salvar(); render(); }
+function fecharOpcoes() {
+  lerOpcoes(); fecharFolha(); pausar(false); salvar(); render();
+  if (S.fase === "batata" && !BT.id && BT.resta) { BT.explode = Date.now() + BT.resta; BT.resta = 0; chiar(); }
+}
 function pedirZerar() {
   lerOpcoes();
   folha(`<h2>Zerar o placar?</h2><p class="center muted">Os dois times voltam a zero. As vitórias e as perguntas da turma continuam guardadas.</p>
     <button class="btn gold" data-a="zerar">Sim, zerar</button>
-    <button class="btn ghost" data-a="opcoes">Cancelar</button>`, { fora: () => pausar(false) });
+    <button class="btn ghost" data-a="opcoes">Cancelar</button>`, { fora: fecharOpcoes });
 }
 
 /* ================== PERGUNTAS DA TURMA ================== */
