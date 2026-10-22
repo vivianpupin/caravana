@@ -588,7 +588,9 @@ const VALE = { mimica: 25000, desenho: 100000, batata: 100000, canta: 50000 };
 const TEMPO_MIMICA = 60, TEMPO_DESENHO = 75, TEMPO_CANTA = 20, PALAVRAS_CANTA = 3;
 // chance de cada desafio sair na roleta (a pergunta sai mais)
 const PESOS = { pergunta: 44, mimica: 15, desenho: 15, batata: 12, canta: 14 };
-const UNIDADES = ["estrelas", "pétalas de lótus", "diyas", "mantras", "rupias", "camelos"];
+// o que os times juntam: a cada aventura nova sai um diferente
+const UNIDADES = ["pétalas de lótus", "luzes de diya", "xícaras de chai", "tuk-tuks", "vaquinhas sagradas", "elefantes", "pitadas de masala", "buzinadas", "macaquinhos ladrões", "samosas", "bênçãos"];
+function sortearUnidade(atual) { const op = UNIDADES.filter((u) => u !== atual); return op[Math.floor(Math.random() * op.length)]; }
 const KEY = "aventuras-da-caravana-v2";
 
 const DESAFIOS = {
@@ -635,7 +637,7 @@ function novoEstado() {
     ],
     vez: 0, quemComeca: 0, ultimo: "", desafio: "",
     usadas: [], usadasMini: {}, minhas: [],
-    unidade: "estrelas", tempo: 45, som: true, voz: true,
+    unidade: sortearUnidade(), tempo: 45, som: true, voz: true,
   };
 }
 let S = novoEstado();
@@ -849,8 +851,9 @@ function palco() {
 function palcoEspera() {
   const novo = T(0).pontos === 0 && T(1).pontos === 0;
   return `<div class="hero">
-    <p class="eyebrow">${novo ? "Primeiro time a juntar" : "Próximo desafio"}</p>
-    ${novo ? `<div class="kind">${qtd(META)}</div><p class="muted">vence a aventura. A cada vez sai um desafio surpresa: pergunta, mímica, desenho, batata quente ou música.</p>`
+    <p class="eyebrow">${novo ? "Nesta aventura, o primeiro time a juntar" : "Próximo desafio"}</p>
+    ${novo ? `<div class="kind">${qtd(META)}</div><p class="muted">vence. A cada vez sai um desafio surpresa: pergunta, mímica, desenho, batata quente ou música.</p>
+      <button class="btn link" data-a="outraUnidade">Sortear outro prêmio</button>`
       : `<div class="who">${esc(T(S.vez).nome)}</div><p class="muted">Faltam ${qtd(META - T(S.vez).pontos)} para este time chegar lá.</p>`}
     <button class="btn team big" data-a="sortear">${novo ? "Começar a aventura!" : "Sortear o desafio"}</button>
   </div>`;
@@ -917,7 +920,7 @@ function campeao(v) {
 function novaAventura() {
   pararTudo();
   S.times.forEach((t) => { t.pontos = 0; t.aj = AJUDAS(); });
-  S.quemComeca = 1 - S.quemComeca; S.vez = S.quemComeca; S.fase = "espera"; S.ultimo = "";
+  S.quemComeca = 1 - S.quemComeca; S.vez = S.quemComeca; S.fase = "espera"; S.ultimo = ""; S.unidade = sortearUnidade(S.unidade);
   mostrado = null; salvar(); render(); window.scrollTo(0, 0);
 }
 function sair() { pararTudo(); S.fase = "espera"; salvar(); render(); }
@@ -1211,7 +1214,7 @@ function opcoes() {
       <div class="field"><label for="t0">Time 1</label><input id="t0" value="${esc(T(0).nome)}" maxlength="22" autocomplete="off"></div>
       <div class="field"><label for="t1">Time 2</label><input id="t1" value="${esc(T(1).nome)}" maxlength="22" autocomplete="off"></div>
     </div>
-    <div class="field"><label for="un">O que os times juntam (até 1 milhão)</label><input id="un" value="${esc(S.unidade)}" maxlength="24" autocomplete="off"></div>
+    <div class="field"><label for="un">O que os times juntam nesta aventura (a cada aventura nova, sai outro)</label><input id="un" value="${esc(S.unidade)}" maxlength="24" autocomplete="off"></div>
     <div class="chips">${UNIDADES.map((u) => `<button data-a="unidade" data-u="${u}" class="${u === S.unidade ? "on" : ""}">${u}</button>`).join("")}</div>
     <div class="field"><label for="tm">Tempo para responder as perguntas</label><select id="tm">${opTempo}</select></div>
     <button class="toggle" data-a="tSom">Sons <span class="pill ${S.som ? "on" : ""}">${S.som ? "Ligados" : "Desligados"}</span></button>
@@ -1318,6 +1321,7 @@ document.addEventListener("click", (e) => {
     case "tSom": lerOpcoes(); S.som = !S.som; salvar(); opcoes(); break;
     case "tVoz": lerOpcoes(); S.voz = !S.voz; salvar(); opcoes(); break;
     case "pedirZerar": pedirZerar(); break;
+    case "outraUnidade": S.unidade = sortearUnidade(S.unidade); SOM.carta(); salvar(); render(); break;
     case "zerar": fecharFolha(); novaAventura(); toast("Placar zerado"); break;
     case "novaAventura": fecharFolha(); novaAventura(); break;
     case "minhas": lerOpcoes(); pararTudo(); S.fase = "espera"; S.tela = "minhas"; salvar(); render(); window.scrollTo(0, 0); break;
@@ -1366,6 +1370,7 @@ function passo() {
 /* ================== INÍCIO ================== */
 function boot(d) {
   if (d && d.S) S = Object.assign(novoEstado(), d.S); else carregar();
+  if (!S.unidade || ["estrelas", "flores de marigold"].includes(S.unidade)) S.unidade = sortearUnidade();   // opções que saíram da lista
   // ao reabrir, o desafio que estava no meio não continua sozinho: volta para o placar
   S.fase = "espera"; S.tela = S.tela === "minhas" ? "minhas" : "jogo";
   render();
