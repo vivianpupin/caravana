@@ -107,6 +107,13 @@ p{margin:0}
 .champ .tm strong{display:block;font-family:var(--display);font-weight:400;font-size:30px;color:var(--team);line-height:1.1}
 .champ .tm span{font-size:14px;color:var(--muted)}
 
+/* ===== Lista dos desafios (só informação, não são botões) ===== */
+.desafios{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.desafios li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start}
+.desafios svg{width:26px;height:26px;color:var(--gold);margin-top:2px}
+.desafios b{display:block;color:var(--gold-soft)}
+.desafios span{font-size:15px;color:var(--muted)}
+.card b{color:var(--gold-soft)}
 /* ===== Cardápio de jogos ===== */
 .games{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .game{
@@ -874,7 +881,7 @@ const toggle = (a, nome, on, sim, nao) => `<button class="toggle" data-a="${a}">
 function telaInicio() {
   const opTempo = [[0, "Sem cronômetro"], [30, "30 segundos"], [45, "45 segundos"], [60, "60 segundos"]]
     .map(([v, t]) => `<option value="${v}" ${S.tempo == v ? "selected" : ""}>${t}</option>`).join("");
-  const cards = Object.entries(JOGOS).map(([k, j]) => `<div class="game">${ICON[k]}<h3>${j.nome}</h3><p>${j.curto}</p><span class="pr">${j.premio}</span></div>`).join("");
+  const lista = Object.entries(JOGOS).map(([k, j]) => `<li>${ICON[k]}<div><b>${j.nome}</b><span>${j.curto} ${j.premio}.</span></div></li>`).join("");
   return `<div class="screen">
     <header class="marquee">
       <p class="eyebrow">Caravana do Céu</p>
@@ -886,12 +893,10 @@ function telaInicio() {
       <button class="btn gold big" data-a="comecar">${S.jogando ? "Continuar o trajeto" : "Começar o trajeto"}</button>
       ${S.jogando ? `<button class="btn ghost" data-a="pedirFim">Encerrar o trajeto</button>` : ""}
     </div>
-    <section class="stack">
-      <h2>O que pode cair</h2>
-      <p class="muted">A cada vez, a roleta sorteia um desafio. Ninguém sabe qual vem!</p>
-      <div class="games">${cards}
-        <div class="game roleta">${ICON.roleta}<h3>Roleta</h3><p>Sorteia o desafio de cada vez.</p><span class="pr">Surpresa!</span></div>
-      </div>
+    <section class="card">
+      <h2>Como funciona</h2>
+      <p>Você só aperta <b>Começar o trajeto</b>. A cada vez, o app sorteia sozinho um destes 5 desafios para o time da vez:</p>
+      <ul class="desafios">${lista}</ul>
     </section>
     <section class="card">
       <h2>Os times</h2>
