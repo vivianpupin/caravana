@@ -105,8 +105,8 @@ _jogo = (raiz / "jogos" / "aventuras-da-caravana.html").read_text(encoding="utf-
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Aventuras">
-<link rel="icon" href="img/icone-192.png">
-<link rel="apple-touch-icon" href="img/icone-180.png">
+<link rel="icon" href="img/icone-jogo-192.png">
+<link rel="apple-touch-icon" href="img/icone-jogo-180.png">
 <link rel="manifest" href="jogo.webmanifest">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}</style>
 </head><body>
