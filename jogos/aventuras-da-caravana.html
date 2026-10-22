@@ -704,7 +704,7 @@ function novoEstado() {
       { nome: "Time Ganesha", pontos: 0, trajetos: 0, aj: AJUDAS() },
       { nome: "Time Hanuman", pontos: 0, trajetos: 0, aj: AJUDAS() },
     ],
-    vez: 0, quemComeca: 0, degrau: 0, atual: null,
+    vez: 0, quemComeca: 0, degrau: 0, atual: null, ultimo: "",
     usadas: [], usadasMini: {}, minhas: [],
     tempo: 45, som: true, voz: true,
     trajeto: 1, jogando: false, fim: null,
@@ -874,7 +874,7 @@ const toggle = (a, nome, on, sim, nao) => `<button class="toggle" data-a="${a}">
 function telaInicio() {
   const opTempo = [[0, "Sem cronômetro"], [30, "30 segundos"], [45, "45 segundos"], [60, "60 segundos"]]
     .map(([v, t]) => `<option value="${v}" ${S.tempo == v ? "selected" : ""}>${t}</option>`).join("");
-  const cards = Object.entries(JOGOS).map(([k, j]) => `<button class="game" data-a="jogo" data-j="${k}">${ICON[k]}<h3>${j.nome}</h3><p>${j.curto}</p><span class="pr">${j.premio}</span></button>`).join("");
+  const cards = Object.entries(JOGOS).map(([k, j]) => `<div class="game">${ICON[k]}<h3>${j.nome}</h3><p>${j.curto}</p><span class="pr">${j.premio}</span></div>`).join("");
   return `<div class="screen">
     <header class="marquee">
       <p class="eyebrow">Caravana do Céu</p>
@@ -882,12 +882,16 @@ function telaInicio() {
       <p class="lead">na Índia Sagrada · jogos de times para a estrada</p>
     </header>
     ${S.jogando ? `<section class="stack"><h2>Placar do trajeto ${S.trajeto}</h2>${placarDuplo()}</section>` : ""}
-    <section class="stack">
-      <h2>${S.jogando ? "Escolha o próximo jogo" : "Escolha um jogo para começar"}</h2>
-      <div class="games">${cards}
-        <button class="game roleta" data-a="roleta">${ICON.roleta}<h3>Roleta</h3><p>O app sorteia o jogo.</p><span class="pr">Surpresa!</span></button>
-      </div>
+    <div class="stack">
+      <button class="btn gold big" data-a="comecar">${S.jogando ? "Continuar o trajeto" : "Começar o trajeto"}</button>
       ${S.jogando ? `<button class="btn ghost" data-a="pedirFim">Encerrar o trajeto</button>` : ""}
+    </div>
+    <section class="stack">
+      <h2>O que pode cair</h2>
+      <p class="muted">A cada vez, a roleta sorteia um desafio. Ninguém sabe qual vem!</p>
+      <div class="games">${cards}
+        <div class="game roleta">${ICON.roleta}<h3>Roleta</h3><p>Sorteia o desafio de cada vez.</p><span class="pr">Surpresa!</span></div>
+      </div>
     </section>
     <section class="card">
       <h2>Os times</h2>
@@ -918,8 +922,8 @@ function telaVez() {
     ${placarDuplo()}
     <div class="stack">
       <button class="btn team big" data-a="valendo">Valendo!</button>
-      <div class="duo"><button class="btn ghost" data-a="inicio">Trocar de jogo</button><button class="btn ghost" data-a="roleta">Roleta</button></div>
-      <button class="btn link" data-a="pedirFim">Encerrar o trajeto</button>
+      <button class="btn ghost" data-a="roleta">Sortear outro desafio</button>
+      <div class="duo"><button class="btn link" data-a="inicio">Início</button><button class="btn link" data-a="pedirFim">Encerrar o trajeto</button></div>
     </div>
   </div>`;
 }
@@ -1330,10 +1334,17 @@ function ctCantou(k) {
 function comecarTrajeto() {
   if (S.jogando) return;
   if (S.fim) { S.times.forEach((t) => { t.pontos = 0; t.aj = AJUDAS(); }); S.trajeto++; S.quemComeca = 1 - S.quemComeca; S.fim = null; }
-  S.jogando = true; S.vez = S.quemComeca; S.degrau = 0; S.atual = null;
+  S.jogando = true; S.vez = S.quemComeca; S.degrau = 0; S.atual = null; S.ultimo = "";
+}
+function comecar() {
+  lerConfig(); audio(); telaAcesa(); comecarTrajeto();
+  if (S.jogo === "quiz" && S.atual) { S.tela = "pergunta"; salvar(); render(); return retomar(); }
+  if (S.tela !== "vez" && S.ultimo) { S.tela = "vez"; salvar(); render(); return; }
+  salvar(); roleta();
 }
 function escolherJogo(j) {
   lerConfig(); audio(); telaAcesa(); comecarTrajeto();
+  S.ultimo = j;
   S.jogo = j;
   if (j === "quiz" && S.atual) { S.tela = "pergunta"; salvar(); render(); return retomar(); }
   S.tela = "vez"; salvar(); render(); window.scrollTo(0, 0); SOM.vinheta();
@@ -1346,8 +1357,7 @@ function valendo() {
 }
 function passar() {
   fecharFolha(); pararRelogio(); clearTimeout(BT.id);
-  S.vez = outro(); S.degrau = 0; S.atual = null; S.tela = "vez"; salvar(); render(); window.scrollTo(0, 0); SOM.vinheta();
-  falar((JOGOS[S.jogo].dois ? "Agora começa o " : "Agora é a vez do ") + T(S.vez).nome);
+  S.vez = outro(); S.degrau = 0; S.atual = null; salvar(); roleta();
 }
 function sairMini() {
   fecharFolha(); pararRelogio(); clearTimeout(BT.id);
@@ -1356,8 +1366,9 @@ function sairMini() {
 }
 function roleta() {
   lerConfig(); audio();
-  const nomes = Object.keys(JOGOS), alvo = nomes[Math.floor(Math.random() * nomes.length)];
-  folha(`<p class="eyebrow center">Roleta da Aventura</p><div class="spin" id="spin"></div>`);
+  // não repete o mesmo desafio duas vezes seguidas
+  const nomes = Object.keys(JOGOS), opcoes = nomes.filter((k) => k !== S.ultimo), alvo = opcoes[Math.floor(Math.random() * opcoes.length)];
+  folha(`<p class="eyebrow center">Roleta da Aventura · vez do ${esc(T(S.vez).nome)}</p><div class="spin" id="spin"></div>`);
   let i = 0, gap = 60;
   const gira = () => {
     const el = document.getElementById("spin"); if (!el) return;
@@ -1476,7 +1487,7 @@ document.addEventListener("click", (e) => {
   const b = e.target.closest("[data-a]"); if (!b) return;
   const a = b.dataset.a, p = b.dataset.p !== undefined ? +b.dataset.p : null;
   switch (a) {
-    case "jogo": escolherJogo(b.dataset.j); break;
+    case "comecar": comecar(); break;
     case "roleta": roleta(); break;
     case "valendo": valendo(); break;
     case "marcar": marcar(p); break;
