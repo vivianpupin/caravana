@@ -599,7 +599,7 @@ const CANTA = ["Amor","Lua","Mar","Coração","Saudade","Bahia","Chuva","Estrada
 const META = 1000000;
 const FINAL = 900000;   // a partir daqui o time só vence acertando a Pergunta Final
 const VALOR_PERGUNTA = { 1: 50000, 2: 100000, 3: 150000 };
-const VALE = { mimica: 25000, desenho: 100000, batata: 100000, canta: 50000 };
+const VALE = { mimica: 100000, desenho: 100000, batata: 100000, canta: 50000 };
 const TEMPO_MIMICA = 60, TEMPO_DESENHO = 75, TEMPO_CANTA = 20, PALAVRAS_CANTA = 3;
 // chance de cada desafio sair na roleta (a pergunta sai mais)
 const PESOS = { pergunta: 44, mimica: 15, desenho: 15, batata: 12, canta: 14 };
@@ -612,8 +612,9 @@ const DESAFIOS = {
   pergunta: { nome: "Pergunta", regras: [] },
   mimica: { nome: "Mímica", regras: [
     "Escolham quem vai fazer a mímica. <b>Só essa pessoa olha a tela.</b>",
-    "<b>60 segundos</b> para o time adivinhar o maior número de cartas. Pode pular 3.",
+    "<b>60 segundos</b> para o time adivinhar. <b>Acertou, ganhou a rodada!</b> Pode pular a carta 3 vezes.",
     "Não vale falar nem fazer barulho.",
+    "Se o tempo acabar, o outro time pode <b>roubar</b>.",
   ] },
   desenho: { nome: "Imagem e Ação", regras: [
     "Quem vai desenhar olha a palavra escondido e desenha com o dedo na tela.",
@@ -720,7 +721,12 @@ function sortearDesafio() {
 }
 
 /* ================== SOM ================== */
-let ac = null, ruido = null;
+let ac = null, ruido = null, saida = null;
+// tudo passa por um compressor: dá para tocar mais alto sem estourar o alto-falante do celular
+function mesa(a) {
+  if (!saida) { const c = a.createDynamicsCompressor(); c.threshold.value = -14; c.knee.value = 8; c.ratio.value = 6; const g = a.createGain(); g.gain.value = 1.6; c.connect(g).connect(a.destination); saida = c; }
+  return saida;
+}
 function audio() {
   if (!S.som) return null;
   try {
@@ -736,41 +742,63 @@ function tom(f, dur, tipo = "sine", vol = 0.18, quando = 0, ate = null) {
   if (ate) o.frequency.exponentialRampToValueAtTime(ate, t + dur);
   g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.012);
   g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-  o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + 0.05);
+  o.connect(g).connect(mesa(a)); o.start(t); o.stop(t + dur + 0.05);
 }
-function batida(quando, vol = 0.5, corte = 900, dur = 0.2) {
+function batida(quando, vol = 0.5, corte = 900, dur = 0.2, tipo = "lowpass") {
   const a = audio(); if (!a) return;
   if (!ruido) {
     ruido = a.createBuffer(1, a.sampleRate * 1.2, a.sampleRate);
     const d = ruido.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
   }
   const s = a.createBufferSource(), g = a.createGain(), fl = a.createBiquadFilter(), t = a.currentTime + quando;
-  fl.type = "lowpass"; fl.frequency.value = corte; s.buffer = ruido;
+  fl.type = tipo; fl.frequency.value = corte; s.buffer = ruido;
   g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-  s.connect(fl).connect(g).connect(a.destination); s.start(t); s.stop(t + dur + 0.05);
-  tom(90, Math.min(dur, 0.15), "sine", vol * 0.5, quando, 50);
+  s.connect(fl).connect(g).connect(mesa(a)); s.start(t); s.stop(t + dur + 0.05);
+  if (tipo === "lowpass") tom(90, Math.min(dur, 0.15), "sine", vol * 0.5, quando, 50);
 }
 const SOM = {
-  tique(n) { tom(n % 2 ? 1250 : 950, 0.05, "square", 0.05); },
-  tiqueForte(n) { tom(n % 2 ? 1500 : 1150, 0.07, "square", 0.09); },
-  suspense() { let t = 0, gap = 0.2; while (t < 1.9) { batida(t, 0.35 + t * 0.15); t += gap; gap = Math.max(0.05, gap * 0.86); } },
-  certa() { [523, 659, 784, 1047].forEach((f, i) => tom(f, 0.35, "triangle", 0.2, i * 0.11)); tom(1568, 0.6, "triangle", 0.12, 0.45); },
-  ponto() { tom(880, 0.12, "triangle", 0.18); tom(1320, 0.25, "triangle", 0.16, 0.09); },
-  errada() { tom(330, 0.35, "sawtooth", 0.14, 0, 220); tom(220, 0.7, "sawtooth", 0.14, 0.32, 110); },
-  vinheta() { [392, 523, 659, 784].forEach((f, i) => tom(f, 0.22, "square", 0.07, i * 0.09)); tom(1047, 0.5, "triangle", 0.14, 0.38); },
-  milhao() { const n = [523, 659, 784, 1047, 784, 1047, 1319, 1568]; n.forEach((f, i) => tom(f, 0.3, "triangle", 0.2, i * 0.13)); for (let i = 0; i < 8; i++) batida(i * 0.13, 0.3); },
-  roubada() { for (let i = 0; i < 6; i++) tom(i % 2 ? 660 : 880, 0.14, "square", 0.08, i * 0.15); },
+  tique(n) { tom(n % 2 ? 1250 : 950, 0.06, "square", 0.16); },
+  tiqueForte(n) { tom(n % 2 ? 1500 : 1150, 0.09, "square", 0.26); tom(n % 2 ? 750 : 575, 0.09, "square", 0.12); },
+  suspense() {
+    let t = 0, gap = 0.2; while (t < 1.9) { batida(t, 0.35 + t * 0.15); t += gap; gap = Math.max(0.05, gap * 0.86); }
+    tom(110, 2, "sawtooth", 0.16, 0, 440); tom(165, 2, "sawtooth", 0.12, 0, 660);    // nota subindo, como no Show do Milhão
+  },
+  // acorde de impacto quando a pergunta aparece: tambor grave e um acorde menor que vai sumindo
+  drama() { batida(0, 1, 260, 1); [110, 131, 165, 220].forEach((f) => tom(f, 1.8, "sawtooth", 0.13)); tom(55, 1.6, "sine", 0.5, 0, 40); batida(0.45, 0.8, 260, 0.8); },
+  // coração batendo junto com o relógio, mais forte no fim
+  coracao(forte) { batida(0, forte ? 0.95 : 0.6, 160, 0.2); batida(0.16, forte ? 0.7 : 0.4, 160, 0.16); },
+  // comemoração: fanfarra subindo, acorde final e palmas
+  certa() {
+    [523, 659, 784, 1047].forEach((f, i) => { tom(f, 0.35, "triangle", 0.32, i * 0.11); tom(f / 2, 0.35, "square", 0.08, i * 0.11); });
+    [1047, 1319, 1568].forEach((f) => tom(f, 0.9, "triangle", 0.2, 0.45)); tom(262, 0.9, "sawtooth", 0.1, 0.45);
+    SOM.palmas(0.5, 1.6);
+  },
+  palmas(ini = 0, dur = 1.5) { for (let t = 0; t < dur; t += 0.035 + Math.random() * 0.04) batida(ini + t, 0.35 * (1 - t / dur) + 0.1, 1200 + Math.random() * 1500, 0.05, "bandpass"); },
+  ponto() { tom(880, 0.14, "triangle", 0.3); tom(1320, 0.3, "triangle", 0.28, 0.09); SOM.palmas(0.15, 0.7); },
+  errada() { batida(0, 0.8, 300, 0.8); tom(330, 0.35, "sawtooth", 0.16, 0, 220); tom(220, 0.9, "sawtooth", 0.16, 0.32, 90); tom(70, 1, "sine", 0.3, 0.3, 40); },
+  vinheta() { [392, 523, 659, 784].forEach((f, i) => tom(f, 0.22, "square", 0.12, i * 0.09)); tom(1047, 0.5, "triangle", 0.24, 0.38); },
+  milhao() {
+    const n = [523, 659, 784, 1047, 784, 1047, 1319, 1568]; n.forEach((f, i) => { tom(f, 0.3, "triangle", 0.32, i * 0.13); tom(f / 2, 0.3, "square", 0.08, i * 0.13); });
+    for (let i = 0; i < 8; i++) batida(i * 0.13, 0.5);
+    [1047, 1319, 1568, 2093].forEach((f) => tom(f, 1.6, "triangle", 0.2, 1.05)); tom(131, 1.6, "sawtooth", 0.14, 1.05);
+    SOM.palmas(1, 3);
+  },
+  roubada() { for (let i = 0; i < 6; i++) tom(i % 2 ? 660 : 880, 0.14, "square", 0.16, i * 0.15); batida(0, 0.8, 300, 0.5); },
   carta() { tom(700, 0.12, "triangle", 0.15, 0, 1400); },
   clique() { tom(600, 0.04, "triangle", 0.08); },
-  pavio() { tom(1800, 0.03, "square", 0.04); },
+  pavio() { tom(1800, 0.035, "square", 0.12); },
   bum() { batida(0, 1, 500, 1.1); tom(120, 0.9, "sawtooth", 0.25, 0, 30); },
   contagem() { for (let i = 0; i < 8; i++) tom(900 + i * 70, 0.04, "square", 0.045, i * 0.09); },
   roleta(i) { tom(500 + (i % 6) * 90, 0.05, "triangle", 0.1); },
 };
 function vibrar(p) { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
+// como a voz do celular deve falar os nomes indianos (ela lê do jeito português e erra)
+const PRONUNCIA = [[/hanuman/gi, "Ránuman"], [/ganesha/gi, "Ganêcha"], [/shiva/gi, "Xiva"], [/krishna/gi, "Krixna"], [/lakshmi/gi, "Lákxmi"],
+  [/rishikesh/gi, "Richikêch"], [/jaipur/gi, "Djaipur"], [/diwali/gi, "Divali"], [/\bchai\b/gi, "tchai"], [/\bholi\b/gi, "Rôli"]];
 function falar(txt) {
   if (!S.voz || !S.som) return;
   try {
+    PRONUNCIA.forEach(([re, dito]) => { txt = txt.replace(re, dito); });
     const u = new SpeechSynthesisUtterance(txt); u.lang = "pt-BR"; u.rate = 1.02; u.pitch = 0.9;
     speechSynthesis.cancel(); speechSynthesis.speak(u);
   } catch (e) {}
@@ -795,6 +823,7 @@ function relogio(total, fim) {
     if (clk.pausado) return;
     clk.resta--; pintarTempo();
     if (clk.resta <= 10 && clk.resta > 0) SOM.tiqueForte(clk.resta); else if (clk.resta > 0) SOM.tique(clk.resta);
+    if (S.fase === "pergunta" && clk.resta > 0) SOM.coracao(clk.resta <= 10);
     if (clk.resta <= 0) { pararRelogio(); fim && fim(); }
   }, 1000);
 }
@@ -907,7 +936,7 @@ function palcoIntro() {
     <div class="kind">${DESAFIOS[d].nome}</div>
     <p class="eyebrow">${dois ? `Os dois times jogam · começa o ${esc(T(S.vez).nome)}` : `Vez do ${esc(T(S.vez).nome)}`}</p>
     <ul>${DESAFIOS[d].regras.map((r) => `<li>${r}</li>`).join("")}</ul>
-    <p class="muted">Vale <b style="color:var(--gold-soft)">${qtd(VALE[d])}</b> ${d === "mimica" ? "por acerto" : d === "canta" ? "por música" : d === "batata" ? "para quem sobrar" : "se acertar"}.</p>
+    <p class="muted">Vale <b style="color:var(--gold-soft)">${qtd(VALE[d])}</b> ${d === "canta" ? "por música" : d === "batata" ? "para quem sobrar" : "se acertar"}.</p>
     <button class="btn team big" data-a="valendo">Valendo!</button>
     <button class="btn link" data-a="sortear">Sortear outro desafio</button>
   </div>`;
@@ -977,13 +1006,13 @@ const botaoSeguir = `<button class="btn gold big" data-a="seguir">Próximo desaf
 let P = null;
 function finalComeca() {
   P = sortearPergunta(3); P.valor = VALOR_PERGUNTA[3]; P.final = true;
-  S.desafio = "pergunta"; S.fase = "pergunta"; salvar(); render(); SOM.milhao(); vibrar([100, 80, 100]);
+  S.desafio = "pergunta"; S.fase = "pergunta"; salvar(); render(); SOM.drama(); vibrar([100, 80, 100]);
   falar("Pergunta final! " + T(S.vez).nome + ", valendo a vitória!");
   if (S.tempo) relogio(S.tempo, tempoEsgotado);
 }
 function perguntaComeca() {
   P = sortearPergunta(nivelDoTime(S.vez)); P.valor = VALOR_PERGUNTA[P.nivel];
-  S.fase = "pergunta"; salvar(); render(); SOM.vinheta();
+  S.fase = "pergunta"; salvar(); render(); SOM.drama();
   falar("Pergunta valendo " + qtd(P.valor));
   if (S.tempo) relogio(S.tempo, tempoEsgotado);
 }
@@ -1046,8 +1075,9 @@ function tempoEsgotado() {
 }
 function roubada() {
   const o = outro(), restam = P.ordem.map((x, p) => p).filter((p) => p !== P.marcada && !P.elim.includes(p));
-  SOM.roubada(); falar("Roubada! " + T(o).nome + ", cinco segundos!");
-  folha(`<p class="eyebrow center" style="color:${cor(o)}">Roubada!</p>
+  SOM.roubada(); falar("Errou! " + T(o).nome + ", vocês podem roubar. Cinco segundos!");
+  folha(`<div class="huge bad">Errou!</div>
+    <p class="center muted">O ${esc(T(S.vez).nome)} errou. Agora o outro time pode roubar:</p>
     <h2 style="color:${cor(o)}">${esc(T(o).nome)}, gritem a resposta!</h2>
     <div class="ring" id="conta">5</div>
     <p class="center muted">Toque no que o time gritou primeiro.</p>
@@ -1061,7 +1091,8 @@ function roubar(p) {
   const g = roubou ? ganhar(o, P.valor) : 0;
   P.estado = "revelada"; render();
   if (roubou) { SOM.certa(); confete(false, o); falar(T(o).nome + " roubou!"); } else if (p >= 0) SOM.errada();
-  folha(`<h2 class="${roubou ? "ok" : "bad"}">${roubou ? `${esc(T(o).nome)} roubou!` : "Ninguém acertou"}</h2>
+  folha(`<h2 class="${roubou ? "ok" : "bad"}">${roubou ? `${esc(T(o).nome)} roubou!` : "Errou!"}</h2>
+    ${roubou ? "" : `<p class="center muted">${p >= 0 ? "O outro time também errou." : "O outro time não respondeu."} Ninguém ganha nesta pergunta.</p>`}
     <div class="answer"><small>A resposta certa era</small>${esc(P.r[0])}</div>
     ${roubou ? `<p class="center">+ <b>${qtd(g)}</b> para o ${esc(T(o).nome)}${naFinal(o)}</p>` : ""}${botaoSeguir}`);
 }
@@ -1100,19 +1131,34 @@ function palcoMimica() {
   return `<div class="minihead"><button class="sair" data-a="sair">Sair</button><span class="chip">Mímica · ${esc(T(S.vez).nome)}</span></div>
     ${barraTempo(TEMPO_MIMICA)}
     <div class="wordcard"><span class="cat">${esc(c.cat)}</span><span class="word ${c.palavra.length > 18 ? "long" : ""}">${esc(c.palavra)}</span></div>
-    <div class="counter"><span><b class="num">${MM.acertos}</b>acertos</span><span><b class="num" style="color:var(--gold)">${MM.pulos}</b>pulos</span></div>
+    <div class="counter"><span><b class="num" style="color:var(--gold)">${MM.pulos}</b>pulos</span></div>
     <div class="duo"><button class="btn soft big" data-a="mmPular" ${MM.pulos ? "" : "disabled"}>Pular</button><button class="btn ok big" data-a="mmAcerto">Acertaram!</button></div>`;
 }
-function mmAcerto() { MM.acertos++; SOM.ponto(); vibrar(60); MM.carta = tirar(MIMICA, "mimica"); render(); }
+// acertou a mímica: o tempo para, o time ganha a rodada e a vez passa
+function mmAcerto(k = S.vez) {
+  pararRelogio(); const g = ganhar(k, VALE.mimica); render();
+  SOM.certa(); confete(false, k); vibrar(120); falar(T(k).nome + " acertou!");
+  folha(`<h2 class="ok">${k === S.vez ? "Acertaram!" : esc(T(k).nome) + " roubou!"}</h2>
+    <div class="answer"><small>Era</small>${esc(MM.carta.palavra)}</div>
+    <p class="center">+ <b>${qtd(g)}</b> para o ${esc(T(k).nome)}${naFinal(k)}</p>${botaoSeguir}`);
+}
 function mmPular() { if (!MM.pulos) return; MM.pulos--; SOM.carta(); MM.carta = tirar(MIMICA, "mimica"); render(); }
 function mimicaFim() {
-  const v = ganhar(S.vez, MM.acertos * VALE.mimica); render();
-  SOM.errada(); vibrar([200, 80, 200]);
-  setTimeout(() => { if (MM.acertos) { SOM.certa(); confete(MM.acertos >= 4, S.vez); } }, 700);
-  falar("Acabou o tempo! " + MM.acertos + (MM.acertos === 1 ? " acerto" : " acertos"));
-  folha(`<h2>Acabou o tempo!</h2>
-    <div class="huge">${MM.acertos} ${MM.acertos === 1 ? "acerto" : "acertos"}</div>
-    <p class="center">+ <b>${qtd(v)}</b> para o ${esc(T(S.vez).nome)}${naFinal(S.vez)}</p>${botaoSeguir}`);
+  const o = outro(); SOM.errada(); vibrar([200, 80, 200]);
+  setTimeout(() => { SOM.roubada(); falar("Acabou o tempo! " + T(o).nome + ", vocês podem roubar!"); }, 500);
+  folha(`<div class="huge bad">Errou!</div>
+    <p class="center muted">Acabou o tempo do ${esc(T(S.vez).nome)}. Agora o outro time pode roubar:</p>
+    <h2 style="color:${cor(o)}">${esc(T(o).nome)}, o que é a mímica?</h2>
+    <div class="ring" id="conta">5</div>
+    <div class="answer"><small>A resposta é</small>${esc(MM.carta.palavra)}</div>
+    <div class="duo"><button class="btn ghost" data-a="mmRoubo" data-p="0">Ninguém acertou</button><button class="btn team" style="--team:${cor(o)}" data-a="mmRoubo" data-p="1">Roubaram!</button></div>`);
+  contagem(5, document.getElementById("conta"));
+}
+function mmRoubo(ok) {
+  fecharFolha();
+  if (ok) return mmAcerto(outro());
+  folha(`<h2 class="bad">Errou!</h2><div class="answer"><small>Era</small>${esc(MM.carta.palavra)}</div>
+    <p class="center muted">Ninguém ganha nesta rodada.</p>${botaoSeguir}`);
 }
 
 /* ================== IMAGEM E AÇÃO ================== */
@@ -1182,7 +1228,7 @@ function dzTempo() {
   SOM.errada(); vibrar([200, 80, 200]);
   if (DZ.todos) {
     falar("Acabou o tempo!");
-    return folha(`<h2 class="bad">Ninguém acertou</h2><div class="answer"><small>Era</small>${esc(DZ.carta.palavra)}</div>${botaoSeguir}`);
+    return folha(`<h2 class="bad">Errou!</h2><div class="answer"><small>Era</small>${esc(DZ.carta.palavra)}</div>${botaoSeguir}`);
   }
   const o = outro();
   setTimeout(() => { SOM.roubada(); falar("Roubada! " + T(o).nome + ", cinco segundos!"); }, 500);
@@ -1196,7 +1242,7 @@ function dzTempo() {
 function dzRoubo(ok) {
   fecharFolha();
   if (ok) return dzAcerto(outro());
-  folha(`<h2 class="bad">Ninguém acertou</h2><div class="answer"><small>Era</small>${esc(DZ.carta.palavra)}</div>${botaoSeguir}`);
+  folha(`<h2 class="bad">Errou!</h2><div class="answer"><small>Era</small>${esc(DZ.carta.palavra)}</div>${botaoSeguir}`);
 }
 
 /* ================== BATATA QUENTE ================== */
@@ -1362,6 +1408,7 @@ document.addEventListener("click", (e) => {
     case "voltarPergunta": fecharFolha(); pausar(false); render(); break;
     case "ajPular": ajPular(); break;
     case "mmAcerto": mmAcerto(); break;
+    case "mmRoubo": mmRoubo(p === 1); break;
     case "mmPular": mmPular(); break;
     case "dzTrocar": DZ.carta = tirar(DESENHO, "desenho"); SOM.carta(); render(); break;
     case "dzDesenhar": dzDesenhar(); break;
