@@ -5362,6 +5362,15 @@ function aplicaLut(ctx, w, hh, f) {
   ctx.putImageData(d, 0, 0);
 }
 // modo "cor": só a parte de cor, ponto a ponto (vira a tabela de cores da câmera ao vivo); modo "efeitos": só vinheta, grão e luzes por cima
+// realce de detalhes (máscara de nitidez): só na foto final, antes do filtro, para dar definição sem mudar o efeito
+function realcaDetalhes(ctx, w, hh, forca) {
+  try {
+    const d = ctx.getImageData(0, 0, w, hh), p = d.data, o = new Uint8ClampedArray(p), L = w * 4;
+    for (let y = 1; y < hh - 1; y++) for (let x = 1, i = y * L + 4; x < w - 1; x++, i += 4)
+      for (let c = 0; c < 3; c++) { const k = i + c, m = (o[k - 4] + o[k + 4] + o[k - L] + o[k + L]) * .25; p[k] = o[k] + (o[k] - m) * forca * 2; }
+    ctx.putImageData(d, 0, 0);
+  } catch (e) {}
+}
 function aplicaFiltro(ctx, w, hh, f, graoEsc, modo) {
   if (f.lut && modo !== "efeitos") aplicaLut(ctx, w, hh, f);
   const g0 = { nenhum: 0, leve: 12, medio: 24, forte: 42, super8: 16, filme: 5 }[graoEsc];
@@ -5610,6 +5619,7 @@ async function montaFoto(canvas, Fx) {
   if (!tmp) {
     tmp = document.createElement("canvas"); tmp.width = w; tmp.height = hh;
     const t = tmp.getContext("2d", { willReadFrequently: true }); t.drawImage(img, sx, sy, sw, sh, 0, 0, w, hh);
+    if (!F.vivo) realcaDetalhes(t, w, hh, .45);
     aplicaFiltro(t, w, hh, FILTROS.find(x => x.id === F.filtro) || FILTROS[0], F.grao || "auto");
     Object.assign(montaFoto, { img: F.img, filtro: F.filtro, grao: F.grao, reels, recorte: F.recorte, tmp, mix: null });
   }
@@ -7131,7 +7141,7 @@ function videoCam(C) {
   const x = e.getContext("2d"); if (C.frente) x.setTransform(-1, 0, 0, 1, sw, 0); x.drawImage(v, sx, sy, sw, sh, 0, 0, sw, sh); x.setTransform(1, 0, 0, 1, 0, 0);
   e.videoWidth = sw; e.videoHeight = sh; e.chave = chave; return e;
 }
-// zoom das câmeras: pinça com dois dedos na tela da câmera. Se o celular deixa, usa o zoom da própria câmera (melhor);
+// zoom das câmeras antigas da maleta (a câmera do celular fica sem zoom): pinça com dois dedos na tela da câmera. Se o celular deixa, usa o zoom da própria câmera (melhor);
 // se não, amplia o meio da imagem (até 3×, para a foto não perder qualidade). Trocar de câmera volta para 1×.
 function zoomCam(z) {
   const C = S.camEst; if (!C) return;
@@ -7145,7 +7155,7 @@ function zoomCam(z) {
 const zoomAtual = () => { const C = S.camEst; return C ? (C.zoomHw ? C.zoomPedido || C.zoomHw.atual || 1 : C.zoom || 1) : 1; };
 (() => {
   let d0 = 0, z0 = 1;
-  const pode = e => e.touches.length === 2 && S.tab === "fotos" && S.camEst && S.foto && S.foto.vivo && S.fotoSel == null && e.target.closest && e.target.closest("#main");
+  const pode = e => e.touches.length === 2 && S.tab === "fotos" && S.camSel && S.camSel !== "celular" && S.camEst && S.foto && S.foto.vivo && e.target.closest && e.target.closest("#main");
   const dist = e => Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
   document.addEventListener("touchstart", e => { if (!pode(e)) { d0 = 0; return; } d0 = dist(e); z0 = zoomAtual(); e.preventDefault(); }, { passive: false });
   document.addEventListener("touchmove", e => { if (!d0 || e.touches.length !== 2) return; e.preventDefault(); zoomCam(z0 * dist(e) / d0); }, { passive: false });
