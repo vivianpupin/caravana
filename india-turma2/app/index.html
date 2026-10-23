@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "23/10 · 10:24";</script>
+<script>window.__VERSAO = "23/10 · 10:32";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1017,6 +1017,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .celcontagem{position:absolute;inset:0;z-index:9;display:grid;place-items:center;pointer-events:none;background:rgba(0,0,0,.25)}
 .celcontagem b{font:700 96px/1 "Courier Prime",monospace;color:#E8352A;text-shadow:0 0 4px rgba(255,70,50,.9),0 0 18px rgba(230,40,25,.7),0 0 36px rgba(200,30,20,.45);filter:blur(.3px);animation:contapulsa 1s ease-out infinite}
 @keyframes contapulsa{0%{transform:scale(1.25);opacity:.4}25%{transform:scale(1);opacity:1}100%{opacity:.85}}
+.zoometiq{position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:80;background:rgba(20,12,6,.72);color:#F3E3C0;font:600 18px Poppins,sans-serif;padding:6px 14px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none}
+.zoometiq.on{opacity:1}
 .celflash{position:fixed;z-index:60;pointer-events:none;background:#fff;border-radius:12px;animation:celflash .42s ease-out forwards}
 @keyframes celflash{0%{opacity:.95}100%{opacity:0}}
 .estudiocel .celvisor .celknob{display:flex;flex-direction:column;align-items:center;gap:4px;width:48px;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;
@@ -7151,13 +7153,37 @@ const iconeFototeca = () => h("svg", { viewBox: "0 0 24 24", width: "20", height
 const podeCamera = () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 const C0frente = () => !!(S.camEst && S.camEst.frente);
 // selfie espelhada, como num espelho: o que a pessoa vê no visor é o que fica na foto e no filme (em todas as câmeras)
+// zoom digital: recorta o meio da imagem da câmera (o visor, a foto e o filme saem com o mesmo zoom)
 function videoCam(C) {
-  const v = C && C.video; if (!v || !C.frente || !v.videoWidth) return v;
-  const e = C.espelho || (C.espelho = document.createElement("canvas"));
-  if (e.width !== v.videoWidth || e.height !== v.videoHeight) { e.width = v.videoWidth; e.height = v.videoHeight; }
-  const x = e.getContext("2d"); x.setTransform(-1, 0, 0, 1, e.width, 0); x.drawImage(v, 0, 0); x.setTransform(1, 0, 0, 1, 0, 0);
-  e.videoWidth = e.width; e.videoHeight = e.height; return e;
+  const v = C && C.video; if (!v || !v.videoWidth) return v;
+  const z = C.zoom || 1; if (!C.frente && z <= 1.01) return v;
+  const vw = v.videoWidth, vh = v.videoHeight, sw = Math.round(vw / z), sh = Math.round(vh / z), sx = (vw - sw) / 2, sy = (vh - sh) / 2;
+  const e = C.espelho || (C.espelho = document.createElement("canvas")), chave = v.currentTime + "|" + z + "|" + !!C.frente;
+  if (e.chave === chave && e.width === sw && e.height === sh) return e;
+  if (e.width !== sw || e.height !== sh) { e.width = sw; e.height = sh; }
+  const x = e.getContext("2d"); if (C.frente) x.setTransform(-1, 0, 0, 1, sw, 0); x.drawImage(v, sx, sy, sw, sh, 0, 0, sw, sh); x.setTransform(1, 0, 0, 1, 0, 0);
+  e.videoWidth = sw; e.videoHeight = sh; e.chave = chave; return e;
 }
+// zoom das câmeras: pinça com dois dedos na tela da câmera. Se o celular deixa, usa o zoom da própria câmera (melhor);
+// se não, amplia o meio da imagem (até 3×, para a foto não perder qualidade). Trocar de câmera volta para 1×.
+function zoomCam(z) {
+  const C = S.camEst; if (!C) return;
+  const hw = C.zoomHw, max = hw ? Math.min(hw.max, 5) : 3, min = hw ? Math.max(hw.min, 1) : 1;
+  z = Math.max(min, Math.min(max, z)); C.zoomPedido = z;
+  if (hw) { C.zoom = 1; if (!C.zoomT) C.zoomT = setTimeout(() => { C.zoomT = 0; try { hw.trilha.applyConstraints({ advanced: [{ zoom: C.zoomPedido }] }).catch(() => {}); } catch (e) {} }, 60); }
+  else C.zoom = z;
+  let et = document.querySelector(".zoometiq"); if (!et) { et = h("div", { class: "zoometiq", "aria-live": "polite" }); document.body.append(et); }
+  et.textContent = (Math.round(z * 10) / 10).toString().replace(".", ",") + "×"; et.classList.add("on"); clearTimeout(zoomCam.t); zoomCam.t = setTimeout(() => et.classList.remove("on"), 900);
+}
+const zoomAtual = () => { const C = S.camEst; return C ? (C.zoomHw ? C.zoomPedido || C.zoomHw.atual || 1 : C.zoom || 1) : 1; };
+(() => {
+  let d0 = 0, z0 = 1;
+  const pode = e => e.touches.length === 2 && S.tab === "fotos" && S.camEst && S.foto && S.foto.vivo && S.fotoSel == null && e.target.closest && e.target.closest("#main");
+  const dist = e => Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+  document.addEventListener("touchstart", e => { if (!pode(e)) { d0 = 0; return; } d0 = dist(e); z0 = zoomAtual(); e.preventDefault(); }, { passive: false });
+  document.addEventListener("touchmove", e => { if (!d0 || e.touches.length !== 2) return; e.preventDefault(); zoomCam(z0 * dist(e) / d0); }, { passive: false });
+  document.addEventListener("touchend", e => { if (e.touches.length < 2) d0 = 0; });
+})();
 function iniciaVivo(F0) {
   let C = S.camEst;
   if (!C) {
@@ -7198,7 +7224,11 @@ async function ligaCam() {
     const fluxo = pegaFluxoGuardado(lado) || await pede(true).catch(() => pede(false));
     // se a câmera já foi fechada ou virada de novo enquanto esperava, desliga este fluxo e sai
     if (S.camEst !== C || C.vez !== vez) { guardaFluxo(fluxo, lado); return; }
-    C.fluxo = fluxo; C.fluxoFrente = lado; fluxo.getVideoTracks().forEach(t => { t.onended = () => { if (S.camEst === C && C.fluxo === fluxo && !document.hidden) { C.fluxo = null; ligaCam(); } }; }); C.video.srcObject = fluxo; await C.video.play(); C.acordou = true; C.vivoDesde = performance.now();
+    C.fluxo = fluxo; C.fluxoFrente = lado;
+    try { const tr0 = fluxo.getVideoTracks()[0], cp = tr0.getCapabilities ? tr0.getCapabilities() : null; C.zoomHw = cp && cp.zoom && cp.zoom.max > 1 ? { trilha: tr0, min: cp.zoom.min || 1, max: cp.zoom.max, atual: (tr0.getSettings().zoom || 1) } : null; C.zoom = 1;
+      // câmera reaproveitada que ficou com zoom: volta para 1×
+      if (C.zoomHw && C.zoomHw.atual > Math.max(C.zoomHw.min, 1) + .01) { C.zoomHw.atual = Math.max(C.zoomHw.min, 1); tr0.applyConstraints({ advanced: [{ zoom: C.zoomHw.atual }] }).catch(() => {}); } } catch (e) { C.zoomHw = null; }
+    fluxo.getVideoTracks().forEach(t => { t.onended = () => { if (S.camEst === C && C.fluxo === fluxo && !document.hidden) { C.fluxo = null; ligaCam(); } }; }); C.video.srcObject = fluxo; await C.video.play(); C.acordou = true; C.vivoDesde = performance.now();
     if (!C.rodando) { C.rodando = true; requestAnimationFrame(quadroCam); }
   } catch (e) { if (S.camEst !== C || C.vez !== vez) return; fechaVivo(); S.camFalhou = true; if (S.foto && S.foto.vivo) S.foto = { ...S.foto, img: null, vivo: false }; render(); }
 }
