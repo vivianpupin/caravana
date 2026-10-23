@@ -5596,8 +5596,10 @@ async function montaFoto(canvas, Fx) {
   const img = F.img; let sx = 0, sy = 0, sw = img.width, sh = img.height;
   const rec = reels ? 9 / 16 : F.recorte;
   if (rec) { if (sw / sh > rec) { sw = sh * rec; sx = (img.width - sw) / 2; } else { sh = sw / rec; sy = (img.height - sh) / 2; } }
-  // foto final em alta (o grão e os filtros são aplicados já no tamanho do Reels, sem esticar depois); o visor ao vivo fica mais leve
-  const max = reels || !F.vivo ? 1920 : 1600, k = Math.min(reels && !F.vivo ? 1920 / sh : 1, max / Math.max(sw, sh));
+  // foto final em alta: até 3264 px no lado maior (8 megapixels, o mesmo que um 4K), com folga para a moldura não passar do limite
+  // de imagem do iPhone (16 megapixels; acima disso a foto sai em branco); o visor ao vivo continua mais leve
+  // no formato em pé (Reels/Stories) a foto final também vai até 3264 de altura; foto pequena ainda é ampliada até 1920, como antes
+  const max = !F.vivo ? 3264 : reels ? 1920 : 1600, k = reels && !F.vivo ? Math.min(Math.max(1920 / sh, 1), 3264 / sh) : Math.min(1, max / Math.max(sw, sh));
   const w = Math.round(sw * k), hh = Math.round(sh * k);
   // o filtro é o passo pesado: guarda o resultado até trocar a foto ou o filtro
   let tmp = F.img === montaFoto.img && F.filtro === montaFoto.filtro && F.grao === montaFoto.grao && reels === montaFoto.reels && F.recorte === montaFoto.recorte ? montaFoto.tmp : null;
@@ -6828,7 +6830,9 @@ async function revelaFoto(img, c, extra) {
 }
 // toda foto das câmeras sai em 9:16, pronta para Reels e Stories: o que já é 9:16 só ajusta o tamanho; o resto vai no meio, sobre preto ou sobre a própria foto desfocada
 function paraReels(cv, modo) {
-  const W = 1080, H = 1920, out = document.createElement("canvas"); out.width = W; out.height = H; const c = out.getContext("2d");
+  // o 9:16 acompanha o tamanho da foto (de 1080×1920 até 1836×3264), em vez de reduzir tudo para 1080×1920 (a foto perdia qualidade)
+  const H = Math.min(3264, Math.max(1920, Math.round(Math.max(cv.height, cv.width * 16 / 9)))), W = Math.round(H * 9 / 16);
+  const out = document.createElement("canvas"); out.width = W; out.height = H; const c = out.getContext("2d");
   c.imageSmoothingEnabled = true; c.imageSmoothingQuality = "high";
   if (modo === "nenhum") return cv; // a 4 Tempos sai deitada, como a 1234 da NOMO
   if (Math.abs(cv.width / cv.height - W / H) < .012) { c.drawImage(cv, 0, 0, W, H); return out; }
@@ -7156,7 +7160,8 @@ async function ligaCam() {
   const vez = C.vez = (C.vez || 0) + 1, lado = !!C.frente;
   try {
     // pede a câmera da frente ou de trás com "exact": sem isso o iPhone às vezes ignora o pedido e continua na de trás (o Virar não virava)
-    const pede = exato => navigator.mediaDevices.getUserMedia({ video: { facingMode: exato ? { exact: lado ? "user" : "environment" } : (lado ? "user" : "environment"), width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false });
+    // câmera de trás na resolução máxima do celular (a foto sai com até 8 megapixels); a selfie fica em 1920, porque o visor espelha cada quadro
+    const pede = exato => navigator.mediaDevices.getUserMedia({ video: { facingMode: exato ? { exact: lado ? "user" : "environment" } : (lado ? "user" : "environment"), width: { ideal: lado ? 1920 : 4032 }, height: { ideal: lado ? 1440 : 3024 } }, audio: false });
     const fluxo = pegaFluxoGuardado(lado) || await pede(true).catch(() => pede(false));
     // se a câmera já foi fechada ou virada de novo enquanto esperava, desliga este fluxo e sai
     if (S.camEst !== C || C.vez !== vez) { guardaFluxo(fluxo, lado); return; }
