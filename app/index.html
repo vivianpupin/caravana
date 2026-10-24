@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "24/10 · 12:52";</script>
+<script>window.__VERSAO = "24/10 · 12:54";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -7312,7 +7312,7 @@ function videoCam(C, grande) {
 // A imagem atual fica nítida e as anteriores vão se apagando por cima; o rastro é guardado pequeno (economiza o celular)
 // e só a foto tirada sai no tamanho grande.
 function comRastro(C, b, grande) {
-  const v = C.video, w = b.videoWidth, hh = b.videoHeight, k = Math.min(1, 360 / Math.max(w, hh)), tw = Math.round(w * k), th = Math.round(hh * k);
+  const v = C.video, w = b.videoWidth, hh = b.videoHeight, k = Math.min(1, 200 / Math.min(w, hh)), tw = Math.round(w * k), th = Math.round(hh * k);
   // máscara do assunto: só o que é claro e está perto do meio deixa rastro (o fundo escuro e as bordas não)
   const M = C.rastroBuf || (C.rastroBuf = document.createElement("canvas"));
   const chave = v.currentTime + "|" + w + "x" + hh;
@@ -7324,11 +7324,12 @@ function comRastro(C, b, grande) {
       const L = .299 * p[n] + .587 * p[n + 1] + .114 * p[n + 2], r = Math.hypot((xx - tw / 2) / (tw * .5), (y - th * .55) / (th * .45));
       const m = ss(L, 80, 170) * (1 - ss(r, .3, .9)); p[n] *= m; p[n + 1] *= m; p[n + 2] *= m; }
     x.putImageData(d, 0, 0);
-    // o rastro: o assunto repetido para o lado, cada cópia mais fraca que a anterior
+    // o rastro: o assunto escorrega para o lado num risco contínuo e horizontal (a imagem pequena se soma deslocada 1, 2, 4, 8… pontos,
+    // cada vez mais fraca), e depois é ampliada, o que deixa o risco macio
     const A = C.rastroAcc || (C.rastroAcc = document.createElement("canvas")); if (A.width !== tw || A.height !== th) { A.width = tw; A.height = th; }
-    const a = A.getContext("2d"); a.globalCompositeOperation = "source-over"; a.globalAlpha = 1; a.fillStyle = "#000"; a.fillRect(0, 0, tw, th);
-    a.globalCompositeOperation = "lighten"; const n0 = 16;
-    for (let i2 = 1; i2 <= n0; i2++) { a.globalAlpha = .6 * (1 - i2 / (n0 + 1)); a.drawImage(M, tw * .18 * i2 / n0, 0); }
+    const a = A.getContext("2d"); a.globalCompositeOperation = "source-over"; a.globalAlpha = 1; a.clearRect(0, 0, tw, th); a.drawImage(M, 0, 0);
+    a.globalCompositeOperation = "lighten";
+    for (let st = 1; st < tw * .22; st *= 2) { a.globalAlpha = .8; a.drawImage(A, st, 0); }
     a.globalCompositeOperation = "source-over"; a.globalAlpha = 1;
     M.chave = chave;
   }
@@ -7336,7 +7337,8 @@ function comRastro(C, b, grande) {
   const O = grande ? document.createElement("canvas") : C.rastroOut || (C.rastroOut = document.createElement("canvas"));
   if (O.width !== ow || O.height !== oh) { O.width = ow; O.height = oh; }
   const o = O.getContext("2d"); o.globalAlpha = 1; o.drawImage(b, 0, 0, ow, oh);
-  o.globalCompositeOperation = "screen"; o.drawImage(C.rastroAcc, 0, 0, ow, oh); o.globalCompositeOperation = "source-over";
+  o.imageSmoothingEnabled = true; o.imageSmoothingQuality = "high";
+  o.globalCompositeOperation = "screen"; o.globalAlpha = .85; o.drawImage(C.rastroAcc, 0, 0, ow, oh); o.globalCompositeOperation = "source-over"; o.globalAlpha = 1;
   O.videoWidth = ow; O.videoHeight = oh; return O;
 }
 function videoCamBase(C) {
