@@ -8977,7 +8977,7 @@ function abrirCarta(c, chegou) {
   if (chegou) asas();
   closeSheets(); marcaCarta(c.id); setTimeout(render, 0);
   const box = h("div", { role: "dialog", "aria-label": "Carta: " + (c.titulo || "correspondência"), class: "correiobox" + (chegou ? " chegou" : "") },
-    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: c.audio && c.audio.partes ? "O pombo-correio trouxe um aviso da Caravana" : c.pessoal ? "Chegou uma carta só para você!" : "Chegou uma carta por pombo-correio!" })) : null,
+    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: c.audio && c.audio.partes ? "Um pombo-correio chegou do Oriente" : c.pessoal ? "Chegou uma carta só para você!" : "Chegou uma carta por pombo-correio!" })) : null,
     pergaminhoCarta(c),
     h("div", { class: "foot2" }, S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editarCarta(c) }, "Editar") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Guardar a carta")));
