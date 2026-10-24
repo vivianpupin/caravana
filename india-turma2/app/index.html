@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "24/10 · 10:32";</script>
+<script>window.__VERSAO = "24/10 · 10:33";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1861,6 +1861,7 @@ nav.tabs button{position:relative}
 .rolo{display:block;height:18px;border-radius:9px;background:linear-gradient(180deg,#B8904F,#E9CF96 45%,#A77D3E);box-shadow:0 3px 6px rgba(0,0,0,.3);position:relative;z-index:1}
 .rolo.top{margin-bottom:-6px}.rolo.bot{margin-top:-6px}
 .voo{display:flex;flex-direction:column;align-items:center;gap:4px;color:#F6EDDA;font-family:var(--display);font-style:italic;font-size:17px;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.voo p{white-space:nowrap;font-size:min(17px,4.3vw);text-align:center}
 .pombo{width:110px;height:auto}
 @media (prefers-reduced-motion:no-preference){
   .chegou .pombo{animation:voa 1.6s cubic-bezier(.2,.7,.3,1) both}
@@ -9009,7 +9010,7 @@ function abrirCarta(c, chegou) {
   if (chegou) asas();
   closeSheets(); marcaCarta(c.id); setTimeout(render, 0);
   const box = h("div", { role: "dialog", "aria-label": "Carta: " + (c.titulo || "correspondência"), class: "correiobox" + (chegou ? " chegou" : "") },
-    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: c.audio && c.audio.partes ? "O pombo-correio trouxe um aviso da Caravana!" : c.pessoal ? "Chegou uma carta só para você!" : "Chegou uma carta por pombo-correio!" })) : null,
+    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: c.audio && c.audio.partes ? "O pombo-correio trouxe um aviso da Caravana" : c.pessoal ? "Chegou uma carta só para você!" : "Chegou uma carta por pombo-correio!" })) : null,
     pergaminhoCarta(c),
     h("div", { class: "foot2" }, S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editarCarta(c) }, "Editar") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Guardar a carta")));
