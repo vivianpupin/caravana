@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "24/10 · 10:17";</script>
+<script>window.__VERSAO = "24/10 · 10:32";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -8570,7 +8570,7 @@ function tocadorAudioCarta(c) {
   const au = new Audio(); au.preload = "none";
   const tempo = h("small", { class: "pgaudt", text: c.audio.dur ? tempoAudio(c.audio.dur) : "" });
   const bt = h("button", { type: "button", class: "pgaudbt", "aria-label": "Ouvir o aviso" }, "▶");
-  const caixa = h("div", { class: "pgaudio" }, bt, h("div", { class: "pgaudmeio" }, ondinha(26), h("span", { class: "pgaudtx", text: "Ouvir o aviso da Caravana" }), tempo));
+  const caixa = h("div", { class: "pgaudio" }, bt, h("div", { class: "pgaudmeio" }, ondinha(26), h("span", { class: "pgaudtx", text: "Toque para ouvir" }), tempo));
   const pinta = () => { bt.textContent = au.paused ? "▶" : "❚❚"; caixa.classList.toggle("tocando", !au.paused); };
   au.addEventListener("play", pinta); au.addEventListener("pause", pinta); au.addEventListener("ended", () => { pinta(); caixa.querySelectorAll(".ondinha i").forEach(b => b.classList.remove("on")); });
   au.addEventListener("timeupdate", () => { const d = isFinite(au.duration) ? au.duration : c.audio.dur || 0; if (d) { const barras = caixa.querySelectorAll(".ondinha i"), k = Math.round(au.currentTime / d * barras.length); barras.forEach((b, x) => b.classList.toggle("on", x < k)); tempo.textContent = tempoAudio(au.paused ? d : d - au.currentTime); } });
