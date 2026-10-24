@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "24/10 · 12:46";</script>
+<script>window.__VERSAO = "24/10 · 12:49";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -7324,7 +7324,12 @@ function comRastro(C, b, grande) {
   const O = grande ? document.createElement("canvas") : C.rastroOut || (C.rastroOut = document.createElement("canvas"));
   if (O.width !== ow || O.height !== oh) { O.width = ow; O.height = oh; }
   const o = O.getContext("2d"); o.globalAlpha = 1; o.drawImage(b, 0, 0, ow, oh);
-  o.globalAlpha = .6; o.drawImage(R, 0, 0, ow, oh); o.globalAlpha = 1;
+  // borrão de velocidade: a imagem se repete arrastada para o lado e as partes claras deixam o risco (como obturador lento com a câmera em movimento)
+  const fonte = grande ? b : R.width ? R : b, passo = ow * .12 / 10;
+  o.globalCompositeOperation = "lighten";
+  for (let i = 1; i <= 10; i++) { o.globalAlpha = .27; o.drawImage(fonte, passo * i, 0, ow, oh); }
+  o.globalCompositeOperation = "source-over";
+  o.globalAlpha = .35; o.drawImage(R, 0, 0, ow, oh); o.globalAlpha = 1;
   O.videoWidth = ow; O.videoHeight = oh; return O;
 }
 function videoCamBase(C) {
