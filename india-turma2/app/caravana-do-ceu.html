@@ -7638,7 +7638,20 @@ const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
 const instalado = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
 const ehIphone = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 const pushPossivel = () => "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
-const avisosLigados = () => pushPossivel() && Notification.permission === "granted" && lsGet("cdi-avisos") === "1";
+const avisosLigados = () => pushPossivel() && Notification.permission === "granted";
+// notificação já liberada: confere em silêncio se o celular está inscrito para receber (se a inscrição falhou ou sumiu, refaz sem perguntar nada)
+async function garanteAvisos() {
+  if (S.garantiuAvisos || !noSite() || !S.uid || !eu() || !avisosLigados() || !instalado()) return;
+  S.garantiuAvisos = true;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (sub && lsGet("cdi-avisos") === "1") return;
+    if (!sub) { const { publicKey } = await chaveAvisos(); if (!publicKey) return; sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u8(publicKey) }); }
+    await S.db.doc("push/" + S.uid).set({ sub: JSON.parse(JSON.stringify(sub)), ts: Date.now() });
+    lsSet("cdi-avisos", "1");
+  } catch (e) { S.garantiuAvisos = false; }
+}
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); S.instalar = e; render(); });
 window.addEventListener("appinstalled", () => { S.instalar = null; render(); });
 if (navigator.serviceWorker) navigator.serviceWorker.addEventListener("message", e => { if (e.data && e.data.aba) go(e.data.aba); });
@@ -7671,7 +7684,8 @@ async function ativarAvisos(permJa) {
 async function estadoPerm(nome) { try { return (await navigator.permissions.query({ name: nome })).state; } catch (e) { return "prompt"; } }
 async function convidaAvisos() {
   if (S.convidou || !noSite() || !S.uid || !eu()) return;
-  if (Date.now() - (+lsGet("cdi-perm") || 0) < 24 * 3600 * 1000) return;
+  garanteAvisos();
+  if (lsGet("cdi-perm")) return;
   S.convidou = true;
   const cam = podeCamera() ? await estadoPerm("camera") : "denied", loc = navigator.geolocation ? await estadoPerm("geolocation") : "denied";
   const notOk = avisosLigados(), notPode = instalado() && pushPossivel();
@@ -7743,7 +7757,7 @@ function cartaoCelular() {
       h("p", { text: "Fica na tela inicial como um aplicativo e abre mesmo sem sinal." }),
       h("button", { class: "btn gold", type: "button", onclick: async () => { const e = S.instalar; S.instalar = null; try { await e.prompt(); } catch (x) {} render(); } }, "Instalar o app"));
   }
-  if (pushPossivel() && !avisosLigados() && !fechadoHa("cdi-cel-push")) {
+  if (pushPossivel() && !avisosLigados() && !lsGet("cdi-cel-push")) {
     if (Notification.permission === "denied") return h("div", { class: "celcard" }, fechar("cdi-cel-push"),
       h("p", { class: "eyebrow", text: "Notificações bloqueadas" }),
       h("p", { text: "Para receber as mensagens da caravana, libere as notificações do app nos Ajustes do celular." }));
