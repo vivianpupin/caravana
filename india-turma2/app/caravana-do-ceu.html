@@ -5414,6 +5414,7 @@ const FILTROS = [
   { id: "cam-noturno", cat: "Câmeras", nome: "Blue Lassi", noite: 1, con: 1.22, vin: .45, grao: 30, cinema: 2 },
   // o mesmo brilho, halo e grão dos Lassi, mas com as cores de verdade (sem pintar de azul, laranja ou rosa)
   { id: "cam-magic", cat: "Câmeras", nome: "Magic Lassi", con: 1.2, sat: 1.06, lift: -6, vin: .45, grao: 30, cinema: 2, natural: 1 },
+  { id: "cam-funsaver", cat: "Câmeras", nome: "FunSaver", m: [1.06, .04, 0, .02, 1, 0, 0, .02, .86], con: 1.2, sat: 1.25, split: [[40, 20, 6], [255, 226, 180]], add: [6, 0, -10], vin: .34, grao: 22, pelicula: 1 },
   { id: "cam-quicksnap", cat: "Câmeras", nome: "QuickSnap", m: [.97, .03, 0, 0, 1.02, 0, 0, .02, .98], con: 1.14, sat: 1.16, split: [[10, 46, 34], [255, 244, 236]], add: [-4, 3, 0], vin: .32, grao: 22, pelicula: 1 },
   { id: "cam-mango", cat: "Câmeras", nome: "Mango Lassi", noite: 1, rampa: [[10, 4, 0], [130, 66, 22], [255, 214, 150]], quente: [40, 4, -50], con: 1.22, vin: .45, grao: 30, cinema: 2 },
   { id: "cam-rose", cat: "Câmeras", nome: "Rose Lassi", noite: 1, rampa: [[8, 0, 8], [120, 48, 92], [250, 205, 225]], quente: [36, -4, -34], con: 1.22, vin: .45, grao: 30, cinema: 2 },
@@ -6742,6 +6743,25 @@ function mudaExpo(d) {
   try { navigator.vibrate && navigator.vibrate(8); } catch (e) {}
 }
 // botões de cinema em cada câmera: [filtro, nome]
+// filmes da Bazar 400 (a descartável): o de sempre, a Fuji QuickSnap verde e a Kodak FunSaver amarela
+const FILMES_BAZAR = [["cam-fuji", "Bazar"], ["cam-quicksnap", "QuickSnap"], ["cam-funsaver", "FunSaver"]];
+// flash da Bazar 400: automático (liga sozinho no escuro), ligado ou desligado. O celular não deixa o site acender a luz do iPhone,
+// então o flash é feito na própria foto: a tela pisca, a frente fica iluminada e o fundo cai no escuro, como foto de festa
+const flashModo = () => S.flashModo || (S.flashModo = (() => { try { return localStorage.getItem("cdi-flash") || "auto"; } catch (e) { return "auto"; } })());
+const textoFlash = () => ({ auto: "⚡ Flash automático", on: "⚡ Flash ligado", off: "⚡ Flash desligado" })[flashModo()];
+function cenaEscura(v) {
+  try { const c = document.createElement("canvas"); c.width = 24; c.height = 32; const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(v, 0, 0, 24, 32);
+    const p = x.getImageData(0, 0, 24, 32).data; let s = 0; for (let i = 0; i < p.length; i += 4) s += .299 * p[i] + .587 * p[i + 1] + .114 * p[i + 2]; return s / (p.length / 4) < 70; } catch (e) { return false; }
+}
+function flashNaFoto(q) {
+  const g = q.getContext("2d"), w = q.width, hh = q.height, cx = w / 2, cy = hh * .48, R = Math.hypot(w, hh) / 2;
+  g.save();
+  g.globalCompositeOperation = "screen"; let gr = g.createRadialGradient(cx, cy, 0, cx, cy, R * .55);
+  gr.addColorStop(0, "rgba(255,250,244,.58)"); gr.addColorStop(.6, "rgba(255,250,244,.16)"); gr.addColorStop(1, "rgba(255,250,244,0)"); g.fillStyle = gr; g.fillRect(0, 0, w, hh);
+  g.globalCompositeOperation = "multiply"; gr = g.createRadialGradient(cx, cy, R * .25, cx, cy, R);
+  gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(.6, "rgba(120,120,128,1)"); gr.addColorStop(1, "rgba(30,30,36,1)"); g.fillStyle = gr; g.fillRect(0, 0, w, hh);
+  g.restore();
+}
 const CINE_BOTOES = { rajastao: [["cam-kodak-cor", "Color"]], campo: [["cam-cinematic", "Cinematic"]], super8: [["cam-magic", "Magic Lassi"], ["cam-noturno", "Blue Lassi"], ["cam-mango", "Mango Lassi"], ["cam-rose", "Rose Lassi"], ["cam-pista", "Pistache"], ["cam-masala", "Masala"], ["cam-indigo", "Índigo"]] };
 const FILME_CAM = { campo: "Placa de vidro · obturador lento · 1900", couro: "Filme 35 mm desbotado · 1955", quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
 function vCameraFisica(c) {
@@ -6779,8 +6799,10 @@ function vCameraFisica(c) {
   };
   // como na NOMO: o clique revela a foto por trás, a câmera continua ligada e a miniatura do canto mostra a foto nova
   const dispara = () => { if (!F.vivo) return; if (c.filma && S.camModo === "filme") return; if (c.rajadas) return rajada(); const C = S.camEst, v = videoCam(C); if (!v || !v.videoWidth) return;
-    cliqueSom(); if (navigator.vibrate) navigator.vibrate(30); if (flashOn) { const fl = h("div", { class: "flashcam" }); document.body.append(fl); setTimeout(() => fl.remove(), 450); }
+    const comFlash = c.id === "descartavel" && (flashModo() === "on" || (flashModo() === "auto" && cenaEscura(v)));
+    cliqueSom(); if (navigator.vibrate) navigator.vibrate(30); if (flashOn || comFlash) { const fl = h("div", { class: "flashcam" }); document.body.append(fl); setTimeout(() => fl.remove(), 450); }
     const q = document.createElement("canvas"); q.width = v.videoWidth; q.height = v.videoHeight; q.getContext("2d").drawImage(v, 0, 0);
+    if (comFlash) flashNaFoto(q);
     // obturador lento: a câmera de placa fica aberta quase um segundo e soma as imagens; o que se mexe sai riscado, como foto de 1900
     if (c.lento) { if (C.expondo) return; C.expondo = true; const g = q.getContext("2d"), n = 10; let k = 1;
       document.querySelector(".cfjanela")?.classList.add("expondo");
@@ -6820,7 +6842,12 @@ function vCameraFisica(c) {
       h("button", { type: "button", "aria-label": "Mais claro", onclick: () => mudaExpo(1) }, "+")) : null,
     CINE_BOTOES[c.id] ? h("div", { class: "cfcines" }, CINE_BOTOES[c.id].map(([fid, nome]) => h("button", { type: "button", class: "cfcinebt" + (S.foto.filtro === fid ? " on" : ""), "aria-pressed": String(S.foto.filtro === fid), "data-f": fid, onclick: ev => { if (S.gravando) return; const liga = S.foto.filtro !== fid; S.foto = { ...S.foto, filtro: liga ? fid : (c.preset && c.preset.filtro) || "original" }; montaFoto.img = null;
       ev.currentTarget.parentNode.querySelectorAll(".cfcinebt").forEach(b => { const on = liga && b.dataset.f === fid; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); }); document.querySelector(".cfexpo")?.classList.toggle("fora", !liga); document.querySelectorAll(".cftom").forEach(x => { const on = S.foto.filtro === x.dataset.f; x.classList.toggle("on", on); x.setAttribute("aria-checked", String(on)); }); } }, h("i", { "aria-hidden": "true" }), nome))) : null,
-    c.id === "descartavel" ? chave("Bazar", "QuickSnap", S.foto.filtro === "cam-quicksnap", ev => { const q = S.foto.filtro !== "cam-quicksnap"; S.foto = { ...S.foto, filtro: q ? "cam-quicksnap" : c.preset.filtro }; montaFoto.img = null; ev.currentTarget.classList.toggle("b", q); }) : null,
+    c.id === "descartavel" ? h("div", { class: "cfcines", role: "radiogroup", "aria-label": "Filme" }, FILMES_BAZAR.map(([fid, nome]) => h("button", { type: "button", role: "radio", class: "cfcinebt" + (S.foto.filtro === fid ? " on" : ""), "aria-checked": String(S.foto.filtro === fid), "data-f": fid, onclick: ev => {
+      S.foto = { ...S.foto, filtro: fid }; montaFoto.img = null;
+      ev.currentTarget.parentNode.querySelectorAll(".cfcinebt").forEach(b => { const on = b.dataset.f === fid; b.classList.toggle("on", on); b.setAttribute("aria-checked", String(on)); }); } }, h("i", { "aria-hidden": "true" }), nome))) : null,
+    c.id === "descartavel" ? h("div", { class: "cfcines" }, h("button", { type: "button", class: "cfcinebt" + (flashModo() !== "off" ? " on" : ""), "aria-label": "Flash", onclick: ev => {
+      const prox = { auto: "on", on: "off", off: "auto" }[flashModo()]; S.flashModo = prox; try { localStorage.setItem("cdi-flash", prox); } catch (e) {}
+      const b = ev.currentTarget; b.classList.toggle("on", prox !== "off"); b.lastChild.textContent = textoFlash(); } }, h("i", { "aria-hidden": "true" }), textoFlash())) : null,
     c.filma ? chave("Foto", "Filme", S.camModo === "filme", ev => { if (S.gravando) return; S.camModo = S.camModo === "filme" ? "foto" : "filme"; trocaModoFilme(c, ev.currentTarget); }) : null);
   const fc = FOTO_CAM[c.id], fotoCorpo = fc && temFoto("img/cameras/" + c.id + "-corpo.jpg");
   // com a foto realista: a câmera de perto ocupa a tela, a imagem ao vivo entra no visor da foto e o botão da foto dispara
