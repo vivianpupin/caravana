@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "24/10 · 17:48";</script>
+<script>window.__VERSAO = "24/10 · 17:49";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -5447,8 +5447,8 @@ const FILTROS = [
   { id: "cam-noturno", cat: "Câmeras", nome: "Blue Lassi", noite: 1, con: 1.22, vin: .45, grao: 30, cinema: 2 },
   // o mesmo brilho, halo e grão dos Lassi, mas com as cores de verdade (sem pintar de azul, laranja ou rosa)
   { id: "cam-magic", cat: "Câmeras", nome: "Magic Lassi", con: 1.2, sat: 1.06, lift: -6, vin: .45, grao: 30, cinema: 2, natural: 1 },
-  { id: "cam-funsaver", cat: "Câmeras", nome: "FunSaver", m: [1.06, .04, 0, .02, 1, 0, 0, .02, .86], con: 1.2, sat: 1.25, split: [[40, 20, 6], [255, 226, 180]], add: [6, 0, -10], vin: .34, grao: 22, pelicula: 1 },
-  { id: "cam-quicksnap", cat: "Câmeras", nome: "QuickSnap", m: [.97, .03, 0, 0, 1.02, 0, 0, .02, .98], con: 1.14, sat: 1.16, split: [[10, 46, 34], [255, 244, 236]], add: [-4, 3, 0], vin: .32, grao: 22, pelicula: 1 },
+  { id: "cam-funsaver", cat: "Câmeras", nome: "Kodak FunSaver", m: [1.06, .04, 0, .02, 1, 0, 0, .02, .86], con: 1.2, sat: 1.25, split: [[40, 20, 6], [255, 226, 180]], add: [6, 0, -10], vin: .34, grao: 22, pelicula: 1 },
+  { id: "cam-quicksnap", cat: "Câmeras", nome: "Fuji QuickSnap", m: [.97, .03, 0, 0, 1.02, 0, 0, .02, .98], con: 1.14, sat: 1.16, split: [[10, 46, 34], [255, 244, 236]], add: [-4, 3, 0], vin: .32, grao: 22, pelicula: 1 },
   { id: "cam-mango", cat: "Câmeras", nome: "Mango Lassi", noite: 1, rampa: [[10, 4, 0], [130, 66, 22], [255, 214, 150]], quente: [40, 4, -50], con: 1.22, vin: .45, grao: 30, cinema: 2 },
   { id: "cam-rose", cat: "Câmeras", nome: "Rose Lassi", noite: 1, rampa: [[8, 0, 8], [120, 48, 92], [250, 205, 225]], quente: [36, -4, -34], con: 1.22, vin: .45, grao: 30, cinema: 2 },
   { id: "cam-pista", cat: "Câmeras", nome: "Pistache", noite: 1, rampa: [[0, 8, 4], [36, 98, 74], [205, 238, 212]], quente: [32, -2, -42], con: 1.22, vin: .45, grao: 30, cinema: 2 },
@@ -6777,7 +6777,7 @@ function mudaExpo(d) {
 }
 // botões de cinema em cada câmera: [filtro, nome]
 // filmes da Bazar 400 (a descartável): o de sempre, a Fuji QuickSnap verde e a Kodak FunSaver amarela
-const FILMES_BAZAR = [["cam-fuji", "Bazar"], ["cam-quicksnap", "QuickSnap"], ["cam-funsaver", "FunSaver"]];
+const FILMES_BAZAR = [["cam-fuji", "Bazar"], ["cam-quicksnap", "Fuji QuickSnap"], ["cam-funsaver", "Kodak FunSaver"]];
 // flash da Bazar 400: automático (liga sozinho no escuro), ligado ou desligado. O celular não deixa o site acender a luz do iPhone,
 // então o flash é feito na própria foto: a tela pisca, a frente fica iluminada e o fundo cai no escuro, como foto de festa
 const flashModo = () => S.flashModo || (S.flashModo = (() => { try { return localStorage.getItem("cdi-flash") || "auto"; } catch (e) { return "auto"; } })());
