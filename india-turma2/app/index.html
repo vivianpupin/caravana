@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "24/10 · 10:48";</script>
+<script>window.__VERSAO = "24/10 · 10:49";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1843,9 +1843,9 @@ nav.tabs button{position:relative}
 .pgaudio{display:flex;align-items:center;gap:12px;margin:6px 0 4px;padding:10px 12px;border-radius:16px;background:rgba(120,80,40,.12);border:1px solid rgba(120,80,40,.25)}
 .pgaudbt{flex:0 0 46px;height:46px;border-radius:50%;border:0;background:#7A3B2A;color:#F6EDDA;font-size:16px;box-shadow:0 3px 8px rgba(60,30,10,.35)}
 .pgaudmeio{flex:1;min-width:0;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 8px}
-.pgaudmeio .ondinha{grid-column:1}
-.pgaudtx{grid-column:1/-1;font-size:min(13.5px,3.5vw);white-space:nowrap;color:#5A3E22}
-.pgaudt{grid-column:2;grid-row:1;font-size:12px;color:#7A5A36;font-variant-numeric:tabular-nums}
+.pgaudmeio .ondinha{grid-column:1/-1}
+.pgaudtx{font-size:min(12px,3.1vw);white-space:nowrap;color:#5A3E22}
+.pgaudt{font-size:12px;color:#7A5A36;font-variant-numeric:tabular-nums}
 .ondinha{display:flex;align-items:center;gap:2px;height:26px}
 .ondinha i{flex:1;border-radius:2px;background:rgba(122,90,54,.45);transition:background .2s}
 .ondinha i.on{background:#7A3B2A}
@@ -8571,7 +8571,7 @@ function tocadorAudioCarta(c) {
   const au = new Audio(); au.preload = "none";
   const tempo = h("small", { class: "pgaudt", text: c.audio.dur ? tempoAudio(c.audio.dur) : "" });
   const bt = h("button", { type: "button", class: "pgaudbt", "aria-label": "Ouvir o aviso" }, "▶");
-  const caixa = h("div", { class: "pgaudio" }, bt, h("div", { class: "pgaudmeio" }, ondinha(26), tempo, h("span", { class: "pgaudtx", text: "Ouvir o aviso da Caravana" })));
+  const caixa = h("div", { class: "pgaudio" }, bt, h("div", { class: "pgaudmeio" }, ondinha(26), h("span", { class: "pgaudtx", text: "Ouvir o aviso da Caravana" }), tempo));
   const pinta = () => { bt.textContent = au.paused ? "▶" : "❚❚"; caixa.classList.toggle("tocando", !au.paused); };
   au.addEventListener("play", pinta); au.addEventListener("pause", pinta); au.addEventListener("ended", () => { pinta(); caixa.querySelectorAll(".ondinha i").forEach(b => b.classList.remove("on")); });
   au.addEventListener("timeupdate", () => { const d = isFinite(au.duration) ? au.duration : c.audio.dur || 0; if (d) { const barras = caixa.querySelectorAll(".ondinha i"), k = Math.round(au.currentTime / d * barras.length); barras.forEach((b, x) => b.classList.toggle("on", x < k)); tempo.textContent = tempoAudio(au.paused ? d : d - au.currentTime); } });
