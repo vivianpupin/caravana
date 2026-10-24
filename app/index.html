@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "24/10 · 09:11";</script>
+<script>window.__VERSAO = "24/10 · 09:13";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -9163,7 +9163,9 @@ function carrosselDestaques(fs) {
   const trilho = h("div", { class: "mdtrilho", onscroll: e => { const el = e.currentTarget, k = Math.round(el.scrollLeft / Math.max(1, el.clientWidth)); if (k !== S.destIdx) marca(k); } },
     fs.map(f => { const d = diaDaFoto(f); return h("button", { type: "button", class: "mdslide", onclick: () => abrirFotoMural(f, fs), "aria-label": f.legenda || "Foto em destaque" },
       h("img", { ...fotoTardia(f.fotoId), alt: "" }),
-      h("span", { class: "mdtxt" }, f.legenda ? h("b", { text: f.legenda }) : null, h("small", { text: [f.cidade || (d && d.cidade), d ? "dia " + d.n : ""].filter(Boolean).join(" · ") || "Caravana do Céu" }))); }));
+      // todo destaque tem título: o que a líder escreveu ao destacar (sem título, vale o nome da cidade)
+      h("span", { class: "mdtxt" }, h("b", { text: f.legenda || f.cidade || (d && d.cidade) || (ehPista(f) ? "Pistas pré-embarque" : "Caravana do Céu") }),
+        h("small", { text: [f.legenda ? f.cidade || (d && d.cidade) : "", d ? "Dia " + d.n : ""].filter(Boolean).join(" · ") }))); }));
   // volta para a foto em que estava (a tela se refaz quando chega foto nova) e passa sozinho a cada 4 segundos
   requestAnimationFrame(() => { trilho.scrollLeft = idx * trilho.clientWidth; });
   let mexendo = 0; trilho.addEventListener("touchstart", () => { mexendo = Date.now(); }, { passive: true });
@@ -9365,7 +9367,11 @@ function abrirFotoMural(f0, lista) {
     conta.textContent = fs.length > 1 ? `${i + 1} de ${fs.length}` + (f.cidade ? " · " + f.cidade : "") : f.cidade || "";
     const nc = curtidasDe(f); coracao.textContent = (curti(f) ? "♥" : "♡") + (nc ? " " + nc : ""); coracao.classList.toggle("on", curti(f)); coracao.setAttribute("aria-label", curti(f) ? "Descurtir" : "Curtir");
     coracao.onclick = () => { curtir(f).catch(() => { st.textContent = "Não consegui curtir agora."; st.className = "msg err"; mostra(); }); mostra(); };
-    const destacar = () => { const v = !f.destaque; f.destaque = v; mostra(); S.db.doc("mural/" + f.id).update({ destaque: v }).catch(() => { f.destaque = !v; mostra(); }); };
+    // ao destacar, a líder dá um título (ele aparece em cima da foto, nos destaques)
+    const destacar = () => { const v = !f.destaque, antes = f.legenda || ""; let leg = antes;
+      if (v) { const r = prompt("Título do destaque (aparece em cima da foto):", antes || f.cidade || ""); if (r === null) return; leg = r.trim().slice(0, 60); }
+      f.destaque = v; f.legenda = leg; mostra();
+      S.db.doc("mural/" + f.id).update({ destaque: v, legenda: leg }).catch(() => { f.destaque = !v; f.legenda = antes; mostra(); }); };
     st.textContent = ""; st.className = "msg";
     info.replaceChildren(...(f.legenda ? [h("b", { text: f.legenda })] : []), h("small", { text: [d ? `Dia ${d.n}` : new Date(f.ts).toLocaleDateString("pt-BR"), "enviada por " + nomeDe(f.autor), fs.length > 1 ? "arraste para o lado" : ""].filter(Boolean).join(" · ") }));
     acoes.replaceChildren(h("button", { class: "btn gold", type: "button", onclick: () => salvarMidiaMural(f, st) }, "Salvar no celular"),
