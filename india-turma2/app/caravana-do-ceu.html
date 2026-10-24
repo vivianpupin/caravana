@@ -1846,6 +1846,59 @@ nav.tabs button{position:relative}
 .offline span{font-size:13.5px;color:var(--soft)}
 /* Mural */
 .mural{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+/* Galeria da Caravana: destaques, álbuns por cidade, vídeos e a foto aberta em tela cheia */
+.madd{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:0 0 14px}
+.madd select{font:inherit;font-size:13px;padding:9px 10px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);max-width:100%}
+.madd .msg{flex-basis:100%;margin:0}.madd .msg:empty{display:none}
+.mdestaq{margin:2px 0 6px}
+.mdtrilho{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:18px;scrollbar-width:none;box-shadow:var(--shadow)}
+.mdtrilho::-webkit-scrollbar{display:none}
+.mdslide{position:relative;flex:0 0 100%;scroll-snap-align:start;aspect-ratio:4/3.4;border:0;padding:0;background:#2B1F14;overflow:hidden}
+.mdslide img{width:100%;height:100%;object-fit:cover;display:block}
+.mdtxt{position:absolute;left:0;right:0;bottom:0;padding:44px 16px 14px;background:linear-gradient(transparent,rgba(20,14,8,.78));color:#F6EDDA;text-align:left;display:flex;flex-direction:column;gap:2px}
+.mdtxt b{font-family:var(--display);font-style:italic;font-weight:400;font-size:21px;line-height:1.2}
+.mdtxt small{font-size:11.5px;opacity:.88}
+.mdpontos{display:flex;gap:5px;justify-content:center;margin:10px 0 4px}
+.mdpontos i{width:6px;height:6px;border-radius:3px;background:#D3C5AC;transition:width .3s,background .3s}.mdpontos i.on{width:18px;background:var(--terra)}
+.msec{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 -6px}
+.msec b{font-family:var(--display);font-style:italic;font-weight:400;font-size:20px}
+.msec button{border:0;background:none;padding:4px 0;color:var(--terra);font:500 12.5px Poppins,sans-serif}
+.malbuns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.malbum{position:relative;height:126px;border:0;padding:0;border-radius:14px;overflow:hidden;background:#2B1F14;box-shadow:var(--shadow)}
+.malbum>img,.malbum>.vidmini{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.malbum::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(20,14,8,.65))}
+.malbum span{position:absolute;z-index:1;left:12px;bottom:9px;color:#fff;font:500 15px Poppins,sans-serif;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.malbum small{position:absolute;z-index:1;right:8px;top:8px;color:#fff;font-size:11px;background:rgba(0,0,0,.45);padding:2px 8px;border-radius:99px}
+.mvideos{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px 4px}
+.mvideos::-webkit-scrollbar{display:none}
+.mvideos .mfoto{flex:0 0 118px;aspect-ratio:9/13}
+.mural.g3{grid-template-columns:repeat(3,1fr);gap:3px;border-radius:14px;overflow:hidden}
+.mural.g3 .mfoto{border-radius:0;box-shadow:none}
+.mvolta{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+.mvolta .btn{padding:8px 14px}
+.mvolta b{font-family:var(--display);font-style:italic;font-weight:400;font-size:21px}
+.mvolta small{margin-left:auto;color:var(--soft);font-size:12px}
+.sheet.mvisor{background:#0E0A07;backdrop-filter:none;padding:0;align-items:stretch;z-index:40}
+.sheet.mvisor>.mvbox{background:none;border-radius:0;box-shadow:none;padding:0;max-width:none;max-height:none;width:100%;height:100%;overflow:hidden;display:flex;flex-direction:column;gap:0;color:#F5EFE4}
+.mvtopo{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;font-size:13px}
+.mvtopo>span{flex:1;text-align:center}
+.mvfecha,.mvest{border:0;background:rgba(255,255,255,.1);color:#F5EFE4;border-radius:99px;font:500 13px Poppins,sans-serif;padding:8px 12px;min-width:38px}
+.mvest[hidden]{display:block;visibility:hidden}
+.mvtrilho{flex:1;min-height:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.mvtrilho::-webkit-scrollbar{display:none}
+.mvslide{flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;display:flex;align-items:center;justify-content:center;min-height:0;overflow:hidden}
+.mvslide .mgrande,.mvslide>img,.mvslide video{width:100%;height:100%;max-height:100%;object-fit:contain;border-radius:0;box-shadow:none;background:none;margin:0}
+.mvslide .vidgrande{width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center}
+.mvslide .mvcapa{width:100%;height:100%;display:block;opacity:.6}
+.mvslide .mvcapa img{object-fit:contain}
+.mvbase{padding:12px 16px calc(14px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px}
+.mvinfo{display:flex;flex-direction:column;gap:2px;min-height:20px}
+.mvinfo b{font-family:var(--display);font-style:italic;font-weight:400;font-size:18px}
+.mvinfo small{font-size:12px;opacity:.75}
+.mvacoes{display:flex;gap:10px}
+.mvacoes .btn{flex:1}
+.mvacoes .btn.ghost{flex:0 0 auto;color:#F5EFE4;border-color:rgba(255,255,255,.25)}
+.mvbase .msg{margin:0;color:#E9D9B8}.mvbase .msg:empty{display:none}
 .mwrap{position:relative}
 .mdel{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(20,14,8,.6);color:#fff;font-size:18px;line-height:28px;padding:0}
 .album .zera{color:var(--err)}
@@ -9014,29 +9067,120 @@ async function baixarAlbum(st, cid) {
     st.textContent = `Álbum pronto: ${feitas} fotos.` + (/iPhone|iPad/.test(navigator.userAgent) ? " No iPhone ele fica no app Arquivos, em Downloads." : "");
   } catch (e) { st.textContent = "Não consegui montar o álbum agora. Tente de novo com internet boa."; }
 }
+// ---------- Galeria da Caravana: destaques que passam sozinhos, álbuns por cidade e vídeos ----------
+// os álbuns se montam sozinhos pela cidade de cada foto; os destaques são as fotos que a líder marcou com ☆ (sem nenhuma marcada, as mais novas)
+const cidadesMural = () => [...CIDADES_MURAL, ...new Set(S.mural.map(f => f.cidade).filter(c => c && !CIDADES_MURAL.includes(c)))];
+const destaquesMural = () => { const fs = S.mural.filter(f => !f.video), d = fs.filter(f => f.destaque); return (d.length ? d : fs).slice(0, 8); };
+const capaAlbum = fs => fs.find(f => f.destaque && !f.video) || fs.find(f => !f.video) || fs[0];
+const diaDaFoto = f => { const iso = f.tirada || new Date((f.ts || 0) - 3 * 3600e3 + 8.5 * 3600e3).toISOString().slice(0, 10); return (S.roteiro?.dias || []).find(d => d.iso === iso); };
+function miniGaleria(f, lista, extra) {
+  return h("button", { type: "button", class: "mfoto" + (ehPista(f) ? " pista" : "") + (extra ? " " + extra : ""), onclick: () => abrirFotoMural(f, lista), "aria-label": (f.legenda || (f.video ? "Vídeo" : "Foto")) + " de " + nomeDe(f.autor) }, muralMini(f));
+}
+let destTimer = 0;
+function carrosselDestaques(fs) {
+  clearInterval(destTimer);
+  const n = fs.length, idx = Math.min(S.destIdx || 0, n - 1);
+  const pontos = h("div", { class: "mdpontos", "aria-hidden": "true" }, fs.map((_, k) => h("i", { class: k === idx ? "on" : null })));
+  const marca = k => { S.destIdx = k; [...pontos.children].forEach((p, x) => p.classList.toggle("on", x === k)); };
+  const trilho = h("div", { class: "mdtrilho", onscroll: e => { const el = e.currentTarget, k = Math.round(el.scrollLeft / Math.max(1, el.clientWidth)); if (k !== S.destIdx) marca(k); } },
+    fs.map(f => { const d = diaDaFoto(f); return h("button", { type: "button", class: "mdslide", onclick: () => abrirFotoMural(f, fs), "aria-label": f.legenda || "Foto em destaque" },
+      h("img", { ...fotoTardia(f.fotoId), alt: "" }),
+      h("span", { class: "mdtxt" }, f.legenda ? h("b", { text: f.legenda }) : null, h("small", { text: [f.cidade || (d && d.cidade), d ? "dia " + d.n : ""].filter(Boolean).join(" · ") || "Caravana do Céu" }))); }));
+  // volta para a foto em que estava (a tela se refaz quando chega foto nova) e passa sozinho a cada 4 segundos
+  requestAnimationFrame(() => { trilho.scrollLeft = idx * trilho.clientWidth; });
+  let mexendo = 0; trilho.addEventListener("touchstart", () => { mexendo = Date.now(); }, { passive: true });
+  if (n > 1) destTimer = setInterval(() => { if (!trilho.isConnected) return clearInterval(destTimer); if (document.hidden || Date.now() - mexendo < 8000 || document.querySelector(".sheet")) return;
+    trilho.scrollTo({ left: ((S.destIdx || 0) + 1) % n * trilho.clientWidth, behavior: "smooth" }); }, 4000);
+  return h("div", { class: "mdestaq" }, trilho, n > 1 ? pontos : null);
+}
+// a líder adiciona fotos da Sony, do celular ou profissionais: várias de uma vez, na qualidade máxima da Galeria.
+// A cidade sai da data em que a foto foi tirada (gravada dentro da foto), conferida no roteiro; sem data, vale a cidade escolhida.
+async function dataDaFoto(file) {
+  try {
+    const b = new DataView(await file.slice(0, 262144).arrayBuffer());
+    if (b.getUint16(0) !== 0xFFD8) return null;
+    for (let o = 2; o < b.byteLength - 10;) {
+      const m = b.getUint16(o), len = b.getUint16(o + 2);
+      if (m === 0xFFE1 && b.getUint32(o + 4) === 0x45786966) {
+        const t0 = o + 10, le = b.getUint16(t0) === 0x4949, u16 = p => b.getUint16(t0 + p, le), u32 = p => b.getUint32(t0 + p, le);
+        const acha = (p, tag) => { const q = u16(p); for (let k = 0; k < q; k++) { const e = p + 2 + k * 12; if (u16(e) === tag) return e; } return 0; };
+        const i0 = u32(4), ex = acha(i0, 0x8769); let e = ex ? acha(u32(ex + 8), 0x9003) : 0; if (!e) e = acha(i0, 0x0132); if (!e) return null;
+        let s = ""; const off = u32(e + 8); for (let k = 0; k < 10; k++) s += String.fromCharCode(b.getUint8(t0 + off + k));
+        const d = s.match(/(\d{4}):(\d\d):(\d\d)/); return d ? `${d[1]}-${d[2]}-${d[3]}` : null;
+      }
+      if ((m & 0xFF00) !== 0xFF00) break; o += 2 + len;
+    }
+  } catch (e) {}
+  return null;
+}
+function campoAddGaleria() {
+  let fi = document.getElementById("mural-add");
+  if (fi) return fi;
+  fi = h("input", { type: "file", id: "mural-add", accept: "image/*", multiple: true, hidden: true, onchange: async () => {
+    const fs = [...fi.files]; fi.value = ""; soltaArquivo(); if (!fs.length) return;
+    const aviso = (txt, cls) => { S.muralAdd = [txt, cls || ""]; const m = document.getElementById("mural-add-msg"); if (m) { m.textContent = txt; m.className = "msg " + (cls || ""); } };
+    let ok = 0;
+    for (const [k, file] of fs.entries()) {
+      aviso(`Enviando ${k + 1} de ${fs.length}…`);
+      try {
+        const iso = await dataDaFoto(file), dia = iso && (S.roteiro?.dias || []).find(d => d.iso === iso);
+        const cidade = S.muralAddCidade || (dia && dia.cidade) || cidadeHoje() || "";
+        const r = await S.assets.upload(file);
+        await addMural({ autor: S.uid, fotoId: r.id, cidade, legenda: "", ts: Date.now(), ...(iso ? { tirada: iso } : {}) }); ok++;
+      } catch (e) { aviso(erroFoto(e), "err"); }
+    }
+    aviso(ok === fs.length ? (ok === 1 ? "Foto adicionada na Galeria." : `${ok} fotos adicionadas na Galeria.`) : `${ok} de ${fs.length} fotos adicionadas.`, ok ? "ok" : "err");
+  } });
+  document.body.append(fi); return fi;
+}
+function addGaleriaLider() {
+  if (!S.isOwner || !S.assets) return null;
+  const [txt, cls] = S.muralAdd || ["", ""];
+  return h("div", { class: "madd" },
+    h("button", { class: "btn gold", type: "button", onclick: () => campoAddGaleria().click() }, "＋ Adicionar fotos"),
+    h("select", { "aria-label": "Cidade das fotos", onchange: e => { S.muralAddCidade = e.target.value; } },
+      [["", "Cidade pela data da foto"], ...cidadesMural().map(c => [c, c])].map(([v, n]) => h("option", { value: v, selected: (S.muralAddCidade || "") === v ? "" : null }, n))),
+    h("p", { id: "mural-add-msg", class: "msg " + cls, role: "status", text: txt }));
+}
+function blocoAlbum(cid) {
+  const st = h("p", { class: "small", role: "status" });
+  return h("div", { class: "album" },
+    h("button", { class: "btn", type: "button", onclick: () => baixarAlbum(st, cid) }, (noSite() && podeRolo() ? "Salvar no celular: " : "Baixar ") + (cid ? `álbum de ${cid}` : "álbum da tribo")),
+    h("span", { class: "small", text: cid ? "As fotos desta cidade num arquivo só." : "Todas as fotos da galeria e do chat num arquivo só." }), st);
+}
 function vMural() {
-  const cid = S.muralCidade || "", fotos = S.mural.filter(f => !cid || f.cidade === cid);
+  const cid = S.muralCidade || "";
   // missão das pistas: ver a galeria já conta (as pistas aparecem normais, com a etiqueta "Pista")
-  { const vis = pistasVistas(), novas = fotos.filter(f => ehPista(f) && !vis[f.id]); if (novas.length) try { localStorage.setItem("cdi-pistas", JSON.stringify({ ...vis, ...Object.fromEntries(novas.map(f => [f.id, Date.now()])) })); } catch (e) {}
-    if (novas.length && !cid) marcaMissao("pistas"); }
-  perfis(fotos.map(f => f.autor));
-  return h("section", { class: "view" },
-    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Galeria da Caravana" }))),
-    abasFotos(),
-    h("p", { class: "lede", text: "As fotos que a caravana envia, separadas por cidade." }),
-    h("div", { class: "opts" }, [["", "Todas"], ...CIDADES_MURAL.map(c => [c, c])].map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(cid === id), onclick: () => { S.muralCidade = id; render(); } },
-      n + (id ? ` · ${S.mural.filter(f => f.cidade === id).length}` : "")))),
-    fotos.length ? h("div", { class: "mural" }, fotos.map(f => h("div", { class: "mwrap" + (ehPista(f) ? " pista" : "") },
-      h("button", { type: "button", class: "mfoto", onclick: () => abrirFotoMural(f), "aria-label": (f.legenda || "Foto") + " de " + nomeDe(f.autor) },
-        muralMini(f), h("span", { class: "mnome", text: nomeDe(f.autor).split(" ")[0] + (f.cidade && !cid ? " · " + f.cidade : "") })),
-      f.autor === S.uid || S.isOwner ? h("button", { type: "button", class: "mdel", "aria-label": "Apagar esta foto", onclick: () => { if (confirm("Apagar esta foto da galeria?")) apagaFotoMural(f).catch(() => alert("Não consegui apagar a foto.")); } }, "×") : null)))
-      : h("div", { class: "fotovazia" }, h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: cid ? "Nenhuma foto de " + cid + " ainda" : "A galeria está esperando" }),
-        h("span", { text: "Monte sua foto no Estúdio e toque em Enviar para a galeria da caravana." }),
-        h("button", { class: "btn gold", type: "button", onclick: () => { S.fotoAba = "estudio"; render(); } }, "Ir para o Estúdio")),
-    // salvar o álbum fica embaixo da galeria
-    fotos.length ? (() => { const st = h("p", { class: "small", role: "status" }); return h("div", { class: "album" },
-      h("button", { class: "btn", type: "button", onclick: () => baixarAlbum(st, cid) }, (noSite() && podeRolo() ? "Salvar no celular: " : "Baixar ") + (cid ? `álbum de ${cid}` : "álbum da tribo")),
-      h("span", { class: "small", text: cid ? "As fotos desta cidade num arquivo só." : "Todas as fotos da galeria e do chat num arquivo só." }), st); })() : null);
+  { const vis = pistasVistas(), novas = S.mural.filter(f => ehPista(f) && !vis[f.id]); if (novas.length) try { localStorage.setItem("cdi-pistas", JSON.stringify({ ...vis, ...Object.fromEntries(novas.map(f => [f.id, Date.now()])) })); } catch (e) {}
+    if (novas.length) marcaMissao("pistas"); }
+  perfis(S.mural.map(f => f.autor));
+  const topo = [h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Galeria da Caravana" }))), abasFotos()];
+  if (!S.mural.length) return h("section", { class: "view" }, ...topo, addGaleriaLider(),
+    h("div", { class: "fotovazia" }, h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "A galeria está esperando" }),
+      h("span", { text: "Monte sua foto no Estúdio e toque em Enviar para a galeria da caravana." }),
+      h("button", { class: "btn gold", type: "button", onclick: () => { S.fotoAba = "estudio"; render(); } }, "Ir para o Estúdio")));
+  // dentro de um álbum: todas as fotos da cidade (ou todas, ou só os vídeos), em grade de 3
+  if (cid) {
+    const fotos = cid === "*" ? S.mural : cid === "▶" ? S.mural.filter(f => f.video) : S.mural.filter(f => f.cidade === cid);
+    const nome = cid === "*" ? "Todas as fotos" : cid === "▶" ? "Vídeos" : cid;
+    return h("section", { class: "view" }, ...topo,
+      h("div", { class: "mvolta" }, h("button", { type: "button", class: "btn ghost", onclick: () => { S.muralCidade = ""; render(); scrollTo(0, 0); } }, "‹ Álbuns"),
+        h("b", { text: nome }), h("small", { text: fotos.length === 1 ? "1 item" : fotos.length + " itens" })),
+      fotos.length ? h("div", { class: "mural g3" }, fotos.map(f => miniGaleria(f, fotos))) : h("p", { class: "small", text: "Ainda não tem nada aqui." }),
+      cid !== "▶" && fotos.some(f => !f.video) ? blocoAlbum(cid === "*" ? "" : cid) : null);
+  }
+  const albuns = cidadesMural().map(c => [c, S.mural.filter(f => f.cidade === c)]).filter(([, fs]) => fs.length);
+  const semCidade = S.mural.filter(f => !f.cidade), videos = S.mural.filter(f => f.video), dest = destaquesMural();
+  return h("section", { class: "view" }, ...topo, addGaleriaLider(),
+    dest.length ? carrosselDestaques(dest) : null,
+    h("div", { class: "msec" }, h("b", { text: "Álbuns" }), h("button", { type: "button", onclick: () => { S.muralCidade = "*"; render(); scrollTo(0, 0); } }, "Ver tudo ›")),
+    h("div", { class: "malbuns" }, [...albuns, ...(semCidade.length ? [["Caravana", semCidade, "*"]] : [])].map(([c, fs, alvo]) => { const capa = capaAlbum(fs);
+      return h("button", { type: "button", class: "malbum", onclick: () => { S.muralCidade = alvo || c; render(); scrollTo(0, 0); } },
+        capa && capa.video && !(capa.video.partes || capa.capaId) ? muralMini(capa) : h("img", { ...fotoTardia(capa.fotoId), alt: "" }),
+        h("span", { text: c }), h("small", { text: String(fs.length) })); })),
+    videos.length ? h("div", { class: "msec" }, h("b", { text: "Vídeos" }), h("button", { type: "button", onclick: () => { S.muralCidade = "▶"; render(); scrollTo(0, 0); } }, "Ver tudo ›")) : null,
+    videos.length ? h("div", { class: "mvideos" }, videos.slice(0, 12).map(f => miniGaleria(f, videos))) : null,
+    blocoAlbum(""));
 }
 // filme tocando limpo: sem os controles do celular (que deixam uma camada escura por cima); um toque pausa e outro volta a tocar
 function filmeLimpo(src, poster, cls) {
@@ -9143,24 +9287,38 @@ function midiaGrandeMural(f, legenda) {
   if (f.video) return vid();
   return h("img", { class: "mgrande", src: blob(f.fotoId), "data-foto": f.fotoId, alt: legenda, onerror: e => { const i = e.currentTarget; if (i.dataset.v) return; i.dataset.v = 1; f.video = true; i.replaceWith(vid()); } });
 }
-function abrirFotoMural(f) {
+function salvarMidiaMural(f, st) {
+  // filme: o iPhone só abre a lista de salvar logo depois do toque, então o filme precisa já estar baixado
+  if (f.video && f.video.partes && noSite() && !f._filmeBlob) { st.textContent = "Carregando o filme…"; st.className = "msg"; urlDoFilme(f).then(() => { st.textContent = "Filme pronto. Toque de novo em Salvar no celular."; st.className = "msg ok"; }, () => { st.textContent = "Não consegui baixar o filme. Confira a internet."; st.className = "msg err"; }); return; }
+  salvarNoRolo(f._filmeBlob ? Promise.resolve(f._filmeBlob) : (f.video && f.video.partes ? urlDoFilme(f) : fotoPronta(f.fotoId)).then(u => fetch(u)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + (f.video ? (/webm/.test((f.video && f.video.tipo) || "") ? ".webm" : ".mp4") : ".jpg"), st);
+}
+function abrirFotoMural(f0, lista) {
   closeSheets();
-  const meu = f.autor === S.uid || S.isOwner, st = h("p", { class: "msg", role: "status" });
-  const box = h("div", { role: "dialog", "aria-label": "Foto da galeria" },
-    midiaGrandeMural(f, f.legenda || "Foto da caravana"),
-    h("p", { class: "eyebrow", text: [f.cidade, new Date(f.ts).toLocaleDateString("pt-BR")].filter(Boolean).join(" · ") }),
-    f.legenda ? h("h3", { text: f.legenda }) : null,
-    h("p", { class: "small", text: "Enviada por " + nomeDe(f.autor) }), st,
-    h("div", { class: "actions", style: "justify-content:center" },
-      h("button", { class: "btn gold", type: "button", onclick: () => {
-        // filme: o iPhone só abre a lista de salvar logo depois do toque, então o filme precisa já estar baixado
-        if (f.video && f.video.partes && noSite() && !f._filmeBlob) { st.textContent = "Carregando o filme…"; st.className = "msg"; urlDoFilme(f).then(() => { st.textContent = "Filme pronto. Toque de novo em Salvar no dispositivo."; st.className = "msg ok"; }, () => { st.textContent = "Não consegui baixar o filme. Confira a internet."; st.className = "msg err"; }); return; }
-        salvarNoRolo(f._filmeBlob ? Promise.resolve(f._filmeBlob) : (f.video && f.video.partes ? urlDoFilme(f) : fotoPronta(f.fotoId)).then(u => fetch(u)).then(r => r.blob()), "caravana-" + (f.cidade || "india").toLowerCase() + (f.video ? (/webm/.test((f.video && f.video.tipo) || "") ? ".webm" : ".mp4") : ".jpg"), st) ; }}, "Salvar no dispositivo")),
-    h("div", { class: "foot2" },
-      meu ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (!confirm("Apagar esta foto da galeria?")) return; apagaFotoMural(f).then(closeSheets, () => { st.textContent = "Não consegui apagar a foto."; st.className = "msg err"; }); } }, "Apagar foto") : h("span"),
-      h("button", { class: "btn", type: "button", onclick: closeSheets }, "Fechar")));
-  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
-  document.body.append(sheet);
+  const fs = lista && lista.length ? lista : [f0]; let i = Math.max(0, fs.findIndex(x => x.id === f0.id));
+  const st = h("p", { class: "msg", role: "status" }), conta = h("span"), estrela = h("button", { type: "button", class: "mvest", hidden: !S.isOwner || null }),
+    info = h("div", { class: "mvinfo" }), acoes = h("div", { class: "mvacoes" });
+  // cada foto só carrega quando chega perto (a atual e as vizinhas); filme só toca quando é a atual
+  const slides = fs.map(() => h("div", { class: "mvslide" }));
+  const enche = k => { const s = slides[k]; if (!s || s.dataset.ok) return; const f = fs[k];
+    if (f.video && k !== i) { s.append(h("span", { class: "mvcapa" }, muralMini(f))); return; }
+    s.dataset.ok = 1; s.replaceChildren(midiaGrandeMural(f, f.legenda || "Foto da caravana")); };
+  const mostra = () => {
+    const f = fs[i], d = diaDaFoto(f), meu = f.autor === S.uid || S.isOwner; [i - 1, i, i + 1].forEach(enche);
+    slides.forEach((s, k) => { if (k !== i) s.querySelectorAll("video").forEach(v => { try { v.pause(); } catch (e) {} }); });
+    conta.textContent = fs.length > 1 ? `${i + 1} de ${fs.length}` + (f.cidade ? " · " + f.cidade : "") : f.cidade || "";
+    estrela.textContent = f.destaque ? "★ Destaque" : "☆ Destacar"; estrela.onclick = () => { const v = !f.destaque; f.destaque = v; mostra(); S.db.doc("mural/" + f.id).update({ destaque: v }).catch(() => { f.destaque = !v; mostra(); }); };
+    st.textContent = ""; st.className = "msg";
+    info.replaceChildren(...(f.legenda ? [h("b", { text: f.legenda })] : []), h("small", { text: [d ? `Dia ${d.n}` : new Date(f.ts).toLocaleDateString("pt-BR"), "enviada por " + nomeDe(f.autor), fs.length > 1 ? "arraste para o lado" : ""].filter(Boolean).join(" · ") }));
+    acoes.replaceChildren(h("button", { class: "btn gold", type: "button", onclick: () => salvarMidiaMural(f, st) }, "Salvar no celular"),
+      ...[meu ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (!confirm(f.video ? "Apagar este vídeo da galeria?" : "Apagar esta foto da galeria?")) return; apagaFotoMural(f).then(closeSheets, () => { st.textContent = "Não consegui apagar."; st.className = "msg err"; }); } }, "Apagar") : null].filter(Boolean));
+  };
+  const trilho = h("div", { class: "mvtrilho", onscroll: e => { const el = e.currentTarget, k = Math.round(el.scrollLeft / Math.max(1, el.clientWidth)); if (k !== i && fs[k]) { i = k; if (fs[k].video) { slides[k].dataset.ok = ""; slides[k].replaceChildren(); } mostra(); } } }, slides);
+  const box = h("div", { class: "mvbox", role: "dialog", "aria-label": "Foto da galeria" },
+    h("div", { class: "mvtopo" }, h("button", { type: "button", class: "mvfecha", "aria-label": "Fechar", onclick: closeSheets, text: "✕" }), conta, estrela),
+    trilho, h("div", { class: "mvbase" }, info, acoes, st));
+  const sheet = h("div", { class: "sheet mvisor" }, box);
+  document.body.append(sheet); mostra();
+  requestAnimationFrame(() => { trilho.scrollLeft = i * trilho.clientWidth; });
 }
 
 
@@ -9544,7 +9702,7 @@ function abrirMotorista(nome) {
   const box = h("div", { role: "dialog", "aria-label": "Mostrar ao motorista", class: "motorista" },
     h("p", { class: "mhi", lang: "hi", text: "कृपया मुझे यहाँ ले चलिए" }),
     h("p", { class: "men", text: "Please take me here" }),
-    h("div", { class: "mdest" }, h("p", { class: "mhi2", lang: "hi", text: H.hi }), h("p", { class: "men2", text: H.en }), h("p", { class: "mend", text: H.end })),
+    h("div", { class: "mdestaq" }, h("p", { class: "mhi2", lang: "hi", text: H.hi }), h("p", { class: "men2", text: H.en }), h("p", { class: "mend", text: H.end })),
     h("div", { class: "actions", style: "justify-content:center" },
       h("a", { class: "btn gold", href: url, target: "_blank", rel: "noopener" }, "Abrir rota no Google Maps"),
       h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")),
