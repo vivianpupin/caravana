@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "24/10 · 10:11";</script>
+<script>window.__VERSAO = "24/10 · 10:13";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1840,55 +1840,23 @@ nav.tabs button{position:relative}
 .pgmass small{font-style:normal;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;opacity:.75}
 .pgm p:not(.pgmdata){text-shadow:0 0 .6px rgba(46,36,25,.55)}
 .lacre{align-self:center;width:78px;height:78px;background:url(img/lacre.webp) center/contain no-repeat;display:grid;place-items:center;filter:sepia(.45) saturate(.6) brightness(.82) contrast(1.05) drop-shadow(0 3px 4px rgba(0,0,0,.35));margin-top:6px}
-/* aviso de voz: lacre de cera com a ondinha de som (quem recebe) */
-.lacrevoz{display:flex;flex-direction:column;align-items:center;gap:8px;margin:8px auto 6px;border:0;background:none;padding:0;color:#2E2419;font:inherit;cursor:pointer;width:100%}
-.lvselo{position:relative;width:104px;height:104px;display:grid;place-items:center;background:url(img/lacre.webp) center/contain no-repeat;filter:sepia(.45) saturate(.6) brightness(.82) contrast(1.05) drop-shadow(0 4px 6px rgba(0,0,0,.4));transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
-.lvselo svg{width:54px;height:27px;color:rgba(20,4,2,.78);filter:drop-shadow(0 1px 0 rgba(255,190,170,.45)) drop-shadow(0 -1px 0 rgba(0,0,0,.35))}
-.lacrevoz:not(.aberto) .lvselo{animation:lvpulsa 2.4s ease-in-out infinite}
-@keyframes lvpulsa{50%{transform:scale(1.06)}}
-.lacrevoz.aberto .lvselo{transform:scale(.72)}
-.lacrevoz.tocando .lvselo svg{animation:lvonda .9s ease-in-out infinite}
-@keyframes lvonda{50%{transform:scaleY(.55)}}
-.lvbaixo{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%}
-.lvdica{font-size:13px;letter-spacing:.04em;color:#5A3E22}
-.lacrevoz .ondinha{width:100%;max-width:260px;display:none}
-.lacrevoz.aberto .ondinha{display:flex}
-.lvtempo{font-size:11.5px;color:#7A5A36;font-variant-numeric:tabular-nums}
-.ondinha{align-items:center;gap:2px;height:24px}
-.ondinha i{flex:1;border-radius:2px;background:rgba(122,90,54,.4);transition:background .2s}
+/* aviso de voz no pergaminho */
+.pgaudio{display:flex;align-items:center;gap:12px;margin:6px 0 4px;padding:10px 12px;border-radius:16px;background:rgba(120,80,40,.12);border:1px solid rgba(120,80,40,.25)}
+.pgaudbt{flex:0 0 46px;height:46px;border-radius:50%;border:0;background:#7A3B2A;color:#F6EDDA;font-size:16px;box-shadow:0 3px 8px rgba(60,30,10,.35)}
+.pgaudmeio{flex:1;min-width:0;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 8px}
+.pgaudmeio .ondinha{grid-column:1/-1}
+.pgaudtx{font-size:12.5px;color:#5A3E22}
+.pgaudt{font-size:12px;color:#7A5A36;font-variant-numeric:tabular-nums}
+.ondinha{display:flex;align-items:center;gap:2px;height:26px}
+.ondinha i{flex:1;border-radius:2px;background:rgba(122,90,54,.45);transition:background .2s}
 .ondinha i.on{background:#7A3B2A}
-/* gravador da líder: rádio antigo de madeira */
-.radio{display:flex;flex-direction:column;gap:12px;padding:16px 16px 14px;border-radius:22px 22px 14px 14px;color:#F3E6C8;
-  background:radial-gradient(ellipse at 30% 0%,rgba(255,220,170,.18),transparent 60%),repeating-linear-gradient(97deg,rgba(0,0,0,.08) 0 3px,transparent 3px 9px),linear-gradient(160deg,#7A4A26,#4E2C14 70%,#3A2010);
-  box-shadow:inset 0 2px 0 rgba(255,220,170,.25),inset 0 -3px 0 rgba(0,0,0,.35),0 8px 18px rgba(40,20,8,.3)}
-.rtopo{display:flex;gap:12px;align-items:stretch}
-.rgrade{flex:1;min-height:74px;border-radius:12px;border:3px solid #B8904E;box-shadow:inset 0 0 10px rgba(0,0,0,.7);
-  background:repeating-linear-gradient(90deg,#C9A35E 0 2px,transparent 2px 7px),radial-gradient(circle at 50% 50%,#3A2414,#1E120A)}
-.rvu{position:relative;width:92px;border-radius:10px;overflow:hidden;background:linear-gradient(#F4E6C2,#E2CC97);border:3px solid #B8904E;box-shadow:inset 0 0 6px rgba(80,50,10,.45)}
-.rvuescala{position:absolute;left:10%;right:10%;top:18%;height:60%;border-top:2px solid #6B4A22;border-radius:50% 50% 0 0}
-.rvuescala::after{content:"";position:absolute;right:0;top:-2px;width:30%;height:100%;border-top:2px solid #A33A2A;border-radius:0 60% 0 0}
-.rvuagulha{position:absolute;left:50%;bottom:8px;width:2px;height:54px;margin-left:-1px;background:#2A1A0C;transform-origin:50% 100%;transform:rotate(-50deg);transition:transform .08s linear}
-.rvu small{position:absolute;left:0;right:0;bottom:3px;text-align:center;font:600 8px Poppins,sans-serif;letter-spacing:.2em;color:#6B4A22}
-.rdial{position:relative;height:34px;border-radius:8px;background:linear-gradient(#F6E9C8,#E7D3A2);border:2px solid #B8904E;box-shadow:inset 0 0 8px rgba(120,80,20,.5)}
-.rdmarcas{position:absolute;inset:0 4% 0 4%;display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:4px;font:500 10px "Courier Prime","Courier New",monospace;color:#5A3E1C;
-  background:repeating-linear-gradient(90deg,#8A6A3A 0 1px,transparent 1px calc(100% / 18)) top/100% 9px no-repeat}
-.rdmarcas span{width:0;display:flex;justify-content:center}
-.rdagulha{position:absolute;top:2px;bottom:2px;left:4%;width:2px;margin-left:-1px;background:#B1291C;box-shadow:0 0 4px rgba(177,41,28,.6);transition:left .15s linear}
-.rinfo{display:flex;align-items:center;gap:8px;font-size:12.5px}
-.rluz{width:11px;height:11px;border-radius:50%;background:#5A3A22;box-shadow:inset 0 1px 2px rgba(0,0,0,.6)}
-.radio.gravando .rluz{background:#FF4A36;box-shadow:0 0 10px #FF4A36,0 0 2px #FFD0C0;animation:gravpisca 1s infinite}
-.radio.tocando .rluz{background:#FFC24A;box-shadow:0 0 10px #FFC24A}
-@keyframes gravpisca{50%{opacity:.35}}
-.rlegenda{flex:1;letter-spacing:.03em}
-.rtempo{font:600 15px "Courier Prime","Courier New",monospace;color:#FFE3A8;font-variant-numeric:tabular-nums}
-.rbotoes{display:flex;justify-content:space-around;gap:8px}
-.rbot{display:flex;flex-direction:column;align-items:center;gap:5px;border:0;background:none;color:#F3E6C8;padding:0;font:500 11px Poppins,sans-serif;letter-spacing:.06em}
-.rbotic{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:16px;color:#3A2410;
-  background:radial-gradient(circle at 35% 30%,#FFF1C8,#D6AE62 45%,#8E6526 100%);box-shadow:0 3px 0 #2A1608,0 5px 8px rgba(0,0,0,.4),inset 0 -3px 4px rgba(80,50,10,.45)}
-.rbotgrava .rbotic{color:#B1291C;font-size:20px}
-.rbot:active .rbotic,.rbot.on .rbotic{transform:translateY(2px);box-shadow:0 1px 0 #2A1608,0 2px 4px rgba(0,0,0,.4),inset 0 -2px 3px rgba(80,50,10,.45)}
-.rbot[disabled]{opacity:.4}
-.rst{margin:0;color:#FFD9B0}.rst:empty{display:none}
+.gravador{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;background:var(--panel2);border:1px solid var(--line)}
+.gravador audio{width:100%}
+.gravlinha{display:flex;align-items:center;gap:10px}
+.gravlinha.gravando b{flex:1;font-variant-numeric:tabular-nums}
+.gravponto{width:12px;height:12px;border-radius:50%;background:#C4302B;animation:gravpisca 1s infinite}
+@keyframes gravpisca{50%{opacity:.25}}
+.gravbt{align-self:flex-start}
 .lacre img{width:30px;height:auto;filter:brightness(0) sepia(1) hue-rotate(-30deg) saturate(3) brightness(.32) drop-shadow(0 1px 0 rgba(255,210,190,.35));opacity:.8}
 .pergaminho .rolo{display:none}
 .rolo{display:block;height:18px;border-radius:9px;background:linear-gradient(180deg,#B8904F,#E9CF96 45%,#A77D3E);box-shadow:0 3px 6px rgba(0,0,0,.3);position:relative;z-index:1}
@@ -8602,86 +8570,53 @@ function urlDoAudio(c) {
 }
 const tempoAudio = s => { s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
 function ondinha(n) { return h("span", { class: "ondinha", "aria-hidden": "true" }, Array.from({ length: n || 22 }, (_, k) => h("i", { style: `height:${30 + Math.round(Math.abs(Math.sin(k * 1.7) * 55 + Math.sin(k * .6) * 15))}%` }))); }
-const ONDA_SVG = '<svg viewBox="0 0 64 32" aria-hidden="true"><path d="M2 16h6M12 9v14M18 4v24M24 11v10M30 6v20M36 13v6M42 7v18M48 10v12M54 14v4M60 16h2" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
-// quem recebe: o lacre de cera com a ondinha de som; toque para ouvir
 function tocadorAudioCarta(c) {
   const au = new Audio(); au.preload = "none";
-  const dur = () => isFinite(au.duration) && au.duration ? au.duration : c.audio.dur || 0;
-  const tempo = h("small", { class: "lvtempo", text: c.audio.dur ? tempoAudio(c.audio.dur) : "" });
-  const dica = h("span", { class: "lvdica", text: "Toque para ouvir" });
-  const selo = h("span", { class: "lvselo" }); selo.innerHTML = ONDA_SVG;
-  const onda = ondinha(30);
-  const caixa = h("button", { type: "button", class: "lacrevoz", "aria-label": "Ouvir a mensagem" }, selo, h("span", { class: "lvbaixo" }, dica, onda, tempo));
-  const pinta = () => { caixa.classList.toggle("tocando", !au.paused); if (caixa.classList.contains("aberto")) dica.textContent = au.paused ? (au.ended || !au.currentTime ? "Toque para ouvir de novo" : "Toque para continuar") : "Ouvindo… toque para pausar"; };
-  au.addEventListener("play", pinta); au.addEventListener("pause", pinta);
-  au.addEventListener("ended", () => { pinta(); onda.querySelectorAll("i").forEach(b => b.classList.remove("on")); tempo.textContent = tempoAudio(dur()); });
-  au.addEventListener("timeupdate", () => { const d = dur(); if (!d) return; const barras = onda.querySelectorAll("i"), k = Math.round(au.currentTime / d * barras.length); barras.forEach((b, x) => b.classList.toggle("on", x < k)); tempo.textContent = tempoAudio(d - au.currentTime); });
-  caixa.onclick = async () => {
+  const tempo = h("small", { class: "pgaudt", text: c.audio.dur ? tempoAudio(c.audio.dur) : "" });
+  const bt = h("button", { type: "button", class: "pgaudbt", "aria-label": "Ouvir o aviso" }, "▶");
+  const caixa = h("div", { class: "pgaudio" }, bt, h("div", { class: "pgaudmeio" }, ondinha(26), h("span", { class: "pgaudtx", text: "Ouvir o aviso da Caravana" }), tempo));
+  const pinta = () => { bt.textContent = au.paused ? "▶" : "❚❚"; caixa.classList.toggle("tocando", !au.paused); };
+  au.addEventListener("play", pinta); au.addEventListener("pause", pinta); au.addEventListener("ended", () => { pinta(); caixa.querySelectorAll(".ondinha i").forEach(b => b.classList.remove("on")); });
+  au.addEventListener("timeupdate", () => { const d = isFinite(au.duration) ? au.duration : c.audio.dur || 0; if (d) { const barras = caixa.querySelectorAll(".ondinha i"), k = Math.round(au.currentTime / d * barras.length); barras.forEach((b, x) => b.classList.toggle("on", x < k)); tempo.textContent = tempoAudio(au.paused ? d : d - au.currentTime); } });
+  bt.onclick = async () => {
     if (!au.paused) return au.pause();
-    caixa.classList.add("aberto");
-    if (!au.src) { dica.textContent = "Abrindo o lacre…"; try { au.src = await urlDoAudio(c); } catch (e) { dica.textContent = "Sem internet agora. Toque de novo."; return; } }
+    if (!au.src) { bt.textContent = "…"; try { au.src = await urlDoAudio(c); } catch (e) { bt.textContent = "▶"; tempo.textContent = "Sem internet agora. Tente de novo."; return; } }
     au.play().catch(() => pinta());
   };
+  // fechou a carta, o áudio para
   const para = new MutationObserver(() => { if (!caixa.isConnected) { au.pause(); para.disconnect(); } }); setTimeout(() => para.observe(document.body, { childList: true, subtree: true }), 0);
   return caixa;
 }
-// a líder grava num rádio antigo: o ponteiro do mostrador corre pelos minutos, a lâmpada acende e o ponteiro do medidor dança com a voz
+// gravador da líder: toca para gravar, toca para parar, ouve antes de mandar (até 3 minutos)
 function gravadorAudio(atual, aoMudar) {
-  let estado = atual ? { blob: null, tipo: atual.tipo, dur: atual.dur, antigo: true } : null, mr = null, fluxo = null, t0 = 0, relogio = 0, ana = null, actx = null;
-  const LIMITE = 180, au = new Audio(); au.preload = "auto";
-  const agulha = h("i", { class: "rdagulha" }), vu = h("i", { class: "rvuagulha" }), luz = h("span", { class: "rluz", "aria-hidden": "true" });
-  const visor = h("b", { class: "rtempo", text: "0:00" }), legenda = h("span", { class: "rlegenda" }), st = h("p", { class: "small rst" });
-  const marcas = h("div", { class: "rdmarcas", "aria-hidden": "true" }, ["0", "½", "1", "1½", "2", "2½", "3"].map(m => h("span", { text: m })));
-  const botoes = h("div", { class: "rbotoes" });
-  const poeAgulha = s => { agulha.style.left = (4 + Math.min(1, s / LIMITE) * 92) + "%"; visor.textContent = tempoAudio(s); };
-  const balanca = nivel => { vu.style.transform = `rotate(${-50 + Math.min(1, nivel) * 100}deg)`; };
-  let anima = 0;
-  const loop = () => { cancelAnimationFrame(anima);
-    const passo = () => {
-      if (mr) { const s = (Date.now() - t0) / 1000; poeAgulha(s); if (s >= LIMITE) para();
-        if (ana) { const d = new Uint8Array(ana.fftSize); ana.getByteTimeDomainData(d); let m = 0; for (const v of d) m = Math.max(m, Math.abs(v - 128)); balanca(m / 70); } }
-      else if (!au.paused) { poeAgulha(au.currentTime); balanca(.35 + Math.random() * .45); }
-      else { balanca(0); return; }
-      anima = requestAnimationFrame(passo); };
-    passo(); };
+  let estado = atual ? { blob: null, tipo: atual.tipo, dur: atual.dur, antigo: atual } : null, mr = null, fluxo = null, t0 = 0, relogio = 0;
+  const caixa = h("div", { class: "gravador" }), st = h("p", { class: "small" });
+  const LIMITE = 180;
   const para = () => { if (mr && mr.state !== "inactive") mr.stop(); };
   const grava = async () => {
-    au.pause();
     try { fluxo = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); }
     catch (e) { st.textContent = "O celular não liberou o microfone. Libere nos Ajustes do celular e tente de novo."; return; }
-    try { const A = window.AudioContext || window.webkitAudioContext; actx = actx || new A(); ana = actx.createAnalyser(); ana.fftSize = 512; actx.createMediaStreamSource(fluxo).connect(ana); } catch (e) { ana = null; }
     const tipo = ["audio/mp4", "audio/webm;codecs=opus", "audio/webm"].find(x => window.MediaRecorder && MediaRecorder.isTypeSupported(x)) || "";
     const pedacos = []; mr = new MediaRecorder(fluxo, tipo ? { mimeType: tipo, audioBitsPerSecond: 64000 } : undefined);
     mr.ondataavailable = e => e.data && e.data.size && pedacos.push(e.data);
-    mr.onstop = () => { fluxo.getTracks().forEach(x => x.stop()); const dur = (Date.now() - t0) / 1000;
-      const b = new Blob(pedacos, { type: (mr.mimeType || tipo || "audio/mp4").split(";")[0] }); mr = null; ana = null;
-      if (b.size) { estado = { blob: b, tipo: b.type, dur }; au.src = URL.createObjectURL(b); aoMudar(estado); }
-      pinta(); };
-    t0 = Date.now(); mr.start(1000); pinta(); loop();
+    mr.onstop = () => { clearInterval(relogio); fluxo.getTracks().forEach(x => x.stop()); const dur = (Date.now() - t0) / 1000;
+      const b = new Blob(pedacos, { type: (mr.mimeType || tipo || "audio/mp4").split(";")[0] }); mr = null;
+      estado = b.size ? { blob: b, tipo: b.type, dur } : estado; aoMudar(estado); pinta(); };
+    t0 = Date.now(); mr.start(1000); pinta();
+    relogio = setInterval(() => { const s = (Date.now() - t0) / 1000; const r = caixa.querySelector(".gravtempo"); if (r) r.textContent = tempoAudio(s) + " / " + tempoAudio(LIMITE); if (s >= LIMITE) para(); }, 250);
   };
-  const ouve = async () => {
-    if (!au.paused) return au.pause();
-    if (!au.src && estado && estado.antigo && atual.cartaId) { legenda.textContent = "Sintonizando…"; try { au.src = await urlDoAudio({ id: atual.cartaId, audio: atual }); } catch (e) { st.textContent = "Não consegui carregar o áudio guardado."; pinta(); return; } }
-    au.currentTime = au.ended ? 0 : au.currentTime; au.play().catch(() => {});
-  };
-  au.addEventListener("play", () => { pinta(); loop(); }); au.addEventListener("pause", () => pinta()); au.addEventListener("ended", () => { poeAgulha(0); pinta(); });
   const pinta = () => {
-    const gravando = !!mr, tocando = !au.paused;
-    caixa.classList.toggle("gravando", gravando); caixa.classList.toggle("tocando", tocando);
-    legenda.textContent = gravando ? "No ar · gravando" : tocando ? "Tocando o seu aviso" : estado ? "Aviso gravado · " + tempoAudio(estado.dur) : "Pronto para gravar";
-    if (!gravando && !tocando) poeAgulha(estado && !au.currentTime ? 0 : au.currentTime || 0);
-    botoes.replaceChildren(
-      gravando ? h("button", { type: "button", class: "rbot rbotgrava on", onclick: para }, h("span", { class: "rbotic" }, "■"), h("small", { text: "Parar" }))
-        : h("button", { type: "button", class: "rbot rbotgrava", onclick: grava }, h("span", { class: "rbotic" }, "●"), h("small", { text: estado ? "Regravar" : "Gravar" })),
-      h("button", { type: "button", class: "rbot", disabled: gravando || !estado ? "" : null, onclick: ouve }, h("span", { class: "rbotic" }, tocando ? "❚❚" : "▶"), h("small", { text: tocando ? "Pausar" : "Ouvir" })),
-      h("button", { type: "button", class: "rbot", disabled: gravando || !estado ? "" : null, onclick: () => { au.pause(); au.removeAttribute("src"); estado = null; aoMudar(null); pinta(); } }, h("span", { class: "rbotic" }, "✕"), h("small", { text: "Tirar" })));
+    st.textContent = "";
+    if (mr) return caixa.replaceChildren(h("div", { class: "gravlinha gravando" }, h("span", { class: "gravponto", "aria-hidden": "true" }), h("b", { class: "gravtempo", text: "0:00 / " + tempoAudio(LIMITE) }),
+      h("button", { type: "button", class: "btn gold", onclick: para }, "■ Parar")), st);
+    if (!estado) return caixa.replaceChildren(h("button", { type: "button", class: "btn gravbt", onclick: grava }, "🎙️ Gravar aviso de voz"), h("p", { class: "small", text: "Toque para gravar e toque em Parar quando terminar. Você ouve antes de mandar." }), st);
+    const ouvir = h("audio", { controls: true, preload: "metadata" });
+    if (estado.blob) ouvir.src = URL.createObjectURL(estado.blob);
+    else if (estado.antigo && atual.cartaId) urlDoAudio({ id: atual.cartaId, audio: atual }).then(u => { ouvir.src = u; }).catch(() => {});
+    caixa.replaceChildren(h("div", { class: "gravlinha" }, h("b", { text: "🎙️ Aviso de voz · " + tempoAudio(estado.dur) })), ouvir,
+      h("div", { class: "actions" }, h("button", { type: "button", class: "btn", onclick: grava }, "Gravar de novo"),
+        h("button", { type: "button", class: "btn ghost", onclick: () => { estado = null; aoMudar(null); pinta(); } }, "Tirar o áudio")), st);
   };
-  const caixa = h("div", { class: "radio" },
-    h("div", { class: "rtopo" }, h("div", { class: "rgrade", "aria-hidden": "true" }),
-      h("div", { class: "rvu", "aria-hidden": "true" }, h("span", { class: "rvuescala" }), vu, h("small", { text: "VOZ" }))),
-    h("div", { class: "rdial" }, marcas, agulha),
-    h("div", { class: "rinfo" }, luz, legenda, visor),
-    botoes, st);
   pinta();
   return caixa;
 }
