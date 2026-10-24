@@ -1916,34 +1916,6 @@ nav.tabs button{position:relative}
 .mvacoes .btn{flex:1}
 .mvacoes .btn.ghost{flex:0 0 auto;color:#F5EFE4;border-color:rgba(255,255,255,.25)}
 .mvbase .msg{margin:0;color:#E9D9B8}.mvbase .msg:empty{display:none}
-/* segunda maleta (desenhada, até a foto ficar pronta) */
-.malaescolha{display:flex;justify-content:center;gap:8px;margin:-2px 0 10px}
-.malaescbt{border:1px solid rgba(138,63,50,.25);background:var(--panel);color:var(--ink);border-radius:99px;padding:7px 16px;font:500 13px Poppins,sans-serif;cursor:pointer}
-.malaescbt[aria-selected="true"]{background:#3B2A1C;color:#F5EFE4;border-color:#3B2A1C}
-.mala2{max-width:430px;min-height:440px;display:flex;flex-direction:column;justify-content:center}
-.mala2casa .camdesenho{height:120px}
-.mala2{margin:18px auto 6px;max-width:420px;border-radius:18px;padding:12px 12px 16px;background:linear-gradient(180deg,#6B4426,#4A2D17);box-shadow:inset 0 2px 0 rgba(255,220,170,.2),inset 0 -4px 0 rgba(0,0,0,.35),0 12px 26px rgba(40,22,10,.35);border:2px solid #3A2210}
-.mala2tampa{display:flex;justify-content:center;margin-bottom:10px}
-.mala2tampa span{font:600 10px Poppins,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#E9C98E;background:rgba(0,0,0,.3);border:1px solid rgba(201,163,94,.5);border-radius:99px;padding:4px 12px}
-.mala2casas{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.mala2casa{display:flex;flex-direction:column;align-items:center;gap:6px;border:0;border-radius:12px;padding:12px 8px 10px;background:radial-gradient(circle at 50% 35%,#3E4434,#262B20);box-shadow:inset 0 3px 8px rgba(0,0,0,.6),inset 0 -1px 0 rgba(255,255,255,.06);cursor:pointer}
-.mala2casa .camdesenho{width:100%;height:84px;display:grid;place-items:center}
-.mala2casa .camdesenho svg{width:100%;height:100%}
-.mala2nome{font:600 11px Poppins,sans-serif;color:#E9DCC0;letter-spacing:.04em}
-/* Gêmeas 72 (meio quadro): metal claro com couro preto */
-.cf-meio{background-color:#2A2826;background-image:linear-gradient(180deg,#D9D6CF 0 16%,#24221F 16% 84%,#BDB9B1 84%)}
-.cf-meio .cfgravado{color:rgba(255,255,255,.05);font:800 min(15vw,74px)/1 Georgia,serif;font-style:italic}
-.cf-meio .cfmoldura{border-radius:18px;padding:14px;background:linear-gradient(180deg,#3A3835,#161514);box-shadow:inset 0 2px 3px rgba(255,255,255,.15),0 0 0 5px #A9A59D,0 14px 26px rgba(0,0,0,.5)}
-.cf-meio .cfjanela{width:min(calc(100vw - 160px),300px);aspect-ratio:3/4}
-.cfmeio{position:absolute;top:8px;right:10px;z-index:3;font:700 11px "Courier New",monospace;color:#FFD88A;background:rgba(0,0,0,.5);border-radius:6px;padding:3px 7px;letter-spacing:.06em}
-.cfmeio.on{color:#1A1208;background:#FFD88A}
-/* Mumbai VHS: plástico cinza-escuro, visor com linhas de TV */
-.cf-vhs{background-color:#26262A;background-image:linear-gradient(180deg,#34343A,#1A1A1E)}
-.cf-vhs .cfgravado{color:rgba(255,255,255,.05);font:900 min(18vw,90px)/1 "Arial Black",Arial,sans-serif}
-.cf-vhs .cfmoldura{border-radius:14px;padding:12px;background:linear-gradient(180deg,#1C1C20,#0A0A0C);box-shadow:inset 0 2px 3px rgba(255,255,255,.1),0 0 0 4px #3E3E44,0 14px 26px rgba(0,0,0,.55)}
-.cf-vhs .cfjanela{width:calc(100vw - 90px);max-width:520px;aspect-ratio:4/3}
-.cfvhs{position:absolute;inset:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px)}
-.cfvhsrec{position:absolute;top:8px;left:10px;z-index:3;font:700 12px "Courier New",monospace;color:#F2F2F2;text-shadow:1px 1px 0 #000;letter-spacing:.04em}
 .mfoto .mcurte{position:absolute;z-index:1;left:6px;bottom:5px;font-size:11px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.7)}
 .mvacoes{align-items:center;gap:8px}
 .mvacao{border:0;background:rgba(255,255,255,.1);color:#F5EFE4;border-radius:99px;font:500 14px Poppins,sans-serif;padding:10px 14px;white-space:nowrap}
@@ -5442,8 +5414,6 @@ const FILTROS = [
   { id: "cam-noturno", cat: "Câmeras", nome: "Blue Lassi", noite: 1, con: 1.22, vin: .45, grao: 30, cinema: 2 },
   // o mesmo brilho, halo e grão dos Lassi, mas com as cores de verdade (sem pintar de azul, laranja ou rosa)
   { id: "cam-magic", cat: "Câmeras", nome: "Magic Lassi", con: 1.2, sat: 1.06, lift: -6, vin: .45, grao: 30, cinema: 2, natural: 1 },
-  { id: "cam-meio", cat: "Câmeras", nome: "Gêmeas 72", m: [1.04, .03, 0, .02, 1, 0, 0, .03, .88], lift: 10, con: 1.12, sat: 1.05, split: [[30, 20, 10], [250, 232, 205]], vin: .3, grao: 18, pelicula: 1, semFiapos: 1 },
-  { id: "cam-vhs", cat: "Câmeras", nome: "Mumbai VHS", lift: 14, con: 1.02, sat: 1.25, add: [8, -2, 6], vin: .15, grao: 12, semFiapos: 1 },
   { id: "cam-funsaver", cat: "Câmeras", nome: "Kodak FunSaver", m: [1.06, .04, 0, .02, 1, 0, 0, .02, .86], con: 1.2, sat: 1.25, split: [[40, 20, 6], [255, 226, 180]], add: [6, 0, -10], vin: .34, grao: 22, pelicula: 1 },
   { id: "cam-quicksnap", cat: "Câmeras", nome: "Fuji QuickSnap", m: [.97, .03, 0, 0, 1.02, 0, 0, .02, .98], con: 1.14, sat: 1.16, split: [[10, 46, 34], [255, 244, 236]], add: [-4, 3, 0], vin: .32, grao: 22, pelicula: 1 },
   { id: "cam-mango", cat: "Câmeras", nome: "Mango Lassi", noite: 1, rampa: [[10, 4, 0], [130, 66, 22], [255, 214, 150]], quente: [40, 4, -50], con: 1.22, vin: .45, grao: 30, cinema: 2 },
@@ -6631,15 +6601,7 @@ const CAMERAS_C = [
   { id: "couro", tons: [["cam-couro-quente", "#D88A3A", "Quente"], ["cam-couro", "#B58E6A", "Natural"], ["cam-couro-frio", "#4F84A8", "Fria"]], nome: "Delhi 1955", frase: "Câmera 35 mm dos anos 50 no estojo de couro. Cor desbotada de álbum de família.",
     preset: { filtro: "cam-couro", moldura: "nenhuma", recorte: 9 / 16, formato: "original", grao: "auto", reels: "preto" },
     svg: `<svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="30" width="104" height="66" rx="10" fill="#7B4A28"/><circle cx="70" cy="64" r="20" fill="#2A2420"/><circle cx="70" cy="64" r="11" fill="#0E0C0B"/></svg>` },
-  { id: "meio", duplas: 1, nome: "Gêmeas 72", frase: "Câmera de meio quadro: duas fotos em pé, lado a lado, num quadro só.",
-    preset: { filtro: "cam-meio", moldura: "nenhuma", recorte: 3 / 4, formato: "original", grao: "auto", reels: "nenhum" },
-    svg: `<svg viewBox="0 0 220 140" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="mqm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2F0EA"/><stop offset=".5" stop-color="#C9C6BE"/><stop offset="1" stop-color="#8E8B84"/></linearGradient><linearGradient id="mqc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3734"/><stop offset="1" stop-color="#151413"/></linearGradient><radialGradient id="mql" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#5A6C8A"/><stop offset=".45" stop-color="#1A2030"/><stop offset="1" stop-color="#050608"/></radialGradient></defs><rect x="14" y="26" width="192" height="98" rx="10" fill="url(#mqm)"/><rect x="14" y="50" width="192" height="58" fill="url(#mqc)"/><rect x="14" y="26" width="192" height="98" rx="10" fill="none" stroke="#6E6B64" stroke-width="2"/><rect x="150" y="12" width="34" height="16" rx="3" fill="#B9B6AE" stroke="#77746D"/><rect x="24" y="16" width="22" height="12" rx="3" fill="#B9B6AE" stroke="#77746D"/><circle cx="110" cy="80" r="34" fill="#9E9B94" stroke="#5E5B55" stroke-width="2"/><circle cx="110" cy="80" r="27" fill="#2A2826"/><circle cx="110" cy="80" r="20" fill="url(#mql)"/><circle cx="103" cy="73" r="5" fill="rgba(255,255,255,.35)"/><rect x="160" y="34" width="34" height="12" rx="2" fill="#20242C"/><text x="40" y="44" font-family="Georgia,serif" font-size="11" font-style="italic" fill="#3A3734">Gêmeas</text><text x="170" y="118" font-family="Courier New,monospace" font-size="10" font-weight="700" fill="#E9E4D6">72</text></svg>` },
-  { id: "vhs", nome: "Mumbai VHS", frase: "Filmadora de fita dos anos 90: cor borrada, linhas de TV e a data na tela.",
-    preset: { filtro: "cam-vhs", moldura: "nenhuma", recorte: 4 / 3, formato: "original", grao: "auto", reels: "preto" },
-    svg: `<svg viewBox="0 0 230 140" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="vhc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4A4E"/><stop offset=".5" stop-color="#2A2A2E"/><stop offset="1" stop-color="#141416"/></linearGradient><radialGradient id="vhl" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#6A5A8A"/><stop offset=".45" stop-color="#1A1830"/><stop offset="1" stop-color="#040408"/></radialGradient></defs><rect x="30" y="40" width="150" height="72" rx="14" fill="url(#vhc)" stroke="#0A0A0C" stroke-width="2"/><rect x="60" y="22" width="96" height="22" rx="8" fill="#232326" stroke="#0A0A0C"/><rect x="150" y="18" width="46" height="26" rx="6" fill="#1A1A1D" stroke="#0A0A0C"/><rect x="156" y="23" width="34" height="16" rx="3" fill="#3A4A5A"/><circle cx="198" cy="76" r="26" fill="#1C1C1F" stroke="#0A0A0C" stroke-width="2"/><circle cx="198" cy="76" r="18" fill="url(#vhl)"/><circle cx="192" cy="70" r="4" fill="rgba(255,255,255,.35)"/><rect x="18" y="58" width="16" height="36" rx="5" fill="#1A1A1D"/><circle cx="58" cy="60" r="5" fill="#C4302B"/><text x="50" y="98" font-family="Arial Black,Arial,sans-serif" font-size="13" font-weight="900" fill="#D9D9D9" letter-spacing="1">VHS</text><rect x="95" y="88" width="64" height="8" rx="2" fill="#3A3A3E"/><text x="104" y="70" font-family="Arial,sans-serif" font-size="8" fill="#9A9AA0">HANDYCAM</text></svg>` },
 ];
-// câmeras da segunda maleta (não cabem na foto da primeira)
-const MALETA2 = ["meio", "vhs"];
 // todas as câmeras da maleta também filmam (chave Foto/Filme); o celular filma pelo botão Filmar do estúdio
 for (const c of CAMERAS_C) if (c.id !== "celular") c.filma = 1;
 // fotos realistas (quando estiverem na pasta img/cameras): corpo de perto com o visor, câmera inteira recortada e a estante
@@ -6689,8 +6651,6 @@ function vEstante() {
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Arsenal de Travessia" }), h("h1", { text: "Escolha sua câmera" }))),
     abasFotos(),
-    h("div", { class: "malaescolha", role: "tablist", "aria-label": "Qual maleta" }, [[1, "Maleta 1"], [2, "Maleta 2"]].map(([n, nome]) => h("button", { type: "button", role: "tab", class: "malaescbt", "aria-selected": String((S.maletaN || 1) === n), onclick: () => { S.maletaN = n; render(); } }, nome))),
-    S.maletaN === 2 ? maleta2() :
     // a caravana está em movimento: as câmeras viajam numa mala de couro aberta sobre a areia, cada uma no seu compartimento
     // mala-cheia.jpg: a foto já com as câmeras dentro (geradas juntas, sem recorte); aí os botões ficam invisíveis por cima de cada compartimento
     // mala-oito.jpg: a mala maior, com as 8 câmeras; se ainda não estiver, usa a de 6 (as câmeras novas ficam só na faixa de baixo)
@@ -6704,17 +6664,6 @@ function vEstante() {
       h("div", { class: "tabua" })))),
     vDiarioViajante(),
     ehLider(S.uid) ? chaveLogoLider() : null);
-}
-// segunda maleta: as câmeras novas (meio quadro e VHS). Com a foto img/cameras/maleta2-foto.jpg, os botões ficam por cima de cada compartimento
-const MALA2_FOTO = { meio: [.12, .3, .48, .8], vhs: [.52, .3, .88, .8] };
-function maleta2() {
-  const cams = CAMERAS_C.filter(c => MALETA2.includes(c.id));
-  if (!cams.length) return null;
-  if (temFoto("img/cameras/maleta2-foto.jpg")) return h("div", { class: "malafoto mala2foto" }, imgFixa("img/cameras/maleta2-foto.jpg", "estantefundo"),
-    cams.map(c => { const [x0, y0, x1, y1] = MALA2_FOTO[c.id]; return h("button", { type: "button", class: "namala nm-" + c.id, "aria-label": c.nome, style: `left:${x0 * 100}%;top:${y0 * 100}%;width:${(x1 - x0) * 100}%;height:${(y1 - y0) * 100}%`, onclick: () => escolheCamera(c.id) }); }));
-  return h("div", { class: "mala2" },
-    h("div", { class: "mala2tampa" }, h("span", { text: "Segunda maleta" })),
-    h("div", { class: "mala2casas" }, cams.map(c => h("button", { type: "button", class: "mala2casa", onclick: () => escolheCamera(c.id), "aria-label": c.nome }, imgCam(c), h("span", { class: "mala2nome", text: c.nome })))));
 }
 // só a líder vê: tirar o logo da Caravana das fotos e filmes que ela fizer (em todas as câmeras); fica guardado neste celular
 const semLogo = () => { try { return ehLider(S.uid) && localStorage.getItem("cdi-sem-logo") === "1"; } catch (e) { return false; } };
@@ -6765,7 +6714,7 @@ async function escolheCamera(id) {
   S.camSel = id; S.fotoSel = null; S.camFalhou = false; S.camDupla = false; S.duplaA = null; S.foto = fotoDaCamera(c);
   render(); $("#main") && ($("#main").scrollTop = 0);
 }
-const voltaEstante = () => { S.meioA = null; S.trocandoCam = null; fechaVivo(); S.camSel = null; S.foto = null; render(); };
+const voltaEstante = () => { S.trocandoCam = null; fechaVivo(); S.camSel = null; S.foto = null; render(); };
 // som de obturador, curtinho
 // som do clique: batida metálica curta do espelho + a cortina fechando logo depois; volume baixo.
 // usa o mesmo áudio já destravado no primeiro toque da tela (antes criava um novo na hora e atrasava)
@@ -6814,7 +6763,7 @@ function flashNaFoto(q) {
   g.restore();
 }
 const CINE_BOTOES = { rajastao: [["cam-kodak-cor", "Color"]], campo: [["cam-cinematic", "Cinematic"]], super8: [["cam-magic", "Magic Lassi"], ["cam-noturno", "Blue Lassi"], ["cam-mango", "Mango Lassi"], ["cam-rose", "Rose Lassi"], ["cam-pista", "Pistache"], ["cam-masala", "Masala"], ["cam-indigo", "Índigo"]] };
-const FILME_CAM = { meio: "Meio quadro · 72 poses · 35 mm", vhs: "Fita VHS · SP · 1998", campo: "Placa de vidro · obturador lento · 1900", couro: "Filme 35 mm desbotado · 1955", quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
+const FILME_CAM = { campo: "Placa de vidro · obturador lento · 1900", couro: "Filme 35 mm desbotado · 1955", quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
 function vCameraFisica(c) {
   const F0 = S.foto || (S.foto = fotoDaCamera(c));
   if (!F0.img && podeCamera() && !S.camFalhou) { const C = iniciaVivo(F0); S.foto = { ...F0, img: C.frame, vivo: true }; }
@@ -6854,14 +6803,6 @@ function vCameraFisica(c) {
     cliqueSom(); if (navigator.vibrate) navigator.vibrate(30); if (flashOn || comFlash) { const fl = h("div", { class: "flashcam" }); document.body.append(fl); setTimeout(() => fl.remove(), 450); }
     const q = document.createElement("canvas"); q.width = v.videoWidth; q.height = v.videoHeight; q.getContext("2d").drawImage(v, 0, 0);
     if (comFlash) flashNaFoto(q);
-    if (c.duplas) {
-      if (!S.meioA) { S.meioA = q; piscaVisor(); document.querySelectorAll(".cfmeio").forEach(e => { e.textContent = "2 de 2"; e.classList.add("on"); }); return; }
-      const a = S.meioA; S.meioA = null; document.querySelectorAll(".cfmeio").forEach(e => { e.textContent = "1 de 2"; e.classList.remove("on"); });
-      const H = 1800, hw = 1350, gap = 28, out = document.createElement("canvas"); out.width = hw * 2 + gap; out.height = H; const o = out.getContext("2d");
-      o.fillStyle = "#0E0C0A"; o.fillRect(0, 0, out.width, H);
-      [a, q].forEach((s, k) => { let sw = s.width, sh = s.height; if (sw / sh > hw / H) sw = sh * hw / H; else sh = sw * H / hw; o.drawImage(s, (s.width - sw) / 2, (s.height - sh) / 2, sw, sh, k * (hw + gap), 0, hw, H); });
-      piscaVisor(); revelaFoto(out, c, { recorte: null }); return;
-    }
     // obturador lento: a câmera de placa fica aberta quase um segundo e soma as imagens; o que se mexe sai riscado, como foto de 1900
     if (c.lento) { if (C.expondo) return; C.expondo = true; const g = q.getContext("2d"), n = 10; let k = 1;
       document.querySelector(".cfjanela")?.classList.add("expondo");
@@ -6886,9 +6827,7 @@ function vCameraFisica(c) {
   const frente = !!(S.camEst && S.camEst.frente);
   // peças da câmera
   const janela = h("div", { class: "cfjanela", style: c.id === "super8" ? "--razao:" + (F.recorte === 2.35 ? 2.35 : 4 / 3) : null }, F.img ? canvas : h("p", { class: "small", text: "Libere a câmera nos ajustes do celular." }),
-    c.id === "super8" ? [h("span", { class: "cfmira", "aria-hidden": "true" }), h("span", { class: "cfrazao", text: F.recorte === 2.35 ? "2.35:1" : "4:3" })] : null,
-    c.duplas ? h("span", { class: "cfmeio" + (S.meioA ? " on" : ""), "aria-live": "polite", text: S.meioA ? "2 de 2" : "1 de 2" }) : null,
-    c.id === "vhs" ? [h("span", { class: "cfvhs", "aria-hidden": "true" }), h("span", { class: "cfvhsrec", text: "● REC   SP" })] : null);
+    c.id === "super8" ? [h("span", { class: "cfmira", "aria-hidden": "true" }), h("span", { class: "cfrazao", text: F.recorte === 2.35 ? "2.35:1" : "4:3" })] : null);
   const visor = h("div", { class: "cfvisor" }, h("div", { class: "cfmoldura" }, janela));
   const obturador = h("button", { type: "button", class: "cfdisparo", "aria-label": "Tirar foto", onclick: dispara }, c.id === "descartavel" ? h("i", { "aria-hidden": "true" }, "• • •") : c.rajadas ? h("i", { "aria-hidden": "true" }, "AGORA") : null);
   const miniatura = h("button", { type: "button", class: "cfmini" + (S.revelando ? " revelando" : ""), "aria-label": "Ver as fotos", onclick: () => { if ((S.fotosDiario || [])[0]) c.rajadas ? verQuatro() : verFotos(0); } }, // lê a lista na hora (a miniatura muda sem redesenhar a tela)
@@ -7087,22 +7026,6 @@ function personalidade(cv, g, c, suave) {
   if (id === "rajastao") { // filme puxado: grão grosso que aparece mais nas sombras
     const N = Math.round(G.w * G.hh / (90 * u * u) * (suave ? .2 : 1)); x.globalCompositeOperation = "overlay"; if (suave) x.globalAlpha = .5; // no Color, bem menos pontinhos
     for (let i = 0; i < N; i++) { const v = R(); x.fillStyle = v < .5 ? "rgba(0,0,0,.35)" : "rgba(255,255,255,.3)"; const r = (.8 + R() * 1.6) * u; x.fillRect(G.ox + R() * G.w, G.oy + R() * G.hh, r, r); }
-  } else if (id === "vhs") {
-    const w = G.w, hh = G.hh, p = document.createElement("canvas"); p.width = Math.max(1, Math.round(w * .42)); p.height = Math.max(1, Math.round(hh * .42));
-    p.getContext("2d").drawImage(cv, G.ox, G.oy, w, hh, 0, 0, p.width, p.height); x.imageSmoothingEnabled = true; x.drawImage(p, G.ox, G.oy, w, hh);
-    try { const d = x.getImageData(G.ox, G.oy, w, hh), q = d.data, s = Math.max(2, Math.round(w * .006)) * 4, c2 = new Uint8ClampedArray(q);
-      for (let y = 0; y < hh; y++) { const L = y * w * 4; for (let k = 0; k < w * 4; k += 4) { const i = L + k; q[i] = c2[Math.max(L, i - s)]; q[i + 2] = c2[Math.min(L + w * 4 - 4, i + s) + 2]; } }
-      x.putImageData(d, G.ox, G.oy); } catch (e) {}
-    x.globalCompositeOperation = "source-over"; x.fillStyle = "rgba(0,0,0,.16)"; const lh = Math.max(2, Math.round(hh / 260));
-    for (let y = G.oy; y < G.oy + hh; y += lh * 2) x.fillRect(G.ox, y, w, lh);
-    const by = G.oy + hh * (.72 + R() * .18), bh = hh * .025; x.globalAlpha = .35; x.drawImage(cv, G.ox, by, w, bh, G.ox + w * .02, by, w, bh); x.globalAlpha = 1;
-    x.fillStyle = "rgba(255,255,255,.08)"; x.fillRect(G.ox, by, w, bh * .3);
-    const fs = Math.round(w * .045), ag = new Date(), M = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"][ag.getMonth()];
-    x.font = `700 ${fs}px "Courier New",monospace`; x.fillStyle = "#F2F2F2"; x.shadowColor = "rgba(0,0,0,.8)"; x.shadowBlur = fs * .25; x.shadowOffsetX = fs * .08; x.shadowOffsetY = fs * .08;
-    x.fillText("PLAY \u25B6", G.ox + w * .06, G.oy + hh * .09);
-    x.fillText(M + " " + String(ag.getDate()).padStart(2, "0") + " " + ag.getFullYear(), G.ox + w * .06, G.oy + hh * .86);
-    x.fillText((ag.getHours() < 12 ? "AM " : "PM ") + ((ag.getHours() % 12) || 12) + ":" + String(ag.getMinutes()).padStart(2, "0") + ":" + String(ag.getSeconds()).padStart(2, "0"), G.ox + w * .06, G.oy + hh * .93);
-    x.shadowColor = "transparent";
   } else if (id === "descartavel") { // flash estourado no meio, cantos caindo no escuro
     x.globalCompositeOperation = "screen"; const gr = x.createRadialGradient(cx, cy * .98, 0, cx, cy, L * .42); gr.addColorStop(0, "rgba(255,240,200,.14)"); gr.addColorStop(1, "rgba(255,240,200,0)"); x.fillStyle = gr; x.fillRect(G.ox, G.oy, G.w, G.hh);
     x.globalCompositeOperation = "multiply"; sombra(.3, .3);
