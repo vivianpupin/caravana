@@ -485,6 +485,8 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .missoeslista{list-style:none;margin:0;padding:0}
 .missoeslista li button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:0;border-bottom:1px dashed rgba(40,28,15,.18);padding:10px 2px;cursor:pointer;color:inherit;font:inherit}
 .missoeslista li:last-child button{border-bottom:0}
+.missoeslista li.trancada .missaotrava{display:flex;align-items:center;gap:12px;width:100%;padding:10px 2px;border-top:1px dashed rgba(40,28,15,.18);opacity:.55}
+.missoeslista li.trancada .missaock{border:0;background:none;font-size:14px}
 .missaock{flex:0 0 24px;height:24px;border-radius:50%;border:1.5px solid rgba(138,63,50,.5);display:grid;place-items:center;font-size:14px;color:#F6EDDA}
 .missoeslista li.ok .missaock{background:#3F4938;border-color:#3F4938}
 .missaotx{flex:1;display:flex;flex-direction:column;gap:2px}
@@ -2509,7 +2511,12 @@ const pistas = () => (S.mural || []).filter(ehPista);
 const pistasVistas = () => { try { return JSON.parse(localStorage.getItem("cdi-pistas") || "{}"); } catch (e) { return {}; } };
 const pistaAberta = f => S.isOwner || f.autor === S.uid || !!pistasVistas()[f.id];
 const MISSAO_PISTAS = ["pistas", "Decifrar as pistas da Caravana", "Deixamos algumas pistas na Galeria da Caravana. Descubra o que vem por aí.", v => pistas().length > 0 && pistas().every(pistaAberta), () => { S.fotoAba = "mural"; S.muralCidade = ""; if (S.tab !== "fotos") go("fotos"); else render(); }];
-const missoesAtivas = () => pistas().length ? [...MISSOES, MISSAO_PISTAS] : MISSOES;
+// última missão: abre 3 dias antes da viagem e leva até a Galeria da Caravana, onde a líder coloca os spoilers da preparação
+const ABRE_SPOILERS = "2026-11-01", ABRE_SPOILERS_TXT = "1º de novembro";
+const spoilersAbertos = () => hojeIso() >= ABRE_SPOILERS;
+const MISSAO_SPOILERS = ["spoilers", "Spoilers da travessia", "Na Galeria da Caravana tem novidades da preparação da viagem. Vá espiar!", v => false,
+  () => { marcaMissao("spoilers"); S.fotoAba = "mural"; S.muralCidade = ""; if (S.tab !== "fotos") go("fotos"); else render(); }];
+const missoesAtivas = () => [...MISSOES, ...(pistas().length ? [MISSAO_PISTAS] : []), ...(spoilersAbertos() ? [MISSAO_SPOILERS] : [])];
 // guarda também no celular: a missão aparece cumprida na hora, mesmo sem sinal
 const missoesLocais = () => { try { return JSON.parse(localStorage.getItem("cdi-missoes") || "{}"); } catch (e) { return {}; } };
 const missaoFeita = ([id, , , auto]) => { const v = eu(); return !!((v && (v.missoes || {})[id]) || missoesLocais()[id] || auto(v)); };
@@ -2544,7 +2551,11 @@ function vMissoes() {
       return h("li", { class: ok ? "ok" : "" }, h("button", { type: "button", onclick: m[4] },
         h("span", { class: "missaock", "aria-hidden": "true", text: ok ? "✓" : "" }),
         h("span", { class: "missaotx" }, h("b", { text: m[1] }), h("small", { text: ok && m[0] === "guardiao" && meuGuardiao() ? "Seu guardião: " + GUARDIOES[meuGuardiao()].nome : m[0] === "pistas" && !ok && pistas().some(pistaAberta) ? `${pistas().filter(pistaAberta).length} de ${pistas().length} pistas descobertas.` : m[2] })),
-        h("span", { class: "missaoir", "aria-hidden": "true", text: "›" }))); })));
+        h("span", { class: "missaoir", "aria-hidden": "true", text: "›" }))); }),
+      // antes de abrir, a última missão aparece trancada, com a data (não conta para o carimbo até abrir)
+      spoilersAbertos() ? null : h("li", { class: "trancada" }, h("div", { class: "missaotrava" },
+        h("span", { class: "missaock", "aria-hidden": "true", text: "🔒" }),
+        h("span", { class: "missaotx" }, h("b", { text: MISSAO_SPOILERS[1] }), h("small", { text: "Abre em " + ABRE_SPOILERS_TXT + ", 3 dias antes da viagem." }))))));
 }
 // ---------- mensagem na garrafa: fica guardada só neste celular e volta no último dia ----------
 const ABRE_INTENCAO = "2026-11-16";
@@ -8995,6 +9006,7 @@ function vMural() {
   // missão das pistas: ver a galeria já conta (as pistas aparecem normais, com a etiqueta "Pista")
   { const vis = pistasVistas(), novas = fotos.filter(f => ehPista(f) && !vis[f.id]); if (novas.length) try { localStorage.setItem("cdi-pistas", JSON.stringify({ ...vis, ...Object.fromEntries(novas.map(f => [f.id, Date.now()])) })); } catch (e) {}
     if (novas.length && !cid) marcaMissao("pistas"); }
+  if (spoilersAbertos() && !cid) marcaMissao("spoilers");
   perfis(fotos.map(f => f.autor));
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Galeria da Caravana" }))),
