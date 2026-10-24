@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "24/10 · 06:40";</script>
+<script>window.__VERSAO = "24/10 · 08:57";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -9054,7 +9054,7 @@ function vMural() {
     if (novas.length && !cid) marcaMissao("pistas"); }
   perfis(fotos.map(f => f.autor));
   return h("section", { class: "view" },
-    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Galeria da Caravana" }))),
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Galeria da Caravana" }))),
     abasFotos(),
     h("p", { class: "lede", text: "As fotos que a caravana envia, separadas por cidade." }),
     h("div", { class: "opts" }, [["", "Todas"], ...CIDADES_MURAL.map(c => [c, c])].map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(cid === id), onclick: () => { S.muralCidade = id; render(); } },
