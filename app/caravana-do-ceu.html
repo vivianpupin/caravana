@@ -1806,6 +1806,23 @@ nav.tabs button{position:relative}
 .pgmass small{font-style:normal;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;opacity:.75}
 .pgm p:not(.pgmdata){text-shadow:0 0 .6px rgba(46,36,25,.55)}
 .lacre{align-self:center;width:78px;height:78px;background:url(img/lacre.webp) center/contain no-repeat;display:grid;place-items:center;filter:sepia(.45) saturate(.6) brightness(.82) contrast(1.05) drop-shadow(0 3px 4px rgba(0,0,0,.35));margin-top:6px}
+/* aviso de voz no pergaminho */
+.pgaudio{display:flex;align-items:center;gap:12px;margin:6px 0 4px;padding:10px 12px;border-radius:16px;background:rgba(120,80,40,.12);border:1px solid rgba(120,80,40,.25)}
+.pgaudbt{flex:0 0 46px;height:46px;border-radius:50%;border:0;background:#7A3B2A;color:#F6EDDA;font-size:16px;box-shadow:0 3px 8px rgba(60,30,10,.35)}
+.pgaudmeio{flex:1;min-width:0;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 8px}
+.pgaudmeio .ondinha{grid-column:1/-1}
+.pgaudtx{font-size:12.5px;color:#5A3E22}
+.pgaudt{font-size:12px;color:#7A5A36;font-variant-numeric:tabular-nums}
+.ondinha{display:flex;align-items:center;gap:2px;height:26px}
+.ondinha i{flex:1;border-radius:2px;background:rgba(122,90,54,.45);transition:background .2s}
+.ondinha i.on{background:#7A3B2A}
+.gravador{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;background:var(--panel2);border:1px solid var(--line)}
+.gravador audio{width:100%}
+.gravlinha{display:flex;align-items:center;gap:10px}
+.gravlinha.gravando b{flex:1;font-variant-numeric:tabular-nums}
+.gravponto{width:12px;height:12px;border-radius:50%;background:#C4302B;animation:gravpisca 1s infinite}
+@keyframes gravpisca{50%{opacity:.25}}
+.gravbt{align-self:flex-start}
 .lacre img{width:30px;height:auto;filter:brightness(0) sepia(1) hue-rotate(-30deg) saturate(3) brightness(.32) drop-shadow(0 1px 0 rgba(255,210,190,.35));opacity:.8}
 .pergaminho .rolo{display:none}
 .rolo{display:block;height:18px;border-radius:9px;background:linear-gradient(180deg,#B8904F,#E9CF96 45%,#A77D3E);box-shadow:0 3px 6px rgba(0,0,0,.3);position:relative;z-index:1}
@@ -8508,6 +8525,75 @@ function pomboSvg(cls) {
     h("rect", { x: 26, y: 34, width: 14, height: 6, rx: 3, fill: "#EBD6A6", stroke: "#8A6A3F", "stroke-width": .8 }),
     h("path", { d: "M33 33.5 V40.5", stroke: "#8A2A1F", "stroke-width": 1.6 }));
 }
+// ---------- aviso falado: a líder grava a voz na hora e o pombo-correio leva junto com a carta ----------
+// o áudio vai em pedacinhos (o banco só guarda até 1 MB por item) e só é baixado quando a pessoa toca para ouvir
+const audiosBaixados = {};
+function urlDoAudio(c) {
+  if (audiosBaixados[c.id]) return audiosBaixados[c.id];
+  return audiosBaixados[c.id] = Promise.all(c.audio.partes.map(id => S.db.doc("fotos/" + id).get().then(d => { const t = atob(d.data().data), u = new Uint8Array(t.length); for (let i = 0; i < t.length; i++) u[i] = t.charCodeAt(i); return u; })))
+    .then(p => URL.createObjectURL(new Blob(p, { type: c.audio.tipo || "audio/mp4" })))
+    .catch(e => { delete audiosBaixados[c.id]; throw e; });
+}
+const tempoAudio = s => { s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+function ondinha(n) { return h("span", { class: "ondinha", "aria-hidden": "true" }, Array.from({ length: n || 22 }, (_, k) => h("i", { style: `height:${30 + Math.round(Math.abs(Math.sin(k * 1.7) * 55 + Math.sin(k * .6) * 15))}%` }))); }
+function tocadorAudioCarta(c) {
+  const au = new Audio(); au.preload = "none";
+  const tempo = h("small", { class: "pgaudt", text: c.audio.dur ? tempoAudio(c.audio.dur) : "" });
+  const bt = h("button", { type: "button", class: "pgaudbt", "aria-label": "Ouvir o aviso" }, "▶");
+  const caixa = h("div", { class: "pgaudio" }, bt, h("div", { class: "pgaudmeio" }, ondinha(26), h("span", { class: "pgaudtx", text: "Ouvir o aviso da Caravana" }), tempo));
+  const pinta = () => { bt.textContent = au.paused ? "▶" : "❚❚"; caixa.classList.toggle("tocando", !au.paused); };
+  au.addEventListener("play", pinta); au.addEventListener("pause", pinta); au.addEventListener("ended", () => { pinta(); caixa.querySelectorAll(".ondinha i").forEach(b => b.classList.remove("on")); });
+  au.addEventListener("timeupdate", () => { const d = isFinite(au.duration) ? au.duration : c.audio.dur || 0; if (d) { const barras = caixa.querySelectorAll(".ondinha i"), k = Math.round(au.currentTime / d * barras.length); barras.forEach((b, x) => b.classList.toggle("on", x < k)); tempo.textContent = tempoAudio(au.paused ? d : d - au.currentTime); } });
+  bt.onclick = async () => {
+    if (!au.paused) return au.pause();
+    if (!au.src) { bt.textContent = "…"; try { au.src = await urlDoAudio(c); } catch (e) { bt.textContent = "▶"; tempo.textContent = "Sem internet agora. Tente de novo."; return; } }
+    au.play().catch(() => pinta());
+  };
+  // fechou a carta, o áudio para
+  const para = new MutationObserver(() => { if (!caixa.isConnected) { au.pause(); para.disconnect(); } }); setTimeout(() => para.observe(document.body, { childList: true, subtree: true }), 0);
+  return caixa;
+}
+// gravador da líder: toca para gravar, toca para parar, ouve antes de mandar (até 3 minutos)
+function gravadorAudio(atual, aoMudar) {
+  let estado = atual ? { blob: null, tipo: atual.tipo, dur: atual.dur, antigo: atual } : null, mr = null, fluxo = null, t0 = 0, relogio = 0;
+  const caixa = h("div", { class: "gravador" }), st = h("p", { class: "small" });
+  const LIMITE = 180;
+  const para = () => { if (mr && mr.state !== "inactive") mr.stop(); };
+  const grava = async () => {
+    try { fluxo = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); }
+    catch (e) { st.textContent = "O celular não liberou o microfone. Libere nos Ajustes do celular e tente de novo."; return; }
+    const tipo = ["audio/mp4", "audio/webm;codecs=opus", "audio/webm"].find(x => window.MediaRecorder && MediaRecorder.isTypeSupported(x)) || "";
+    const pedacos = []; mr = new MediaRecorder(fluxo, tipo ? { mimeType: tipo, audioBitsPerSecond: 64000 } : undefined);
+    mr.ondataavailable = e => e.data && e.data.size && pedacos.push(e.data);
+    mr.onstop = () => { clearInterval(relogio); fluxo.getTracks().forEach(x => x.stop()); const dur = (Date.now() - t0) / 1000;
+      const b = new Blob(pedacos, { type: (mr.mimeType || tipo || "audio/mp4").split(";")[0] }); mr = null;
+      estado = b.size ? { blob: b, tipo: b.type, dur } : estado; aoMudar(estado); pinta(); };
+    t0 = Date.now(); mr.start(1000); pinta();
+    relogio = setInterval(() => { const s = (Date.now() - t0) / 1000; const r = caixa.querySelector(".gravtempo"); if (r) r.textContent = tempoAudio(s) + " / " + tempoAudio(LIMITE); if (s >= LIMITE) para(); }, 250);
+  };
+  const pinta = () => {
+    st.textContent = "";
+    if (mr) return caixa.replaceChildren(h("div", { class: "gravlinha gravando" }, h("span", { class: "gravponto", "aria-hidden": "true" }), h("b", { class: "gravtempo", text: "0:00 / " + tempoAudio(LIMITE) }),
+      h("button", { type: "button", class: "btn gold", onclick: para }, "■ Parar")), st);
+    if (!estado) return caixa.replaceChildren(h("button", { type: "button", class: "btn gravbt", onclick: grava }, "🎙️ Gravar aviso de voz"), h("p", { class: "small", text: "Toque para gravar e toque em Parar quando terminar. Você ouve antes de mandar." }), st);
+    const ouvir = h("audio", { controls: true, preload: "metadata" });
+    if (estado.blob) ouvir.src = URL.createObjectURL(estado.blob);
+    else if (estado.antigo && atual.cartaId) urlDoAudio({ id: atual.cartaId, audio: atual }).then(u => { ouvir.src = u; }).catch(() => {});
+    caixa.replaceChildren(h("div", { class: "gravlinha" }, h("b", { text: "🎙️ Aviso de voz · " + tempoAudio(estado.dur) })), ouvir,
+      h("div", { class: "actions" }, h("button", { type: "button", class: "btn", onclick: grava }, "Gravar de novo"),
+        h("button", { type: "button", class: "btn ghost", onclick: () => { estado = null; aoMudar(null); pinta(); } }, "Tirar o áudio")), st);
+  };
+  pinta();
+  return caixa;
+}
+async function sobeAudio(blob, aviso) {
+  const partes = [];
+  try {
+    for (let i = 0, n = Math.ceil(blob.size / PEDACO); i < n; i++) { if (aviso) aviso(`Enviando o áudio… ${i + 1} de ${n}`);
+      const r = await S.db.collection("fotos").add({ data: await b64(blob.slice(i * PEDACO, (i + 1) * PEDACO)), autor: S.uid, ts: Date.now(), parte: i }); partes.push(r.id); }
+  } catch (e) { for (const id of partes) S.assets?.delete(id).catch(() => {}); throw e; }
+  return partes;
+}
 function pergaminhoCarta(c) {
   return h("article", { class: "pergaminho" },
     h("span", { class: "rolo top", "aria-hidden": "true" }),
@@ -8516,7 +8602,8 @@ function pergaminhoCarta(c) {
       c.pessoal ? h("p", { class: "pgmso", text: "Só para você" }) : null,
       c.titulo ? h("h3", { class: "pgmtit", text: c.titulo }) : null,
       h("p", { class: "pgmpara", text: "Para " + primeiroNome() + "," }),
-      String(c.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })),
+      c.audio && c.audio.partes ? tocadorAudioCarta(c) : null,
+      String(c.texto || "").split(/\n\s*\n/).filter(p => p.trim()).map(p => h("p", { text: p.trim() })),
       h("div", { class: "pgmass" }, h("span", { text: assinaturaDe(c) }), h("small", { text: "Caravana do Céu" })),
       h("span", { class: "lacre", "aria-hidden": "true" }, h("img", { src: "img/simbolo-claro.png", alt: "" }))),
     h("span", { class: "rolo bot", "aria-hidden": "true" }));
@@ -8892,7 +8979,7 @@ function abrirCarta(c, chegou) {
   if (chegou) asas();
   closeSheets(); marcaCarta(c.id); setTimeout(render, 0);
   const box = h("div", { role: "dialog", "aria-label": "Carta: " + (c.titulo || "correspondência"), class: "correiobox" + (chegou ? " chegou" : "") },
-    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: c.pessoal ? "Chegou uma carta só para você!" : "Chegou uma carta por pombo-correio!" })) : null,
+    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: c.audio && c.audio.partes ? "O pombo-correio trouxe um aviso da Caravana!" : c.pessoal ? "Chegou uma carta só para você!" : "Chegou uma carta por pombo-correio!" })) : null,
     pergaminhoCarta(c),
     h("div", { class: "foot2" }, S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editarCarta(c) }, "Editar") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Guardar a carta")));
@@ -8914,19 +9001,31 @@ function editarCarta(c) {
     S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || ""))).map(v => h("option", { value: v.id, text: "Só para " + (v.nome || "viajante"), selected: c.para === v.id })));
   if (c.id) para.disabled = true; // uma carta já criada não muda de destino
   const st = h("p", { class: "msg", role: "status" });
-  let gravando = false;
+  let gravando = false, audioNovo = undefined; // undefined = não mexeu; null = tirou; {blob,...} = gravou
+  const gravador = gravadorAudio(c.audio ? { ...c.audio, cartaId: c.id } : null, a => { audioNovo = a; });
   const grava = async modo => {
     if (gravando) return;
-    if (!ta.value.trim()) { st.textContent = "Escreva a carta antes."; st.className = "msg err"; return; }
+    const temAudio = audioNovo ? true : audioNovo === null ? false : !!(c.audio && c.audio.partes);
+    if (!ta.value.trim() && !temAudio) { st.textContent = "Escreva a carta ou grave um aviso de voz antes."; st.className = "msg err"; return; }
     const envio = modo === "agora" ? Date.now() : Date.parse(`${d.value}T${hr.value || "07:00"}:00+05:30`);
     if (!isFinite(envio)) { st.textContent = "Confira a data e a hora."; st.className = "msg err"; return; }
     const dados = { titulo: tit.value.trim(), texto: ta.value.trim(), assinatura: ass.value.trim() || ASSINATURA, local: loc.value.trim(), envio, rascunho: modo === "rascunho", ts: Date.now() };
+    gravando = true;
+    try {
+      if (audioNovo && audioNovo.blob) { const partes = await sobeAudio(audioNovo.blob, x => { st.textContent = x; st.className = "msg"; });
+        dados.audio = { partes, tipo: audioNovo.tipo || "audio/mp4", dur: Math.round(audioNovo.dur || 0) }; }
+      else if (audioNovo === undefined && c.audio) dados.audio = c.audio;
+    } catch (e) { gravando = false; st.textContent = "Não consegui enviar o áudio. Confira a internet e tente de novo."; st.className = "msg err"; return; }
+    gravando = false;
+    const antigoSai = c.audio && c.audio.partes && dados.audio !== c.audio ? c.audio.partes : [];
     const pv = c.id ? c.para || "" : para.value, col = pv ? "cartasPessoais" : "cartas";
     if (pv) dados.para = pv;
     gravando = true;
     try {
       if (c.avisada && c.envio === dados.envio) dados.avisada = true; // carta já avisada não avisa de novo ao ser corrigida
       if (c.id) await S.db.doc(col + "/" + c.id).set(dados); else { const r = await S.db.collection(col).add(dados); c.id = r && r.id; c.para = pv; }
+      for (const id of antigoSai) S.assets?.delete(id).catch(() => {}); // o áudio trocado ou tirado sai do banco
+      c.audio = dados.audio; audioNovo = undefined; delete audiosBaixados[c.id];
       st.textContent = modo === "rascunho" ? "Rascunho guardado. Ninguém vê ainda." : modo === "agora" ? "Carta enviada! Ela chega agora para a caravana." : `Carta programada para ${dataCarta(envio)}, às ${horaCarta(envio)} na Índia.`;
       st.className = "msg ok";
     } catch (e) { st.textContent = "Não consegui guardar a carta."; st.className = "msg err"; }
@@ -8936,7 +9035,8 @@ function editarCarta(c) {
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: c.id ? "Editar carta" : "Nova carta" }))),
     h("label", { class: "lab", for: "cc-para", text: "Para quem" }), para,
     h("label", { class: "lab", for: "cc-tit", text: "Título" }), tit,
-    h("label", { class: "lab", for: "cc-txt", text: "Carta" }), ta,
+    h("label", { class: "lab", text: "Aviso de voz" }), gravador,
+    h("label", { class: "lab", for: "cc-txt", text: "Carta (pode ir só o áudio)" }), ta,
     h("p", { class: "small", text: "Para toda a caravana, cada viajante recebe com o próprio nome no começo. Só para uma pessoa, a carta chega lacrada com selo de cera e só ela lê." }),
     h("div", { class: "ccrow" }, h("div", null, h("label", { class: "lab", for: "cc-loc", text: "Enviada de" }), loc), h("div", null, h("label", { class: "lab", for: "cc-ass", text: "Assinatura" }), ass)),
     h("div", { class: "ccrow" }, h("div", null, h("label", { class: "lab", for: "cc-dia", text: "Dia da entrega" }), d), h("div", null, h("label", { class: "lab", for: "cc-hora", text: "Hora na Índia" }), hr)),
@@ -8954,7 +9054,7 @@ function editarCarta(c) {
 // líder apaga uma carta (geral ou pessoal) direto da lista
 function apagarCarta(c, depois) {
   if (!confirm("Apagar a carta \"" + (c.titulo || "sem título") + "\"" + (c.para ? " para " + nomeDe(c.para).split(" ")[0] : "") + "? Ela some do app.")) return;
-  S.db.doc((c.para ? "cartasPessoais/" : "cartas/") + c.id).delete().then(() => { if (depois) depois(); }, () => alert("Não consegui apagar a carta. Confira a internet e tente de novo."));
+  S.db.doc((c.para ? "cartasPessoais/" : "cartas/") + c.id).delete().then(() => { for (const id of (c.audio && c.audio.partes) || []) S.assets?.delete(id).catch(() => {}); if (depois) depois(); }, () => alert("Não consegui apagar a carta. Confira a internet e tente de novo."));
 }
 function vCorrespondencia() {
   const abertas = cartasAbertas().slice().reverse();
@@ -8968,7 +9068,7 @@ function vCorrespondencia() {
     h("button", { type: "button", class: "envapaga", "aria-label": "Apagar carta", title: "Apagar carta", onclick: () => apagarCarta(c) }, "🗑"));
   const env1 = (c, fut, entregue) => h("button", { type: "button", class: "envelope" + (fut && !entregue ? " fut" : ""), onclick: () => fut ? editarCarta(c) : abrirCarta(c) },
     h("span", { class: "rolinho", "aria-hidden": "true" }, h("i")),
-    h("span", { class: "ctx" }, h("b", { text: (c.para || c.pessoal ? "💌 " : "") + (c.titulo || "Carta da líder") }),
+    h("span", { class: "ctx" }, h("b", { text: (c.audio && c.audio.partes ? "🎙️ " : c.para || c.pessoal ? "💌 " : "") + (c.titulo || (c.audio && c.audio.partes ? "Aviso da Caravana" : "Carta da líder")) }),
       h("span", { text: (c.para && S.isOwner ? "Só para " + nomeDe(c.para).split(" ")[0] + " · " : c.pessoal ? "Só para você · " : "") + (fut && !entregue ? (c.rascunho ? "Rascunho · ninguém vê ainda" : `Programada · ${dataCarta(c.envio)}, ${horaCarta(c.envio)} na Índia`) : (c.local ? c.local + " · " : "") + dataCarta(c.envio)) })));
   return h("section", { class: "correio" },
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: "Cartas da travessia" }))),
