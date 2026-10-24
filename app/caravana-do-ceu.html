@@ -5416,7 +5416,7 @@ const FILTROS = [
   { id: "cam-noturno", cat: "Câmeras", nome: "Blue Lassi", noite: 1, con: 1.22, vin: .45, grao: 30, cinema: 2 },
   // o mesmo brilho, halo e grão dos Lassi, mas com as cores de verdade (sem pintar de azul, laranja ou rosa)
   { id: "cam-magic", cat: "Câmeras", nome: "Magic Lassi", con: 1.2, sat: 1.06, lift: -6, vin: .45, grao: 30, cinema: 2, natural: 1 },
-  { id: "cam-lowvel", cat: "Câmeras", nome: "Low Velocity", m: [1.06, .04, 0, 0, .96, .02, 0, .06, .74], sat: 1.08, split: [[34, 14, 2], [255, 206, 150]], con: 1.12, add: [4, -2, -8], vin: .38, grao: 12 },
+  { id: "cam-lowvel", cat: "Câmeras", nome: "Low Velocity", semFiapos: 1, m: [1.06, .04, 0, 0, .96, .02, 0, .06, .74], sat: 1.08, split: [[20, 8, 0], [255, 206, 150]], con: 1.2, lift: -12, add: [2, -4, -10], vin: .42, grao: 10 },
   { id: "cam-mango", cat: "Câmeras", nome: "Mango Lassi", noite: 1, rampa: [[10, 4, 0], [130, 66, 22], [255, 214, 150]], quente: [40, 4, -50], con: 1.22, vin: .45, grao: 30, cinema: 2 },
   { id: "cam-rose", cat: "Câmeras", nome: "Rose Lassi", noite: 1, rampa: [[8, 0, 8], [120, 48, 92], [250, 205, 225]], quente: [36, -4, -34], con: 1.22, vin: .45, grao: 30, cinema: 2 },
   { id: "cam-pista", cat: "Câmeras", nome: "Pistache", noite: 1, rampa: [[0, 8, 4], [36, 98, 74], [205, 238, 212]], quente: [32, -2, -42], con: 1.22, vin: .45, grao: 30, cinema: 2 },
@@ -7278,24 +7278,31 @@ function videoCam(C, grande) {
 // A imagem atual fica nítida e as anteriores vão se apagando por cima; o rastro é guardado pequeno (economiza o celular)
 // e só a foto tirada sai no tamanho grande.
 function comRastro(C, b, grande) {
-  const v = C.video, w = b.videoWidth, hh = b.videoHeight, k = Math.min(1, 720 / Math.max(w, hh)), tw = Math.round(w * k), th = Math.round(hh * k);
-  const R = C.rastroBuf || (C.rastroBuf = document.createElement("canvas"));
+  const v = C.video, w = b.videoWidth, hh = b.videoHeight, k = Math.min(1, 360 / Math.max(w, hh)), tw = Math.round(w * k), th = Math.round(hh * k);
+  // máscara do assunto: só o que é claro e está perto do meio deixa rastro (o fundo escuro e as bordas não)
+  const M = C.rastroBuf || (C.rastroBuf = document.createElement("canvas"));
   const chave = v.currentTime + "|" + w + "x" + hh;
-  const agora = performance.now();
-  if (R.chave !== chave && (agora - (R.t || 0) > 85 || R.width !== tw)) {
-    const novo = R.width !== tw || R.height !== th; if (novo) { R.width = tw; R.height = th; }
-    const x = R.getContext("2d"); x.globalAlpha = novo || !R.chave ? 1 : .34; x.drawImage(b, 0, 0, tw, th); x.globalAlpha = 1; R.chave = chave; R.t = agora;
+  if (M.chave !== chave) {
+    if (M.width !== tw || M.height !== th) { M.width = tw; M.height = th; }
+    const x = M.getContext("2d", { willReadFrequently: true }); x.drawImage(b, 0, 0, tw, th);
+    const d = x.getImageData(0, 0, tw, th), p = d.data, ss = (v0, a, z) => { const q = Math.min(1, Math.max(0, (v0 - a) / (z - a))); return q * q * (3 - 2 * q); };
+    for (let y = 0, n = 0; y < th; y++) for (let xx = 0; xx < tw; xx++, n += 4) {
+      const L = .299 * p[n] + .587 * p[n + 1] + .114 * p[n + 2], r = Math.hypot((xx - tw / 2) / (tw * .5), (y - th * .55) / (th * .45));
+      const m = ss(L, 80, 170) * (1 - ss(r, .3, .9)); p[n] *= m; p[n + 1] *= m; p[n + 2] *= m; }
+    x.putImageData(d, 0, 0);
+    // o rastro: o assunto repetido para o lado, cada cópia mais fraca que a anterior
+    const A = C.rastroAcc || (C.rastroAcc = document.createElement("canvas")); if (A.width !== tw || A.height !== th) { A.width = tw; A.height = th; }
+    const a = A.getContext("2d"); a.globalCompositeOperation = "source-over"; a.globalAlpha = 1; a.fillStyle = "#000"; a.fillRect(0, 0, tw, th);
+    a.globalCompositeOperation = "lighten"; const n0 = 16;
+    for (let i2 = 1; i2 <= n0; i2++) { a.globalAlpha = .6 * (1 - i2 / (n0 + 1)); a.drawImage(M, tw * .18 * i2 / n0, 0); }
+    a.globalCompositeOperation = "source-over"; a.globalAlpha = 1;
+    M.chave = chave;
   }
   const lado = grande ? Math.max(w, hh) : Math.min(960, Math.max(w, hh)), s = lado / Math.max(w, hh), ow = Math.round(w * s), oh = Math.round(hh * s);
   const O = grande ? document.createElement("canvas") : C.rastroOut || (C.rastroOut = document.createElement("canvas"));
   if (O.width !== ow || O.height !== oh) { O.width = ow; O.height = oh; }
   const o = O.getContext("2d"); o.globalAlpha = 1; o.drawImage(b, 0, 0, ow, oh);
-  // borrão de velocidade: a imagem se repete arrastada para o lado e as partes claras deixam o risco (como obturador lento com a câmera em movimento)
-  const fonte = grande ? b : R.width ? R : b, passo = ow * .12 / 10;
-  o.globalCompositeOperation = "lighten";
-  for (let i = 1; i <= 10; i++) { o.globalAlpha = .27; o.drawImage(fonte, passo * i, 0, ow, oh); }
-  o.globalCompositeOperation = "source-over";
-  o.globalAlpha = .35; o.drawImage(R, 0, 0, ow, oh); o.globalAlpha = 1;
+  o.globalCompositeOperation = "screen"; o.drawImage(C.rastroAcc, 0, 0, ow, oh); o.globalCompositeOperation = "source-over";
   O.videoWidth = ow; O.videoHeight = oh; return O;
 }
 function videoCamBase(C) {
