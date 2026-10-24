@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "24/10 · 06:32";</script>
+<script>window.__VERSAO = "24/10 · 06:34";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -917,7 +917,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .prs{display:flex;gap:6px}
 .pr{width:30px;text-align:center;font-weight:700;font-size:16px;color:var(--faint)}
 .pr.on{color:var(--ok)}
-.album{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:4px 0 12px}
+.album{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:18px 0 12px}
 .album .small{margin:0}
 .imapa{display:inline-block;margin-top:4px;font-size:12.5px;font-weight:600;color:var(--terra)}
 .abertura{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:#1A120B;overflow:hidden;animation:abentra .6s ease both}
@@ -9043,16 +9043,17 @@ function vMural() {
     h("p", { class: "lede", text: "As fotos que a caravana envia, separadas por cidade." }),
     h("div", { class: "opts" }, [["", "Todas"], ...CIDADES_MURAL.map(c => [c, c])].map(([id, n]) => h("button", { type: "button", class: "opt", "aria-pressed": String(cid === id), onclick: () => { S.muralCidade = id; render(); } },
       n + (id ? ` · ${S.mural.filter(f => f.cidade === id).length}` : "")))),
-    fotos.length ? (() => { const st = h("p", { class: "small", role: "status" }); return h("div", { class: "album" },
-      h("button", { class: "btn", type: "button", onclick: () => baixarAlbum(st, cid) }, (noSite() && podeRolo() ? "Salvar no celular: " : "Baixar ") + (cid ? `álbum de ${cid}` : "álbum da tribo")),
-      h("span", { class: "small", text: cid ? "As fotos desta cidade num arquivo só." : "Todas as fotos da galeria e do chat num arquivo só." }), st); })() : null,
     fotos.length ? h("div", { class: "mural" }, fotos.map(f => h("div", { class: "mwrap" + (ehPista(f) ? " pista" : "") },
       h("button", { type: "button", class: "mfoto", onclick: () => abrirFotoMural(f), "aria-label": (f.legenda || "Foto") + " de " + nomeDe(f.autor) },
         muralMini(f), h("span", { class: "mnome", text: nomeDe(f.autor).split(" ")[0] + (f.cidade && !cid ? " · " + f.cidade : "") })),
       f.autor === S.uid || S.isOwner ? h("button", { type: "button", class: "mdel", "aria-label": "Apagar esta foto", onclick: () => { if (confirm("Apagar esta foto da galeria?")) apagaFotoMural(f).catch(() => alert("Não consegui apagar a foto.")); } }, "×") : null)))
       : h("div", { class: "fotovazia" }, h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: cid ? "Nenhuma foto de " + cid + " ainda" : "A galeria está esperando" }),
         h("span", { text: "Monte sua foto no Estúdio e toque em Enviar para a galeria da caravana." }),
-        h("button", { class: "btn gold", type: "button", onclick: () => { S.fotoAba = "estudio"; render(); } }, "Ir para o Estúdio")));
+        h("button", { class: "btn gold", type: "button", onclick: () => { S.fotoAba = "estudio"; render(); } }, "Ir para o Estúdio")),
+    // salvar o álbum fica embaixo da galeria
+    fotos.length ? (() => { const st = h("p", { class: "small", role: "status" }); return h("div", { class: "album" },
+      h("button", { class: "btn", type: "button", onclick: () => baixarAlbum(st, cid) }, (noSite() && podeRolo() ? "Salvar no celular: " : "Baixar ") + (cid ? `álbum de ${cid}` : "álbum da tribo")),
+      h("span", { class: "small", text: cid ? "As fotos desta cidade num arquivo só." : "Todas as fotos da galeria e do chat num arquivo só." }), st); })() : null);
 }
 // filme tocando limpo: sem os controles do celular (que deixam uma camada escura por cima); um toque pausa e outro volta a tocar
 function filmeLimpo(src, poster, cls) {
