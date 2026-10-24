@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "24/10 · 06:37";</script>
+<script>window.__VERSAO = "24/10 · 06:38";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3550,7 +3550,7 @@ function celebraSelo(l) {
       h("h2", { class: "celnome", text: l.nome }),
       h("p", { class: "celsub", text: [d ? `Dia ${d.n} · ${d.cidade}` : "", `${qtd} de ${ls.length} carimbos`].filter(Boolean).join("  ·  ") }),
       h("div", { class: "actions", style: "justify-content:center" },
-        h("button", { class: "btn gold", type: "button", onclick: () => { fechar(); S.trilhaChegou = l.id; setTimeout(() => { if (S.trilhaChegou === l.id) S.trilhaChegou = null; }, 3000); if (S.tab !== "passaporte") go("passaporte"); else render(); setTimeout(() => document.querySelector(".parada.chegou")?.scrollIntoView({ block: "center", behavior: "smooth" }), 120); } }, "Ver na minha trilha"),
+        h("button", { class: "btn gold", type: "button", onclick: () => { fechar(); S.trilhaChegou = l.id; setTimeout(() => { if (S.trilhaChegou === l.id) S.trilhaChegou = null; }, 3000); if (S.tab !== "passaporte") go("passaporte"); else render(); setTimeout(() => document.querySelector(".parada.chegou")?.scrollIntoView({ block: "center", behavior: "smooth" }), 120); } }, "Ver no passaporte"),
         h("button", { class: "btn ghost celfecha", type: "button", onclick: fechar }, "Fechar"))));
   document.body.append(ov);
 }
