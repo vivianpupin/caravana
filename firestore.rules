@@ -40,6 +40,15 @@ service cloud.firestore {
       allow read: if membro();
       allow create: if membro() && autor();
       allow update, delete: if lider() || (membro() && resource.data.autor == request.auth.uid);
+      // curtir: qualquer viajante mexe só no próprio coração
+      allow update: if membro() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['curtidas'])
+        && request.resource.data.get('curtidas', {}).diff(resource.data.get('curtidas', {})).affectedKeys().hasOnly([request.auth.uid]);
+    }
+    // comentários das fotos da Galeria
+    match /comentarios/{id} {
+      allow read: if membro();
+      allow create: if membro() && autor() && request.resource.data.texto is string && request.resource.data.texto.size() <= 500;
+      allow update, delete: if lider() || (membro() && resource.data.autor == request.auth.uid);
     }
     match /pensamentos/{id} {
       allow read: if membro();
