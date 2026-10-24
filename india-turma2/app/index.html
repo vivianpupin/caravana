@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "24/10 · 09:57";</script>
+<script>window.__VERSAO = "24/10 · 10:11";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -8695,11 +8695,11 @@ function pergaminhoCarta(c) {
     h("div", { class: "pgm" },
       h("p", { class: "pgmdata", text: (c.local || "Índia") + " · " + dataCarta(c.envio || Date.now()) }),
       c.pessoal ? h("p", { class: "pgmso", text: "Só para você" }) : null,
-      c.titulo ? h("h3", { class: "pgmtit", text: c.titulo }) : null,
+      c.titulo && !(c.audio && c.audio.partes) ? h("h3", { class: "pgmtit", text: c.titulo }) : null,
       h("p", { class: "pgmpara", text: "Para " + primeiroNome() + "," }),
       c.audio && c.audio.partes ? tocadorAudioCarta(c) : null,
       String(c.texto || "").split(/\n\s*\n/).filter(p => p.trim()).map(p => h("p", { text: p.trim() })),
-      h("div", { class: "pgmass" }, h("span", { text: assinaturaDe(c) }), h("small", { text: "Caravana do Céu" })),
+      c.audio && c.audio.partes ? null : h("div", { class: "pgmass" }, h("span", { text: assinaturaDe(c) }), h("small", { text: "Caravana do Céu" })),
       c.audio && c.audio.partes ? null : h("span", { class: "lacre", "aria-hidden": "true" }, h("img", { src: "img/simbolo-claro.png", alt: "" }))),
     h("span", { class: "rolo bot", "aria-hidden": "true" }));
 }
