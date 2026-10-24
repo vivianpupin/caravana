@@ -1899,7 +1899,11 @@ nav.tabs button{position:relative}
 .mvacoes .btn.ghost{flex:0 0 auto;color:#F5EFE4;border-color:rgba(255,255,255,.25)}
 .mvbase .msg{margin:0;color:#E9D9B8}.mvbase .msg:empty{display:none}
 .mfoto .mcurte{position:absolute;z-index:1;left:6px;bottom:5px;font-size:11px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.7)}
-.mvest.on{color:#F08A7A}
+.mvacoes{align-items:center;gap:8px}
+.mvacao{border:0;background:rgba(255,255,255,.1);color:#F5EFE4;border-radius:99px;font:500 14px Poppins,sans-serif;padding:10px 14px;white-space:nowrap}
+.mvcora.on{color:#F08A7A}
+.mvesp{flex:1}
+.mvicone{border:1px solid rgba(255,255,255,.22);background:none;color:#F5EFE4;border-radius:99px;font:500 12px Poppins,sans-serif;padding:7px 10px;white-space:nowrap}
 .mvbox{position:relative}
 .mcomentarios{position:absolute;left:0;right:0;bottom:0;max-height:62%;background:#1E1610;border-radius:20px 20px 0 0;padding:14px 16px calc(12px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;box-shadow:0 -10px 30px rgba(0,0,0,.4)}
 .mctopo{display:flex;justify-content:space-between;align-items:center}
@@ -9316,8 +9320,11 @@ function salvarMidiaMural(f, st) {
 function abrirFotoMural(f0, lista) {
   closeSheets();
   const fs = lista && lista.length ? lista : [f0]; let i = Math.max(0, fs.findIndex(x => x.id === f0.id));
-  const st = h("p", { class: "msg", role: "status" }), conta = h("span"), coracao = h("button", { type: "button", class: "mvest" }),
+  const st = h("p", { class: "msg", role: "status" }), conta = h("span"), coracao = h("button", { type: "button", class: "mvacao mvcora" }), comenta = h("button", { type: "button", class: "mvacao" }),
     info = h("div", { class: "mvinfo" }), acoes = h("div", { class: "mvacoes" });
+  // quantos comentários tem a foto aberta (só escuta a foto da vez)
+  let offConta = null; const contaComentarios = f => { offConta && offConta(); comenta.textContent = "💬 Comentar";
+    offConta = S.db.collection("comentarios").where("mural", "==", f.id).onSnapshot(s => { const n = s.docs.length; comenta.textContent = n ? `💬 ${n} ${n === 1 ? "comentário" : "comentários"}` : "💬 Comentar"; }, () => {}); };
   let painel = null; const fechaPainel = () => { if (painel) { painel._off && painel._off(); painel.remove(); painel = null; } };
   // cada foto só carrega quando chega perto (a atual e as vizinhas); filme só toca quando é a atual
   const slides = fs.map(() => h("div", { class: "mvslide" }));
@@ -9337,14 +9344,17 @@ function abrirFotoMural(f0, lista) {
       S.db.doc("mural/" + f.id).update({ destaque: v, legenda: leg }).catch(() => { f.destaque = !v; f.legenda = antes; mostra(); }); };
     st.textContent = ""; st.className = "msg";
     info.replaceChildren(...(f.legenda ? [h("b", { text: f.legenda })] : []), h("small", { text: [d ? `Dia ${d.n}` : new Date(f.ts).toLocaleDateString("pt-BR"), "enviada por " + nomeDe(f.autor), fs.length > 1 ? "arraste para o lado" : ""].filter(Boolean).join(" · ") }));
-    acoes.replaceChildren(h("button", { class: "btn gold", type: "button", onclick: () => salvarMidiaMural(f, st) }, "Salvar no celular"),
-      h("button", { class: "btn ghost", type: "button", "aria-label": "Comentários", onclick: () => { fechaPainel(); painel = painelComentarios(f, fechaPainel); box.append(painel); } }, "💬"),
-      ...[S.isOwner ? h("button", { class: "btn ghost", type: "button", "aria-label": f.destaque ? "Tirar dos destaques" : "Colocar nos destaques", onclick: destacar }, f.destaque ? "★" : "☆") : null, meu ? h("button", { class: "btn ghost", type: "button", onclick: () => { if (!confirm(f.video ? "Apagar este vídeo da galeria?" : "Apagar esta foto da galeria?")) return; apagaFotoMural(f).then(closeSheets, () => { st.textContent = "Não consegui apagar."; st.className = "msg err"; }); } }, "Apagar") : null].filter(Boolean));
+    // curtir e comentar à esquerda, bem à mostra; salvar, destacar e apagar pequenos à direita
+    comenta.onclick = () => { fechaPainel(); painel = painelComentarios(f, fechaPainel); box.append(painel); }; contaComentarios(f);
+    acoes.replaceChildren(coracao, comenta, h("span", { class: "mvesp" }),
+      ...[h("button", { class: "mvicone", type: "button", "aria-label": "Salvar no celular", onclick: () => salvarMidiaMural(f, st) }, "⤓ Salvar"),
+        S.isOwner ? h("button", { class: "mvicone", type: "button", "aria-label": f.destaque ? "Tirar dos destaques" : "Colocar nos destaques", onclick: destacar }, f.destaque ? "★" : "☆") : null,
+        meu ? h("button", { class: "mvicone", type: "button", "aria-label": f.video ? "Apagar vídeo" : "Apagar foto", onclick: () => { if (!confirm(f.video ? "Apagar este vídeo da galeria?" : "Apagar esta foto da galeria?")) return; apagaFotoMural(f).then(closeSheets, () => { st.textContent = "Não consegui apagar."; st.className = "msg err"; }); } }, "🗑") : null].filter(Boolean));
   };
   let toqueAnt = 0;
   const trilho = h("div", { class: "mvtrilho", onclick: e => { if (e.target.closest("video")) return; const ag = Date.now(); if (ag - toqueAnt < 320 && !curti(fs[i])) coracao.click(); toqueAnt = ag; }, onscroll: e => { const el = e.currentTarget, k = Math.round(el.scrollLeft / Math.max(1, el.clientWidth)); if (k !== i && fs[k]) { i = k; fechaPainel(); if (fs[k].video) { slides[k].dataset.ok = ""; slides[k].replaceChildren(); } mostra(); } } }, slides);
   const box = h("div", { class: "mvbox", role: "dialog", "aria-label": "Foto da galeria" },
-    h("div", { class: "mvtopo" }, h("button", { type: "button", class: "mvfecha", "aria-label": "Fechar", onclick: () => { fechaPainel(); closeSheets(); }, text: "✕" }), conta, coracao),
+    h("div", { class: "mvtopo" }, h("button", { type: "button", class: "mvfecha", "aria-label": "Fechar", onclick: () => { fechaPainel(); offConta && offConta(); closeSheets(); }, text: "✕" }), conta, h("i", { class: "mvfecha", style: "visibility:hidden", "aria-hidden": "true", text: "✕" })),
     trilho, h("div", { class: "mvbase" }, info, acoes, st));
   const sheet = h("div", { class: "sheet mvisor" }, box);
   document.body.append(sheet); mostra();
