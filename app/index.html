@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "24/10 · 06:23";</script>
+<script>window.__VERSAO = "24/10 · 06:28";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2545,12 +2545,12 @@ const pistas = () => (S.mural || []).filter(ehPista);
 const pistasVistas = () => { try { return JSON.parse(localStorage.getItem("cdi-pistas") || "{}"); } catch (e) { return {}; } };
 const pistaAberta = f => S.isOwner || f.autor === S.uid || !!pistasVistas()[f.id];
 const MISSAO_PISTAS = ["pistas", "Decifrar as pistas da Caravana", "Deixamos algumas pistas na Galeria da Caravana. Descubra o que vem por aí.", v => pistas().length > 0 && pistas().every(pistaAberta), () => { S.fotoAba = "mural"; S.muralCidade = ""; if (S.tab !== "fotos") go("fotos"); else render(); }];
-// última missão: abre 3 dias antes da viagem e leva até a Galeria da Caravana, onde a líder coloca os spoilers da preparação
-const ABRE_SPOILERS = "2026-11-01", ABRE_SPOILERS_TXT = "1º de novembro";
-const spoilersAbertos = () => hojeIso() >= ABRE_SPOILERS;
-const MISSAO_SPOILERS = ["spoilers", "Spoilers da travessia", "Na Galeria da Caravana tem novidades da preparação da viagem. Vá espiar!", v => false,
-  () => { marcaMissao("spoilers"); S.fotoAba = "mural"; S.muralCidade = ""; if (S.tab !== "fotos") go("fotos"); else render(); }];
-const missoesAtivas = () => [...MISSOES, ...(pistas().length ? [MISSAO_PISTAS] : []), ...(spoilersAbertos() ? [MISSAO_SPOILERS] : [])];
+// as duas últimas missões (pistas na Galeria e mensagem para a tribo) ficam trancadas até faltarem 3 dias para a viagem
+const ABRE_ULTIMAS = "2026-11-01", ABRE_ULTIMAS_TXT = "1º de novembro";
+const ultimasAbertas = () => hojeIso() >= ABRE_ULTIMAS;
+const MISSAO_TRIBO = ["tribo", "Mensagem para a tribo", "Mande uma mensagem no chat para a turma antes de embarcar.", v => (S.chat || []).some(m => m.autor === S.uid && m.tipo !== "reacao" && (m.ts || 0) >= Date.parse(ABRE_ULTIMAS + "T00:00:00-03:00")), () => go("conversa")];
+const ULTIMAS = [MISSAO_PISTAS, MISSAO_TRIBO];
+const missoesAtivas = () => ultimasAbertas() ? [...MISSOES, ...ULTIMAS] : MISSOES;
 // guarda também no celular: a missão aparece cumprida na hora, mesmo sem sinal
 const missoesLocais = () => { try { return JSON.parse(localStorage.getItem("cdi-missoes") || "{}"); } catch (e) { return {}; } };
 const missaoFeita = ([id, , , auto]) => { const v = eu(); return !!((v && (v.missoes || {})[id]) || missoesLocais()[id] || auto(v)); };
@@ -2586,10 +2586,10 @@ function vMissoes() {
         h("span", { class: "missaock", "aria-hidden": "true", text: ok ? "✓" : "" }),
         h("span", { class: "missaotx" }, h("b", { text: m[1] }), h("small", { text: ok && m[0] === "guardiao" && meuGuardiao() ? "Seu guardião: " + GUARDIOES[meuGuardiao()].nome : m[0] === "pistas" && !ok && pistas().some(pistaAberta) ? `${pistas().filter(pistaAberta).length} de ${pistas().length} pistas descobertas.` : m[2] })),
         h("span", { class: "missaoir", "aria-hidden": "true", text: "›" }))); }),
-      // antes de abrir, a última missão aparece trancada, com a data (não conta para o carimbo até abrir)
-      spoilersAbertos() ? null : h("li", { class: "trancada" }, h("div", { class: "missaotrava" },
+      // antes de abrir, as últimas missões aparecem trancadas, com a data (não contam para o carimbo até abrir)
+      ultimasAbertas() ? null : ULTIMAS.map(m => h("li", { class: "trancada" }, h("div", { class: "missaotrava" },
         h("span", { class: "missaock", "aria-hidden": "true", text: "🔒" }),
-        h("span", { class: "missaotx" }, h("b", { text: MISSAO_SPOILERS[1] }), h("small", { text: "Abre em " + ABRE_SPOILERS_TXT + ", 3 dias antes da viagem." }))))));
+        h("span", { class: "missaotx" }, h("b", { text: m[1] }), h("small", { text: "Abre em " + ABRE_ULTIMAS_TXT + ", 3 dias antes da viagem." })))))));
 }
 // ---------- mensagem na garrafa: fica guardada só neste celular e volta no último dia ----------
 const ABRE_INTENCAO = "2026-11-16";
@@ -9040,7 +9040,7 @@ function vMural() {
   // missão das pistas: ver a galeria já conta (as pistas aparecem normais, com a etiqueta "Pista")
   { const vis = pistasVistas(), novas = fotos.filter(f => ehPista(f) && !vis[f.id]); if (novas.length) try { localStorage.setItem("cdi-pistas", JSON.stringify({ ...vis, ...Object.fromEntries(novas.map(f => [f.id, Date.now()])) })); } catch (e) {}
     if (novas.length && !cid) marcaMissao("pistas"); }
-  if (spoilersAbertos() && !cid) marcaMissao("spoilers");
+  if (ultimasAbertas() && !cid) marcaMissao("pistas");
   perfis(fotos.map(f => f.autor));
   return h("section", { class: "view" },
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Estúdio da Caravana" }), h("h1", { text: "Galeria da Caravana" }))),
