@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "25/10 · 11:06";</script>
+<script>window.__VERSAO = "25/10 · 11:28";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1957,7 +1957,10 @@ nav.tabs button{position:relative}
 .globoaviso{position:absolute;inset:0;display:grid;place-items:center;color:#E9D9B8;font-size:14px;margin:0}
 .globomoldura .mapctrl{position:absolute;right:10px;top:10px;z-index:2}
 .head h1.titmapa,.titmapa{font-family:var(--ui);font-weight:500;font-size:19px;letter-spacing:0;line-height:1.3}
-.globomoldura .mapdica{position:absolute;left:50%;right:auto;bottom:38px;transform:translateX(-50%);z-index:2;white-space:nowrap;pointer-events:none}
+.globocam{position:absolute;left:10px;top:10px;z-index:2;display:flex;background:rgba(255,248,236,.95);border-radius:999px;padding:3px;box-shadow:0 2px 8px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s}
+.globocam.on{opacity:1;pointer-events:auto}
+.globocam button{border:0;background:none;border-radius:999px;padding:6px 13px;font:500 12.5px var(--ui);color:#5B4630}
+.globocam button[aria-pressed="true"]{background:#3B2A1C;color:#FFF3DC}
 .globopin{display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .globobon{width:42px;height:58px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.6))}
 .globobon svg{width:100%;height:100%}
@@ -5363,7 +5366,7 @@ function vPerto() {
   if (!eu0 && !S.pertoCentro && perto.length && !S._pertoAuto) { S._pertoAuto = true; setTimeout(verTodos, 0); }
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   return h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
-    window.__SITE ? h("div", { class: "fcats", role: "tablist", style: "margin:0" }, [["ruas", "Ruas"], ["satelite", "Satélite"]].map(([id, n]) =>
+    window.__SITE ? h("div", { class: "fcats", role: "tablist", style: "margin:0" }, [["ruas", "Mapa"], ["satelite", "Satélite"]].map(([id, n]) =>
       h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String((S.camadaMapa === "satelite" ? "satelite" : "ruas") === id), onclick: () => { S.camadaMapa = id; render(); } }, n))) : null,
     h("div", { class: "map mapaperto" }, mapaPerto(),
       h("div", { class: "mapctl" },
@@ -5371,7 +5374,7 @@ function vPerto() {
         h("button", { type: "button", "aria-label": "Afastar", onclick: () => zoom(2) }, ic("M5 12h14")),
         h("button", { type: "button", "aria-label": "Centralizar em mim", class: S.pertoCentro ? "" : "on", onclick: () => { S.pertoCentro = null; render(); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")),
         perto.length ? h("button", { type: "button", "aria-label": "Ver todos", onclick: verTodos }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")) : null),
-      h("p", { class: "mapdica", text: "Arraste com o dedo · pinça para aproximar" })),
+      null),
     eu0 && S.rua && S.rua.txt ? h("div", { class: "ruaaqui", role: "status" }, h("span", { class: "eyebrow", text: "Você está em" }), h("b", { text: S.rua.txt }), S.rua.sub ? h("small", { text: S.rua.sub }) : null) : null,
     eu0 ? h("p", { class: "coord", style: "text-align:left", text: "Você: " + coordTxt(eu0.lat, eu0.lng) }) : null,
     !S.gpsOn ? h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null)
@@ -5442,7 +5445,8 @@ function vMundo() {
       h("div", { class: "mapctrl" },
         h("button", { type: "button", "aria-label": "Ver todos", onclick: () => enquadraGlobo(true) }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")),
         minhaPos() ? h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => { const m = minhaPos(); S.globo && S.globo.flyTo({ center: [+m.lng, +m.lat], zoom: 12, duration: 2500 }); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")) : null),
-      h("p", { class: "mapdica", text: "Gire com o dedo · pinça para aproximar" })),
+      h("div", { class: "globocam" + (S.globoPerto ? " on" : "") }, [["satelite", "Satélite"], ["mapa", "Mapa"]].map(([id, n]) =>
+        h("button", { type: "button", "aria-pressed": String((S.globoCamada || "satelite") === id), onclick: () => { S.globoCamada = id; camadaGlobo(); render(); } }, n)))),
     !S.gpsOn ? h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null)
       : h("p", { class: "msg ok", text: S.gpsMsg || "Você está ao vivo no mapa." }),
     gente.length ? null : h("p", { class: "small", text: "Quando alguém da caravana ligar a localização, o bonequinho aparece no globo, onde a pessoa estiver: em casa, numa conexão ou já na Índia." }));
@@ -5453,17 +5457,15 @@ function montaGlobo(caixa) {
   const m = S.globo = new maplibregl.Map({ container: caixa, attributionControl: { compact: true }, center: [40, 20], zoom: 1.4, maxZoom: 19, dragRotate: false, pitchWithRotate: false, fadeDuration: 0, maxTileCacheZoomLevels: 6, refreshExpiredTiles: false,
     style: { version: 8, projection: { type: "globe" },
       sources: {
-        // mapa de ruas (sem satélite): só aparece se a foto de satélite falhar, para o mapa nunca ficar vazio
-        mapa: { type: "raster", tiles: [ESRI_GLOBO + "World_Street_Map/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 19, attribution: "Esri" },
+        // mapa bege (o mesmo do "Perto de mim"): opção "Mapa" quando aproxima, e reserva se a foto de satélite falhar
+        mapa: { type: "raster", tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize: 256, maxzoom: 19, attribution: "© OpenStreetMap" },
         sat: { type: "raster", tiles: [ESRI_GLOBO + "World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18, attribution: "Esri, Maxar" },
         nomes: { type: "raster", tiles: [ESRI_GLOBO + "Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18 },
-        ruas: { type: "raster", tiles: [ESRI_GLOBO + "Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18 },
         prec: { type: "geojson", data: { type: "FeatureCollection", features: [] } } },
       sky: { "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 1, 5, 1, 7, 0] },
       layers: [{ id: "fundo", type: "background", paint: { "background-color": "#0B1426" } },
-        { id: "mapa", type: "raster", source: "mapa", layout: { visibility: "none" }, paint: { "raster-fade-duration": 0 } },
+        { id: "mapa", type: "raster", source: "mapa", layout: { visibility: "none" }, paint: { "raster-fade-duration": 0, "raster-saturation": -.15, "raster-opacity": .72 } },
         { id: "sat", type: "raster", source: "sat", paint: { "raster-fade-duration": 0 } },
-        { id: "ruas", type: "raster", source: "ruas", minzoom: 11, paint: { "raster-fade-duration": 0, "raster-opacity": .9 } },
         { id: "nomes", type: "raster", source: "nomes", paint: { "raster-fade-duration": 0, "raster-opacity": .9 } },
         { id: "precf", type: "fill", source: "prec", minzoom: 12, paint: { "fill-color": "#E9C77E", "fill-opacity": .18 } },
         { id: "precl", type: "line", source: "prec", minzoom: 12, paint: { "line-color": "#E9C77E", "line-width": 1.5 } }] } });
@@ -5471,8 +5473,20 @@ function montaGlobo(caixa) {
   // se a foto de satélite de perto falhar, daquele zoom para cima mostra o mapa de ruas no lugar
   let zSat = 99;
   m.on("error", e => { if (e.sourceId !== "sat") return; const z = e.tile && e.tile.tileID ? e.tile.tileID.canonical.z : Math.round(m.getZoom());
-    m.setLayoutProperty("mapa", "visibility", "visible"); if (z < zSat) { zSat = z; m.setLayerZoomRange("sat", 0, Math.max(1, z - .5)); } });
-  m.on("load", () => { atualizaGlobo(); enquadraGlobo(false); });
+    S.globoSatFalhou = true; camadaGlobo(); if (z < zSat) { zSat = z; m.setLayerZoomRange("sat", 0, Math.max(1, z - .5)); } });
+  // as opções Satélite / Mapa aparecem quando o mapa está perto
+  m.on("zoom", () => { const perto = m.getZoom() >= GLOBO_PERTO; if (perto !== !!S.globoPerto) { S.globoPerto = perto; const c = document.querySelector(".globocam"); if (c) c.classList.toggle("on", perto); camadaGlobo(); } });
+  m.on("load", () => { camadaGlobo(); atualizaGlobo(); enquadraGlobo(false); });
+}
+const GLOBO_PERTO = 8;
+function camadaGlobo() {
+  const m = S.globo; if (!m || !m.getLayer("mapa")) return;
+  const mapa = S.globoPerto && S.globoCamada === "mapa";
+  m.setLayoutProperty("mapa", "visibility", mapa || S.globoSatFalhou ? "visible" : "none");
+  m.setLayoutProperty("sat", "visibility", mapa ? "none" : "visible");
+  m.setLayoutProperty("nomes", "visibility", mapa ? "none" : "visible");
+  // por baixo do mapa, o fundo bege dá o tom amarelinho do mapa antigo
+  m.setPaintProperty("fundo", "background-color", mapa ? "#EAD6A8" : "#0B1426");
 }
 const VALE_MUNDO = 48 * 60 * 60 * 1000;
 function posicoesMundo() {
