@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "25/10 · 09:56";</script>
+<script>window.__VERSAO = "25/10 · 10:21";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1955,11 +1955,13 @@ nav.tabs button{position:relative}
 .globo{position:relative;width:100%;height:min(68vh,560px)}
 .globoaviso{position:absolute;inset:0;display:grid;place-items:center;color:#E9D9B8;font-size:14px;margin:0}
 .globomoldura .mapctrl{position:absolute;right:10px;top:10px;z-index:2}
-.globomoldura .mapdica{position:absolute;left:50%;right:auto;bottom:8px;transform:translateX(-50%);z-index:2;white-space:nowrap;pointer-events:none}
+.globomoldura .mapdica{position:absolute;left:50%;right:auto;bottom:38px;transform:translateX(-50%);z-index:2;white-space:nowrap;pointer-events:none}
 .globopin{display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .globobon{width:42px;height:58px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.6))}
 .globobon svg{width:100%;height:100%}
-.globonome{margin-top:-2px;background:rgba(255,248,236,.95);color:#2B2117;border-radius:999px;padding:2px 9px;font:600 11.5px Poppins,sans-serif;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.globonome{margin-top:-2px;display:flex;flex-direction:column;align-items:center;background:rgba(255,248,236,.95);color:#2B2117;border-radius:12px;padding:2px 9px 3px;font:600 11.5px/1.2 Poppins,sans-serif;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.globonome small{font:500 9.5px Poppins,sans-serif;color:#7A5A36}
+.globopin.vivo .globonome small{color:#2F7A3A}
 .globopin.eu .globonome{background:#E9C77E}
 .globomoldura .maplibregl-ctrl-attrib{font-size:9px;background:rgba(255,255,255,.6)}
 .mfoto .mcurte{position:absolute;z-index:1;left:6px;bottom:5px;font-size:11px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.7)}
@@ -5429,8 +5431,8 @@ function vMundo() {
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   const caixa = S.globoBox || (S.globoBox = h("div", { class: "globo" }, h("p", { class: "globoaviso", text: "Abrindo o globo…" })));
   carregaGlobo().then(() => montaGlobo(caixa), () => { const a = caixa.querySelector(".globoaviso"); if (a) a.textContent = "Não consegui abrir o globo. Confira a internet."; });
-  if (S.globo) requestAnimationFrame(() => { try { S.globo.resize(); } catch (e) {} atualizaGlobo(); });
-  const gente = posicoesAtuais().filter(p => isFinite(+p.lat));
+  if (S.globo) requestAnimationFrame(() => { try { S.globo.resize(); S.globo.triggerRepaint(); } catch (e) {} atualizaGlobo(); });
+  const gente = posicoesMundo();
   return h("div", { class: "perto mundo" },
     h("div", { class: "globomoldura" }, caixa,
       h("div", { class: "mapctrl" },
@@ -5444,37 +5446,64 @@ function vMundo() {
 function montaGlobo(caixa) {
   if (S.globo || !window.maplibregl) return;
   caixa.replaceChildren();
-  const m = S.globo = new maplibregl.Map({ container: caixa, attributionControl: { compact: true }, center: [40, 20], zoom: 1.4, maxZoom: 18.5, dragRotate: false, pitchWithRotate: false,
+  const m = S.globo = new maplibregl.Map({ container: caixa, attributionControl: { compact: true }, center: [40, 20], zoom: 1.4, maxZoom: 19, dragRotate: false, pitchWithRotate: false, fadeDuration: 0, maxTileCacheZoomLevels: 6, refreshExpiredTiles: false,
     style: { version: 8, projection: { type: "globe" },
       sources: {
         sat: { type: "raster", tiles: [ESRI_GLOBO + "World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18, attribution: "Esri, Maxar" },
-        nomes: { type: "raster", tiles: [ESRI_GLOBO + "Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18 } },
+        nomes: { type: "raster", tiles: [ESRI_GLOBO + "Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18 },
+        ruas: { type: "raster", tiles: [ESRI_GLOBO + "Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18 },
+        prec: { type: "geojson", data: { type: "FeatureCollection", features: [] } } },
       sky: { "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 1, 5, 1, 7, 0] },
-      layers: [{ id: "fundo", type: "background", paint: { "background-color": "#0B1426" } }, { id: "sat", type: "raster", source: "sat" }, { id: "nomes", type: "raster", source: "nomes", paint: { "raster-opacity": .85 } }] } });
-  m.touchZoomRotate.disableRotation();
+      layers: [{ id: "fundo", type: "background", paint: { "background-color": "#0B1426" } },
+        { id: "sat", type: "raster", source: "sat", paint: { "raster-fade-duration": 0 } },
+        { id: "ruas", type: "raster", source: "ruas", minzoom: 11, paint: { "raster-fade-duration": 0, "raster-opacity": .9 } },
+        { id: "nomes", type: "raster", source: "nomes", paint: { "raster-fade-duration": 0, "raster-opacity": .9 } },
+        { id: "precf", type: "fill", source: "prec", minzoom: 12, paint: { "fill-color": "#E9C77E", "fill-opacity": .18 } },
+        { id: "precl", type: "line", source: "prec", minzoom: 12, paint: { "line-color": "#E9C77E", "line-width": 1.5 } }] } });
+  m.touchZoomRotate.disableRotation(); caixa.__mapa = m;
   m.on("load", () => { atualizaGlobo(); enquadraGlobo(false); });
+}
+const VALE_MUNDO = 48 * 60 * 60 * 1000;
+function posicoesMundo() {
+  const m = {};
+  for (const p of S.posicoes) if (p.gps && Date.now() - (p.ts || 0) < VALE_MUNDO && isFinite(+p.lat)) m[p.id] = p;
+  for (const id in S.aoVivo) { const v = S.aoVivo[id]; if (Date.now() - v.ts < 10 * 60 * 1000) m[id] = { ...(m[id] || {}), ...v, id, vivoGps: true }; }
+  return Object.values(m).filter(p => isFinite(+p.lat));
+}
+// círculo da precisão do GPS (em metros) em volta de cada pessoa, quando o mapa está perto
+function circuloPrec(p) {
+  const r = Math.max(5, Math.min(+p.prec || 0, 3000)), c = [], la = +p.lat * Math.PI / 180;
+  for (let k = 0; k <= 48; k++) { const a = k / 48 * 2 * Math.PI; c.push([+p.lng + r / (111320 * Math.cos(la)) * Math.cos(a), +p.lat + r / 110540 * Math.sin(a)]); }
+  return { type: "Feature", properties: {}, geometry: { type: "Polygon", coordinates: [c] } };
 }
 // cada pessoa com localização ligada vira um bonequinho no globo (o próprio, montado no Explorador)
 function atualizaGlobo() {
   const m = S.globo; if (!m || !window.maplibregl) return;
   const marcas = S.globoMarcas || (S.globoMarcas = {}), vistos = {};
-  for (const p of posicoesAtuais().filter(p => isFinite(+p.lat))) {
+  const gente = posicoesMundo();
+  for (const p of gente) {
     vistos[p.id] = 1; let mk = marcas[p.id];
+    // quem está do outro lado do globo some (antes ficava flutuando no espaço)
     if (!mk) { const el = h("div", { class: "globopin" + (p.id === S.uid ? " eu" : ""), role: "button", tabindex: "0", "aria-label": nomeDe(p.id), onclick: () => abrirPessoa(p.id) },
-        h("div", { class: "globobon" }, bonecoCentrado(bonecoDe(p.id), "bonecosvg")), h("span", { class: "globonome", text: nomeDe(p.id).split(" ")[0] }));
-      mk = marcas[p.id] = new maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([+p.lng, +p.lat]).addTo(m); }
+        h("div", { class: "globobon" }, bonecoCentrado(bonecoDe(p.id), "bonecosvg")), h("span", { class: "globonome" }, h("b"), h("small")));
+      mk = marcas[p.id] = new maplibregl.Marker({ element: el, anchor: "bottom", opacityWhenCovered: "0" }).setLngLat([+p.lng, +p.lat]).addTo(m); }
     else mk.setLngLat([+p.lng, +p.lat]);
+    const el = mk.getElement(); el.querySelector("b").textContent = nomeDe(p.id).split(" ")[0];
+    el.querySelector("small").textContent = p.vivoGps ? "● ao vivo" : haQuanto(p.ts);
+    el.classList.toggle("vivo", !!p.vivoGps);
   }
   for (const id in marcas) if (!vistos[id]) { marcas[id].remove(); delete marcas[id]; }
+  const src = m.getSource && m.getSource("prec");
+  if (src) src.setData({ type: "FeatureCollection", features: gente.filter(p => +p.prec > 0).map(circuloPrec) });
 }
 function enquadraGlobo(anima) {
   const m = S.globo; if (!m) return;
-  const gente = posicoesAtuais().filter(p => isFinite(+p.lat));
+  const gente = posicoesMundo();
   if (!gente.length) return m.flyTo({ center: [40, 20], zoom: 1.4, duration: anima ? 1800 : 0 });
   const lo = gente.map(p => +p.lng), la = gente.map(p => +p.lat);
   // gente espalhada pelo mundo: o globo aparece grande na tela (não minúsculo)
   const cam = m.cameraForBounds([[Math.min(...lo), Math.min(...la)], [Math.max(...lo), Math.max(...la)]], { padding: 60, maxZoom: 12 });
-  if (cam) m.flyTo({ ...cam, zoom: Math.max(1.75, cam.zoom), duration: anima ? 2200 : 0 });
+  if (cam) m.flyTo({ ...cam, zoom: Math.max(1.2, cam.zoom), duration: anima ? 2200 : 0 });
 }
 
 // ---------- Estúdio de fotos ----------
