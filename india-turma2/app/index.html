@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "25/10 · 10:21";</script>
+<script>window.__VERSAO = "25/10 · 10:48";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -5449,12 +5449,15 @@ function montaGlobo(caixa) {
   const m = S.globo = new maplibregl.Map({ container: caixa, attributionControl: { compact: true }, center: [40, 20], zoom: 1.4, maxZoom: 19, dragRotate: false, pitchWithRotate: false, fadeDuration: 0, maxTileCacheZoomLevels: 6, refreshExpiredTiles: false,
     style: { version: 8, projection: { type: "globe" },
       sources: {
+        // base leve (até zoom 6): fica sempre por baixo, para o mapa nunca ficar vazio se a foto detalhada não carregar
+        base: { type: "raster", tiles: [ESRI_GLOBO + "World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 6 },
         sat: { type: "raster", tiles: [ESRI_GLOBO + "World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18, attribution: "Esri, Maxar" },
         nomes: { type: "raster", tiles: [ESRI_GLOBO + "Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18 },
         ruas: { type: "raster", tiles: [ESRI_GLOBO + "Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18 },
         prec: { type: "geojson", data: { type: "FeatureCollection", features: [] } } },
       sky: { "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 1, 5, 1, 7, 0] },
       layers: [{ id: "fundo", type: "background", paint: { "background-color": "#0B1426" } },
+        { id: "base", type: "raster", source: "base", paint: { "raster-fade-duration": 0 } },
         { id: "sat", type: "raster", source: "sat", paint: { "raster-fade-duration": 0 } },
         { id: "ruas", type: "raster", source: "ruas", minzoom: 11, paint: { "raster-fade-duration": 0, "raster-opacity": .9 } },
         { id: "nomes", type: "raster", source: "nomes", paint: { "raster-fade-duration": 0, "raster-opacity": .9 } },
