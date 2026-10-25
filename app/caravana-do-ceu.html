@@ -1916,6 +1916,19 @@ nav.tabs button{position:relative}
 .mvacoes .btn{flex:1}
 .mvacoes .btn.ghost{flex:0 0 auto;color:#F5EFE4;border-color:rgba(255,255,255,.25)}
 .mvbase .msg{margin:0;color:#E9D9B8}.mvbase .msg:empty{display:none}
+/* globo do mapa */
+.mapamodo{margin:-4px 0 12px}
+.globomoldura{position:relative;border-radius:22px;overflow:hidden;background:radial-gradient(circle at 50% 45%,#0D1830,#05060A 70%);box-shadow:var(--shadow)}
+.globo{position:relative;width:100%;height:min(68vh,560px)}
+.globoaviso{position:absolute;inset:0;display:grid;place-items:center;color:#E9D9B8;font-size:14px;margin:0}
+.globomoldura .mapctrl{position:absolute;right:10px;top:10px;z-index:2}
+.globomoldura .mapdica{position:absolute;left:50%;right:auto;bottom:8px;transform:translateX(-50%);z-index:2;white-space:nowrap;pointer-events:none}
+.globopin{display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.globobon{width:42px;height:58px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.6))}
+.globobon svg{width:100%;height:100%}
+.globonome{margin-top:-2px;background:rgba(255,248,236,.95);color:#2B2117;border-radius:999px;padding:2px 9px;font:600 11.5px Poppins,sans-serif;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.globopin.eu .globonome{background:#E9C77E}
+.globomoldura .maplibregl-ctrl-attrib{font-size:9px;background:rgba(255,255,255,.6)}
 .mfoto .mcurte{position:absolute;z-index:1;left:6px;bottom:5px;font-size:11px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.7)}
 .mvacoes{align-items:center;gap:8px}
 .mvacao{border:0;background:rgba(255,255,255,.1);color:#F5EFE4;border-radius:99px;font:500 14px Poppins,sans-serif;padding:10px 14px;white-space:nowrap}
@@ -5351,14 +5364,86 @@ function ruaAqui(p) {
     }).catch(() => {}).finally(() => { S.ruaBusca = false; });
 }
 const distKm = (a, b) => { const R = 6371, r = x => x * Math.PI / 180, dLa = r(+b.lat - a.lat), dLo = r(+b.lng - a.lng); const q = Math.sin(dLa / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(+b.lat)) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(q)); };
+// mapa: "Mundo" (globo, para o pré-embarque e as conexões) ou "Perto de mim" (a cidade, durante a viagem).
+// Abre sozinho no globo enquanto alguém ainda está fora da Índia; quando todos chegam, abre na cidade.
+const naIndia = p => +p.lat > 6 && +p.lat < 37 && +p.lng > 68 && +p.lng < 98;
+function modoMapaPadrao() {
+  const gente = posicoesAtuais().filter(p => isFinite(+p.lat));
+  return Date.now() >= INICIO_VIAGEM && hojeIso() <= FIM && gente.length && gente.every(naIndia) ? "perto" : "mundo";
+}
 function vMapa() {
   if (S.montando) return vExplorador();
   perfis(S.posicoes.map(p => p.id));
+  const modo = S.mapaModo || modoMapaPadrao();
   return h("section", { class: "view" },
     h("div", { class: "head" },
-      h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: "Perto de mim" }))),
-    h("div", { class: "mapwrap" }, vPerto(),
+      h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: modo === "mundo" ? "Onde está a caravana" : "Perto de mim" }))),
+    h("div", { class: "opts mapamodo", role: "tablist", "aria-label": "Tipo de mapa" }, [["mundo", "🌍 Mundo"], ["perto", "📍 Perto de mim"]].map(([id, nome]) =>
+      h("button", { type: "button", role: "tab", class: "opt", "aria-pressed": String(modo === id), onclick: () => { S.mapaModo = id; render(); } }, nome))),
+    modo === "mundo" ? h("div", { class: "mapwrap" }, vMundo(), h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null)))
+      : h("div", { class: "mapwrap" }, vPerto(),
       h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null), vHotelHoje())));
+}
+// ---------- globo (como o Google Earth): gira com o dedo, pinça para aproximar, satélite até o nível da rua ----------
+function carregaGlobo() {
+  if (window.maplibregl) return Promise.resolve();
+  return S.globoLib || (S.globoLib = new Promise((ok, erro) => {
+    const css = document.createElement("link"); css.rel = "stylesheet"; css.href = "vendor/maplibre-gl.css"; document.head.append(css);
+    const sc = document.createElement("script"); sc.src = "vendor/maplibre-gl.js"; sc.onload = ok; sc.onerror = () => { S.globoLib = null; erro(); }; document.head.append(sc);
+  }));
+}
+const ESRI_GLOBO = "https://server.arcgisonline.com/ArcGIS/rest/services/";
+function vMundo() {
+  autoGps();
+  const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+  const caixa = S.globoBox || (S.globoBox = h("div", { class: "globo" }, h("p", { class: "globoaviso", text: "Abrindo o globo…" })));
+  carregaGlobo().then(() => montaGlobo(caixa), () => { const a = caixa.querySelector(".globoaviso"); if (a) a.textContent = "Não consegui abrir o globo. Confira a internet."; });
+  if (S.globo) requestAnimationFrame(() => { try { S.globo.resize(); } catch (e) {} atualizaGlobo(); });
+  const gente = posicoesAtuais().filter(p => isFinite(+p.lat));
+  return h("div", { class: "perto mundo" },
+    h("div", { class: "globomoldura" }, caixa,
+      h("div", { class: "mapctrl" },
+        h("button", { type: "button", "aria-label": "Ver todos", onclick: () => enquadraGlobo(true) }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")),
+        minhaPos() ? h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => { const m = minhaPos(); S.globo && S.globo.flyTo({ center: [+m.lng, +m.lat], zoom: 12, duration: 2500 }); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")) : null),
+      h("p", { class: "mapdica", text: "Gire com o dedo · pinça para aproximar" })),
+    !S.gpsOn ? h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null)
+      : h("p", { class: "msg ok", text: S.gpsMsg || "Você está ao vivo no mapa." }),
+    gente.length ? null : h("p", { class: "small", text: "Quando alguém da caravana ligar a localização, o bonequinho aparece no globo, onde a pessoa estiver: em casa, numa conexão ou já na Índia." }));
+}
+function montaGlobo(caixa) {
+  if (S.globo || !window.maplibregl) return;
+  caixa.replaceChildren();
+  const m = S.globo = new maplibregl.Map({ container: caixa, attributionControl: { compact: true }, center: [40, 20], zoom: 1.4, maxZoom: 18.5, dragRotate: false, pitchWithRotate: false,
+    style: { version: 8, projection: { type: "globe" },
+      sources: {
+        sat: { type: "raster", tiles: [ESRI_GLOBO + "World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18, attribution: "Esri, Maxar" },
+        nomes: { type: "raster", tiles: [ESRI_GLOBO + "Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18 } },
+      sky: { "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 1, 5, 1, 7, 0] },
+      layers: [{ id: "fundo", type: "background", paint: { "background-color": "#0B1426" } }, { id: "sat", type: "raster", source: "sat" }, { id: "nomes", type: "raster", source: "nomes", paint: { "raster-opacity": .85 } }] } });
+  m.touchZoomRotate.disableRotation();
+  m.on("load", () => { atualizaGlobo(); enquadraGlobo(false); });
+}
+// cada pessoa com localização ligada vira um bonequinho no globo (o próprio, montado no Explorador)
+function atualizaGlobo() {
+  const m = S.globo; if (!m || !window.maplibregl) return;
+  const marcas = S.globoMarcas || (S.globoMarcas = {}), vistos = {};
+  for (const p of posicoesAtuais().filter(p => isFinite(+p.lat))) {
+    vistos[p.id] = 1; let mk = marcas[p.id];
+    if (!mk) { const el = h("div", { class: "globopin" + (p.id === S.uid ? " eu" : ""), role: "button", tabindex: "0", "aria-label": nomeDe(p.id), onclick: () => abrirPessoa(p.id) },
+        h("div", { class: "globobon" }, bonecoCentrado(bonecoDe(p.id), "bonecosvg")), h("span", { class: "globonome", text: nomeDe(p.id).split(" ")[0] }));
+      mk = marcas[p.id] = new maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([+p.lng, +p.lat]).addTo(m); }
+    else mk.setLngLat([+p.lng, +p.lat]);
+  }
+  for (const id in marcas) if (!vistos[id]) { marcas[id].remove(); delete marcas[id]; }
+}
+function enquadraGlobo(anima) {
+  const m = S.globo; if (!m) return;
+  const gente = posicoesAtuais().filter(p => isFinite(+p.lat));
+  if (!gente.length) return m.flyTo({ center: [40, 20], zoom: 1.4, duration: anima ? 1800 : 0 });
+  const lo = gente.map(p => +p.lng), la = gente.map(p => +p.lat);
+  // gente espalhada pelo mundo: o globo aparece grande na tela (não minúsculo)
+  const cam = m.cameraForBounds([[Math.min(...lo), Math.min(...la)], [Math.max(...lo), Math.max(...la)]], { padding: 60, maxZoom: 12 });
+  if (cam) m.flyTo({ ...cam, zoom: Math.max(1.75, cam.zoom), duration: anima ? 2200 : 0 });
 }
 
 // ---------- Estúdio de fotos ----------
