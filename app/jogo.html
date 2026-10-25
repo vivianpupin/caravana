@@ -1,0 +1,1832 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2a130b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Aventuras">
+<link rel="icon" href="img/icone-jogo-192.png">
+<link rel="apple-touch-icon" href="img/icone-jogo-180.png">
+<link rel="manifest" href="jogo.webmanifest">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}</style>
+</head><body>
+<title>As Aventuras da Caravana</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Hind:wght@400;500;600;700&display=swap">
+<style>
+/* Uma tela só: o placar dos dois times fica sempre no alto, com a corrida até 1 milhão; embaixo, o palco onde os desafios vão aparecendo.
+   Cores de templo indiano: fundo marrom de madeira escura, vermelho de sindoor nas molduras, amarelo de cúrcuma nos destaques. */
+:root{
+  --night:#2a130b;       /* marrom bem escuro (fundo) */
+  --night-2:#3e1d10;
+  --panel:#55291a;       /* marrom dos cartões */
+  --panel-2:#73391f;
+  --red:#d8392a;         /* vermelho das molduras */
+  --gold:#f7b82d;        /* amarelo dos destaques */
+  --gold-soft:#ffe3a3;
+  --ink:#fff4e4;
+  --muted:#dcb79a;
+  --t0:#ff5240;          /* Time 1: vermelho */
+  --t1:#ffd23f;          /* Time 2: amarelo */
+  --right:#4fd17f;
+  --wrong:#ff3048;
+  --paper:#fbf4e2;       /* folha do Imagem e Ação */
+  --pen:#1b1640;
+  --display:"Yatra One", Georgia, "Times New Roman", serif;
+  --body:"Hind", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--night);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.4;
+  background-image:radial-gradient(120% 70% at 50% -10%, var(--night-2) 0%, var(--night) 70%);
+  background-attachment:fixed;-webkit-tap-highlight-color:transparent;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid var(--gold-soft);outline-offset:3px}
+#app{
+  max-width:560px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;gap:14px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:12px 24px;
+}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;line-height:1.05}
+h2{font-size:26px;color:var(--gold)}
+p{margin:0}
+.muted{color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+.center{text-align:center}
+.eyebrow{margin:0;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-soft);font-weight:600}
+
+/* ===== Cabeçalho ===== */
+.head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.head h1{font-size:22px;color:var(--gold)}
+.head h1 small{display:block;font-family:var(--body);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.gear{width:46px;height:46px;border-radius:14px;background:var(--panel);display:flex;align-items:center;justify-content:center;color:var(--gold-soft)}
+.gear svg{width:24px;height:24px}
+
+/* ===== Placar ===== */
+.board{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.team{
+  position:relative;border-radius:18px;background:var(--panel);padding:12px 12px 14px;border:3px solid transparent;min-width:0;
+  display:flex;flex-direction:column;gap:4px;transition:border-color .2s, box-shadow .2s;
+}
+.team.on{border-color:var(--team);box-shadow:0 0 22px -6px var(--team)}
+.team .nm{font-family:var(--display);font-weight:400;font-size:20px;line-height:1.1;color:var(--gold);overflow-wrap:anywhere;text-wrap:balance}
+.team .vl{font-family:var(--display);font-size:34px;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.team .un{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.team .track{height:10px;border-radius:6px;background:var(--night);overflow:hidden;margin-top:6px}
+.team .track i{display:block;height:100%;background:var(--team);border-radius:6px;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.team .tag{position:absolute;top:-11px;right:10px;background:var(--team);color:var(--night);font-size:11px;font-weight:700;letter-spacing:.1em;padding:2px 8px;border-radius:999px}
+.team .wins{font-size:12px;color:var(--gold-soft);font-weight:600}
+.goal{text-align:center;font-size:13px;color:var(--muted)}
+.goal b{color:var(--gold-soft)}
+.pop{animation:pop .5s ease}
+@keyframes pop{40%{transform:scale(1.15);color:var(--gold)}}
+
+/* ===== Palco ===== */
+.stage{flex:1;display:flex;flex-direction:column;gap:14px;min-height:0}
+.hero{
+  flex:1;border-radius:24px;background:var(--panel);border:3px solid var(--red);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;padding:26px 18px;text-align:center;min-height:300px;
+}
+.hero .who{font-family:var(--display);font-size:46px;line-height:1.05;color:var(--gold)}
+.hero .kind{font-family:var(--display);font-size:42px;line-height:1.05;color:var(--gold)}
+.hero svg.big{width:64px;height:64px;color:var(--gold)}
+.hero ul{margin:0;padding-left:20px;text-align:left;display:flex;flex-direction:column;gap:6px;max-width:34ch}
+.hero li::marker{color:var(--gold)}
+.hero li b{color:var(--gold-soft)}
+.spin{font-family:var(--display);font-size:42px;color:var(--gold);min-height:2.3em;display:flex;align-items:center;justify-content:center}
+
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:12px 20px;border-radius:16px;
+  font-weight:700;font-size:19px;text-align:center;transition:transform .08s ease;width:100%;
+}
+.btn:active{transform:scale(.97)}
+.btn.gold{background:var(--gold);color:var(--night);box-shadow:0 6px 0 #a8701a}
+.btn.team{background:var(--team);color:var(--night);box-shadow:0 6px 0 rgba(0,0,0,.35)}
+.btn.ok{background:var(--right);color:var(--night);box-shadow:0 6px 0 rgba(0,0,0,.35)}
+.btn.soft{background:var(--panel-2);color:var(--ink)}
+.btn.ghost{border:2px solid var(--panel-2);color:var(--ink);min-height:50px;font-size:17px}
+.btn.big{min-height:68px;font-size:23px}
+.btn.link{min-height:40px;font-size:15px;font-weight:600;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.btn[disabled]{opacity:.35;pointer-events:none}
+.stack{display:flex;flex-direction:column;gap:12px;width:100%}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+
+/* ===== Cronômetro ===== */
+.timer{display:flex;align-items:center;gap:10px}
+.timer .bar{flex:1;height:10px;border-radius:6px;background:var(--panel);overflow:hidden}
+.timer .bar i{display:block;height:100%;width:100%;background:var(--gold);border-radius:6px;transition:width 1s linear, background .3s}
+.timer .bar i.hot{background:var(--wrong)}
+.timer .sec{font-weight:700;font-size:22px;min-width:2.2em;text-align:right;font-variant-numeric:tabular-nums}
+.timer .sec.hot{color:var(--wrong);animation:pulse .5s ease-in-out infinite alternate}
+@keyframes pulse{to{transform:scale(1.18)}}
+
+/* ===== Pergunta ===== */
+.qbox{padding:18px;border-radius:18px;background:var(--panel);border:2px solid var(--red)}
+.qbox .tag{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--gold)}
+.qbox .tag span:last-child{color:var(--team)}
+.qbox .q{font-size:21px;font-weight:600;line-height:1.3;margin-top:6px;text-wrap:pretty}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{
+  --edge:var(--gold);display:block;width:100%;padding:2px;min-height:58px;background:var(--edge);
+  clip-path:polygon(18px 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 18px 100%, 0 50%);
+}
+.opt .in{
+  display:flex;align-items:center;gap:12px;min-height:54px;padding:10px 26px;text-align:left;
+  background:var(--night-2);font-size:18px;font-weight:500;line-height:1.25;
+  clip-path:polygon(17px 0, calc(100% - 17px) 0, 100% 50%, calc(100% - 17px) 100%, 17px 100%, 0 50%);
+}
+.opt .lt{flex:none;font-family:var(--display);font-size:22px;color:var(--gold);width:1.1em}
+.opt.sel .in{background:var(--gold);color:var(--night)}
+.opt.sel .lt{color:var(--night)}
+.opt.suspense .in{animation:blink .32s steps(2) infinite}
+@keyframes blink{50%{background:var(--night-2);color:var(--ink)}}
+.opt.right{--edge:var(--right)}
+.opt.right .in{background:var(--right);color:var(--night);animation:none}
+.opt.right .lt{color:var(--night)}
+.opt.wrong{--edge:var(--wrong)}
+.opt.wrong .in{background:var(--wrong);color:var(--ink);animation:none}
+.opt.wrong .lt{color:var(--ink)}
+.opt.elim{opacity:.22;pointer-events:none}
+.opt.elim .in span:last-child{text-decoration:line-through}
+.helps{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.help{border-radius:14px;background:var(--panel);padding:10px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:600}
+.help svg{width:22px;height:22px;color:var(--gold)}
+.help small{color:var(--muted);font-weight:500}
+.help[disabled]{opacity:.3;pointer-events:none}
+
+/* ===== Cartas de palavra (mímica, canta, batata) ===== */
+.minihead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.minihead .chip{border-radius:999px;padding:6px 12px;background:var(--panel);font-weight:700;font-size:14px;color:var(--team);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.minihead .sair{font-weight:700;color:var(--muted);padding:6px 2px;font-size:15px;flex:none}
+.wordcard{
+  flex:1;min-height:200px;border-radius:24px;background:var(--panel);border:3px solid var(--red);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:22px 18px;text-align:center;
+}
+.wordcard .cat{font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--gold)}
+.wordcard .word{font-family:var(--display);font-size:44px;line-height:1.05;color:var(--ink);text-wrap:balance;overflow-wrap:anywhere}
+.wordcard .word.long{font-size:31px}
+.wordcard.todos{border-color:var(--t1);background:color-mix(in srgb, var(--t1) 16%, var(--panel))}
+.counter{display:flex;justify-content:center;gap:24px;font-weight:600;color:var(--muted);text-align:center}
+.counter b{display:block;font-family:var(--display);font-weight:400;font-size:38px;color:var(--right);line-height:1}
+
+/* ===== Imagem e Ação ===== */
+.paper{position:relative;flex:1;min-height:300px;border-radius:18px;background:var(--paper);overflow:hidden;touch-action:none}
+.paper canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pen{width:38px;height:38px;border-radius:50%;border:3px solid var(--panel);background:var(--c)}
+.pen.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--gold)}
+.tools .sp{flex:1}
+.tool{border-radius:12px;background:var(--panel);padding:8px 12px;font-weight:700;font-size:14px;min-height:40px}
+.peek{position:absolute;left:12px;top:12px;right:12px;border-radius:12px;background:var(--pen);color:var(--paper);padding:10px 14px;font-weight:700;text-align:center}
+
+/* ===== Batata quente ===== */
+.bomb{display:flex;justify-content:center}
+.bomb svg{width:150px;height:150px}
+.bomb.lit svg{animation:shake var(--spd, .6s) ease-in-out infinite}
+@keyframes shake{25%{transform:rotate(-7deg) scale(1.04)}75%{transform:rotate(7deg) scale(1.04)}}
+.holder{font-family:var(--display);font-size:38px;color:var(--gold);text-align:center;line-height:1.05}
+
+/* ===== Folha (sobreposição) ===== */
+.sheet-wrap{
+  position:fixed;inset:0;z-index:20;background:rgba(24,9,4,.74);display:flex;align-items:flex-end;justify-content:center;
+  padding-left:max(12px, env(safe-area-inset-left, 0px));padding-right:max(12px, env(safe-area-inset-right, 0px));
+  padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));padding-top:calc(12px + env(safe-area-inset-top, 0px));
+  animation:fade .15s ease;
+}
+@keyframes fade{from{opacity:0}}
+.sheet{
+  width:100%;max-width:540px;max-height:100%;overflow:auto;background:var(--night-2);border-radius:24px;padding:22px 18px 18px;
+  display:flex;flex-direction:column;gap:14px;border:2px solid var(--red);animation:rise .22s cubic-bezier(.2,.9,.3,1.2);
+}
+@keyframes rise{from{transform:translateY(40px)}}
+.sheet h2{font-size:32px;text-align:center}
+.sheet .huge{font-family:var(--display);font-size:50px;line-height:1;text-align:center;color:var(--gold)}
+.sheet .ok{color:var(--right)}
+.sheet .bad{color:var(--wrong)}
+.sheet .answer{background:var(--panel);border-radius:14px;padding:12px 14px;text-align:center;font-weight:600}
+.sheet .answer small{display:block;font-weight:500;color:var(--muted);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.ring{font-family:var(--display);font-size:84px;line-height:1;text-align:center;color:var(--gold)}
+.ring.hot{color:var(--wrong)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pcard{
+  aspect-ratio:2/3;max-width:100%;border-radius:12px;background:var(--panel-2);border:2px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:44px;color:var(--gold);
+  background-image:repeating-linear-gradient(45deg, transparent 0 8px, rgba(246,185,49,.13) 8px 10px);transition:transform .35s;
+}
+.pcard.up{background:var(--gold);color:var(--night);transform:rotateY(360deg)}
+.pcard[disabled]{pointer-events:none}
+
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:14px;font-weight:600;color:var(--muted)}
+.field input,.field select,.field textarea{
+  width:100%;background:var(--night);border:2px solid var(--panel-2);border-radius:12px;padding:12px 14px;font-size:17px;color:var(--ink);font-family:var(--body);
+}
+.field textarea{min-height:72px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);outline:none}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border-radius:999px;padding:8px 14px;background:var(--panel);font-weight:600;font-size:15px}
+.chips button.on{background:var(--gold);color:var(--night)}
+.toggle{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px;border-radius:14px;background:var(--panel);font-weight:600;width:100%;text-align:left}
+.toggle .pill{border-radius:999px;padding:4px 12px;font-size:14px;background:var(--night);color:var(--muted)}
+.toggle .pill.on{background:var(--right);color:var(--night)}
+.card{background:var(--panel);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.mine{display:flex;flex-direction:column;gap:8px}
+.mine .it{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--night);border-radius:12px;padding:10px 12px}
+.mine .it p{font-size:15px;min-width:0;overflow-wrap:anywhere}
+.mine .it small{color:var(--right);font-weight:600}
+.mine .it button{color:var(--wrong);font-weight:700;font-size:14px;padding:6px}
+
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:30}
+.toast{
+  position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);z-index:40;
+  background:var(--gold);color:var(--night);font-weight:700;padding:10px 18px;border-radius:999px;animation:rise .2s ease;white-space:nowrap;
+}
+@media (max-width:380px){
+  .team .vl{font-size:28px}
+  .qbox .q{font-size:19px}.opt .in{font-size:16.5px}
+  .hero .who,.hero .kind{font-size:36px}
+  .wordcard .word{font-size:36px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before{animation:none!important;transition:none!important}
+}
+</style>
+
+<div id="app" aria-live="polite"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script>
+/* ================== PERGUNTAS ==================
+   [nível, tema, pergunta, CERTA, errada, errada, errada, cidade?]
+   nível 1 = fácil, 2 = médio, 3 = difícil: a dificuldade sobe conforme o time chega perto de 1 milhão */
+const BANCO = [
+// ---------- Índia ----------
+[1,"Índia","Qual é a capital da Índia?","Nova Delhi","Mumbai","Calcutá","Bangalore"],
+[1,"Índia","Qual animal é sagrado no hinduísmo e anda livre pelas ruas da Índia?","A vaca","O cavalo","A cabra","O camelo"],
+[1,"Índia","Qual é a moeda da Índia?","Rupia","Rublo","Iene","Dinar"],
+[1,"Índia","Como se chama a saudação indiana feita com as mãos juntas?","Namastê","Shalom","Aloha","Konnichiwa"],
+[1,"Índia","Em que continente fica a Índia?","Ásia","África","Oceania","Europa"],
+[1,"Índia","Qual oceano banha o sul da Índia?","Oceano Índico","Oceano Pacífico","Oceano Atlântico","Oceano Ártico"],
+[1,"Índia","Quais são as cores da bandeira da Índia?","Açafrão, branco e verde","Vermelho, branco e azul","Verde e amarelo","Preto, vermelho e amarelo"],
+[1,"Índia","Qual país governou a Índia como colônia até 1947?","Reino Unido","França","Portugal","Holanda"],
+[1,"Índia","Qual líder levou a Índia à independência pregando a não violência?","Mahatma Gandhi","Dalai Lama","Buda","Nelson Mandela"],
+[1,"Índia","Qual é o esporte mais popular da Índia?","Críquete","Futebol","Basquete","Tênis"],
+[1,"Índia","Qual é a língua mais falada na Índia?","Hindi","Sânscrito","Inglês","Árabe"],
+[1,"Índia","Qual é a religião da maioria dos indianos?","Hinduísmo","Budismo","Islamismo","Cristianismo"],
+[1,"Índia","Qual destas religiões nasceu na Índia?","Budismo","Cristianismo","Islamismo","Judaísmo"],
+[1,"Índia","Qual é o país mais populoso do mundo desde 2023?","Índia","China","Estados Unidos","Indonésia"],
+[1,"Índia","Que riquixá motorizado de três rodas está em toda esquina da Índia?","Tuk-tuk","Bonde","Charrete","Patinete"],
+[1,"Índia","Que vestimenta feminina é um longo tecido enrolado no corpo?","Sári","Quimono","Poncho","Kilt"],
+[1,"Índia","Pedro Álvares Cabral estava indo para onde quando chegou ao Brasil em 1500?","Índia","China","Japão","Austrália"],
+[1,"Índia","Que animal do deserto é muito comum no Rajastão?","Camelo","Pinguim","Canguru","Lhama"],
+[1,"Índia","Qual festa indiana é famosa pela guerra de pó colorido?","Holi","Diwali","Carnaval","Ramadã"],
+[1,"Índia","Qual festa indiana é conhecida como o Festival das Luzes?","Diwali","Holi","Hanukkah","Navratri"],
+[1,"Índia","Que cadeia de montanhas fica no norte da Índia?","Himalaia","Andes","Alpes","Montes Urais"],
+[2,"Índia","Qual é o animal nacional da Índia?","Tigre-de-bengala","Elefante","Leão","Vaca"],
+[2,"Índia","Qual é a ave nacional da Índia?","Pavão","Papagaio","Águia","Flamingo"],
+[2,"Índia","Qual é a flor nacional da Índia?","Lótus","Rosa","Orquídea","Girassol"],
+[2,"Índia","Qual é a fruta nacional da Índia?","Manga","Banana","Coco","Jaca"],
+[2,"Índia","Em que ano a Índia ficou independente?","1947","1822","1889","1965"],
+[2,"Índia","O que aparece no centro da bandeira da Índia?","Uma roda azul","Uma estrela","Um leão","Uma lua"],
+[2,"Índia","Qual região da Índia foi colônia de Portugal até 1961?","Goa","Kerala","Punjab","Bengala"],
+[2,"Índia","Qual navegador português chegou à Índia por mar em 1498?","Vasco da Gama","Pedro Álvares Cabral","Cristóvão Colombo","Fernão de Magalhães"],
+[2,"Índia","Quantos habitantes a Índia tem, mais ou menos?","1,4 bilhão","400 milhões","800 milhões","3 bilhões"],
+[2,"Índia","Quantas horas a Índia está à frente de Brasília?","8 horas e meia","3 horas","12 horas","5 horas"],
+[2,"Índia","Qual era o antigo nome de Mumbai?","Bombaim","Madras","Calcutá","Benares"],
+[2,"Índia","Com qual destes países a Índia faz fronteira?","Nepal","Tailândia","Irã","Japão"],
+[2,"Índia","Qual país-ilha fica logo ao sul da Índia?","Sri Lanka","Madagascar","Filipinas","Indonésia"],
+[2,"Índia","Qual é a segunda maior religião da Índia?","Islamismo","Budismo","Cristianismo","Judaísmo"],
+[2,"Índia","O Templo Dourado, em Amritsar, é sagrado para qual religião?","Sikhismo","Budismo","Jainismo","Islamismo"],
+[2,"Índia","Que jogo de tabuleiro nasceu na Índia antiga, com o nome de chaturanga?","Xadrez","Damas","Gamão","Ludo"],
+[2,"Índia","Os algarismos de 0 a 9 que usamos hoje nasceram onde?","Na Índia","Em Roma","No Egito","Na Grécia"],
+[2,"Índia","Que império construiu o Taj Mahal e o Forte Vermelho?","Império Mogol","Império Romano","Império Otomano","Império Persa"],
+[2,"Índia","Quanto vale 1 lakh de rupias?","100 mil rupias","1 mil rupias","1 milhão de rupias","10 milhões de rupias"],
+[2,"Índia","Quanto vale 1 crore de rupias?","10 milhões de rupias","100 mil rupias","1 milhão de rupias","1 bilhão de rupias"],
+[2,"Índia","\"Mahatma\", o título de Gandhi, significa:","Grande alma","Grande rei","Pai da nação","Homem santo"],
+[2,"Índia","Assam e Darjeeling são regiões indianas famosas por qual produto?","Chá","Café","Seda","Cacau"],
+[2,"Índia","Que desenho colorido é feito no chão, na porta das casas, principalmente no Diwali?","Rangoli","Mehndi","Batik","Mosaico"],
+[2,"Índia","Como se chamam os desenhos de henna feitos nas mãos das noivas?","Mehndi","Rangoli","Origami","Bindi"],
+[2,"Índia","Que instrumento de cordas ficou famoso no mundo com Ravi Shankar?","Cítara","Violão","Harpa","Banjo"],
+[2,"Índia","Como se chama o par de tambores indianos tocados com as mãos?","Tabla","Djembê","Cajón","Pandeiro"],
+[2,"Índia","Na Índia, quando alguém balança a cabeça de um lado para o outro, costuma querer dizer:","Sim, entendi","Não, de jeito nenhum","Estou bravo","Vá embora"],
+[2,"Índia","Num restaurante tradicional na Índia, come-se com qual mão?","Direita","Esquerda","As duas","Tanto faz"],
+[3,"Índia","Quantos raios tem a roda azul no centro da bandeira indiana?","24","8","12","32"],
+[3,"Índia","Quem foi o primeiro primeiro-ministro da Índia?","Jawaharlal Nehru","Mahatma Gandhi","Indira Gandhi","Narendra Modi"],
+[3,"Índia","A Marcha do Sal, de Gandhi, em 1930, protestava contra o imposto sobre:","O sal","O chá","O algodão","O arroz"],
+[3,"Índia","Em que ano Gandhi foi assassinado?","1948","1930","1964","1975"],
+[3,"Índia","Quantas línguas a Constituição da Índia reconhece oficialmente na sua lista?","22","2","9","100"],
+[3,"Índia","Em 2023, a Índia foi o primeiro país a pousar uma nave perto de qual região da Lua?","Polo sul","Polo norte","Lado oculto","Mar da Tranquilidade"],
+[3,"Índia","Qual festival hindu é considerado o maior encontro de pessoas do mundo?","Kumbh Mela","Diwali","Holi","Navratri"],
+[3,"Índia","\"Navratri\", nome de um festival hindu, significa:","Nove noites","Mil luzes","Lua cheia","Ano novo"],
+[3,"Índia","Como se chamam as lamparinas de barro acesas no Diwali?","Diyas","Bindis","Ghats","Malas"],
+[3,"Índia","Qual gigante do Himalaia, na fronteira da Índia com o Nepal, é a terceira montanha mais alta do mundo?","Kangchenjunga","Everest","K2","Annapurna"],
+[3,"Índia","Onde nasce o rio Ganges?","Numa geleira do Himalaia","No deserto do Thar","No Oceano Índico","No Sri Lanka"],
+[3,"Índia","Onde o rio Ganges deságua?","Na Baía de Bengala","No Mar Arábico","No Mar Vermelho","No Mar Mediterrâneo"],
+[3,"Índia","Qual é a árvore nacional da Índia?","Figueira-de-bengala","Coqueiro","Bambu","Mangueira"],
+[3,"Índia","A pimenta-do-reino é nativa de qual lugar?","Sul da Índia","México","Brasil","Itália"],
+[3,"Índia","Qual é o nome do deserto que fica no Rajastão?","Thar","Saara","Atacama","Gobi"],
+[3,"Índia","Como se chama a versão indiana do Show do Milhão?","Kaun Banega Crorepati","Bigg Boss","Indian Idol","MasterChef Índia"],
+[3,"Índia","Que astro do cinema indiano apresentou por anos a versão indiana do Show do Milhão?","Amitabh Bachchan","Shah Rukh Khan","Dev Patel","Salman Rushdie"],
+
+// ---------- Deuses ----------
+[1,"Deuses","Qual deus hindu tem cabeça de elefante?","Ganesha","Shiva","Vishnu","Brahma"],
+[1,"Deuses","Qual deus macaco é símbolo de força e devoção?","Hanuman","Ganesha","Krishna","Rama"],
+[1,"Deuses","Qual deus de pele azul aparece sempre tocando flauta?","Krishna","Shiva","Ganesha","Brahma"],
+[1,"Deuses","Qual deus tem um terceiro olho na testa?","Shiva","Ganesha","Krishna","Hanuman"],
+[1,"Deuses","O mantra \"Om Namah Shivaya\" saúda qual deus?","Shiva","Krishna","Ganesha","Rama"],
+[2,"Deuses","Na Trimurti hindu, quem é o criador do universo?","Brahma","Vishnu","Shiva","Ganesha"],
+[2,"Deuses","Na Trimurti hindu, qual deus é o preservador?","Vishnu","Brahma","Shiva","Hanuman"],
+[2,"Deuses","Quem é o pai de Ganesha?","Shiva","Vishnu","Brahma","Krishna"],
+[2,"Deuses","Qual é a deusa da riqueza e da prosperidade?","Lakshmi","Kali","Durga","Sarasvati"],
+[2,"Deuses","Qual deusa aparece com a pele escura e a língua para fora?","Kali","Lakshmi","Sarasvati","Parvati"],
+[3,"Deuses","Quem é a mãe de Ganesha?","Parvati","Lakshmi","Sarasvati","Sita"],
+[3,"Deuses","Hanuman é herói de qual épico indiano?","Ramayana","Mahabharata","Ilíada","Odisseia"],
+[3,"Deuses","No Ramayana, quem sequestra Sita, a esposa de Rama?","Ravana","Hanuman","Arjuna","Krishna"],
+[3,"Deuses","No Bhagavad Gita, Krishna aconselha qual guerreiro?","Arjuna","Rama","Hanuman","Ravana"],
+[3,"Deuses","Segundo a lenda, Ganesha usou a própria presa quebrada para escrever qual épico?","Mahabharata","Ramayana","Os Vedas","O Kama Sutra"],
+[3,"Deuses","No norte da Índia, o Diwali celebra a volta de qual deus para casa?","Rama","Shiva","Ganesha","Brahma"],
+
+// ---------- Deuses: perguntinhas fáceis ----------
+[1,"Deuses","Qual animal carrega Ganesha?","Um ratinho","Um leão","Um pavão","Um cavalo"],
+[1,"Deuses","Qual animal a deusa Durga monta?","Um leão","Um rato","Um cisne","Um camelo"],
+[1,"Deuses","Qual animal é o companheiro de Shiva?","Um touro","Um macaco","Um gato","Um elefante"],
+[1,"Deuses","Qual doce Ganesha mais adora?","Modak, um bolinho doce","Brigadeiro","Pudim","Sorvete"],
+[1,"Deuses","De que cor é a pele de Krishna nas imagens?","Azul","Verde","Rosa","Amarela"],
+[1,"Deuses","O que o pequeno Krishna adorava roubar da cozinha?","Manteiga","Pimenta","Pão","Café"],
+[1,"Deuses","Qual é a arma de três pontas de Shiva?","Um tridente","Uma espada","Um arco","Um martelo"],
+[1,"Deuses","O que Shiva tem enrolado no pescoço?","Uma cobra","Um cachecol","Uma corrente","Uma flor"],
+[1,"Deuses","O que cai das mãos de Lakshmi nas imagens?","Moedas de ouro","Pétalas de rosa","Gotas de chuva","Estrelas"],
+[1,"Deuses","Lakshmi aparece sentada em cima de quê?","Uma flor de lótus","Uma pedra","Uma nuvem","Um trono de ouro"],
+[1,"Deuses","Sarasvati é a deusa de quê?","Do conhecimento, da música e das artes","Da guerra","Da chuva","Da comida"],
+[1,"Deuses","Qual arma o herói Rama usa?","Arco e flecha","Espada","Lança","Tridente"],
+[1,"Deuses","Qual deusa é o próprio rio mais sagrado da Índia?","Ganga","Durga","Kali","Lakshmi"],
+[1,"Deuses","Como se chamam as formas em que Vishnu desce à Terra?","Avatares","Mantras","Chakras","Gurus"],
+[1,"Deuses","Quantas cabeças tem o deus Brahma?","4","1","2","10"],
+[2,"Deuses","Qual ave carrega o deus Vishnu?","Garuda, uma águia gigante","Um pavão","Um papagaio","Um cisne"],
+[2,"Deuses","Qual ave acompanha a deusa Sarasvati?","Um cisne","Um corvo","Uma galinha","Um tucano"],
+[2,"Deuses","Kartikeya, o irmão de Ganesha, monta em qual animal?","Um pavão","Um rato","Um touro","Um leão"],
+[2,"Deuses","Como se chama o touro de Shiva?","Nandi","Garuda","Mushika","Airavata"],
+[2,"Deuses","Como se chama o ratinho de Ganesha?","Mushika","Nandi","Garuda","Hanuman"],
+[2,"Deuses","Hanuman é filho de qual deus?","Do deus do vento","Do deus do fogo","Do deus do sol","Do deus do mar"],
+[2,"Deuses","Para salvar Lakshmana, Hanuman voou carregando o quê?","Uma montanha inteira","Um elefante","Um barco","Uma árvore"],
+[2,"Deuses","Quando era bebê, o que Hanuman tentou comer achando que era uma fruta?","O Sol","A Lua","Uma estrela","Uma nuvem"],
+[2,"Deuses","O que Shiva segura nos cabelos?","A Lua e o rio Ganges","Uma coroa de ouro","Um pássaro","Flores de lótus"],
+[2,"Deuses","Por que a garganta de Shiva é azul?","Ele bebeu um veneno para salvar o mundo","Ele comeu mirtilo","Ele estava com frio","Ele nasceu assim por acaso"],
+[2,"Deuses","Na corrida de volta ao mundo com o irmão, o que Ganesha fez para ganhar?","Deu a volta nos pais, que eram o mundo dele","Correu mais rápido","Voou num pássaro","Pegou um atalho"],
+[2,"Deuses","Segundo a história, como Ganesha ficou com cabeça de elefante?","Shiva colocou nele a cabeça de um elefante","Nasceu assim","Ganhou num concurso","Foi um feitiço de bruxa"],
+[2,"Deuses","Por que Durga tem tantos braços?","Para segurar as armas que os deuses deram a ela","Para abraçar todo mundo","Para cozinhar mais rápido","Para dançar"],
+[2,"Deuses","Por que Hanuman aparece pintado de laranja nos templos?","Os devotos passam nele um pó laranja, o sindoor","Ele toma muito sol","Ele come muita cenoura","É a cor do macaco de verdade"],
+[2,"Deuses","Qual deus é o dançarino que faz o universo girar, o Nataraja?","Shiva","Ganesha","Brahma","Hanuman"],
+[2,"Deuses","Rama e Krishna são avatares de qual deus?","Vishnu","Shiva","Brahma","Ganesha"],
+[2,"Deuses","O carro do deus Sol, Surya, é puxado por quantos cavalos?","7","2","4","12"],
+[2,"Deuses","Quantos dias dura a grande festa de Ganesha, o Ganesh Chaturthi?","10 dias","1 dia","3 dias","30 dias"],
+[2,"Deuses","Segundo a história, por que Kali aparece com a língua de fora?","Ficou envergonhada ao pisar sem querer em Shiva","Estava com calor","Estava provando comida","Estava fazendo careta para assustar crianças"],
+
+[1,"Deuses","Parvati é a esposa de qual deus?","Shiva","Vishnu","Brahma","Hanuman"],
+[1,"Deuses","Parvati é a mãe de quais deuses?","Ganesha e Kartikeya","Rama e Krishna","Shiva e Vishnu","Hanuman e Garuda"],
+[2,"Deuses","O nome Parvati quer dizer:","Filha da montanha","Filha do mar","Rainha do céu","Mãe das flores"],
+[1,"Deuses","De onde a deusa Ganga desceu?","Do céu","De dentro da terra","De uma montanha de gelo","Do mar"],
+[2,"Deuses","A deusa Ganga aparece montada em qual animal?","Um crocodilo","Um cavalo","Um elefante","Uma tartaruga"],
+[1,"Deuses","Surya é o deus de quê?","Do Sol","Da Lua","Da chuva","Do vento"],
+[1,"Deuses","Qual sequência de posturas do yoga homenageia o deus Surya?","A Saudação ao Sol","A Dança da Lua","A Postura da Árvore","O Cachorro olhando para baixo"],
+[1,"Deuses","Brahma é o deus que:","Criou o universo","Destrói o universo","Cuida dos animais","Traz a chuva"],
+[3,"Deuses","Segundo a história, Brahma nasceu de uma flor que saiu do umbigo de qual deus?","Vishnu","Shiva","Ganesha","Indra"],
+[1,"Deuses","De que cor é a pele de Vishnu nas imagens?","Azul","Vermelha","Verde","Dourada"],
+[1,"Deuses","Quem é a esposa de Vishnu?","Lakshmi","Parvati","Kali","Ganga"],
+[2,"Deuses","Vishnu dorme sobre o quê, no oceano?","Uma serpente gigante","Uma tartaruga","Uma nuvem","Uma folha de lótus"],
+[2,"Deuses","Quantos avatares principais de Vishnu as histórias contam?","10","3","7","100"],
+[3,"Deuses","Segundo a história, o primeiro avatar de Vishnu foi um:","Peixe","Leão","Cavalo","Pássaro"],
+[3,"Deuses","Krishna é qual avatar de Vishnu?","O oitavo","O primeiro","O terceiro","O décimo"],
+[3,"Deuses","Em qual cidade Krishna passou a infância?","Vrindavan","Varanasi","Jaipur","Agra"],
+[2,"Deuses","Durga venceu um demônio que tinha a forma de:","Um búfalo","Um tigre","Uma cobra","Um macaco"],
+[2,"Deuses","Qual festa de nove noites celebra a deusa Durga?","Navratri","Holi","Diwali","Kumbh Mela"],
+[1,"Deuses","De que cor é a pele de Kali nas imagens?","Escura, preta ou azul-escura","Branca","Amarela","Verde"],
+[2,"Deuses","Quantos braços Sarasvati costuma ter nas imagens?","4","2","6","10"],
+[3,"Deuses","Qual festa da primavera homenageia a deusa Sarasvati?","Vasant Panchami","Diwali","Holi","Navratri"],
+[1,"Deuses","Hanuman é devoto de qual deus?","Rama","Ganesha","Brahma","Surya"],
+[2,"Deuses","Qual arma Hanuman carrega?","Uma maça, um bastão pesado","Uma espada","Um arco","Um tridente"],
+[1,"Deuses","Qual é o nome da esposa de Shiva?","Parvati","Lakshmi","Sarasvati","Sita"],
+[2,"Deuses","Em qual montanha do Himalaia Shiva mora?","Monte Kailash","Monte Everest","Monte Fuji","Monte Olimpo"],
+[2,"Deuses","Quantas presas inteiras Ganesha tem?","Uma, a outra está quebrada","Duas","Quatro","Nenhuma"],
+[2,"Deuses","Como se chama o irmão de Ganesha?","Kartikeya","Hanuman","Rama","Krishna"],
+[3,"Deuses","Segundo a história, Lakshmi nasceu de onde?","Do oceano de leite, quando os deuses o agitaram","De uma flor no jardim","De uma estrela","De uma montanha"],
+// ---------- Sabores ----------
+[1,"Sabores","Qual bebida indiana é um chá com leite e especiarias?","Chai","Mate","Matcha","Kombucha"],
+[1,"Sabores","Qual tempero dá a cor amarela ao curry?","Cúrcuma","Canela","Páprica","Cominho"],
+[1,"Sabores","Como se chama o pão indiano assado no forno tandoor?","Naan","Baguete","Tortilla","Ciabatta"],
+[1,"Sabores","Qual salgado indiano é um pastel triangular frito, recheado de batata?","Samosa","Coxinha","Empanada","Esfiha"],
+[1,"Sabores","Qual prato indiano é um arroz temperado com carne ou legumes?","Biryani","Paella","Risoto","Yakissoba"],
+[1,"Sabores","O que é o lassi?","Bebida de iogurte batido","Sopa de lentilha","Pão frito","Doce de arroz"],
+[2,"Sabores","O que é o paneer?","Queijo fresco","Pão frito","Molho de tomate","Arroz doce"],
+[2,"Sabores","O que é o dal?","Lentilhas cozidas e temperadas","Frango assado","Pão de milho","Sorvete"],
+[2,"Sabores","O que é o ghee?","Manteiga clarificada","Leite de coco","Pimenta em pó","Iogurte"],
+[2,"Sabores","\"Masala\", em pratos como o chai masala, quer dizer:","Mistura de especiarias","Muito picante","Com leite","Feito no forno"],
+[2,"Sabores","O que é o tandoor?","Um forno de barro","Uma panela de ferro","Uma especiaria","Um tipo de arroz"],
+[3,"Sabores","O que é o thali?","Um prato com várias porçõezinhas","Um chá gelado","Um doce de coco","Uma faca de cozinha"],
+[3,"Sabores","O que é o gulab jamun?","Bolinho doce em calda","Pimenta recheada","Sopa de legumes","Pão de queijo"],
+[3,"Sabores","No tempero \"garam masala\", a palavra \"garam\" significa:","Quente","Doce","Verde","Antigo"],
+
+// ---------- Hindi ----------
+[2,"Hindi","Como se diz \"obrigado\" em hindi?","Dhanyavaad","Namastê","Chalo","Achha"],
+[2,"Hindi","O que significa \"chalo!\" em hindi?","Vamos!","Pare!","Cuidado!","Bom dia!"],
+[2,"Hindi","O que significa \"achha\" em hindi?","Certo, tá bom","Não","Socorro","Água"],
+[2,"Hindi","Na feira, o que você está perguntando quando diz \"kitna hai?\"","Quanto custa?","Onde fica?","Que horas são?","Tem troco?"],
+[2,"Hindi","Como se diz \"não\" em hindi?","Nahi","Haan","Chai","Pani"],
+[3,"Hindi","O que significa \"paani\" em hindi?","Água","Pão","Fogo","Chá"],
+[3,"Hindi","Como se diz \"sim\" em hindi?","Haan","Nahi","Bas","Accha"],
+[3,"Hindi","O que significa \"bas!\" em hindi?","Chega! / Só isso","Mais!","Rápido!","Bom apetite!"],
+
+// ---------- Espiritualidade ----------
+[1,"Espiritualidade","Qual prática indiana une posturas, respiração e meditação?","Yoga","Tai chi","Pilates","Capoeira"],
+[1,"Espiritualidade","Qual som sagrado é entoado no começo das meditações?","Om","Amém","Aleluia","Shalom"],
+[1,"Espiritualidade","Como se chama a lei de ação e consequência no hinduísmo e no budismo?","Karma","Mantra","Chakra","Nirvana"],
+[1,"Espiritualidade","Qual é a medicina tradicional indiana?","Ayurveda","Acupuntura","Homeopatia","Reiki"],
+[1,"Espiritualidade","Quantos chakras principais costumam ser citados?","7","3","12","21"],
+[2,"Espiritualidade","Em sânscrito, \"chakra\" significa:","Roda","Luz","Flor","Fogo"],
+[2,"Espiritualidade","Namastê quer dizer mais ou menos:","Eu me curvo a você","Bom apetite","Até amanhã","Muito obrigado"],
+[2,"Espiritualidade","Como se chama a saudação ao sol do yoga?","Surya Namaskar","Savasana","Pranayama","Om Shanti"],
+[2,"Espiritualidade","Qual é a língua antiga dos textos sagrados hindus?","Sânscrito","Hindi","Latim","Árabe"],
+[2,"Espiritualidade","Sob que tipo de árvore Buda alcançou a iluminação?","Uma figueira","Um coqueiro","Um bambu","Um carvalho"],
+[2,"Espiritualidade","\"Guru\" quer dizer, na tradição:","Quem tira da escuridão","Quem vive no templo","Quem é rico","Quem é mais velho"],
+[3,"Espiritualidade","Qual é o nome da postura de lótus no yoga?","Padmasana","Savasana","Tadasana","Balasana"],
+[3,"Espiritualidade","Savasana, a postura do relaxamento final, é a postura do:","Cadáver","Guerreiro","Gato","Lótus"],
+[3,"Espiritualidade","Quais são os textos sagrados mais antigos do hinduísmo?","Os Vedas","Os Evangelhos","O Alcorão","O Tao Te Ching"],
+[3,"Espiritualidade","Em que dia se comemora o Dia Internacional do Yoga?","21 de junho","1º de janeiro","15 de agosto","2 de outubro"],
+[3,"Espiritualidade","\"Ayurveda\" quer dizer:","Conhecimento da vida","Caminho do meio","Força do sol","Casa dos deuses"],
+
+// ---------- Saberes da Caravana (do próprio app) ----------
+[1,"Saberes da Caravana","O nome MAEE, símbolo da Caravana, junta as iniciais de:","Quatro espíritos dos elementos","Quatro cidades da Índia","Quatro deuses hindus","Quatro estações do ano"],
+[1,"Saberes da Caravana","Kali é a deusa da morte, mas da morte de quê?","Do ego","Do corpo","Dos inimigos","Das plantas"],
+[1,"Saberes da Caravana","Ganesha é o senhor dos começos e aquele que:","Remove os obstáculos","Traz a chuva","Guarda os mortos","Faz a guerra"],
+[2,"Saberes da Caravana","No MAEE, o que a estrela representa?","A orientação","A riqueza","A morte do ego","A chuva"],
+[2,"Saberes da Caravana","No MAEE, qual espírito representa a Água?","Ayná","Mendrá","Ene","Enya"],
+[2,"Saberes da Caravana","A raiz da palavra Dharma quer dizer:","Aquilo que sustenta","Aquilo que queima","Luz divina","Silêncio"],
+[2,"Saberes da Caravana","Qual é o mantra de Ganesha?","Om Gam Ganapataye Namaha","Om Namah Shivaya","Om Mani Padme Hum","Hare Krishna"],
+[2,"Saberes da Caravana","A flauta de Krishna também representa:","O coração humano, vazio para ser livre","A riqueza do mundo","O som da guerra","O vento do Himalaia"],
+[2,"Saberes da Caravana","No Diwali, as famílias acendem lamparinas nas portas para receber qual deusa?","Lakshmi","Kali","Sarasvati","Durga"],
+[2,"Saberes da Caravana","De que cor é o sári de Sarasvati?","Branco","Vermelho","Azul","Dourado"],
+[2,"Saberes da Caravana","Sarasvati é a protetora de quem?","Artistas, escritores, professores e estudantes","Guerreiros e soldados","Comerciantes","Pescadores"],
+[2,"Saberes da Caravana","Que instrumento Sarasvati toca?","A vina","A cítara","A flauta","A tabla"],
+[3,"Saberes da Caravana","No MAEE, Mendrá é qual elemento?","Terra","Água","Vento","Fogo"],
+[3,"Saberes da Caravana","No MAEE, qual espírito representa o Fogo?","Enya","Ene","Ayná","Mendrá"],
+[3,"Saberes da Caravana","\"Kala\", a raiz do nome de Kali, significa em sânscrito:","Tempo","Fogo","Mãe","Noite"],
+[3,"Saberes da Caravana","A guirlanda de cinquenta cabeças de Kali representa:","As 50 letras do alfabeto sânscrito","50 inimigos vencidos","50 anos de vida","50 templos"],
+[3,"Saberes da Caravana","Quantas virtudes em grau infinito a tradição dá a Krishna?","Seis","Três","Sete","Doze"],
+[3,"Saberes da Caravana","Sarasvati quer dizer \"aquela que dá\":","A essência do nosso próprio Ser","A riqueza da terra","A água do rio","A luz do sol"],
+
+// ---------- Roteiro (com cidade) ----------
+[1,"Delhi","Qual monumento de Delhi é um grande arco em homenagem aos soldados?","India Gate","Arco do Triunfo","Hawa Mahal","Taj Mahal",  "Delhi"],
+[2,"Delhi","Em qual forte de Delhi o primeiro-ministro discursa no Dia da Independência?","Forte Vermelho","Forte Amber","Forte de Agra","Forte Golconda","Delhi"],
+[2,"Delhi","Delhi é cortada por qual rio?","Yamuna","Ganges","Indo","Brahmaputra","Delhi"],
+[3,"Delhi","Qual monumento de Delhi é o minarete de tijolos mais alto do mundo?","Qutub Minar","Charminar","Hawa Mahal","India Gate","Delhi"],
+[3,"Delhi","O Templo de Lótus, em Delhi, pertence a qual fé?","Fé Bahá'í","Hinduísmo","Budismo","Sikhismo","Delhi"],
+[1,"Agra","O Taj Mahal fica em qual cidade?","Agra","Jaipur","Delhi","Varanasi","Agra"],
+[1,"Agra","O Taj Mahal foi construído em homenagem a quem?","À esposa do imperador","À mãe do imperador","A um deus hindu","A um general","Agra"],
+[1,"Agra","Do que é feito, principalmente, o Taj Mahal?","Mármore branco","Granito","Ouro","Tijolo","Agra"],
+[1,"Agra","O Taj Mahal está entre as Sete Maravilhas do Mundo Moderno junto com qual monumento brasileiro?","Cristo Redentor","Pão de Açúcar","Teatro Amazonas","Elevador Lacerda","Agra"],
+[2,"Agra","Qual imperador mandou construir o Taj Mahal?","Shah Jahan","Akbar","Ashoka","Aurangzeb","Agra"],
+[2,"Agra","Como se chamava a esposa para quem o Taj Mahal foi feito?","Mumtaz Mahal","Jasmine","Sita","Indira","Agra"],
+[3,"Agra","Quanto tempo levou, mais ou menos, para construir o Taj Mahal?","Cerca de 20 anos","2 anos","60 anos","100 anos","Agra"],
+[3,"Agra","Shah Jahan passou seus últimos anos preso por quem?","Pelo próprio filho","Pelos ingleses","Pelos portugueses","Pela esposa","Agra"],
+[3,"Agra","O Taj Mahal fica às margens de qual rio?","Yamuna","Ganges","Indo","Narmada","Agra"],
+[1,"Varanasi","Qual cidade sagrada à beira do Ganges é uma das mais antigas habitadas do mundo?","Varanasi","Jaipur","Agra","Mumbai","Varanasi"],
+[1,"Varanasi","Qual é o rio mais sagrado da Índia?","Ganges","Amazonas","Nilo","Indo","Varanasi"],
+[2,"Varanasi","Como se chamam as escadarias à beira do rio em Varanasi?","Ghats","Stupas","Minaretes","Gopurams","Varanasi"],
+[2,"Varanasi","Como se chama a cerimônia do fogo feita toda noite à beira do Ganges?","Ganga Aarti","Holi","Kumbh Mela","Puja do chá","Varanasi"],
+[2,"Varanasi","Varanasi também é chamada de:","Benares ou Kashi","Bombaim","Madras","Calcutá","Varanasi"],
+[2,"Varanasi","Varanasi é considerada a cidade de qual deus?","Shiva","Ganesha","Krishna","Brahma","Varanasi"],
+[3,"Varanasi","O Manikarnika Ghat, em Varanasi, é famoso por quê?","Pelas cremações","Pelo mercado de seda","Pelos banhos de lama","Pelo festival de pipas","Varanasi"],
+[3,"Varanasi","Em Sarnath, pertinho de Varanasi, Buda fez o quê?","Seu primeiro sermão","Nasceu","Morreu","Casou","Varanasi"],
+[1,"Jaipur","Qual cidade é conhecida como a Cidade Rosa?","Jaipur","Agra","Rishikesh","Mumbai","Jaipur"],
+[2,"Jaipur","Jaipur é a capital de qual estado?","Rajastão","Punjab","Goa","Kerala","Jaipur"],
+[2,"Jaipur","O nome Hawa Mahal, o palácio de Jaipur, quer dizer:","Palácio dos Ventos","Palácio da Lua","Palácio do Sol","Palácio das Águas","Jaipur"],
+[3,"Jaipur","Quantas janelinhas tem o Hawa Mahal, mais ou menos?","953","53","353","1.953","Jaipur"],
+[3,"Jaipur","Jaipur foi pintada de rosa em 1876 para receber quem?","O Príncipe de Gales","A Rainha do Brasil","Gandhi","Os Beatles","Jaipur"],
+[3,"Jaipur","O Jantar Mantar, em Jaipur, é um antigo observatório de:","Astronomia","Pássaros","Música","Medicina","Jaipur"],
+[3,"Jaipur","Que forte no alto de uma colina perto de Jaipur tem um Salão dos Espelhos?","Forte Amber","Forte Vermelho","Forte de Agra","Forte Golconda","Jaipur"],
+[1,"Rishikesh","Rishikesh é conhecida como a capital mundial de quê?","Do yoga","Do chá","Da seda","Do cinema","Rishikesh"],
+[1,"Rishikesh","Rishikesh fica ao pé de qual cadeia de montanhas?","Himalaia","Andes","Alpes","Montanhas Rochosas","Rishikesh"],
+[2,"Rishikesh","Qual banda foi a Rishikesh estudar meditação em 1968?","Os Beatles","Os Rolling Stones","Queen","ABBA","Rishikesh"],
+[2,"Rishikesh","Por ser uma cidade sagrada, em Rishikesh é proibido vender:","Carne e bebida alcoólica","Chá","Flores","Incenso","Rishikesh"],
+[3,"Rishikesh","Rishikesh fica em qual estado indiano?","Uttarakhand","Rajastão","Goa","Kerala","Rishikesh"],
+[3,"Rishikesh","Qual Beatle se apaixonou pela música indiana e estudou cítara com Ravi Shankar?","George Harrison","Paul McCartney","John Lennon","Ringo Starr","Rishikesh"],
+
+// ---------- Novelas, TV e cinema ----------
+[1,"Novelas e TV","Qual novela de 2009 se passava na Índia?","Caminho das Índias","O Clone","Salve Jorge","Avenida Brasil"],
+[1,"Novelas e TV","Qual apresentador comandou o Show do Milhão?","Silvio Santos","Faustão","Gugu","Luciano Huck"],
+[1,"Novelas e TV","Qual apresentador gritava \"Ô loco, meu!\"?","Faustão","Silvio Santos","Gugu","Chacrinha"],
+[1,"Novelas e TV","Qual novela tinha a vilã Carminha?","Avenida Brasil","Senhora do Destino","Vale Tudo","Mulheres Apaixonadas"],
+[1,"Novelas e TV","No seriado Chaves, onde o Chaves costuma se esconder?","No barril","No armário","Debaixo da cama","Na árvore"],
+[1,"Novelas e TV","Qual é o nome do professor do seriado Chaves?","Professor Girafales","Professor Pardal","Professor Xavier","Professor Linguiça"],
+[1,"Novelas e TV","Qual série tinha Ross, Rachel, Monica, Chandler, Joey e Phoebe?","Friends","Seinfeld","Two and a Half Men","How I Met Your Mother"],
+[1,"Novelas e TV","O filme \"Quem Quer Ser um Milionário?\" conta a história de um jovem de Mumbai em que tipo de programa?","Um show de perguntas","Um reality de culinária","Uma corrida de carros","Um concurso de dança"],
+[1,"Novelas e TV","Como se chama o polo do cinema indiano, em Mumbai?","Bollywood","Hollywood","Nollywood","Cinecittà"],
+[2,"Novelas e TV","Qual bordão virou mania com a novela Caminho das Índias?","Are baba!","Inshallah!","Hakuna matata!","Cadê o dinheiro?"],
+[2,"Novelas e TV","Quem viveu a Maya em Caminho das Índias?","Juliana Paes","Grazi Massafera","Deborah Secco","Ísis Valverde"],
+[2,"Novelas e TV","Qual novela tinha a personagem Jade e o bordão \"Inshallah\"?","O Clone","Caminho das Índias","Salve Jorge","Explode Coração"],
+[2,"Novelas e TV","Qual novela tinha a vilã Nazaré Tedesco?","Senhora do Destino","Avenida Brasil","A Favorita","Laços de Família"],
+[2,"Novelas e TV","No Show do Milhão, quantos pulos o participante tinha?","3","1","5","Nenhum"],
+[2,"Novelas e TV","Quem é conhecido como o Rei de Bollywood?","Shah Rukh Khan","Dev Patel","Jackie Chan","Bruce Lee"],
+[2,"Novelas e TV","Qual programa infantil da TV Cultura tinha o Nino, o Gato Pirata e o Bongô?","Castelo Rá-Tim-Bum","Sítio do Picapau Amarelo","TV Colosso","Xou da Xuxa"],
+[3,"Novelas e TV","Em Chaves, quantos meses de aluguel o Seu Madruga deve?","14","3","6","24"],
+[3,"Novelas e TV","Quantos anos tinha o Nino, do Castelo Rá-Tim-Bum?","300","12","100","1.000"],
+[3,"Novelas e TV","Quem matou Odete Roitman em Vale Tudo, na versão de 1988?","Leila","Maria de Fátima","Raquel","Heleninha"],
+[3,"Novelas e TV","Em que ano o Show do Milhão estreou no SBT?","1999","1985","2005","2012"],
+[3,"Novelas e TV","Quantos Oscars o filme \"Quem Quer Ser um Milionário?\" ganhou?","8","1","3","11"],
+[3,"Novelas e TV","Quem viveu o Raj em Caminho das Índias?","Rodrigo Lombardi","Cauã Reymond","Reynaldo Gianecchini","Murilo Benício"],
+
+// ---------- Desenhos animados ----------
+[1,"Desenhos","Qual gato laranja é louco por lasanha?","Garfield","Tom","Frajola","Félix"],
+[1,"Desenhos","Em Tom e Jerry, quem é o rato?","Jerry","Tom","Spike","Butch"],
+[1,"Desenhos","Qual é o nome do pai da família Simpson?","Homer","Bart","Ned","Moe"],
+[1,"Desenhos","Qual é o Pokémon amarelo do Ash?","Pikachu","Charmander","Bulbasaur","Squirtle"],
+[1,"Desenhos","Quem mora num abacaxi no fundo do mar?","Bob Esponja","Patrick","Lula Molusco","Nemo"],
+[1,"Desenhos","Qual coelho pergunta \"O que é que há, velhinho?\"","Pernalonga","Patolino","Gaguinho","Taz"],
+[1,"Desenhos","De que cor são os Smurfs?","Azul","Verde","Amarelo","Roxo"],
+[1,"Desenhos","Qual é o nome do coelhinho azul da Mônica?","Sansão","Bidu","Floquinho","Mingau"],
+[1,"Desenhos","Qual personagem da Turma da Mônica morre de medo de água?","Cascão","Cebolinha","Magali","Chico Bento"],
+[1,"Desenhos","Em Toy Story, qual é o nome do caubói?","Woody","Buzz","Rex","Slinky"],
+[1,"Desenhos","No Rei Leão, qual é o nome do pai de Simba?","Mufasa","Scar","Timão","Rafiki"],
+[1,"Desenhos","Quem é o protagonista de Dragon Ball?","Goku","Vegeta","Naruto","Seiya"],
+[2,"Desenhos","O desenho Mogli, o Menino Lobo, se passa em qual país?","Índia","Brasil","Quênia","Austrália"],
+[2,"Desenhos","Em Mogli, qual é o nome do tigre vilão?","Shere Khan","Scar","Baloo","Bagheera"],
+[2,"Desenhos","Qual personagem da Turma da Mônica tem só cinco fios de cabelo?","Cebolinha","Cascão","Chico Bento","Franjinha"],
+[2,"Desenhos","Qual vilão vive tentando capturar os Smurfs?","Gargamel","Esqueleto","Mumm-Ra","Dick Vigarista"],
+[2,"Desenhos","Qual é o grito do He-Man?","Pelos poderes de Grayskull!","Avante, Vingadores!","Shazam!","Thundercats, ho!"],
+[2,"Desenhos","Em Caverna do Dragão, quem aparece e some dando conselhos enigmáticos?","Mestre dos Magos","Vingador","Tiamat","Uni"],
+[2,"Desenhos","Em Os Cavaleiros do Zodíaco, qual é a constelação de Seiya?","Pégaso","Dragão","Cisne","Andrômeda"],
+[2,"Desenhos","Qual é a cidade dos Flintstones?","Bedrock","Springfield","Patópolis","Gotham"],
+[2,"Desenhos","Em Os Cavaleiros do Zodíaco, qual deusa os cavaleiros protegem?","Atena","Afrodite","Hera","Ártemis"],
+[3,"Desenhos","Em Mogli, que animal é a Bagheera?","Pantera-negra","Urso","Cobra","Lobo"],
+[3,"Desenhos","Qual é o nome do cachorro dos Jetsons?","Astro","Bidu","Pluto","Dino"],
+[3,"Desenhos","Em qual desenho aparecem Lion-O, Panthro e Cheetara?","ThunderCats","He-Man","Silverhawks","Comandos em Ação"],
+[3,"Desenhos","\"Hakuna Matata\", do Rei Leão, significa:","Sem problemas","Bom dia","Viva o rei","Vamos embora"],
+
+// ---------- Anos 90 ----------
+[1,"Anos 90","Que bichinho virtual era febre nos anos 90?","Tamagotchi","Ioiô","Pião","Game Boy"],
+[1,"Anos 90","Em que ano o Brasil foi tetracampeão mundial, nos Estados Unidos?","1994","1990","1998","2002"],
+[1,"Anos 90","Qual banda cantava \"Pelados em Santos\"?","Mamonas Assassinas","Raimundos","Skank","Titãs"],
+[1,"Anos 90","Qual piloto brasileiro morreu em 1994, no circuito de Ímola?","Ayrton Senna","Nelson Piquet","Rubens Barrichello","Emerson Fittipaldi"],
+[1,"Anos 90","Qual grupo tinha Posh, Baby, Scary, Sporty e Ginger?","Spice Girls","Destiny's Child","Backstreet Boys","Rouge"],
+[1,"Anos 90","Qual filme de 1997 tinha Jack e Rose num navio?","Titanic","Pearl Harbor","Náufrago","Piratas do Caribe"],
+[1,"Anos 90","Complete o hit do É o Tchan: \"Na boquinha da...\"","Garrafa","Panela","Janela","Fogueira"],
+[1,"Anos 90","Que aparelho tocava fitas cassete enquanto você andava na rua?","Walkman","Discman","iPod","Vitrola"],
+[1,"Anos 90","Qual apresentadora era a Rainha dos Baixinhos?","Xuxa","Angélica","Eliana","Mara Maravilha"],
+[2,"Anos 90","Qual jogador italiano perdeu o pênalti decisivo na final da Copa de 94?","Roberto Baggio","Paolo Maldini","Franco Baresi","Del Piero"],
+[2,"Anos 90","Em que ano começou o Plano Real?","1994","1986","1990","2000"],
+[2,"Anos 90","Qual videogame era o \"rival\" do Super Nintendo e tinha o Sonic?","Mega Drive","PlayStation","Atari","Nintendo 64"],
+[2,"Anos 90","Qual banda gravou \"Anna Júlia\" em 1999?","Los Hermanos","Skank","Jota Quest","O Rappa"],
+[2,"Anos 90","Qual banda cantava \"Garota Nacional\"?","Skank","Charlie Brown Jr.","Capital Inicial","Raimundos"],
+[2,"Anos 90","Qual dupla lançou \"É o Amor\" em 1991?","Zezé Di Camargo & Luciano","Chitãozinho & Xororó","Leandro & Leonardo","Bruno & Marrone"],
+[3,"Anos 90","Em que ano a Copa do Mundo foi na França, com a final Brasil x França?","1998","1994","2002","1990"],
+[3,"Anos 90","Qual era o nome da ovelha clonada em 1996?","Dolly","Molly","Polly","Lolly"],
+
+// ---------- Música ----------
+[1,"Música","Qual dupla canta \"Evidências\"?","Chitãozinho & Xororó","Zezé Di Camargo & Luciano","Victor & Leo","Jorge & Mateus"],
+[1,"Música","Qual banda inglesa cantou \"Hey Jude\"?","Beatles","Queen","Rolling Stones","Coldplay"],
+[2,"Música","Quem é o Rei do Baião?","Luiz Gonzaga","Dominguinhos","Gilberto Gil","Alceu Valença"],
+[2,"Música","Quem compôs \"Garota de Ipanema\" com Vinicius de Moraes?","Tom Jobim","Chico Buarque","Caetano Veloso","João Gilberto"],
+[2,"Música","Quem canta \"País Tropical\"?","Jorge Ben Jor","Tim Maia","Djavan","Roberto Carlos"],
+[2,"Música","Ivete Sangalo ficou famosa como vocalista de qual banda?","Banda Eva","Chiclete com Banana","Asa de Águia","Timbalada"],
+[2,"Música","Quem canta \"Aquarela\" (\"Numa folha qualquer eu desenho um sol amarelo\")?","Toquinho","Vinicius de Moraes","Milton Nascimento","Djavan"],
+[3,"Música","Qual destes músicos baianos criou os Doces Bárbaros com Caetano, Gil e Bethânia?","Gal Costa","Elis Regina","Rita Lee","Marisa Monte"],
+
+// ---------- Futebol ----------
+[1,"Futebol","Quantas Copas do Mundo o Brasil já ganhou?","5","3","4","6"],
+[1,"Futebol","Quem é chamado de Rei do Futebol?","Pelé","Maradona","Ronaldo","Zico"],
+[1,"Futebol","Contra qual seleção o Brasil perdeu de 7 a 1 em 2014?","Alemanha","Argentina","Holanda","França"],
+[2,"Futebol","Quem fez os dois gols do Brasil na final da Copa de 2002?","Ronaldo","Rivaldo","Ronaldinho","Cafu"],
+[2,"Futebol","Em quais países foi a Copa de 2002?","Coreia do Sul e Japão","China e Japão","Estados Unidos","Alemanha"],
+[2,"Futebol","Em que ano o Brasil ganhou sua primeira Copa do Mundo?","1958","1950","1962","1970"],
+[2,"Futebol","Quais países sediaram a Copa do Mundo de 2026?","Estados Unidos, Canadá e México","Brasil e Argentina","Catar","Espanha e Portugal"],
+
+// ---------- Brasil e conhecimentos gerais ----------
+[1,"Geral","Qual é o maior planeta do Sistema Solar?","Júpiter","Saturno","Terra","Marte"],
+[1,"Geral","Qual é o Planeta Vermelho?","Marte","Vênus","Júpiter","Mercúrio"],
+[1,"Geral","Qual é o maior oceano do mundo?","Pacífico","Atlântico","Índico","Ártico"],
+[1,"Geral","Quem pintou a Mona Lisa?","Leonardo da Vinci","Michelangelo","Van Gogh","Picasso"],
+[1,"Geral","Qual é a montanha mais alta do mundo?","Everest","Kilimanjaro","Aconcágua","Mont Blanc"],
+[1,"Geral","Qual país tem o formato de uma bota?","Itália","Chile","Portugal","Grécia"],
+[1,"Geral","Quantos lados tem um hexágono?","6","5","8","7"],
+[1,"Geral","Em que ano os portugueses chegaram ao Brasil?","1500","1492","1822","1600"],
+[1,"Geral","Qual é o maior bioma do Brasil?","Amazônia","Cerrado","Caatinga","Pantanal"],
+[1,"Geral","Qual país é o maior produtor de café do mundo?","Brasil","Colômbia","Índia","Etiópia"],
+[1,"Geral","Qual cantor é chamado de Rei da música brasileira?","Roberto Carlos","Caetano Veloso","Erasmo Carlos","Gilberto Gil"],
+[2,"Geral","Quantas estrelas tem a bandeira do Brasil?","27","26","22","50"],
+[2,"Geral","Quantos ossos tem o corpo de um adulto?","206","106","300","412"],
+[2,"Geral","Em que ano o homem pisou na Lua pela primeira vez?","1969","1959","1975","1981"],
+[2,"Geral","Qual é o menor país do mundo?","Vaticano","Mônaco","Malta","San Marino"],
+[2,"Geral","O Monte Everest fica na fronteira de quais países?","Nepal e China","Índia e Paquistão","Butão e Índia","Nepal e Índia"],
+[2,"Geral","Qual é o símbolo químico do ouro?","Au","Ou","Ag","Go"],
+[3,"Geral","Qual é a capital da Austrália?","Camberra","Sydney","Melbourne","Perth"],
+[3,"Geral","Quantos minutos tem um dia?","1.440","1.000","2.400","3.600"],
+[3,"Geral","Quantos países fazem parte da ONU?","193","100","150","220"],
+[3,"Geral","A luz viaja a quantos quilômetros por segundo, mais ou menos?","300 mil","3 mil","30 mil","3 milhões"],
+];
+
+/* ================== CARTAS DOS JOGOS ================== */
+const MIMICA = {
+  "Índia": ["Ganesha","Hanuman","Taj Mahal","Encantador de serpentes","Tuk-tuk no trânsito","Vaca no meio da estrada","Banho no Ganges","Vestir um sári","Comer com a mão","Tomar chai bem quente","Buzinar sem parar","Macaco roubando comida","Dança de Bollywood","Andar de elefante","Andar de camelo","Pechinchar no mercado","Meditar no Himalaia","Postura de yoga","Shiva dançando","Krishna tocando flauta","Acender lamparina no Diwali","Guerra de pó colorido no Holi","Comer comida muito apimentada","Atravessar a rua em Delhi"],
+  "Filmes": ["Titanic","O Rei Leão","Harry Potter","Homem-Aranha","Tubarão","E.T.","Frozen","Procurando Nemo","Matrix","Star Wars","Jurassic Park","Esqueceram de Mim","Shrek","Mogli","Piratas do Caribe","Karatê Kid","Ghost","Tropa de Elite","Quem Quer Ser um Milionário?","O Auto da Compadecida","Divertida Mente","Avatar","Rocky","O Mágico de Oz"],
+  "TV e novelas": ["Chaves","Chapolin","Show do Milhão","Faustão","Silvio Santos jogando aviãozinho","Caminho das Índias","Xuxa","Big Brother","Castelo Rá-Tim-Bum","Jornal Nacional","Sítio do Picapau Amarelo","Teletubbies","Power Rangers","Os Trapalhões","Previsão do tempo","O Clone"],
+  "Desenhos": ["Pica-Pau","Scooby-Doo","Bob Esponja","Pikachu","Popeye","Tom e Jerry","Os Flintstones","He-Man","Smurfs","Pernalonga","Dragon Ball","Cavaleiros do Zodíaco","Cebolinha","Mickey","Pato Donald","Os Simpsons","Peppa Pig","Papa-Léguas","Taz","Caverna do Dragão"],
+  "Ações": ["Escovar os dentes","Trocar pneu","Perder o voo","Fazer o check-in","Arrumar a mala","Tirar selfie","Dormir no ônibus","Dançar forró","Pescar","Surfar","Tomar banho de chuva","Passar protetor solar","Esquecer o passaporte","Morrer de fome","Cochilar na reunião","Fazer churrasco","Andar de patins","Pular corda","Ver um gol do Brasil","Ser picado por mosquito","Carregar a mala pesada","Procurar sinal de wi-fi"],
+  "Profissões": ["Dentista","Piloto de avião","Bombeiro","Guia de turismo","Motorista de tuk-tuk","Cabeleireiro","DJ","Astronauta","Jogador de futebol","Garçom","Fotógrafo","Professor de yoga","Mágico","Salva-vidas","Cozinheiro","Maestro","Padre","Palhaço"],
+  "Animais": ["Camelo","Elefante","Macaco","Pavão","Cobra","Tigre","Girafa","Pinguim","Canguru","Polvo","Galinha","Caranguejo","Morcego","Tartaruga","Cavalo","Gorila","Coruja","Pato"],
+  "Músicas": ["Ai Se Eu Te Pego","Macarena","Ragatanga","Na Boquinha da Garrafa","Evidências","Aquarela","Garota de Ipanema","Ilariê","Atirei o Pau no Gato","Parabéns pra Você","Brilha, Brilha, Estrelinha","Cabeça, Ombro, Joelho e Pé","Asa Branca","Thriller","YMCA","Dança do Siri"],
+  "Ditados": ["Quem não tem cão caça com gato","De grão em grão a galinha enche o papo","Cavalo dado não se olham os dentes","Água mole em pedra dura tanto bate até que fura","Em casa de ferreiro, espeto de pau","Mais vale um pássaro na mão do que dois voando","Deus ajuda quem cedo madruga","Cão que ladra não morde","Quem vê cara não vê coração","A pressa é inimiga da perfeição","Macaco velho não põe a mão em cumbuca","Quem com ferro fere, com ferro será ferido"],
+};
+const DESENHO = {
+  "Índia": ["Taj Mahal","Elefante","Tuk-tuk","Ganesha","Xícara de chai","Pavão","Camelo","Vaca","Templo","Rio Ganges","Flor de lótus","Lamparina","Cobra saindo do cesto","Turbante","Tigre","Incenso","Mandala","Sári","Himalaia","Macaco"],
+  "Viagem": ["Avião","Mala","Passaporte","Trem","Mapa do tesouro","Bússola","Câmera fotográfica","Barraca de camping","Ônibus","Navio","Selfie","Óculos de sol","Chapéu","Mochila","Guarda-chuva","Bicicleta","Montanha","Praia","Cachoeira","Hotel"],
+  "Coisas": ["Pizza","Sorvete","Violão","Coração","Foguete","Relógio","Celular","Abacaxi","Banana","Bolo de aniversário","Lâmpada","Escova de dentes","Tesoura","Vela","Chave","Coroa","Pipa","Balão","Sapato","Óculos"],
+  "Personagens": ["Bob Esponja","Pikachu","Mickey","Homem-Aranha","Mônica","Chaves","Batman","Papai Noel","Sereia","Fantasma","Palhaço","Pirata","Dinossauro","Robô","Bruxa","Smurf","Minion","Anjo"],
+  "Lugares": ["Cristo Redentor","Torre Eiffel","Pirâmide","Castelo","Vulcão","Arco-íris","Pôr do sol","Lua cheia","Ilha deserta","Farol","Estádio de futebol","Igreja","Roda-gigante","Iglu","Fazenda","Deserto"],
+  "Ações": ["Meditar","Dormir","Pescar","Dançar","Nadar","Chorar","Cozinhar","Voar","Correr","Ler um livro","Tomar banho","Plantar uma árvore"],
+};
+const BATATA = ["Frutas","Países","Animais","Deuses e deusas da Índia","Comidas indianas","Coisas amarelas","Coisas vermelhas","Novelas da Globo","Times de futebol brasileiros","Marcas de carro","Palavras terminadas em -ão","Cantores e cantoras brasileiros","Capitais do Brasil","Personagens da Disney","Desenhos animados","Coisas que levamos na mala","Profissões","Partes do corpo","Instrumentos musicais","Esportes","Bebidas","Doces brasileiros","Nomes de mulher com A","Nomes de homem com J","Coisas da cozinha","Personagens do Chaves","Super-heróis","Flores","Cidades da Índia","Países da Europa","Peças de roupa","Apresentadores de TV","Coisas que voam","Coisas que têm rodas","Palavras em inglês","Temperos","Jogadores da seleção brasileira","Filmes da Disney","Coisas que tem na praia","Pratos típicos brasileiros"];
+
+// Verdade ou mito: [frase, é verdade?, explicação curta]
+const VERDADES = [
+  ["Na Índia, as vacas podem andar livres pelas ruas das cidades.", true, "Elas são sagradas e ninguém as tira do caminho."],
+  ["O xadrez nasceu na Índia.", true, "O jogo antigo se chamava chaturanga."],
+  ["Na Índia, todo mundo é vegetariano.", false, "Muita gente é, mas muitos indianos comem carne."],
+  ["O Taj Mahal é um templo hindu.", false, "É um mausoléu que um imperador mogol fez para a esposa."],
+  ["A Constituição da Índia reconhece mais de 20 línguas.", true, "São 22 línguas na lista oficial."],
+  ["Curry é o nome de um tempero só.", false, "É uma mistura de vários temperos, e também o nome dos pratos com molho."],
+  ["Na Índia, muita gente come com a mão direita.", true, "A mão esquerda fica para outras coisas."],
+  ["Na Índia, balançar a cabeça de um lado para o outro sempre quer dizer não.", false, "Quase sempre quer dizer sim ou entendi."],
+  ["Os números de 0 a 9 que usamos vieram da Índia.", true, "Por isso se chamam algarismos indo-arábicos."],
+  ["A Índia é o país com mais gente no mundo.", true, "Passou a China em 2023."],
+  ["O yoga foi inventado nos Estados Unidos.", false, "O yoga nasceu na Índia há milhares de anos."],
+  ["Os Beatles estiveram em Rishikesh.", true, "Foram em 1968 aprender meditação."],
+  ["Em Varanasi, é proibido tomar banho no rio Ganges.", false, "Milhares de pessoas se banham nele todos os dias."],
+  ["Jaipur foi pintada de rosa para receber um príncipe.", true, "Foi em 1876, para a visita do Príncipe de Gales."],
+  ["Ganesha tem cabeça de leão.", false, "Ganesha tem cabeça de elefante."],
+  ["Na Índia, buzinar é considerado falta de educação.", false, "Lá a buzina é um jeito de avisar: estou passando!"],
+  ["Muitos caminhões na Índia têm escrito \"Horn OK Please\" na traseira.", true, "É um pedido: buzine antes de ultrapassar."],
+  ["\"Chai\" quer dizer café em hindi.", false, "Chai quer dizer chá."],
+  ["A Índia é o país que mais faz filmes no mundo.", true, "São mais de mil filmes por ano."],
+  ["O Taj Mahal fica em Delhi.", false, "Fica em Agra."],
+  ["O Diwali é a festa da água.", false, "É a festa das luzes."],
+  ["O pavão é a ave nacional da Índia.", true, "E o tigre-de-bengala é o animal nacional."],
+  ["O leão é o animal nacional da Índia.", false, "É o tigre-de-bengala."],
+  ["Ainda existem leões selvagens na Índia.", true, "Eles vivem na floresta de Gir, no oeste do país."],
+  ["Gandhi usava roupas de um tecido que ele mesmo fiava.", true, "O tecido se chama khadi."],
+  ["A Índia já pousou uma nave perto do polo sul da Lua.", true, "Foi a missão Chandrayaan-3, em 2023."],
+  ["O rio Ganges nasce no deserto.", false, "Ele nasce numa geleira do Himalaia."],
+  ["Em Rishikesh não se vende carne nem bebida alcoólica.", true, "É uma cidade sagrada."],
+  ["\"Namastê\" quer dizer bom apetite.", false, "Quer dizer mais ou menos eu me curvo a você."],
+  ["O hindi é escrito com um alfabeto chamado devanágari.", true, "É aquele com uma linha em cima das letras."],
+  ["Na Índia, os carros andam do lado direito da rua, como no Brasil.", false, "Lá se anda do lado esquerdo, e o volante fica à direita."],
+  ["A palavra \"xampu\" veio de uma palavra indiana.", true, "Vem de \"champo\", que quer dizer massagear."],
+  ["A palavra \"pijama\" veio da Índia.", true, "Os ingleses trouxeram a roupa e o nome de lá."],
+  ["O animal de Ganesha é a vaca.", false, "É o ratinho, chamado Mushika."],
+  ["A flor de lótus é um símbolo sagrado na Índia.", true, "Ela nasce na lama e floresce limpinha."],
+  ["Shiva tem a pele cor-de-rosa.", false, "Nas imagens, Shiva costuma ser azul ou cinza-azulado."],
+];
+// Quem sou eu: [categoria, resposta, pistas da mais difícil para a mais fácil]
+const QUEM_SOU = [
+  ["Deus", "Ganesha", ["Sou chamado antes de tudo começar.", "Removo os obstáculos do caminho.", "Tenho uma presa quebrada.", "Adoro um bolinho doce chamado modak.", "Tenho cabeça de elefante."]],
+  ["Deus", "Hanuman", ["Sou filho do deus do vento.", "Sou o maior devoto de Rama.", "Voei carregando uma montanha inteira.", "Quando bebê, quis comer o Sol.", "Sou um macaco."]],
+  ["Deus", "Shiva", ["Danço para o universo girar.", "Seguro o rio Ganges nos cabelos.", "Minha garganta é azul.", "Tenho um tridente e uma cobra no pescoço.", "Varanasi é a minha cidade."]],
+  ["Deus", "Krishna", ["Fui criado por pastores de vacas.", "Ensinei Arjuna no Bhagavad Gita.", "Adorava roubar manteiga.", "Toco flauta.", "Tenho a pele azul."]],
+  ["Deusa", "Lakshmi", ["Sou a esposa de Vishnu.", "No Diwali, me recebem em casa com lamparinas.", "Fico sentada numa flor de lótus.", "Moedas de ouro caem das minhas mãos.", "Sou a deusa da riqueza."]],
+  ["Deusa", "Sarasvati", ["Visto um sári branco.", "Fico sentada numa pedra à beira de um rio.", "Um cisne me acompanha.", "Toco a vina.", "Protejo os estudantes e os artistas."]],
+  ["Deusa", "Durga", ["Os deuses me deram suas armas.", "Venci um demônio búfalo.", "Tenho muitos braços.", "Sou uma mãe guerreira.", "Ando montada num leão."]],
+  ["Deusa", "Kali", ["Meu nome vem da palavra tempo.", "Uso um colar de cabeças.", "Sou a deusa da morte do ego.", "Fiquei envergonhada ao pisar sem querer em Shiva.", "Tenho a pele escura e a língua de fora."]],
+  ["Deus", "Vishnu", ["Durmo sobre uma serpente no oceano.", "Sou o preservador do universo.", "Desço à Terra em forma de avatares.", "Rama e Krishna são formas minhas.", "Uma águia gigante, Garuda, me carrega."]],
+  ["Deus", "Brahma", ["Faço parte da Trimurti.", "Nasci de uma flor de lótus.", "Sarasvati é a minha esposa.", "Sou o criador do universo.", "Tenho quatro cabeças."]],
+  ["Herói", "Rama", ["Sou um príncipe de Ayodhya.", "Minha esposa Sita foi sequestrada.", "Hanuman me ajudou a resgatá-la.", "Uso arco e flecha.", "O Diwali celebra a minha volta para casa."]],
+  ["Deusa", "Parvati", ["Sou filha das montanhas do Himalaia.", "Sou a esposa de Shiva.", "Segundo a história, fiz um filho com uma pasta de cúrcuma.", "Meu outro filho anda num pavão.", "Sou a mãe de Ganesha."]],
+  ["Deusa", "Ganga", ["Desci do céu para a Terra.", "Shiva me segurou nos cabelos para eu não cair com força demais.", "Quem se banha em mim fica purificado.", "Passo por Rishikesh e por Varanasi.", "Sou um rio e uma deusa."]],
+  ["Deus", "Surya", ["Todo dia faço a mesma viagem pelo céu.", "Meu carro é puxado por sete cavalos.", "No yoga, me saúdam com uma sequência de posturas.", "Sem mim não existe dia.", "Sou o Sol."]],
+  ["Personagem", "Buda", ["Fui um príncipe que deixou o palácio.", "Meditei embaixo de uma figueira.", "Dei meu primeiro ensinamento em Sarnath, perto de Varanasi.", "Ensinei o caminho do meio.", "Minha religião se chama budismo."]],
+  ["Personagem", "Gandhi", ["Fui advogado na África do Sul.", "Fiz uma marcha de 24 dias até o mar.", "Fiava o meu próprio tecido.", "Lutei pela independência sem violência.", "Me chamam de Mahatma."]],
+  ["Lugar", "Taj Mahal", ["Levei uns 20 anos para ficar pronto.", "Sou feito de mármore branco.", "Fui um presente de amor de um imperador para a esposa.", "Fico em Agra, à beira do rio Yamuna.", "Sou uma das Sete Maravilhas do mundo moderno."]],
+  ["Lugar", "Varanasi", ["Sou uma das cidades mais antigas do mundo.", "Também me chamam de Benares ou Kashi.", "Tenho escadarias chamadas ghats.", "Toda noite tenho a cerimônia do fogo, a Ganga Aarti.", "Fico à beira do Ganges e sou a cidade de Shiva."]],
+];
+// Complete: [tipo, começo, continuação]
+const COMPLETE = [
+  ["Mantra", "Om Namah…", "Shivaya"],
+  ["Mantra", "Om Gam Ganapataye…", "Namaha"],
+  ["Mantra", "Hare Krishna, Hare Krishna, Krishna Krishna…", "Hare Hare"],
+  ["Mantra", "Hare Rama, Hare Rama, Rama Rama…", "Hare Hare"],
+  ["Mantra", "Om Mani Padme…", "Hum"],
+  ["Mantra", "Om Shanti, Shanti…", "Shanti"],
+  ["Mantra", "Lokah Samastah Sukhino…", "Bhavantu"],
+  ["Mantra", "Om Namo Bhagavate…", "Vasudevaya"],
+  ["Mantra", "Asato ma sat gamaya, tamaso ma…", "jyotir gamaya"],
+  ["Mantra", "Om Bhur Bhuvah…", "Swaha"],
+  ["Música", "Olha que coisa mais linda, mais cheia de graça…", "é ela, menina, que vem e que passa"],
+  ["Música", "E nessa loucura de dizer que não te quero…", "vou negando as aparências, disfarçando as evidências"],
+  ["Música", "Numa folha qualquer eu desenho um sol amarelo…", "e com cinco ou seis retas é fácil fazer um castelo"],
+  ["Música", "Quando olhei a terra ardendo…", "qual fogueira de São João"],
+  ["Música", "Moro num país tropical…", "abençoado por Deus e bonito por natureza"],
+  ["Música", "Parabéns pra você, nesta data querida…", "muitas felicidades, muitos anos de vida"],
+  ["Música", "Todos os dias quando acordo…", "não tenho mais o tempo que passou"],
+  ["Música", "Mas que nada, sai da minha frente…", "eu quero passar"],
+  ["Música", "Brasil, meu Brasil brasileiro…", "meu mulato inzoneiro"],
+  ["Música", "Atirei o pau no gato…", "mas o gato não morreu"],
+  ["Música", "Ciranda, cirandinha, vamos todos cirandar…", "vamos dar a meia-volta, volta e meia vamos dar"],
+  ["Música", "Eu sei que vou te amar…", "por toda a minha vida eu vou te amar"],
+  ["Música", "Hakuna Matata, é lindo dizer…", "Hakuna Matata, sim, vai entender"],
+  ["Música", "Marmelada de banana, bananada de goiaba…", "goiabada de marmelo"],
+  ["Ditado", "Quem com ferro fere…", "com ferro será ferido"],
+  ["Ditado", "Água mole em pedra dura…", "tanto bate até que fura"],
+  ["Ditado", "De grão em grão…", "a galinha enche o papo"],
+  ["Ditado", "Quem não tem cão…", "caça com gato"],
+  ["Ditado", "Em casa de ferreiro…", "espeto de pau"],
+  ["Ditado", "Mais vale um pássaro na mão…", "do que dois voando"],
+];
+// trechos das músicas da Vivian: [tipo, começo, continuação, nome da música]
+const MUSICAS_DA_VIVIAN = [
+  ["Canto", "Em honra aos meus ancestrais…", "a quem já fui, a quem mora em mim", "Canto aos Ancestrais"],
+  ["Canto", "Eu honro essa sabedoria…", "toda essa força que vem do coração", "Canto aos Ancestrais"],
+  ["Canto", "Me liberto das histórias que vivi…", "trazendo um ensinamento e preenchendo meu ser", "Canto aos Ancestrais"],
+  ["Canto", "Todas as vezes que eu me lembrar quem eu fui e quem eu sou…", "a mãe terra vai chamar", "Canto aos Ancestrais"],
+  ["Canto", "Ora ieie ô Oxum, na cachoeira…", "eu vou sumir", "Lua Preta"],
+  ["Canto", "Vou me juntar com as marolas…", "do fundo do mar", "Lua Preta"],
+  ["Canto", "Odoya…", "minha mãe Yemanja", "Lua Preta"],
+  ["Canto", "Eu fui pro mar, eu fui pro mar…", "pedir a força", "Lua Preta"],
+  ["Canto", "Força do canto…", "que sopra em mim", "Lua Preta"],
+  ["Canto", "Eparrei Iansã, troveja, eu toco o céu e a terra…", "sou início e fim", "Lua Preta"],
+  ["Canto", "Pelas pedras passa água…", "cor ferrugem", "Yemanjayna"],
+  ["Canto", "Vem, vem de lá, de outro mundo…", "sutil azul", "Yemanjayna"],
+  ["Canto", "Vento veio avisar, na onda forte…", "vai me levar", "Yemanjayna"],
+  ["Canto", "Brisa leve que bate e entra…", "e toca no peito", "Yemanjayna"],
+  ["Canto", "Minha mãe tá…", "nesse mar", "Yemanjayna"],
+  ["Canto", "Canto forte, meu rezo de cura, num teto de estrela…", "sereia vem me encontrar", "Yemanjayna"],
+  ["Canto", "Água fria purifica…", "minha dor", "Yemanjayna"],
+  ["Canto", "He Ayná, Eskawata kayawai…", "Hei Hei Yemanja", "Yemanjayna"],
+  ["Canto", "O sol vermelho desceu lá nas montanhas, e o vento que trouxe…", "um cheiro de folha", "Sol Vermelho"],
+  ["Canto", "Veio sussurrar que eu fale manso…", "que eu respire manso", "Sol Vermelho"],
+  ["Canto", "Jamais estou só…", "porque me acompanha", "Sol Vermelho"],
+  ["Canto", "Captar o oculto…", "das entrelinhas da vida", "Sol Vermelho"],
+  ["Canto", "Vem de um lugar além dos olhos…", "um lugar onde mora o infinito", "Sol Vermelho"],
+  ["Canto", "Toda alma é naturalmente…", "doce", "Sol Vermelho"],
+  ["Canto", "Eu não sou da mente, não sou da matéria, não temo a morte…", "pois nunca nasci", "Sol Vermelho"],
+  ["Canto", "E das estrelas sou o brilho…", "e o olhar", "Sol Vermelho"],
+  ["Canto", "Defumaê, defuma, na força da floresta…", "defuma", "Defumaê"],
+  ["Canto", "Defumaê, defuma, sou filha…", "da Mãe Terra, defuma", "Defumaê"],
+  ["Canto", "Eu peço pra limpar, o atabaque…", "vem me ajudar", "Defumaê"],
+  ["Canto", "Fumaça sobe…", "bem devagar", "Defumaê"],
+  ["Canto", "Eu chamo os guardiões…", "pra essa roda guardar", "Defumaê"],
+  ["Canto", "Vem lá o vento forte…", "da espada de Iansã", "Defumaê"],
+  ["Canto", "Vem lá meu pai Oxossi…", "com sua flecha brilhar", "Defumaê"],
+  ["Canto", "Eu chamo a Velha Tribo…", "o canto do Jaguar", "Defumaê"],
+  ["Canto", "Eu vejo lá, Pai Oxalá…", "eu vejo lá o amor iluminar", "Defumaê"],
+  ["Canto", "Sou guardada pela cabocla da mata…", "flecha dourada, serena, pele de jaguar", "Defumaê"],
+  ["Canto", "Eu não sou daqui, eu vim de longe…", "lá das estrelas", "Gaia Ô"],
+  ["Canto", "Eu vim dali, daquela aldeia…", "por entre as montanhas do céu", "Gaia Ô"],
+  ["Canto", "Sombras dançando na fogueira…", "o vento carrega meu véu", "Gaia Ô"],
+  ["Canto", "Uê Maia ê ia, Uê Maia ê…", "Inca maraia, ô Gaia ôo", "Gaia Ô"],
+  ["Canto", "A força do segredo que eu trago no peito…", "me expande e me faz voar", "Gaia Ô"],
+  ["Canto", "Eu volto nessa noite na cura da montanha…", "desperto o poder de enxergar", "Gaia Ô"],
+  ["Canto", "O brilho em minha fronte…", "que ativa os mundos em espiral", "Força do Jaguar"],
+  ["Canto", "Eu vou seguindo meu caminho…", "no silêncio do meu ser", "Força do Jaguar"],
+  ["Canto", "Noite negra ilumina…", "esses filhos da floresta", "Força do Jaguar"],
+  ["Canto", "Grande Espírito recebe…", "a minha tribo de poder", "Força do Jaguar"],
+  ["Canto", "Vem a força do Jaguar, desce à Terra…", "vem ser a estrela guia", "Força do Jaguar"],
+  ["Canto", "Planta em mim toda a sabedoria, me transforma num canal…", "do infinito", "Força do Jaguar"],
+  ["Canto", "Na presença da Mãe Terra, força viva…", "a semente cresce em mim", "Força do Jaguar"],
+];
+const CANTA = ["Amor","Lua","Mar","Coração","Saudade","Bahia","Chuva","Estrada","Beijo","Sol","Flor","Dança","Noite","Céu","Menina","Praia","Festa","Carro","Deus","Viagem","Fogo","Estrela","Tempo","Sonho","Felicidade","Paixão","Olhos","Rio","Verão","Carnaval","Avião","Vento","Mãe","Rosa","Azul","Amarelo","Dinheiro","Trem","Rei","Anjo","Café","Sorriso","Morena","Sertão","Cavalo","Janela","Boca","Chorar","Garota","Baby","Primavera","Vida","Mundo","Paz","Telefone","Lágrima","Cidade","Cabelo","Mentira"];
+
+
+/* ================== REGRAS ================== */
+const META = 1000000;
+const FINAL = 900000;   // a partir daqui o time só vence acertando a Pergunta Final
+const VALOR_PERGUNTA = { 1: 50000, 2: 100000, 3: 150000 };
+const VALE = { mimica: 100000, desenho: 100000, batata: 100000, canta: 50000, verdade: 50000, complete: 50000, quemsou: 150000 };
+// Quem sou eu: quanto menos pistas o time precisar, mais vale
+const VALE_PISTA = [150000, 120000, 90000, 60000, 30000];
+const FRASES_VERDADE = 3, TRECHOS_COMPLETE = 3, TEMPO_COMPLETE = 20;
+const TEMPO_MIMICA = 60, TEMPO_DESENHO = 75, TEMPO_CANTA = 20, PALAVRAS_CANTA = 3;
+// chance de cada desafio sair na roleta (a pergunta sai mais)
+const PESOS = { pergunta: 34, mimica: 12, desenho: 12, batata: 10, canta: 10, verdade: 8, quemsou: 8, complete: 7 };
+// o que os times juntam: a cada aventura nova sai um diferente
+const UNIDADES = ["pétalas de lótus", "luzes de diya", "xícaras de chai", "tuk-tuks", "vaquinhas sagradas", "elefantes", "pitadas de masala", "buzinadas", "macaquinhos ladrões", "samosas", "bênçãos"];
+function sortearUnidade(atual) { const op = UNIDADES.filter((u) => u !== atual); return op[Math.floor(Math.random() * op.length)]; }
+const KEY = "aventuras-da-caravana-v2";
+
+const DESAFIOS = {
+  pergunta: { nome: "Pergunta", regras: [] },
+  mimica: { nome: "Mímica", regras: [
+    "Escolham quem vai fazer a mímica. <b>Só essa pessoa olha a tela.</b>",
+    "<b>60 segundos</b> para o time adivinhar. <b>Acertou, ganhou a rodada!</b> Pode pular a carta 3 vezes.",
+    "Não vale falar nem fazer barulho.",
+    "Se o tempo acabar, o outro time pode <b>roubar</b>.",
+  ] },
+  desenho: { nome: "Imagem e Ação", regras: [
+    "Quem vai desenhar olha a palavra escondido e desenha com o dedo na tela.",
+    "<b>75 segundos</b>. Não vale letras, números nem falar.",
+    "Se o tempo acabar, o outro time pode <b>roubar</b>.",
+  ] },
+  batata: { nome: "Batata Quente", regras: [
+    "Os <b>dois times</b> jogam. Sai um tema e cada time, na sua vez, fala uma palavra dele.",
+    "Falou? Toque em <b>Passa a batata</b>. Ninguém sabe quando ela explode!",
+    "Quem estiver com a batata, travar ou repetir, perde.",
+  ] },
+  verdade: { nome: "Verdade ou Mito?", regras: [
+    "Vou dizer <b>3 frases</b> sobre a Índia.",
+    "O time grita: <b>verdade!</b> ou <b>mito!</b>, e você toca na resposta.",
+    "Cada acerto vale <b>50 mil</b>.",
+  ] },
+  quemsou: { nome: "Quem Sou Eu?", regras: [
+    "O app dá <b>uma pista por vez</b> sobre um deus, um personagem ou um lugar da Índia.",
+    "O time tenta adivinhar. Errou? Toque em <b>Mais uma pista</b>.",
+    "Quanto menos pistas, mais vale: <b>150 mil</b> na primeira, 30 mil na última.",
+  ] },
+  complete: { nome: "Complete!", regras: [
+    "Os <b>dois times</b> jogam. Aparece o começo de um mantra, de um canto, de uma música ou de um ditado.",
+    "Quem completar primeiro, ganha <b>50 mil</b>.",
+    "São <b>3 trechos</b>, 20 segundos cada.",
+  ] },
+  canta: { nome: "Canta, se Souber!", regras: [
+    "Os <b>dois times</b> jogam. Sai uma palavra.",
+    "O primeiro time que <b>cantar</b> um pedaço de música com ela ganha.",
+    "São <b>3 palavras</b>, 20 segundos cada.",
+  ] },
+};
+const ICON = {
+  verdade: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l4 4 8-9"/><path d="M15 15l5 5M20 15l-5 5"/></svg>`,
+  quemsou: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9a3 3 0 1 1 4 2.8c-.7.3-1 .9-1 1.6V15"/><circle cx="12" cy="18.5" r=".6" fill="currentColor"/><circle cx="12" cy="12" r="10"/></svg>`,
+  complete: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M4 12h7M4 17h5"/><path d="M15 17h.01M18 17h.01M21 17h.01"/></svg>`,
+  pergunta: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.6 6.5 19.5l1-6.3L3 8.9 9 8z"/></svg>`,
+  mimica: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2.2"/><path d="M5 9l7 1.5L19 9M12 10.5V15l-3.5 6M12 15l3.5 6"/></svg>`,
+  desenho: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5l4 4L8 20H4v-4z"/><path d="M13.5 6.5l4 4"/></svg>`,
+  batata: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="14" r="7"/><path d="M15.5 8.5L18 6M18 6l1-3M18 6l3 1"/></svg>`,
+  canta: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>`,
+  cartas: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="11" height="15" rx="2"/><path d="M10 4.5 17.5 3a2 2 0 0 1 2.3 1.6l2 11a2 2 0 0 1-1.6 2.3L16 18.6"/></svg>`,
+  pular: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l7 6-7 6zM13 6l7 6-7 6z"/></svg>`,
+  gear: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>`,
+};
+const AJUDAS = () => ({ cartas: 2, pular: 3 });
+
+function novoEstado() {
+  return {
+    tela: "jogo", fase: "espera",
+    times: [
+      { nome: "Time Ganesha", pontos: 0, vitorias: 0, aj: AJUDAS() },
+      { nome: "Time Hanuman", pontos: 0, vitorias: 0, aj: AJUDAS() },
+    ],
+    vez: 0, quemComeca: 0, ultimo: "", desafio: "",
+    usadas: [], usadasMini: {}, minhas: [], dobro: -1, rodadas: 0,
+    unidade: sortearUnidade(), tempo: 45, som: true, voz: true,
+  };
+}
+let S = novoEstado();
+function salvar() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function carregar() {
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (d && d.times) S = Object.assign(novoEstado(), d);
+  } catch (e) {}
+}
+
+/* ================== FORMATOS ================== */
+const fnum = (n) => n.toLocaleString("pt-BR", { maximumFractionDigits: 2 });
+function curto(v) {                       // "350 mil", "1 milhão"
+  if (v >= 1e6) { const n = v / 1e6; return fnum(n) + (n < 2 ? " milhão" : " milhões"); }
+  if (v >= 1000) return fnum(v / 1000) + " mil";
+  return fnum(v);
+}
+function qtd(v) { return curto(v) + (v >= 1e6 ? " de " : " ") + S.unidade; }   // "100 mil estrelas"
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const L = ["A", "B", "C", "D"];
+const outro = () => 1 - S.vez;
+const T = (i) => S.times[i];
+const cor = (i) => `var(--t${i})`;
+function embaralhar(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+/* ================== SORTEIOS ================== */
+function todas() {
+  const minhas = (S.minhas || []).map((m, i) => [m.nivel, "Da turma", m.q, m.r[0], m.r[1], m.r[2], m.r[3], "m" + i]);
+  return BANCO.map((b, i) => [...b.slice(0, 7), "b" + i]).concat(minhas);
+}
+// a pergunta fica mais difícil conforme o time chega perto de 1 milhão
+function nivelDoTime(k) { const p = T(k).pontos / META; return p < 0.35 ? 1 : p < 0.7 ? 2 : 3; }
+function sortearPergunta(nivel) {
+  const lista = todas();
+  let livres = lista.filter((x) => x[0] === nivel && !S.usadas.includes(x[7]));
+  if (!livres.length) {
+    const ids = lista.filter((x) => x[0] === nivel).map((x) => x[7]);
+    S.usadas = S.usadas.filter((id) => !ids.includes(id));
+    livres = lista.filter((x) => x[0] === nivel);
+  }
+  const daTurma = livres.filter((x) => x[1] === "Da turma");
+  const pool = daTurma.length && Math.random() < 0.3 ? daTurma : livres;
+  const p = pool[Math.floor(Math.random() * pool.length)];
+  S.usadas.push(p[7]);
+  return { nivel, tema: p[1], q: p[2], r: [p[3], p[4], p[5], p[6]], ordem: embaralhar([0, 1, 2, 3]), elim: [], marcada: null, estado: "" };
+}
+function tirar(baralho, nome) {
+  const itens = Array.isArray(baralho) ? baralho.map((p) => ["", p]) : Object.entries(baralho).flatMap(([c, ps]) => ps.map((p) => [c, p]));
+  const usadas = (S.usadasMini[nome] = S.usadasMini[nome] || []);
+  let livres = itens.filter((x) => !usadas.includes(x[1]));
+  if (!livres.length) { usadas.length = 0; livres = itens; }
+  const x = livres[Math.floor(Math.random() * livres.length)];
+  usadas.push(x[1]);
+  return { cat: x[0], palavra: x[1] };
+}
+function desafiosAtivos() { return Object.keys(PESOS); }
+function sortearDesafio() {
+  const ativos = desafiosAtivos(), total = ativos.reduce((a, k) => a + PESOS[k], 0);
+  const tira = () => { let r = Math.random() * total; for (const k of ativos) { if ((r -= PESOS[k]) < 0) return k; } return "pergunta"; };
+  let d = tira();
+  if (d === S.ultimo && d !== "pergunta") d = tira();     // evita repetir o mesmo jogo seguido
+  if (d === S.ultimo && d !== "pergunta") d = "pergunta";
+  return d;
+}
+
+/* ================== SOM ================== */
+let ac = null, ruido = null, saida = null;
+// tudo passa por um compressor: dá para tocar mais alto sem estourar o alto-falante do celular
+function mesa(a) {
+  if (!saida) { const c = a.createDynamicsCompressor(); c.threshold.value = -14; c.knee.value = 8; c.ratio.value = 6; const g = a.createGain(); g.gain.value = 1.6; c.connect(g).connect(a.destination); saida = c; }
+  return saida;
+}
+function audio() {
+  if (!S.som) return null;
+  try {
+    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === "suspended") ac.resume();
+  } catch (e) { return null; }
+  return ac;
+}
+function tom(f, dur, tipo = "sine", vol = 0.18, quando = 0, ate = null) {
+  const a = audio(); if (!a) return;
+  const t = a.currentTime + quando, o = a.createOscillator(), g = a.createGain();
+  o.type = tipo; o.frequency.setValueAtTime(f, t);
+  if (ate) o.frequency.exponentialRampToValueAtTime(ate, t + dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(mesa(a)); o.start(t); o.stop(t + dur + 0.05);
+}
+function batida(quando, vol = 0.5, corte = 900, dur = 0.2, tipo = "lowpass") {
+  const a = audio(); if (!a) return;
+  if (!ruido) {
+    ruido = a.createBuffer(1, a.sampleRate * 1.2, a.sampleRate);
+    const d = ruido.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  }
+  const s = a.createBufferSource(), g = a.createGain(), fl = a.createBiquadFilter(), t = a.currentTime + quando;
+  fl.type = tipo; fl.frequency.value = corte; s.buffer = ruido;
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  s.connect(fl).connect(g).connect(mesa(a)); s.start(t); s.stop(t + dur + 0.05);
+  if (tipo === "lowpass") tom(90, Math.min(dur, 0.15), "sine", vol * 0.5, quando, 50);
+}
+const SOM = {
+  tique(n) { tom(n % 2 ? 1250 : 950, 0.06, "square", 0.16); },
+  tiqueForte(n) { tom(n % 2 ? 1500 : 1150, 0.09, "square", 0.26); tom(n % 2 ? 750 : 575, 0.09, "square", 0.12); },
+  suspense() {
+    let t = 0, gap = 0.2; while (t < 1.9) { batida(t, 0.35 + t * 0.15); t += gap; gap = Math.max(0.05, gap * 0.86); }
+    tom(110, 2, "sawtooth", 0.16, 0, 440); tom(165, 2, "sawtooth", 0.12, 0, 660);    // nota subindo, como no Show do Milhão
+  },
+  // acorde de impacto quando a pergunta aparece: tambor grave e um acorde menor que vai sumindo
+  drama() { batida(0, 1, 260, 1); [110, 131, 165, 220].forEach((f) => tom(f, 1.8, "sawtooth", 0.13)); tom(55, 1.6, "sine", 0.5, 0, 40); batida(0.45, 0.8, 260, 0.8); },
+  // coração batendo junto com o relógio, mais forte no fim
+  coracao(forte) { batida(0, forte ? 0.95 : 0.6, 160, 0.2); batida(0.16, forte ? 0.7 : 0.4, 160, 0.16); },
+  // comemoração: fanfarra subindo, acorde final e palmas
+  certa() {
+    [523, 659, 784, 1047].forEach((f, i) => { tom(f, 0.35, "triangle", 0.32, i * 0.11); tom(f / 2, 0.35, "square", 0.08, i * 0.11); });
+    [1047, 1319, 1568].forEach((f) => tom(f, 0.9, "triangle", 0.2, 0.45)); tom(262, 0.9, "sawtooth", 0.1, 0.45);
+    SOM.palmas(0.5, 1.6);
+  },
+  palmas(ini = 0, dur = 1.5) { for (let t = 0; t < dur; t += 0.035 + Math.random() * 0.04) batida(ini + t, 0.35 * (1 - t / dur) + 0.1, 1200 + Math.random() * 1500, 0.05, "bandpass"); },
+  ponto() { tom(880, 0.14, "triangle", 0.3); tom(1320, 0.3, "triangle", 0.28, 0.09); SOM.palmas(0.15, 0.7); },
+  errada() { batida(0, 0.8, 300, 0.8); tom(330, 0.35, "sawtooth", 0.16, 0, 220); tom(220, 0.9, "sawtooth", 0.16, 0.32, 90); tom(70, 1, "sine", 0.3, 0.3, 40); },
+  vinheta() { [392, 523, 659, 784].forEach((f, i) => tom(f, 0.22, "square", 0.12, i * 0.09)); tom(1047, 0.5, "triangle", 0.24, 0.38); },
+  milhao() {
+    const n = [523, 659, 784, 1047, 784, 1047, 1319, 1568]; n.forEach((f, i) => { tom(f, 0.3, "triangle", 0.32, i * 0.13); tom(f / 2, 0.3, "square", 0.08, i * 0.13); });
+    for (let i = 0; i < 8; i++) batida(i * 0.13, 0.5);
+    [1047, 1319, 1568, 2093].forEach((f) => tom(f, 1.6, "triangle", 0.2, 1.05)); tom(131, 1.6, "sawtooth", 0.14, 1.05);
+    SOM.palmas(1, 3);
+  },
+  roubada() { for (let i = 0; i < 6; i++) tom(i % 2 ? 660 : 880, 0.14, "square", 0.16, i * 0.15); batida(0, 0.8, 300, 0.5); },
+  carta() { tom(700, 0.12, "triangle", 0.15, 0, 1400); },
+  clique() { tom(600, 0.04, "triangle", 0.08); },
+  pavio() { tom(1800, 0.035, "square", 0.12); },
+  bum() { batida(0, 1, 500, 1.1); tom(120, 0.9, "sawtooth", 0.25, 0, 30); },
+  contagem() { for (let i = 0; i < 8; i++) tom(900 + i * 70, 0.04, "square", 0.045, i * 0.09); },
+  roleta(i) { tom(500 + (i % 6) * 90, 0.05, "triangle", 0.1); },
+};
+function vibrar(p) { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
+// como a voz do celular deve falar os nomes indianos (ela lê do jeito português e erra)
+const PRONUNCIA = [[/hanuman/gi, "Ránuman"], [/ganesha/gi, "Ganêcha"], [/shiva/gi, "Xiva"], [/krishna/gi, "Krixna"], [/lakshmi/gi, "Lákxmi"],
+  [/rishikesh/gi, "Richikêch"], [/jaipur/gi, "Djaipur"], [/diwali/gi, "Divali"], [/\bchai\b/gi, "tchai"], [/\bholi\b/gi, "Rôli"]];
+function falar(txt) {
+  if (!S.voz || !S.som) return;
+  try {
+    PRONUNCIA.forEach(([re, dito]) => { txt = txt.replace(re, dito); });
+    const u = new SpeechSynthesisUtterance(txt); u.lang = "pt-BR"; u.rate = 1.02; u.pitch = 0.9;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  } catch (e) {}
+}
+
+
+
+/* ================== TELA ACESA ================== */
+let trava = null;
+async function telaAcesa() {
+  try { if ("wakeLock" in navigator && !trava) { trava = await navigator.wakeLock.request("screen"); trava.addEventListener("release", () => (trava = null)); } } catch (e) {}
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") telaAcesa(); });
+
+/* ================== CRONÔMETRO (o tique-taque) ================== */
+let clk = { id: null, resta: 0, total: 0, pausado: false };
+function relogio(total, fim) {
+  pararRelogio();
+  clk = { id: null, resta: total, total, pausado: false };
+  pintarTempo();
+  clk.id = setInterval(() => {
+    if (clk.pausado) return;
+    clk.resta--; pintarTempo();
+    if (clk.resta <= 10 && clk.resta > 0) SOM.tiqueForte(clk.resta); else if (clk.resta > 0) SOM.tique(clk.resta);
+    if (S.fase === "pergunta" && clk.resta > 0) SOM.coracao(clk.resta <= 10);
+    if (clk.resta <= 0) { pararRelogio(); fim && fim(); }
+  }, 1000);
+}
+function pararRelogio() { clearInterval(clk.id); clk.id = null; }
+function pausar(v) { clk.pausado = v; }
+function pintarTempo() {
+  const bar = document.querySelector(".timer .bar i"), sec = document.querySelector(".timer .sec");
+  if (!bar || !clk.total) return;
+  const hot = clk.resta <= 10;
+  if (!bar.dataset.ok) { bar.dataset.ok = 1; bar.style.transition = "none"; bar.style.width = (100 * clk.resta / clk.total) + "%"; bar.offsetWidth; bar.style.transition = ""; }
+  bar.style.width = (100 * clk.resta / clk.total) + "%"; bar.classList.toggle("hot", hot);
+  sec.textContent = clk.resta; sec.classList.toggle("hot", hot);
+}
+const barraTempo = (total) => `<div class="timer" aria-label="Tempo restante"><div class="bar"><i></i></div><span class="sec">${total}</span></div>`;
+function pararTudo() { fecharFolha(); pararRelogio(); clearTimeout(BT.id); clearTimeout(giro); }
+
+/* ================== A TELA ================== */
+const app = document.getElementById("app");
+let mostrado = null;   // valores que o placar está mostrando (para a contagem subir aos poucos)
+function render() {
+  if (S.tela === "minhas") { app.innerHTML = telaMinhas(); return; }
+  const destaque = ["espera", "roleta", "intro", "pergunta", "mimica", "desenho", "verdade", "quemsou"].includes(S.fase) ? S.vez : -1;
+  app.innerHTML = `
+    <header class="head"><h1><small>Caravana do Céu</small>As Aventuras da Caravana</h1>
+      <button class="gear" data-a="opcoes" aria-label="Ajustes do jogo">${ICON.gear}</button></header>
+    <div class="board">${[0, 1].map((k) => `
+      <div class="team ${k === destaque ? "on" : ""}" style="--team:${cor(k)}">
+        ${k === destaque ? `<span class="tag">VEZ</span>` : ""}
+        <span class="nm">${esc(T(k).nome)}</span>
+        <span class="vl" id="vl${k}">${curto(mostrado ? mostrado[k] : T(k).pontos)}</span>
+        <span class="un">${esc(S.unidade)}</span>
+        <div class="track"><i id="tr${k}" style="width:${Math.min(100, 100 * (mostrado ? mostrado[k] : T(k).pontos) / META)}%"></i></div>
+        ${T(k).pontos >= FINAL ? `<span class="wins" style="color:var(--gold)">Na final!</span>` : ""}
+        ${T(k).vitorias ? `<span class="wins">${T(k).vitorias} ${T(k).vitorias === 1 ? "vitória" : "vitórias"}</span>` : ""}
+      </div>`).join("")}</div>
+    <main class="stage" style="--team:${cor(S.vez)}">${palco()}</main>`;
+  pintarTempo();
+  if (S.fase === "desenho" && DZ.fase === "desenho") montarPapel();
+  contarPlacar();
+}
+// a contagem: o número do placar sobe aos poucos até o valor novo
+function contarPlacar() {
+  const alvo = [T(0).pontos, T(1).pontos];
+  if (!mostrado) { mostrado = alvo.slice(); return; }
+  [0, 1].forEach((k) => {
+    const de = mostrado[k], ate = alvo[k];
+    if (de === ate) return;
+    const el = document.getElementById("vl" + k), tr = document.getElementById("tr" + k), t0 = performance.now();
+    const passo = (t) => {
+      const f = Math.min(1, (t - t0) / 900), v = Math.round(de + (ate - de) * (1 - Math.pow(1 - f, 3)));
+      if (el) el.textContent = curto(Math.round(v / 1000) * 1000);
+      if (f < 1) requestAnimationFrame(passo); else { mostrado[k] = ate; if (el) { el.textContent = curto(ate); el.classList.add("pop"); } }
+    };
+    if (tr) tr.style.width = Math.min(100, 100 * ate / META) + "%";
+    if (ate > de) SOM.contagem();
+    requestAnimationFrame(passo);
+  });
+}
+function palco() {
+  switch (S.fase) {
+    case "espera": return palcoEspera();
+    case "roleta": return `<div class="hero"><p class="eyebrow">Sorteando o desafio do ${esc(T(S.vez).nome)}</p><div class="spin" id="spin">…</div></div>`;
+    case "intro": return palcoIntro();
+    case "pergunta": return palcoPergunta();
+    case "mimica": return palcoMimica();
+    case "desenho": return palcoDesenho();
+    case "batata": return palcoBatata();
+    case "canta": return palcoCanta();
+    case "verdade": return palcoVerdade();
+    case "quemsou": return palcoQuemSou();
+    case "complete": return palcoComplete();
+  }
+  return palcoEspera();
+}
+function palcoEspera() {
+  const novo = T(0).pontos === 0 && T(1).pontos === 0;
+  return `<div class="hero">
+    <p class="eyebrow">${novo ? "Nesta aventura, o primeiro time a juntar" : "Próximo desafio"}</p>
+    ${novo ? `<div class="kind">${qtd(META)}</div><p class="muted">vence. A cada vez sai um desafio surpresa. Quem chegar a 900 mil vai para a <b style="color:var(--gold-soft)">Pergunta Final</b>, que vale a vitória.</p>
+      <button class="btn link" data-a="outraUnidade">Sortear outro prêmio</button>`
+      : `<div class="who">${esc(T(S.vez).nome)}</div><p class="muted">${T(S.vez).pontos >= FINAL ? "Está na final! Acertando a Pergunta Final, vence a aventura." : `Faltam ${qtd(META - T(S.vez).pontos)} para este time chegar lá.`}</p>`}
+    <button class="btn team big" data-a="sortear">${novo ? "Começar a aventura!" : "Sortear o desafio"}</button>
+  </div>`;
+}
+
+/* ================== ROLETA ================== */
+let giro = null;
+function sortear() {
+  audio(); telaAcesa(); pararTudo();
+  if (T(S.vez).pontos >= FINAL) return finalComeca();
+  const alvo = sortearDesafio();
+  S.fase = "roleta"; render();
+  const nomes = desafiosAtivos(); let i = 0, gap = 55;
+  const gira = () => {
+    const el = document.getElementById("spin"); if (!el) return;
+    const fim = gap > 250, k = fim ? alvo : nomes[i % nomes.length];
+    el.textContent = DESAFIOS[k].nome; SOM.roleta(i); i++;
+    if (fim) { SOM.certa(); giro = setTimeout(() => abrir(alvo), 900); return; }
+    gap *= 1.13; giro = setTimeout(gira, gap);
+  };
+  gira();
+}
+function abrir(d) {
+  S.desafio = d; S.ultimo = d; salvar();
+  if (d === "pergunta") return perguntaComeca();
+  S.fase = "intro"; render(); SOM.vinheta();
+  falar(DESAFIOS[d].nome + "! " + (DOIS.includes(d) ? "Os dois times jogam!" : "Vez do " + T(S.vez).nome));
+}
+function palcoIntro() {
+  const d = S.desafio, dois = DOIS.includes(d);
+  return `<div class="hero">
+    ${ICON[d].replace("<svg", '<svg class="big"')}
+    <div class="kind">${DESAFIOS[d].nome}</div>
+    <p class="eyebrow">${dois ? `Os dois times jogam · começa o ${esc(T(S.vez).nome)}` : `Vez do ${esc(T(S.vez).nome)}`}</p>
+    <ul>${DESAFIOS[d].regras.map((r) => `<li>${r}</li>`).join("")}</ul>
+    <p class="muted">Vale <b style="color:var(--gold-soft)">${qtd(VALE[d])}</b> ${d === "canta" ? "por música" : d === "batata" ? "para quem sobrar" : d === "verdade" ? "por frase certa" : d === "complete" ? "por trecho" : d === "quemsou" ? "se acertar na primeira pista" : "se acertar"}.</p>
+    <button class="btn team big" data-a="valendo">Valendo!</button>
+    <button class="btn link" data-a="sortear">Sortear outro desafio</button>
+  </div>`;
+}
+function valendo() {
+  ({ mimica: mimicaComeca, desenho: desenhoComeca, batata: batataComeca, canta: cantaComeca, verdade: verdadeComeca, quemsou: quemSouComeca, complete: completeComeca })[S.desafio]();
+}
+const DOIS = ["batata", "canta", "complete"];   // desafios em que os dois times jogam juntos
+function tirarLista(lista, nome, chave) {
+  const usadas = (S.usadasMini[nome] = S.usadasMini[nome] || []);
+  let livres = lista.filter((x) => !usadas.includes(chave(x)));
+  if (!livres.length) { usadas.length = 0; livres = lista; }
+  const x = livres[Math.floor(Math.random() * livres.length)]; usadas.push(chave(x)); return x;
+}
+
+/* ================== DEPOIS DE CADA DESAFIO ================== */
+// soma no placar: dobra se o time tirou a carta do dobro e para em 900 mil (dali em diante, só a Pergunta Final)
+function ganhar(k, v) {
+  if (S.dobro === k && v > 0) v *= 2;
+  const antes = T(k).pontos, depois = antes >= FINAL ? antes : Math.min(FINAL, antes + v);
+  T(k).pontos = depois; salvar();
+  return depois - antes;
+}
+const naFinal = (k) => T(k).pontos >= FINAL ? ` <b style="color:var(--gold)">Na final!</b>` : "";
+function vencedor() { const a = T(0).pontos >= META, b = T(1).pontos >= META; return a && b ? (T(0).pontos >= T(1).pontos ? 0 : 1) : a ? 0 : b ? 1 : -1; }
+function seguir() {
+  pararTudo();
+  const v = vencedor();
+  if (v >= 0) return campeao(v);
+  S.dobro = -1; S.vez = outro(); S.fase = "espera"; S.rodadas = (S.rodadas || 0) + 1; salvar(); render(); window.scrollTo(0, 0);
+  if (S.rodadas > 2 && T(S.vez).pontos < FINAL && Math.random() < 0.18) return cartaSurpresa();
+  giro = setTimeout(sortear, 350);     // os desafios vão vindo um atrás do outro
+}
+// de vez em quando, antes do desafio, sai uma carta surpresa para o time da vez
+const CARTAS_SURPRESA = [
+  { titulo: "Carta do Karma", texto: (k, o) => `O ${esc(T(k).nome)} rouba ${qtd(50000)} do ${esc(T(o).nome)}!`, pode: (k, o) => T(o).pontos >= 50000,
+    faz: (k, o) => { T(o).pontos -= 50000; T(k).pontos = Math.min(FINAL, T(k).pontos + 50000); } },
+  { titulo: "Bênção do Ganges", texto: (k) => `O ${esc(T(k).nome)} ganha ${qtd(100000)} de presente!`, faz: (k) => { T(k).pontos = Math.min(FINAL, T(k).pontos + 100000); } },
+  { titulo: "Vale o dobro!", texto: (k) => `O próximo desafio do ${esc(T(k).nome)} vale o dobro!`, faz: (k) => { S.dobro = k; } },
+  { titulo: "Macaquinho ladrão", texto: (k) => `Um macaquinho pegou ${qtd(50000)} do ${esc(T(k).nome)} e saiu correndo!`, pode: (k) => T(k).pontos >= 50000,
+    faz: (k) => { T(k).pontos -= 50000; } },
+  { titulo: "Tuk-tuk turbo", texto: () => `Os dois times ganham ${qtd(50000)}!`, faz: () => { [0, 1].forEach((t) => (T(t).pontos = Math.min(FINAL, T(t).pontos + 50000))); } },
+];
+function cartaSurpresa() {
+  const k = S.vez, o = outro(), op = CARTAS_SURPRESA.filter((c) => !c.pode || c.pode(k, o)), c = op[Math.floor(Math.random() * op.length)];
+  const texto = c.texto(k, o); c.faz(k, o); salvar();
+  SOM.roubada(); vibrar([80, 60, 80]);
+  folha(`<p class="eyebrow center">Carta surpresa!</p><h2>${c.titulo}</h2>
+    <p class="center" style="font-size:20px">${texto}</p>
+    <button class="btn gold big" data-a="posCarta">Continuar</button>`);
+  falar("Carta surpresa! " + c.titulo + "!");
+}
+function campeao(v) {
+  T(v).vitorias++; S.fase = "espera"; salvar(); render();
+  SOM.milhao(); confete(true, v); setTimeout(() => confete(true, v), 1200);
+  falar(T(v).nome + " chegou a um milhão de " + S.unidade + "! Venceu a aventura!");
+  folha(`<p class="eyebrow center" style="color:${cor(v)}">Venceu a aventura!</p>
+    <h2 style="color:${cor(v)}">${esc(T(v).nome)}</h2>
+    <div class="huge">${qtd(T(v).pontos)}</div>
+    <p class="center muted">O ${esc(T(1 - v).nome)} ficou com ${qtd(T(1 - v).pontos)}.</p>
+    <button class="btn gold big" data-a="novaAventura">Jogar de novo</button>`);
+}
+function novaAventura() {
+  pararTudo();
+  S.times.forEach((t) => { t.pontos = 0; t.aj = AJUDAS(); });
+  S.quemComeca = 1 - S.quemComeca; S.vez = S.quemComeca; S.fase = "espera"; S.ultimo = ""; S.unidade = sortearUnidade(S.unidade);
+  S.dobro = -1; S.rodadas = 0;
+  mostrado = null; salvar(); render(); window.scrollTo(0, 0);
+}
+function sair() { pararTudo(); S.fase = "espera"; salvar(); render(); }
+const botaoSeguir = `<button class="btn gold big" data-a="seguir">Próximo desafio</button>`;
+
+/* ================== PERGUNTA ================== */
+let P = null;
+function finalComeca() {
+  P = sortearPergunta(3); P.valor = VALOR_PERGUNTA[3]; P.final = true;
+  S.desafio = "pergunta"; S.fase = "pergunta"; salvar(); render(); SOM.drama(); vibrar([100, 80, 100]);
+  falar("Pergunta final! " + T(S.vez).nome + ", valendo a vitória!");
+  if (S.tempo) relogio(S.tempo, tempoEsgotado);
+}
+function perguntaComeca() {
+  P = sortearPergunta(nivelDoTime(S.vez)); P.valor = VALOR_PERGUNTA[P.nivel];
+  S.fase = "pergunta"; salvar(); render(); SOM.drama();
+  falar("Pergunta valendo " + qtd(P.valor));
+  if (S.tempo) relogio(S.tempo, tempoEsgotado);
+}
+function palcoPergunta() {
+  const travado = !!P.estado, aj = T(S.vez).aj;
+  const opcoes = P.ordem.map((orig, p) => {
+    let cls = "opt";
+    if (P.elim.includes(p)) cls += " elim";
+    if (P.marcada === p) cls += P.estado === "suspense" ? " sel suspense" : P.estado === "certa" ? " right" : P.estado ? " wrong" : " sel";
+    if ((P.estado === "revelada" || P.estado === "certa") && orig === 0) cls = "opt right";
+    return `<button class="${cls}" data-a="marcar" data-p="${p}" ${travado ? "disabled" : ""}><span class="in"><span class="lt">${L[p]}</span><span>${esc(P.r[orig])}</span></span></button>`;
+  }).join("");
+  return `
+    ${S.tempo ? barraTempo(S.tempo) : ""}
+    <div class="qbox">
+      <div class="tag">${P.final ? `<span>Pergunta final · ${esc(P.tema)}</span><span>Vale a vitória!</span>` : `<span>${esc(P.tema)} · ${["", "fácil", "média", "difícil"][P.nivel]}</span><span>Vale ${qtd(P.valor)}</span>`}</div>
+      <p class="q">${esc(P.q)}</p>
+    </div>
+    <div class="opts">${opcoes}</div>
+    <div class="helps">
+      <button class="help" data-a="ajCartas" ${aj.cartas && !travado ? "" : "disabled"}>${ICON.cartas}Cartas <small>${aj.cartas}</small></button>
+      <button class="help" data-a="ajPular" ${aj.pular && !travado ? "" : "disabled"}>${ICON.pular}Pular <small>${aj.pular}</small></button>
+    </div>`;
+}
+function marcar(p) {
+  if (P.estado || P.elim.includes(p)) return;
+  SOM.clique(); pausar(true); P.marcada = p; render();
+  falar("Está certo disso?");
+  folha(`<h2>Está certo disso?</h2>
+    <div class="answer"><small>Resposta do ${esc(T(S.vez).nome)}</small>${L[p]}) ${esc(P.r[P.ordem[p]])}</div>
+    <button class="btn gold big" data-a="confirmar">Sim, está certo!</button>
+    <button class="btn ghost" data-a="desmarcar">Não, deixa eu pensar</button>`, { fora: desmarcar });
+}
+function desmarcar() { fecharFolha(); P.marcada = null; pausar(false); render(); }
+function confirmar() {
+  fecharFolha(); pararRelogio();
+  P.estado = "suspense"; render(); SOM.suspense(); vibrar([40, 60, 40, 60, 40]);
+  setTimeout(revelar, 2000);
+}
+function revelar() {
+  if (S.fase !== "pergunta") return;
+  if (P.ordem[P.marcada] === 0 && P.final) {
+    P.estado = "certa"; T(S.vez).pontos = META; salvar(); render(); SOM.certa(); vibrar(200);
+    return setTimeout(() => campeao(S.vez), 1200);
+  }
+  if (P.ordem[P.marcada] === 0) {
+    P.estado = "certa"; const g = ganhar(S.vez, P.valor); render(); SOM.certa(); confete(false, S.vez); vibrar(120);
+    falar("Certa resposta! Mais " + qtd(g));
+    folha(`<h2 class="ok">Certa resposta!</h2><div class="huge">+ ${qtd(g)}</div>
+      <p class="center muted">para o ${esc(T(S.vez).nome)}${naFinal(S.vez)}</p>${botaoSeguir}`);
+  } else {
+    P.estado = "errada"; render(); SOM.errada(); vibrar([200, 80, 200]); falar("Que pena! Errou!");
+    setTimeout(roubada, 900);
+  }
+}
+function tempoEsgotado() {
+  if (S.fase !== "pergunta" || P.estado) return;
+  fecharFolha(); P.estado = "errada"; render(); SOM.errada(); vibrar([200, 80, 200]); falar("Acabou o tempo!");
+  toast("Acabou o tempo!"); setTimeout(roubada, 900);
+}
+function roubada() {
+  const o = outro(), restam = P.ordem.map((x, p) => p).filter((p) => p !== P.marcada && !P.elim.includes(p));
+  SOM.roubada(); falar("Errou! " + T(o).nome + ", vocês podem roubar. Cinco segundos!");
+  folha(`<div class="huge bad">Errou!</div>
+    <p class="center muted">O ${esc(T(S.vez).nome)} errou. Agora o outro time pode roubar:</p>
+    <h2 style="color:${cor(o)}">${esc(T(o).nome)}, gritem a resposta!</h2>
+    <div class="ring" id="conta">5</div>
+    <p class="center muted">Toque no que o time gritou primeiro.</p>
+    <div class="stack">${restam.map((p) => `<button class="btn soft" data-a="roubar" data-p="${p}">${L[p]}) ${esc(P.r[P.ordem[p]])}</button>`).join("")}
+    <button class="btn ghost" data-a="roubar" data-p="-1">Não responderam</button></div>`);
+  contagem(5, document.getElementById("conta"));
+}
+function roubar(p) {
+  fecharFolha();
+  const o = outro(), roubou = p >= 0 && P.ordem[p] === 0;
+  const g = roubou ? ganhar(o, P.valor) : 0;
+  P.estado = "revelada"; render();
+  if (roubou) { SOM.certa(); confete(false, o); falar(T(o).nome + " roubou!"); } else if (p >= 0) SOM.errada();
+  folha(`<h2 class="${roubou ? "ok" : "bad"}">${roubou ? `${esc(T(o).nome)} roubou!` : "Errou!"}</h2>
+    ${roubou ? "" : `<p class="center muted">${p >= 0 ? "O outro time também errou." : "O outro time não respondeu."} Ninguém ganha nesta pergunta.</p>`}
+    <div class="answer"><small>A resposta certa era</small>${esc(P.r[0])}</div>
+    ${roubou ? `<p class="center">+ <b>${qtd(g)}</b> para o ${esc(T(o).nome)}${naFinal(o)}</p>` : ""}${botaoSeguir}`);
+}
+function ajCartas() {
+  pausar(true); T(S.vez).aj.cartas--; salvar(); render();
+  folha(`<h2>Cartas do Oráculo</h2><p class="center muted">O time escolhe uma carta. O número dela é quantas respostas erradas vão sumir.</p>
+    <div class="cards">${embaralhar([0, 1, 2, 3]).map((v, k) => `<button class="pcard" data-a="virar" data-v="${v}" aria-label="Carta ${k + 1}">ॐ</button>`).join("")}</div>
+    <p class="center" id="cartaMsg" aria-live="polite"></p>
+    <button class="btn gold" data-a="voltarPergunta" id="cartaOk" hidden>Voltar à pergunta</button>`);
+}
+function virar(btn) {
+  const n = +btn.dataset.v; SOM.carta();
+  document.querySelectorAll(".pcard").forEach((b) => { b.setAttribute("disabled", ""); b.textContent = b.dataset.v; if (b === btn) b.classList.add("up"); else b.style.opacity = ".35"; });
+  const erradas = embaralhar(P.ordem.map((o, p) => p).filter((p) => P.ordem[p] !== 0 && !P.elim.includes(p)));
+  P.elim = P.elim.concat(erradas.slice(0, n));
+  document.getElementById("cartaMsg").textContent = n === 0 ? "Carta 0: nenhuma resposta eliminada. Que azar!" : `Carta ${n}: ${n === 1 ? "uma resposta errada eliminada" : n + " respostas erradas eliminadas"}!`;
+  document.getElementById("cartaOk").hidden = false;
+  falar(n === 0 ? "Carta zero. Nenhuma eliminada!" : "Carta " + n + "!");
+}
+function ajPular() {
+  const aj = T(S.vez).aj; if (!aj.pular) return;
+  aj.pular--; SOM.carta(); toast("Pergunta trocada"); falar("Pulou!");
+  const nivel = P.nivel; P = sortearPergunta(nivel); P.valor = VALOR_PERGUNTA[nivel];
+  salvar(); render(); if (S.tempo) relogio(S.tempo, tempoEsgotado);
+}
+
+/* ================== MÍMICA ================== */
+let MM = { acertos: 0, pulos: 3, carta: null };
+function mimicaComeca() {
+  MM = { acertos: 0, pulos: 3, carta: tirar(MIMICA, "mimica") };
+  S.fase = "mimica"; render(); SOM.vinheta(); vibrar(80);
+  relogio(TEMPO_MIMICA, mimicaFim);
+}
+function palcoMimica() {
+  const c = MM.carta;
+  return `<div class="minihead"><button class="sair" data-a="sair">Sair</button><span class="chip">Mímica · ${esc(T(S.vez).nome)}</span></div>
+    ${barraTempo(TEMPO_MIMICA)}
+    <div class="wordcard"><span class="cat">${esc(c.cat)}</span><span class="word ${c.palavra.length > 18 ? "long" : ""}">${esc(c.palavra)}</span></div>
+    <div class="counter"><span><b class="num" style="color:var(--gold)">${MM.pulos}</b>pulos</span></div>
+    <div class="duo"><button class="btn soft big" data-a="mmPular" ${MM.pulos ? "" : "disabled"}>Pular</button><button class="btn ok big" data-a="mmAcerto">Acertaram!</button></div>`;
+}
+// acertou a mímica: o tempo para, o time ganha a rodada e a vez passa
+function mmAcerto(k = S.vez) {
+  pararRelogio(); const g = ganhar(k, VALE.mimica); render();
+  SOM.certa(); confete(false, k); vibrar(120); falar(T(k).nome + " acertou!");
+  folha(`<h2 class="ok">${k === S.vez ? "Acertaram!" : esc(T(k).nome) + " roubou!"}</h2>
+    <div class="answer"><small>Era</small>${esc(MM.carta.palavra)}</div>
+    <p class="center">+ <b>${qtd(g)}</b> para o ${esc(T(k).nome)}${naFinal(k)}</p>${botaoSeguir}`);
+}
+function mmPular() { if (!MM.pulos) return; MM.pulos--; SOM.carta(); MM.carta = tirar(MIMICA, "mimica"); render(); }
+function mimicaFim() {
+  const o = outro(); SOM.errada(); vibrar([200, 80, 200]);
+  setTimeout(() => { SOM.roubada(); falar("Acabou o tempo! " + T(o).nome + ", vocês podem roubar!"); }, 500);
+  folha(`<div class="huge bad">Errou!</div>
+    <p class="center muted">Acabou o tempo do ${esc(T(S.vez).nome)}. Agora o outro time pode roubar:</p>
+    <h2 style="color:${cor(o)}">${esc(T(o).nome)}, o que é a mímica?</h2>
+    <div class="ring" id="conta">5</div>
+    <div class="answer"><small>A resposta é</small>${esc(MM.carta.palavra)}</div>
+    <div class="duo"><button class="btn ghost" data-a="mmRoubo" data-p="0">Ninguém acertou</button><button class="btn team" style="--team:${cor(o)}" data-a="mmRoubo" data-p="1">Roubaram!</button></div>`);
+  contagem(5, document.getElementById("conta"));
+}
+function mmRoubo(ok) {
+  fecharFolha();
+  if (ok) return mmAcerto(outro());
+  folha(`<h2 class="bad">Errou!</h2><div class="answer"><small>Era</small>${esc(MM.carta.palavra)}</div>
+    <p class="center muted">Ninguém ganha nesta rodada.</p>${botaoSeguir}`);
+}
+
+/* ================== IMAGEM E AÇÃO ================== */
+let DZ = { fase: "palavra", carta: null, todos: false, tracos: [], cor: "" };
+const CORES = ["#1b1640", "#e23b3b", "#2a6fdb", "#1f9d55", "#f08a00"];
+function desenhoComeca() {
+  DZ = { fase: "palavra", carta: tirar(DESENHO, "desenho"), todos: Math.random() < 0.2, tracos: [], cor: CORES[0] };
+  S.fase = "desenho"; render();
+  if (DZ.todos) falar("Todos jogam!");
+}
+function palcoDesenho() {
+  const c = DZ.carta, i = S.vez;
+  if (DZ.fase === "palavra") return `
+    <div class="minihead"><button class="sair" data-a="sair">Sair</button><span class="chip">${esc(T(i).nome)} desenha</span></div>
+    <p class="center muted">Só quem vai desenhar olha agora!</p>
+    <div class="wordcard ${DZ.todos ? "todos" : ""}">
+      ${DZ.todos ? `<span class="cat" style="color:var(--t1)">Todos jogam! Os dois times adivinham</span>` : ""}
+      <span class="cat">${esc(c.cat)}</span><span class="word ${c.palavra.length > 16 ? "long" : ""}">${esc(c.palavra)}</span>
+    </div>
+    <div class="duo"><button class="btn soft" data-a="dzTrocar">Outra palavra</button><button class="btn team" data-a="dzDesenhar">Desenhar!</button></div>`;
+  const acertos = DZ.todos
+    ? `<div class="duo">${[0, 1].map((k) => `<button class="btn team" style="--team:${cor(k)}" data-a="dzAcerto" data-p="${k}">${esc(T(k).nome)} acertou</button>`).join("")}</div>`
+    : `<button class="btn ok big" data-a="dzAcerto" data-p="${i}">Acertaram!</button>`;
+  return `
+    <div class="minihead"><button class="sair" data-a="sair">Sair</button><span class="chip">${DZ.todos ? "Todos jogam" : esc(T(i).nome)} · ${esc(c.cat)}</span></div>
+    ${barraTempo(TEMPO_DESENHO)}
+    <div class="paper" id="papel"><canvas id="tela" aria-label="Área de desenho"></canvas></div>
+    <div class="tools">
+      ${CORES.map((k) => `<button class="pen ${DZ.cor === k ? "on" : ""}" style="--c:${k}" data-a="dzCor" data-c="${k}" aria-label="Cor"></button>`).join("")}
+      <span class="sp"></span>
+      <button class="tool" data-a="dzEspiar">Espiar</button><button class="tool" data-a="dzDesfazer">Desfazer</button><button class="tool" data-a="dzLimpar">Limpar</button>
+    </div>
+    ${acertos}`;
+}
+function dzDesenhar() { DZ.fase = "desenho"; render(); SOM.vinheta(); relogio(TEMPO_DESENHO, dzTempo); }
+let ctx2 = null, papel = null, traco = null;
+function montarPapel() {
+  const cv = document.getElementById("tela"); if (!cv) return;
+  const r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  cv.width = r.width * dpr; cv.height = r.height * dpr;
+  ctx2 = cv.getContext("2d"); ctx2.setTransform(dpr, 0, 0, dpr, 0, 0); ctx2.lineCap = "round"; ctx2.lineJoin = "round";
+  papel = cv; redesenhar();
+  const pt = (e) => { const b = cv.getBoundingClientRect(); return [(e.clientX - b.left) / b.width, (e.clientY - b.top) / b.height]; };
+  cv.onpointerdown = (e) => { e.preventDefault(); cv.setPointerCapture(e.pointerId); traco = { cor: DZ.cor, pts: [pt(e)] }; DZ.tracos.push(traco); redesenhar(); };
+  cv.onpointermove = (e) => { if (!traco) return; e.preventDefault(); traco.pts.push(pt(e)); redesenhar(); };
+  cv.onpointerup = cv.onpointercancel = () => { traco = null; };
+}
+function redesenhar() {
+  if (!ctx2 || !papel) return;
+  const w = papel.clientWidth, h = papel.clientHeight;
+  ctx2.clearRect(0, 0, w, h);
+  for (const t of DZ.tracos) {
+    ctx2.strokeStyle = t.cor; ctx2.lineWidth = 5; ctx2.beginPath();
+    t.pts.forEach(([x, y], k) => (k ? ctx2.lineTo(x * w, y * h) : ctx2.moveTo(x * w, y * h)));
+    if (t.pts.length === 1) ctx2.lineTo(t.pts[0][0] * w + 0.1, t.pts[0][1] * h);
+    ctx2.stroke();
+  }
+}
+function dzAcerto(k) {
+  pararRelogio(); const g = ganhar(k, VALE.desenho); render();
+  SOM.certa(); confete(false, k); vibrar(120); falar(T(k).nome + " acertou!");
+  folha(`<h2 class="ok">${esc(T(k).nome)} acertou!</h2>
+    <div class="answer"><small>Era</small>${esc(DZ.carta.palavra)}</div>
+    <p class="center">+ <b>${qtd(g)}</b>${naFinal(k)}</p>${botaoSeguir}`);
+}
+function dzTempo() {
+  SOM.errada(); vibrar([200, 80, 200]);
+  if (DZ.todos) {
+    falar("Acabou o tempo!");
+    return folha(`<h2 class="bad">Errou!</h2><div class="answer"><small>Era</small>${esc(DZ.carta.palavra)}</div>${botaoSeguir}`);
+  }
+  const o = outro();
+  setTimeout(() => { SOM.roubada(); falar("Roubada! " + T(o).nome + ", cinco segundos!"); }, 500);
+  folha(`<p class="eyebrow center" style="color:${cor(o)}">Roubada!</p>
+    <h2 style="color:${cor(o)}">${esc(T(o).nome)}, o que é o desenho?</h2>
+    <div class="ring" id="conta">5</div>
+    <div class="answer"><small>A resposta é</small>${esc(DZ.carta.palavra)}</div>
+    <div class="duo"><button class="btn ghost" data-a="dzRoubo" data-p="0">Ninguém acertou</button><button class="btn team" style="--team:${cor(o)}" data-a="dzRoubo" data-p="1">Roubaram!</button></div>`);
+  contagem(5, document.getElementById("conta"));
+}
+function dzRoubo(ok) {
+  fecharFolha();
+  if (ok) return dzAcerto(outro());
+  folha(`<h2 class="bad">Errou!</h2><div class="answer"><small>Era</small>${esc(DZ.carta.palavra)}</div>${botaoSeguir}`);
+}
+
+/* ================== BATATA QUENTE ================== */
+let BT = { fase: "pronto", cat: "", segura: 0, explode: 0, id: null };
+const BOMBA = `<svg viewBox="0 0 120 120" aria-hidden="true"><ellipse cx="58" cy="72" rx="40" ry="34" fill="#c98a3a"/><ellipse cx="46" cy="60" rx="12" ry="8" fill="#e0a85a"/><circle cx="40" cy="82" r="3" fill="#8a5a22"/><circle cx="70" cy="64" r="3" fill="#8a5a22"/><circle cx="74" cy="88" r="3" fill="#8a5a22"/><path d="M84 46 Q92 30 104 26" stroke="#ffe09a" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="105" cy="24" r="7" fill="#ff8a1f"/><circle cx="105" cy="24" r="3.5" fill="#ffe09a"/></svg>`;
+function batataComeca() {
+  BT = { fase: "queimando", cat: tirar(BATATA, "batata").palavra, segura: S.vez, explode: Date.now() + (18 + Math.random() * 27) * 1000, id: null };
+  S.fase = "batata"; render(); falar("Tema: " + BT.cat + ". Valendo!"); chiar();
+}
+function palcoBatata() {
+  const k = BT.segura;
+  return `<div class="minihead"><button class="sair" data-a="sair">Sair</button><span class="chip" style="color:var(--gold)">Batata Quente</span></div>
+    <div class="wordcard" style="flex:none;min-height:0"><span class="cat">Tema</span><span class="word ${BT.cat.length > 18 ? "long" : ""}">${esc(BT.cat)}</span></div>
+    <div class="bomb lit" id="bomba">${BOMBA}</div>
+    <p class="eyebrow center">A batata está com o</p>
+    <div class="holder" style="--team:${cor(k)}">${esc(T(k).nome)}</div>
+    <button class="btn team big" style="--team:${cor(k)}" data-a="btPassa">Falou! Passa a batata</button>
+    <button class="btn ghost" data-a="btTravou">Travou ou repetiu</button>`;
+}
+function chiar() {
+  clearTimeout(BT.id);
+  const resta = BT.explode - Date.now();
+  if (resta <= 0) return explodir();
+  const gap = Math.max(90, Math.min(650, resta / 14));
+  SOM.pavio();
+  const b = document.getElementById("bomba"); if (b) b.style.setProperty("--spd", Math.max(0.12, gap / 1000) + "s");
+  BT.id = setTimeout(chiar, gap);
+}
+function btPassa() { SOM.clique(); vibrar(30); BT.segura = 1 - BT.segura; render(); chiar(); }
+function explodir() {
+  clearTimeout(BT.id); if (S.fase !== "batata") return;
+  const perdeu = BT.segura, ganhou = 1 - perdeu;
+  const g = ganhar(ganhou, VALE.batata); render();
+  SOM.bum(); vibrar([400, 100, 400]); falar("Bum! " + T(ganhou).nome + " ganhou!");
+  setTimeout(() => confete(false, ganhou), 400);
+  folha(`<div class="huge bad">BUM!</div>
+    <p class="center">A batata explodiu com o <b style="color:${cor(perdeu)}">${esc(T(perdeu).nome)}</b>.</p>
+    <p class="center">+ <b>${qtd(g)}</b> para o <b style="color:${cor(ganhou)}">${esc(T(ganhou).nome)}</b>${naFinal(ganhou)}</p>${botaoSeguir}`);
+}
+
+/* ================== VERDADE OU MITO? ================== */
+let VM = { n: 0, item: null, resp: null, acertos: 0 };
+function verdadeComeca() { VM = { n: 0, item: null, resp: null, acertos: 0 }; S.fase = "verdade"; verdadeProxima(); }
+function verdadeProxima() {
+  VM.n++; VM.resp = null; VM.item = tirarLista(VERDADES, "verdade", (x) => x[0]);
+  salvar(); render(); SOM.drama(); falar("Verdade ou mito? " + VM.item[0]);
+}
+function palcoVerdade() {
+  const [frase, certo, explica] = VM.item, respondeu = VM.resp !== null, acertou = respondeu && VM.resp === certo;
+  return `<div class="minihead"><button class="sair" data-a="sair">Sair</button><span class="chip">Verdade ou Mito? · ${VM.n} de ${FRASES_VERDADE}</span></div>
+    <div class="wordcard"><span class="cat">${esc(T(S.vez).nome)}, é verdade ou mito?</span><span class="word long">${esc(frase)}</span>
+      ${respondeu ? `<span class="cat" style="color:${acertou ? "var(--right)" : "var(--wrong)"};font-size:20px">${acertou ? "Acertou!" : "Errou!"} É ${certo ? "verdade" : "mito"}</span><span>${esc(explica)}</span>` : ""}</div>
+    ${respondeu
+      ? `<button class="btn gold big" data-a="vmSeguir">${VM.n < FRASES_VERDADE ? "Próxima frase" : "Ver resultado"}</button>`
+      : `<div class="duo"><button class="btn ok big" data-a="vmResp" data-p="1">Verdade</button><button class="btn big" style="background:var(--wrong);color:var(--ink)" data-a="vmResp" data-p="0">Mito</button></div>`}`;
+}
+function vmResp(v) {
+  if (VM.resp !== null) return;
+  VM.resp = v; const ok = v === VM.item[1];
+  if (ok) { VM.acertos++; ganhar(S.vez, VALE.verdade); SOM.ponto(); vibrar(80); falar("Acertou! É " + (VM.item[1] ? "verdade" : "mito")); }
+  else { SOM.errada(); vibrar([200, 80, 200]); falar("Errou! É " + (VM.item[1] ? "verdade" : "mito")); }
+  render();
+}
+function vmSeguir() {
+  if (VM.n < FRASES_VERDADE) return verdadeProxima();
+  if (VM.acertos) { SOM.certa(); confete(VM.acertos === FRASES_VERDADE, S.vez); } else SOM.errada();
+  folha(`<h2 class="${VM.acertos ? "ok" : "bad"}">${VM.acertos === FRASES_VERDADE ? "Gabaritou!" : VM.acertos ? "Fim da rodada" : "Errou todas!"}</h2>
+    <div class="huge">${VM.acertos} de ${FRASES_VERDADE}</div>
+    <p class="center">${VM.acertos ? `+ <b>${qtd(VM.acertos * VALE.verdade * (S.dobro === S.vez ? 2 : 1))}</b> para o ${esc(T(S.vez).nome)}${naFinal(S.vez)}` : "Nenhum ponto desta vez."}</p>${botaoSeguir}`);
+}
+
+/* ================== QUEM SOU EU? ================== */
+let QS = { item: null, pistas: 1 };
+function quemSouComeca() {
+  QS = { item: tirarLista(QUEM_SOU, "quemsou", (x) => x[1]), pistas: 1 };
+  S.fase = "quemsou"; salvar(); render(); SOM.drama(); falar("Quem sou eu? Primeira pista: " + QS.item[2][0]);
+}
+function palcoQuemSou() {
+  const [cat, , pistas] = QS.item, n = QS.pistas, vale = VALE_PISTA[n - 1];
+  return `<div class="minihead"><button class="sair" data-a="sair">Sair</button><span class="chip">Quem Sou Eu? · ${esc(T(S.vez).nome)}</span></div>
+    <div class="wordcard" style="justify-content:flex-start;align-items:stretch;text-align:left">
+      <span class="cat" style="text-align:center">Sou ${({ Deus: "um deus", Deusa: "uma deusa", "Herói": "um herói", Personagem: "uma pessoa famosa", Lugar: "um lugar" })[cat] || esc(cat)}… quem sou eu?</span>
+      <ol style="margin:0;padding-left:26px;display:flex;flex-direction:column;gap:10px;font-size:19px;font-weight:600">
+        ${pistas.slice(0, n).map((p, i) => `<li style="${i === n - 1 ? "color:var(--gold-soft)" : "opacity:.85"}">${esc(p)}</li>`).join("")}
+      </ol>
+    </div>
+    <p class="center muted">Pista ${n} de ${pistas.length} · acertar agora vale <b style="color:var(--gold-soft)">${qtd(vale)}</b></p>
+    <div class="duo">
+      ${n < pistas.length ? `<button class="btn soft big" data-a="qsPista">Mais uma pista</button>` : `<button class="btn ghost big" data-a="qsNinguem">Ninguém acertou</button>`}
+      <button class="btn ok big" data-a="qsAcerto">Acertaram!</button>
+    </div>
+    <button class="btn link" data-a="qsEspiar">Ver a resposta (só quem lê)</button>`;
+}
+function qsPista() { QS.pistas++; SOM.carta(); render(); falar("Pista " + QS.pistas + ": " + QS.item[2][QS.pistas - 1]); }
+function qsAcerto() {
+  const g = ganhar(S.vez, VALE_PISTA[QS.pistas - 1]); render();
+  SOM.certa(); confete(QS.pistas <= 2, S.vez); vibrar(120); falar("Acertou! Era " + QS.item[1]);
+  folha(`<h2 class="ok">Acertaram!</h2><div class="answer"><small>Era</small>${esc(QS.item[1])}</div>
+    <p class="center">Com ${QS.pistas} ${QS.pistas === 1 ? "pista" : "pistas"}: + <b>${qtd(g)}</b> para o ${esc(T(S.vez).nome)}${naFinal(S.vez)}</p>${botaoSeguir}`);
+}
+function qsNinguem() {
+  SOM.errada(); vibrar([200, 80, 200]); falar("Errou! Era " + QS.item[1]);
+  folha(`<h2 class="bad">Errou!</h2><div class="answer"><small>Era</small>${esc(QS.item[1])}</div>
+    <p class="center muted">Nenhum ponto desta vez.</p>${botaoSeguir}`);
+}
+
+/* ================== COMPLETE! ================== */
+let CP = { n: 0, item: null };
+function completeComeca() { CP = { n: 0, item: null }; S.fase = "complete"; completeProxima(); }
+function completeProxima() {
+  CP.n++; CP.item = Math.random() < 0.4 ? tirarLista(MUSICAS_DA_VIVIAN, "completeVivian", (x) => x[1]) : tirarLista(COMPLETE, "complete", (x) => x[1]);
+  render(); SOM.drama(); falar("Complete!");
+  relogio(TEMPO_COMPLETE, () => { SOM.errada(); toast("Tempo! Alguém completou?"); });
+}
+function palcoComplete() {
+  const [tipo, comeco, fim, nome] = CP.item;
+  return `<div class="minihead"><button class="sair" data-a="sair">Sair</button><span class="chip" style="color:var(--gold)">Complete! · ${CP.n} de ${TRECHOS_COMPLETE}</span></div>
+    ${barraTempo(TEMPO_COMPLETE)}
+    <div class="wordcard"><span class="cat">Complete ${tipo === "Mantra" ? "o mantra" : tipo === "Ditado" ? "o ditado" : tipo === "Canto" ? "o canto" : "a música"}${nome ? ` · ${esc(nome)}` : ""}</span><span class="word long">${esc(comeco)}</span>
+      <details style="margin-top:6px"><summary style="cursor:pointer;color:var(--muted);font-weight:600">Ver a resposta</summary><p style="font-size:20px;font-weight:700;color:var(--gold-soft);margin-top:6px">${esc(fim)}</p></details></div>
+    <p class="center muted">Quem completou primeiro?</p>
+    <div class="duo">${[0, 1].map((k) => `<button class="btn team big" style="--team:${cor(k)}" data-a="cpQuem" data-p="${k}">${esc(T(k).nome)}</button>`).join("")}</div>
+    <button class="btn ghost" data-a="cpQuem" data-p="-1">Ninguém completou</button>`;
+}
+function cpQuem(k) {
+  pararRelogio();
+  if (k >= 0) { const g = ganhar(k, VALE.complete); SOM.ponto(); vibrar(60); toast((g ? "+ " + qtd(g) + " para o " : "") + T(k).nome + (g ? "" : " já está na final!")); }
+  else toast("Era: " + CP.item[2]);
+  if (CP.n < TRECHOS_COMPLETE && vencedor() < 0) return completeProxima();
+  render(); SOM.certa(); falar("Fim da rodada!");
+  folha(`<h2>Fim da rodada!</h2><p class="center muted">Confira o placar lá em cima.</p>${botaoSeguir}`);
+}
+
+/* ================== CANTA, SE SOUBER! ================== */
+let CT = { n: 0, palavra: "" };
+function cantaComeca() { CT = { n: 0, palavra: "" }; S.fase = "canta"; cantaProxima(); }
+function cantaProxima() {
+  CT.n++; CT.palavra = tirar(CANTA, "canta").palavra;
+  render(); SOM.vinheta(); falar("Cante uma música com a palavra: " + CT.palavra);
+  relogio(TEMPO_CANTA, () => { SOM.errada(); toast("Tempo! Alguém cantou?"); });
+}
+function palcoCanta() {
+  return `<div class="minihead"><button class="sair" data-a="sair">Sair</button><span class="chip" style="color:var(--gold)">Canta, se Souber! · ${CT.n} de ${PALAVRAS_CANTA}</span></div>
+    ${barraTempo(TEMPO_CANTA)}
+    <div class="wordcard"><span class="cat">Cante uma música com</span><span class="word">${esc(CT.palavra)}</span></div>
+    <p class="center muted">Quem cantou primeiro?</p>
+    <div class="duo">${[0, 1].map((k) => `<button class="btn team big" style="--team:${cor(k)}" data-a="ctCantou" data-p="${k}">${esc(T(k).nome)}</button>`).join("")}</div>
+    <button class="btn ghost" data-a="ctCantou" data-p="-1">Ninguém cantou</button>`;
+}
+function ctCantou(k) {
+  pararRelogio();
+  if (k >= 0) { const g = ganhar(k, VALE.canta); SOM.ponto(); vibrar(60); toast(g ? "+ " + qtd(g) + " para o " + T(k).nome : T(k).nome + " já está na final!"); }
+  if (CT.n < PALAVRAS_CANTA && vencedor() < 0) return cantaProxima();
+  render(); SOM.certa(); falar("Fim da rodada!");
+  folha(`<h2>Fim da música!</h2><p class="center muted">Confira o placar lá em cima.</p>${botaoSeguir}`);
+}
+
+/* ================== AJUSTES ================== */
+function opcoes() {
+  pausar(true);
+  // a roleta e a batata não podem continuar correndo com os ajustes abertos
+  if (S.fase === "roleta") { clearTimeout(giro); S.fase = "espera"; }
+  if (S.fase === "batata" && BT.id) { BT.resta = BT.explode - Date.now(); clearTimeout(BT.id); BT.id = null; }
+  const opTempo = [[0, "Sem cronômetro"], [30, "30 segundos"], [45, "45 segundos"], [60, "60 segundos"]]
+    .map(([v, t]) => `<option value="${v}" ${S.tempo == v ? "selected" : ""}>${t}</option>`).join("");
+  folha(`<h2>Ajustes</h2>
+    <div class="row2">
+      <div class="field"><label for="t0">Time 1</label><input id="t0" value="${esc(T(0).nome)}" maxlength="22" autocomplete="off"></div>
+      <div class="field"><label for="t1">Time 2</label><input id="t1" value="${esc(T(1).nome)}" maxlength="22" autocomplete="off"></div>
+    </div>
+    <div class="field"><label for="un">O que os times juntam nesta aventura (a cada aventura nova, sai outro)</label><input id="un" value="${esc(S.unidade)}" maxlength="24" autocomplete="off"></div>
+    <div class="chips">${UNIDADES.map((u) => `<button data-a="unidade" data-u="${u}" class="${u === S.unidade ? "on" : ""}">${u}</button>`).join("")}</div>
+    <div class="field"><label for="tm">Tempo para responder as perguntas</label><select id="tm">${opTempo}</select></div>
+    <button class="toggle" data-a="tSom">Sons <span class="pill ${S.som ? "on" : ""}">${S.som ? "Ligados" : "Desligados"}</span></button>
+    <button class="toggle" data-a="tVoz">Voz do apresentador <span class="pill ${S.voz ? "on" : ""}">${S.voz ? "Ligada" : "Desligada"}</span></button>
+    <button class="btn soft" data-a="minhas">Perguntas da turma${S.minhas.length ? ` (${S.minhas.length})` : ""}</button>
+    <button class="btn ghost" data-a="pedirZerar">Zerar o placar</button>
+    <button class="btn gold" data-a="fecharOpcoes">Pronto</button>`, { fora: fecharOpcoes });
+}
+function lerOpcoes() {
+  const v = (id) => document.getElementById(id);
+  if (v("t0")) T(0).nome = v("t0").value.trim() || "Time 1";
+  if (v("t1")) T(1).nome = v("t1").value.trim() || "Time 2";
+  if (v("un")) S.unidade = v("un").value.replace(/[<>&"]/g, "").trim() || sortearUnidade();
+  if (v("tm")) S.tempo = +v("tm").value;
+}
+function fecharOpcoes() {
+  lerOpcoes(); fecharFolha(); pausar(false); salvar(); render();
+  if (S.fase === "batata" && !BT.id && BT.resta) { BT.explode = Date.now() + BT.resta; BT.resta = 0; chiar(); }
+}
+function pedirZerar() {
+  lerOpcoes();
+  folha(`<h2>Zerar o placar?</h2><p class="center muted">Os dois times voltam a zero. As vitórias e as perguntas da turma continuam guardadas.</p>
+    <button class="btn gold" data-a="zerar">Sim, zerar</button>
+    <button class="btn ghost" data-a="opcoes">Cancelar</button>`, { fora: fecharOpcoes });
+}
+
+/* ================== PERGUNTAS DA TURMA ================== */
+function telaMinhas() {
+  const lista = S.minhas.map((m, k) => `<div class="it"><p>${esc(m.q)}<br><small>✓ ${esc(m.r[0])}</small></p><button data-a="apagarMinha" data-k="${k}" aria-label="Apagar pergunta">Apagar</button></div>`).join("");
+  return `<p class="eyebrow">As Aventuras da Caravana</p>
+    <h1 style="font-size:38px;color:var(--gold)">Perguntas da turma</h1>
+    <p class="muted">Crie perguntas sobre a própria Caravana: quem é quem, o que aconteceu nos dias, curiosidades dos viajantes. Elas entram no sorteio e ficam guardadas neste celular.</p>
+    <form class="card" id="formMinha">
+      <div class="field"><label for="mq">Pergunta</label><textarea id="mq" required maxlength="200" placeholder="Ex.: Quantos países a Vivian já visitou?"></textarea></div>
+      <div class="field"><label for="mr0">Resposta certa</label><input id="mr0" required maxlength="80" autocomplete="off"></div>
+      <div class="field"><label for="mr1">Resposta errada 1</label><input id="mr1" required maxlength="80" autocomplete="off"></div>
+      <div class="field"><label for="mr2">Resposta errada 2</label><input id="mr2" required maxlength="80" autocomplete="off"></div>
+      <div class="field"><label for="mr3">Resposta errada 3</label><input id="mr3" required maxlength="80" autocomplete="off"></div>
+      <div class="field"><label for="mn">Dificuldade</label><select id="mn"><option value="1">Fácil</option><option value="2" selected>Média</option><option value="3">Difícil</option></select></div>
+      <button class="btn gold" type="submit">Guardar pergunta</button>
+    </form>
+    ${S.minhas.length ? `<h2>Guardadas (${S.minhas.length})</h2><div class="mine">${lista}</div>` : `<p class="muted">Nenhuma pergunta da turma ainda.</p>`}
+    <button class="btn soft" data-a="voltarJogo">Voltar ao jogo</button>`;
+}
+
+/* ================== FOLHAS (pop-ups) ================== */
+let folhaAberta = null, contaFolha = null;
+function folha(html, opts = {}) {
+  fecharFolha();
+  const w = document.createElement("div");
+  w.className = "sheet-wrap"; w.innerHTML = `<div class="sheet" role="dialog" aria-modal="true">${html}</div>`;
+  if (opts.fora) w.addEventListener("click", (e) => { if (e.target === w) opts.fora(); });
+  document.body.appendChild(w); folhaAberta = w;
+  const b = w.querySelector("button.btn"); if (b) b.focus({ preventScroll: true });
+}
+function fecharFolha() { if (folhaAberta) { folhaAberta.remove(); folhaAberta = null; } clearInterval(contaFolha); }
+function contagem(seg, el) {
+  clearInterval(contaFolha); let n = seg; el.textContent = n;
+  contaFolha = setInterval(() => {
+    n--; el.textContent = Math.max(n, 0); el.classList.toggle("hot", n <= 5);
+    if (n > 0) SOM.tiqueForte(n);
+    if (n <= 0) { clearInterval(contaFolha); SOM.errada(); }
+  }, 1000);
+}
+function toast(t) {
+  const d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d);
+  setTimeout(() => d.remove(), 1800);
+}
+
+/* ================== CLIQUES ================== */
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-a]"); if (!b) return;
+  const a = b.dataset.a, p = b.dataset.p !== undefined ? +b.dataset.p : null;
+  switch (a) {
+    case "sortear": sortear(); break;
+    case "valendo": valendo(); break;
+    case "seguir": seguir(); break;
+    case "sair": sair(); break;
+    case "marcar": marcar(p); break;
+    case "confirmar": confirmar(); break;
+    case "desmarcar": desmarcar(); break;
+    case "roubar": roubar(p); break;
+    case "ajCartas": ajCartas(); break;
+    case "virar": virar(b); break;
+    case "voltarPergunta": fecharFolha(); pausar(false); render(); break;
+    case "ajPular": ajPular(); break;
+    case "mmAcerto": mmAcerto(); break;
+    case "mmRoubo": mmRoubo(p === 1); break;
+    case "mmPular": mmPular(); break;
+    case "dzTrocar": DZ.carta = tirar(DESENHO, "desenho"); SOM.carta(); render(); break;
+    case "dzDesenhar": dzDesenhar(); break;
+    case "dzCor": DZ.cor = b.dataset.c; document.querySelectorAll(".pen").forEach((x) => x.classList.toggle("on", x === b)); break;
+    case "dzDesfazer": DZ.tracos.pop(); redesenhar(); break;
+    case "dzLimpar": DZ.tracos = []; redesenhar(); break;
+    case "dzEspiar": {
+      const pp = document.getElementById("papel"); if (!pp || pp.querySelector(".peek")) break;
+      const d = document.createElement("div"); d.className = "peek"; d.textContent = DZ.carta.palavra; pp.appendChild(d);
+      setTimeout(() => d.remove(), 1800); break;
+    }
+    case "dzAcerto": dzAcerto(p); break;
+    case "dzRoubo": dzRoubo(p === 1); break;
+    case "btPassa": btPassa(); break;
+    case "btTravou": explodir(); break;
+    case "ctCantou": ctCantou(p); break;
+    case "vmResp": vmResp(p === 1); break;
+    case "vmSeguir": vmSeguir(); break;
+    case "qsPista": qsPista(); break;
+    case "qsAcerto": qsAcerto(); break;
+    case "qsNinguem": qsNinguem(); break;
+    case "qsEspiar": toast("Resposta: " + QS.item[1]); break;
+    case "cpQuem": cpQuem(p); break;
+    case "posCarta": fecharFolha(); render(); sortear(); break;
+    case "opcoes": opcoes(); break;
+    case "fecharOpcoes": fecharOpcoes(); break;
+    case "unidade": document.getElementById("un").value = b.dataset.u; document.querySelectorAll(".chips button").forEach((x) => x.classList.toggle("on", x === b)); break;
+    case "tSom": lerOpcoes(); S.som = !S.som; salvar(); opcoes(); break;
+    case "tVoz": lerOpcoes(); S.voz = !S.voz; salvar(); opcoes(); break;
+    case "pedirZerar": pedirZerar(); break;
+    case "outraUnidade": S.unidade = sortearUnidade(S.unidade); SOM.carta(); salvar(); render(); break;
+    case "zerar": fecharFolha(); novaAventura(); toast("Placar zerado"); break;
+    case "novaAventura": fecharFolha(); novaAventura(); break;
+    case "minhas": lerOpcoes(); pararTudo(); S.fase = "espera"; S.tela = "minhas"; salvar(); render(); window.scrollTo(0, 0); break;
+    case "voltarJogo": S.tela = "jogo"; salvar(); render(); window.scrollTo(0, 0); break;
+    case "apagarMinha": S.usadas = S.usadas.filter((id) => !id.startsWith("m")); S.minhas.splice(+b.dataset.k, 1); salvar(); render(); break;
+  }
+});
+document.addEventListener("submit", (e) => {
+  if (e.target.id !== "formMinha") return;
+  e.preventDefault();
+  const v = (id) => document.getElementById(id).value.trim();
+  const m = { q: v("mq"), r: [v("mr0"), v("mr1"), v("mr2"), v("mr3")], nivel: +v("mn") };
+  if (!m.q || m.r.some((x) => !x)) return;
+  S.minhas.push(m); salvar(); render(); toast("Pergunta guardada");
+});
+window.addEventListener("resize", () => { if (S.fase === "desenho" && DZ.fase === "desenho") montarPapel(); });
+
+/* ================== CONFETE ================== */
+const cv = document.getElementById("confetti"), cx = cv.getContext("2d");
+let pedacos = [], animando = false;
+function confete(muito, time) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const css = getComputedStyle(document.documentElement), g = (n) => css.getPropertyValue(n).trim();
+  const cores = time === undefined ? [g("--gold"), g("--gold-soft"), g("--t0"), g("--t1"), g("--ink")]
+    : [g("--gold"), g("--gold-soft"), g("--t" + time), g("--t" + time), g("--ink")];
+  cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio;
+  const n = muito ? 260 : 110;
+  for (let i = 0; i < n; i++) pedacos.push({
+    x: Math.random() * cv.width, y: -Math.random() * cv.height * 0.5, w: (6 + Math.random() * 8) * devicePixelRatio, h: (8 + Math.random() * 10) * devicePixelRatio,
+    vy: (2 + Math.random() * 4) * devicePixelRatio, vx: (Math.random() - 0.5) * 3 * devicePixelRatio, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.3, c: cores[i % cores.length],
+  });
+  if (!animando) { animando = true; requestAnimationFrame(passo); }
+}
+function passo() {
+  cx.clearRect(0, 0, cv.width, cv.height);
+  pedacos = pedacos.filter((p) => p.y < cv.height + 40);
+  for (const p of pedacos) {
+    p.x += p.vx; p.y += p.vy; p.r += p.vr;
+    cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.r * 2))); cx.restore();
+  }
+  if (pedacos.length) requestAnimationFrame(passo); else { animando = false; cx.clearRect(0, 0, cv.width, cv.height); }
+}
+
+
+
+/* ================== INÍCIO ================== */
+function boot(d) {
+  if (d && d.S) S = Object.assign(novoEstado(), d.S); else carregar();
+  if (!S.unidade || ["estrelas", "flores de marigold"].includes(S.unidade)) S.unidade = sortearUnidade();   // opções que saíram da lista
+  // ao reabrir, o desafio que estava no meio não continua sozinho: volta para o placar
+  S.fase = "espera"; S.tela = S.tela === "minhas" ? "minhas" : "jogo";
+  render();
+}
+try { window.claude?.hot?.snapshot?.(() => ({ S })); } catch (e) {}
+window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
+</script>
+
+<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});</script>
+</body></html>

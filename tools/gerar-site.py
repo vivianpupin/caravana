@@ -95,10 +95,29 @@ if ("serviceWorker" in navigator) {
 versao = (datetime.datetime.utcnow() - datetime.timedelta(hours=3)).strftime("%d/%m · %H:%M")
 (raiz / "app" / "index.html").write_text(head.replace("%s", versao) + app + tail, encoding="utf-8")
 (raiz / "app" / "versao.json").write_text('{"v": "%s"}\n' % versao, encoding="utf-8")
+# o jogo da estrada (As Aventuras da Caravana): página própria, jogo.html, que também fica guardada no celular para jogar sem sinal
+_jogo = (raiz / "jogos" / "aventuras-da-caravana.html").read_text(encoding="utf-8")
+(raiz / "app" / "jogo.html").write_text("""<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2a130b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Aventuras">
+<link rel="icon" href="img/icone-jogo-192.png">
+<link rel="apple-touch-icon" href="img/icone-jogo-180.png">
+<link rel="manifest" href="jogo.webmanifest">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}</style>
+</head><body>
+""" + _jogo + """
+<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});</script>
+</body></html>
+""", encoding="utf-8")
 # lista de tudo que o celular guarda para abrir sem internet (sw.js); a marca muda quando alguma imagem ou dado muda
 import hashlib, json as _json, re as _re
 _app = raiz / "app"
-_arqs = ["index.html", "shim.js", "config.js", "manifest.webmanifest"] + sorted(
+_arqs = ["index.html", "shim.js", "config.js", "manifest.webmanifest", "jogo.html", "jogo.webmanifest"] + sorted(
     str(f.relative_to(_app)) for pasta in ("img", "dados", "deuses", "insignias") for f in (_app / pasta).rglob("*")
     if f.is_file() and "-antiga" not in f.name and not f.name.startswith("."))
 _marca = hashlib.sha1(b"".join((_app / a).read_bytes() for a in _arqs if a != "index.html")).hexdigest()[:10]
