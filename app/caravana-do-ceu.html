@@ -1922,6 +1922,7 @@ nav.tabs button{position:relative}
 .globo{position:relative;width:100%;height:min(68vh,560px)}
 .globoaviso{position:absolute;inset:0;display:grid;place-items:center;color:#E9D9B8;font-size:14px;margin:0}
 .globomoldura .mapctrl{position:absolute;right:10px;top:10px;z-index:2}
+.head h1.titmapa,.titmapa{font-family:var(--ui);font-weight:500;font-size:19px;letter-spacing:0;line-height:1.3}
 .globomoldura .mapdica{position:absolute;left:50%;right:auto;bottom:38px;transform:translateX(-50%);z-index:2;white-space:nowrap;pointer-events:none}
 .globopin{display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .globobon{width:42px;height:58px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.6))}
@@ -5379,7 +5380,7 @@ function vMapa() {
   const modo = S.mapaModo || modoMapaPadrao();
   return h("section", { class: "view" },
     h("div", { class: "head" },
-      h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: modo === "mundo" ? "Onde está a caravana" : "Perto de mim" }))),
+      h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { class: "titmapa", text: modo === "mundo" ? "Onde está a Caravana" : "Perto de mim" }))),
     h("div", { class: "opts mapamodo", role: "tablist", "aria-label": "Tipo de mapa" }, [["mundo", "🌍 Mundo"], ["perto", "📍 Perto de mim"]].map(([id, nome]) =>
       h("button", { type: "button", role: "tab", class: "opt", "aria-pressed": String(modo === id), onclick: () => { S.mapaModo = id; render(); } }, nome))),
     modo === "mundo" ? h("div", { class: "mapwrap" }, vMundo(), h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null)))
@@ -5418,21 +5419,25 @@ function montaGlobo(caixa) {
   const m = S.globo = new maplibregl.Map({ container: caixa, attributionControl: { compact: true }, center: [40, 20], zoom: 1.4, maxZoom: 19, dragRotate: false, pitchWithRotate: false, fadeDuration: 0, maxTileCacheZoomLevels: 6, refreshExpiredTiles: false,
     style: { version: 8, projection: { type: "globe" },
       sources: {
-        // base leve (até zoom 6): fica sempre por baixo, para o mapa nunca ficar vazio se a foto detalhada não carregar
-        base: { type: "raster", tiles: [ESRI_GLOBO + "World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 6 },
+        // mapa de ruas (sem satélite): só aparece se a foto de satélite falhar, para o mapa nunca ficar vazio
+        mapa: { type: "raster", tiles: [ESRI_GLOBO + "World_Street_Map/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 19, attribution: "Esri" },
         sat: { type: "raster", tiles: [ESRI_GLOBO + "World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18, attribution: "Esri, Maxar" },
         nomes: { type: "raster", tiles: [ESRI_GLOBO + "Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18 },
         ruas: { type: "raster", tiles: [ESRI_GLOBO + "Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18 },
         prec: { type: "geojson", data: { type: "FeatureCollection", features: [] } } },
       sky: { "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 1, 5, 1, 7, 0] },
       layers: [{ id: "fundo", type: "background", paint: { "background-color": "#0B1426" } },
-        { id: "base", type: "raster", source: "base", paint: { "raster-fade-duration": 0 } },
+        { id: "mapa", type: "raster", source: "mapa", layout: { visibility: "none" }, paint: { "raster-fade-duration": 0 } },
         { id: "sat", type: "raster", source: "sat", paint: { "raster-fade-duration": 0 } },
         { id: "ruas", type: "raster", source: "ruas", minzoom: 11, paint: { "raster-fade-duration": 0, "raster-opacity": .9 } },
         { id: "nomes", type: "raster", source: "nomes", paint: { "raster-fade-duration": 0, "raster-opacity": .9 } },
         { id: "precf", type: "fill", source: "prec", minzoom: 12, paint: { "fill-color": "#E9C77E", "fill-opacity": .18 } },
         { id: "precl", type: "line", source: "prec", minzoom: 12, paint: { "line-color": "#E9C77E", "line-width": 1.5 } }] } });
   m.touchZoomRotate.disableRotation(); caixa.__mapa = m;
+  // se a foto de satélite de perto falhar, daquele zoom para cima mostra o mapa de ruas no lugar
+  let zSat = 99;
+  m.on("error", e => { if (e.sourceId !== "sat") return; const z = e.tile && e.tile.tileID ? e.tile.tileID.canonical.z : Math.round(m.getZoom());
+    m.setLayoutProperty("mapa", "visibility", "visible"); if (z < zSat) { zSat = z; m.setLayerZoomRange("sat", 0, Math.max(1, z - .5)); } });
   m.on("load", () => { atualizaGlobo(); enquadraGlobo(false); });
 }
 const VALE_MUNDO = 48 * 60 * 60 * 1000;
