@@ -9456,7 +9456,7 @@ function painelComentarios(f, fecha) {
   pinta(); caixa._off = off; return caixa;
 }
 // a líder adiciona fotos da fototeca (Sony, celular, profissionais): várias de uma vez, na qualidade máxima da Galeria.
-// Antes do embarque tudo entra em Pistas pré-embarque; durante a viagem, a cidade é a do balão escolhido.
+// Antes do embarque tudo entra no álbum Prelúdio; durante a viagem, a cidade é a do balão escolhido.
 function campoAddGaleria() {
   let fi = document.getElementById("mural-add");
   if (fi) return fi;
@@ -9478,7 +9478,7 @@ function addGaleriaLider() {
   const [txt, cls] = S.muralAdd || ["", ""], antes = Date.now() < INICIO_VIAGEM, sel = S.muralAddCidade || cidadeHoje() || "";
   return h("div", { class: "madd" },
     h("button", { class: "btn gold", type: "button", onclick: () => { if (!antes && !sel) { S.muralAdd = ["Escolha a cidade das fotos num dos balões.", "err"]; render(); return; } S.muralAddCidade = sel; S.muralAdd = null; campoAddGaleria().click(); } }, "＋ Adicionar fotos"),
-    antes ? h("span", { class: "small", text: "Antes do embarque, as fotos entram em Pistas pré-embarque." })
+    antes ? h("span", { class: "small", text: "Antes do embarque, as fotos entram no álbum Prelúdio." })
       : h("div", { class: "opts", role: "group", "aria-label": "Cidade das fotos" }, cidadesMural().map(c => h("button", { type: "button", class: "opt", "aria-pressed": String(sel === c), onclick: () => { S.muralAddCidade = c; S.muralAdd = null; render(); } }, c))),
     h("p", { id: "mural-add-msg", class: "msg " + cls, role: "status", text: txt }));
 }
@@ -9502,14 +9502,14 @@ function vMural() {
   // dentro de um álbum: todas as fotos da cidade (ou todas, ou só os vídeos), em grade de 3
   if (cid) {
     const fotos = cid === "*" ? S.mural : cid === "▶" ? S.mural.filter(f => f.video) : cid === "?" ? S.mural.filter(ehPista) : cid === "~" ? S.mural.filter(f => !f.cidade && !ehPista(f)) : S.mural.filter(f => f.cidade === cid && !ehPista(f));
-    const nome = cid === "*" ? "Todas as fotos" : cid === "▶" ? "Vídeos" : cid === "?" ? "Pistas pré-embarque" : cid === "~" ? "Caravana" : cid;
+    const nome = cid === "*" ? "Todas as fotos" : cid === "▶" ? "Vídeos" : cid === "?" ? "Prelúdio" : cid === "~" ? "Caravana" : cid;
     return h("section", { class: "view" }, ...topo,
       h("div", { class: "mvolta" }, h("button", { type: "button", class: "btn ghost", onclick: () => { S.muralCidade = ""; render(); scrollTo(0, 0); } }, "‹ Álbuns"),
         h("b", { text: nome }), h("small", { text: fotos.length === 1 ? "1 item" : fotos.length + " itens" })),
       fotos.length ? h("div", { class: "mural g3" }, fotos.map(f => miniGaleria(f, fotos))) : h("p", { class: "small", text: "Ainda não tem nada aqui." }),
       (cid === "*" || cid.length > 1) && fotos.some(f => !f.video) ? blocoAlbum(cid === "*" ? "" : cid) : null);
   }
-  const albuns = [["Pistas pré-embarque", S.mural.filter(ehPista), "?"], ...cidadesMural().map(c => [c, S.mural.filter(f => f.cidade === c && !ehPista(f))])].filter(([, fs]) => fs.length);
+  const albuns = [["Prelúdio", S.mural.filter(ehPista), "?"], ...cidadesMural().map(c => [c, S.mural.filter(f => f.cidade === c && !ehPista(f))])].filter(([, fs]) => fs.length);
   // só os álbuns: as pistas num álbum só e, conforme a viagem anda, um álbum para cada cidade (fotos e vídeos juntos)
   const semCidade = S.mural.filter(f => !f.cidade && !ehPista(f));
   return h("section", { class: "view" }, ...topo, addGaleriaLider(),
