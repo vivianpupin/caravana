@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "26/10 · 16:58";</script>
+<script>window.__VERSAO = "26/10 · 17:00";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1292,6 +1292,7 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfcinebt:active i{transform:scale(.94)}
 /* Bazar: o flash numa fileira em cima e os 3 filmes embaixo, bem distribuídos */
 .cf-descartavel .cfcines.cfflashrow{width:auto;justify-content:flex-start}
+.cfflashfoto{position:absolute;z-index:5;transform:translate(-50%,-50%);pointer-events:auto}
 .cf-descartavel .cfcines{justify-content:space-between;-webkit-mask-image:none;mask-image:none;padding-right:2px;width:min(calc(100vw - 40px),330px)}
 .cf-descartavel .cfcinebt{white-space:normal;width:72px;min-width:0;text-align:center}
 /* Agra: o Cinematic continua no botão de antes */
@@ -6838,7 +6839,7 @@ for (const c of CAMERAS_C) if (c.id !== "celular") c.filma = 1;
 const FOTO_CAM = {
   // visor: a janela grande onde a imagem ao vivo aparece inteira (no formato da foto que vai sair); botao: o disparador da própria câmera
   rajastao: { visor: [.224, .19, .761, .77], botao: [.498, .875, .08], selfie: [.84, .88] },
-  descartavel: { visor: [.705, .385, .915, .565], botao: [.350, .493, .13], selfie: [.82, .8] },
+  descartavel: { visor: [.705, .385, .915, .565], botao: [.350, .493, .13], selfie: [.82, .8], flash: [.35, .3] },
   instantanea: { visor: [.32, .21, .68, .44], botao: [.503, .699, .11], selfie: [.8, .86] },
   super8: { visor: [.292, .097, .713, .507], botao: [.498, .598, .09], selfie: [.8, .76] },
   quatro: { visor: [.255, .31, .73, .625], botao: [.512, .786, .09], selfie: [.8, .88], luzes: [.356, .433, .512, .589].map(y => [.146, y]) },
@@ -6979,6 +6980,12 @@ const FILMES_BAZAR = [["cam-fuji", "Bazar"], ["cam-quicksnap", "Fuji QuickSnap"]
 // então o flash é feito na própria foto: a tela pisca, a frente fica iluminada e o fundo cai no escuro, como foto de festa
 const flashModo = () => S.flashModo || (S.flashModo = (() => { try { return localStorage.getItem("cdi-flash") || "auto"; } catch (e) { return "auto"; } })());
 const textoFlash = () => ({ auto: "⚡ Flash automático", on: "⚡ Flash ligado", off: "⚡ Flash desligado" })[flashModo()];
+// botão do flash da Bazar: automático → ligado → desligado
+function botaoFlash(cls, style) {
+  return h("button", { type: "button", class: "cfcinebt cfflash" + (cls ? " " + cls : "") + (flashModo() !== "off" ? " on" : ""), "aria-label": "Flash", style: style || null, onclick: ev => {
+    const prox = { auto: "on", on: "off", off: "auto" }[flashModo()]; S.flashModo = prox; try { localStorage.setItem("cdi-flash", prox); } catch (e) {}
+    const b = ev.currentTarget; b.classList.toggle("on", prox !== "off"); b.lastChild.textContent = textoFlash(); } }, h("i", { "aria-hidden": "true" }), textoFlash());
+}
 function cenaEscura(v) {
   try { const c = document.createElement("canvas"); c.width = 24; c.height = 32; const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(v, 0, 0, 24, 32);
     const p = x.getImageData(0, 0, 24, 32).data; let s = 0; for (let i = 0; i < p.length; i += 4) s += .299 * p[i] + .587 * p[i + 1] + .114 * p[i + 2]; return s / (p.length / 4) < 70; } catch (e) { return false; }
@@ -7072,10 +7079,8 @@ function vCameraFisica(c) {
       h("button", { type: "button", "aria-label": "Mais claro", onclick: () => mudaExpo(1) }, "+")) : null,
     CINE_BOTOES[c.id] ? h("div", { class: "cfcines" }, CINE_BOTOES[c.id].map(([fid, nome]) => h("button", { type: "button", class: "cfcinebt" + (S.foto.filtro === fid ? " on" : ""), "aria-pressed": String(S.foto.filtro === fid), "data-f": fid, onclick: ev => { if (S.gravando) return; const liga = S.foto.filtro !== fid; S.foto = { ...S.foto, filtro: liga ? fid : (c.preset && c.preset.filtro) || "original" }; montaFoto.img = null;
       ev.currentTarget.parentNode.querySelectorAll(".cfcinebt").forEach(b => { const on = liga && b.dataset.f === fid; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); }); document.querySelector(".cfexpo")?.classList.toggle("fora", !liga); document.querySelectorAll(".cftom").forEach(x => { const on = S.foto.filtro === x.dataset.f; x.classList.toggle("on", on); x.setAttribute("aria-checked", String(on)); }); } }, h("i", { "aria-hidden": "true" }), nome))) : null,
-    // o flash fica numa fileira própria, em cima dos filmes
-    c.id === "descartavel" ? h("div", { class: "cfcines cfflashrow" }, h("button", { type: "button", class: "cfcinebt cfflash" + (flashModo() !== "off" ? " on" : ""), "aria-label": "Flash", onclick: ev => {
-      const prox = { auto: "on", on: "off", off: "auto" }[flashModo()]; S.flashModo = prox; try { localStorage.setItem("cdi-flash", prox); } catch (e) {}
-      const b = ev.currentTarget; b.classList.toggle("on", prox !== "off"); b.lastChild.textContent = textoFlash(); } }, h("i", { "aria-hidden": "true" }), textoFlash())) : null,
+    // sem a foto da câmera, o flash fica numa fileira em cima dos filmes (com a foto, ele vai para o corpo da câmera, em cima do CLICK)
+    c.id === "descartavel" && !(FOTO_CAM[c.id] && temFoto("img/cameras/" + c.id + "-corpo.jpg")) ? h("div", { class: "cfcines cfflashrow" }, botaoFlash()) : null,
     c.id === "descartavel" ? h("div", { class: "cfcines", role: "radiogroup", "aria-label": "Filme" }, FILMES_BAZAR.map(([fid, nome]) => h("button", { type: "button", role: "radio", class: "cfcinebt" + (S.foto.filtro === fid ? " on" : ""), "aria-checked": String(S.foto.filtro === fid), "data-f": fid, onclick: ev => {
       S.foto = { ...S.foto, filtro: fid }; montaFoto.img = null;
       ev.currentTarget.parentNode.querySelectorAll(".cfcinebt[data-f]").forEach(b => { const on = b.dataset.f === fid; b.classList.toggle("on", on); b.setAttribute("aria-checked", String(on)); }); } }, h("i", { "aria-hidden": "true" }), nome))) : null,
@@ -7095,6 +7100,7 @@ function vCameraFisica(c) {
         quatro: [h("i", { class: "cruz" }), h("i", { class: "info", text: "1 · 2 · 3 · 4" })],
         super8: [h("i", { class: "info", text: "● REC  18 fps" })],
       }[c.id] || []))),
+    fc.flash ? botaoFlash("cfflashfoto", `left:${fc.flash[0] * 100}%;top:${fc.flash[1] * 100}%`) : null,
     fc.selfie ? h("button", { type: "button", class: "cfselfie" + (frente ? " on" : ""), "aria-label": frente ? "Voltar para a câmera de trás" : "Selfie", onclick: virar, style: `left:${fc.selfie[0] * 100}%;top:${fc.selfie[1] * 100}%` }) : null,
     (fc.luzes || []).map(([x, y]) => h("span", { class: "cfluz cfluzfoto", style: `left:${x * 100}%;top:${y * 100}%` })),
     F.vivo ? h("button", { type: "button", class: "cfbotaofoto", "aria-label": c.filma && S.camModo === "filme" ? "Filmar" : "Tirar foto", onclick: dispara, onpointerdown: e => apertaFilmar(e, c, F), style: `left:${(fc.botao[0] - fc.botao[2]) * 100}%;top:calc(${fc.botao[1] * 100}% - ${fc.botao[2] * 100 * 9 / 16}%);width:${fc.botao[2] * 200}%` }) : null)) : null;
