@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "25/10 · 22:22";</script>
+<script>window.__VERSAO = "25/10 · 22:28";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1951,18 +1951,22 @@ nav.tabs button{position:relative}
 .mvbase .msg{margin:0;color:#E9D9B8}.mvbase .msg:empty{display:none}
 /* globo do mapa */
 .mapamodo{margin:-4px 0 12px}
-.globomoldura{position:relative;border-radius:22px;overflow:hidden;background:radial-gradient(circle at 50% 45%,#0D1830,#05060A 70%);box-shadow:var(--shadow)}
+.mapaglobo{position:relative;overflow:hidden;background:#EAD6A8}
+.mapaglobo .globo{background:radial-gradient(circle at 50% 48%,#EAD6A8 55%,#C9AE78 100%)}
+.mapaglobo .mapctl{z-index:2}
+.globoorn{position:absolute;inset:0;pointer-events:none;z-index:1;box-shadow:inset 0 0 0 10px rgba(0,0,0,0),inset 0 0 60px rgba(107,74,34,.35)}
+.globoorn::before,.globoorn::after{content:"";position:absolute;border:1.6px solid #5B3F22}
+.globoorn::before{inset:7px}
+.globoorn::after{inset:11px;border-width:.6px}
+.globocart{position:absolute;left:18px;top:20px;background:#F1E2BC;border:1px solid #5B3F22;outline:.5px solid #5B3F22;outline-offset:-4px;padding:6px 14px 5px;display:flex;flex-direction:column;align-items:center}
+.globocart b{font:600 12px var(--display);color:#3B2A1C;letter-spacing:.3em}
+.globocart i{font:italic 500 10px var(--display);color:#6B4A2A}
 .globo{position:relative;width:100%;height:min(68vh,560px)}
 .globoaviso{position:absolute;inset:0;display:grid;place-items:center;color:#E9D9B8;font-size:14px;margin:0}
-.globomoldura .mapctrl{position:absolute;right:10px;top:10px;z-index:2}
 .head h1.titmapa,.titmapa{font-family:var(--ui);font-weight:500;font-size:19px;letter-spacing:0;line-height:1.3}
-.globocam{position:absolute;left:10px;top:10px;z-index:2;display:flex;background:rgba(255,248,236,.95);border-radius:999px;padding:3px;box-shadow:0 2px 8px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s}
 .globo .maplibregl-canvas,.globo .maplibregl-marker{transition:opacity .45s}
 .globo.abrindo .maplibregl-canvas,.globo.abrindo .maplibregl-marker{opacity:0}
 .mapcred{margin:4px 2px 0;font-size:9.5px;color:#9A8B74;text-align:right}
-.globocam.on{opacity:1;pointer-events:auto}
-.globocam button{border:0;background:none;border-radius:999px;padding:6px 13px;font:500 12.5px var(--ui);color:#5B4630}
-.globocam button[aria-pressed="true"]{background:#3B2A1C;color:#FFF3DC}
 .globopin{display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .globobon{width:42px;height:58px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.6))}
 .globobon svg{width:100%;height:100%}
@@ -1970,7 +1974,6 @@ nav.tabs button{position:relative}
 .globonome small{font:500 9.5px Poppins,sans-serif;color:#7A5A36}
 .globopin.vivo .globonome small{color:#2F7A3A}
 .globopin.eu .globonome{background:#E9C77E}
-.globomoldura .maplibregl-ctrl-attrib{font-size:9px;background:rgba(255,255,255,.6)}
 .mfoto .mcurte{position:absolute;z-index:1;left:6px;bottom:5px;font-size:11px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.7)}
 .mvacoes{align-items:center;gap:8px}
 .mvacao{border:0;background:rgba(255,255,255,.1);color:#F5EFE4;border-radius:99px;font:500 14px Poppins,sans-serif;padding:10px 14px;white-space:nowrap}
@@ -5453,18 +5456,29 @@ function vMundo() {
   const caixa = S.globoBox || (S.globoBox = h("div", { class: "globo" }, h("p", { class: "globoaviso", text: "Abrindo o globo…" })));
   carregaGlobo().then(() => montaGlobo(caixa), () => { const a = caixa.querySelector(".globoaviso"); if (a) a.textContent = "Não consegui abrir o globo. Confira a internet."; });
   if (S.globo) requestAnimationFrame(() => { try { S.globo.resize(); S.globo.triggerRepaint(); } catch (e) {} atualizaGlobo(); });
-  const gente = posicoesMundo();
-  return h("div", { class: "perto mundo" },
-    h("div", { class: "globomoldura" }, caixa,
-      h("div", { class: "mapctrl" },
-        h("button", { type: "button", "aria-label": "Ver todos", onclick: () => enquadraGlobo(true) }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")),
-        minhaPos() ? h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => { const m = minhaPos(); S.globo && S.globo.flyTo({ center: [+m.lng, +m.lat], zoom: 12, duration: 2500 }); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")) : null),
-      h("div", { class: "globocam" + (S.globoPerto ? " on" : "") }, [["satelite", "Satélite"], ["mapa", "Mapa"]].map(([id, n]) =>
-        h("button", { type: "button", "aria-pressed": String((S.globoCamada || "satelite") === id), onclick: () => { S.globoCamada = id; camadaGlobo(); render(); } }, n)))),
-    h("p", { class: "mapcred", text: "Satélite: Esri, Maxar · Mapa: © OpenStreetMap" }),
+  const gente = posicoesMundo(), eu0 = minhaPos(), sat = (S.globoCamada || "satelite") === "satelite";
+  const zoom = f => S.globo && S.globo.easeTo({ zoom: S.globo.getZoom() + f, duration: 400 });
+  const vaiPara = p => S.globo && S.globo.flyTo({ center: [+p.lng, +p.lat], zoom: Math.max(S.globo.getZoom(), 12), duration: 2500 });
+  const lista = gente.filter(p => p.id !== S.uid).map(p => ({ p, km: eu0 ? distKm(eu0, p) : null })).sort((a, b) => a.km != null ? a.km - b.km : (b.p.ts || 0) - (a.p.ts || 0));
+  // a mesma cara do "Perto de mim": abas Mapa / Satélite, moldura de pergaminho, botões redondos e a lista da turma embaixo
+  return h("div", { class: "perto mundo", style: "display:flex;flex-direction:column;gap:10px;min-width:0" },
+    h("div", { class: "fcats", role: "tablist", style: "margin:0" }, [["mapa", "Mapa"], ["satelite", "Satélite"]].map(([id, n]) =>
+      h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String((sat ? "satelite" : "mapa") === id), onclick: () => { S.globoCamada = id; camadaGlobo(); render(); } }, n))),
+    h("div", { class: "map mapaglobo" }, caixa,
+      h("div", { class: "globoorn", "aria-hidden": "true" }, h("div", { class: "globocart" }, h("b", { text: "AO VIVO" }), h("i", { text: "A caravana pelo mundo" }))),
+      h("div", { class: "mapctl" },
+        h("button", { type: "button", "aria-label": "Aproximar", onclick: () => zoom(1) }, ic("M12 5v14M5 12h14")),
+        h("button", { type: "button", "aria-label": "Afastar", onclick: () => zoom(-1) }, ic("M5 12h14")),
+        eu0 ? h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => vaiPara(eu0) }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")) : null,
+        h("button", { type: "button", "aria-label": "Ver todos", onclick: () => enquadraGlobo(true) }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")))),
+    h("p", { class: "mapcred", text: sat ? "Satélite: Esri, Maxar" : "Mapa: © OpenStreetMap" }),
     !S.gpsOn ? gpsDesligado()
-      : h("p", { class: "msg ok", text: S.gpsMsg || "Você está ao vivo no mapa." }),
-    gente.length ? null : h("p", { class: "small", text: "Quando alguém da caravana ligar a localização, o bonequinho aparece no globo, onde a pessoa estiver: em casa, numa conexão ou já na Índia." }));
+      : h("div", { style: "display:flex;flex-direction:column;gap:6px;align-items:flex-start" }, h("p", { class: "msg ok", text: S.gpsMsg || "Você está ao vivo no mapa." }),
+        h("button", { class: "btn ghost", type: "button", onclick: () => ligarGps() }, "Desligar localização ao vivo")),
+    lista.length ? h("ul", { class: "pertolist" }, lista.slice(0, 30).map(({ p, km }) => h("li", { onclick: () => { vaiPara(p); scrollTo({ top: 0, behavior: "smooth" }); }, style: "cursor:pointer" },
+      bonecoSvg(bonecoDe(p.id), "bonecosvg mini"), h("div", null, h("b", { text: nomeDe(p.id) }),
+        h("small", { text: [p.vivoGps ? "ao vivo" : haQuanto(p.ts), km == null ? "" : km < 1 ? Math.round(km * 1000) + " m de você" : Math.round(km).toLocaleString("pt-BR") + " km de você"].filter(Boolean).join(" · ") })))))
+      : h("p", { class: "small", text: "Quando alguém da caravana ligar a localização, o bonequinho aparece no globo, onde a pessoa estiver: em casa, numa conexão ou já na Índia." }));
 }
 function montaGlobo(caixa) {
   if (S.globo || !window.maplibregl) return;
@@ -5477,7 +5491,7 @@ function montaGlobo(caixa) {
         sat: { type: "raster", tiles: [ESRI_GLOBO + "World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18, attribution: "Esri, Maxar" },
         nomes: { type: "raster", tiles: [ESRI_GLOBO + "Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18 },
         prec: { type: "geojson", data: { type: "FeatureCollection", features: [] } } },
-      sky: { "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 1, 5, 1, 7, 0] },
+      sky: { "atmosphere-blend": 0 },
       layers: [{ id: "fundo", type: "background", paint: { "background-color": "#0B1426" } },
         { id: "mapa", type: "raster", source: "mapa", layout: { visibility: "none" }, paint: { "raster-fade-duration": 0, "raster-saturation": -.15, "raster-opacity": .72 } },
         { id: "sat", type: "raster", source: "sat", paint: { "raster-fade-duration": 0 } },
@@ -5493,14 +5507,11 @@ function montaGlobo(caixa) {
   let zSat = 99;
   m.on("error", e => { if (e.sourceId !== "sat") return; const z = e.tile && e.tile.tileID ? e.tile.tileID.canonical.z : Math.round(m.getZoom());
     S.globoSatFalhou = true; camadaGlobo(); if (z < zSat) { zSat = z; m.setLayerZoomRange("sat", 0, Math.max(1, z - .5)); } });
-  // as opções Satélite / Mapa aparecem quando o mapa está perto
-  m.on("zoom", () => { const perto = m.getZoom() >= GLOBO_PERTO; if (perto !== !!S.globoPerto) { S.globoPerto = perto; const c = document.querySelector(".globocam"); if (c) c.classList.toggle("on", perto); camadaGlobo(); } });
   m.on("load", () => { camadaGlobo(); atualizaGlobo(); enquadraGlobo(false); });
 }
-const GLOBO_PERTO = 8;
 function camadaGlobo() {
   const m = S.globo; if (!m || !m.getLayer("mapa")) return;
-  const mapa = S.globoPerto && S.globoCamada === "mapa";
+  const mapa = S.globoCamada === "mapa";
   m.setLayoutProperty("mapa", "visibility", mapa || S.globoSatFalhou ? "visible" : "none");
   m.setLayoutProperty("sat", "visibility", mapa ? "none" : "visible");
   m.setLayoutProperty("nomes", "visibility", mapa ? "none" : "visible");
@@ -9437,10 +9448,9 @@ async function baixarAlbum(st, cid) {
     st.textContent = `Álbum pronto: ${feitas} fotos.` + (/iPhone|iPad/.test(navigator.userAgent) ? " No iPhone ele fica no app Arquivos, em Downloads." : "");
   } catch (e) { st.textContent = "Não consegui montar o álbum agora. Tente de novo com internet boa."; }
 }
-// ---------- Galeria da Caravana: destaques que passam sozinhos, álbuns por cidade e vídeos ----------
-// os álbuns se montam sozinhos pela cidade de cada foto; os destaques são as fotos que a líder marcou com ☆ (sem nenhuma marcada, as mais novas)
+// ---------- Galeria da Caravana: as pistas num álbum só e um álbum por cidade ----------
+// os álbuns se montam sozinhos pela cidade de cada foto
 const cidadesMural = () => [...CIDADES_MURAL, ...new Set(S.mural.map(f => f.cidade).filter(c => c && !CIDADES_MURAL.includes(c)))];
-const destaquesMural = () => { const fs = S.mural.filter(f => !f.video), d = fs.filter(f => f.destaque); return (d.length ? d : fs).slice(0, 8); };
 const capaAlbum = fs => fs.find(f => f.destaque && !f.video) || fs.find(f => !f.video) || fs[0];
 const diaDaFoto = f => { const iso = f.tirada || new Date((f.ts || 0) - 3 * 3600e3 + 8.5 * 3600e3).toISOString().slice(0, 10); return (S.roteiro?.dias || []).find(d => d.iso === iso); };
 const curtidasDe = f => Object.keys(f.curtidas || {}).filter(k => f.curtidas[k]).length;
@@ -9471,25 +9481,6 @@ function painelComentarios(f, fecha) {
     h("div", { class: "mctopo" }, h("b", { text: "Comentários" }), h("button", { type: "button", class: "mvfecha", "aria-label": "Fechar comentários", text: "✕", onclick: () => { off && off(); fecha(); } })),
     lista, st, h("div", { class: "mcescreve" }, ta, h("button", { class: "btn gold", type: "button", onclick: envia }, "Enviar")));
   pinta(); caixa._off = off; return caixa;
-}
-let destTimer = 0;
-function carrosselDestaques(fs) {
-  clearInterval(destTimer);
-  const n = fs.length, idx = Math.min(S.destIdx || 0, n - 1);
-  const pontos = h("div", { class: "mdpontos", "aria-hidden": "true" }, fs.map((_, k) => h("i", { class: k === idx ? "on" : null })));
-  const marca = k => { S.destIdx = k; [...pontos.children].forEach((p, x) => p.classList.toggle("on", x === k)); };
-  const trilho = h("div", { class: "mdtrilho", onscroll: e => { const el = e.currentTarget, k = Math.round(el.scrollLeft / Math.max(1, el.clientWidth)); if (k !== S.destIdx) marca(k); } },
-    fs.map(f => { const d = diaDaFoto(f); return h("button", { type: "button", class: "mdslide", onclick: () => abrirFotoMural(f, fs), "aria-label": f.legenda || "Foto em destaque" },
-      h("img", { ...fotoTardia(f.fotoId), alt: "" }),
-      // todo destaque tem título: o que a líder escreveu ao destacar (sem título, vale o nome da cidade)
-      h("span", { class: "mdtxt" }, h("b", { text: f.legenda || f.cidade || (d && d.cidade) || (ehPista(f) ? "Pistas pré-embarque" : "Caravana do Céu") }),
-        h("small", { text: [f.legenda ? f.cidade || (d && d.cidade) : "", d ? "Dia " + d.n : ""].filter(Boolean).join(" · ") }))); }));
-  // volta para a foto em que estava (a tela se refaz quando chega foto nova) e passa sozinho a cada 4 segundos
-  requestAnimationFrame(() => { trilho.scrollLeft = idx * trilho.clientWidth; });
-  let mexendo = 0; trilho.addEventListener("touchstart", () => { mexendo = Date.now(); }, { passive: true });
-  if (n > 1) destTimer = setInterval(() => { if (!trilho.isConnected) return clearInterval(destTimer); if (document.hidden || Date.now() - mexendo < 8000 || document.querySelector(".sheet")) return;
-    trilho.scrollTo({ left: ((S.destIdx || 0) + 1) % n * trilho.clientWidth, behavior: "smooth" }); }, 4000);
-  return h("div", { class: "mdestaq" }, trilho, n > 1 ? pontos : null);
 }
 // a líder adiciona fotos da fototeca (Sony, celular, profissionais): várias de uma vez, na qualidade máxima da Galeria.
 // Antes do embarque tudo entra em Pistas pré-embarque; durante a viagem, a cidade é a do balão escolhido.
@@ -9546,16 +9537,13 @@ function vMural() {
       (cid === "*" || cid.length > 1) && fotos.some(f => !f.video) ? blocoAlbum(cid === "*" ? "" : cid) : null);
   }
   const albuns = [["Pistas pré-embarque", S.mural.filter(ehPista), "?"], ...cidadesMural().map(c => [c, S.mural.filter(f => f.cidade === c && !ehPista(f))])].filter(([, fs]) => fs.length);
-  const semCidade = S.mural.filter(f => !f.cidade && !ehPista(f)), videos = S.mural.filter(f => f.video), dest = destaquesMural();
+  // só os álbuns: as pistas num álbum só e, conforme a viagem anda, um álbum para cada cidade (fotos e vídeos juntos)
+  const semCidade = S.mural.filter(f => !f.cidade && !ehPista(f));
   return h("section", { class: "view" }, ...topo, addGaleriaLider(),
-    dest.length ? carrosselDestaques(dest) : null,
-    h("div", { class: "msec" }, h("b", { text: "Álbuns" }), h("button", { type: "button", onclick: () => { S.muralCidade = "*"; render(); scrollTo(0, 0); } }, "Ver tudo ›")),
     h("div", { class: "malbuns" }, [...albuns, ...(semCidade.length ? [["Caravana", semCidade, "~"]] : [])].map(([c, fs, alvo]) => { const capa = capaAlbum(fs);
       return h("button", { type: "button", class: "malbum", onclick: () => { S.muralCidade = alvo || c; render(); scrollTo(0, 0); } },
         capa && capa.video && !(capa.video.partes || capa.capaId) ? muralMini(capa) : h("img", { ...fotoTardia(capa.fotoId), alt: "" }),
         h("span", { text: c }), h("small", { text: String(fs.length) })); })),
-    videos.length ? h("div", { class: "msec" }, h("b", { text: "Vídeos" }), h("button", { type: "button", onclick: () => { S.muralCidade = "▶"; render(); scrollTo(0, 0); } }, "Ver tudo ›")) : null,
-    videos.length ? h("div", { class: "mvideos" }, videos.slice(0, 12).map(f => miniGaleria(f, videos))) : null,
     blocoAlbum(""));
 }
 // filme tocando limpo: sem os controles do celular (que deixam uma camada escura por cima); um toque pausa e outro volta a tocar
@@ -9688,18 +9676,12 @@ function abrirFotoMural(f0, lista) {
     conta.textContent = fs.length > 1 ? `${i + 1} de ${fs.length}` + (f.cidade ? " · " + f.cidade : "") : f.cidade || "";
     const nc = curtidasDe(f); coracao.textContent = (curti(f) ? "♥" : "♡") + (nc ? " " + nc : ""); coracao.classList.toggle("on", curti(f)); coracao.setAttribute("aria-label", curti(f) ? "Descurtir" : "Curtir");
     coracao.onclick = () => { curtir(f).catch(() => { st.textContent = "Não consegui curtir agora."; st.className = "msg err"; mostra(); }); mostra(); };
-    // ao destacar, a líder dá um título (ele aparece em cima da foto, nos destaques)
-    const destacar = () => { const v = !f.destaque, antes = f.legenda || ""; let leg = antes;
-      if (v) { const r = prompt("Título do destaque (aparece em cima da foto):", antes || f.cidade || ""); if (r === null) return; leg = r.trim().slice(0, 60); }
-      f.destaque = v; f.legenda = leg; mostra();
-      S.db.doc("mural/" + f.id).update({ destaque: v, legenda: leg }).catch(() => { f.destaque = !v; f.legenda = antes; mostra(); }); };
     st.textContent = ""; st.className = "msg";
     info.replaceChildren(...(f.legenda ? [h("b", { text: f.legenda })] : []), h("small", { text: [d ? `Dia ${d.n}` : new Date(f.ts).toLocaleDateString("pt-BR"), "enviada por " + nomeDe(f.autor), fs.length > 1 ? "arraste para o lado" : ""].filter(Boolean).join(" · ") }));
-    // curtir e comentar à esquerda, bem à mostra; salvar, destacar e apagar pequenos à direita
+    // curtir e comentar à esquerda, bem à mostra; salvar e apagar pequenos à direita
     comenta.onclick = () => { fechaPainel(); painel = painelComentarios(f, fechaPainel); box.append(painel); }; contaComentarios(f);
     acoes.replaceChildren(coracao, comenta, h("span", { class: "mvesp" }),
       ...[h("button", { class: "mvicone", type: "button", "aria-label": "Salvar no celular", onclick: () => salvarMidiaMural(f, st) }, "⤓ Salvar"),
-        S.isOwner ? h("button", { class: "mvicone", type: "button", "aria-label": f.destaque ? "Tirar dos destaques" : "Colocar nos destaques", onclick: destacar }, f.destaque ? "★" : "☆") : null,
         meu ? h("button", { class: "mvicone", type: "button", "aria-label": f.video ? "Apagar vídeo" : "Apagar foto", onclick: () => { if (!confirm(f.video ? "Apagar este vídeo da galeria?" : "Apagar esta foto da galeria?")) return; apagaFotoMural(f).then(closeSheets, () => { st.textContent = "Não consegui apagar."; st.className = "msg err"; }); } }, "🗑") : null].filter(Boolean));
   };
   let toqueAnt = 0;
