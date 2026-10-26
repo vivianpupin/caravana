@@ -6920,8 +6920,8 @@ function mudaExpo(d) {
   try { navigator.vibrate && navigator.vibrate(8); } catch (e) {}
 }
 // botões de cinema em cada câmera: [filtro, nome]
-// filmes da Bazar 400 (a descartável): o de sempre, a Fuji QuickSnap verde, a Kodak FunSaver amarela e o Flash Noturno (foto de festa)
-const FILMES_BAZAR = [["cam-fuji", "Bazar"], ["cam-quicksnap", "Fuji QuickSnap"], ["cam-funsaver", "Kodak FunSaver"], ["cam-flashnoite", "Flash Noturno"]];
+// filmes da Bazar 400 (a descartável): o de sempre, a Fuji QuickSnap verde e a Kodak FunSaver amarela
+const FILMES_BAZAR = [["cam-fuji", "Bazar"], ["cam-quicksnap", "Fuji QuickSnap"], ["cam-funsaver", "Kodak FunSaver"]];
 // flash da Bazar 400: automático (liga sozinho no escuro), ligado ou desligado. O celular não deixa o site acender a luz do iPhone,
 // então o flash é feito na própria foto: a tela pisca, a frente fica iluminada e o fundo cai no escuro, como foto de festa
 const flashModo = () => S.flashModo || (S.flashModo = (() => { try { return localStorage.getItem("cdi-flash") || "auto"; } catch (e) { return "auto"; } })());
@@ -6939,7 +6939,7 @@ function flashNaFoto(q) {
   gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(.6, "rgba(120,120,128,1)"); gr.addColorStop(1, "rgba(30,30,36,1)"); g.fillStyle = gr; g.fillRect(0, 0, w, hh);
   g.restore();
 }
-const CINE_BOTOES = { rajastao: [["cam-kodak-cor", "Color"]], campo: [["cam-cinematic", "Cinematic"]], super8: [["cam-magic", "Magic Lassi"], ["cam-noturno", "Blue Lassi"], ["cam-mango", "Mango Lassi"], ["cam-rose", "Rose Lassi"], ["cam-pista", "Pistache"], ["cam-masala", "Masala"], ["cam-indigo", "Índigo"]] };
+const CINE_BOTOES = { rajastao: [["cam-kodak-cor", "Color"]], quatro: [["cam-flashnoite", "Flash Noturno"]], campo: [["cam-cinematic", "Cinematic"]], super8: [["cam-magic", "Magic Lassi"], ["cam-noturno", "Blue Lassi"], ["cam-mango", "Mango Lassi"], ["cam-rose", "Rose Lassi"], ["cam-pista", "Pistache"], ["cam-masala", "Masala"], ["cam-indigo", "Índigo"]] };
 const FILME_CAM = { campo: "Placa de vidro · obturador lento · 1900", couro: "Filme 35 mm desbotado · 1955", quatro: "4 lentes · 4 disparos · ISO 200", rajastao: "Filme preto e branco · 35 mm", descartavel: "Filme de descartável · ISO 400", instantanea: "Filme instantâneo", super8: "Película de cinema" };
 function vCameraFisica(c) {
   const F0 = S.foto || (S.foto = fotoDaCamera(c));
