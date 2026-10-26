@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "25/10 · 18:15";</script>
+<script>window.__VERSAO = "25/10 · 22:19";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -4970,8 +4970,9 @@ S.online = new Set(); S.aoVivo = {}; S.baloes = {}; S.gpsOn = false; S.gpsMsg = 
 function posicoesAtuais() {
   const m = {};
   // só vale posição que veio do GPS (as antigas, marcadas à mão numa lista, ficam de fora)
-  for (const p of S.posicoes) if (p.gps && Date.now() - (p.ts || 0) < FRESCO) m[p.id] = p;
-  for (const id in S.aoVivo) { const v = S.aoVivo[id]; if (Date.now() - v.ts < 10 * 60 * 1000) m[id] = { ...(m[id] || {}), ...v, id, vivoGps: true }; }
+  // o meu bonequinho nunca some: parado, o GPS do celular fica sem mandar leitura nova e a minha posição "envelhecia"
+  for (const p of S.posicoes) if (p.gps && (p.id === S.uid || Date.now() - (p.ts || 0) < FRESCO)) m[p.id] = p;
+  for (const id in S.aoVivo) { const v = S.aoVivo[id]; if (id === S.uid || Date.now() - v.ts < 10 * 60 * 1000) m[id] = { ...(m[id] || {}), ...v, id, vivoGps: true }; }
   return Object.values(m);
 }
 function erroGps(e) {
@@ -5491,8 +5492,8 @@ function camadaGlobo() {
 const VALE_MUNDO = 48 * 60 * 60 * 1000;
 function posicoesMundo() {
   const m = {};
-  for (const p of S.posicoes) if (p.gps && Date.now() - (p.ts || 0) < VALE_MUNDO && isFinite(+p.lat)) m[p.id] = p;
-  for (const id in S.aoVivo) { const v = S.aoVivo[id]; if (Date.now() - v.ts < 10 * 60 * 1000) m[id] = { ...(m[id] || {}), ...v, id, vivoGps: true }; }
+  for (const p of S.posicoes) if (p.gps && (p.id === S.uid || Date.now() - (p.ts || 0) < VALE_MUNDO) && isFinite(+p.lat)) m[p.id] = p;
+  for (const id in S.aoVivo) { const v = S.aoVivo[id]; if (id === S.uid || Date.now() - v.ts < 10 * 60 * 1000) m[id] = { ...(m[id] || {}), ...v, id, vivoGps: true }; }
   return Object.values(m).filter(p => isFinite(+p.lat));
 }
 // círculo da precisão do GPS (em metros) em volta de cada pessoa, quando o mapa está perto
