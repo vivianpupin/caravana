@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "26/10 · 16:47";</script>
+<script>window.__VERSAO = "26/10 · 16:54";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1281,6 +1281,15 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfcinebt i{width:8px;height:8px;border-radius:50%;background:#3A2E26;box-shadow:inset 0 1px 2px rgba(0,0,0,.8)}
 .cfcinebt.on{color:#2B1F14;background:linear-gradient(180deg,#E8C98E,#B98A43);border-color:transparent;box-shadow:0 0 14px rgba(232,192,122,.55)}
 .cfcinebt.on i{background:#8FD3E0;box-shadow:0 0 6px #8FD3E0}
+/* botões de cromo gasto (como os da câmera antiga): o escolhido fica dourado */
+.cfcinebt{flex-direction:column;gap:6px;border:0;border-radius:0;padding:2px 3px;background:none;min-width:62px;font:700 9px/1.2 "Courier Prime",monospace;letter-spacing:.12em;color:#E3D3B6;text-shadow:0 1px 2px rgba(0,0,0,.85)}
+.cfcinebt i{position:relative;width:40px;height:40px;background:conic-gradient(from 30deg,#8e8a82,#cfcac0,#77736b,#b5b0a5,#6b675f,#c2bdb2,#8e8a82);box-shadow:0 3px 5px rgba(0,0,0,.75),inset 0 0 0 2px rgba(40,30,20,.45),inset 0 0 6px rgba(60,40,20,.55)}
+.cfcinebt i::after{content:"";position:absolute;inset:7px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e6e0d2,#a9a397 35%,#6e695f 75%,#4f4b44);box-shadow:inset 0 1px 3px rgba(0,0,0,.6),inset 0 0 0 1px rgba(70,50,30,.4)}
+.cfcinebt i::before{content:"";position:absolute;inset:0;border-radius:50%;z-index:1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg stroke-linecap='round'%3E%3Cpath d='M9 14l9 6M24 8l-5 11M28 26l7-4M12 29l6-2M30 12l2 9M7 22l5 3' stroke='%23fffaf0' stroke-opacity='.45' stroke-width='.5'/%3E%3Cpath d='M15 9l-4 7M26 30l-6-3M33 17l-3 5' stroke='%231e160e' stroke-opacity='.45' stroke-width='.5'/%3E%3C/g%3E%3Cg fill='%23281c0f' fill-opacity='.35'%3E%3Ccircle cx='13' cy='11' r='.8'/%3E%3Ccircle cx='29' cy='15' r='.6'/%3E%3Ccircle cx='22' cy='31' r='.9'/%3E%3Ccircle cx='8' cy='25' r='.5'/%3E%3Ccircle cx='31' cy='28' r='.7'/%3E%3Ccircle cx='18' cy='6' r='.5'/%3E%3C/g%3E%3C/svg%3E") center/100% 100%}
+.cfcinebt.on{background:none;border:0;box-shadow:none;color:#F0C879}
+.cfcinebt.on i{background:conic-gradient(from 30deg,#8e8a82,#cfcac0,#77736b,#b5b0a5,#6b675f,#c2bdb2,#8e8a82);box-shadow:0 3px 5px rgba(0,0,0,.75),inset 0 0 0 2px rgba(40,30,20,.45),inset 0 0 6px rgba(60,40,20,.55)}
+.cfcinebt.on i::after{inset:8px;background:radial-gradient(circle at 35% 30%,#f3d9a0,#b98f45 40%,#6e4d1d 85%);box-shadow:inset 0 2px 4px rgba(0,0,0,.6),0 0 8px rgba(240,180,90,.45)}
+.cfcinebt:active i{transform:scale(.94)}
 .cfchave span:first-child{color:#F1E2BC}
 .cfchave.b span:first-child{color:rgba(241,226,188,.45)}
 .cfchave.b span:last-child{color:#F1E2BC}
