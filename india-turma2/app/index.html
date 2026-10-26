@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "25/10 · 22:28";</script>
+<script>window.__VERSAO = "25/10 · 22:29";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -4990,8 +4990,8 @@ const noite = () => { const hj = hojeIso(), viagem = hj >= "2026-11-18" && hj <=
   const hr = viagem ? +new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour: "numeric", hourCycle: "h23" }) % 24 : new Date().getHours(); return hr >= 22 || hr < 6; };
 function pausaNoite() {
   if (noite()) {
-    if (S.gpsWatch != null) { navigator.geolocation.clearWatch(S.gpsWatch); S.gpsWatch = null; S.gpsOn = false; S.gpsNoite = true; S.gpsMsg = "Localização pausada à noite para poupar bateria. Volta sozinha às 6h."; if (S.tab === "mapa") render(); }
-  } else if (S.gpsNoite) { S.gpsNoite = false; ligarGps(true); }
+    if (S.gpsWatch != null && !S.gpsNoiteLigou) { navigator.geolocation.clearWatch(S.gpsWatch); S.gpsWatch = null; S.gpsOn = false; S.gpsNoite = true; S.gpsMsg = "Localização pausada à noite para poupar bateria. Volta sozinha às 6h."; if (S.tab === "mapa") render(); }
+  } else { S.gpsNoiteLigou = false; if (S.gpsNoite) { S.gpsNoite = false; ligarGps(true); } }
 }
 setInterval(pausaNoite, 5 * 60 * 1000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) pausaNoite(); });
@@ -5353,7 +5353,10 @@ function gestosMapa(svg, mov, P, km) {
 // o botão "Ligar" só aparece para quem ainda não permitiu: procurando o GPS ou pausado à noite, mostra só um aviso
 function gpsDesligado() {
   if (S.gpsWatch != null) return h("p", { class: "msg", role: "status", text: "Procurando você…" });
-  if (S.gpsNoite) return h("p", { class: "msg", role: "status", text: "Localização pausada à noite para poupar bateria. Volta sozinha às 6h." });
+  // à noite a localização pausa sozinha, mas quem quiser pode ligar mesmo assim
+  if (S.gpsNoite) return h("div", { style: "display:flex;flex-direction:column;gap:6px" },
+    h("button", { class: "btn gold", type: "button", onclick: () => { S.gpsNoite = false; S.gpsNoiteLigou = true; ligarGps(true); } }, "Ligar minha localização ao vivo"),
+    h("p", { class: "msg", role: "status", text: "À noite a localização fica pausada para poupar bateria e volta sozinha às 6h. Se quiser aparecer no mapa agora, toque em Ligar." }));
   return h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null);
 }
 function autoGps() {
