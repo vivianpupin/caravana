@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "25/10 · 22:19";</script>
+<script>window.__VERSAO = "25/10 · 22:22";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1957,6 +1957,9 @@ nav.tabs button{position:relative}
 .globomoldura .mapctrl{position:absolute;right:10px;top:10px;z-index:2}
 .head h1.titmapa,.titmapa{font-family:var(--ui);font-weight:500;font-size:19px;letter-spacing:0;line-height:1.3}
 .globocam{position:absolute;left:10px;top:10px;z-index:2;display:flex;background:rgba(255,248,236,.95);border-radius:999px;padding:3px;box-shadow:0 2px 8px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s}
+.globo .maplibregl-canvas,.globo .maplibregl-marker{transition:opacity .45s}
+.globo.abrindo .maplibregl-canvas,.globo.abrindo .maplibregl-marker{opacity:0}
+.mapcred{margin:4px 2px 0;font-size:9.5px;color:#9A8B74;text-align:right}
 .globocam.on{opacity:1;pointer-events:auto}
 .globocam button{border:0;background:none;border-radius:999px;padding:6px 13px;font:500 12.5px var(--ui);color:#5B4630}
 .globocam button[aria-pressed="true"]{background:#3B2A1C;color:#FFF3DC}
@@ -5132,11 +5135,16 @@ function satelite(svg, P, modo) {
   if ((x1 - x0 + 1) * (y1 - y0 + 1) > 64) return;
   for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) {
     const [a, b] = P.xy({ lat: y2lat(y), lng: x2lon(x) }), [c, d] = P.xy({ lat: y2lat(y + 1), lng: x2lon(x + 1) });
-    for (const cam of camadas) { const im = h("image", { href: url(cam, z, x, y), x: a, y: b, width: c - a + .6, height: d - b + .6, preserveAspectRatio: "none" });
-      im.addEventListener("error", () => { if (!im.dataset.r) { im.dataset.r = 1; im.setAttribute("href", reserva(cam, z, x, y)); } }, { once: false }); g.append(im); }
+    for (const cam of camadas) {
+      // reaproveita a imagem já carregada: redesenhar o mapa não recarrega os pedaços (antes piscava)
+      const k = cam + "/" + z + "/" + x + "/" + y, T = S.tilesPerto || (S.tilesPerto = new Map()); let im = T.get(k);
+      if (!im) { im = h("image", { href: url(cam, z, x, y), preserveAspectRatio: "none" }); const ii = im;
+        im.addEventListener("error", () => { if (!ii.dataset.r) { ii.dataset.r = 1; ii.setAttribute("href", reserva(cam, z, x, y)); } });
+        if (T.size > 400) T.clear(); T.set(k, im); }
+      for (const [n, v] of [["x", a], ["y", b], ["width", c - a + .6], ["height", d - b + .6]]) im.setAttribute(n, v);
+      g.append(im); }
   }
   svg.append(g);
-  svg.append(h("text", { x: P.W - 22, y: P.H - 20, class: "satcred", "text-anchor": "end", text: modo === "ruas" ? "© OpenStreetMap" : modo === "hibrido" ? "Satélite: Esri, Maxar · rótulos © CARTO, OpenStreetMap" : "Satélite: Esri, Maxar, Earthstar Geographics" }));
 }
 function escala(svg, P) {
   const H = P.H, per = P.s / 111.32, nice = [0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
@@ -5339,6 +5347,12 @@ function gestosMapa(svg, mov, P, km) {
     clearTimeout(rodaT); rodaT = setTimeout(confirma, 280);
   }, { passive: false });
 }
+// o botão "Ligar" só aparece para quem ainda não permitiu: procurando o GPS ou pausado à noite, mostra só um aviso
+function gpsDesligado() {
+  if (S.gpsWatch != null) return h("p", { class: "msg", role: "status", text: "Procurando você…" });
+  if (S.gpsNoite) return h("p", { class: "msg", role: "status", text: "Localização pausada à noite para poupar bateria. Volta sozinha às 6h." });
+  return h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null);
+}
 function autoGps() {
   if (S.gpsWatch != null || S._autoGps) return; S._autoGps = true;
   const liga = () => { if (noite()) S.gpsNoite = true; else ligarGps(true); };
@@ -5373,9 +5387,11 @@ function vPerto() {
         h("button", { type: "button", "aria-label": "Centralizar em mim", class: S.pertoCentro ? "" : "on", onclick: () => { S.pertoCentro = null; render(); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")),
         perto.length ? h("button", { type: "button", "aria-label": "Ver todos", onclick: verTodos }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")) : null),
       null),
+    // créditos das imagens fora do mapa, pequenininhos
+    window.__SITE ? h("p", { class: "mapcred", text: S.camadaMapa === "satelite" ? "Satélite: Esri, Maxar" : "Mapa: © OpenStreetMap" }) : null,
     eu0 && S.rua && S.rua.txt ? h("div", { class: "ruaaqui", role: "status" }, h("span", { class: "eyebrow", text: "Você está em" }), h("b", { text: S.rua.txt }), S.rua.sub ? h("small", { text: S.rua.sub }) : null) : null,
     eu0 ? h("p", { class: "coord", style: "text-align:left", text: "Você: " + coordTxt(eu0.lat, eu0.lng) }) : null,
-    !S.gpsOn ? h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null)
+    !S.gpsOn ? gpsDesligado()
       : h("div", { style: "display:flex;flex-direction:column;gap:6px;align-items:flex-start" }, h("p", { class: "msg ok", text: (S.gpsMsg || "Você está ao vivo.") + (S.aoVivo[S.uid]?.prec ? ` Precisão de ${S.aoVivo[S.uid].prec} m.` : "") }),
         h("button", { class: "btn ghost", type: "button", onclick: () => ligarGps() }, "Desligar localização ao vivo")),
     perto.length ? h("ul", { class: "pertolist" }, perto.slice(0, 20).map(({ p, km }) => h("li", { onclick: () => abrirPessoa(p.id), style: "cursor:pointer" },
@@ -5445,14 +5461,15 @@ function vMundo() {
         minhaPos() ? h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => { const m = minhaPos(); S.globo && S.globo.flyTo({ center: [+m.lng, +m.lat], zoom: 12, duration: 2500 }); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")) : null),
       h("div", { class: "globocam" + (S.globoPerto ? " on" : "") }, [["satelite", "Satélite"], ["mapa", "Mapa"]].map(([id, n]) =>
         h("button", { type: "button", "aria-pressed": String((S.globoCamada || "satelite") === id), onclick: () => { S.globoCamada = id; camadaGlobo(); render(); } }, n)))),
-    !S.gpsOn ? h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null)
+    h("p", { class: "mapcred", text: "Satélite: Esri, Maxar · Mapa: © OpenStreetMap" }),
+    !S.gpsOn ? gpsDesligado()
       : h("p", { class: "msg ok", text: S.gpsMsg || "Você está ao vivo no mapa." }),
     gente.length ? null : h("p", { class: "small", text: "Quando alguém da caravana ligar a localização, o bonequinho aparece no globo, onde a pessoa estiver: em casa, numa conexão ou já na Índia." }));
 }
 function montaGlobo(caixa) {
   if (S.globo || !window.maplibregl) return;
   caixa.replaceChildren();
-  const m = S.globo = new maplibregl.Map({ container: caixa, attributionControl: { compact: true }, center: [40, 20], zoom: 1.4, maxZoom: 19, dragRotate: false, pitchWithRotate: false, fadeDuration: 0, maxTileCacheZoomLevels: 6, refreshExpiredTiles: false,
+  const m = S.globo = new maplibregl.Map({ container: caixa, attributionControl: false, center: [40, 20], zoom: 1.4, maxZoom: 19, dragRotate: false, pitchWithRotate: false, fadeDuration: 0, maxTileCacheZoomLevels: 6, refreshExpiredTiles: false,
     style: { version: 8, projection: { type: "globe" },
       sources: {
         // mapa bege (o mesmo do "Perto de mim"): opção "Mapa" quando aproxima, e reserva se a foto de satélite falhar
@@ -5468,6 +5485,10 @@ function montaGlobo(caixa) {
         { id: "precf", type: "fill", source: "prec", minzoom: 12, paint: { "fill-color": "#E9C77E", "fill-opacity": .18 } },
         { id: "precl", type: "line", source: "prec", minzoom: 12, paint: { "line-color": "#E9C77E", "line-width": 1.5 } }] } });
   m.touchZoomRotate.disableRotation(); caixa.__mapa = m;
+  // o globo só aparece depois de desenhado (na primeira vez piscava enquanto as imagens chegavam)
+  caixa.classList.add("abrindo"); caixa.append(h("p", { class: "globoaviso", text: "Abrindo o globo…" }));
+  const mostra = () => { caixa.classList.remove("abrindo"); caixa.querySelector(".globoaviso")?.remove(); };
+  m.once("idle", mostra); setTimeout(mostra, 5000);
   // se a foto de satélite de perto falhar, daquele zoom para cima mostra o mapa de ruas no lugar
   let zSat = 99;
   m.on("error", e => { if (e.sourceId !== "sat") return; const z = e.tile && e.tile.tileID ? e.tile.tileID.canonical.z : Math.round(m.getZoom());
