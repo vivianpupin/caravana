@@ -1256,6 +1256,15 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfcinebt.on i{background:conic-gradient(from 30deg,#8e8a82,#cfcac0,#77736b,#b5b0a5,#6b675f,#c2bdb2,#8e8a82);box-shadow:0 3px 5px rgba(0,0,0,.75),inset 0 0 0 2px rgba(40,30,20,.45),inset 0 0 6px rgba(60,40,20,.55)}
 .cfcinebt.on i::after{inset:8px;background:radial-gradient(circle at 35% 30%,#f3d9a0,#b98f45 40%,#6e4d1d 85%);box-shadow:inset 0 2px 4px rgba(0,0,0,.6),0 0 8px rgba(240,180,90,.45)}
 .cfcinebt:active i{transform:scale(.94)}
+/* Bazar: os 3 filmes e o flash numa fileira só, bem distribuídos */
+.cf-descartavel .cfcines{justify-content:space-between;-webkit-mask-image:none;mask-image:none;padding-right:2px;width:min(calc(100vw - 40px),330px)}
+.cf-descartavel .cfcinebt{white-space:normal;width:72px;min-width:0;text-align:center}
+/* Agra: o Cinematic continua no botão de antes */
+.cf-campo .cfcinebt{flex-direction:row;gap:7px;border:1px solid rgba(232,192,122,.35);border-radius:999px;padding:6px 12px;background:rgba(0,0,0,.42);min-width:0;font:600 10px Poppins,sans-serif;letter-spacing:.12em;color:rgba(241,226,188,.55);text-shadow:none}
+.cf-campo .cfcinebt i{width:8px;height:8px;background:#3A2E26;box-shadow:inset 0 1px 2px rgba(0,0,0,.8)}
+.cf-campo .cfcinebt i::before,.cf-campo .cfcinebt i::after{display:none}
+.cf-campo .cfcinebt.on{color:#2B1F14;background:linear-gradient(180deg,#E8C98E,#B98A43);border-color:transparent;box-shadow:0 0 14px rgba(232,192,122,.55)}
+.cf-campo .cfcinebt.on i{background:#8FD3E0;box-shadow:0 0 6px #8FD3E0}
 .cfchave span:first-child{color:#F1E2BC}
 .cfchave.b span:first-child{color:rgba(241,226,188,.45)}
 .cfchave.b span:last-child{color:#F1E2BC}
@@ -7030,8 +7039,8 @@ function vCameraFisica(c) {
       ev.currentTarget.parentNode.querySelectorAll(".cfcinebt").forEach(b => { const on = liga && b.dataset.f === fid; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); }); document.querySelector(".cfexpo")?.classList.toggle("fora", !liga); document.querySelectorAll(".cftom").forEach(x => { const on = S.foto.filtro === x.dataset.f; x.classList.toggle("on", on); x.setAttribute("aria-checked", String(on)); }); } }, h("i", { "aria-hidden": "true" }), nome))) : null,
     c.id === "descartavel" ? h("div", { class: "cfcines", role: "radiogroup", "aria-label": "Filme" }, FILMES_BAZAR.map(([fid, nome]) => h("button", { type: "button", role: "radio", class: "cfcinebt" + (S.foto.filtro === fid ? " on" : ""), "aria-checked": String(S.foto.filtro === fid), "data-f": fid, onclick: ev => {
       S.foto = { ...S.foto, filtro: fid }; montaFoto.img = null;
-      ev.currentTarget.parentNode.querySelectorAll(".cfcinebt").forEach(b => { const on = b.dataset.f === fid; b.classList.toggle("on", on); b.setAttribute("aria-checked", String(on)); }); } }, h("i", { "aria-hidden": "true" }), nome))) : null,
-    c.id === "descartavel" ? h("div", { class: "cfcines" }, h("button", { type: "button", class: "cfcinebt" + (flashModo() !== "off" ? " on" : ""), "aria-label": "Flash", onclick: ev => {
+      ev.currentTarget.parentNode.querySelectorAll(".cfcinebt[data-f]").forEach(b => { const on = b.dataset.f === fid; b.classList.toggle("on", on); b.setAttribute("aria-checked", String(on)); }); } }, h("i", { "aria-hidden": "true" }), nome)),
+      h("button", { type: "button", class: "cfcinebt cfflash" + (flashModo() !== "off" ? " on" : ""), "aria-label": "Flash", onclick: ev => {
       const prox = { auto: "on", on: "off", off: "auto" }[flashModo()]; S.flashModo = prox; try { localStorage.setItem("cdi-flash", prox); } catch (e) {}
       const b = ev.currentTarget; b.classList.toggle("on", prox !== "off"); b.lastChild.textContent = textoFlash(); } }, h("i", { "aria-hidden": "true" }), textoFlash())) : null,
     c.filma ? chave("Foto", "Filme", S.camModo === "filme", ev => { if (S.gravando) return; S.camModo = S.camModo === "filme" ? "foto" : "filme"; trocaModoFilme(c, ev.currentTarget); }) : null);
