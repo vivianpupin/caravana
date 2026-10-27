@@ -6986,7 +6986,8 @@ function vCameraFisica(c) {
     for (let k = 0; k < 4; k++) { const sx = Math.max(0, Math.min(vw - k0, (vw - k0) / 2 + (k - 1.5) * passo));
       cliqueSom(); if (navigator.vibrate) navigator.vibrate(18);
       document.querySelectorAll(".cfluz").forEach((l, i) => l.classList.toggle("on", i <= k));
-      o.drawImage(videoCam(C) || v, sx, sy, k0, sh, k * fx, 0, fx, H);
+      if (S.foto.filtro === "cam-flashnoite") { const t = document.createElement("canvas"); t.width = Math.round(fx); t.height = H; t.getContext("2d").drawImage(videoCam(C) || v, sx, sy, k0, sh, 0, 0, t.width, H); flashNaFoto(t); o.drawImage(t, k * fx, 0, fx, H); }
+      else o.drawImage(videoCam(C) || v, sx, sy, k0, sh, k * fx, 0, fx, H);
       // cada lente puxa uma cor diferente, como as lentes baratas de plástico
       // cada lente tem o seu próprio escurecido nas bordas, como nas fotos da 1234
       const vg = o.createRadialGradient(k * fx + fx / 2, H / 2, fx * .25, k * fx + fx / 2, H / 2, H * .62); vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, "rgba(0,0,0,.6)");
@@ -7003,7 +7004,8 @@ function vCameraFisica(c) {
   };
   // como na NOMO: o clique revela a foto por trás, a câmera continua ligada e a miniatura do canto mostra a foto nova
   const dispara = () => { if (!F.vivo) return; if (c.filma && S.camModo === "filme") return; if (c.rajadas && !umaQuatro()) return rajada(); const C = S.camEst, v = videoCam(C); if (!v || !v.videoWidth) return;
-    const comFlash = c.id === "descartavel" && (flashModo() === "on" || (flashModo() === "auto" && cenaEscura(v)));
+    // Alien World: sempre com o flash de festa (frente iluminada, fundo no escuro), como a foto de referência
+    const comFlash = (c.id === "descartavel" && (flashModo() === "on" || (flashModo() === "auto" && cenaEscura(v)))) || S.foto.filtro === "cam-flashnoite";
     cliqueSom(); if (navigator.vibrate) navigator.vibrate(30); if (flashOn || comFlash) { const fl = h("div", { class: "flashcam" }); document.body.append(fl); setTimeout(() => fl.remove(), 450); }
     const q = document.createElement("canvas"); q.width = v.videoWidth; q.height = v.videoHeight; q.getContext("2d").drawImage(v, 0, 0);
     if (comFlash) flashNaFoto(q);
