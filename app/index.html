@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "27/10 · 18:02";</script>
+<script>window.__VERSAO = "27/10 · 18:29";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -7690,7 +7690,9 @@ function tiraFotoVivo() {
 }
 // câmera ao vivo na placa de vídeo: a cor do filtro vira uma tabela (LUT) e o celular aplica em cada quadro sem travar
 const LUT_N = 33;
-function glVivo(C) {
+// final: a foto que vai ser salva. A tabela de cores guarda a cor antes do corte (até 510, em metade) e a vinheta é feita aqui,
+// na mesma ordem do jeito antigo (cor → vinheta → corte); assim os filtros quentes não perdem o vermelho nas bordas e nas luzes
+function glVivo(C, final) {
   if (C.gl !== undefined) return C.gl;
   try {
     const c = document.createElement("canvas"), gl = c.getContext("webgl", { preserveDrawingBuffer: true, premultipliedAlpha: false, antialias: false });
@@ -7698,7 +7700,7 @@ function glVivo(C) {
     const sh = (t, src) => { const o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw 0; return o; };
     const pr = gl.createProgram();
     gl.attachShader(pr, sh(gl.VERTEX_SHADER, "attribute vec2 p;varying vec2 uv;void main(){uv=vec2(p.x*.5+.5,.5-p.y*.5);gl_Position=vec4(p,0.,1.);}"));
-    gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, "#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif\nuniform sampler2D v;uniform sampler2D l;uniform float N;varying vec2 uv;void main(){vec3 c=texture2D(v,uv).rgb;float b=c.b*(N-1.);float b0=floor(b);float b1=min(b0+1.,N-1.);vec2 q=vec2(c.r*(N-1.)+.5,(c.g*(N-1.)+.5)/N);vec3 s0=texture2D(l,vec2((b0*N+q.x)/(N*N),q.y)).rgb;vec3 s1=texture2D(l,vec2((b1*N+q.x)/(N*N),q.y)).rgb;gl_FragColor=vec4(mix(s0,s1,b-b0),1.);}"));
+    gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, "#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif\nuniform sampler2D v;uniform sampler2D l;uniform float N;uniform vec2 S;uniform float vin;varying vec2 uv;void main(){vec3 c=texture2D(v,uv).rgb;float b=c.b*(N-1.);float b0=floor(b);float b1=min(b0+1.,N-1.);vec2 q=vec2(c.r*(N-1.)+.5,(c.g*(N-1.)+.5)/N);vec3 s0=texture2D(l,vec2((b0*N+q.x)/(N*N),q.y)).rgb;vec3 s1=texture2D(l,vec2((b1*N+q.x)/(N*N),q.y)).rgb;" + (final ? "vec3 c2=mix(s0,s1,b-b0)*2.;vec2 d=(uv-.5)*S;float k=1.-vin*pow(length(d)/length(.5*S),2.2);gl_FragColor=vec4(clamp(c2*k,0.,1.),1.);}" : "gl_FragColor=vec4(mix(s0,s1,b-b0),1.);}")));
     gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw 0; gl.useProgram(pr);
     const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     const loc = gl.getAttribLocation(pr, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
@@ -7707,29 +7709,37 @@ function glVivo(C) {
     const tv = tex(0), tl = tex(1);
     gl.uniform1i(gl.getUniformLocation(pr, "v"), 0); gl.uniform1i(gl.getUniformLocation(pr, "l"), 1); gl.uniform1f(gl.getUniformLocation(pr, "N"), LUT_N);
     c.addEventListener("webglcontextlost", ev => { ev.preventDefault(); C.gl = null; });
-    C.gl = { c, gl, tv, tl, chave: null };
+    C.gl = { c, gl, tv, tl, chave: null, uS: gl.getUniformLocation(pr, "S"), uVin: gl.getUniformLocation(pr, "vin") };
   } catch (e) { C.gl = null; }
   return C.gl;
 }
 function corPelaPlaca(cv, t, w, hh, f, grao) {
-  if (f.arco || f.holi) return false;
-  const G = glVivo(S.glFoto || (S.glFoto = {})); if (!G) return false;
+  if (f.arco || f.holi || window.__semPlaca) return false; // __semPlaca: só para comparar com o jeito antigo nos testes
+  const G = glVivo(S.glFoto || (S.glFoto = {}), true); if (!G) return false;
   try {
     const gl = G.gl, mx = gl.getParameter(gl.MAX_TEXTURE_SIZE); if (w > mx || hh > mx) return false;
     G.c.width = w; G.c.height = hh; gl.viewport(0, 0, w, hh);
-    lutDoFiltro(G, f, grao);
+    lutDoFiltro(G, f, grao, true); gl.uniform2f(G.uS, w, hh); gl.uniform1f(G.uVin, f.vin || 0);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, G.tv); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cv); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     t.drawImage(G.c, 0, 0);
     // vinheta e luzes por cima; o grão é o mesmo de antes, ponto a ponto (o grão do visor ao vivo, ampliado, ficava grosso na foto)
-    efeitosRapidos(t, w, hh, f.vin || 0, 0); efeitosFiltro(t, w, hh, f.super8 ? { ...f, pelicula: 1 } : f);
+    efeitosFiltro(t, w, hh, f.super8 ? { ...f, pelicula: 1 } : f); // a vinheta já saiu da placa
     const g = { nenhum: 0, leve: 12, medio: 24, forte: 42, super8: 16, filme: 5 }[grao] ?? (f.grao || 0);
     if (g) { const d = t.getImageData(0, 0, w, hh), q = d.data; for (let i = 0; i < q.length; i += 4) { const n = (Math.random() - .5) * g; q[i] += n; q[i + 1] += n; q[i + 2] += n; } t.putImageData(d, 0, 0); }
     return true;
   } catch (e) { return false; }
 }
-function lutDoFiltro(G, f, grao) {
+function lutDoFiltro(G, f, grao, final) {
   const chave = f.id + "|" + grao + "|" + (f.cinema ? cineExpo : 1); if (G.chave === chave) return;
   const N = LUT_N, cv = document.createElement("canvas"); cv.width = N * N; cv.height = N; const x = cv.getContext("2d", { willReadFrequently: true }), d = x.createImageData(N * N, N);
+  if (final) { // a cor sem corte: calcula em números soltos e guarda a metade (0 a 510 vira 0 a 255)
+    const q = new Float32Array(N * N * N * 4);
+    for (let gg = 0; gg < N; gg++) for (let b = 0; b < N; b++) for (let rr = 0; rr < N; rr++) { const i = (gg * N * N + b * N + rr) * 4; q[i] = rr * 255 / (N - 1); q[i + 1] = gg * 255 / (N - 1); q[i + 2] = b * 255 / (N - 1); q[i + 3] = 255; }
+    aplicaFiltro({ getImageData: () => ({ data: q }), putImageData: () => {} }, N * N, N, f, grao, "cor");
+    for (let i = 0; i < q.length; i += 4) { d.data[i] = q[i] / 2; d.data[i + 1] = q[i + 1] / 2; d.data[i + 2] = q[i + 2] / 2; d.data[i + 3] = 255; }
+    x.putImageData(d, 0, 0);
+    const gl = G.gl; gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, G.tl); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cv); G.chave = chave; return;
+  }
   for (let gg = 0; gg < N; gg++) for (let b = 0; b < N; b++) for (let rr = 0; rr < N; rr++) { const i = (gg * N * N + b * N + rr) * 4; d.data[i] = rr * 255 / (N - 1); d.data[i + 1] = gg * 255 / (N - 1); d.data[i + 2] = b * 255 / (N - 1); d.data[i + 3] = 255; }
   x.putImageData(d, 0, 0); aplicaFiltro(x, N * N, N, f, grao, "cor");
   const gl = G.gl; gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, G.tl); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cv); G.chave = chave;
