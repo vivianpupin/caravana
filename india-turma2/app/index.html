@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "28/10 · 13:26";</script>
+<script>window.__VERSAO = "28/10 · 14:07";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1998,6 +1998,9 @@ nav.tabs button{position:relative}
 .mvbase .msg{margin:0;color:#E9D9B8}.mvbase .msg:empty{display:none}
 /* globo do mapa */
 .mapamodo{margin:-4px 0 12px}
+/* aba Mapa: menos espaço em cima e nos lados, para o mapa crescer */
+.mapaview{padding-top:12px;gap:12px}.mapaview .mapamodo{margin:-2px 0 0}
+@media (max-width:979px){.mapaview .mapaglobo,.mapaview .mapaperto{margin:0 -8px}}
 .mapaglobo{position:relative;overflow:hidden;background:#EAD6A8}
 .mapaglobo .globo{background:radial-gradient(circle at 50% 48%,#EAD6A8 55%,#C9AE78 100%)}
 .mapaglobo .mapctl{z-index:2}
@@ -5515,7 +5518,7 @@ function vMapa() {
   if (S.montando) return vExplorador();
   perfis(S.posicoes.map(p => p.id));
   const modo = S.mapaModo || "mundo";
-  return h("section", { class: "view" },
+  return h("section", { class: "view mapaview" },
     h("div", { class: "head" },
       h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { class: "titmapa", text: modo === "mundo" ? "Onde está a Caravana" : "Perto de mim" }))),
     h("div", { class: "opts mapamodo", role: "tablist", "aria-label": "Tipo de mapa" }, [["mundo", "🌍 Mundo"], ["perto", "📍 Perto de mim"]].map(([id, nome]) =>
