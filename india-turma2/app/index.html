@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "28/10 · 17:14";</script>
+<script>window.__VERSAO = "28/10 · 18:25";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3860,12 +3860,14 @@ function vPassaporte() {
     h("button", { class: "folhear", type: "button", onclick: () => abrirLivro(0) },
       h("img", { src: "img/passaporte-capa.webp", alt: "" }),
       h("span", null, h("b", { text: "Folhear meu passaporte" }), h("span", { text: "Abra o passaporte e vire as páginas com seus carimbos." }))),
-    h("div", { class: "pages" }, fundoPassaporte(),
+    // para a líder, os carimbos abrem e fecham como os outros cartões (para os viajantes, ficam sempre abertos)
+    S.isOwner ? dobraLider("selos", "panel", h("div", null, h("p", { class: "eyebrow", text: "Passaporte" }), h("h2", { text: "Os carimbos da Índia Sagrada" })),
+      h("div", { class: "pages" }, fundoPassaporte(), ls.length ? trilhaSelos(ls, mins) : carregando()))
+    : h("div", { class: "pages" }, fundoPassaporte(),
       h("div", { class: "ph" }, h("p", { class: "eyebrow", text: "Os carimbos da Índia Sagrada" })),
       ls.length ? trilhaSelos(ls, mins) : carregando()),
-    gente.length ? h("div", { class: "panel" },
-      h("p", { class: "eyebrow", text: "A caravana" }),
-      h("h2", { text: gente.length === 1 ? "1 passaporte emitido" : gente.length + " passaportes emitidos" }),
+    gente.length ? (S.isOwner ? (resumo, lista) => dobraLider("caravana", "panel", resumo, lista) : (resumo, lista) => h("div", { class: "panel" }, ...resumo.childNodes, lista))(
+      h("div", null, h("p", { class: "eyebrow", text: "A caravana" }), h("h2", { text: gente.length === 1 ? "1 passaporte emitido" : gente.length + " passaportes emitidos" })),
       h("ul", { class: "roster" }, gente.map(g => h("li", null,
         h("span", { class: "n", text: g.lider ? "✦" : nn(nums[g.id] || 0) }),
         h("img", { src: avatar(g.id), alt: "" }),
@@ -4067,7 +4069,7 @@ function dobraLider(chave, cls, resumo, ...filhos) {
 function vHabilidadesLider() {
   if (!S.isOwner) return null;
   const gente = S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome).localeCompare(String(b.nome)));
-  return dobraLider("habilidades", "secret", h("div", null, h("p", { class: "eyebrow", text: "Habilidades" }), h("h2", { text: "Liberar habilidades" })),
+  return dobraLider("habilidades", "panel", h("div", null, h("p", { class: "eyebrow", text: "Habilidades" }), h("h2", { text: "Liberar habilidades" })),
     h("p", { class: "small", text: "Quando liberar, todos recebem um aviso no celular e a caixinha para fazer a foto. Ninguém vê esta lista." }),
     h("ul", { class: "hablider" }, HABILIDADES.map(([id, nA, nO, fA, fO, lid]) => {
       const tem = gente.filter(v => (v.habilidades || {})[id]);
