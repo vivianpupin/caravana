@@ -3968,8 +3968,7 @@ function checaHabilidades() {
 function vMinhasHabilidades() {
   const ids = minhasHab(); if (!ids.length) return null;
   const gen = (eu() || {}).genero;
-  return h("div", { class: "panel" },
-    h("p", { class: "eyebrow", text: "Minhas habilidades" }),
+  return dobraLider("minhashab", "panel", h("div", null, h("p", { class: "eyebrow", text: "Minhas habilidades" }), h("h2", { text: ids.length === 1 ? "1 habilidade" : ids.length + " habilidades" })),
     h("div", { class: "hablista" }, ids.map(id => { const t = habTexto(id, gen); return h("button", { type: "button", class: "habitem", onclick: () => abrirHabilidade(id) },
       h("b", { text: t.nome, style: "--n:" + t.nome.length }), h("span", { text: t.frase }),
       h("small", { text: [localDe(t.local) ? "📍 " + localDe(t.local).nome : "", habFeitas().includes(id) ? "📸 Fazer outra foto" : "📸 Fazer a foto"].filter(Boolean).join("  ·  ") })); })),
