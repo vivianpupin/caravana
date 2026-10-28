@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "28/10 · 17:02";</script>
+<script>window.__VERSAO = "28/10 · 17:14";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -9666,7 +9666,7 @@ function campoAddGaleria() {
   fi = h("input", { type: "file", id: "mural-add", accept: "image/*,video/*", multiple: true, hidden: true, onchange: async () => {
     const fs = [...fi.files]; fi.value = ""; soltaArquivo(); if (!fs.length) return;
     const aviso = (txt, cls) => { S.muralAdd = [txt, cls || ""]; const m = document.getElementById("mural-add-msg"); if (m) { m.textContent = txt; m.className = "msg " + (cls || ""); } };
-    const cidade = Date.now() < INICIO_VIAGEM ? "" : (S.muralAddCidade || cidadeHoje() || ""); let ok = 0;
+    const cidade = Date.now() < INICIO_VIAGEM ? "" : (S.muralAddCidade || cidadeHoje() || ""); let ok = 0, motivo = "";
     for (const [k, file] of fs.entries()) {
       aviso(`Enviando ${k + 1} de ${fs.length}…`);
       try {
@@ -9675,12 +9675,12 @@ function campoAddGaleria() {
         if (/^video\//.test(file.type) || /\.(mov|mp4|m4v|webm|hevc|3gp)$/i.test(file.name || "")) {
           const msg = { set textContent(t) { aviso((fs.length > 1 ? `${k + 1} de ${fs.length} · ` : "") + t); }, set className(c) { if (c.includes("err")) S.muralAdd[1] = "err"; } };
           S.muralAdd = ["", ""]; await enviaFilmeGaleria({ blob: file, cidade, camera: "" }, msg);
-          if (S.muralAdd[1] === "err") continue; ok++;
+          if (S.muralAdd[1] === "err") { motivo = S.muralAdd[0]; continue; } ok++;
         } else { const r = await S.assets.upload(file); await addMural({ autor: S.uid, fotoId: r.id, cidade, legenda: "", ts: Date.now() }); ok++; }
       }
-      catch (e) { aviso(erroFoto(e), "err"); }
+      catch (e) { motivo = /^video\//.test(file.type) || /\.(mov|mp4|m4v|webm|hevc|3gp)$/i.test(file.name || "") ? "Não consegui preparar esse vídeo" + (e && e.message ? " (" + String(e.message).slice(0, 60) + ")" : "") + "." : erroFoto(e); aviso(motivo, "err"); }
     }
-    aviso(ok === fs.length ? (ok === 1 ? "Adicionado na Galeria." : `${ok} adicionados na Galeria.`) : `${ok} de ${fs.length} adicionados.`, ok ? "ok" : "err");
+    aviso(ok === fs.length ? (ok === 1 ? "Adicionado na Galeria." : `${ok} adicionados na Galeria.`) : `${ok} de ${fs.length} adicionados.` + (motivo ? " " + motivo : ""), ok ? "ok" : "err");
   } });
   document.body.append(fi); return fi;
 }
@@ -9742,8 +9742,20 @@ function filmeLimpo(src, poster, cls) {
 // antes de enviar, o filme é refeito menor (até 30 s, 540 px), para caber e não gastar os dados de quem assiste.
 const PEDACO = 600000;
 async function capaDoFilme(blob) {
-  const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "auto"; v.src = URL.createObjectURL(blob);
-  try { await new Promise((ok, no) => { v.onloadeddata = ok; v.onerror = no; setTimeout(no, 6000); });
+  try { return (await capaDoFilme2(blob)) || capaReserva(); } catch (e) { return capaReserva(); }
+}
+// capa de reserva (quando o celular não deixa tirar um quadro do vídeo): fundo escuro com o símbolo de play
+function capaReserva() {
+  const c = document.createElement("canvas"); c.width = 540; c.height = 960; const x = c.getContext("2d");
+  const g = x.createLinearGradient(0, 0, 0, 960); g.addColorStop(0, "#3B2A1C"); g.addColorStop(1, "#14100C"); x.fillStyle = g; x.fillRect(0, 0, 540, 960);
+  x.fillStyle = "rgba(243,235,221,.9)"; x.beginPath(); x.moveTo(230, 420); x.lineTo(330, 480); x.lineTo(230, 540); x.closePath(); x.fill();
+  return new Promise(r => c.toBlob(r, "image/jpeg", .85));
+}
+// No iPhone o vídeo só carrega e entrega imagem se estiver na página, mudo e tocando: entra escondido
+async function capaDoFilme2(blob) {
+  const v = document.createElement("video"); v.muted = true; v.defaultMuted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("muted", ""); v.preload = "auto";
+  v.style.cssText = "position:fixed;left:0;top:0;width:2px;height:2px;opacity:.01;pointer-events:none;z-index:-1"; document.body.append(v); v.src = URL.createObjectURL(blob);
+  try { v.play().catch(() => {}); await new Promise((ok, no) => { v.onloadeddata = ok; v.onerror = no; setTimeout(no, 10000); });
     // o iPhone só desenha o quadro depois de tocar um instante (senão a capa sai preta)
     try { await v.play(); v.pause(); } catch (e) {}
     // a capa não é o quadro preto do começo: tenta logo depois do início e, se sair escuro, mais adiante no filme
@@ -9756,11 +9768,11 @@ async function capaDoFilme(blob) {
       if (l > melhorLuz) { melhorLuz = l; melhor = await new Promise(r => c.toBlob(r, "image/jpeg", .85)); }
       if (l > 28) break;
     }
-    return melhor; } finally { URL.revokeObjectURL(v.src); }
+    return melhor; } finally { try { v.pause(); } catch (e) {} URL.revokeObjectURL(v.src); v.remove(); }
 }
 async function filmeMenor(blob, aviso) {
   if (blob.size <= 2.4e6 || !window.MediaRecorder) return blob;
-  const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.src = URL.createObjectURL(blob);
+  const v = document.createElement("video"); v.muted = true; v.defaultMuted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("muted", ""); v.src = URL.createObjectURL(blob);
   v.style.cssText = "position:fixed;left:0;top:0;width:2px;height:2px;opacity:.01;pointer-events:none"; document.body.append(v);
   try {
     await new Promise((ok, no) => { v.onloadedmetadata = ok; v.onerror = no; setTimeout(no, 8000); });
@@ -9799,7 +9811,7 @@ async function enviaFilmeGaleria2(it, msg) {
   msg.textContent = "Preparando o filme…"; msg.className = "msg";
   // diminuir o filme leva o tempo do próprio filme (até 30 s): mostra quanto falta e pede para não sair do app
   const t0 = performance.now(), filme = await filmeMenor(it.blob, n => { const falta = n > 3 ? Math.max(1, Math.round((performance.now() - t0) / n * (100 - n) / 1000)) : null; msg.textContent = "Preparando o filme… " + n + "%" + (falta ? ` · faltam ${falta} s` : "") + " · deixe o app aberto"; });
-  if (filme.size > 6e6) { msg.textContent = "Esse filme é longo demais para a galeria. Grave um trecho mais curto (até 30 segundos)."; msg.className = "msg err"; return; }
+  if (filme.size > 6e6) { msg.textContent = filme === it.blob ? "Não consegui diminuir esse vídeo no celular. Deixe o app aberto e a tela acesa e tente de novo, ou escolha um vídeo mais curto." : "Esse filme é longo demais para a galeria. Grave um trecho mais curto (até 30 segundos)."; msg.className = "msg err"; return; }
   const capaId = (await S.assets.upload(capa)).id;
   let partes = [];
   try {
