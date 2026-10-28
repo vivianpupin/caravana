@@ -20,8 +20,8 @@ export default async () => {
     if (agora - c.envio > 2 * 3600 * 1000) continue;
     k = k || await chaves(d);
     enviados += c.para
-      ? await enviarPara(d, k, c.para, { title: "💌 Chegou uma carta só para você", body: c.titulo || "Abra o app para ler.", tag: "carta-" + s.id, url: "./?aba=travessia" }, 24 * 3600)
-      : await enviarTodos(d, k, { title: "💌 Chegou uma carta da líder", body: c.titulo || "Abra o app para ler.", tag: "carta-" + s.id, url: "./?aba=travessia" }, null, 24 * 3600);
+      ? await enviarPara(d, k, c.para, { title: "💌 Chegou uma carta só para você", body: c.titulo || "Abra o app para ler.", tag: "carta-" + s.id, url: "./?aba=travessia&carta=" + s.id }, 24 * 3600)
+      : await enviarTodos(d, k, { title: "💌 Chegou uma carta da líder", body: c.titulo || "Abra o app para ler.", tag: "carta-" + s.id, url: "./?aba=travessia&carta=" + s.id }, null, 24 * 3600);
   }
   return new Response("enviados: " + enviados);
 };

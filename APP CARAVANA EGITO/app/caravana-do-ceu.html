@@ -6659,7 +6659,12 @@ async function filma(c) {
       avisoReacao("🎞️ Filme guardado nos Registros, na Maleta, embaixo das câmeras."); }
     else avisoReacao("Não consegui gravar o filme neste celular."); };
   // capa do filme: o primeiro quadro, guardado como foto, para a miniatura nunca ficar preta (o iPhone não mostra quadro de vídeo parado)
-  let capa = null; setTimeout(() => { const k = document.createElement("canvas"); k.width = 360; k.height = 640; k.getContext("2d").drawImage(rec, 0, 0, 360, 640); k.toBlob(b => { capa = b; }, "image/jpeg", .8); }, 250);
+  // capa do filme: um quadro do começo, mas não um quadro escuro (se sair escuro, tenta de novo um pouco depois)
+  let capa = null; const tiraCapa = (tenta) => { const k = document.createElement("canvas"); k.width = 360; k.height = 640; const kx = k.getContext("2d", { willReadFrequently: true }); kx.drawImage(rec, 0, 0, 360, 640);
+    const d = kx.getImageData(0, 0, 360, 640).data; let t = 0, n = 0; for (let i = 0; i < d.length; i += 4 * 97) { t += d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11; n++; }
+    if (t / n > 28 || !capa) k.toBlob(b => { if (b) capa = b; }, "image/jpeg", .8);
+    if (t / n <= 28 && tenta < 3) setTimeout(() => tiraCapa(tenta + 1), 700); };
+  setTimeout(() => tiraCapa(0), 400);
   const limite = setTimeout(() => mr.state === "recording" && mr.stop(), 60000);
   // o iPhone só manda imagem para o filme depois que a tela já foi desenhada algumas vezes: a gravação começa um instante depois, para o 1º quadro não sair preto
   const comeca = setTimeout(() => { if (mr.state === "inactive" && S.gravando === mr) mr.start(500); }, 250);
@@ -7376,8 +7381,31 @@ const pushPossivel = () => "serviceWorker" in navigator && "PushManager" in wind
 const avisosLigados = () => pushPossivel() && Notification.permission === "granted" && lsGet("cdi-avisos") === "1";
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); S.instalar = e; render(); });
 window.addEventListener("appinstalled", () => { S.instalar = null; render(); });
-if (navigator.serviceWorker) navigator.serviceWorker.addEventListener("message", e => { if (e.data && e.data.aba) go(e.data.aba); });
-{ const aba = new URLSearchParams(location.search).get("aba"); if (["conversa", "passaporte", "travessia", "pombo"].includes(aba)) S.tab = aba; }
+// toque numa notificação: vai direto para o que ela avisou (a carta, o pombo, a habilidade, o carimbo ou quem mandou recado), sem passar pela abertura do dia
+const ABAS_LINK = ["travessia", "passaporte", "ensinamentos", "explorador", "fotos", "mapa", "conversa", "pombo"];
+function pegaLink(q) {
+  const aba = q.get("aba"); if (!ABAS_LINK.includes(aba)) return null;
+  const L = { carta: q.get("carta"), pombo: q.get("pombo"), hab: q.get("hab"), selo: q.get("selo"), de: q.get("de") };
+  S.abrirLink = Object.values(L).some(Boolean) ? { ...L, ate: Date.now() + 60000 } : null;
+  return aba;
+}
+function tentaAbrirLink() {
+  const L = S.abrirLink; if (!L || !S.uid) return;
+  if (Date.now() > L.ate) { S.abrirLink = null; return; }
+  if (L.carta) { const c = cartasAbertas().find(x => x.id === L.carta); if (!c) return; S.abrirLink = null; abrirCarta(c); }
+  else if (L.pombo) { const p = S.pombosIn.find(x => x.id === L.pombo); if (!p) return; S.abrirLink = null; abrirPombo(p, !p.lida); }
+  else if (L.hab) { if (!(eu() && (eu().habilidades || {})[L.hab])) return; S.abrirLink = null; abrirHabilidade(L.hab, true); }
+  else if (L.selo) { const l = localDe(L.selo); if (!l) return; S.abrirLink = null; abrirSelo(l); }
+  else if (L.de) { if (!S.viajantes.some(v => v.id === L.de)) return; S.abrirLink = null; abrirPessoa(L.de); } // recado pelo mapa: abre quem mandou, para responder
+}
+if (navigator.serviceWorker) navigator.serviceWorker.addEventListener("message", e => {
+  const d = e.data || {}; if (!d.aba) return;
+  const aba = d.url ? pegaLink(new URL(d.url).searchParams) : d.aba;
+  if (aba) { go(aba); tentaAbrirLink(); }
+});
+{ const q = new URLSearchParams(location.search), aba = pegaLink(q); if (aba) S.tab = aba;
+  if (q.has("aba")) try { history.replaceState(null, "", location.pathname); } catch (e) {} }
+setInterval(tentaAbrirLink, 1500);
 // a líder abre ou fecha um selo para todos; ao abrir, a caravana recebe o aviso no celular
 async function liberarSelo(l) {
   const abre = !l.aberto, ref = S.db.doc("locais/" + l.id);
@@ -7922,7 +7950,7 @@ function boasVindas(pronto) {
   let fechou = false;
   const fecha = () => { if (fechou) return; fechou = true; pronto.then(() => { ov.classList.add("sai"); render(); setTimeout(() => ov.remove(), 700); }); };
 }
-function abreDia() { const t = +new URLSearchParams(location.search).get("abertura"); aberturaDoDia(t || 0); }
+function abreDia() { if (S.abrirLink) return; const t = +new URLSearchParams(location.search).get("abertura"); aberturaDoDia(t || 0); }
 document.addEventListener("visibilitychange", () => { if (!document.hidden) abreDia(); });
 
 
@@ -8851,9 +8879,20 @@ function filmeLimpo(src, poster, cls) {
 const PEDACO = 600000;
 async function capaDoFilme(blob) {
   const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "auto"; v.src = URL.createObjectURL(blob);
-  try { await new Promise((ok, no) => { v.onloadeddata = ok; v.onerror = no; setTimeout(no, 6000); }); try { v.currentTime = .1; await new Promise(r => { v.onseeked = r; setTimeout(r, 1500); }); } catch (e) {}
-    const c = document.createElement("canvas"); c.width = v.videoWidth; c.height = v.videoHeight; c.getContext("2d").drawImage(v, 0, 0);
-    return await new Promise(r => c.toBlob(r, "image/jpeg", .85)); } finally { URL.revokeObjectURL(v.src); }
+  try { await new Promise((ok, no) => { v.onloadeddata = ok; v.onerror = no; setTimeout(no, 6000); });
+    // o iPhone só desenha o quadro depois de tocar um instante (senão a capa sai preta)
+    try { await v.play(); v.pause(); } catch (e) {}
+    // a capa não é o quadro preto do começo: tenta logo depois do início e, se sair escuro, mais adiante no filme
+    const c = document.createElement("canvas"); c.width = v.videoWidth; c.height = v.videoHeight; const x = c.getContext("2d", { willReadFrequently: true });
+    const dur = isFinite(v.duration) && v.duration > 0 ? v.duration : 1, luz = () => { const d = x.getImageData(0, 0, c.width, c.height).data; let t = 0, n = 0; for (let i = 0; i < d.length; i += 4 * 97) { t += d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11; n++; } return n ? t / n : 0; };
+    let melhor = null, melhorLuz = -1;
+    for (const t of [Math.min(1, dur * .1), dur * .25, dur * .5]) {
+      try { v.currentTime = t; await new Promise(r => { v.onseeked = r; setTimeout(r, 1500); }); } catch (e) {}
+      x.drawImage(v, 0, 0); const l = luz();
+      if (l > melhorLuz) { melhorLuz = l; melhor = await new Promise(r => c.toBlob(r, "image/jpeg", .85)); }
+      if (l > 28) break;
+    }
+    return melhor; } finally { URL.revokeObjectURL(v.src); }
 }
 async function filmeMenor(blob, aviso) {
   if (blob.size <= 2.4e6 || !window.MediaRecorder) return blob;
@@ -8887,16 +8926,19 @@ async function enviaFilmeGaleria(it, msg) {
   const capa = it.capa || await capaDoFilme(it.blob);
   if (!capa) throw new Error("capa");
   msg.textContent = "Preparando o filme…"; msg.className = "msg";
-  const filme = await filmeMenor(it.blob, n => { msg.textContent = "Preparando o filme… " + n + "%"; });
+  // diminuir o filme leva o tempo do próprio filme (até 30 s): mostra quanto falta e pede para não sair do app
+  const t0 = performance.now(), filme = await filmeMenor(it.blob, n => { const falta = n > 3 ? Math.max(1, Math.round((performance.now() - t0) / n * (100 - n) / 1000)) : null; msg.textContent = "Preparando o filme… " + n + "%" + (falta ? ` · faltam ${falta} s` : "") + " · deixe o app aberto"; });
   if (filme.size > 6e6) { msg.textContent = "Esse filme é longo demais para a galeria. Grave um trecho mais curto (até 30 segundos)."; msg.className = "msg err"; return; }
   const capaId = (await S.assets.upload(capa)).id;
   let partes = [];
   try {
     if (noSite()) {
-      for (let i = 0, n = Math.ceil(filme.size / PEDACO); i < n; i++) { msg.textContent = `Enviando o filme… ${i + 1} de ${n}`;
-        const r = await S.db.collection("fotos").add({ data: await b64(filme.slice(i * PEDACO, (i + 1) * PEDACO)), autor: S.uid, ts: Date.now(), parte: i }); partes.push(r.id); }
+      // as partes sobem 3 de cada vez (bem mais rápido que uma por uma), mantendo a ordem
+      const n = Math.ceil(filme.size / PEDACO); let prontas = 0; partes = new Array(n); msg.textContent = `Enviando o filme… 0 de ${n}`;
+      const sobe = async i => { const r = await S.db.collection("fotos").add({ data: await b64(filme.slice(i * PEDACO, (i + 1) * PEDACO)), autor: S.uid, ts: Date.now(), parte: i }); partes[i] = r.id; msg.textContent = `Enviando o filme… ${++prontas} de ${n}`; };
+      let prox = 0; await Promise.all([0, 1, 2].map(async () => { while (prox < n) await sobe(prox++); }));
     } else partes = [(await S.assets.upload(filme)).id];
-  } catch (e) { for (const id of [capaId, ...partes]) S.assets.delete(id).catch(() => {}); throw e; }
+  } catch (e) { for (const id of [capaId, ...partes].filter(Boolean)) S.assets.delete(id).catch(() => {}); throw e; }
   await S.db.collection("mural").add({ autor: S.uid, fotoId: capaId, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now(), video: { partes, tipo: filme.type || "video/mp4" } });
   msg.textContent = "Filme na Galeria da Caravana."; msg.className = "msg ok";
 }
