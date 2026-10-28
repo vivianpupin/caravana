@@ -4054,6 +4054,8 @@ function vGuardioesLider() {
     catch (e) { msg.textContent = "As passagens estão aí embaixo, mas a internet está lenta e a lista ainda não foi guardada. Gere de novo quando a conexão melhorar."; msg.className = "msg err"; }
   };
   if (ta.value.trim()) desenha();
+  // trocou a palavra-chave (ou ela acabou de chegar do banco): refaz os links das passagens com a palavra certa
+  S.redesenhaPassagens = () => { if (ta.isConnected && ta.value.trim()) desenha(); };
   const gente = S.viajantes.slice().sort((a, b) => normNome(a.nome) < normNome(b.nome) ? -1 : 1);
   const opcoes = [["", "—"], ...Object.entries(GUARDIOES).map(([id, G]) => [id, G.nome])];
   return h("div", { class: "panel" },
@@ -4071,7 +4073,7 @@ function vGuardioesLider() {
 function vPalavraLider() {
   if (!S.isOwner || !noSite() || !S.db) return null;
   const atual = h("b", { class: "palavraatual", text: S.palavraAtual == null ? "…" : (S.palavraAtual || "(nenhuma)") });
-  if (S.palavraAtual === undefined) { S.palavraAtual = null; S.db.doc("privado/acesso").get().then(d => { S.palavraAtual = d.exists ? String(d.data().palavra || "") : ""; document.querySelectorAll(".palavraatual").forEach(e => { e.textContent = S.palavraAtual || "(nenhuma)"; }); }).catch(() => { S.palavraAtual = undefined; }); }
+  if (S.palavraAtual === undefined) { S.palavraAtual = null; S.db.doc("privado/acesso").get().then(d => { S.palavraAtual = d.exists ? String(d.data().palavra || "") : ""; document.querySelectorAll(".palavraatual").forEach(e => { e.textContent = S.palavraAtual || "(nenhuma)"; }); S.redesenhaPassagens?.(); }).catch(() => { S.palavraAtual = undefined; }); }
   const campo = h("input", { type: "text", id: "nova-palavra", placeholder: "nova palavra-chave", autocomplete: "off", autocapitalize: "none" });
   const msg = h("p", { class: "msg", role: "status" });
   const troca = async () => {
@@ -4079,7 +4081,7 @@ function vPalavraLider() {
     if (nova.length < 4) { msg.textContent = "Use pelo menos 4 letras."; msg.className = "msg err"; return; }
     if (!confirm("Trocar a palavra-chave para \"" + nova + "\"?\n\nQuem já está no app continua dentro. Quem entrar depois usa a palavra nova.")) return;
     try { await S.db.doc("privado/acesso").set({ palavra: nova, anterior: S.palavraAtual || "", ts: Date.now() }); S.palavraAtual = nova;
-      document.querySelectorAll(".palavraatual").forEach(e => { e.textContent = nova; }); campo.value = ""; msg.textContent = "Pronto. A palavra-chave agora é " + nova + "."; msg.className = "msg ok"; }
+      document.querySelectorAll(".palavraatual").forEach(e => { e.textContent = nova; }); campo.value = ""; S.redesenhaPassagens?.(); msg.textContent = "Pronto. A palavra-chave agora é " + nova + ". Os links das passagens já foram refeitos com ela: copie de novo antes de mandar."; msg.className = "msg ok"; }
     catch (e) { msg.textContent = "Não consegui trocar. Tente de novo."; msg.className = "msg err"; }
   };
   return h("div", { class: "panel" },
