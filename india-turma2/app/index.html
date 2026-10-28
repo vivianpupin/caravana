@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "28/10 · 12:40";</script>
+<script>window.__VERSAO = "28/10 · 12:41";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2696,7 +2696,7 @@ const MISSOES = [
   ["intencao", "Mensagem na garrafa", "Escreva e lance a garrafa no rio.", v => !!lerIntencao(), () => abrirIntencao()],
   ["camera", "Testar uma câmera da maleta", "Tire uma foto com uma das câmeras antigas.", v => false, () => go("fotos")],
   ["pombo", "Mandar um pombo-correio", "Uma cartinha para alguém da turma.", v => S.pombosOut.length > 0, () => go("pombo")],
-  ["trilha", "A trilha da travessia", "Coloque o disco na vitrola da Caravana e guarde a playlist no seu Spotify.", v => false, () => abrirVitrola()]
+  ["trilha", "A trilha da travessia", "Pressione o disco na vitrola da Caravana e ouça a trilha que acompanha a jornada.", v => false, () => abrirVitrola()]
 ];
 // pistas: tudo o que vai para a Galeria antes da viagem é pista; a missão só aparece quando existe alguma
 const INICIO_VIAGEM = Date.parse("2026-11-18T00:00:00+05:30");
