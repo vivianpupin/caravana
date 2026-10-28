@@ -2096,7 +2096,16 @@ function marcaChat() {
   if (!pin) { pin = h("span", { class: "pinmsg", "aria-hidden": "true" }); bt.append(pin); }
   pin.textContent = n > 9 ? "9+" : n ? String(n) : ""; pin.hidden = !n;
   bt.setAttribute("aria-label", n ? `Chat, ${n} ${n > 1 ? "mensagens novas" : "mensagem nova"}` : "Chat");
+  bolinhaApp(n);
+}
+// a bolinha no ícone do app: mensagens novas do chat + pombos e cartas ainda não lidos.
+// Com o app fechado, quem acende a bolinha é a notificação (sw.js); ao abrir, o número volta a ser o que falta ler de verdade.
+function bolinhaApp(chat) {
+  let n = chat || 0;
+  try { n += S.pombosIn.filter(p => !p.lida).length; } catch (e) {}
+  try { if (!S.isOwner) n += cartasAbertas().filter(c => !cartasVistas()[c.id]).length; } catch (e) {}
   try { if (navigator.setAppBadge) n ? navigator.setAppBadge(n) : navigator.clearAppBadge(); } catch (e) {}
+  try { caches.open("caravana-bolinha").then(c => c.put("n", new Response(String(n)))).catch(() => {}); } catch (e) {}
 }
 // seletores das faixas que deslizam para o lado (lidos uma vez do próprio CSS do app)
 let _selRol = null;

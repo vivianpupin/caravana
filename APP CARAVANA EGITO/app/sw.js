@@ -19,7 +19,7 @@ self.addEventListener("install", e => {
 // completa o que faltou guardar (se a instalação pegou sinal fraco, algum arquivo ficou de fora e faltava sem internet)
 function completa() { return Promise.all([caches.open(CACHE), caches.open(MARCAS)]).then(([c, m]) => Promise.all(["./", ...ARQUIVOS].map(a => c.match(a).then(g => g || guardaUm(c, m, a, true)).catch(() => {})))); }
 self.addEventListener("message", e => { if (e.data === "completa") e.waitUntil(completa()); });
-self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => ![CACHE, EXTRA, MAPA, MARCAS].includes(k)).map(k => caches.delete(k))))); self.clients.claim(); });
+self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => ![CACHE, EXTRA, MAPA, MARCAS, "caravana-bolinha"].includes(k)).map(k => caches.delete(k))))); self.clients.claim(); });
 const guarda = (nome, req, r) => { if (r && (r.ok || r.type === "opaque")) { const cp = r.clone(); caches.open(nome).then(c => c.put(req, cp)); } return r; };
 // mostra o guardado na hora e atualiza por trás, para a próxima vez
 function guardadoPrimeiro(nome, req) {
@@ -63,7 +63,9 @@ self.addEventListener("fetch", e => {
 // notificações de mensagem nova no chat
 self.addEventListener("push", e => {
   let d = {}; try { d = e.data ? e.data.json() : {}; } catch (x) { d = { body: e.data && e.data.text() }; }
-  e.waitUntil(self.registration.showNotification(d.title || "Caravana do Céu", { body: d.body || "Mensagem nova no chat", icon: "img/icone-192.png", badge: "img/icone-192.png", tag: d.tag || "chat", renotify: true, requireInteraction: !!d.requireInteraction, data: { url: d.url || "./?aba=conversa" } }));
+  // com o app fechado, a notificação acende a bolinha no ícone (soma 1 a cada aviso; ao abrir o app, ele acerta o número)
+  const bolinha = () => caches.open("caravana-bolinha").then(async c => { const r = await c.match("n"), n = (r ? +(await r.text()) || 0 : 0) + 1; await c.put("n", new Response(String(n))); if (self.navigator.setAppBadge) await self.navigator.setAppBadge(n); }).catch(() => {});
+  e.waitUntil(Promise.all([self.registration.showNotification(d.title || "Caravana do Céu", { body: d.body || "Mensagem nova no chat", icon: "img/icone-192.png", badge: "img/icone-192.png", tag: d.tag || "chat", renotify: true, requireInteraction: !!d.requireInteraction, data: { url: d.url || "./?aba=conversa" } }), bolinha()]));
 });
 self.addEventListener("notificationclick", e => {
   e.notification.close();
