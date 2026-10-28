@@ -3335,8 +3335,6 @@ function vSaberes() {
       guia.map(g => h("details", { class: "guide" + (S.lidos[g.id] ? " lido" : ""), ontoggle: ev => { if (ev.currentTarget.open) { marcaLido(g.id); ev.currentTarget.classList.add("lido"); } } },
         h("summary", null, h("div", null, h("b", { text: g.titulo }), g.resumo ? h("span", { text: g.resumo }) : null), h("span", { class: "lidotag", "aria-label": "Lido" }, "✓"), h("span", { text: "▾", "aria-hidden": "true" })),
         h("div", { class: "gb" }, String(g.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })))))) : null,
-    h("p", { class: "eyebrow rule", text: "A trilha da travessia" }),
-    vVitrolaSaberes(),
     vOffline(),
     h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }));
 }
@@ -6945,6 +6943,8 @@ function vEstante() {
         imgCam(c), h("span", { class: "etiqueta", text: c.nome })))),
       h("div", { class: "tabua" })))),
     vDiarioViajante(),
+    h("p", { class: "eyebrow rule", text: "A trilha da travessia" }),
+    vVitrolaSaberes(),
     ehLider(S.uid) ? chaveLogoLider() : null);
 }
 // só a líder vê: tirar o logo da Caravana das fotos e filmes que ela fizer (em todas as câmeras); fica guardado neste celular
