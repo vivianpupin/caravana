@@ -209,6 +209,11 @@ let palavraDigitada = "";
 const PALAVRAS_ANTIGAS = ["caravana", "ganga"];
 let trocarSenha = "";
 const senhaDe = palavra => "caravana-" + palavra;
+// o servidor diz se a palavra está certa (sem ligar para acento) e, se a conta já existia com outra palavra, refaz a senha
+async function conferePalavra(email, palavra) {
+  try { const r = await fetch("/.netlify/functions/entrada", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email, palavra }) });
+    return r.ok ? await r.json() : null; } catch (e) { return null; }
+}
 async function entrarComEmail(email, palavra, erro, bt) {
   email = email.trim().toLowerCase(); palavra = palavra.trim().toLowerCase();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { erro.textContent = "Confira o e-mail."; return; }
@@ -227,6 +232,13 @@ async function entrarComEmail(email, palavra, erro, bt) {
   catch (e) {
     if (/network/.test(e.code || "")) { erro.textContent = "Sem internet. Tente de novo quando tiver sinal."; }
     else {
+      // confere a palavra no servidor antes de criar a conta, e destrava a conta de quem entrou a primeira vez com a palavra errada
+      const r = await conferePalavra(email, palavra);
+      if (r && r.errada) { erro.textContent = "Palavra incorreta. Confira com a líder da caravana."; palavraDigitada = ""; bt.disabled = false; bt.textContent = "Entrar"; return; }
+      if (r && r.ok && r.palavra) {
+        palavraDigitada = r.palavra;
+        try { if (r.nova) await auth.createUserWithEmailAndPassword(email, senhaDe(r.palavra)); else await auth.signInWithEmailAndPassword(email, senhaDe(r.palavra)); return; } catch (x) {}
+      }
       // quem criou a conta quando a palavra era outra: entra com a palavra antiga e a senha passa a ser a nova
       for (const antiga of PALAVRAS_ANTIGAS) {
         if (antiga === palavra) continue;
@@ -352,7 +364,10 @@ function telaPalavra() {
     const palavra = inp.value.trim().toLowerCase(); if (!palavra) return;
     erro.textContent = "";
     try { await fs.doc("membros/" + me.id).set({ palavra, nome: me.name, email: me.email, ts: Date.now() }); entrar(); }
-    catch (e) { erro.textContent = "Palavra incorreta. Confira com a líder da caravana."; }
+    catch (e) {
+      const r = me.email ? await conferePalavra(me.email, palavra) : null;
+      if (r && r.ok && r.palavra && r.palavra !== palavra) { try { await fs.doc("membros/" + me.id).set({ palavra: r.palavra, nome: me.name, email: me.email, ts: Date.now() }); return entrar(); } catch (x) {} }
+      erro.textContent = "Palavra incorreta. Confira com a líder da caravana."; }
   };
   inp.addEventListener("keydown", e => { if (e.key === "Enter") ok(); });
   portao(el("p", { textContent: `Olá, ${me.name.split(" ")[0]}! Digite a palavra da caravana, que a líder passou no grupo.` }), inp,
