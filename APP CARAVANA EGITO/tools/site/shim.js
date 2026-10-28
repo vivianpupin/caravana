@@ -119,21 +119,28 @@ if (pronto) {
   const st = document.createElement("style");
   st.textContent = "html.espera,html.espera body{background:#1d1a16 url(img/textura.jpg) center/cover}html.espera body>*:not(#portao):not(#fora):not(#boasvindas){visibility:hidden}";
   document.head.append(st);
-  // quem já entrou neste celular vê o app na hora (como antes); só quem ainda não entrou espera a tela certa
-  let jaEntrou = false; try { jaEntrou = localStorage.getItem("cdi-entrou") === "1"; } catch (e) {}
-  if (!jaEntrou) document.documentElement.classList.add("espera");
+  // quem já entrou neste celular e já viu a boas-vindas vê o app na hora; os outros esperam a tela certa
+  // (quem entrou mas ainda não viu a boas-vindas também espera: antes o app aparecia e só depois vinha a boas-vindas por cima)
+  let jaEntrou = false, bvVisto = false; try { jaEntrou = localStorage.getItem("cdi-entrou") === "1"; bvVisto = localStorage.getItem("cdi-bv") === "1"; } catch (e) {}
+  if (!jaEntrou || !bvVisto) document.documentElement.classList.add("espera");
   // primeira vez no celular, fora do app instalado: a boas-vindas aparece na hora, sem esperar o login carregar (antes ficava um fundo vazio e piscava)
   const celular0 = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
   const instalado0 = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
   if (!jaEntrou && celular0 && !instalado0 && !window.CARAVANA_NAVEGADOR_INTERNO && location.protocol === "https:")
     document.addEventListener("DOMContentLoaded", () => { try { telaInstalar(); } catch (e) {} });
-  // segurança: nunca deixa a tela escura presa (sem internet a conferência pode demorar)
-  setTimeout(() => { if (!document.getElementById("portao")) document.documentElement.classList.remove("espera"); }, 5000);
+  // segurança: nunca deixa a tela escura presa (sem internet a conferência pode demorar);
+  // na primeira vez espera mais, porque com internet lenta a boas-vindas demora e o app aparecia antes dela
+  setTimeout(() => { if (!document.getElementById("portao")) document.documentElement.classList.remove("espera"); }, bvVisto ? 5000 : 12000);
 }
 // o próprio app tira o "espera" quando já sabe o que mostrar (boas-vindas ou a página certa); 8 s é só segurança
 // quem ainda não viu a boas-vindas do app: o próprio app tira o "espera" quando a boas-vindas já está na tela (antes o app aparecia por trás e piscava)
-const fecharPortao = () => { document.getElementById("portao")?.remove(); let bv = false; try { bv = localStorage.getItem("cdi-bv") === "1"; } catch (e) {}
-  setTimeout(() => document.documentElement.classList.remove("espera"), bv ? 4000 : 9000); };
+// o cartão de entrar fica na tela ("Abrindo a travessia…") até o app já ter a próxima tela pronta; antes ele sumia
+// ao tocar em Entrar e ficava só o fundo escuro vazio por alguns segundos, piscando antes da boas-vindas
+const fecharPortao = () => {
+  if (document.getElementById("portao")) portao(el("p", { textContent: "Abrindo a travessia…" }));
+  window.__fechaPortao = () => { document.getElementById("portao")?.remove(); window.__fechaPortao = null; };
+  let bv = false; try { bv = localStorage.getItem("cdi-bv") === "1"; } catch (e) {}
+  setTimeout(() => { window.__fechaPortao?.(); document.documentElement.classList.remove("espera"); }, bv ? 4000 : 9000); };
 const el = (tag, props = {}, ...kids) => { const e = document.createElement(tag); Object.assign(e, props); e.append(...kids); return e; };
 
 // ---------- estado ----------
@@ -171,15 +178,17 @@ if (!pronto) {
     if (me.isOwner) {
       semear();
       const ac = await leDoc("privado/acesso");
-      if (ac === "demorou") return entrar();
-      if (!ac || !ac.exists) return telaCriarPalavra();
+      // sem internet a leitura falha (ou demora): entra assim mesmo; só pede para criar a palavra quando a internet confirmou que ela não existe
+      if (!ac || ac === "demorou") return entrar();
+      if (!ac.exists && !(ac.metadata && ac.metadata.fromCache)) return telaCriarPalavra();
       return entrar();
     }
     // entrou com a palavra antiga: a senha vira a palavra nova só depois de confirmar que é membro
     const novaSenha = () => { if (trocarSenha) { const nova = trocarSenha; trocarSenha = ""; u.updatePassword(senhaDe(nova)).catch(() => {}); } };
     const m = await leDoc("membros/" + u.uid);
     let entrouAntes = false; try { entrouAntes = localStorage.getItem("cdi-entrou") === "1"; } catch (e) {}
-    if (m === "demorou" && entrouAntes) return entrar();
+    // quem já entrou neste celular não fica preso na tela da palavra quando abre o app sem internet
+    if ((m === "demorou" || !m) && entrouAntes) return entrar();
     if (m && m !== "demorou" && m.exists) { novaSenha(); return entrar(); }
     // entrou com e-mail + palavra: a mesma palavra já vira a chave de membro, sem pedir de novo
     if (palavraDigitada) {
@@ -200,6 +209,11 @@ let palavraDigitada = "";
 const PALAVRAS_ANTIGAS = ["caravana", "ganga"];
 let trocarSenha = "";
 const senhaDe = palavra => "caravana-" + palavra;
+// o servidor diz se a palavra está certa (sem ligar para acento) e, se a conta já existia com outra palavra, refaz a senha
+async function conferePalavra(email, palavra) {
+  try { const r = await fetch("/.netlify/functions/entrada", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email, palavra }) });
+    return r.ok ? await r.json() : null; } catch (e) { return null; }
+}
 async function entrarComEmail(email, palavra, erro, bt) {
   email = email.trim().toLowerCase(); palavra = palavra.trim().toLowerCase();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { erro.textContent = "Confira o e-mail."; return; }
@@ -218,6 +232,13 @@ async function entrarComEmail(email, palavra, erro, bt) {
   catch (e) {
     if (/network/.test(e.code || "")) { erro.textContent = "Sem internet. Tente de novo quando tiver sinal."; }
     else {
+      // confere a palavra no servidor antes de criar a conta, e destrava a conta de quem entrou a primeira vez com a palavra errada
+      const r = await conferePalavra(email, palavra);
+      if (r && r.errada) { erro.textContent = "Palavra incorreta. Confira com a líder da caravana."; palavraDigitada = ""; bt.disabled = false; bt.textContent = "Entrar"; return; }
+      if (r && r.ok && r.palavra) {
+        palavraDigitada = r.palavra;
+        try { if (r.nova) await auth.createUserWithEmailAndPassword(email, senhaDe(r.palavra)); else await auth.signInWithEmailAndPassword(email, senhaDe(r.palavra)); return; } catch (x) {}
+      }
       // quem criou a conta quando a palavra era outra: entra com a palavra antiga e a senha passa a ser a nova
       for (const antiga of PALAVRAS_ANTIGAS) {
         if (antiga === palavra) continue;
@@ -343,7 +364,10 @@ function telaPalavra() {
     const palavra = inp.value.trim().toLowerCase(); if (!palavra) return;
     erro.textContent = "";
     try { await fs.doc("membros/" + me.id).set({ palavra, nome: me.name, email: me.email, ts: Date.now() }); entrar(); }
-    catch (e) { erro.textContent = "Palavra incorreta. Confira com a líder da caravana."; }
+    catch (e) {
+      const r = me.email ? await conferePalavra(me.email, palavra) : null;
+      if (r && r.ok && r.palavra && r.palavra !== palavra) { try { await fs.doc("membros/" + me.id).set({ palavra: r.palavra, nome: me.name, email: me.email, ts: Date.now() }); return entrar(); } catch (x) {} }
+      erro.textContent = "Palavra incorreta. Confira com a líder da caravana."; }
   };
   inp.addEventListener("keydown", e => { if (e.key === "Enter") ok(); });
   portao(el("p", { textContent: `Olá, ${me.name.split(" ")[0]}! Digite a palavra da caravana, que a líder passou no grupo.` }), inp,
@@ -402,6 +426,20 @@ let cotaEsgotada = false;
 const ehCota = e => !!e && (e.code === "resource-exhausted" || /resource.exhausted|quota/i.test(e.message || ""));
 function marcaCota(v) { if (cotaEsgotada === v) return; cotaEsgotada = v; window.__cotaEsgotada = v; window.dispatchEvent(new CustomEvent("caravana-cota", { detail: v })); }
 const vigia = p => p.catch(e => { if (ehCota(e)) marcaCota(true); throw e; });
+// sem sinal (templo, estrada), o banco guarda o envio no celular e manda sozinho quando a internet volta.
+// o app não fica esperando: depois de alguns segundos sem resposta, o envio conta como aceito ("pendente")
+let pendentes = 0;
+const semEsperar = p => {
+  const v = vigia(p); v.catch(() => {});
+  const espera = navigator.onLine === false ? 300 : 5000;
+  return Promise.race([v.then(() => ({ pendente: false, enviado: v })), new Promise(r => setTimeout(() => r({ pendente: true, enviado: v }), espera))]).then(x => {
+    if (x.pendente) {
+      pendentes++; window.dispatchEvent(new CustomEvent("caravana-pendente", { detail: { n: pendentes } }));
+      v.then(() => { pendentes = Math.max(0, pendentes - 1); window.dispatchEvent(new CustomEvent("caravana-enviado", { detail: { n: pendentes } })); }, () => { pendentes = Math.max(0, pendentes - 1); });
+    }
+    return x;
+  });
+};
 // escuta que se refaz sozinha depois de uma recusa por cota (o Firestore encerra a escuta quando dá erro)
 function ouve(q, conv, cb, err) {
   let off = null, parou = false, t = null;
@@ -416,9 +454,9 @@ function refDoc(r) {
   return {
     id: r.id,
     get: async () => snapDoc(await vigia(r.get())),
-    set: d => vigia(r.set(d)),
-    update: d => vigia(r.update(achata(d))),
-    delete: () => vigia(r.delete()),
+    set: d => semEsperar(r.set(d)),
+    update: d => semEsperar(r.update(achata(d))),
+    delete: () => semEsperar(r.delete()),
     onSnapshot: (cb, err) => ouve(r, snapDoc, cb, err),
   };
 }
@@ -430,7 +468,7 @@ function refCol(q, base) {
     where: (a, op, b) => refCol(q.where(a, op === "eq" ? "==" : op, b), base),
     onSnapshot: (cb, err) => ouve(q, qs => ({ docs: qs.docs.map(snapDoc), size: qs.size, empty: qs.empty }), cb, err),
     get: async () => { const qs = await vigia(q.get()); return { docs: qs.docs.map(snapDoc), size: qs.size, empty: qs.empty }; },
-    add: async d => { const r = await vigia(base.add(d)); return { id: r.id }; },
+    add: async d => { const ref = base.doc(), x = await semEsperar(ref.set(d)); return { id: ref.id, pendente: x.pendente, enviado: x.enviado }; },
     doc: id => refDoc(id ? base.doc(id) : base.doc()),
   };
 }
@@ -458,15 +496,17 @@ const user = {
 const fotos = {}, pedindo = new Set();
 const VAZIO = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
 let avisoTimer = null;
-window.__blobUrl = id => {
+let chegaram = [];
+// soOlha: só devolve a foto se já estiver aqui (a galeria pede a foto de verdade quando ela aparece na tela)
+window.__blobUrl = (id, soOlha) => {
   if (!id) return VAZIO;
   if (fotos[id]) return fotos[id];
-  if (!pedindo.has(id) && fs) {
+  if (!soOlha && !pedindo.has(id) && fs) {
     pedindo.add(id);
     // foto nunca muda: procura primeiro no celular e só baixa se ainda não tiver (economiza o chip)
     const ref = fs.doc("fotos/" + id);
     ref.get({ source: "cache" }).then(s => s.exists ? s : ref.get()).catch(() => ref.get()).then(s => {
-      if (s.exists) { fotos[id] = s.data().data; clearTimeout(avisoTimer); avisoTimer = setTimeout(() => window.dispatchEvent(new Event("caravana-foto")), 60); }
+      if (s.exists) { fotos[id] = s.data().data; chegaram.push(id); clearTimeout(avisoTimer); avisoTimer = setTimeout(() => { const ids = chegaram; chegaram = []; window.dispatchEvent(new CustomEvent("caravana-foto", { detail: { ids } })); }, 60); }
     }).catch(() => pedindo.delete(id));
   }
   return VAZIO;
@@ -474,23 +514,23 @@ window.__blobUrl = id => {
 async function comprime(blob) {
   // foto direto da câmera: o <img> já vira para a posição certa
   let bmp; try { const u = URL.createObjectURL(blob), im = new Image(); im.src = u; await im.decode(); bmp = im; setTimeout(() => URL.revokeObjectURL(u), 1000); } catch (e) { bmp = await createImageBitmap(blob); }
-  let lado = 1600, q = .85, url = ""; const bw = bmp.naturalWidth || bmp.width, bh = bmp.naturalHeight || bmp.height;
+  let lado = 1600, q = .92, url = ""; const bw = bmp.naturalWidth || bmp.width, bh = bmp.naturalHeight || bmp.height;
   for (let i = 0; i < 8; i++) {
     const k = Math.min(1, lado / Math.max(bw, bh));
     const c = document.createElement("canvas"); c.width = Math.round(bw * k); c.height = Math.round(bh * k);
-    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+    const g = c.getContext("2d"); g.imageSmoothingQuality = "high"; g.drawImage(bmp, 0, 0, c.width, c.height);
     url = c.toDataURL("image/jpeg", q);
     if (url.length < 900000) break;
-    q = Math.max(.55, q - .1); lado = Math.round(lado * .82);
+    q = Math.max(.6, q - .06); lado = Math.round(lado * .82);
   }
   return url;
 }
 const assets = {
   upload: async blob => {
     const data = await comprime(blob);
-    const r = await fs.collection("fotos").add({ data, autor: me.id, ts: Date.now() });
-    fotos[r.id] = data;
-    return { id: r.id, url: data, sizeBytes: data.length, contentType: "image/jpeg" };
+    const r = fs.collection("fotos").doc(); fotos[r.id] = data;
+    const x = await semEsperar(r.set({ data, autor: me.id, ts: Date.now() }));
+    return { id: r.id, url: data, sizeBytes: data.length, contentType: "image/jpeg", pendente: x.pendente };
   },
   list: async () => ({ assets: [], usage: {} }),
   delete: async id => fs.doc("fotos/" + id).delete(),
