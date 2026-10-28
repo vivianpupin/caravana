@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "28/10 · 12:50";</script>
+<script>window.__VERSAO = "28/10 · 13:08";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2312,6 +2312,8 @@ function mostraAbaAtiva() {
 function go(tab) {
   try { VOZ.parar(); } catch (e) {}
   S.trocandoCam = null;
+  // toda vez que o mapa abre, abre no Mundo, com o planeta inteiro na tela
+  if (tab === "mapa" && S.tab !== "mapa") { S.mapaModo = "mundo"; planetaDeNovo(); }
   S.tab = tab; if (tab === "conversa") { S.chatGrudado = true; S.chatAbriuEm = null; } try { localStorage.setItem("cdi-tab2", tab); } catch (e) {}
   render(); $("#main").scrollTop = 0;
   mostraAbaAtiva();
@@ -5508,20 +5510,15 @@ function ruaAqui(p) {
 const distKm = (a, b) => { const R = 6371, r = x => x * Math.PI / 180, dLa = r(+b.lat - a.lat), dLo = r(+b.lng - a.lng); const q = Math.sin(dLa / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(+b.lat)) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(q)); };
 // mapa: "Mundo" (globo, para o pré-embarque e as conexões) ou "Perto de mim" (a cidade, durante a viagem).
 // Abre sozinho no globo enquanto alguém ainda está fora da Índia; quando todos chegam, abre na cidade.
-const naIndia = p => +p.lat > 6 && +p.lat < 37 && +p.lng > 68 && +p.lng < 98;
-function modoMapaPadrao() {
-  const gente = posicoesAtuais().filter(p => isFinite(+p.lat));
-  return Date.now() >= INICIO_VIAGEM && hojeIso() <= FIM && gente.length && gente.every(naIndia) ? "perto" : "mundo";
-}
 function vMapa() {
   if (S.montando) return vExplorador();
   perfis(S.posicoes.map(p => p.id));
-  const modo = S.mapaModo || modoMapaPadrao();
+  const modo = S.mapaModo || "mundo";
   return h("section", { class: "view" },
     h("div", { class: "head" },
       h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { class: "titmapa", text: modo === "mundo" ? "Onde está a Caravana" : "Perto de mim" }))),
     h("div", { class: "opts mapamodo", role: "tablist", "aria-label": "Tipo de mapa" }, [["mundo", "🌍 Mundo"], ["perto", "📍 Perto de mim"]].map(([id, nome]) =>
-      h("button", { type: "button", role: "tab", class: "opt", "aria-pressed": String(modo === id), onclick: () => { S.mapaModo = id; if (id === "perto") { S.pertoCentro = null; S.pertoKm = null; } render(); } }, nome))),
+      h("button", { type: "button", role: "tab", class: "opt", "aria-pressed": String(modo === id), onclick: () => { S.mapaModo = id; if (id === "perto") { S.pertoCentro = null; S.pertoKm = null; } else planetaDeNovo(); render(); } }, nome))),
     modo === "mundo" ? h("div", { class: "mapwrap" }, vMundo(), h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null)))
       : h("div", { class: "mapwrap" }, vPerto(),
       h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null), vHotelHoje())));
@@ -5641,6 +5638,8 @@ function atualizaGlobo() {
   const src = m.getSource && m.getSource("prec");
   if (src) src.setData({ type: "FeatureCollection", features: gente.filter(p => +p.prec > 0).map(circuloPrec) });
 }
+// volta o globo para o planeta inteiro (ao abrir o mapa e ao tocar em Mundo)
+function planetaDeNovo() { if (S.globo) try { S.globo.stop(); S.globo.jumpTo(planetaInteiro(S.globo.getContainer())); } catch (e) {} }
 // o planeta inteiro na tela (com folga), virado para onde está a turma
 function planetaInteiro(caixa) {
   const w = (caixa && caixa.clientWidth) || 360, hh = (caixa && caixa.clientHeight) || 560, g = posicoesMundo();
