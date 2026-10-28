@@ -112,6 +112,6 @@ async function avisarReacao(d, k, id) {
   const v = await d.doc("viajantes/" + m.by).get();
   const nome = String((v.exists && v.data().nome) || "Alguém da caravana").trim().split(/\s+/)[0];
   const texto = r.r === "fala" ? String(r.texto || "").slice(0, 80) : REACOES[r.r] || "👋";
-  const enviados = await enviarPara(d, k, r.para, { title: nome + " · Caravana do Céu", body: texto, tag: "reacao-" + id, url: "./?aba=mapa" }, 3600);
+  const enviados = await enviarPara(d, k, r.para, { title: nome + " · Caravana do Céu", body: texto, tag: "reacao-" + id, url: "./?aba=mapa&de=" + m.by }, 3600);
   return Response.json({ ok: true, enviados });
 }

@@ -8034,7 +8034,7 @@ window.addEventListener("appinstalled", () => { S.instalar = null; render(); });
 const ABAS_LINK = ["travessia", "passaporte", "ensinamentos", "explorador", "fotos", "mapa", "conversa", "pombo"];
 function pegaLink(q) {
   const aba = q.get("aba"); if (!ABAS_LINK.includes(aba)) return null;
-  const L = { carta: q.get("carta"), pombo: q.get("pombo"), hab: q.get("hab"), selo: q.get("selo") };
+  const L = { carta: q.get("carta"), pombo: q.get("pombo"), hab: q.get("hab"), selo: q.get("selo"), de: q.get("de") };
   S.abrirLink = Object.values(L).some(Boolean) ? { ...L, ate: Date.now() + 60000 } : null;
   return aba;
 }
@@ -8045,6 +8045,7 @@ function tentaAbrirLink() {
   else if (L.pombo) { const p = S.pombosIn.find(x => x.id === L.pombo); if (!p) return; S.abrirLink = null; abrirPombo(p, !p.lida); }
   else if (L.hab) { if (!(eu() && (eu().habilidades || {})[L.hab])) return; S.abrirLink = null; abrirHabilidade(L.hab, true); }
   else if (L.selo) { const l = localDe(L.selo); if (!l) return; S.abrirLink = null; abrirSelo(l); }
+  else if (L.de) { if (!S.viajantes.some(v => v.id === L.de)) return; S.abrirLink = null; abrirPessoa(L.de); } // recado pelo mapa: abre quem mandou, para responder
 }
 if (navigator.serviceWorker) navigator.serviceWorker.addEventListener("message", e => {
   const d = e.data || {}; if (!d.aba) return;
