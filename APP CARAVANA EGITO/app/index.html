@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "28/10 · 16:58";</script>
+<script>window.__VERSAO = "28/10 · 17:02";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -8955,6 +8955,7 @@ async function filmeMenor(blob, aviso) {
 }
 const b64 = b => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = no; r.readAsDataURL(b); });
 async function enviaFilmeGaleria(it, msg) {
+  msg.textContent = "Lendo o vídeo…"; msg.className = "msg";
   const capa = it.capa || await capaDoFilme(it.blob);
   if (!capa) throw new Error("capa");
   msg.textContent = "Preparando o filme…"; msg.className = "msg";

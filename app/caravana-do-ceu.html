@@ -9637,7 +9637,8 @@ function campoAddGaleria() {
       aviso(`Enviando ${k + 1} de ${fs.length}…`);
       try {
         // vídeo: vai como os filmes da Super 8 (capa, versão menor de até 30 segundos e o filme em partes)
-        if (/^video\//.test(file.type)) {
+        // vídeo: pelo tipo ou, quando o iPhone não informa o tipo, pela extensão do arquivo
+        if (/^video\//.test(file.type) || /\.(mov|mp4|m4v|webm|hevc|3gp)$/i.test(file.name || "")) {
           const msg = { set textContent(t) { aviso((fs.length > 1 ? `${k + 1} de ${fs.length} · ` : "") + t); }, set className(c) { if (c.includes("err")) S.muralAdd[1] = "err"; } };
           S.muralAdd = ["", ""]; await enviaFilmeGaleria({ blob: file, cidade, camera: "" }, msg);
           if (S.muralAdd[1] === "err") continue; ok++;
@@ -9758,6 +9759,7 @@ async function enviaFilmeGaleria(it, msg) {
 // enquanto filma ou envia um filme, a atualização do app espera (senão recarregava no meio e perdia tudo)
 window.__ocupado = () => !!S.gravando || S.enviandoFilme > 0 || !!S.revelando || fotoOcupada();
 async function enviaFilmeGaleria2(it, msg) {
+  msg.textContent = "Lendo o vídeo…"; msg.className = "msg";
   const capa = it.capa || await capaDoFilme(it.blob);
   if (!capa) throw new Error("capa");
   msg.textContent = "Preparando o filme…"; msg.className = "msg";

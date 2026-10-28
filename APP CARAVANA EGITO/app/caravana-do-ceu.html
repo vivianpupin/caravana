@@ -8923,6 +8923,7 @@ async function filmeMenor(blob, aviso) {
 }
 const b64 = b => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = no; r.readAsDataURL(b); });
 async function enviaFilmeGaleria(it, msg) {
+  msg.textContent = "Lendo o vídeo…"; msg.className = "msg";
   const capa = it.capa || await capaDoFilme(it.blob);
   if (!capa) throw new Error("capa");
   msg.textContent = "Preparando o filme…"; msg.className = "msg";
