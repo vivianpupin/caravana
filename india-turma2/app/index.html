@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "28/10 · 18:25";</script>
+<script>window.__VERSAO = "28/10 · 18:40";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -4807,15 +4807,20 @@ function vExplorador() {
     // quem ainda não montou começa do zero: só o básico, para ir vestindo
     S.bonecoRasc = salvo ? maosSeparadas(bonecoDe(S.uid)) : { ...bonecoPadrao(S.uid), roupa: "basico", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum", pet: "nenhum", deus: "nenhum", barba: "nao" };
   }
+  if (!S.bonecoBase) S.bonecoBase = JSON.stringify(S.bonecoRasc);
   const b = S.bonecoRasc, set = (k, val) => { S.bonecoRasc = { ...S.bonecoRasc, [k]: val }; render(); };
   const chips = (k, ops) => h("div", { class: "opts" }, ops.map(([val, lab]) => h("button", { type: "button", class: "opt", "aria-pressed": String(b[k] === val), onclick: () => set(k, val) }, lab)));
   const cores = (k, arr, rot) => h("div", { class: "opts" }, arr.map(c => h("button", { type: "button", class: "sw", style: `background:${c}`, "aria-label": rot, "aria-pressed": String(b[k] === c), onclick: () => set(k, c) })));
-  const msg = h("p", { class: "msg" + (S.expMsg ? " ok" : ""), role: "status", text: S.expMsg || "" });
+  const msg = h("p", { id: "exp-msg", class: "msg" + (S.expMsg ? " ok" : ""), role: "status", text: S.expMsg || "" });
+  // salva sozinho a cada escolha: o botão "Salvar" fica lá embaixo e muita gente saía da aba sem chegar nele
+  const jaSalvo = JSON.stringify((S.viajantes.find(x => x.id === S.uid) || {}).boneco || null), agora = JSON.stringify(b);
+  if (v && S.db && agora !== jaSalvo && (jaSalvo !== "null" || agora !== S.bonecoBase)) { clearTimeout(S.expAutoT); S.expAutoT = setTimeout(() => salvaExplorador(document.getElementById("exp-msg")), 1200); }
   return h("section", { class: "view" },
 
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Mapa da Expedição" }), h("h1", { text: "Monte seu explorador" }))),
     h("div", { class: "builder" },
       h("div", { class: "preview" }, bonecoSvg(b, "bonecosvg big"), h("p", { class: "tagname", text: v ? v.nome : "Viajante" }),
+        v && agora === jaSalvo ? h("p", { class: "small", style: "margin:0;color:#3F6B3A", text: "✓ Salvo" }) : null,
         h("div", { class: "actions", style: "flex-direction:column;gap:6px" },
           h("button", { class: "btn", type: "button", onclick: () => { S.bonecoRasc = bonecoPadrao(Math.random().toString(36)); render(); } }, "Sortear"),
           h("button", { class: "btn ghost", type: "button", onclick: () => { const x = S.bonecoRasc; S.bonecoRasc = { pele: x.pele, cabeloCor: x.cabeloCor, cabelo: x.cabelo, roupa: "basico", chapeu: "sem", roupaCor: x.roupaCor, acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum", barba: "nao", pet: "nenhum", deus: "nenhum", nariz: "nenhum", pes: "nenhum", ombro: "nenhum" }; render(); } }, "Desmontar"))),
@@ -4837,20 +4842,21 @@ function vExplorador() {
         h("p", { class: "lab", text: "Fantasia dos deuses" }), chips("deus", BONECO.deus),
         null)),
     v ? h("div", { class: "actions", style: "justify-content:center" },
-      h("button", { class: "btn gold", type: "button", onclick: async () => {
-        // guarda o que está na tela e continua mostrando o mesmo boneco (clicar de novo não pode apagar as escolhas)
-        if (S.salvandoExp || !S.bonecoRasc) return;
-        const bon = { ...S.bonecoRasc }; S.salvandoExp = true;
-        try { await S.db.doc("viajantes/" + S.uid).update({ boneco: bon }); S.bonecoRasc = bon; delete adesivoCache.eu; if (S.fotoAdesThumbs) delete S.fotoAdesThumbs.eu; S.expMsg = "Explorador salvo. Ele já aparece no mapa."; msg.textContent = S.expMsg; msg.className = "msg ok"; setTimeout(() => { S.expMsg = null; }, 6000); }
-        catch (e) { msg.textContent = "Não consegui salvar. Tente de novo."; msg.className = "msg err"; }
-        S.salvandoExp = false;
-      } }, "Salvar meu explorador"), msg)
+      h("button", { class: "btn gold", type: "button", onclick: () => { clearTimeout(S.expAutoT); salvaExplorador(msg); } }, "Salvar meu explorador"), msg)
       : h("p", { class: "small", style: "text-align:center", text: "Emita seu passaporte para salvar o seu explorador." }),
     vSalvaExplorador(), vCaravanaBonecos(), vRetrato());
 }
 // ---------- Explorador: salvar como imagem, os exploradores da caravana e o retrato da turma ----------
 const bonecoImg = (b, lado) => svgParaImg(h("g", null, desenhaBoneco(b)), lado);
 const pngDe = cv => new Promise(ok => cv.toBlob(ok, "image/png"));
+// guarda o que está na tela e continua mostrando o mesmo boneco (clicar de novo não pode apagar as escolhas)
+async function salvaExplorador(msg) {
+  if (S.salvandoExp || !S.bonecoRasc || !S.db) return;
+  const bon = { ...S.bonecoRasc }; S.salvandoExp = true;
+  try { await S.db.doc("viajantes/" + S.uid).update({ boneco: bon }); S.bonecoRasc = bon; delete adesivoCache.eu; if (S.fotoAdesThumbs) delete S.fotoAdesThumbs.eu; S.expMsg = "Explorador salvo. Ele já aparece no mapa e na Caravana."; if (msg) { msg.textContent = S.expMsg; msg.className = "msg ok"; } setTimeout(() => { S.expMsg = null; }, 6000); }
+  catch (e) { if (msg) { msg.textContent = "Não consegui salvar. Tente de novo."; msg.className = "msg err"; } }
+  S.salvandoExp = false;
+}
 const comBoneco = () => S.viajantes.filter(v => v.boneco);
 function vSalvaExplorador() {
   const msg = h("p", { class: "msg", role: "status" });
