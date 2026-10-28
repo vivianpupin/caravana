@@ -7205,7 +7205,12 @@ async function filma2(c) {
       avisoReacao(ok ? "🎞️ Filme guardado nos Registros, na Maleta, embaixo das câmeras." : "Não consegui guardar o filme: a memória do celular pode estar cheia."); }
     else avisoReacao("Não consegui gravar o filme neste celular."); };
   // capa do filme: o primeiro quadro, guardado como foto, para a miniatura nunca ficar preta (o iPhone não mostra quadro de vídeo parado)
-  let capa = null; setTimeout(() => { const k = document.createElement("canvas"); k.width = 360; k.height = 640; k.getContext("2d").drawImage(rec, 0, 0, 360, 640); k.toBlob(b => { capa = b; }, "image/jpeg", .8); }, 250);
+  // capa do filme: um quadro do começo, mas não um quadro escuro (se sair escuro, tenta de novo um pouco depois)
+  let capa = null; const tiraCapa = (tenta) => { const k = document.createElement("canvas"); k.width = 360; k.height = 640; const kx = k.getContext("2d", { willReadFrequently: true }); kx.drawImage(rec, 0, 0, 360, 640);
+    const d = kx.getImageData(0, 0, 360, 640).data; let t = 0, n = 0; for (let i = 0; i < d.length; i += 4 * 97) { t += d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11; n++; }
+    if (t / n > 28 || !capa) k.toBlob(b => { if (b) capa = b; }, "image/jpeg", .8);
+    if (t / n <= 28 && tenta < 3) setTimeout(() => tiraCapa(tenta + 1), 700); };
+  setTimeout(() => tiraCapa(0), 400);
   const limite = setTimeout(() => mr.state === "recording" && mr.stop(), 60000);
   // o iPhone só manda imagem para o filme depois que a tela já foi desenhada algumas vezes: a gravação começa um instante depois, para o 1º quadro não sair preto
   const comeca = setTimeout(() => { if (mr.state === "inactive" && S.gravando === mr) { try { mr.start(500); } catch (e) { solta(); avisoReacao("Não consegui gravar o filme neste celular."); } } }, 250);
@@ -9700,9 +9705,20 @@ function filmeLimpo(src, poster, cls) {
 const PEDACO = 600000;
 async function capaDoFilme(blob) {
   const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "auto"; v.src = URL.createObjectURL(blob);
-  try { await new Promise((ok, no) => { v.onloadeddata = ok; v.onerror = no; setTimeout(no, 6000); }); try { v.currentTime = .1; await new Promise(r => { v.onseeked = r; setTimeout(r, 1500); }); } catch (e) {}
-    const c = document.createElement("canvas"); c.width = v.videoWidth; c.height = v.videoHeight; c.getContext("2d").drawImage(v, 0, 0);
-    return await new Promise(r => c.toBlob(r, "image/jpeg", .85)); } finally { URL.revokeObjectURL(v.src); }
+  try { await new Promise((ok, no) => { v.onloadeddata = ok; v.onerror = no; setTimeout(no, 6000); });
+    // o iPhone só desenha o quadro depois de tocar um instante (senão a capa sai preta)
+    try { await v.play(); v.pause(); } catch (e) {}
+    // a capa não é o quadro preto do começo: tenta logo depois do início e, se sair escuro, mais adiante no filme
+    const c = document.createElement("canvas"); c.width = v.videoWidth; c.height = v.videoHeight; const x = c.getContext("2d", { willReadFrequently: true });
+    const dur = isFinite(v.duration) && v.duration > 0 ? v.duration : 1, luz = () => { const d = x.getImageData(0, 0, c.width, c.height).data; let t = 0, n = 0; for (let i = 0; i < d.length; i += 4 * 97) { t += d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11; n++; } return n ? t / n : 0; };
+    let melhor = null, melhorLuz = -1;
+    for (const t of [Math.min(1, dur * .1), dur * .25, dur * .5]) {
+      try { v.currentTime = t; await new Promise(r => { v.onseeked = r; setTimeout(r, 1500); }); } catch (e) {}
+      x.drawImage(v, 0, 0); const l = luz();
+      if (l > melhorLuz) { melhorLuz = l; melhor = await new Promise(r => c.toBlob(r, "image/jpeg", .85)); }
+      if (l > 28) break;
+    }
+    return melhor; } finally { URL.revokeObjectURL(v.src); }
 }
 async function filmeMenor(blob, aviso) {
   if (blob.size <= 2.4e6 || !window.MediaRecorder) return blob;
