@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "28/10 · 12:00";</script>
+<script>window.__VERSAO = "28/10 · 12:01";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1167,6 +1167,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .dobra>summary::-webkit-details-marker{display:none}
 .dobra>summary h2{margin:0}
 .dobra>summary .eyebrow{margin:0 0 2px}
+.palavranas{padding:0 0 14px;margin-bottom:14px;border-bottom:1px solid var(--line)}
+.palavranas h3{margin:0 0 4px}
 .dobraseta{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(185,138,67,.14);color:#8A6B43;font-size:14px;transition:transform .2s}
 .dobra[open]>summary .dobraseta{transform:rotate(180deg)}
 .dobra[open]>summary{margin-bottom:10px}
@@ -3825,7 +3827,7 @@ function vPassaporte() {
         h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : tituloViajante(g), totalViagens(g) > 1 ? totalViagens(g) + " viagens" : "", g.cidade].filter(Boolean).join(" · ") }), medalhasDe(g, 24)),
         h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null,
     vMinhasHabilidades(), vHabilidadesLider(),
-    vPalavraLider(), vGuardioesLider(),
+    vGuardioesLider(),
     vGenteLider(),
     S.isOwner || aberto(localDe("travessia")) ? h("button", { class: "folhear video", type: "button", onclick: abrirVideoPassaporte },
       h("span", { class: "vidico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("path", { d: "M8 5.5v13l11-6.5z", fill: "#3B2A1C" }))),
@@ -4095,15 +4097,17 @@ function vGuardioesLider() {
     desenha(); msg.textContent = "Gerando…"; msg.className = "msg";
     const espera = (pr, ms) => Promise.race([pr, new Promise((_, no) => setTimeout(() => no(new Error("demorou")), ms))]);
     if (!S.palavraAtual) { try { const d = await espera(S.db.doc("privado/acesso").get(), 6000); S.palavraAtual = d.exists ? String(d.data().palavra || "") : ""; desenha(); } catch (e) {} }
-    try { await espera(salva(), 8000); msg.textContent = S.palavraAtual ? "Passagens prontas. Os guardiões entram sozinhos nos passaportes." : "Passagens prontas, mas sem a palavra-chave no link: crie a palavra no cartão acima e gere de novo."; msg.className = S.palavraAtual ? "msg ok" : "msg err"; }
+    try { await espera(salva(), 8000); msg.textContent = S.palavraAtual ? "Passagens prontas. Os guardiões entram sozinhos nos passaportes." : "Passagens prontas, mas sem a palavra-chave no link: crie a palavra aqui em cima e gere de novo."; msg.className = S.palavraAtual ? "msg ok" : "msg err"; }
     catch (e) { msg.textContent = "As passagens estão aí embaixo, mas a internet está lenta e a lista ainda não foi guardada. Gere de novo quando a conexão melhorar."; msg.className = "msg err"; }
   };
   if (ta.value.trim()) desenha();
   // trocou a palavra-chave (ou ela acabou de chegar do banco): refaz os links das passagens com a palavra certa
-  S.redesenhaPassagens = () => { if (ta.isConnected && ta.value.trim()) desenha(); };
+  S.redesenhaPassagens = () => { if (ta.isConnected && ta.value.trim()) desenha();
+    if (S.palavraAtual && /sem a palavra-chave/.test(msg.textContent)) { msg.textContent = "Passagens prontas, com a palavra-chave no link."; msg.className = "msg ok"; } };
   const gente = S.viajantes.slice().sort((a, b) => normNome(a.nome) < normNome(b.nome) ? -1 : 1);
   const opcoes = [["", "—"], ...Object.entries(GUARDIOES).map(([id, G]) => [id, G.nome])];
   return dobraLider("passagens", "panel", h("div", null, h("p", { class: "eyebrow", text: "Passagens" }), h("h2", { text: "Passagens de embarque" })),
+    vPalavraLider(true),
     h("p", { class: "small", text: "Uma pessoa por linha: nome e número da passagem. Se quiser escolher o guardião, escreva o nome dele depois (ex.: João Pedro, 3, Hanuman). Sem guardião, ele é sorteado pelo número. A palavra-chave entra sozinha no link." }),
     ta, h("div", { class: "actions" }, h("button", { class: "btn gold", type: "button", onclick: gerar }, "Gerar passagens")), msg, lista,
     gente.length ? h("div", null, h("p", { class: "eyebrow", style: "margin-top:14px", text: "O guardião de cada viajante" }),
@@ -4113,7 +4117,8 @@ function vGuardioesLider() {
       })),
       gente.some(v => !v.guardiao) ? h("p", { class: "small", text: "Em vermelho: quem ainda não foi encontrado na lista (o nome no passaporte está diferente). Escolha o guardião ao lado." }) : null) : null);
 }
-function vPalavraLider() {
+// dentro: a palavra-chave aparece dentro do cartão das Passagens (sem cartão próprio)
+function vPalavraLider(dentro) {
   if (!S.isOwner || !noSite() || !S.db) return null;
   const atual = h("b", { class: "palavraatual", text: S.palavraAtual == null ? "…" : (S.palavraAtual || "(nenhuma)") });
   if (S.palavraAtual === undefined) { S.palavraAtual = null; S.db.doc("privado/acesso").get().then(d => { S.palavraAtual = d.exists ? String(d.data().palavra || "") : ""; document.querySelectorAll(".palavraatual").forEach(e => { e.textContent = S.palavraAtual || "(nenhuma)"; }); S.redesenhaPassagens?.(); }).catch(() => { S.palavraAtual = undefined; }); }
@@ -4127,6 +4132,9 @@ function vPalavraLider() {
       document.querySelectorAll(".palavraatual").forEach(e => { e.textContent = nova; }); campo.value = ""; S.redesenhaPassagens?.(); msg.textContent = "Pronto. A palavra-chave agora é " + nova + ". Os links das passagens já foram refeitos com ela: copie de novo antes de mandar."; msg.className = "msg ok"; }
     catch (e) { msg.textContent = "Não consegui trocar. Tente de novo."; msg.className = "msg err"; }
   };
+  if (dentro) return h("div", { class: "palavranas" }, h("h3", null, "Palavra-chave: ", atual),
+    h("p", { class: "small", text: "É a palavra que cada pessoa digita para entrar no app. Ela vai escondida na raspadinha de cada passagem." }),
+    h("div", { class: "unlock" }, campo, h("button", { class: "btn gold", type: "button", onclick: troca }, "Trocar")), msg);
   return dobraLider("palavra", "panel", h("div", null, h("p", { class: "eyebrow", text: "Palavra-chave" }), h("h2", null, "Palavra-chave: ", atual)),
     h("p", { class: "small", text: "É a palavra que cada pessoa digita para entrar no app. Ela vai escondida na raspadinha de cada passagem." }),
     h("div", { class: "unlock" }, campo, h("button", { class: "btn gold", type: "button", onclick: troca }, "Trocar")), msg,
