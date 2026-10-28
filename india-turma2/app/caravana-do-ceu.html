@@ -1130,6 +1130,13 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .regsel .btn{padding:7px 14px;font-size:13px}
 .regmarca{position:absolute;right:6px;top:6px;z-index:3;width:26px;height:26px;border-radius:50%;border:2px solid #fff;background:rgba(0,0,0,.35);color:#fff;display:grid;place-items:center;font:700 15px/1 sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.5)}
 .regmarca.on{background:#B98A43;border-color:#FFF3DC}
+.dobra>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.dobra>summary::-webkit-details-marker{display:none}
+.dobra>summary h2{margin:0}
+.dobra>summary .eyebrow{margin:0 0 2px}
+.dobraseta{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(185,138,67,.14);color:#8A6B43;font-size:14px;transition:transform .2s}
+.dobra[open]>summary .dobraseta{transform:rotate(180deg)}
+.dobra[open]>summary{margin-bottom:10px}
 .diariofotos .contato{position:relative;display:grid;grid-template-columns:repeat(2,1fr);gap:16px 14px;padding:22px 18px 24px;border-radius:14px;
   background-color:#5A3420;background-image:radial-gradient(ellipse at 25% 15%,rgba(255,210,160,.18),rgba(0,0,0,0) 55%),radial-gradient(ellipse at 80% 90%,rgba(0,0,0,.35),rgba(0,0,0,0) 60%),repeating-radial-gradient(circle at 37% 61%,rgba(0,0,0,.06) 0 1px,rgba(0,0,0,0) 1px 3px),linear-gradient(90deg,#4E2C1A,#6A3E26 49%,#3A2012 50%,#6A3E26 51%,#4E2C1A);
   box-shadow:inset 0 0 0 7px rgba(0,0,0,.18),inset 0 0 0 8px rgba(230,190,140,.35),inset 0 0 26px rgba(0,0,0,.55),0 10px 22px rgba(40,20,8,.4)}
@@ -3972,11 +3979,16 @@ async function darHabilidade(id, uids) {
     .then(x => x.json()).then(j => avisoReacao(j && j.ok ? `✨ Liberada! Aviso enviado para ${j.enviados || 0} ${j.enviados === 1 ? "celular" : "celulares"}.` : "✨ Liberada!")).catch(() => avisoReacao("✨ Liberada!"));
   else avisoReacao("✨ Liberada!");
 }
+// cartões da líder que abrem e fecham (a página não fica comprida); o app lembra quais ficaram abertos
+function dobraLider(chave, cls, resumo, ...filhos) {
+  const D = S.dobra || (S.dobra = (() => { try { return JSON.parse(localStorage.getItem("cdi-dobra") || "{}") || {}; } catch (e) { return {}; } })());
+  return h("details", { class: cls + " dobra", open: D[chave] ? true : null, ontoggle: e => { D[chave] = e.currentTarget.open; try { localStorage.setItem("cdi-dobra", JSON.stringify(D)); } catch (x) {} } },
+    h("summary", null, resumo, h("span", { class: "dobraseta", "aria-hidden": "true", text: "▾" })), ...filhos);
+}
 function vHabilidadesLider() {
   if (!S.isOwner) return null;
   const gente = S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome).localeCompare(String(b.nome)));
-  return h("div", { class: "secret" },
-    h("p", { class: "eyebrow", text: "Habilidades · só você vê" }),
+  return dobraLider("habilidades", "secret", h("div", null, h("p", { class: "eyebrow", text: "Habilidades · só você vê" }), h("h2", { text: "Liberar habilidades" })),
     h("p", { class: "small", text: "Quando liberar, todos recebem um aviso no celular e a caixinha para fazer a foto. Ninguém vê esta lista." }),
     h("ul", { class: "hablider" }, HABILIDADES.map(([id, nA, nO, fA, fO, lid]) => {
       const tem = gente.filter(v => (v.habilidades || {})[id]);
@@ -4058,9 +4070,7 @@ function vGuardioesLider() {
   S.redesenhaPassagens = () => { if (ta.isConnected && ta.value.trim()) desenha(); };
   const gente = S.viajantes.slice().sort((a, b) => normNome(a.nome) < normNome(b.nome) ? -1 : 1);
   const opcoes = [["", "—"], ...Object.entries(GUARDIOES).map(([id, G]) => [id, G.nome])];
-  return h("div", { class: "panel" },
-    h("p", { class: "eyebrow", text: "Só você vê · passagens" }),
-    h("h2", { text: "Passagens de embarque" }),
+  return dobraLider("passagens", "panel", h("div", null, h("p", { class: "eyebrow", text: "Só você vê · passagens" }), h("h2", { text: "Passagens de embarque" })),
     h("p", { class: "small", text: "Uma pessoa por linha: nome e número da passagem. Se quiser escolher o guardião, escreva o nome dele depois (ex.: João Pedro, 3, Hanuman). Sem guardião, ele é sorteado pelo número. A palavra-chave entra sozinha no link." }),
     ta, h("div", { class: "actions" }, h("button", { class: "btn gold", type: "button", onclick: gerar }, "Gerar passagens")), msg, lista,
     gente.length ? h("div", null, h("p", { class: "eyebrow", style: "margin-top:14px", text: "O guardião de cada viajante" }),
@@ -4084,9 +4094,7 @@ function vPalavraLider() {
       document.querySelectorAll(".palavraatual").forEach(e => { e.textContent = nova; }); campo.value = ""; S.redesenhaPassagens?.(); msg.textContent = "Pronto. A palavra-chave agora é " + nova + ". Os links das passagens já foram refeitos com ela: copie de novo antes de mandar."; msg.className = "msg ok"; }
     catch (e) { msg.textContent = "Não consegui trocar. Tente de novo."; msg.className = "msg err"; }
   };
-  return h("div", { class: "panel" },
-    h("p", { class: "eyebrow", text: "Só você vê · palavra-chave" }),
-    h("h2", null, "Palavra-chave: ", atual),
+  return dobraLider("palavra", "panel", h("div", null, h("p", { class: "eyebrow", text: "Só você vê · palavra-chave" }), h("h2", null, "Palavra-chave: ", atual)),
     h("p", { class: "small", text: "É a palavra que cada pessoa digita para entrar no app. Ela vai escondida na raspadinha de cada passagem." }),
     h("div", { class: "unlock" }, campo, h("button", { class: "btn gold", type: "button", onclick: troca }, "Trocar")), msg,
     h("p", { class: "small", text: "As passagens de cada viajante ficam no cartão logo abaixo." }));
@@ -4106,9 +4114,7 @@ function vGenteLider() {
     await Promise.all([S.db.doc("viajantes/" + x.id).delete().catch(() => {}), S.db.doc("membros/" + x.id).delete().catch(() => {})]);
     avisoReacao("Pronto, " + nome + " saiu da caravana.");
   };
-  return h("div", { class: "panel" },
-    h("p", { class: "eyebrow", text: "Só você vê · viajantes" }),
-    h("h2", { text: `${linhas.length} ${linhas.length === 1 ? "pessoa" : "pessoas"} · ${prontos} ${prontos === 1 ? "pronta" : "prontas"}` }),
+  return dobraLider("viajantes", "panel", h("div", null, h("p", { class: "eyebrow", text: "Só você vê · viajantes" }), h("h2", { text: `${linhas.length} ${linhas.length === 1 ? "pessoa" : "pessoas"} · ${prontos} ${prontos === 1 ? "pronta" : "prontas"}` })),
     h("p", { class: "small", text: "Pronta = passaporte emitido, app instalado na tela inicial, avisos e localização ligados. Atualiza quando a pessoa abre o app." }),
     h("ul", { class: "roster prontos" }, linhas.map(x => {
       const a = (x.v && x.v.app) || {}, nome = (x.v && x.v.nome) || (x.m && x.m.nome) || "Viajante";
