@@ -5359,7 +5359,10 @@ function autoGps() {
 }
 function vPerto() {
   autoGps();
-  const eu0 = minhaPos(), km = S.pertoKm || (eu0 ? 0.12 : 3);
+  const eu0 = minhaPos();
+  // a minha posição chegou depois de o mapa abrir mostrando a turma: volta para perto de mim
+  if (eu0 && S._pertoAuto && !S._pertoPerto) { S._pertoPerto = true; S.pertoCentro = null; S.pertoKm = null; }
+  const km = S.pertoKm || (eu0 ? 0.12 : 3);
   if (eu0) ruaAqui(eu0);
   // sem a minha localização, mostra todo mundo mesmo assim (antes a lista ficava vazia e parecia que ninguém estava no mapa)
   const todos = posicoesAtuais().filter(p => p.id !== S.uid && isFinite(+p.lat));
@@ -5430,7 +5433,7 @@ function vMapa() {
     h("div", { class: "head" },
       h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { class: "titmapa", text: modo === "mundo" ? "Onde está a Caravana" : "Perto de mim" }))),
     h("div", { class: "opts mapamodo", role: "tablist", "aria-label": "Tipo de mapa" }, [["mundo", "🌍 Mundo"], ["perto", "📍 Perto de mim"]].map(([id, nome]) =>
-      h("button", { type: "button", role: "tab", class: "opt", "aria-pressed": String(modo === id), onclick: () => { S.mapaModo = id; render(); } }, nome))),
+      h("button", { type: "button", role: "tab", class: "opt", "aria-pressed": String(modo === id), onclick: () => { S.mapaModo = id; if (id === "perto") { S.pertoCentro = null; S.pertoKm = null; } render(); } }, nome))),
     modo === "mundo" ? h("div", { class: "mapwrap" }, vMundo(), h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null)))
       : h("div", { class: "mapwrap" }, vPerto(),
       h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null), vHotelHoje())));
@@ -5449,7 +5452,8 @@ function vMundo() {
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   const caixa = S.globoBox || (S.globoBox = h("div", { class: "globo" }, h("p", { class: "globoaviso", text: "Abrindo o globo…" })));
   carregaGlobo().then(() => montaGlobo(caixa), () => { const a = caixa.querySelector(".globoaviso"); if (a) a.textContent = "Não consegui abrir o globo. Confira a internet."; });
-  if (S.globo) requestAnimationFrame(() => { try { S.globo.resize(); S.globo.triggerRepaint(); } catch (e) {} atualizaGlobo(); });
+  // só reajusta o tamanho do globo se a caixa mudou: reajustar apaga o desenho por um instante (era o que fazia piscar)
+  if (S.globo) requestAnimationFrame(() => { try { const t = caixa.clientWidth + "x" + caixa.clientHeight; if (S.globoTam !== t) { S.globoTam = t; S.globo.resize(); } } catch (e) {} atualizaGlobo(); });
   const gente = posicoesMundo(), eu0 = minhaPos(), sat = (S.globoCamada || "satelite") === "satelite";
   const zoom = f => S.globo && S.globo.easeTo({ zoom: S.globo.getZoom() + f, duration: 400 });
   const vaiPara = p => S.globo && S.globo.flyTo({ center: [+p.lng, +p.lat], zoom: Math.max(S.globo.getZoom(), 12), duration: 2500 });
@@ -5477,7 +5481,8 @@ function vMundo() {
 function montaGlobo(caixa) {
   if (S.globo || !window.maplibregl) return;
   caixa.replaceChildren();
-  const m = S.globo = new maplibregl.Map({ container: caixa, attributionControl: false, center: [40, 20], zoom: 1.4, maxZoom: 19, dragRotate: false, pitchWithRotate: false, fadeDuration: 0, maxTileCacheZoomLevels: 6, refreshExpiredTiles: false,
+  const ini = planetaInteiro(caixa); S.globoTam = caixa.clientWidth + "x" + caixa.clientHeight;
+  const m = S.globo = new maplibregl.Map({ container: caixa, attributionControl: false, center: ini.center, zoom: ini.zoom, maxZoom: 19, dragRotate: false, pitchWithRotate: false, fadeDuration: 0, maxTileCacheZoomLevels: 6, refreshExpiredTiles: false,
     style: { version: 8, projection: { type: "globe" },
       sources: {
         // mapa bege (o mesmo do "Perto de mim"): opção "Mapa" quando aproxima, e reserva se a foto de satélite falhar
@@ -5496,12 +5501,15 @@ function montaGlobo(caixa) {
   // o globo só aparece depois de desenhado (na primeira vez piscava enquanto as imagens chegavam)
   caixa.classList.add("abrindo"); caixa.append(h("p", { class: "globoaviso", text: "Abrindo o globo…" }));
   const mostra = () => { caixa.classList.remove("abrindo"); caixa.querySelector(".globoaviso")?.remove(); };
-  m.once("idle", mostra); setTimeout(mostra, 5000);
+  m.once("idle", mostra); setTimeout(mostra, 15000);
+  // o globo e os bonecos aparecem juntos, assim que as imagens do planeta chegam (não os bonecos boiando sozinhos)
+  const pronto = () => { if (!caixa.classList.contains("abrindo")) return m.off("render", pronto); if (m.loaded() && m.areTilesLoaded()) { m.off("render", pronto); mostra(); } };
+  m.on("render", pronto);
   // se a foto de satélite de perto falhar, daquele zoom para cima mostra o mapa de ruas no lugar
   let zSat = 99;
   m.on("error", e => { if (e.sourceId !== "sat") return; const z = e.tile && e.tile.tileID ? e.tile.tileID.canonical.z : Math.round(m.getZoom());
     S.globoSatFalhou = true; camadaGlobo(); if (z < zSat) { zSat = z; m.setLayerZoomRange("sat", 0, Math.max(1, z - .5)); } });
-  m.on("load", () => { camadaGlobo(); atualizaGlobo(); enquadraGlobo(false); });
+  m.on("load", () => { camadaGlobo(); atualizaGlobo(); });
 }
 function camadaGlobo() {
   const m = S.globo; if (!m || !m.getLayer("mapa")) return;
@@ -5545,10 +5553,17 @@ function atualizaGlobo() {
   const src = m.getSource && m.getSource("prec");
   if (src) src.setData({ type: "FeatureCollection", features: gente.filter(p => +p.prec > 0).map(circuloPrec) });
 }
+// o planeta inteiro na tela (com folga), virado para onde está a turma
+function planetaInteiro(caixa) {
+  const w = (caixa && caixa.clientWidth) || 360, hh = (caixa && caixa.clientHeight) || 560, g = posicoesMundo();
+  const zoom = Math.log2(Math.min(w, hh) * .44 / (512 / (2 * Math.PI)));
+  const center = g.length ? [g.reduce((a, p) => a + +p.lng, 0) / g.length, Math.max(-25, Math.min(35, g.reduce((a, p) => a + +p.lat, 0) / g.length))] : [40, 20];
+  return { center, zoom };
+}
 function enquadraGlobo(anima) {
   const m = S.globo; if (!m) return;
   const gente = posicoesMundo();
-  if (!gente.length) return m.flyTo({ center: [40, 20], zoom: 1.4, duration: anima ? 1800 : 0 });
+  if (!gente.length) return m.flyTo({ ...planetaInteiro(m.getContainer()), duration: anima ? 1800 : 0 });
   const lo = gente.map(p => +p.lng), la = gente.map(p => +p.lat);
   // gente espalhada pelo mundo: o globo aparece grande na tela (não minúsculo)
   const cam = m.cameraForBounds([[Math.min(...lo), Math.min(...la)], [Math.max(...lo), Math.max(...la)]], { padding: 60, maxZoom: 12 });
