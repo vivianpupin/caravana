@@ -1710,6 +1710,9 @@ body:has(.sheet) .navmais{display:none!important}
 .pertolist li div{display:flex;flex-direction:column}
 .pertolist small{color:var(--soft)}
 .mapaperto{position:relative}
+/* aba Mapa: menos espaço em cima e nos lados, para o mapa crescer */
+.mapaview{padding-top:12px;gap:12px}
+@media (max-width:979px){.mapaview .mapaperto{margin:0 7px}}
 .mapaperto,.mapaperto svg{touch-action:none;-ms-touch-action:none}
 .mapaperto svg{display:block;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .mapctl{position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px}
@@ -4987,7 +4990,7 @@ function minhaPos() {
 // sem localização ligada, o mapa abre na cidade do hotel de hoje (ou em Delhi)
 function centroPadrao() { const c = COORD_CIDADE[(HOTEIS[hotelAgora()] || {}).cid] || COORD_CIDADE.delhi; return { lat: c[0], lng: c[1] }; }
 function mapaPerto() {
-  const W = 600, H = 600, svg = pergaminho(W, H, "perto"), eu0 = minhaPos(), centro = S.pertoCentro || eu0 || centroPadrao();
+  const W = 600, H = 760, svg = pergaminho(W, H, "perto"), eu0 = minhaPos(), centro = S.pertoCentro || eu0 || centroPadrao();
   const temEu = !!eu0;
   svg.setAttribute("aria-label", "Mapa perto de mim");
   const km = S.pertoKm || (eu0 ? 0.12 : 3), dLat = km / 111, dLng = km / (111 * Math.cos(centro.lat * Math.PI / 180));
@@ -5102,6 +5105,7 @@ function vPerto() {
     !S.gpsOn ? h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null)
       : h("div", { style: "display:flex;flex-direction:column;gap:6px;align-items:flex-start" }, h("p", { class: "msg ok", text: (S.gpsMsg || "Você está ao vivo.") + (S.aoVivo[S.uid]?.prec ? ` Precisão de ${S.aoVivo[S.uid].prec} m.` : "") }),
         h("button", { class: "btn ghost", type: "button", onclick: () => ligarGps() }, "Desligar localização ao vivo")),
+    vHotelHoje(),
     perto.length ? h("ul", { class: "pertolist" }, perto.slice(0, 20).map(({ p, km }) => h("li", { onclick: () => abrirPessoa(p.id), style: "cursor:pointer" },
       bonecoSvg(bonecoDe(p.id), "bonecosvg mini"), h("div", null, h("b", { text: nomeDe(p.id) }), h("small", { text: km == null ? (p.vivoGps ? "ao vivo" : haQuanto(p.ts)) : km < 1 ? Math.round(km * 1000) + " m de você" : km.toFixed(km < 10 ? 1 : 0) + " km de você" }))))) :
       h("p", { class: "small", text: "Ninguém da caravana apareceu por perto ainda. Quando alguém ligar a localização, o bonequinho aparece aqui." }));
@@ -5129,11 +5133,11 @@ const distKm = (a, b) => { const R = 6371, r = x => x * Math.PI / 180, dLa = r(+
 function vMapa() {
   if (S.montando) return vExplorador();
   perfis(S.posicoes.map(p => p.id));
-  return h("section", { class: "view" },
+  return h("section", { class: "view mapaview" },
     h("div", { class: "head" },
       h("div", null, h("p", { class: "eyebrow", text: "Ao vivo" }), h("h1", { text: "Perto de mim" }))),
     h("div", { class: "mapwrap" }, vPerto(),
-      h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null), vHotelHoje())));
+      h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null))));
 }
 
 // ---------- Estúdio de fotos ----------
