@@ -78,7 +78,7 @@ self.addEventListener("notificationclick", e => {
   const url = new URL((e.notification.data && e.notification.data.url) || "./", self.registration.scope).href;
   e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(ws => {
     const aba = (url.match(/aba=([a-z]+)/) || [])[1] || "conversa";
-    for (const w of ws) { w.postMessage({ aba }); if ("focus" in w) return w.focus(); }
+    for (const w of ws) { w.postMessage({ aba, url }); if ("focus" in w) return w.focus(); }
     return self.clients.openWindow(url);
   }));
 });

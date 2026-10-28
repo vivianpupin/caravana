@@ -59,7 +59,7 @@ async function avisarSelo(d, k, selo) {
   if (!l) return Response.json({ ok: false });
   // o último selo completa o passaporte e libera o vídeo (mesmo aviso do dia do translado, uma vez só)
   const enviados = selo === "travessia" ? await avisarPassaporteCompleto(d, k)
-    : await enviarTodos(d, k, { title: "🏅 Carimbo novo no seu passaporte!", body: (l.nome || "Carimbo novo") + ". Abra o passaporte para ver.", tag: "selo-" + selo, url: "./?aba=passaporte" }, null, 24 * 3600);
+    : await enviarTodos(d, k, { title: "🏅 Carimbo novo no seu passaporte!", body: (l.nome || "Carimbo novo") + ". Abra o passaporte para ver.", tag: "selo-" + selo, url: "./?aba=passaporte&selo=" + selo }, null, 24 * 3600);
   return Response.json({ ok: true, enviados });
 }
 
@@ -76,7 +76,7 @@ async function avisarHabilidade(d, k, id, para) {
       if (!ts || Date.now() - ts > 10 * 60 * 1000 || (v.habAvisadas || {})[id]) return false;
       t.update(ref, { ["habAvisadas." + id]: true }); return true;
     });
-    if (vai) enviados += await enviarPara(d, k, uid, { title: "✨ Nova habilidade desbloqueada!", body: "Abra o app da Caravana para ver qual é e fazer a sua foto.", tag: "hab-" + id, url: "./?aba=passaporte" }, 24 * 3600);
+    if (vai) enviados += await enviarPara(d, k, uid, { title: "✨ Nova habilidade desbloqueada!", body: "Abra o app da Caravana para ver qual é e fazer a sua foto.", tag: "hab-" + id, url: "./?aba=passaporte&hab=" + id }, 24 * 3600);
   }
   return Response.json({ ok: true, enviados });
 }
@@ -93,7 +93,7 @@ async function avisarPombo(d, k, id) {
   if (!m || typeof m.para !== "string") return Response.json({ ok: false });
   const v = await d.doc("viajantes/" + m.autor).get();
   const nome = String((v.exists && v.data().nome) || "Alguém da caravana").trim().split(/\s+/)[0];
-  const enviados = await enviarPara(d, k, m.para, { title: "🕊️ Chegou um pombo-correio!", body: nome + (m.presente ? " te mandou uma cartinha e um presente." : " te mandou uma cartinha."), tag: "pombo-" + id, url: "./?aba=pombo" }, 24 * 3600);
+  const enviados = await enviarPara(d, k, m.para, { title: "🕊️ Chegou um pombo-correio!", body: nome + (m.presente ? " te mandou uma cartinha e um presente." : " te mandou uma cartinha."), tag: "pombo-" + id, url: "./?aba=pombo&pombo=" + id }, 24 * 3600);
   return Response.json({ ok: true, enviados });
 }
 

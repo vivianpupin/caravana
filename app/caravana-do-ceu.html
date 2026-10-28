@@ -8033,8 +8033,30 @@ async function garanteAvisos() {
 }
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); S.instalar = e; render(); });
 window.addEventListener("appinstalled", () => { S.instalar = null; render(); });
-if (navigator.serviceWorker) navigator.serviceWorker.addEventListener("message", e => { if (e.data && e.data.aba) go(e.data.aba); });
-{ const aba = new URLSearchParams(location.search).get("aba"); if (["conversa", "passaporte", "travessia", "pombo"].includes(aba)) S.tab = aba; }
+// toque numa notificação: vai direto para o que ela avisou (a carta, o pombo, a habilidade ou o carimbo), sem passar pela abertura do dia
+const ABAS_LINK = ["travessia", "passaporte", "ensinamentos", "explorador", "fotos", "mapa", "conversa", "pombo"];
+function pegaLink(q) {
+  const aba = q.get("aba"); if (!ABAS_LINK.includes(aba)) return null;
+  const L = { carta: q.get("carta"), pombo: q.get("pombo"), hab: q.get("hab"), selo: q.get("selo") };
+  S.abrirLink = Object.values(L).some(Boolean) ? { ...L, ate: Date.now() + 60000 } : null;
+  return aba;
+}
+function tentaAbrirLink() {
+  const L = S.abrirLink; if (!L || !S.uid) return;
+  if (Date.now() > L.ate) { S.abrirLink = null; return; }
+  if (L.carta) { const c = cartasAbertas().find(x => x.id === L.carta); if (!c) return; S.abrirLink = null; abrirCarta(c); }
+  else if (L.pombo) { const p = S.pombosIn.find(x => x.id === L.pombo); if (!p) return; S.abrirLink = null; abrirPombo(p, !p.lida); }
+  else if (L.hab) { if (!(eu() && (eu().habilidades || {})[L.hab])) return; S.abrirLink = null; abrirHabilidade(L.hab, true); }
+  else if (L.selo) { const l = localDe(L.selo); if (!l) return; S.abrirLink = null; abrirSelo(l); }
+}
+if (navigator.serviceWorker) navigator.serviceWorker.addEventListener("message", e => {
+  const d = e.data || {}; if (!d.aba) return;
+  const aba = d.url ? pegaLink(new URL(d.url).searchParams) : d.aba;
+  if (aba) { go(aba); tentaAbrirLink(); }
+});
+{ const q = new URLSearchParams(location.search), aba = pegaLink(q); if (aba) S.tab = aba;
+  if (q.has("aba")) try { history.replaceState(null, "", location.pathname); } catch (e) {} }
+setInterval(tentaAbrirLink, 1500);
 // a líder abre ou fecha um selo para todos; ao abrir, a caravana recebe o aviso no celular
 async function liberarSelo(l) {
   const abre = !l.aberto, ref = S.db.doc("locais/" + l.id);
@@ -8586,7 +8608,7 @@ function boasVindas(pronto) {
   let fechou = false;
   const fecha = () => { if (fechou) return; fechou = true; pronto.then(() => { ov.classList.add("sai"); render(); setTimeout(() => ov.remove(), 700); }); };
 }
-function abreDia() { const t = +new URLSearchParams(location.search).get("abertura"); aberturaDoDia(t || 0); }
+function abreDia() { if (S.abrirLink) return; const t = +new URLSearchParams(location.search).get("abertura"); aberturaDoDia(t || 0); }
 document.addEventListener("visibilitychange", () => { if (!document.hidden) abreDia(); });
 
 
