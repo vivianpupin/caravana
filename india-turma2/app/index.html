@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "28/10 · 12:29";</script>
+<script>window.__VERSAO = "28/10 · 12:34";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1171,17 +1171,15 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .palavranas h3{margin:0 0 4px}
 .vtrbox{position:relative;background:#F3EBDD;border-radius:18px;padding:22px 18px 18px;max-width:420px;margin:auto;display:flex;flex-direction:column;gap:10px;text-align:center}
 .vtrbox h2{margin:0}.vtrbox .lede{font-size:15px;margin:0}.vtrbox .btn{align-self:center}
-.vtr{position:relative;flex:none;width:min(340px,86vw);aspect-ratio:1100/822;margin:4px auto;cursor:pointer;border-radius:10px;overflow:hidden;box-shadow:0 10px 24px rgba(40,25,10,.35)}
-.vtrfoto{display:block;width:100%;height:100%;object-fit:cover}
-.vtrgiro{position:absolute;left:40.41%;top:52.07%;width:11.27%;aspect-ratio:1;border-radius:50%;overflow:hidden}
-.vtrgiro>img{position:absolute;width:887.1%;max-width:none;left:-358.5%;top:-345.2%}
-.vtrselo{position:absolute;inset:3.5%;border-radius:50%;background:radial-gradient(circle at 40% 35%,#D6A548,#B97F28 70%,#9A6620);box-shadow:inset 0 0 0 1px rgba(60,35,10,.35),inset 0 0 6px rgba(60,35,10,.4);display:flex;align-items:center;justify-content:center}
-.vtrselo img{width:62%;height:auto;opacity:.8;filter:brightness(.6) sepia(.5);mix-blend-mode:multiply}
-.vtr.toca .vtrgiro{animation:vtrgira 1.8s linear infinite}
-@keyframes vtrgira{to{transform:rotate(360deg)}}
+.vtr{position:relative;flex:none;width:min(230px,60vw);aspect-ratio:664/815;margin:2px auto;cursor:pointer}
+.vtrfoto{display:block;width:100%;height:100%}
+.vtrgiro{position:absolute;left:34%;top:51.87%;width:17.77%;height:12.22%}
+.vtrgiro img{position:absolute;left:0;top:-9.24%;width:100%;aspect-ratio:1;transform:scaleY(.8441)}
+.vtr.toca .vtrgiro img{animation:vtrgira 1.8s linear infinite}
+@keyframes vtrgira{from{transform:scaleY(.8441) rotate(0)}to{transform:scaleY(.8441) rotate(360deg)}}
 .vtrplayer iframe{width:100%;height:352px;border:0;border-radius:12px}
 .vtrcard{display:flex;align-items:center;gap:14px;background:var(--card,#FBF6EC);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:left;cursor:pointer}
-.vtrcard .vtr{width:112px;margin:0;flex:none;pointer-events:none;border-radius:8px;box-shadow:0 4px 10px rgba(40,25,10,.3)}
+.vtrcard .vtr{width:76px;margin:0;flex:none;pointer-events:none}
 .vtrcard .tx{display:flex;flex-direction:column;gap:3px}.vtrcard .tx span{font-size:13px;color:var(--soft)}
 .dobraseta{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(185,138,67,.14);color:#8A6B43;font-size:14px;transition:transform .2s}
 .dobra[open]>summary .dobraseta{transform:rotate(180deg)}
@@ -2787,7 +2785,7 @@ const PLAYLIST_EMBED = "https://open.spotify.com/embed/playlist/3jasHbeISBaEHCVW
 function vitrolaDesenho(tocando) {
   return h("div", { class: "vtr" + (tocando ? " toca" : ""), "aria-hidden": "true" },
     h("img", { src: "img/vitrola.webp", alt: "", class: "vtrfoto" }),
-    h("div", { class: "vtrgiro" }, h("img", { src: "img/vitrola.webp", alt: "" }), h("div", { class: "vtrselo" }, h("img", { src: "img/simbolo-marrom.png", alt: "" }))));
+    h("div", { class: "vtrgiro" }, h("img", { src: "img/vitrola-rotulo.webp", alt: "" })));
 }
 function abrirVitrola() {
   closeSheets();
