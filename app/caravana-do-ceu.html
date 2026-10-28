@@ -1975,7 +1975,7 @@ nav.tabs button{position:relative}
 .globocart{position:absolute;left:18px;top:20px;background:#F1E2BC;border:1px solid #5B3F22;outline:.5px solid #5B3F22;outline-offset:-4px;padding:6px 14px 5px;display:flex;flex-direction:column;align-items:center}
 .globocart b{font:600 12px var(--display);color:#3B2A1C;letter-spacing:.3em}
 .globocart i{font:italic 500 10px var(--display);color:#6B4A2A}
-.globo{position:relative;width:100%;height:min(68vh,560px)}
+.globo{position:relative;width:100%;aspect-ratio:1}
 .globoaviso{position:absolute;inset:0;display:grid;place-items:center;color:#E9D9B8;font-size:14px;margin:0}
 .head h1.titmapa,.titmapa{font-family:var(--ui);font-weight:500;font-size:19px;letter-spacing:0;line-height:1.3}
 .globo .maplibregl-canvas,.globo .maplibregl-marker{transition:opacity .45s}
@@ -5453,6 +5453,7 @@ function vPerto() {
     !S.gpsOn ? gpsDesligado()
       : h("div", { style: "display:flex;flex-direction:column;gap:6px;align-items:flex-start" }, h("p", { class: "msg ok", text: (S.gpsMsg || "Você está ao vivo.") + (S.aoVivo[S.uid]?.prec ? ` Precisão de ${S.aoVivo[S.uid].prec} m.` : "") }),
         h("button", { class: "btn ghost", type: "button", onclick: () => ligarGps() }, "Desligar localização ao vivo")),
+    vHotelHoje(),
     perto.length ? h("ul", { class: "pertolist" }, perto.slice(0, 20).map(({ p, km }) => h("li", { onclick: () => abrirPessoa(p.id), style: "cursor:pointer" },
       bonecoSvg(bonecoDe(p.id), "bonecosvg mini"), h("div", null, h("b", { text: nomeDe(p.id) }), h("small", { text: km == null ? (p.vivoGps ? "ao vivo" : haQuanto(p.ts)) : km < 1 ? Math.round(km * 1000) + " m de você" : km.toFixed(km < 10 ? 1 : 0) + " km de você" }))))) :
       h("p", { class: "small", text: "Ninguém da caravana apareceu por perto ainda. Quando alguém ligar a localização, o bonequinho aparece aqui." }));
@@ -5490,7 +5491,7 @@ function vMapa() {
       h("button", { type: "button", role: "tab", class: "opt", "aria-pressed": String(modo === id), onclick: () => { S.mapaModo = id; if (id === "perto") { S.pertoCentro = null; S.pertoKm = null; } else planetaDeNovo(); render(); } }, nome))),
     modo === "mundo" ? h("div", { class: "mapwrap" }, vMundo(), h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null)))
       : h("div", { class: "mapwrap" }, vPerto(),
-      h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null), vHotelHoje())));
+      h("div", { style: "display:flex;flex-direction:column;gap:16px;min-width:0" }, painelPessoas(null))));
 }
 // ---------- globo (como o Google Earth): gira com o dedo, pinça para aproximar, satélite até o nível da rua ----------
 function carregaGlobo() {
