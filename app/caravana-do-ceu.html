@@ -9761,16 +9761,19 @@ async function enviaFilmeGaleria2(it, msg) {
   const capa = it.capa || await capaDoFilme(it.blob);
   if (!capa) throw new Error("capa");
   msg.textContent = "Preparando o filme…"; msg.className = "msg";
-  const filme = await filmeMenor(it.blob, n => { msg.textContent = "Preparando o filme… " + n + "%"; });
+  // diminuir o filme leva o tempo do próprio filme (até 30 s): mostra quanto falta e pede para não sair do app
+  const t0 = performance.now(), filme = await filmeMenor(it.blob, n => { const falta = n > 3 ? Math.max(1, Math.round((performance.now() - t0) / n * (100 - n) / 1000)) : null; msg.textContent = "Preparando o filme… " + n + "%" + (falta ? ` · faltam ${falta} s` : "") + " · deixe o app aberto"; });
   if (filme.size > 6e6) { msg.textContent = "Esse filme é longo demais para a galeria. Grave um trecho mais curto (até 30 segundos)."; msg.className = "msg err"; return; }
   const capaId = (await S.assets.upload(capa)).id;
   let partes = [];
   try {
     if (noSite()) {
-      for (let i = 0, n = Math.ceil(filme.size / PEDACO); i < n; i++) { msg.textContent = `Enviando o filme… ${i + 1} de ${n}`;
-        const r = await S.db.collection("fotos").add({ data: await b64(filme.slice(i * PEDACO, (i + 1) * PEDACO)), autor: S.uid, ts: Date.now(), parte: i }); partes.push(r.id); }
+      // as partes sobem 3 de cada vez (bem mais rápido que uma por uma), mantendo a ordem
+      const n = Math.ceil(filme.size / PEDACO); let prontas = 0; partes = new Array(n); msg.textContent = `Enviando o filme… 0 de ${n}`;
+      const sobe = async i => { const r = await S.db.collection("fotos").add({ data: await b64(filme.slice(i * PEDACO, (i + 1) * PEDACO)), autor: S.uid, ts: Date.now(), parte: i }); partes[i] = r.id; msg.textContent = `Enviando o filme… ${++prontas} de ${n}`; };
+      let prox = 0; await Promise.all([0, 1, 2].map(async () => { while (prox < n) await sobe(prox++); }));
     } else partes = [(await S.assets.upload(filme)).id];
-  } catch (e) { for (const id of [capaId, ...partes]) S.assets.delete(id).catch(() => {}); throw e; }
+  } catch (e) { for (const id of [capaId, ...partes].filter(Boolean)) S.assets.delete(id).catch(() => {}); throw e; }
   await addMural({ autor: S.uid, fotoId: capaId, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now(), video: { partes, tipo: filme.type || "video/mp4" } });
   msg.textContent = "Filme na Galeria da Caravana."; msg.className = "msg ok";
 }
