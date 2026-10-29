@@ -8,3 +8,5 @@ Esta pasta fica fora de `app/`, então NÃO vai para o site na Netlify.
 - `roteiro-india-2026-turma1.html` — cópia de trabalho da Turma 1 (igual ao STAFF)
 - `roteiro-india-2026-turma2.html` — agenda da líder, Turma 2 (18 a 30 nov)
 - `mapa-dia7-varanasi-lojas.csv` — pontos do Dia 7 em Varanasi (para importar no Google My Maps)
+
+- `app-staff/index.html` — o app "Roteiro Índia Staff" (ícone da lamparina), com as duas turmas num arquivo só. É o que vai para a Netlify.
