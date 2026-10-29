@@ -131,6 +131,19 @@
   .foodrow .fd .fn{font-weight:600;font-size:.92rem;color:var(--verde)}
   .foodrow .fd .fi{font-size:.82rem;color:var(--cinza);margin-top:3px;line-height:1.35}
 
+  .festa{margin-top:8px;font-size:.82rem;font-weight:600;color:var(--dourado);background:#f6eed8;border-radius:10px;padding:6px 10px}
+  details.rituais{background:var(--card);border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.05);margin:26px 0 14px;overflow:hidden;border-left:5px solid var(--dourado)}
+  details.rituais summary{cursor:pointer;list-style:none;padding:14px 16px;font-weight:700;font-size:1.05rem;color:var(--verde)}
+  details.rituais summary::-webkit-details-marker{display:none}
+  details.rituais summary::after{content:" ▸";color:var(--dourado)}
+  details.rituais[open] summary::after{content:" ▾"}
+  details.rituais .rcorpo{padding:0 16px 16px}
+  details.rituais .rdia{padding:10px 0;border-top:1px solid var(--linha)}
+  details.rituais .rdia .rd{font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--cinza);font-weight:600}
+  details.rituais .rdia h4{color:var(--verde);font-size:.98rem;margin:2px 0 4px}
+  details.rituais .rdia p,details.rituais .rint,details.rituais .rfim{font-size:.88rem;line-height:1.5}
+  details.rituais .rint{color:var(--cinza);margin-bottom:6px}
+  details.rituais .rfim{margin-top:10px;font-style:italic}
   .grupo-tit{margin:26px 0 12px;color:var(--verde);font-size:1.15rem;
     border-bottom:2px solid var(--bege);padding-bottom:6px}
   .bloco{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px;
@@ -188,6 +201,7 @@
   <a class="info" href="#t1-dicas">💡 Dicas</a>
   <a class="info" href="#t1-taj">🕌 Taj</a>
   <a class="info" href="#t1-templos">🛕 Templos</a>
+  <a class="info" href="#t1-rituais" onclick="document.getElementById('t1-rituais').open=true">🪔 Rituais</a>
   <a class="info" href="#t1-contatos">📞 Contatos</a>
 </nav>
 <nav class="menu" id="nav-t2" style="display:none">
@@ -208,6 +222,7 @@
   <a class="info" href="#t2-dicas">💡 Dicas</a>
   <a class="info" href="#t2-taj">🕌 Taj</a>
   <a class="info" href="#t2-templos">🛕 Templos</a>
+  <a class="info" href="#t2-rituais" onclick="document.getElementById('t2-rituais').open=true">🪔 Rituais</a>
   <a class="info" href="#t2-contatos">📞 Contatos</a>
 </nav>
 <main>
@@ -282,6 +297,7 @@
       <div class="rotulo">Dia 3</div>
       <h2>AGRA → JAIPUR<span class="badge">Cidade Rosa</span></h2>
       <div class="meta">Sexta · 6 nov</div>
+      <div class="festa">🪔 Dhanteras — saúde, prosperidade e preparação da casa</div>
       <div class="hoteis">🏨 <span>Radisson (saída)</span><span>Umaid Bhawan</span></div>
     </div>
     <ul class="linha">
@@ -313,6 +329,7 @@
       <div class="rotulo">Dia 4</div>
       <h2>JAIPUR<span class="badge">Amber Fort</span></h2>
       <div class="meta">Sábado · 7 nov<span class="badge">Guia espanhol</span></div>
+      <div class="festa">🪔 Kali Chaudas / Choti Diwali — preparação e rituais de purificação</div>
       <div class="hoteis">🏨 <span>Umaid Bhawan</span></div>
     </div>
     <ul class="linha">
@@ -344,8 +361,9 @@
   <section id="t1-d5">
     <div class="dia-cab">
       <div class="rotulo">Dia 5</div>
-      <h2>JAIPUR → VARANASI<span class="badge">Voo</span></h2>
+      <h2>JAIPUR → VARANASI<span class="badge">Voo</span><span class="badge" style="background:var(--dourado)">🪔 Dīpāvalī</span></h2>
       <div class="meta">Domingo · 8 nov</div>
+      <div class="festa">🪔 Dīpāvalī / Lakṣmī Pūjā — noite principal das luzes e adoração de Lakṣmī</div>
       <div class="hoteis">🏨 <span>Umaid Bhawan (saída)</span><span>Ganges View</span></div>
     </div>
     <ul class="linha">
@@ -431,6 +449,7 @@
       <div class="rotulo">Dia 7</div>
       <h2>VARANASI<span class="badge">Hanuman</span></h2>
       <div class="meta">Terça · 10 nov</div>
+      <div class="festa">🪔 Govardhana Pūjā / Annakut — homenagem a Kṛṣṇa e oferendas de alimentos</div>
       <div class="hoteis">🏨 <span>Ganges View</span></div>
     </div>
     <div class="mapa"><a href="https://www.google.com/maps/d/u/0/edit?mid=121AEvMlk9lYYtqVDoV0Ou3zSjxXiJKE&usp=sharing" target="_blank" rel="noopener">🗺️ Abrir mapa dos templos (Google Maps)</a></div>
@@ -468,6 +487,7 @@
       <div class="rotulo">Dia 8</div>
       <h2>VARANASI → RISHIKESH<span class="badge transp">✈️ Voo via Dehradun</span></h2>
       <div class="meta">Quarta · 11 nov<span class="badge">Deslocamento</span></div>
+      <div class="festa">🪔 Bhāī Dūj — celebração dos laços familiares</div>
       <div class="hoteis">🏨 <span>Ganges View (saída)</span><span>Yog Niketan <a href="https://www.google.com/maps/search/?api=1&query=Yog+Niketan+Rishikesh" target="_blank" rel="noopener">🗺️</a></span></div>
     </div>
     <ul class="linha">
@@ -802,6 +822,19 @@
     <div class="contato"><b>Deepak (oferendas · Varanasi)</b><span class="num">pedir no check-in</span></div>
     <div class="contato"><b>Santy (Embroidery fabric · Jaipur)</b><span class="num">contato Lari</span></div>
   </div>
+
+    <details class="rituais" id="t1-rituais">
+    <summary>🪔 Rituais do Dīpāvalī</summary>
+    <div class="rcorpo">
+      <p class="rint">Os cinco dias do festival das luzes caem durante a viagem da Turma 1, de 6 a 11 de novembro de 2026.</p>
+      <div class="rdia"><div class="rd">6/11 · Sexta · Dia 3 da Turma 1</div><h4>Primeiro dia — Dhanteras</h4><p>Dhanteras — saúde, prosperidade e preparação da casa.</p><p>É associado a Dhanvantari, à saúde, aos metais preciosos e à prosperidade. Muitas famílias compram utensílios, metais ou outros objetos considerados auspiciosos. É também um momento de preparar e limpar a casa para a chegada das celebrações.</p></div>
+      <div class="rdia"><div class="rd">7/11 · Sábado · Dia 4 da Turma 1</div><h4>Segundo dia — Naraka Caturdaśī</h4><p>Kali Chaudas / Choti Diwali — preparação e rituais de purificação.</p><p>Recorda a vitória sobre Narakāsura. Em várias tradições, o banho ritual com óleo antes do amanhecer simboliza purificação e renovação.</p></div>
+      <div class="rdia"><div class="rd">8/11 · Domingo · Dia 5 da Turma 1</div><h4>Terceiro dia — Lakṣmī Pūjā</h4><p>Dīpāvalī / Lakṣmī Pūjā — noite principal das luzes e adoração de Lakṣmī.</p><p>A noite central do festival em muitas regiões. Famílias acendem lamparinas, oferecem flores, alimentos, água e perfumes, recitam orações e pedem a presença de Lakṣmī no lar.</p></div>
+      <div class="rdia"><div class="rd">10/11 · Terça · Dia 7 da Turma 1</div><h4>Quarto dia — Govardhana Pūjā ou Bali Pratipadā</h4><p>Govardhana Pūjā / Annakut — homenagem a Kṛṣṇa e oferendas de alimentos.</p><p>Em tradições ligadas a Kṛṣṇa, recorda a proteção concedida aos habitantes de Vraja por meio da elevação da montanha Govardhana. Em outras regiões, o dia homenageia o rei Bali. Ofertas de alimentos e celebrações comunitárias são comuns.</p></div>
+      <div class="rdia"><div class="rd">11/11 · Quarta · Dia 8 da Turma 1</div><h4>Quinto dia — Bhāī Dūj</h4><p>Bhāī Dūj — celebração dos laços familiares.</p><p>Celebra os vínculos entre irmãos e irmãs. Orações, refeições, presentes e gestos de bênção marcam o encerramento do ciclo.</p></div>
+      <p class="rfim">Essa estrutura mostra uma característica muito bonita da festa: ela não se limita a uma única noite de oração. Envolve a casa, o corpo, a alimentação, as relações familiares e a vida comunitária.</p>
+    </div>
+  </details>
 
   <a class="topo-link" href="#topo">↑ voltar ao topo</a>
 </div>
@@ -1416,6 +1449,19 @@
     <div class="contato"><b>Deepak (oferendas · Varanasi)</b><span class="num">pedir no check-in</span></div>
     <div class="contato"><b>Santy (Embroidery Fabric · Jaipur)</b><span class="num">contato Lari</span></div>
   </div>
+
+    <details class="rituais" id="t2-rituais">
+    <summary>🪔 Rituais do Dīpāvalī</summary>
+    <div class="rcorpo">
+      <p class="rint">Os cinco dias do festival das luzes acontecem de 6 a 11 de novembro de 2026, uma semana antes da chegada da Turma 2. Quando o grupo chegar, ainda vai encontrar lamparinas e decorações nas ruas e nos templos.</p>
+      <div class="rdia"><div class="rd">6/11 · Sexta</div><h4>Primeiro dia — Dhanteras</h4><p>Dhanteras — saúde, prosperidade e preparação da casa.</p><p>É associado a Dhanvantari, à saúde, aos metais preciosos e à prosperidade. Muitas famílias compram utensílios, metais ou outros objetos considerados auspiciosos. É também um momento de preparar e limpar a casa para a chegada das celebrações.</p></div>
+      <div class="rdia"><div class="rd">7/11 · Sábado</div><h4>Segundo dia — Naraka Caturdaśī</h4><p>Kali Chaudas / Choti Diwali — preparação e rituais de purificação.</p><p>Recorda a vitória sobre Narakāsura. Em várias tradições, o banho ritual com óleo antes do amanhecer simboliza purificação e renovação.</p></div>
+      <div class="rdia"><div class="rd">8/11 · Domingo</div><h4>Terceiro dia — Lakṣmī Pūjā</h4><p>Dīpāvalī / Lakṣmī Pūjā — noite principal das luzes e adoração de Lakṣmī.</p><p>A noite central do festival em muitas regiões. Famílias acendem lamparinas, oferecem flores, alimentos, água e perfumes, recitam orações e pedem a presença de Lakṣmī no lar.</p></div>
+      <div class="rdia"><div class="rd">10/11 · Terça</div><h4>Quarto dia — Govardhana Pūjā ou Bali Pratipadā</h4><p>Govardhana Pūjā / Annakut — homenagem a Kṛṣṇa e oferendas de alimentos.</p><p>Em tradições ligadas a Kṛṣṇa, recorda a proteção concedida aos habitantes de Vraja por meio da elevação da montanha Govardhana. Em outras regiões, o dia homenageia o rei Bali. Ofertas de alimentos e celebrações comunitárias são comuns.</p></div>
+      <div class="rdia"><div class="rd">11/11 · Quarta</div><h4>Quinto dia — Bhāī Dūj</h4><p>Bhāī Dūj — celebração dos laços familiares.</p><p>Celebra os vínculos entre irmãos e irmãs. Orações, refeições, presentes e gestos de bênção marcam o encerramento do ciclo.</p></div>
+      <p class="rfim">Essa estrutura mostra uma característica muito bonita da festa: ela não se limita a uma única noite de oração. Envolve a casa, o corpo, a alimentação, as relações familiares e a vida comunitária.</p>
+    </div>
+  </details>
 
   <a class="topo-link" href="#topo">↑ voltar ao topo</a>
 </div>
