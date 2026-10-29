@@ -209,6 +209,11 @@ let palavraDigitada = "";
 const PALAVRAS_ANTIGAS = ["caravana", "ganga"];
 let trocarSenha = "";
 const senhaDe = palavra => "caravana-" + palavra;
+// o servidor diz se a palavra está certa (sem ligar para acento) e, se a conta já existia com outra palavra, refaz a senha
+async function conferePalavra(email, palavra) {
+  try { const r = await fetch("/.netlify/functions/entrada", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email, palavra }) });
+    return r.ok ? await r.json() : null; } catch (e) { return null; }
+}
 async function entrarComEmail(email, palavra, erro, bt) {
   email = email.trim().toLowerCase(); palavra = palavra.trim().toLowerCase();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { erro.textContent = "Confira o e-mail."; return; }
@@ -227,6 +232,13 @@ async function entrarComEmail(email, palavra, erro, bt) {
   catch (e) {
     if (/network/.test(e.code || "")) { erro.textContent = "Sem internet. Tente de novo quando tiver sinal."; }
     else {
+      // confere a palavra no servidor antes de criar a conta, e destrava a conta de quem entrou a primeira vez com a palavra errada
+      const r = await conferePalavra(email, palavra);
+      if (r && r.errada) { erro.textContent = "Palavra incorreta. Confira com a líder da caravana."; palavraDigitada = ""; bt.disabled = false; bt.textContent = "Entrar"; return; }
+      if (r && r.ok && r.palavra) {
+        palavraDigitada = r.palavra;
+        try { if (r.nova) await auth.createUserWithEmailAndPassword(email, senhaDe(r.palavra)); else await auth.signInWithEmailAndPassword(email, senhaDe(r.palavra)); return; } catch (x) {}
+      }
       // quem criou a conta quando a palavra era outra: entra com a palavra antiga e a senha passa a ser a nova
       for (const antiga of PALAVRAS_ANTIGAS) {
         if (antiga === palavra) continue;
@@ -352,7 +364,10 @@ function telaPalavra() {
     const palavra = inp.value.trim().toLowerCase(); if (!palavra) return;
     erro.textContent = "";
     try { await fs.doc("membros/" + me.id).set({ palavra, nome: me.name, email: me.email, ts: Date.now() }); entrar(); }
-    catch (e) { erro.textContent = "Palavra incorreta. Confira com a líder da caravana."; }
+    catch (e) {
+      const r = me.email ? await conferePalavra(me.email, palavra) : null;
+      if (r && r.ok && r.palavra && r.palavra !== palavra) { try { await fs.doc("membros/" + me.id).set({ palavra: r.palavra, nome: me.name, email: me.email, ts: Date.now() }); return entrar(); } catch (x) {} }
+      erro.textContent = "Palavra incorreta. Confira com a líder da caravana."; }
   };
   inp.addEventListener("keydown", e => { if (e.key === "Enter") ok(); });
   portao(el("p", { textContent: `Olá, ${me.name.split(" ")[0]}! Digite a palavra da caravana, que a líder passou no grupo.` }), inp,
@@ -499,14 +514,14 @@ window.__blobUrl = (id, soOlha) => {
 async function comprime(blob) {
   // foto direto da câmera: o <img> já vira para a posição certa
   let bmp; try { const u = URL.createObjectURL(blob), im = new Image(); im.src = u; await im.decode(); bmp = im; setTimeout(() => URL.revokeObjectURL(u), 1000); } catch (e) { bmp = await createImageBitmap(blob); }
-  let lado = 1600, q = .85, url = ""; const bw = bmp.naturalWidth || bmp.width, bh = bmp.naturalHeight || bmp.height;
+  let lado = 1600, q = .92, url = ""; const bw = bmp.naturalWidth || bmp.width, bh = bmp.naturalHeight || bmp.height;
   for (let i = 0; i < 8; i++) {
     const k = Math.min(1, lado / Math.max(bw, bh));
     const c = document.createElement("canvas"); c.width = Math.round(bw * k); c.height = Math.round(bh * k);
-    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+    const g = c.getContext("2d"); g.imageSmoothingQuality = "high"; g.drawImage(bmp, 0, 0, c.width, c.height);
     url = c.toDataURL("image/jpeg", q);
     if (url.length < 900000) break;
-    q = Math.max(.55, q - .1); lado = Math.round(lado * .82);
+    q = Math.max(.6, q - .06); lado = Math.round(lado * .82);
   }
   return url;
 }
