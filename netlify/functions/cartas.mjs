@@ -41,6 +41,6 @@ async function avisaChegadas(d, pegaChaves) {
   const nomes = frescos.map(s => String(s.data().nome || "").trim().split(/\s+/)[0]).filter(Boolean);
   if (!nomes.length) return 0;
   const lista = nomes.length === 1 ? nomes[0] : nomes.length <= 4 ? nomes.slice(0, -1).join(", ") + " e " + nomes.at(-1) : nomes.slice(0, 3).join(", ") + " e mais " + (nomes.length - 3);
-  const body = lista + (nomes.length === 1 ? " chegou" : " chegaram") + " na Índia! 🇮🇳 A travessia começou.";
-  return enviarTodos(d, await pegaChaves(), { title: "🌏 Saudações do Oriente", body, tag: "chegada-" + agora, url: "./?aba=mapa" }, null, 6 * 3600);
+  const body = lista + (nomes.length === 1 ? " chegou" : " chegaram") + " na Índia!";
+  return enviarTodos(d, await pegaChaves(), { title: "Saudações do Oriente 🇮🇳", body, tag: "chegada-" + agora, url: "./?aba=mapa" }, null, 6 * 3600);
 }

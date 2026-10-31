@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "31/10 · 07:06";</script>
+<script>window.__VERSAO = "31/10 · 07:10";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -8108,6 +8108,8 @@ function tentaAbrirLink() {
 if (navigator.serviceWorker) navigator.serviceWorker.addEventListener("message", e => {
   const d = e.data || {}; if (!d.aba) return;
   const aba = d.url ? pegaLink(new URL(d.url).searchParams) : d.aba;
+  // notificação que leva ao mapa (chegada na Índia, recado): abre no Mundo, com o planeta inteiro
+  if (aba === "mapa") { S.mapaModo = "mundo"; planetaDeNovo(); }
   if (aba) { go(aba); tentaAbrirLink(); }
 });
 { const q = new URLSearchParams(location.search), aba = pegaLink(q); if (aba) S.tab = aba;

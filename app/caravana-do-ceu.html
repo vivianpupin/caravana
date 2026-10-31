@@ -8078,6 +8078,8 @@ function tentaAbrirLink() {
 if (navigator.serviceWorker) navigator.serviceWorker.addEventListener("message", e => {
   const d = e.data || {}; if (!d.aba) return;
   const aba = d.url ? pegaLink(new URL(d.url).searchParams) : d.aba;
+  // notificação que leva ao mapa (chegada na Índia, recado): abre no Mundo, com o planeta inteiro
+  if (aba === "mapa") { S.mapaModo = "mundo"; planetaDeNovo(); }
   if (aba) { go(aba); tentaAbrirLink(); }
 });
 { const q = new URLSearchParams(location.search), aba = pegaLink(q); if (aba) S.tab = aba;
