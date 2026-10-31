@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "31/10 · 09:30";</script>
+<script>window.__VERSAO = "31/10 · 09:31";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1189,23 +1189,32 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .calsag>summary>span:first-child{display:flex;flex-direction:column;gap:2px}
 .calsag .t{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#9A3B2A;font-weight:600;margin:0}
 .calsag summary b{font-family:var(--serif,Georgia,serif);font-size:19px;font-weight:500}
-.calsag summary small{font-size:13px;color:var(--soft)}
+.calsag summary small{font-size:14px;color:var(--ink);opacity:.8}
 .calsag[open]>summary .dobraseta{transform:rotate(180deg)}
 .calcorpo{display:flex;flex-direction:column;gap:14px;margin-top:14px}
 .calcorpo p{margin:0}
-.calintro{font-style:italic}
+.calintro{font-size:16px;line-height:1.55;color:var(--ink)}
 .caldatas{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .caldatas li,.sadh{display:grid;grid-template-columns:84px 1fr;gap:10px;align-items:start}
 .sadh{grid-template-columns:52px 1fr}
 .caldatas li>span:nth-child(2),.sadh>span:nth-child(2){display:flex;flex-direction:column;gap:2px;min-width:0}
-.caldatas small,.sadh small{font-size:13px;color:var(--soft);line-height:1.4}
-.caldatas .cd,.sadh .cd{font-size:12px;font-weight:600;color:#8A6B43;padding-top:2px;font-variant-numeric:tabular-nums}
+.caldatas b,.sadh b{font-size:16px}
+.caldatas small,.sadh small{font-size:15px;color:var(--ink);opacity:.82;line-height:1.45}
+.caldatas .cd,.sadh .cd,.calguia .cd{font-size:13px;font-weight:700;color:#6E4F24;padding-top:2px;font-variant-numeric:tabular-nums}
 .caldatas li.neste{background:rgba(185,138,67,.14);border-radius:10px;padding:8px;margin:0 -8px}
 .calhoje{align-self:flex-start;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#fff;background:#9A3B2A;border-radius:999px;padding:2px 8px;margin-bottom:2px}
-.calparte h5{margin:0 0 6px;font-size:16px}
+.calparte h5{margin:0 0 4px;font-size:18px}
+.calparte p{font-size:16px;line-height:1.55;color:var(--ink)}
 .calparte{display:flex;flex-direction:column;gap:8px}
 .calsadh{display:flex;flex-direction:column;gap:10px;background:rgba(63,73,56,.07);border-radius:12px;padding:12px}
-.calnota{font-size:12px;color:var(--soft)}
+.calnota{font-size:14px;color:var(--ink);opacity:.75}
+.calguia{display:flex;flex-direction:column;gap:12px;border:1.5px dashed rgba(154,59,42,.45);border-radius:12px;padding:12px}
+.calguiadia{display:flex;flex-direction:column;gap:6px}
+.calguiadia.neste{background:rgba(185,138,67,.14);border-radius:10px;padding:8px;margin:0 -6px}
+.calguiadia .gd{display:flex;gap:8px;align-items:baseline;margin:0}
+.calguiadia .gd b{font-size:16px}
+.calguiadia ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.calguiadia li{font-size:15px;line-height:1.45;color:var(--ink)}
 
 .dobraseta{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(185,138,67,.14);color:#8A6B43;font-size:14px;transition:transform .2s}
 .dobra[open]>summary .dobraseta{transform:rotate(180deg)}
@@ -3030,6 +3039,10 @@ function vCalendarioSagrado(c, iso) {
       c.partes.map(x => h("div", { class: "calparte" }, h("h5", { text: x.titulo }), par(x.texto))),
       h("div", { class: "calsadh" }, h("p", { class: "t", text: "Sadhanas da Caravana" }),
         c.sadhanas.map(x => h("div", { class: "sadh" }, h("span", { class: "cd", text: x.data }), h("span", null, h("b", { text: x.titulo }), h("small", { text: x.texto }))))),
+      // só a líder vê: o passo a passo para conduzir cada dia
+      S.isOwner && c.guia ? h("div", { class: "calguia" }, h("p", { class: "t", text: "Para guiar a Caravana" }),
+        c.guia.map(g => h("div", { class: "calguiadia" + (g.data === (iso || "").slice(8, 10) + "/" + (iso || "").slice(5, 7) ? " neste" : "") }, h("p", { class: "gd" }, h("span", { class: "cd", text: g.data }), h("b", { text: g.titulo })),
+          h("ul", null, g.itens.map(t => h("li", { text: t })))))) : null,
       c.nota ? h("p", { class: "calnota", text: c.nota }) : null));
 }
 function vDia(d, open, isToday, abrir) {
