@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "28/10 · 18:43";</script>
+<script>window.__VERSAO = "31/10 · 07:06";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -5113,6 +5113,9 @@ function ligarGps(silencioso) {
     if (!S.gpsOn) lsSet("cdi-gps", "1");
     S.gpsOn = true; S.gpsMsg = "Você está ao vivo no mapa. A caravana vê você andando enquanto o aplicativo estiver aberto.";
     S.aoVivo[S.uid] = { lat, lng, cidadeId, ts, prec: Math.round(pos.coords.accuracy || 0) };
+    // chegou na Índia (perto da viagem): marca no passaporte uma vez; o servidor avisa a caravana "Saudações do Oriente"
+    if (!S._chegouIndia && eu() && !eu().chegouIndia && S.db && lat > 6 && lat < 37 && lng > 68 && lng < 98 && ts > INICIO_VIAGEM - 3 * 864e5 && ts < INICIO_VIAGEM + 20 * 864e5) {
+      S._chegouIndia = true; S.db.doc("viajantes/" + S.uid).update({ chegouIndia: ts }).catch(() => { S._chegouIndia = false; }); }
     if (S.room && ((andou(ondeSala, lat, lng) && ts - ultimaSala > 15000) || ts - ultimaSala > 8 * 60000)) { ultimaSala = ts; ondeSala = { lat, lng }; S.room.presence({ uid: S.uid, lat, lng, cidadeId, ts }).catch(() => {}); }
     if (((andou(ondeDb, lat, lng) && ts - ultimoDb > 60000) || ts - ultimoDb > 30 * 60000) && S.db && eu()) { ultimoDb = ts; ondeDb = { lat, lng }; S.db.doc("posicoes/" + S.uid).set({ cidadeId, lat, lng, lugar: S.rua && distKm(S.rua, { lat, lng }) < 1 ? S.rua.lugar || "" : "", nota: "", link: "", gps: true, ts }).catch(() => {}); }
     if (S.arrastando) { S.pendente = true; return; }
