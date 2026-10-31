@@ -1150,6 +1150,30 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .vtrcard{display:flex;align-items:center;gap:14px;background:var(--card,#FBF6EC);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:left;cursor:pointer}
 .vtrcard .vtr{width:76px;margin:0;flex:none;pointer-events:none}
 .vtrcard .tx{display:flex;flex-direction:column;gap:3px}.vtrcard .tx span{font-size:13px;color:var(--soft)}
+.calsag{background:var(--card,#FBF6EC);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.calsag>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.calsag>summary::-webkit-details-marker{display:none}
+.calsag>summary>span:first-child{display:flex;flex-direction:column;gap:2px}
+.calsag .t{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#9A3B2A;font-weight:600;margin:0}
+.calsag summary b{font-family:var(--serif,Georgia,serif);font-size:19px;font-weight:500}
+.calsag summary small{font-size:13px;color:var(--soft)}
+.calsag[open]>summary .dobraseta{transform:rotate(180deg)}
+.calcorpo{display:flex;flex-direction:column;gap:14px;margin-top:14px}
+.calcorpo p{margin:0}
+.calintro{font-style:italic}
+.caldatas{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.caldatas li,.sadh{display:grid;grid-template-columns:84px 1fr;gap:10px;align-items:start}
+.sadh{grid-template-columns:52px 1fr}
+.caldatas li>span:nth-child(2),.sadh>span:nth-child(2){display:flex;flex-direction:column;gap:2px;min-width:0}
+.caldatas small,.sadh small{font-size:13px;color:var(--soft);line-height:1.4}
+.caldatas .cd,.sadh .cd{font-size:12px;font-weight:600;color:#8A6B43;padding-top:2px;font-variant-numeric:tabular-nums}
+.caldatas li.neste{background:rgba(185,138,67,.14);border-radius:10px;padding:8px;margin:0 -8px}
+.calhoje{align-self:flex-start;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#fff;background:#9A3B2A;border-radius:999px;padding:2px 8px;margin-bottom:2px}
+.calparte h5{margin:0 0 6px;font-size:16px}
+.calparte{display:flex;flex-direction:column;gap:8px}
+.calsadh{display:flex;flex-direction:column;gap:10px;background:rgba(63,73,56,.07);border-radius:12px;padding:12px}
+.calnota{font-size:12px;color:var(--soft)}
+
 .dobraseta{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(185,138,67,.14);color:#8A6B43;font-size:14px;transition:transform .2s}
 .dobra[open]>summary .dobraseta{transform:rotate(180deg)}
 .dobra[open]>summary{margin-bottom:10px}
@@ -2961,6 +2985,20 @@ function abrirGuardiao(passo) {
   }
   abre();
 }
+// calendário sagrado da cidade (Turma 2 em Varanasi): abre e fecha, com as datas, o que cada uma celebra e as sadhanas da Caravana
+function vCalendarioSagrado(c, iso) {
+  const par = t => String(t || "").split(/\n\s*\n/).map(x => h("p", { text: x.trim() }));
+  return h("details", { class: "calsag" },
+    h("summary", null, h("span", null, h("span", { class: "t", text: "Calendário sagrado" }), h("b", { text: c.titulo }), h("small", { text: c.sub })), h("span", { class: "dobraseta", "aria-hidden": "true", text: "▾" })),
+    h("div", { class: "calcorpo" },
+      h("p", { class: "calintro", text: c.intro }),
+      h("ol", { class: "caldatas" }, c.datas.map(x => h("li", { class: x.iso === iso ? "neste" : "" },
+        h("span", { class: "cd", text: x.data }), h("span", null, x.iso === iso ? h("span", { class: "calhoje", text: "Neste dia" }) : null, h("b", { text: x.nome }), h("small", { text: x.texto }))))),
+      c.partes.map(x => h("div", { class: "calparte" }, h("h5", { text: x.titulo }), par(x.texto))),
+      h("div", { class: "calsadh" }, h("p", { class: "t", text: "Sadhanas da Caravana" }),
+        c.sadhanas.map(x => h("div", { class: "sadh" }, h("span", { class: "cd", text: x.data }), h("span", null, h("b", { text: x.titulo }), h("small", { text: x.texto }))))),
+      c.nota ? h("p", { class: "calnota", text: c.nota }) : null));
+}
 function vDia(d, open, isToday, abrir) {
   const ls = (d.pins || []).map(localDe).filter(Boolean);
   const head = h("button", { class: "dayhead", type: "button", "aria-expanded": String(open), onclick: () => abrir(d.n) },
@@ -2980,6 +3018,7 @@ function vDia(d, open, isToday, abrir) {
         [d.agenda.flatMap(p => p.itens)].map(itens => [
           h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
+      d.calendario ? vCalendarioSagrado(d.calendario, d.iso) : null,
       (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
         l.dados && l.dados.length ? h("div", { class: "stats" }, l.dados.map(x => h("div", null, h("b", { text: x.v }), h("span", { text: x.l })))) : null)),
       d.aviso ? h("div", { class: "note" }, h("p", { class: "t", text: d.aviso.titulo }), h("p", { text: d.aviso.texto })) : null,
