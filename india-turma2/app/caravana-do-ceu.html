@@ -1198,6 +1198,9 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .notifdestaque b{font-size:16px}.notifdestaque span{font-size:15px;line-height:1.4;overflow-wrap:anywhere}
 .notifdestaque .ndx{border:0;background:none;font-size:22px;line-height:1;color:#6B6556;cursor:pointer;padding:0 4px}
 @keyframes ndentra{from{opacity:0;transform:translateY(-16px)}}
+.filmesom{position:absolute;left:10px;bottom:10px;z-index:3;background:rgba(0,0,0,.6);color:#fff;font-size:13px;font-weight:600;border-radius:999px;padding:5px 11px;pointer-events:none;transition:opacity .3s}
+.filmesom.on{opacity:0;animation:somsai 1.6s}
+@keyframes somsai{0%,60%{opacity:1}100%{opacity:0}}
 .dobraseta{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(185,138,67,.14);color:#8A6B43;font-size:14px;transition:transform .2s}
 .dobra[open]>summary .dobraseta{transform:rotate(180deg)}
 .dobra[open]>summary{margin-bottom:10px}
@@ -1281,10 +1284,10 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cfmini video,.qvfoto video{width:100%;height:100%;object-fit:cover}
 .nvseta{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:60px;border:0;background:none;color:rgba(255,255,255,.45);font-size:40px;cursor:pointer}
 .nvseta.e{left:-8px}.nvseta.d{right:-8px}
-.nvbase{display:flex;align-items:flex-start;justify-content:center;gap:14px;padding-top:18px;position:relative;z-index:3}
-.nvacao,.nvcompart{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;height:auto!important;width:auto!important;min-width:58px;color:#B9B2A6!important}
-.nvacao::after,.nvcompart::after{content:attr(data-txt);font:500 10px/1.2 Poppins,sans-serif;color:#C9C1B3;white-space:normal;max-width:96px;text-align:center}
-.nvvoltar{border:1px solid rgba(232,192,122,.5);background:rgba(232,192,122,.12);color:#E8C07A;border-radius:999px;padding:9px 14px;font:600 12px Poppins,sans-serif;cursor:pointer}
+.nvbase{display:flex;align-items:flex-start;justify-content:space-between;gap:2px;padding:18px max(6px,env(safe-area-inset-right,0px)) 0 max(6px,env(safe-area-inset-left,0px));position:relative;z-index:3}
+.nvacao,.nvcompart{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;height:auto!important;width:auto!important;flex:1 1 0;min-width:0;color:#B9B2A6!important}
+.nvacao::after,.nvcompart::after{content:attr(data-txt);font:500 10px/1.2 Poppins,sans-serif;color:#C9C1B3;white-space:normal;max-width:72px;text-align:center}
+.nvvoltar{flex:none;border:1px solid rgba(232,192,122,.5);background:rgba(232,192,122,.12);color:#E8C07A;border-radius:999px;padding:9px 11px;font:600 12px Poppins,sans-serif;cursor:pointer}
 .nvcompart{width:62px;height:62px;border:0;border-radius:50%;background:none;color:#8E8E8E;cursor:pointer}
 .nvacao{width:44px;height:44px;border:0;border-radius:50%;background:none;color:#6E6E6E;cursor:pointer}
 .nomovisor .msg{color:#ccc;min-height:1em;margin:6px 0 0}
@@ -7313,6 +7316,7 @@ async function filma2(c) {
   const tela = S.fotoCanvas; if (!tela || !tela.captureStream || !window.MediaRecorder) { alert("Este celular não consegue filmar pelo app."); return; }
   // o som: pede o microfone (na primeira vez o celular pergunta); sem permissão, grava assim mesmo, só a imagem
   let mic = null; try { mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true }, video: false }); } catch (e) { mic = null; }
+  if (!mic) avisoReacao("🔇 Filmando sem som: o microfone não foi liberado. Para gravar com som, permita o microfone para o app nos Ajustes do celular.");
   // 720 x 1280: imagem boa no celular e um filme leve, que vai inteiro, com som, para o chat e a Galeria
   const W = 720, H = 1280, rec = document.createElement("canvas"); rec.width = W; rec.height = H; const x = rec.getContext("2d");
   const marca = document.createElement("canvas"); marca.width = W; marca.height = H; await marcaCaravana(marca, { ox: 0, oy: 0, w: W, hh: H }, c && c.id === "rajastao");
@@ -7543,10 +7547,10 @@ function verFotos(i) {
       i < l.length - 1 ? h("button", { type: "button", class: "nvseta d", "aria-label": "Próxima foto", onclick: () => verFotos(i + 1) }, "›") : null),
     h("div", { class: "nvbase" },
       h("button", { type: "button", class: "nvvoltar", onclick: () => tela.remove() }, "← Câmera"),
-      h("button", { type: "button", class: "nvacao", "data-txt": "Ver meus Registros", "aria-label": "Ver meus Registros", onclick: () => { tela.remove(); irRegistros(); }, html: null }, iconeRegistros()),
+      h("button", { type: "button", class: "nvacao", "data-txt": "Registros", "aria-label": "Ver meus Registros", onclick: () => { tela.remove(); irRegistros(); }, html: null }, iconeRegistros()),
       h("button", { type: "button", class: "nvacao", "data-txt": "Apagar", "aria-label": "Apagar", onclick: () => { if (confirm("Apagar esta foto?")) { tela.remove(); apagaDoDiario(it.id); } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("path", { d: "M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" }))),
-      h("button", { type: "button", class: "nvcompart", "data-txt": "Salvar no dispositivo", "aria-label": "Salvar no dispositivo", onclick: compartilhar }, h("svg", { viewBox: "0 0 24 24", width: "34", height: "34", fill: "currentColor" }, h("path", { d: "M14 5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11V5z" }))),
-      h("button", { type: "button", class: "nvacao", "data-txt": "Enviar para a Galeria da Caravana", "aria-label": "Enviar para a Galeria da Caravana", onclick: async () => {
+      h("button", { type: "button", class: "nvcompart", "data-txt": "Salvar no celular", "aria-label": "Salvar no dispositivo", onclick: compartilhar }, h("svg", { viewBox: "0 0 24 24", width: "34", height: "34", fill: "currentColor" }, h("path", { d: "M14 5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11V5z" }))),
+      h("button", { type: "button", class: "nvacao", "data-txt": "Na Galeria", "aria-label": "Enviar para a Galeria da Caravana", onclick: async () => {
         if (it.enviando) { msg.textContent = "Já está enviando, espere um pouquinho."; msg.className = "msg"; return; }
         if (it.naGaleria) { msg.textContent = "Esta foto já está na Galeria da Caravana."; msg.className = "msg ok"; return; }
         if (!S.assets || !eu()) { msg.textContent = "Para enviar à galeria, emita seu passaporte."; msg.className = "msg err"; return; }
@@ -7557,7 +7561,7 @@ function verFotos(i) {
         catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
         finally { it.enviando = false; } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("rect", { x: "3", y: "5", width: "18", height: "14", rx: "2" }), h("path", { d: "M3 16l5-5 4 4 3-3 6 6" }))),
       // manda o filme ou a foto direto no chat da caravana (o filme vai com som)
-      h("button", { type: "button", class: "nvacao", "data-txt": "Enviar no Chat", "aria-label": "Enviar no Chat", onclick: async () => {
+      h("button", { type: "button", class: "nvacao", "data-txt": "No Chat", "aria-label": "Enviar no Chat", onclick: async () => {
         somDosFilmes();
         if (it.enviando) { msg.textContent = "Já está enviando, espere um pouquinho."; msg.className = "msg"; return; }
         if (it.noChat) { msg.textContent = "Já está no Chat."; msg.className = "msg ok"; return; }
@@ -9861,10 +9865,16 @@ function vMural() {
     blocoAlbum(""));
 }
 // filme tocando limpo: sem os controles do celular (que deixam uma camada escura por cima); um toque pausa e outro volta a tocar
+// o filme começa tocando mudo, em loop (como uma foto viva); um toque liga o som e volta ao começo; depois, o toque pausa e continua
 function filmeLimpo(src, poster, cls) {
-  const v = h("video", { class: cls || null, src, poster: poster || null, autoplay: true, loop: true, muted: true, playsinline: true, onclick: e => { const x = e.currentTarget; if (x.paused) x.play().catch(() => {}); else x.pause(); } });
+  const som = h("span", { class: "filmesom", "aria-hidden": "true", text: "🔇 Toque para ouvir" });
+  const v = h("video", { class: cls || null, src, poster: poster || null, autoplay: true, loop: true, muted: true, playsinline: true, onclick: e => { const x = e.currentTarget;
+    if (x.muted) { x.muted = false; x.currentTime = 0; x.play().catch(() => { x.muted = true; x.play().catch(() => {}); }); som.textContent = "🔊"; som.classList.add("on"); return; }
+    if (x.paused) x.play().catch(() => {}); else x.pause(); } });
   v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", ""); v.muted = true; v.defaultMuted = true;
   setTimeout(() => v.play().catch(() => {}), 0);
+  // o aviso do som aparece em cima do filme, sem mudar o lugar do filme na tela
+  v.addEventListener("loadeddata", () => { if (v.parentNode && !som.isConnected) { const pai = v.parentNode; if (getComputedStyle(pai).position === "static") pai.style.position = "relative"; pai.append(som); } }, { once: true });
   return v;
 }
 // ---------- filmes na Galeria da Caravana ----------
