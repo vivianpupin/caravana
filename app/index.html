@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "01/11 · 17:10";</script>
+<script>window.__VERSAO = "01/11 · 17:16";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -7503,7 +7503,21 @@ function verFotos(i) {
         try { if (/^video/.test(it.blob.type)) { it.enviando = true; try { await enviaFilmeGaleria(it, msg); } finally { it.enviando = false; } return; }
           const rr = await S.assets.upload(it.blob); await addMural({ autor: S.uid, fotoId: rr.id, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now() }); it.naGaleria = true; msg.textContent = "Foto na Galeria da Caravana."; msg.className = "msg ok"; }
         catch (e) { msg.textContent = erroFoto(e); msg.className = "msg err"; }
-        finally { it.enviando = false; } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("rect", { x: "3", y: "5", width: "18", height: "14", rx: "2" }), h("path", { d: "M3 16l5-5 4 4 3-3 6 6" })))),
+        finally { it.enviando = false; } } }, h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8" }, h("rect", { x: "3", y: "5", width: "18", height: "14", rx: "2" }), h("path", { d: "M3 16l5-5 4 4 3-3 6 6" }))),
+      // manda o filme ou a foto direto no chat da caravana (o filme vai com som)
+      h("button", { type: "button", class: "nvacao", "data-txt": "Enviar no Chat", "aria-label": "Enviar no Chat", onclick: async () => {
+        somDosFilmes();
+        if (it.enviando) { msg.textContent = "Já está enviando, espere um pouquinho."; msg.className = "msg"; return; }
+        if (it.noChat) { msg.textContent = "Já está no Chat."; msg.className = "msg ok"; return; }
+        if (!S.assets || !eu()) { msg.textContent = "Para enviar no chat, emita seu passaporte."; msg.className = "msg err"; return; }
+        it.enviando = true; S.enviandoFilme = (S.enviandoFilme || 0) + 1; msg.textContent = "Enviando…"; msg.className = "msg";
+        try {
+          if (/^video/.test(it.blob.type)) { const r = await preparaFilme(it, msg); if (!r) return; await addChat({ autor: S.uid, tipo: "video", fotoId: r.capaId, video: r.video, texto: "", ts: Date.now() }); }
+          else { const rr = await S.assets.upload(it.blob); await addChat({ autor: S.uid, tipo: "foto", fotoId: rr.id, texto: "", ts: Date.now() }); }
+          it.noChat = true; msg.textContent = "Enviado no Chat da caravana."; msg.className = "msg ok";
+        } catch (e) { msg.textContent = /^video/.test(it.blob.type) ? "Não consegui enviar o filme. Tente de novo." : erroFoto(e); msg.className = "msg err"; }
+        finally { it.enviando = false; S.enviandoFilme--; } } },
+        h("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", "stroke-width": "1.8", "stroke-linejoin": "round" }, h("path", { d: "M4 5h16v11H9l-5 4z" })))),
     msg);
   document.body.append(tela);
   // Kashi: a foto aparece direto, sem esperar revelar nem chacoalhar o celular
