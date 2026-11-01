@@ -1199,8 +1199,6 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .notifdestaque .ndx{border:0;background:none;font-size:22px;line-height:1;color:#6B6556;cursor:pointer;padding:0 4px}
 @keyframes ndentra{from{opacity:0;transform:translateY(-16px)}}
 .filmesom{position:absolute;left:10px;bottom:10px;z-index:3;background:rgba(0,0,0,.6);color:#fff;font-size:13px;font-weight:600;border-radius:999px;padding:5px 11px;pointer-events:none;transition:opacity .3s}
-.filmesom.on{opacity:0;animation:somsai 1.6s}
-@keyframes somsai{0%,60%{opacity:1}100%{opacity:0}}
 .dobraseta{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(185,138,67,.14);color:#8A6B43;font-size:14px;transition:transform .2s}
 .dobra[open]>summary .dobraseta{transform:rotate(180deg)}
 .dobra[open]>summary{margin-bottom:10px}
@@ -9865,16 +9863,15 @@ function vMural() {
     blocoAlbum(""));
 }
 // filme tocando limpo: sem os controles do celular (que deixam uma camada escura por cima); um toque pausa e outro volta a tocar
-// o filme começa tocando mudo, em loop (como uma foto viva); um toque liga o som e volta ao começo; depois, o toque pausa e continua
+// o filme abre tocando com som (quem abriu tocou na tela, e o celular deixa); se o celular não deixar, toca mudo e um toque liga o som
 function filmeLimpo(src, poster, cls) {
   const som = h("span", { class: "filmesom", "aria-hidden": "true", text: "🔇 Toque para ouvir" });
-  const v = h("video", { class: cls || null, src, poster: poster || null, autoplay: true, loop: true, muted: true, playsinline: true, onclick: e => { const x = e.currentTarget;
-    if (x.muted) { x.muted = false; x.currentTime = 0; x.play().catch(() => { x.muted = true; x.play().catch(() => {}); }); som.textContent = "🔊"; som.classList.add("on"); return; }
+  const v = h("video", { class: cls || null, src, poster: poster || null, autoplay: true, loop: true, playsinline: true, onclick: e => { const x = e.currentTarget;
+    if (x.muted) { x.muted = false; x.currentTime = 0; x.play().catch(() => { x.muted = true; x.play().catch(() => {}); }); som.remove(); return; }
     if (x.paused) x.play().catch(() => {}); else x.pause(); } });
-  v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", ""); v.muted = true; v.defaultMuted = true;
-  setTimeout(() => v.play().catch(() => {}), 0);
-  // o aviso do som aparece em cima do filme, sem mudar o lugar do filme na tela
-  v.addEventListener("loadeddata", () => { if (v.parentNode && !som.isConnected) { const pai = v.parentNode; if (getComputedStyle(pai).position === "static") pai.style.position = "relative"; pai.append(som); } }, { once: true });
+  v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", "");
+  const mostraAviso = () => { if (v.parentNode && !som.isConnected) { const pai = v.parentNode; if (getComputedStyle(pai).position === "static") pai.style.position = "relative"; pai.append(som); } };
+  setTimeout(() => v.play().catch(() => { v.muted = true; v.play().catch(() => {}); if (v.readyState >= 2) mostraAviso(); else v.addEventListener("loadeddata", mostraAviso, { once: true }); }), 0);
   return v;
 }
 // ---------- filmes na Galeria da Caravana ----------
