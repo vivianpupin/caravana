@@ -2395,7 +2395,7 @@ function render() {
   if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
   // galeria do celular aberta (escolhendo foto): não redesenha agora, senão a foto escolhida se perde; redesenha quando ela fecha
   if (S.arquivoAberto && Date.now() - S.arquivoAberto < 120000) { S.renderEspera = true; return; }
-  marcaChat(); marcaPombos(); convidaAvisos(); registraApp(); checaHabilidades();
+  marcaChat(); marcaPombos(); convidaAvisos(); registraApp(); checaHabilidades(); localizacaoAoAbrir();
   // escrevendo no chat e chegou mensagem: troca só a lista de mensagens; a caixa de texto fica como está (o cursor e o teclado não pulam)
   if (S.tab === "conversa" && document.activeElement && document.activeElement.id === "chat-input" && S._abaDesenhada && S._abaDesenhada.startsWith("conversa|")) {
     const velho = $("#chatlog"), novo = vConversa().querySelector("#chatlog");
@@ -5431,6 +5431,16 @@ function gpsDesligado() {
     h("button", { class: "btn gold", type: "button", onclick: () => { S.gpsNoite = false; S.gpsNoiteLigou = true; ligarGps(true); } }, "Ligar minha localização ao vivo"),
     h("p", { class: "msg", role: "status", text: "À noite a localização fica pausada para poupar bateria e volta sozinha às 6h. Se quiser aparecer no mapa agora, toque em Ligar." }));
   return h("div", { style: "display:flex;flex-direction:column;gap:6px" }, h("button", { class: "btn gold", type: "button", onclick: () => ligarGps(true) }, "Ligar minha localização ao vivo"), S.gpsMsg ? h("p", { class: "msg", role: "status", text: S.gpsMsg }) : null);
+}
+// a localização liga sozinha toda vez que o app abre, em qualquer aba (o celular pede a permissão se precisar),
+// a não ser que a pessoa tenha desligado de propósito no mapa; à noite fica pausada para poupar bateria
+function localizacaoAoAbrir() {
+  if (S._locAbrir || !noSite() || !S.uid || !eu() || !navigator.geolocation || S.gpsWatch != null) return;
+  if (!lsGet("cdi-perm")) return; // na primeira vez, quem pede é a tela de permissões
+  if (lsGet("cdi-gps") === "0") return;
+  S._locAbrir = true; S._autoGps = true;
+  if (noite()) { S.gpsNoite = true; return; }
+  ligarGps(true);
 }
 function autoGps() {
   if (S.gpsWatch != null || S._autoGps) return; S._autoGps = true;
