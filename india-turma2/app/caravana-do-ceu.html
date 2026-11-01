@@ -1186,6 +1186,12 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .chatvid{position:relative;display:block;padding:0;border:0;background:#2A1F16;border-radius:10px;overflow:hidden;cursor:pointer;width:100%;min-height:150px}
 .chatvid .vidplay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
 .chatvid .vidcarrega{position:absolute;left:8px;right:8px;bottom:8px;background:rgba(0,0,0,.55);color:#fff;font-size:13px;border-radius:8px;padding:6px 8px;text-align:center}
+.vistos{display:inline-flex;gap:4px;align-items:center;margin-top:6px;padding:3px 10px;border-radius:999px;border:0;background:rgba(255,255,255,.14);color:inherit;font-size:12px;font-weight:600;cursor:pointer;opacity:.9}
+.vistosbox{position:relative;background:#F3EBDD;border-radius:18px;padding:22px 18px 18px;max-width:420px;max-height:80vh;overflow:auto;margin:auto;display:flex;flex-direction:column;gap:14px}
+.vistosbox h2{margin:0}.vistostexto{margin:0;font-style:italic;color:var(--soft)}
+.vistosgrupo{display:flex;flex-direction:column;gap:8px}.vistosgrupo .eyebrow{margin:0}
+.vistoslista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.vistoslista li{display:flex;align-items:center;gap:10px}.vistoslista img{width:32px;height:32px;border-radius:50%;object-fit:cover}
 .dobraseta{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(185,138,67,.14);color:#8A6B43;font-size:14px;transition:transform .2s}
 .dobra[open]>summary .dobraseta{transform:rotate(180deg)}
 .dobra[open]>summary{margin-bottom:10px}
@@ -2335,12 +2341,36 @@ $("#me").addEventListener("click", () => go("passaporte"));
   }); }
 
 // mensagem nova no chat: pontinho amarelo na aba Chat (e no ícone do app, quando o celular permite)
+// só a líder: quantas pessoas já viram a mensagem dela (quem abriu o chat depois que ela chegou)
+function linhaVistos(m) {
+  if (!S.presenca) return null;
+  const gente = S.viajantes.filter(v => v.id !== m.autor); if (!gente.length) return null;
+  const viu = gente.filter(v => ((S.presenca.find(p => p.id === v.id) || {}).chatVisto || 0) >= (m.ts || 0));
+  return h("button", { type: "button", class: "vistos", "aria-label": `Visto por ${viu.length} de ${gente.length}. Toque para ver quem`, onclick: () => abrirVistos(m) },
+    h("span", { "aria-hidden": "true", text: "👁" }), ` Visto por ${viu.length} de ${gente.length}`);
+}
+function abrirVistos(m) {
+  closeSheets();
+  const gente = S.viajantes.filter(v => v.id !== m.autor).sort((a, b) => String(a.nome).localeCompare(String(b.nome)));
+  const viu = gente.filter(v => ((S.presenca.find(p => p.id === v.id) || {}).chatVisto || 0) >= (m.ts || 0)), nao = gente.filter(v => !viu.includes(v));
+  const lista = (t, l) => h("div", { class: "vistosgrupo" }, h("p", { class: "eyebrow", text: `${t} · ${l.length}` }),
+    l.length ? h("ul", { class: "vistoslista" }, l.map(v => h("li", null, h("img", { src: avatar(v.id), alt: "" }), h("span", { text: v.nome })))) : h("p", { class: "small", text: "Ninguém." }));
+  const box = h("div", { role: "dialog", "aria-label": "Quem viu sua mensagem", class: "vistosbox" },
+    h("button", { type: "button", class: "celx", "aria-label": "Fechar", onclick: closeSheets }, "×"),
+    h("h2", { text: "Quem viu sua mensagem" }),
+    h("p", { class: "vistostexto", text: String(m.texto || (m.tipo === "foto" ? "📷 Foto" : m.tipo === "video" ? "🎬 Vídeo" : "")).slice(0, 120) }),
+    lista("Já viram", viu), lista("Ainda não viram", nao),
+    h("p", { class: "small", text: "Conta quem abriu o chat depois que a mensagem chegou. Só você vê isso." }));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box); document.body.append(sheet);
+}
 function marcaChat() {
   let visto = 0; try { visto = +localStorage.getItem("cdi-chat-visto") || 0; } catch (e) {}
   const ult = S.chat.reduce((a, m) => Math.max(a, m.ts || 0), 0);
   // ao abrir o chat, lembra até onde a pessoa já tinha lido: a conversa abre ali, e não lá embaixo
   if (S.tab === "conversa" && S.chatAbriuEm == null) { S.chatAbriuEm = visto; S.chatIrNovas = true; }
   if (!visto || S.tab === "conversa") { if (ult > visto) { visto = ult; try { localStorage.setItem("cdi-chat-visto", String(ult)); } catch (e) {} } }
+  // até onde a pessoa já leu o chat vai para o banco: é assim que a líder vê quantos viram a mensagem dela
+  if (S.tab === "conversa" && S.db && S.uid && eu() && visto > (S.vistoEnviado || 0)) { S.vistoEnviado = visto; S.db.doc("presenca/" + S.uid).set({ chatVisto: visto }, { merge: true }).catch(() => { S.vistoEnviado = 0; }); }
   const n = S.chat.filter(m => m.autor !== S.uid && m.tipo !== "local" && m.tipo !== "aovivo" && m.tipo !== "reacao" && (m.ts || 0) > visto).length;
   const bt = document.querySelector('#tabs button[data-tab="conversa"]'); if (!bt) return;
   let pin = bt.querySelector(".pinmsg");
@@ -8467,6 +8497,7 @@ function vConversa() {
         ehAviso ? h("div", null, h("p", { class: "eyebrow avisolab", text: "📢 Aviso da líder" }), h("p", { class: "t", text: m.texto })) :
         textoChat(m.autor, m.texto),
         linhaReacoes(m.id),
+        S.isOwner && m.autor === S.uid && m.tipo !== "reacao" ? linhaVistos(m) : null,
         S.reagindo === m.id ? h("div", { class: "reacbar", role: "group", "aria-label": "Escolha uma reação" }, ["❤️", "🙏", "😂", "😮", "👏", "🔥"].map(e => h("button", { type: "button", "aria-label": e, onclick: () => reagirMsg(m.id, e) }, e))) : null)));
   }
   const cel = cartaoCelular(); if (cel) log.prepend(cel);
@@ -10447,7 +10478,7 @@ function vRupias() {
 
 // ---------- dados ----------
 // cada coleção só redesenha as abas que mostram aqueles dados (evita a tela pular à toa)
-const USA = { posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos", "travessia"], cartas: ["travessia", "pombo"], cartasP: ["travessia", "pombo"], pombosIn: ["pombo"], pombosOut: ["pombo"] };
+const USA = { presenca: ["conversa"], posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos", "travessia"], cartas: ["travessia", "pombo"], cartasP: ["travessia", "pombo"], pombosIn: ["pombo"], pombosOut: ["pombo"] };
 let calmoT = 0, calmoUlt = 0;
 function renderCalmo() { if (calmoT) return; const falta = Math.max(0, 15000 - (Date.now() - calmoUlt)); calmoT = setTimeout(() => { calmoT = 0; calmoUlt = Date.now(); if (!(S.camSel && S.tab === "fotos") && !document.querySelector(".sheet") && !document.activeElement?.matches?.("input,textarea,select,[contenteditable]")) render(); }, falta); }
 function listen(col, key, q, after) {
@@ -10537,6 +10568,7 @@ render();
   { const cp = db.collection("cartasPessoais"); listen("cartasPessoais", "cartasP", S.isOwner || !cp.where ? cp : cp.where("para", "==", S.uid), () => setTimeout(checaCorreio, 1200)); }
   listen("pensamentos", "pedra");
   if (S.isOwner && window.__SITE) listen("membros", "membros");
+  if (S.isOwner) listen("presenca", "presenca");
   listen("mural", "mural", db.collection("mural").orderBy("ts", "desc").limit(300), () => { S.muralPronto = true; });
   setInterval(() => {
     if (document.activeElement?.matches?.("input,textarea,select,[contenteditable]") || document.querySelector(".sheet")) return;
