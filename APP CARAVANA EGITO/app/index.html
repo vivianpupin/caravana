@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "01/11 · 17:04";</script>
+<script>window.__VERSAO = "01/11 · 18:11";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -5116,14 +5116,14 @@ function gestosMapa(svg, mov, P, km) {
     clearTimeout(rodaT); rodaT = setTimeout(confirma, 280);
   }, { passive: false });
 }
-// a localização liga sozinha toda vez que o app abre, em qualquer aba (o celular pede a permissão se precisar),
-// a não ser que a pessoa tenha desligado de propósito no mapa; à noite fica pausada para poupar bateria
+// a localização liga sozinha toda vez que o app abre, em qualquer aba (o celular pede a permissão se precisar);
+// "Desligar" no mapa vale só enquanto o app está aberto
 function localizacaoAoAbrir() {
   if (S._locAbrir || !noSite() || !S.uid || !eu() || !navigator.geolocation || S.gpsWatch != null) return;
   if (!lsGet("cdi-perm")) return; // na primeira vez, quem pede é a tela de permissões
-  if (lsGet("cdi-gps") === "0") return;
+  // liga sempre que o app abre (mesmo quem desligou antes, e mesmo à noite: quem abriu o app quer aparecer no mapa)
   S._locAbrir = true; S._autoGps = true;
-  if (noite()) { S.gpsNoite = true; return; }
+  if (noite()) S.gpsNoiteLigou = true;
   ligarGps(true);
 }
 function autoGps() {
