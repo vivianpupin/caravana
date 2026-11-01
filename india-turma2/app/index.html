@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "01/11 · 17:28";</script>
+<script>window.__VERSAO = "01/11 · 17:44";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1225,6 +1225,12 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .vistosgrupo{display:flex;flex-direction:column;gap:8px}.vistosgrupo .eyebrow{margin:0}
 .vistoslista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .vistoslista li{display:flex;align-items:center;gap:10px}.vistoslista img{width:32px;height:32px;border-radius:50%;object-fit:cover}
+.notifdestaque{position:fixed;z-index:2147483600;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 10px);display:flex;gap:10px;align-items:flex-start;background:#FBF6EC;color:#282722;border-radius:16px;padding:14px 12px 14px 16px;box-shadow:0 14px 40px rgba(20,12,4,.45);border:1px solid rgba(185,138,67,.45);animation:ndentra .35s ease-out;cursor:pointer;max-width:560px;margin:0 auto}
+.notifdestaque.sai{opacity:0;transform:translateY(-12px);transition:.3s}
+.notifdestaque .ndtx{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+.notifdestaque b{font-size:16px}.notifdestaque span{font-size:15px;line-height:1.4;overflow-wrap:anywhere}
+.notifdestaque .ndx{border:0;background:none;font-size:22px;line-height:1;color:#6B6556;cursor:pointer;padding:0 4px}
+@keyframes ndentra{from{opacity:0;transform:translateY(-16px)}}
 .dobraseta{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(185,138,67,.14);color:#8A6B43;font-size:14px;transition:transform .2s}
 .dobra[open]>summary .dobraseta{transform:rotate(180deg)}
 .dobra[open]>summary{margin-bottom:10px}
@@ -8219,14 +8225,26 @@ function tentaAbrirLink() {
   else if (L.selo) { const l = localDe(L.selo); if (!l) return; S.abrirLink = null; abrirSelo(l); }
   else if (L.de) { if (!S.viajantes.some(v => v.id === L.de)) return; S.abrirLink = null; abrirPessoa(L.de); } // recado pelo mapa: abre quem mandou, para responder
 }
+// o texto da notificação tocada aparece em destaque no topo, na hora (por cima até da abertura), enquanto o app carrega o resto
+function destaqueNotif(titulo, corpo, aba) {
+  if (!titulo && !corpo) return;
+  document.querySelector(".notifdestaque")?.remove();
+  const fecha = () => { el.classList.add("sai"); setTimeout(() => el.remove(), 350); };
+  const el = h("div", { class: "notifdestaque", role: "status", onclick: e => { if (e.target.closest(".ndx")) return; fecha(); if (aba && S.tab !== aba) go(aba); } },
+    h("div", { class: "ndtx" }, titulo ? h("b", { text: titulo }) : null, corpo ? h("span", { text: corpo }) : null),
+    h("button", { type: "button", class: "ndx", "aria-label": "Fechar", onclick: fecha }, "×"));
+  document.body.append(el); setTimeout(fecha, 12000);
+}
 if (navigator.serviceWorker) navigator.serviceWorker.addEventListener("message", e => {
   const d = e.data || {}; if (!d.aba) return;
+  if (d.t || d.b) destaqueNotif(d.t, d.b, d.aba);
   const aba = d.url ? pegaLink(new URL(d.url).searchParams) : d.aba;
   // notificação que leva ao mapa (chegada na Índia, recado): abre no Mundo, com o planeta inteiro
   if (aba === "mapa") { S.mapaModo = "mundo"; planetaDeNovo(); }
   if (aba) { go(aba); tentaAbrirLink(); }
 });
 { const q = new URLSearchParams(location.search), aba = pegaLink(q); if (aba) S.tab = aba;
+  if (q.get("nt") || q.get("nb")) { destaqueNotif(q.get("nt"), q.get("nb"), aba); S.abrirLink = S.abrirLink || { ate: Date.now() + 60000 }; }
   if (q.has("aba")) try { history.replaceState(null, "", location.pathname); } catch (e) {} }
 setInterval(tentaAbrirLink, 1500);
 // a líder abre ou fecha um selo para todos; ao abrir, a caravana recebe o aviso no celular

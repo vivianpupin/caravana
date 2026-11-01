@@ -71,14 +71,16 @@ self.addEventListener("push", e => {
   let d = {}; try { d = e.data ? e.data.json() : {}; } catch (x) { d = { body: e.data && e.data.text() }; }
   // com o app fechado, a notificação acende a bolinha no ícone (soma 1 a cada aviso; ao abrir o app, ele acerta o número)
   const bolinha = () => caches.open("caravana-bolinha").then(async c => { const r = await c.match("n"), n = (r ? +(await r.text()) || 0 : 0) + 1; await c.put("n", new Response(String(n))); if (self.navigator.setAppBadge) await self.navigator.setAppBadge(n); }).catch(() => {});
-  e.waitUntil(Promise.all([self.registration.showNotification(d.title || "Caravana do Céu", { body: d.body || "Mensagem nova no chat", icon: "img/icone-t2-192.png", badge: "img/icone-t2-192.png", tag: d.tag || "chat", renotify: true, requireInteraction: !!d.requireInteraction, data: { url: d.url || "./?aba=conversa" } }), bolinha()]));
+  e.waitUntil(Promise.all([self.registration.showNotification(d.title || "Caravana do Céu", { body: d.body || "Mensagem nova no chat", icon: "img/icone-t2-192.png", badge: "img/icone-t2-192.png", tag: d.tag || "chat", renotify: true, requireInteraction: !!d.requireInteraction, data: { url: d.url || "./?aba=conversa", t: d.title || "", b: d.body || "" } }), bolinha()]));
 });
 self.addEventListener("notificationclick", e => {
   e.notification.close();
-  const url = new URL((e.notification.data && e.notification.data.url) || "./", self.registration.scope).href;
+  const nd = e.notification.data || {}, url = new URL(nd.url || "./", self.registration.scope).href;
+  // o texto da notificação vai junto: o app mostra em destaque assim que abre, antes de carregar o resto
+  const comTexto = url + (url.includes("?") ? "&" : "?") + "nt=" + encodeURIComponent(nd.t || "") + "&nb=" + encodeURIComponent(String(nd.b || "").slice(0, 300));
   e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(ws => {
     const aba = (url.match(/aba=([a-z]+)/) || [])[1] || "conversa";
-    for (const w of ws) { w.postMessage({ aba, url }); if ("focus" in w) return w.focus(); }
-    return self.clients.openWindow(url);
+    for (const w of ws) { w.postMessage({ aba, url, t: nd.t, b: nd.b }); if ("focus" in w) return w.focus(); }
+    return self.clients.openWindow(comTexto);
   }));
 });
