@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "01/11 · 17:04";</script>
+<script>window.__VERSAO = "01/11 · 17:08";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1216,6 +1216,9 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .calguiadia ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .calguiadia li{font-size:15px;line-height:1.45;color:var(--ink)}
 
+.chatvid{position:relative;display:block;padding:0;border:0;background:#2A1F16;border-radius:10px;overflow:hidden;cursor:pointer;width:100%;min-height:150px}
+.chatvid .vidplay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+.chatvid .vidcarrega{position:absolute;left:8px;right:8px;bottom:8px;background:rgba(0,0,0,.55);color:#fff;font-size:13px;border-radius:8px;padding:6px 8px;text-align:center}
 .dobraseta{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(185,138,67,.14);color:#8A6B43;font-size:14px;transition:transform .2s}
 .dobra[open]>summary .dobraseta{transform:rotate(180deg)}
 .dobra[open]>summary{margin-bottom:10px}
@@ -8475,6 +8478,7 @@ function vConversa() {
           m.texto ? h("p", { class: "t", text: m.texto }) : null,
           h("div", { class: "actions" }, h("a", { class: "btn", href: m.link, target: "_blank", rel: "noopener" }, "Ver ao vivo no Google Maps"))) :
         m.tipo === "foto" ? h("div", null, h("img", { class: "chatfoto", ...fotoTardia(m.fotoId), alt: m.texto || "Foto", loading: "lazy" }), m.texto ? h("p", { class: "t", text: m.texto }) : null) :
+        m.tipo === "video" && m.video ? h("div", null, chatVideo(m), m.texto ? h("p", { class: "t", text: m.texto }) : null) :
         ehAviso ? h("div", null, h("p", { class: "eyebrow avisolab", text: "📢 Aviso da líder" }), h("p", { class: "t", text: m.texto })) :
         textoChat(m.autor, m.texto),
         linhaReacoes(m.id),
@@ -8529,11 +8533,20 @@ function vConversa() {
     } catch (e) { falha(e); }
   };
   const fotoMsg = h("p", { class: "note", role: "status" });
-  const fileIn = h("input", { type: "file", accept: "image/*", id: "chat-foto", hidden: true, onchange: async () => {
-    const f = fileIn.files[0]; if (!f) return; fotoMsg.textContent = "Enviando a foto…";
+  const fileIn = h("input", { type: "file", accept: "image/*,video/*", id: "chat-foto", hidden: true, onchange: async () => {
+    const f = fileIn.files[0]; if (!f) return; fileIn.value = "";
+    // vídeo: o mesmo caminho dos filmes da Galeria (capa, versão leve de até 30 s, enviado em partes)
+    if (/^video\//.test(f.type) || /\.(mov|mp4|m4v|webm|hevc|3gp)$/i.test(f.name || "")) {
+      const msg = { set textContent(t) { fotoMsg.textContent = t; }, set className(c) { fotoMsg.dataset.err = c.includes("err") ? "1" : ""; } };
+      S.enviandoFilme = (S.enviandoFilme || 0) + 1;
+      try { const r = await preparaFilme({ blob: f }, msg); if (r) { await addChat({ autor: S.uid, tipo: "video", fotoId: r.capaId, video: r.video, texto: ta.value.trim(), ts: Date.now() }); ta.value = ""; fotoMsg.textContent = ""; } }
+      catch (e) { fotoMsg.textContent = "Não consegui enviar o vídeo" + (e && e.message ? " (" + String(e.message).slice(0, 60) + ")" : "") + ". Tente de novo."; }
+      finally { S.enviandoFilme--; }
+      return;
+    }
+    fotoMsg.textContent = "Enviando a foto…";
     try { const id = await subirFoto(f); await addChat({ autor: S.uid, tipo: "foto", fotoId: id, texto: ta.value.trim(), ts: Date.now() }); ta.value = ""; fotoMsg.textContent = ""; }
     catch (e) { fotoMsg.textContent = erroFoto(e); falha(e); }
-    fileIn.value = "";
   } });
   const ico = d => h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "1.7", "stroke-linecap": "round", "stroke-linejoin": "round" }, d.map(p => h("path", { d: p })));
   return h("section", { class: "view chatview" },
@@ -9886,6 +9899,12 @@ async function enviaFilmeGaleria(it, msg) {
 // enquanto filma ou envia um filme, a atualização do app espera (senão recarregava no meio e perdia tudo)
 window.__ocupado = () => !!S.gravando || S.enviandoFilme > 0 || !!S.revelando || fotoOcupada();
 async function enviaFilmeGaleria2(it, msg) {
+  const r = await preparaFilme(it, msg); if (!r) return;
+  await addMural({ autor: S.uid, fotoId: r.capaId, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now(), video: r.video });
+  msg.textContent = "Filme na Galeria da Caravana."; msg.className = "msg ok";
+}
+// capa + versão leve (até 30 s) + o filme em partes: devolve { capaId, video } ou nada (com o motivo no msg)
+async function preparaFilme(it, msg) {
   msg.textContent = "Lendo o vídeo…"; msg.className = "msg";
   const capa = it.capa || await capaDoFilme(it.blob);
   if (!capa) throw new Error("capa");
@@ -9903,11 +9922,23 @@ async function enviaFilmeGaleria2(it, msg) {
       let prox = 0; await Promise.all([0, 1, 2].map(async () => { while (prox < n) await sobe(prox++); }));
     } else partes = [(await S.assets.upload(filme)).id];
   } catch (e) { for (const id of [capaId, ...partes].filter(Boolean)) S.assets.delete(id).catch(() => {}); throw e; }
-  await addMural({ autor: S.uid, fotoId: capaId, cidade: it.cidade || cidadeHoje(), legenda: it.camera || "", ts: Date.now(), video: { partes, tipo: filme.type || "video/mp4" } });
-  msg.textContent = "Filme na Galeria da Caravana."; msg.className = "msg ok";
+  return { capaId, video: { partes, tipo: filme.type || "video/mp4" } };
 }
 // o filme só é baixado quando alguém toca para assistir (economiza os dados de todo mundo)
 const filmesBaixados = {};
+// vídeo no chat: mostra a capa com o play; ao tocar, baixa e toca ali mesmo
+function chatVideo(m) {
+  const ic = h("span", { class: "vidplay", "aria-hidden": "true" }); ic.innerHTML = PLAYSVG;
+  const caixa = h("button", { type: "button", class: "chatvid", "aria-label": "Assistir ao vídeo" + (m.texto ? ": " + m.texto : ""), onclick: () => {
+    if (caixa.dataset.c) return; caixa.dataset.c = 1; caixa.append(h("span", { class: "vidcarrega", text: "Carregando o vídeo…" }));
+    urlDoFilme({ id: "chat-" + m.id, video: m.video }).then(u => { if (!caixa.isConnected) return;
+      // no chat o vídeo toca com som e com os controles (na Galeria ele toca mudo, em loop)
+      const v = h("video", { class: "chatfoto", src: u, poster: blob(m.fotoId), controls: true, playsinline: true, preload: "auto" }); v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", "");
+      caixa.replaceWith(v); v.play().catch(() => {}); },
+      () => { caixa.dataset.c = ""; caixa.querySelector(".vidcarrega").textContent = "Não consegui carregar o vídeo. Toque de novo."; });
+  } }, h("img", { class: "chatfoto", ...fotoTardia(m.fotoId), alt: "", loading: "lazy" }), ic);
+  return caixa;
+}
 function urlDoFilme(f) {
   const vd = f.video || {};
   if (!noSite()) return Promise.resolve(blob(vd.partes[0]));

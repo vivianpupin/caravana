@@ -2,7 +2,7 @@
 // Precisa da variável FIREBASE_SA no Netlify (a chave da conta de serviço do Firebase, colada lá, nunca no código).
 import { avisarPassaporteCompleto, db, chaves, enviarTodos, enviarPara } from "../lib/push.mjs";
 
-const resumo = m => m.tipo === "foto" ? "📷 Mandou uma foto" + (m.texto ? ": " + m.texto : "")
+const resumo = m => m.tipo === "video" ? "🎬 Mandou um vídeo" + (m.texto ? ": " + m.texto : "") : m.tipo === "foto" ? "📷 Mandou uma foto" + (m.texto ? ": " + m.texto : "")
   : m.tipo === "local" ? "📍 Ponto de encontro: " + (m.nome || "local marcado")
   : m.tipo === "aovivo" ? "📍 Está compartilhando a localização ao vivo"
   : String(m.texto || "").replace(/:(surya|ganesha|shiva|krishna|hanuman|lakshmi|durga|kali|parvati|saraswati|vishnu|ganga):/g, (_, d) => "[" + d[0].toUpperCase() + d.slice(1) + "]")
