@@ -1493,5 +1493,11 @@
   }
   (function(){var s='t1';try{s=localStorage.getItem('turma')||'t1';}catch(e){}setTurma(s);})();
 </script>
+<script>
+  // guarda o app no celular para funcionar sem internet
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
+  }
+</script>
 </body>
 </html>
