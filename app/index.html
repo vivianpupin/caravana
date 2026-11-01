@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "01/11 · 17:44";</script>
+<script>window.__VERSAO = "01/11 · 17:46";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -9954,15 +9954,24 @@ async function preparaFilme(it, msg) {
 }
 // o filme só é baixado quando alguém toca para assistir (economiza os dados de todo mundo)
 const filmesBaixados = {};
-// vídeo no chat: mostra a capa com o play; ao tocar, baixa e toca ali mesmo
+// vídeo no chat: mostra a capa com o play; ao tocar, baixa e toca ali mesmo.
+// A tela fica parada no vídeo (o chat não desce sozinho) e o vídeo continua tocando mesmo se o chat redesenhar.
+S.chatVids = {};
 function chatVideo(m) {
+  const pronto = S.chatVids[m.id];
+  if (pronto) { if (!pronto.paused) setTimeout(() => pronto.play().catch(() => {}), 0); return pronto; }
   const ic = h("span", { class: "vidplay", "aria-hidden": "true" }); ic.innerHTML = PLAYSVG;
+  const fixa = el => { S.chatGrudado = false; S.chatIrNovas = false; const log = document.getElementById("chatlog"); if (!log || !el.isConnected) return;
+    const r = el.getBoundingClientRect(), lr = log.getBoundingClientRect(); log.scrollTop += r.top - lr.top - Math.max(8, (lr.height - r.height) / 2); };
   const caixa = h("button", { type: "button", class: "chatvid", "aria-label": "Assistir ao vídeo" + (m.texto ? ": " + m.texto : ""), onclick: () => {
+    S.chatGrudado = false; S.chatIrNovas = false;
     if (caixa.dataset.c) return; caixa.dataset.c = 1; caixa.append(h("span", { class: "vidcarrega", text: "Carregando o vídeo…" }));
     urlDoFilme({ id: "chat-" + m.id, video: m.video }).then(u => { if (!caixa.isConnected) return;
       // no chat o vídeo toca com som e com os controles (na Galeria ele toca mudo, em loop)
       const v = h("video", { class: "chatfoto", src: u, poster: blob(m.fotoId), controls: true, playsinline: true, preload: "auto" }); v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", "");
-      caixa.replaceWith(v); v.play().catch(() => {}); },
+      S.chatVids[m.id] = v;
+      ["loadedmetadata", "play"].forEach(ev => v.addEventListener(ev, () => fixa(v)));
+      caixa.replaceWith(v); fixa(v); v.play().catch(() => {}); },
       () => { caixa.dataset.c = ""; caixa.querySelector(".vidcarrega").textContent = "Não consegui carregar o vídeo. Toque de novo."; });
   } }, h("img", { class: "chatfoto", ...fotoTardia(m.fotoId), alt: "", loading: "lazy" }), ic);
   return caixa;
