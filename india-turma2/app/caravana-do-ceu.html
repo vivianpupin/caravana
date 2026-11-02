@@ -8432,6 +8432,17 @@ if (matchMedia("(pointer:coarse)").matches) {
   const digita = el => el && el.matches && el.matches('textarea,[contenteditable="true"],input:not([type]),input[type=text],input[type=search],input[type=email],input[type=number],input[type=url],input[type=tel]');
   document.addEventListener("focusin", e => { if (digita(e.target)) document.body.classList.add("teclado"); });
   document.addEventListener("focusout", () => setTimeout(() => { if (!digita(document.activeElement)) document.body.classList.remove("teclado"); }, 80));
+  // o menu volta sempre que o teclado não está na tela: quem saiu do app digitando e voltou depois
+  // ficava sem o menu (o iPhone fecha o teclado mas não avisa que a caixa de texto perdeu o foco)
+  const vv = window.visualViewport, tecladoNaTela = () => !vv || vv.height < window.innerHeight * .82;
+  const confere = () => { if (!digita(document.activeElement) || !tecladoNaTela()) document.body.classList.remove("teclado"); };
+  vv?.addEventListener("resize", () => setTimeout(confere, 150));
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) { if (digita(document.activeElement)) document.activeElement.blur(); document.body.classList.remove("teclado"); }
+    else setTimeout(confere, 300);
+  });
+  window.addEventListener("pageshow", () => setTimeout(confere, 300));
+  window.addEventListener("focus", () => setTimeout(confere, 300));
 }
 document.addEventListener("selectionchange", () => { const el = document.getElementById("chat-input"); if (el && el.guarda) el.guarda(); });
 function caixaChat() {
