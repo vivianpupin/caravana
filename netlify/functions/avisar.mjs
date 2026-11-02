@@ -19,6 +19,12 @@ export default async req => {
   if (corpo.habilidade) return avisarHabilidade(d, k, corpo.habilidade, corpo.para);
   if (corpo.pombo) return avisarPombo(d, k, corpo.pombo);
   if (corpo.reacao) return avisarReacao(d, k, corpo.reacao);
+  // alguém acabou de chegar na Índia (o próprio celular pede): anuncia na hora para toda a caravana
+  if (corpo.chegou) {
+    const uid = String(corpo.chegou); if (uid.includes("/")) return Response.json({ ok: false }, { status: 400 });
+    const v = await d.doc("viajantes/" + uid).get(); if (!v.exists || !v.data().chegouIndia) return Response.json({ ok: false });
+    return Response.json({ ok: true, enviados: await avisaChegadas(d, async () => k, true) });
+  }
   // ferramentas da líder (só funcionam para quem é líder no passaporte)
   if (corpo.teste || corpo.chegadas) {
     const uid = String(corpo.teste || corpo.chegadas); if (uid.includes("/")) return Response.json({ ok: false }, { status: 400 });
