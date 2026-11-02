@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "01/11 · 18:11";</script>
+<script>window.__VERSAO = "02/11 · 01:32";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2383,16 +2383,16 @@ $("#me").addEventListener("click", () => go("passaporte"));
 // mensagem nova no chat: pontinho amarelo na aba Chat (e no ícone do app, quando o celular permite)
 // só a líder: quantas pessoas já viram a mensagem dela (quem abriu o chat depois que ela chegou)
 function linhaVistos(m) {
-  if (!S.presenca) return null;
+  if (!S.diarios) return null;
   const gente = S.viajantes.filter(v => v.id !== m.autor); if (!gente.length) return null;
-  const viu = gente.filter(v => ((S.presenca.find(p => p.id === v.id) || {}).chatVisto || 0) >= (m.ts || 0));
+  const viu = gente.filter(v => ((S.diarios.find(p => p.id === v.id) || {}).chatVisto || 0) >= (m.ts || 0));
   return h("button", { type: "button", class: "vistos", "aria-label": `Visto por ${viu.length} de ${gente.length}. Toque para ver quem`, onclick: () => abrirVistos(m) },
     h("span", { "aria-hidden": "true", text: "👁" }), ` Visto por ${viu.length} de ${gente.length}`);
 }
 function abrirVistos(m) {
   closeSheets();
   const gente = S.viajantes.filter(v => v.id !== m.autor).sort((a, b) => String(a.nome).localeCompare(String(b.nome)));
-  const viu = gente.filter(v => ((S.presenca.find(p => p.id === v.id) || {}).chatVisto || 0) >= (m.ts || 0)), nao = gente.filter(v => !viu.includes(v));
+  const viu = gente.filter(v => ((S.diarios.find(p => p.id === v.id) || {}).chatVisto || 0) >= (m.ts || 0)), nao = gente.filter(v => !viu.includes(v));
   const lista = (t, l) => h("div", { class: "vistosgrupo" }, h("p", { class: "eyebrow", text: `${t} · ${l.length}` }),
     l.length ? h("ul", { class: "vistoslista" }, l.map(v => h("li", null, h("img", { src: avatar(v.id), alt: "" }), h("span", { text: v.nome })))) : h("p", { class: "small", text: "Ninguém." }));
   const box = h("div", { role: "dialog", "aria-label": "Quem viu sua mensagem", class: "vistosbox" },
@@ -2410,7 +2410,8 @@ function marcaChat() {
   if (S.tab === "conversa" && S.chatAbriuEm == null) { S.chatAbriuEm = visto; S.chatIrNovas = true; }
   if (!visto || S.tab === "conversa") { if (ult > visto) { visto = ult; try { localStorage.setItem("cdi-chat-visto", String(ult)); } catch (e) {} } }
   // até onde a pessoa já leu o chat vai para o banco: é assim que a líder vê quantos viram a mensagem dela
-  if (S.tab === "conversa" && S.db && S.uid && eu() && visto > (S.vistoEnviado || 0)) { S.vistoEnviado = visto; S.db.doc("presenca/" + S.uid).set({ chatVisto: visto }, { merge: true }).catch(() => { S.vistoEnviado = 0; }); }
+  // (guardado no diário da pessoa, que só ela e a líder leem; o "presenca" é reescrito a cada minuto e perdia o dado)
+  if (S.tab === "conversa" && S.db && S.uid && eu() && visto > (S.vistoEnviado || 0)) { S.vistoEnviado = visto; const ref = S.db.doc("diarios/" + S.uid); ref.update({ chatVisto: visto }).catch(() => ref.set({ chatVisto: visto })).catch(() => { S.vistoEnviado = 0; }); }
   const n = S.chat.filter(m => m.autor !== S.uid && m.tipo !== "local" && m.tipo !== "aovivo" && m.tipo !== "reacao" && (m.ts || 0) > visto).length;
   const bt = document.querySelector('#tabs button[data-tab="conversa"]'); if (!bt) return;
   let pin = bt.querySelector(".pinmsg");
@@ -2519,7 +2520,10 @@ function render() {
   const rolaveis = el => [...el.querySelectorAll(seletorRolavel())].filter(e => e.scrollWidth > e.clientWidth + 4 && e.className && typeof e.className === "string");
   const lados = mesmaAba ? rolaveis(main).map(e => [e.className, e.scrollLeft]) : null;
   pintaMe();
-  const precisaCadastro = S.db && S.uid && S.vReady && !eu() && !S.pularCadastro;
+  // pede para emitir o passaporte só quando tem certeza de que a pessoa não tem: a lista de viajantes chegou de verdade
+  // (sem erro e não vazia; sem sinal ela vinha vazia e o app pedia de novo) e este celular nunca viu o passaporte dela
+  let jaTeve = false; try { if (S.uid && eu()) localStorage.setItem("cdi-passaporte-" + S.uid, "1"); jaTeve = !!S.uid && localStorage.getItem("cdi-passaporte-" + S.uid) === "1"; } catch (e) {}
+  const precisaCadastro = S.db && S.uid && S.vReady && S.viajantesOk && S.viajantes.length > 0 && !eu() && !S.pularCadastro && !jaTeve;
   main.replaceChildren(precisaCadastro ? vCadastro() :
     S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "pombo" ? vPombo() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
   // aviso novo da líder (15 min): aparece no topo de qualquer aba
@@ -9684,7 +9688,7 @@ function vHindi() {
           h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: "M4 9v6h4l5 4V5L8 9H4zM16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12", fill: "none", stroke: "currentColor", "stroke-width": 1.6, "stroke-linecap": "round", "stroke-linejoin": "round" }))) : null)))));
 }
 // Guardar no celular (sem internet)
-const CACHE_KEYS = ["ens", "locais", "cidades", "cartas"];
+const CACHE_KEYS = ["ens", "locais", "cidades", "cartas", "viajantes"];
 for (const k of CACHE_KEYS) { try { const v = JSON.parse(localStorage.getItem("cdi-c-" + k) || "null"); if (Array.isArray(v)) S[k] = k === "locais" ? ajustaLocais(v) : k === "ens" ? ajustaSaberes(v) : v; } catch (e) {} }
 function guardaCache(k) { if (!CACHE_KEYS.includes(k)) return; try { localStorage.setItem("cdi-c-" + k, JSON.stringify(S[k])); } catch (e) {} }
 const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -10545,7 +10549,7 @@ function vRupias() {
 
 // ---------- dados ----------
 // cada coleção só redesenha as abas que mostram aqueles dados (evita a tela pular à toa)
-const USA = { presenca: ["conversa"], posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos", "travessia"], cartas: ["travessia", "pombo"], cartasP: ["travessia", "pombo"], pombosIn: ["pombo"], pombosOut: ["pombo"] };
+const USA = { diarios: ["conversa"], posicoes: ["mapa", "explorador"], chat: ["conversa", "mapa"], pedra: ["pedra"], mural: ["fotos", "travessia"], cartas: ["travessia", "pombo"], cartasP: ["travessia", "pombo"], pombosIn: ["pombo"], pombosOut: ["pombo"] };
 let calmoT = 0, calmoUlt = 0;
 function renderCalmo() { if (calmoT) return; const falta = Math.max(0, 15000 - (Date.now() - calmoUlt)); calmoT = setTimeout(() => { calmoT = 0; calmoUlt = Date.now(); if (!(S.camSel && S.tab === "fotos") && !document.querySelector(".sheet") && !document.activeElement?.matches?.("input,textarea,select,[contenteditable]")) render(); }, falta); }
 function listen(col, key, q, after) {
@@ -10555,6 +10559,7 @@ function listen(col, key, q, after) {
     // a mesma lista de novo (o banco às vezes avisa duas vezes): não redesenha nada, a tela não pisca
     let ass = ""; try { ass = JSON.stringify(docs); } catch (e) {}
     if (!primeira && ass && ass === assinatura) return; assinatura = ass;
+    if (key === "viajantes") S.viajantesOk = true;
     S[key] = docs; if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = ajustaSaberes(S.ens); guardaCache(key);
     S.dbReady = true; if (after) after(); if (key === "chat") marcaChat();
     // os viajantes chegaram (já se sabe se a pessoa tem passaporte e se precisa da tela de permissões): o véu de abertura sai logo depois
@@ -10635,7 +10640,7 @@ render();
   { const cp = db.collection("cartasPessoais"); listen("cartasPessoais", "cartasP", S.isOwner || !cp.where ? cp : cp.where("para", "==", S.uid), () => setTimeout(checaCorreio, 1200)); }
   listen("pensamentos", "pedra");
   if (S.isOwner && window.__SITE) listen("membros", "membros");
-  if (S.isOwner) listen("presenca", "presenca");
+  if (S.isOwner) listen("diarios", "diarios");
   listen("mural", "mural", db.collection("mural").orderBy("ts", "desc").limit(300), () => { S.muralPronto = true; });
   setInterval(() => {
     if (document.activeElement?.matches?.("input,textarea,select,[contenteditable]") || document.querySelector(".sheet")) return;
