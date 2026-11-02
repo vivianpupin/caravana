@@ -1,6 +1,6 @@
 // Notificações no celular: quando alguém manda mensagem no chat, avisa todo mundo que ativou as notificações.
 // Precisa da variável FIREBASE_SA no Netlify (a chave da conta de serviço do Firebase, colada lá, nunca no código).
-import { avisarPassaporteCompleto, db, chaves, enviarTodos, enviarPara, avisaChegadas, testaPush } from "../lib/push.mjs";
+import { avisarPassaporteCompleto, db, chaves, enviarTodos, enviarPara } from "../lib/push.mjs";
 
 const resumo = m => m.tipo === "video" ? "🎬 Mandou um vídeo" + (m.texto ? ": " + m.texto : "") : m.tipo === "foto" ? "📷 Mandou uma foto" + (m.texto ? ": " + m.texto : "")
   : m.tipo === "local" ? "📍 Ponto de encontro: " + (m.nome || "local marcado")
@@ -19,14 +19,6 @@ export default async req => {
   if (corpo.habilidade) return avisarHabilidade(d, k, corpo.habilidade, corpo.para);
   if (corpo.pombo) return avisarPombo(d, k, corpo.pombo);
   if (corpo.reacao) return avisarReacao(d, k, corpo.reacao);
-  // ferramentas da líder (só funcionam para quem é líder no passaporte)
-  if (corpo.teste || corpo.chegadas) {
-    const uid = String(corpo.teste || corpo.chegadas); if (uid.includes("/")) return Response.json({ ok: false }, { status: 400 });
-    const v = await d.doc("viajantes/" + uid).get(); if (!v.exists || v.data().lider !== true) return Response.json({ ok: false, erro: "só a líder" }, { status: 403 });
-    if (corpo.teste) return Response.json(await testaPush(d, k, uid));
-    const enviados = await avisaChegadas(d, async () => k, true);
-    return Response.json({ ok: true, enviados });
-  }
   const { id } = corpo;
   if (!id || typeof id !== "string" || id.includes("/")) return Response.json({ ok: false }, { status: 400 });
   // só avisa uma vez por mensagem, e só se ela acabou de ser enviada

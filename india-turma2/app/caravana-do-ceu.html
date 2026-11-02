@@ -3949,7 +3949,6 @@ function vPassaporte() {
     vMinhasHabilidades(), vHabilidadesLider(),
     vGuardioesLider(),
     vGenteLider(),
-    vAvisosLider(),
     S.isOwner || aberto(localDe("travessia")) ? h("button", { class: "folhear video", type: "button", onclick: abrirVideoPassaporte },
       h("span", { class: "vidico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("path", { d: "M8 5.5v13l11-6.5z", fill: "#3B2A1C" }))),
       h("span", null, h("b", { text: "Vídeo do meu passaporte" }), h("span", { text: "O passaporte gira, abre e folheia seus carimbos. Pronto para Reels e Stories." }))) : null);
@@ -4261,37 +4260,6 @@ function vPalavraLider(dentro) {
     h("p", { class: "small", text: "As passagens de cada viajante ficam no cartão logo abaixo." }));
 }
 // Só a líder: todo mundo da caravana numa tabela só (entrou no app, passaporte, instalado, avisos, localização) e opção de remover
-// Só a líder: testar se as notificações chegam, ver quem o app já marcou como chegando na Índia e mandar a "Saudações do Oriente" na hora
-function vAvisosLider() {
-  if (!S.isOwner || !noSite()) return null;
-  const st = h("p", { class: "msg", role: "status", text: S.avisoTeste || "" });
-  const chama = async (corpo, rotulo) => {
-    st.textContent = rotulo; st.className = "msg";
-    try {
-      const r = await fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(corpo) });
-      const j = await r.json().catch(() => ({}));
-      if (!r.ok && j.erro === "sem FIREBASE_SA") return "O servidor de avisos está sem a chave do Firebase (FIREBASE_SA) na Netlify: nenhuma notificação sai.";
-      if (!r.ok && !j.erro) return `O servidor de avisos não respondeu direito (erro ${r.status}).`;
-      return j;
-    } catch (e) { return "Não consegui falar com o servidor de avisos. Confira a internet e tente de novo."; }
-  };
-  const testar = async () => { const j = await chama({ teste: S.uid }, "Mandando um aviso de teste para o seu celular…");
-    S.avisoTeste = typeof j === "string" ? j : j.ok ? `✓ O servidor mandou o teste para o seu celular. Ele deve chegar em segundos. Celulares com avisos ligados na caravana: ${j.celularesComAvisos}.` : `✗ ${j.erro || "Falhou."} Celulares com avisos ligados na caravana: ${j.celularesComAvisos ?? "?"}.`;
-    st.textContent = S.avisoTeste; st.className = "msg " + (typeof j !== "string" && j.ok ? "ok" : "err"); };
-  const saudar = async () => { const j = await chama({ chegadas: S.uid }, "Mandando a Saudações do Oriente…");
-    S.avisoTeste = typeof j === "string" ? j : j.ok ? (j.enviados ? `✓ Saudações do Oriente enviada para ${j.enviados} ${j.enviados === 1 ? "celular" : "celulares"}.` : "Ninguém novo para anunciar: quem chegou já foi anunciado, ou o app ainda não marcou ninguém (a pessoa precisa abrir o app na Índia com a localização ligada).") : "✗ " + (j.erro || "Falhou.");
-    st.textContent = S.avisoTeste; st.className = "msg " + (typeof j !== "string" && j.ok ? "ok" : "err"); };
-  const hora = ts => new Date(ts).toLocaleString("pt-BR", { timeZone: "Asia/Kolkata", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
-  const chegaram = S.viajantes.filter(v => v.chegouIndia).sort((a, b) => a.chegouIndia - b.chegouIndia);
-  return dobraLider("avisoslider", "panel", h("div", null, h("p", { class: "eyebrow", text: "Notificações" }), h("h2", { text: "Avisos e chegadas" })),
-    h("div", { style: "display:flex;flex-direction:column;gap:10px" },
-      h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: testar }, "🔔 Testar notificação"), h("button", { class: "btn gold", type: "button", onclick: saudar }, "🇮🇳 Mandar Saudações agora")),
-      st,
-      h("p", { class: "eyebrow", style: "margin:6px 0 0", text: `Chegaram na Índia pelo app · ${chegaram.length}` }),
-      chegaram.length ? h("ul", { class: "vistoslista" }, chegaram.map(v => h("li", null, h("img", { src: avatar(v.id), alt: "" }),
-        h("span", null, h("b", { text: v.nome }), h("small", { style: "display:block;color:var(--soft)", text: hora(v.chegouIndia) + " (Índia) · " + (v.chegadaAvisada ? "aviso enviado" : "aviso ainda não enviado") })))))
-        : h("p", { class: "small", text: "Ninguém ainda. O app marca a chegada quando a pessoa abre o app na Índia com a localização ligada." })));
-}
 function vGenteLider() {
   if (!S.isOwner) return null;
   const ids = [...new Set([...S.membros.map(m => m.id), ...S.viajantes.filter(v => !v.lider).map(v => v.id)])];
