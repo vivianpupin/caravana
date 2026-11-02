@@ -1,6 +1,6 @@
 // A cada 15 minutos: se chegou a hora de uma carta da líder, avisa a caravana no celular (uma vez por carta).
 // No dia do translado, avisa também que o passaporte está completo.
-import { db, chaves, enviarTodos, enviarPara, DIA_COMPLETO, avisarPassaporteCompleto } from "../lib/push.mjs";
+import { db, chaves, enviarTodos, enviarPara, DIA_COMPLETO, avisarPassaporteCompleto, avisaChegadas } from "../lib/push.mjs";
 
 export const config = { schedule: "*/15 * * * *" };
 
@@ -27,20 +27,3 @@ export default async () => {
   return new Response("enviados: " + enviados);
 };
 
-// Saudações do Oriente: quem chegou na Índia (o app marca chegouIndia quando o GPS mostra a pessoa lá).
-// Junta quem chegou junto num aviso só: espera 10 minutos depois da primeira chegada para os outros do mesmo voo entrarem.
-async function avisaChegadas(d, pegaChaves) {
-  const snap = await d.collection("viajantes").where("chegouIndia", ">", 0).get();
-  const agora = Date.now(), novos = snap.docs.filter(s => !s.data().chegadaAvisada);
-  if (!novos.length) return 0;
-  // chegada antiga (mais de 12 horas): só marca, sem aviso atrasado
-  const velhos = novos.filter(s => agora - s.data().chegouIndia > 12 * 3600 * 1000), frescos = novos.filter(s => !velhos.includes(s));
-  for (const s of velhos) await s.ref.update({ chegadaAvisada: true });
-  if (!frescos.length || agora - Math.min(...frescos.map(s => s.data().chegouIndia)) < 10 * 60 * 1000) return 0;
-  for (const s of frescos) await s.ref.update({ chegadaAvisada: true });
-  const nomes = frescos.map(s => String(s.data().nome || "").trim().split(/\s+/)[0]).filter(Boolean);
-  if (!nomes.length) return 0;
-  const lista = nomes.length === 1 ? nomes[0] : nomes.length <= 4 ? nomes.slice(0, -1).join(", ") + " e " + nomes.at(-1) : nomes.slice(0, 3).join(", ") + " e mais " + (nomes.length - 3);
-  const body = lista + (nomes.length === 1 ? " chegou" : " chegaram") + " na Índia!";
-  return enviarTodos(d, await pegaChaves(), { title: "Saudações do Oriente 🇮🇳", body, tag: "chegada-" + agora, url: "./?aba=mapa" }, null, 6 * 3600);
-}
