@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/11 · 11:41";</script>
+<script>window.__VERSAO = "03/11 · 12:53";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -9961,10 +9961,11 @@ async function encolheFilme(blob, aviso, comSom) {
     await new Promise(r => { const passo = () => { x.drawImage(v, 0, 0, c.width, c.height); if (aviso) aviso(Math.min(99, Math.round(v.currentTime / dur * 100)));
       if (v.currentTime !== ultT) { ultT = v.currentTime; parado = Date.now(); }
       else if (Date.now() - parado > 3000) { if (!cutucou) { cutucou = true; parado = Date.now(); v.play().catch(() => {}); } else { falhou = true; return r(); } }
-      if (v.ended || v.currentTime >= dur) return r();
+      if (v.ended || v.currentTime >= dur - .25) return r(); // o iPhone às vezes para um pouquinho antes do fim exato
       if (Date.now() - t0 > dur * 1000 + 8000) { falhou = true; return r(); }
       requestAnimationFrame(passo); }; passo(); });
-    mr.stop(); await pronto; v.pause();
+    // o iPhone às vezes não avisa que terminou de fechar o filme (ficava parado em 99%): espera no máximo 5 s
+    try { mr.requestData(); } catch (e) {} mr.stop(); await Promise.race([pronto, new Promise(r => setTimeout(r, 5000))]); v.pause();
     if (falhou) return null;
     const novo = new Blob(partes, { type: (tipo || "video/webm").split(";")[0] });
     return novo.size && novo.size < blob.size ? novo : null;
