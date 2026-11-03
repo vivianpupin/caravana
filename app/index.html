@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/11 · 11:34";</script>
+<script>window.__VERSAO = "03/11 · 11:41";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3228,7 +3228,9 @@ function planetaSvg(id) {
 // as imagens realistas de cada planeta (o desenho em SVG acima fica de reserva)
 const planetaEl = (id, cls) => h("img", { class: cls || "planeta", src: "img/planetas/" + id + ".webp", alt: "", "aria-hidden": "true", draggable: "false" });
 const hojeLocal = () => new Date().toLocaleDateString("en-CA");
-function lerOraculo() { try { return JSON.parse(localStorage.getItem("cdi-oraculo") || "null"); } catch (e) { return null; } }
+// a última leitura vale por 1 hora: depois o Oráculo abre limpo, pronto para uma nova pergunta
+const ORACULO_VALE = 60 * 60 * 1000;
+function lerOraculo() { try { const L = JSON.parse(localStorage.getItem("cdi-oraculo") || "null"); return L && L.ts && Date.now() - L.ts < ORACULO_VALE ? L : null; } catch (e) { return null; } }
 const ORB = { surya: [0, 0, 20], budha: [.34, 145, 10.5], shukra: [.45, 20, 12], chandra: [.57, 205, 11], rahu: [.57, 115, 12], ketu: [.57, 295, 14], mangala: [.68, 340, 11.5], guru: [.8, 160, 15], shani: [.9, 62, 21] };
 // o altar visto de lado, como na foto do sistema solar: as órbitas viram elipses (INCL), a Via Láctea atravessa o céu ao fundo
 const INCL = 1, ALT = 1; // achatamento das órbitas e altura do altar em relação à largura
@@ -3381,7 +3383,7 @@ function abrirOraculo() {
       const anda = () => { if (!box.isConnected) return; pos = (pos + 1) % 9; acende(pos); vibrar(18); tique(); passos--;
         if (passos > 0) { d *= 1.13; setTimeout(anda, d); return; }
         celulas[fim].classList.add("escolhido"); sino(); if (!vibrar([40, 60, 120])) { setTimeout(() => vibrar(1), 120); setTimeout(() => vibrar(1), 260); }
-        try { localStorage.setItem("cdi-oraculo", JSON.stringify(L)); } catch (e) {}
+        try { localStorage.setItem("cdi-oraculo", JSON.stringify({ ...L, ts: Date.now() })); } catch (e) {}
         bt.remove(); barra.remove();
         setTimeout(() => { saida.replaceChildren(leituraOraculo(L), h("div", { class: "actions", style: "justify-content:center;margin-top:10px" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirOraculo() }, "Consultar de novo"))); saida.scrollIntoView({ behavior: "smooth", block: "start" }); }, 600); };
       anda(); };
