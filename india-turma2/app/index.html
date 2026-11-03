@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "03/11 · 01:05";</script>
+<script>window.__VERSAO = "03/11 · 11:34";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -7367,7 +7367,7 @@ async function filma2(c) {
   desenha(); const copia = setInterval(desenha, 1000 / 24);
   const tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || "";
   const fluxo = new MediaStream([...rec.captureStream(24).getVideoTracks(), ...(mic ? mic.getAudioTracks() : [])]);
-  const mr = new MediaRecorder(fluxo, tipo ? { mimeType: tipo, videoBitsPerSecond: 1.8e6, audioBitsPerSecond: 96000 } : undefined), partes = [];
+  const mr = new MediaRecorder(fluxo, tipo ? { mimeType: tipo, videoBitsPerSecond: 1.1e6, audioBitsPerSecond: 80000 } : undefined), partes = [];
   mr.ondataavailable = e => e.data && e.data.size && partes.push(e.data);
   const solta = () => { clearInterval(copia); clearTimeout(limite); mr.stream && mr.stream.getTracks().forEach(t => t.stop()); mic && mic.getTracks().forEach(t => t.stop()); if (S.gravando === mr) S.gravando = null; mostraGravando(); };
   mr.onerror = () => { solta(); avisoReacao("Não consegui gravar o filme neste celular."); };
@@ -9984,7 +9984,11 @@ function somDosFilmes() {
   try { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; const ac = somDosFilmes.ac || (somDosFilmes.ac = new AC()); if (ac.state === "suspended") ac.resume().catch(() => {}); return ac; } catch (e) { return null; }
 }
 async function filmeMenor(blob, aviso) {
-  if (blob.size <= 15e6 || !window.MediaRecorder) return blob;
+  if (blob.size <= 9e6 || !window.MediaRecorder) return blob; // até 9 MB vai inteiro (com som); maior, é diminuído
+  // primeiro tenta com som; se o celular travar o vídeo (o iPhone trava quando o som não foi liberado), tenta de novo só com a imagem
+  return (await encolheFilme(blob, aviso, true)) || (await encolheFilme(blob, aviso, false)) || blob;
+}
+async function encolheFilme(blob, aviso, comSom) {
   const v = document.createElement("video"); v.muted = true; v.defaultMuted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("muted", ""); v.src = URL.createObjectURL(blob);
   v.style.cssText = "position:fixed;left:0;top:0;width:2px;height:2px;opacity:.01;pointer-events:none"; document.body.append(v);
   try {
@@ -9992,7 +9996,7 @@ async function filmeMenor(blob, aviso) {
     const k = Math.min(1, 540 / Math.max(v.videoWidth, v.videoHeight)), c = document.createElement("canvas"); c.width = Math.round(v.videoWidth * k / 2) * 2; c.height = Math.round(v.videoHeight * k / 2) * 2;
     const x = c.getContext("2d"), tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported(t)) || "";
     // tenta levar o som junto: o áudio do vídeo passa pelo Web Audio e entra no filme menor (se o celular não deixar, vai só a imagem)
-    let som = []; try { const ac = somDosFilmes(); if (ac) { const fonte = ac.createMediaElementSource(v), destino = ac.createMediaStreamDestination(); fonte.connect(destino); som = destino.stream.getAudioTracks(); v.muted = false; v.removeAttribute("muted"); } } catch (e) { som = []; }
+    let som = []; try { const ac = comSom ? somDosFilmes() : null; if (ac && ac.state === "running") { const fonte = ac.createMediaElementSource(v), destino = ac.createMediaStreamDestination(); fonte.connect(destino); som = destino.stream.getAudioTracks(); v.muted = false; v.removeAttribute("muted"); } } catch (e) { som = []; }
     const mr = new MediaRecorder(new MediaStream([...c.captureStream(24).getVideoTracks(), ...som]), tipo ? { mimeType: tipo, videoBitsPerSecond: 6e5, audioBitsPerSecond: 64000 } : undefined), partes = [];
     mr.ondataavailable = e => e.data && e.data.size && partes.push(e.data);
     const dur = Math.min(30, isFinite(v.duration) ? v.duration : 30);
@@ -10008,10 +10012,10 @@ async function filmeMenor(blob, aviso) {
       if (Date.now() - t0 > dur * 1000 + 8000) { falhou = true; return r(); }
       requestAnimationFrame(passo); }; passo(); });
     mr.stop(); await pronto; v.pause();
-    if (falhou) return blob;
+    if (falhou) return null;
     const novo = new Blob(partes, { type: (tipo || "video/webm").split(";")[0] });
-    return novo.size && novo.size < blob.size ? novo : blob;
-  } catch (e) { return blob; } finally { v.remove(); URL.revokeObjectURL(v.src); }
+    return novo.size && novo.size < blob.size ? novo : null;
+  } catch (e) { return null; } finally { v.remove(); URL.revokeObjectURL(v.src); }
 }
 const b64 = b => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = no; r.readAsDataURL(b); });
 async function enviaFilmeGaleria(it, msg) {
