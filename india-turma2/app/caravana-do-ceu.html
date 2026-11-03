@@ -1196,6 +1196,16 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .notifdestaque .ndx{border:0;background:none;font-size:22px;line-height:1;color:#6B6556;cursor:pointer;padding:0 4px}
 @keyframes ndentra{from{opacity:0;transform:translateY(-16px)}}
 .filmesom{position:absolute;left:10px;bottom:10px;z-index:3;background:rgba(0,0,0,.6);color:#fff;font-size:13px;font-weight:600;border-radius:999px;padding:5px 11px;pointer-events:none;transition:opacity .3s}
+.ccquem{display:flex;flex-direction:column;gap:10px}
+.ccfixo{margin:0;font-weight:600}
+.ccpessoas{display:flex;flex-direction:column;gap:6px;max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:rgba(255,255,255,.5)}
+.cctopo{display:flex;justify-content:space-between;align-items:center;gap:8px;position:sticky;top:-8px;background:inherit;padding:4px 0}
+.sheet .ccpessoa{display:flex;flex-direction:row;align-items:center;gap:10px;padding:6px 4px;border-radius:8px;cursor:pointer;font-size:15px;font-weight:500;color:var(--ink)}
+.ccpessoa.on{background:rgba(185,138,67,.14)}
+.correioform .ccpessoa input{width:20px;height:20px;padding:0;margin:0;accent-color:#3F4938;flex:none}
+.ccpessoa span{text-align:left}
+.cctopo .linkbtn{background:none;border:0;padding:4px 0;color:#9A3B2A;font:600 13px var(--ui,inherit);text-decoration:underline;cursor:pointer}
+.ccpessoa img{width:30px;height:30px;border-radius:50%;object-fit:cover;flex:none}
 .dobraseta{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(185,138,67,.14);color:#8A6B43;font-size:14px;transition:transform .2s}
 .dobra[open]>summary .dobraseta{transform:rotate(180deg)}
 .dobra[open]>summary{margin-bottom:10px}
@@ -9544,9 +9554,28 @@ function editarCarta(c) {
   const loc = h("input", { type: "text", id: "cc-loc", placeholder: "De onde (ex.: Varanasi)", value: c.local || "" });
   const d = h("input", { type: "date", id: "cc-dia", value: dia });
   const hr = h("input", { type: "time", id: "cc-hora", value: horaCarta(ini) });
-  const para = h("select", { id: "cc-para", "aria-label": "Para quem" }, h("option", { value: "", text: "Toda a caravana" }),
-    S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || ""))).map(v => h("option", { value: v.id, text: "Só para " + (v.nome || "viajante"), selected: c.para === v.id })));
-  if (c.id) para.disabled = true; // uma carta já criada não muda de destino
+  // para quem: toda a caravana ou as pessoas que a líder marcar (cada uma recebe a sua carta lacrada); carta já criada não muda de destino
+  const gente = S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || "")));
+  let modoPara = c.para ? "escolher" : "todos"; const escolhidos = new Set(c.para ? [c.para] : []);
+  const para = h("div", { class: "ccquem" });
+  const pintaPara = () => {
+    if (c.id) return para.replaceChildren(h("p", { class: "ccfixo", text: c.para ? "Só para " + nomeDe(c.para) : "Toda a caravana" }));
+    const conta = h("span", { class: "small", text: escolhidos.size ? `${escolhidos.size} ${escolhidos.size === 1 ? "pessoa marcada" : "pessoas marcadas"}` : "Ninguém marcado ainda" });
+    const todosBt = h("button", { type: "button", class: "linkbtn", onclick: () => { if (escolhidos.size === gente.length) escolhidos.clear(); else gente.forEach(v => escolhidos.add(v.id)); pintaPara(); } });
+    const atualizaConta = () => { conta.textContent = escolhidos.size ? `${escolhidos.size} ${escolhidos.size === 1 ? "pessoa marcada" : "pessoas marcadas"}` : "Ninguém marcado ainda"; todosBt.textContent = escolhidos.size === gente.length ? "Desmarcar todos" : "Marcar todos"; };
+    atualizaConta();
+    para.replaceChildren(
+      h("div", { class: "opts", role: "group", "aria-label": "Para quem" }, [["todos", "Toda a caravana"], ["escolher", "Escolher pessoas"]].map(([id, t]) =>
+        h("button", { type: "button", class: "opt", "aria-pressed": String(modoPara === id), onclick: () => { modoPara = id; pintaPara(); } }, t))),
+      modoPara === "escolher" ? h("div", { class: "ccpessoas" },
+        h("div", { class: "cctopo" }, conta, todosBt),
+        gente.map(v => h("label", { class: "ccpessoa" + (escolhidos.has(v.id) ? " on" : "") },
+          h("input", { type: "checkbox", checked: escolhidos.has(v.id), onchange: e => { if (e.target.checked) escolhidos.add(v.id); else escolhidos.delete(v.id);
+            // marca sem redesenhar a lista (ela não volta para o topo a cada pessoa)
+            e.target.closest(".ccpessoa").classList.toggle("on", e.target.checked); atualizaConta(); } }),
+          h("img", { src: avatar(v.id), alt: "" }), h("span", { text: v.nome || "Viajante" })))) : null);
+  };
+  pintaPara();
   const st = h("p", { class: "msg", role: "status" });
   let gravando = false, audioNovo = undefined; // undefined = não mexeu; null = tirou; {blob,...} = gravou
   const gravador = gravadorAudio(c.audio ? { ...c.audio, cartaId: c.id } : null, a => { audioNovo = a; });
@@ -9564,8 +9593,22 @@ function editarCarta(c) {
       else if (audioNovo === undefined && c.audio) dados.audio = c.audio;
     } catch (e) { gravando = false; st.textContent = "Não consegui enviar o áudio. Confira a internet e tente de novo."; st.className = "msg err"; return; }
     gravando = false;
-    const antigoSai = c.audio && c.audio.partes && dados.audio !== c.audio ? c.audio.partes : [];
-    const pv = c.id ? c.para || "" : para.value, col = pv ? "cartasPessoais" : "cartas";
+    // o áudio de uma carta mandada para várias pessoas é um só: só sai do banco quando nenhuma outra carta usa
+    const usadoEmOutra = a => (S.cartasP || []).concat(S.cartas || []).some(x => x.id !== c.id && x.audio && x.audio.partes && a.partes && x.audio.partes[0] === a.partes[0]);
+    const antigoSai = c.audio && c.audio.partes && dados.audio !== c.audio && !usadoEmOutra(c.audio) ? c.audio.partes : [];
+    // carta nova para as pessoas marcadas: uma carta lacrada para cada uma, com o mesmo texto e o mesmo áudio
+    if (!c.id && modoPara === "escolher" && escolhidos.size !== 1) {
+      if (!escolhidos.size) { st.textContent = "Marque pelo menos uma pessoa."; st.className = "msg err"; return; }
+      gravando = true;
+      try {
+        const grupo = "g" + Date.now();
+        for (const uid of escolhidos) await S.db.collection("cartasPessoais").add({ ...dados, para: uid, grupo });
+        st.textContent = modo === "rascunho" ? `Rascunhos guardados para ${escolhidos.size} pessoas. Ninguém vê ainda.` : modo === "agora" ? `Carta enviada para ${escolhidos.size} pessoas! Ela chega agora para cada uma.` : `Carta programada para ${escolhidos.size} pessoas, para ${dataCarta(envio)}, às ${horaCarta(envio)} na Índia.`;
+        st.className = "msg ok"; setTimeout(closeSheets, 2200);
+      } catch (e) { st.textContent = "Não consegui guardar a carta."; st.className = "msg err"; }
+      gravando = false; return;
+    }
+    const pv = c.id ? c.para || "" : modoPara === "escolher" ? [...escolhidos][0] || "" : "", col = pv ? "cartasPessoais" : "cartas";
     if (pv) dados.para = pv;
     gravando = true;
     try {
@@ -9580,11 +9623,11 @@ function editarCarta(c) {
   };
   const box = h("form", { class: "correioform", onsubmit: e => e.preventDefault() },
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: c.id ? "Editar carta" : "Nova carta" }))),
-    h("label", { class: "lab", for: "cc-para", text: "Para quem" }), para,
+    h("p", { class: "lab", text: "Para quem" }), para,
     h("label", { class: "lab", for: "cc-tit", text: "Título" }), tit,
     h("label", { class: "lab", text: "Aviso de voz" }), gravador,
     h("label", { class: "lab", for: "cc-txt", text: "Carta (pode ir só o áudio)" }), ta,
-    h("p", { class: "small", text: "Para toda a caravana, cada viajante recebe com o próprio nome no começo. Só para uma pessoa, a carta chega lacrada com selo de cera e só ela lê." }),
+    h("p", { class: "small", text: "Para toda a caravana, cada viajante recebe com o próprio nome no começo. Para as pessoas que você marcar, cada uma recebe a sua carta lacrada com selo de cera, e só ela lê." }),
     h("div", { class: "ccrow" }, h("div", null, h("label", { class: "lab", for: "cc-loc", text: "Enviada de" }), loc), h("div", null, h("label", { class: "lab", for: "cc-ass", text: "Assinatura" }), ass)),
     h("div", { class: "ccrow" }, h("div", null, h("label", { class: "lab", for: "cc-dia", text: "Dia da entrega" }), d), h("div", null, h("label", { class: "lab", for: "cc-hora", text: "Hora na Índia" }), hr)),
     h("div", { class: "actions" },
@@ -9601,7 +9644,8 @@ function editarCarta(c) {
 // líder apaga uma carta (geral ou pessoal) direto da lista
 function apagarCarta(c, depois) {
   if (!confirm("Apagar a carta \"" + (c.titulo || "sem título") + "\"" + (c.para ? " para " + nomeDe(c.para).split(" ")[0] : "") + "? Ela some do app.")) return;
-  S.db.doc((c.para ? "cartasPessoais/" : "cartas/") + c.id).delete().then(() => { for (const id of (c.audio && c.audio.partes) || []) S.assets?.delete(id).catch(() => {}); if (depois) depois(); }, () => alert("Não consegui apagar a carta. Confira a internet e tente de novo."));
+  const usadoEmOutra = (S.cartasP || []).concat(S.cartas || []).some(x => x.id !== c.id && x.audio && x.audio.partes && c.audio && c.audio.partes && x.audio.partes[0] === c.audio.partes[0]);
+  S.db.doc((c.para ? "cartasPessoais/" : "cartas/") + c.id).delete().then(() => { if (!usadoEmOutra) for (const id of (c.audio && c.audio.partes) || []) S.assets?.delete(id).catch(() => {}); if (depois) depois(); }, () => alert("Não consegui apagar a carta. Confira a internet e tente de novo."));
 }
 function vCorrespondencia() {
   const abertas = cartasAbertas().slice().reverse();
