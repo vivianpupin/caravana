@@ -9801,12 +9801,18 @@ async function baixarAlbum(st, cid) {
 const cidadesMural = () => [...CIDADES_MURAL, ...new Set(S.mural.map(f => f.cidade).filter(c => c && !CIDADES_MURAL.includes(c)))];
 const capaAlbum = fs => fs.find(f => f.destaque && !f.video) || fs.find(f => !f.video) || fs[0];
 const diaDaFoto = f => { const iso = f.tirada || new Date((f.ts || 0) - 3 * 3600e3 + 8.5 * 3600e3).toISOString().slice(0, 10); return (S.roteiro?.dias || []).find(d => d.iso === iso); };
-const curtidasDe = f => Object.keys(f.curtidas || {}).filter(k => f.curtidas[k]).length;
-const curti = f => !!(f.curtidas || {})[S.uid];
-function curtir(f) {
-  const v = !curti(f); f.curtidas = { ...(f.curtidas || {}), [S.uid]: v };
+// curtidas: as antigas ficam na própria foto; as novas vão como "curtida" na coleção do chat (que já tem permissão no banco)
+const curtidasChat = f => (S.chatMural || []).filter(c => c.tipo === "curtida" && c.mural === f.id);
+const quemCurtiu = f => { const q = new Set(Object.keys(f.curtidas || {}).filter(k => f.curtidas[k])); curtidasChat(f).forEach(c => q.add(c.autor)); (f._descurti || []).forEach(u => q.delete(u)); if (f._curtiAgora) q.add(S.uid); return q; };
+const curtidasDe = f => quemCurtiu(f).size;
+const curti = f => quemCurtiu(f).has(S.uid);
+async function curtir(f) {
   try { navigator.vibrate && navigator.vibrate(10); } catch (e) {}
-  return S.db.doc("mural/" + f.id).update({ curtidas: { [S.uid]: v ? true : { __delete__: true } } }).catch(() => { f.curtidas = { ...f.curtidas, [S.uid]: !v }; throw 0; });
+  if (!curti(f)) { f._curtiAgora = true; f._descurti = (f._descurti || []).filter(u => u !== S.uid);
+    try { await S.db.collection("chat").add({ autor: S.uid, tipo: "curtida", mural: f.id, ts: Date.now() }); } catch (e) { f._curtiAgora = false; throw 0; } return; }
+  f._curtiAgora = false; f._descurti = [...(f._descurti || []), S.uid];
+  await Promise.all(curtidasChat(f).filter(c => c.autor === S.uid).map(c => S.db.doc("chat/" + c.id).delete().catch(() => {})));
+  if ((f.curtidas || {})[S.uid]) S.db.doc("mural/" + f.id).update({ curtidas: { [S.uid]: { __delete__: true } } }).catch(() => {});
 }
 function miniGaleria(f, lista, extra) {
   const n = curtidasDe(f);
@@ -9819,11 +9825,15 @@ function painelComentarios(f, fecha) {
   let coms = [];
   const pinta = () => { perfis(coms.map(c => c.autor)); lista.replaceChildren(...(coms.length ? coms.map(c => h("div", { class: "mcom" },
       h("b", { text: nomeDe(c.autor).split(" ")[0] }), h("span", { text: c.texto }),
-      c.autor === S.uid || S.isOwner ? h("button", { type: "button", class: "mcdel", "aria-label": "Apagar comentário", text: "×", onclick: () => { if (confirm("Apagar este comentário?")) S.db.doc("comentarios/" + c.id).delete().catch(() => {}); } }) : null))
+      c.autor === S.uid || S.isOwner ? h("button", { type: "button", class: "mcdel", "aria-label": "Apagar comentário", text: "×", onclick: () => { if (confirm("Apagar este comentário?")) S.db.doc((c.col || "comentarios") + "/" + c.id).delete().catch(() => {}); } }) : null))
     : [h("p", { class: "small", style: "text-align:center;opacity:.7", text: "Seja a primeira pessoa a comentar." })])); lista.scrollTop = lista.scrollHeight; };
-  const off = S.db.collection("comentarios").where("mural", "==", f.id).onSnapshot(s => { coms = s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.ts || 0) - (b.ts || 0)); pinta(); }, () => { st.textContent = "Não consegui abrir os comentários."; st.className = "msg err"; });
+  let antigos = [], novos = []; const junta = () => { coms = [...antigos, ...novos].sort((a, b) => (a.ts || 0) - (b.ts || 0)); pinta(); };
+  const off1 = S.db.collection("comentarios").where("mural", "==", f.id).onSnapshot(s => { antigos = s.docs.map(d => ({ id: d.id, col: "comentarios", ...d.data() })); junta(); }, () => {});
+  const off2 = S.db.collection("chat").where("mural", "==", f.id).onSnapshot(s => { novos = s.docs.map(d => ({ id: d.id, col: "chat", ...d.data() })).filter(c => c.tipo === "comentario"); junta(); }, () => { st.textContent = "Não consegui abrir os comentários."; st.className = "msg err"; });
   const envia = async () => { const texto = ta.value.trim(); if (!texto) return; ta.value = "";
-    try { await S.db.collection("comentarios").add({ mural: f.id, autor: S.uid, texto, ts: Date.now() }); } catch (e) { ta.value = texto; st.textContent = "Não consegui enviar. Tente de novo."; st.className = "msg err"; } };
+    st.textContent = ""; st.className = "msg";
+    try { await S.db.collection("chat").add({ tipo: "comentario", mural: f.id, autor: S.uid, texto, ts: Date.now() }); } catch (e) { ta.value = texto; st.textContent = "Não consegui enviar. Confira a internet e tente de novo."; st.className = "msg err"; } };
+  const off = () => { off1 && off1(); off2 && off2(); };
   ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); envia(); } });
   const caixa = h("div", { class: "mcomentarios" },
     h("div", { class: "mctopo" }, h("b", { text: "Comentários" }), h("button", { type: "button", class: "mvfecha", "aria-label": "Fechar comentários", text: "✕", onclick: () => { off && off(); fecha(); } })),
@@ -10092,7 +10102,10 @@ function abrirFotoMural(f0, lista) {
     info = h("div", { class: "mvinfo" }), acoes = h("div", { class: "mvacoes" });
   // quantos comentários tem a foto aberta (só escuta a foto da vez)
   let offConta = null; const contaComentarios = f => { offConta && offConta(); comenta.textContent = "💬 Comentar";
-    offConta = S.db.collection("comentarios").where("mural", "==", f.id).onSnapshot(s => { const n = s.docs.length; comenta.textContent = n ? `💬 ${n} ${n === 1 ? "comentário" : "comentários"}` : "💬 Comentar"; }, () => {}); };
+    let na = 0, nn2 = 0; const escreve = () => { const n = na + nn2; comenta.textContent = n ? `💬 ${n} ${n === 1 ? "comentário" : "comentários"}` : "💬 Comentar"; };
+    const o1 = S.db.collection("comentarios").where("mural", "==", f.id).onSnapshot(s => { na = s.docs.length; escreve(); }, () => {});
+    const o2 = S.db.collection("chat").where("mural", "==", f.id).onSnapshot(s => { nn2 = s.docs.filter(d => d.data().tipo === "comentario").length; escreve(); }, () => {});
+    offConta = () => { o1 && o1(); o2 && o2(); }; };
   let painel = null; const fechaPainel = () => { if (painel) { painel._off && painel._off(); painel.remove(); painel = null; } };
   // cada foto só carrega quando chega perto (a atual e as vizinhas); filme só toca quando é a atual
   const slides = fs.map(() => h("div", { class: "mvslide" }));
@@ -10564,11 +10577,12 @@ function renderCalmo() { if (calmoT) return; const falta = Math.max(0, 15000 - (
 function listen(col, key, q, after) {
   let primeira = true, assinatura = "";
   (q || S.db.collection(col)).onSnapshot(snap => {
-    const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    let docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     // a mesma lista de novo (o banco às vezes avisa duas vezes): não redesenha nada, a tela não pisca
     let ass = ""; try { ass = JSON.stringify(docs); } catch (e) {}
     if (!primeira && ass && ass === assinatura) return; assinatura = ass;
     if (key === "viajantes") S.viajantesOk = true;
+    if (key === "chat") { S.chatMural = docs.filter(d => d.tipo === "comentario" || d.tipo === "curtida"); if (S.chatMural.length) docs = docs.filter(d => d.tipo !== "comentario" && d.tipo !== "curtida"); }
     S[key] = docs; if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = ajustaSaberes(S.ens); guardaCache(key);
     S.dbReady = true; if (after) after(); if (key === "chat") marcaChat();
     // os viajantes chegaram (já se sabe se a pessoa tem passaporte e se precisa da tela de permissões): o véu de abertura sai logo depois
