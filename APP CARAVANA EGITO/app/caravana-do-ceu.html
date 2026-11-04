@@ -7933,6 +7933,8 @@ const FRASES_DIA = {
 const fraseDoDia = d => FRASES_DIA[d.n] || "";
 function aberturaDoDia(forcar) {
   const R = S.roteiro; if (!R || document.querySelector(".abertura")) return;
+  // a abertura de um dia novo só entra às 4h da manhã (hora da Índia): quem está acordado à meia-noite não recebe a de amanhã
+  if (!forcar && +new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour: "numeric", hourCycle: "h23" }) % 24 < 4) return;
   const hoje = hojeIso(), d = forcar ? (R.dias.find(x => x.n === forcar) || R.dias[0]) : R.dias.find(x => x.iso === hoje);
   if (!d) return;
   if (!forcar) { if (lsGet("cdi-abertura") === hoje) return; lsSet("cdi-abertura", hoje); }
@@ -7972,6 +7974,8 @@ function boasVindas(pronto) {
   const fecha = () => { if (fechou) return; fechou = true; pronto.then(() => { ov.classList.add("sai"); render(); setTimeout(() => ov.remove(), 700); }); };
 }
 function abreDia() { if (S.abrirLink) return; const t = +new URLSearchParams(location.search).get("abertura"); aberturaDoDia(t || 0); }
+// o app ficou aberto de um dia para o outro: ao voltar para ele depois das 4h, a abertura do dia aparece (uma vez só)
+document.addEventListener("visibilitychange", () => { if (!document.hidden && S.roteiro) setTimeout(() => { if (!S.abrirLink) aberturaDoDia(0); }, 800); });
 document.addEventListener("visibilitychange", () => { if (!document.hidden) abreDia(); });
 
 
