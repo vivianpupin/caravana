@@ -5772,6 +5772,8 @@ const FILTROS = [
   { id: "cam-couro", cat: "Câmeras", nome: "Delhi 1955", m: [1.03, .04, -.01, .03, .98, .01, -.01, .04, .88], lift: 16, con: 1.46, sat: 1.06, split: [[52, 36, 22], [255, 230, 190]], add: [9, 3, -10], vin: .46, grao: 16, pelicula: 1 },
   { id: "cam-couro-quente", cat: "Câmeras", nome: "Delhi 1955 quente", m: [1.08, .04, -.02, .03, 1, 0, -.03, .02, .84], lift: 16, con: 1.48, sat: 1.12, split: [[62, 32, 14], [255, 222, 172]], add: [16, 6, -16], vin: .48, grao: 16, pelicula: 1 },
   { id: "cam-couro-frio", cat: "Câmeras", nome: "Delhi 1955 fria", m: [.94, .02, .02, .01, 1, .02, .02, .04, 1.08], lift: 16, con: 1.46, sat: .98, split: [[20, 36, 50], [240, 238, 228]], add: [-4, 1, 10], vin: .46, grao: 16, pelicula: 1 },
+  // Delhi 1955 P&B: preto e branco lisinho, de bastante contraste e pretos fundos (como foto clássica no Taj), sem grão
+  { id: "cam-couro-pb", cat: "Câmeras", nome: "Delhi 1955 P&B", m: [.46, .44, .10, .46, .44, .10, .46, .44, .10], con: 1.32, add: [14, 14, 14], split: [[0, 0, 0], [255, 255, 255]], vin: .22, grao: 0 },
   { id: "cam-cinematic", cat: "Câmeras", nome: "Cinematic", m: [1.14, 0, 0, 0, 1.1, 0, 0, 0, 1.08], lift: 8, con: 1.24, sat: 1.28, split: [[18, 62, 72], [255, 178, 118]], add: [6, 3, -2], vin: .5, grao: 28, cinema: 1 },
   { id: "cam-noturno", cat: "Câmeras", nome: "Blue Lassi", noite: 1, con: 1.22, vin: .45, grao: 30, cinema: 2 },
   // o mesmo brilho, halo e grão dos Lassi, mas com as cores de verdade (sem pintar de azul, laranja ou rosa)
@@ -6972,7 +6974,7 @@ const CAMERAS_C = [
   { id: "campo", lento: 1, tons: [["cam-campo", "#C9A24E", "Âmbar"], ["cam-campo-vermelho", "#A8432F", "Vermelho"], ["cam-campo-marrom", "#6B4428", "Marrom"]], nome: "Agra 1900", frase: "Câmera de campo de madeira e latão, de placa de vidro. Sépia de 1900.",
     preset: { filtro: "cam-campo", moldura: "nenhuma", recorte: 9 / 16, formato: "original", grao: "auto", reels: "preto" },
     svg: `<svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="30" width="100" height="70" rx="4" fill="#7A4A2A"/><circle cx="70" cy="65" r="20" fill="#B8913F"/><circle cx="70" cy="65" r="12" fill="#1A1410"/></svg>` },
-  { id: "couro", tons: [["cam-couro-quente", "#D88A3A", "Quente"], ["cam-couro", "#B58E6A", "Natural"], ["cam-couro-frio", "#4F84A8", "Fria"]], nome: "Delhi 1955", frase: "Câmera 35 mm dos anos 50 no estojo de couro. Cor desbotada de álbum de família.",
+  { id: "couro", tons: [["cam-couro-quente", "#D88A3A", "Quente"], ["cam-couro", "#B58E6A", "Natural"], ["cam-couro-frio", "#4F84A8", "Fria"], ["cam-couro-pb", "#2A2622", "P&B"]], nome: "Delhi 1955", frase: "Câmera 35 mm dos anos 50 no estojo de couro. Cor desbotada de álbum de família.",
     preset: { filtro: "cam-couro", moldura: "nenhuma", recorte: 9 / 16, formato: "original", grao: "auto", reels: "preto" },
     svg: `<svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="30" width="104" height="66" rx="10" fill="#7B4A28"/><circle cx="70" cy="64" r="20" fill="#2A2420"/><circle cx="70" cy="64" r="11" fill="#0E0C0B"/></svg>` },
 ];
