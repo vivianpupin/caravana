@@ -9743,8 +9743,24 @@ async function salvarNoRolo(blobP, nome, msg) {
   // iPhone: abre a lista de compartilhar, onde fica "Salvar imagem" (vai direto para o rolo da câmera).
   // Android: baixa a foto, que aparece na galeria.
   if (ehIphone() && podeRolo()) { msg.textContent = "Na lista que abrir, toque em Salvar imagem."; msg.className = "msg"; try { await navigator.share({ files: [f] }); msg.textContent = "Pronto! Se escolheu Salvar imagem, a foto está no rolo da câmera."; msg.className = "msg ok"; } catch (e) { if (e && e.name !== "AbortError") { msg.textContent = "Toque e segure na foto e escolha Salvar imagem."; msg.className = "msg"; } } return; }
-  const a = h("a", { href: URL.createObjectURL(b), download: nome }); document.body.append(a); a.click(); a.remove();
-  msg.textContent = ehIphone() ? "Foto salva." : "Foto salva na galeria do celular."; msg.className = "msg ok";
+  const ehVideo = /^video/.test(b.type || ""), oque = ehVideo ? "o filme" : "a foto";
+  const baixa = () => { const a = h("a", { href: URL.createObjectURL(b), download: nome }); document.body.append(a); a.click(); a.remove(); };
+  // Android: abre a lista de compartilhar do celular, onde a pessoa escolhe Galeria ou Fotos (antes só baixava o arquivo para Downloads, e ninguém achava)
+  if (!ehIphone() && podeRolo()) {
+    const compartilha = async () => {
+      try { await navigator.share({ files: [f] }); msg.textContent = `Pronto! Se escolheu Galeria ou Fotos, ${oque} já está lá.`; msg.className = "msg ok"; return true; }
+      catch (e) { if (e && e.name === "AbortError") { msg.textContent = ""; return true; } return false; }
+    };
+    msg.textContent = "Na lista que abrir, escolha Galeria ou Fotos para salvar."; msg.className = "msg";
+    if (await compartilha()) return;
+    // a lista não abriu (o celular pede um toque novo depois de baixar): um botão para abrir de novo, ou baixar o arquivo
+    msg.replaceChildren(h("span", { text: "Toque para salvar: " }),
+      h("button", { type: "button", class: "linkbtn", onclick: () => compartilha() }, "Salvar na galeria"), h("span", { text: " · " }),
+      h("button", { type: "button", class: "linkbtn", onclick: () => { baixa(); msg.textContent = `Baixado! ${ehVideo ? "O filme" : "A foto"} fica na pasta Download (na Galeria, abra o álbum "Download").`; msg.className = "msg ok"; } }, "Baixar arquivo"));
+    msg.className = "msg"; return;
+  }
+  baixa();
+  msg.textContent = ehIphone() ? (ehVideo ? "Filme salvo." : "Foto salva.") : `Baixado! ${ehVideo ? "O filme" : "A foto"} fica na pasta Download (na Galeria, abra o álbum "Download").`; msg.className = "msg ok";
 }
 // apagar foto da galeria (a foto em si também sai do banco, para não ocupar espaço)
 async function apagaFotoMural(f) {
