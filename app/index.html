@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "04/11 · 20:12";</script>
+<script>window.__VERSAO = "04/11 · 20:14";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -7109,10 +7109,10 @@ function corpoPronto(id) {
 // só a líder: liga e desliga o logo da Caravana nas fotos ali mesmo, dentro de cada câmera
 function botaoLogo(onde) {
   if (!ehLider(S.uid)) return null;
-  const txt = h("span", { text: semLogo() ? "Sem logo" : "Logo" });
+  const txt = h("span", { text: "Logo" });
   const b = h("button", { type: "button", class: "cfvolta logobt" + (onde ? " " + onde : "") + (semLogo() ? " off" : ""), "aria-pressed": String(!semLogo()), "aria-label": "Logo da Caravana nas fotos", onclick: e => {
     e.stopPropagation(); const sem = !semLogo(); try { localStorage.setItem("cdi-sem-logo", sem ? "1" : "0"); } catch (x) {}
-    b.classList.toggle("off", sem); b.setAttribute("aria-pressed", String(!sem)); txt.textContent = sem ? "Sem logo" : "Logo"; } },
+    b.classList.toggle("off", sem); b.setAttribute("aria-pressed", String(!sem)); } },
     h("img", { src: "img/simbolo-dourado.png", alt: "", class: "logobtic" }), txt);
   return b;
 }
