@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "04/11 · 15:33";</script>
+<script>window.__VERSAO = "04/11 · 20:12";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1207,6 +1207,11 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .ccpessoa span{text-align:left}
 .cctopo .linkbtn{background:none;border:0;padding:4px 0;color:#9A3B2A;font:600 13px var(--ui,inherit);text-decoration:underline;cursor:pointer}
 .ccpessoa img{width:30px;height:30px;border-radius:50%;object-fit:cover;flex:none}
+.cftopo .cfvolta.logobt{margin-left:auto;gap:5px}
+.logobt .logobtic{width:16px;height:16px;object-fit:contain}
+.cfvolta.logobt.off{opacity:.6}
+.cfvolta.logobt.off span{text-decoration:line-through}
+.estudiocel .celvisor .cfvolta.logobt.cellogo{position:absolute;z-index:4;top:16px;right:16px;left:auto;margin:0;padding:5px 9px;font-size:8.5px}
 .dobraseta{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(185,138,67,.14);color:#8A6B43;font-size:14px;transition:transform .2s}
 .dobra[open]>summary .dobraseta{transform:rotate(180deg)}
 .dobra[open]>summary{margin-bottom:10px}
@@ -7066,7 +7071,7 @@ function vEstante() {
     vDiarioViajante(),
     h("p", { class: "eyebrow rule", text: "A trilha da travessia" }),
     vVitrolaSaberes(),
-    ehLider(S.uid) ? chaveLogoLider() : null);
+    null);
 }
 // só a líder vê: tirar o logo da Caravana das fotos e filmes que ela fizer (em todas as câmeras); fica guardado neste celular
 const semLogo = () => { try { return ehLider(S.uid) && localStorage.getItem("cdi-sem-logo") === "1"; } catch (e) { return false; } };
@@ -7101,6 +7106,16 @@ function corpoPronto(id) {
   return k.p;
 } // só baixa para o cache (não segura as 7 fotos abertas na memória do iPhone)
 // botão claro de voltar para a maleta (no alto da câmera, onde a pessoa procura o "voltar")
+// só a líder: liga e desliga o logo da Caravana nas fotos ali mesmo, dentro de cada câmera
+function botaoLogo(onde) {
+  if (!ehLider(S.uid)) return null;
+  const txt = h("span", { text: semLogo() ? "Sem logo" : "Logo" });
+  const b = h("button", { type: "button", class: "cfvolta logobt" + (onde ? " " + onde : "") + (semLogo() ? " off" : ""), "aria-pressed": String(!semLogo()), "aria-label": "Logo da Caravana nas fotos", onclick: e => {
+    e.stopPropagation(); const sem = !semLogo(); try { localStorage.setItem("cdi-sem-logo", sem ? "1" : "0"); } catch (x) {}
+    b.classList.toggle("off", sem); b.setAttribute("aria-pressed", String(!sem)); txt.textContent = sem ? "Sem logo" : "Logo"; } },
+    h("img", { src: "img/simbolo-dourado.png", alt: "", class: "logobtic" }), txt);
+  return b;
+}
 function voltaMaleta(onde) {
   const b = h("button", { type: "button", class: "cfvolta" + (onde ? " " + onde : ""), "aria-label": "Voltar para a maleta", onclick: voltaEstante },
     h("span", { class: "cfvoltaseta", "aria-hidden": "true", text: "‹" }), h("span", { class: "cfvoltaic" }), h("span", { text: "Maleta" }));
@@ -7256,7 +7271,7 @@ function vCameraFisica(c) {
     h("div", { class: "cftopo" },
       voltaMaleta("topo"),
       h("span", { class: "cfmarca" }, h("img", { src: "img/simbolo-dourado.png", alt: "" }), h("span", null, h("b", { text: c.nome }), h("small", { text: FILME_CAM[c.id] || "" }))),
-      h("span", { class: "cftopovazio" })),
+      botaoLogo("topo") || h("span", { class: "cftopovazio" })),
     fotoCorpo ? h("div", { class: "cfvisor" }) : visor,
     F.vivo ? h("div", { class: "cfbase" }, controles, fotoCorpo ? h("span") : obturador)
       : !F.img ? null : h("div", { class: "cfdepois" },
@@ -8057,7 +8072,7 @@ function vFotos() {
       h("div", { class: "celtit" }, h("p", { class: "celeye", text: "Arsenal de Travessia" }), h("h1", { text: "Câmera do celular" }))),
     F.img ? h("div", { class: "estudio" },
       // visor e botão de clique andam juntos: ao rolar a tela, o botão nunca fica escondido atrás da foto
-      h("div", { class: "fotofixa" }, h("div", { class: "celvisor" }, voltaMaleta("topo celvolta"), h("div", { class: "fotoframe" }, canvas, !F.img && S.camFalhou ? camNegada() : null, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
+      h("div", { class: "fotofixa" }, h("div", { class: "celvisor" }, voltaMaleta("topo celvolta"), botaoLogo("topo cellogo"), h("div", { class: "fotoframe" }, canvas, !F.img && S.camFalhou ? camNegada() : null, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
         F.vivo ? h("div", { class: "actions camacoes" },
           h("button", { class: "celknob celselfie", type: "button", onclick: e => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); e.currentTarget.textContent = C.frente ? "Trás" : "Selfie"; } } }, C0frente() ? "Trás" : "Selfie"),
           h("button", { class: "habclique celobtur", type: "button", "aria-label": "Tirar foto", onclick: disparaCel }),
