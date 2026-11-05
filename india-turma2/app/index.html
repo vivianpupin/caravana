@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "04/11 · 22:55";</script>
+<script>window.__VERSAO = "04/11 · 23:00";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1325,6 +1325,8 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .nvinfo{position:absolute;top:max(22px,calc(env(safe-area-inset-top) + 10px));left:64px;right:14px;margin:0;font:500 11px "Courier Prime",monospace;color:rgba(255,255,255,.5);text-align:right}
 .nvfoto{position:relative;flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
 .nvfoto img,.nvfoto video{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.nvfoto{overflow:hidden}.nvfoto img.nvzoom{touch-action:none;transform-origin:center;will-change:transform;user-select:none;-webkit-user-select:none}
+.nvfoto img.zoom~.nvseta{opacity:0;pointer-events:none}
 .cfmini video,.qvfoto video{width:100%;height:100%;object-fit:cover}
 .nvseta{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:60px;border:0;background:none;color:rgba(255,255,255,.45);font-size:40px;cursor:pointer}
 .nvseta.e{left:-8px}.nvseta.d{right:-8px}
@@ -7597,6 +7599,38 @@ function iconeRegistros() {
   s.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M12 4v16M6 8h3.5v4H6zM14.5 8H18v4h-3.5zM6 14.5h3.5M14.5 14.5H18"/></svg>';
   return s;
 }
+// zoom na foto aberta: pinça com dois dedos, toque duplo aproxima/afasta e, com zoom, um dedo arrasta a foto
+// (enquanto a foto está ampliada o deslizar não troca de foto)
+function fotoZoom(img) {
+  let z = 1, tx = 0, ty = 0, ini = null, ultToque = 0;
+  const aplica = (anim) => { img.style.transition = anim ? "transform .22s ease-out" : "none"; img.style.transform = z > 1 ? `translate(${tx}px,${ty}px) scale(${z})` : ""; img.classList.toggle("zoom", z > 1); };
+  const limita = () => { const r = img.parentNode.getBoundingClientRect(), w = img.offsetWidth * z, hh = img.offsetHeight * z;
+    const mx = Math.max(0, (w - r.width) / 2), my = Math.max(0, (hh - r.height) / 2); tx = Math.max(-mx, Math.min(mx, tx)); ty = Math.max(-my, Math.min(my, ty)); };
+  const dist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+  const meio = t => [(t[0].clientX + t[1].clientX) / 2, (t[0].clientY + t[1].clientY) / 2];
+  const centro = () => { const r = img.getBoundingClientRect(); return [r.left + r.width / 2 - tx, r.top + r.height / 2 - ty]; };
+  // aproxima mantendo parado o ponto (px,py) da tela
+  const zoomEm = (nz, px, py, z0, tx0, ty0) => { const [cx, cy] = centro(); nz = Math.max(1, Math.min(5, nz)); const k = nz / z0;
+    tx = (px - cx) - ((px - cx) - tx0) * k; ty = (py - cy) - ((py - cy) - ty0) * k; z = nz; if (z <= 1.02) { z = 1; tx = 0; ty = 0; } limita(); };
+  img.addEventListener("touchstart", e => {
+    if (e.touches.length === 2) { ini = { d: dist(e.touches), m: meio(e.touches), z, tx, ty, dois: 1 }; return; }
+    if (e.touches.length !== 1) return; const t = e.touches[0], agora = Date.now();
+    if (agora - ultToque < 300) { ultToque = 0; ini = null; if (z > 1) { z = 1; tx = 0; ty = 0; } else zoomEm(2.5, t.clientX, t.clientY, 1, 0, 0); aplica(true); return; }
+    ultToque = agora; ini = { x: t.clientX, y: t.clientY, tx, ty };
+  }, { passive: true });
+  img.addEventListener("touchmove", e => {
+    if (!ini) return;
+    if (e.touches.length > 1 || (ini.x != null && Math.hypot(e.touches[0].clientX - ini.x, e.touches[0].clientY - ini.y) > 10)) ultToque = 0; // arrastou: não conta para o toque duplo
+    if (e.touches.length === 2 && ini.dois) { e.preventDefault(); const m = meio(e.touches); zoomEm(ini.z * dist(e.touches) / ini.d, m[0], m[1], ini.z, ini.tx + (m[0] - ini.m[0]), ini.ty + (m[1] - ini.m[1])); aplica(false); return; }
+    if (e.touches.length === 1 && z > 1 && !ini.dois) { e.preventDefault(); tx = ini.tx + e.touches[0].clientX - ini.x; ty = ini.ty + e.touches[0].clientY - ini.y; limita(); aplica(false); }
+  }, { passive: false });
+  img.addEventListener("touchend", e => { if (e.touches.length === 0) { ini = null; if (z <= 1.02) { z = 1; tx = 0; ty = 0; aplica(true); } } else if (e.touches.length === 1 && ini && ini.dois) ini = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx, ty }; }, { passive: true });
+  // no computador: duplo clique e roda do mouse
+  img.addEventListener("dblclick", e => { if (z > 1) { z = 1; tx = 0; ty = 0; } else zoomEm(2.5, e.clientX, e.clientY, 1, 0, 0); aplica(true); });
+  img.addEventListener("wheel", e => { e.preventDefault(); zoomEm(z * (e.deltaY < 0 ? 1.15 : 1 / 1.15), e.clientX, e.clientY, z, tx, ty); aplica(false); }, { passive: false });
+  img.estaZoom = () => z > 1;
+  return img;
+}
 function verFotos(i) {
   const l = S.fotosDiario || []; if (!l.length) return; i = Math.max(0, Math.min(i, l.length - 1)); const it = l[i];
   document.querySelector(".nomovisor")?.remove(); const msg = h("p", { class: "msg", role: "status" });
@@ -7604,12 +7638,15 @@ function verFotos(i) {
   const compartilhar = async () => { const ext = /mp4/.test(it.blob.type) ? ".mp4" : /webm/.test(it.blob.type) ? ".webm" : ".jpg", f = new File([it.blob], "caravana-" + it.id + ext, { type: it.blob.type || "image/jpeg" });
     if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f] }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
     salvarNoRolo(Promise.resolve(it.blob), "caravana-" + it.id + ext, msg); };
-  let x0 = null;
+  let x0 = null, foto = null;
+  // deslizar troca de foto, mas não durante a pinça (2 dedos) nem com a foto ampliada
   const tela = h("div", { class: "nomovisor", role: "dialog", "aria-label": "Fotos",
-      ontouchstart: e => { x0 = e.touches[0].clientX; }, ontouchend: e => { if (x0 == null) return; const d = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(d) > 50) verFotos(i + (d < 0 ? 1 : -1)); } },
+      ontouchstart: e => { x0 = e.touches.length === 1 && !(foto && foto.estaZoom()) ? e.touches[0].clientX : null; if (e.touches.length > 1) x0 = null; },
+      ontouchmove: e => { if (e.touches.length > 1) x0 = null; },
+      ontouchend: e => { if (x0 == null || e.touches.length) return; const d = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(d) > 50 && !(foto && foto.estaZoom())) verFotos(i + (d < 0 ? 1 : -1)); } },
     h("button", { type: "button", class: "nvfechar", "aria-label": "Fechar", onclick: () => tela.remove() }, "×"),
     h("p", { class: "nvinfo", text: [new Date(it.ts).toLocaleDateString("pt-BR"), it.cidade, it.camera].filter(Boolean).join(" · ") + "   " + (i + 1) + "/" + l.length }),
-    h("div", { class: "nvfoto" }, /^video/.test(it.blob.type) ? filmeLimpo(url, it.capa ? (it.capaUrl || (it.capaUrl = URL.createObjectURL(it.capa))) : null) : h("img", { src: url, alt: "", class: "" }),
+    h("div", { class: "nvfoto" }, /^video/.test(it.blob.type) ? filmeLimpo(url, it.capa ? (it.capaUrl || (it.capaUrl = URL.createObjectURL(it.capa))) : null) : (foto = fotoZoom(h("img", { src: url, alt: "", class: "nvzoom" }))),
       i > 0 ? h("button", { type: "button", class: "nvseta e", "aria-label": "Foto anterior", onclick: () => verFotos(i - 1) }, "‹") : null,
       i < l.length - 1 ? h("button", { type: "button", class: "nvseta d", "aria-label": "Próxima foto", onclick: () => verFotos(i + 1) }, "›") : null),
     h("div", { class: "nvbase" },
