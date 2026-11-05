@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "04/11 · 23:17";</script>
+<script>window.__VERSAO = "04/11 · 23:20";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -271,7 +271,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .celeye{margin:6px 0 0;font:600 12px/1 var(--ui);letter-spacing:.28em;text-transform:uppercase;color:#E2BE78;animation:celSobe .5s 1.2s both}
 .celnome{margin:0;font-family:"Cinzel",Georgia,serif;font-size:30px;color:#FFF1D6;animation:celSobe .5s 1.3s both}
 .celsub{margin:0 0 10px;color:#E8D3AE;font-size:14px;animation:celSobe .5s 1.4s both}
-.celebra .actions{animation:celSobe .5s 1.55s both}.celfecha{color:#E8D3AE!important;border-color:rgba(232,211,174,.4)!important}.celebra .carmsg{color:#F3D9A4;max-width:320px}.celebra .carmsg .linkbtn{color:#FFE2A8}.celcomp{background:rgba(255,248,236,.12)!important;color:#F3D9A4!important;border-color:rgba(243,217,164,.55)!important}
+.celebra .actions{animation:celSobe .5s 1.55s both}.celfecha{color:#E8D3AE!important;border-color:rgba(232,211,174,.4)!important}.celebra [data-carmsg]{color:#F3D9A4;max-width:320px}.celebra [data-carmsg] .linkbtn{color:#FFE2A8}.celcomp{background:rgba(255,248,236,.12)!important;color:#F3D9A4!important;border-color:rgba(243,217,164,.55)!important}
 .parada.chegou .pinwrap{animation:celChegou 1.4s .3s cubic-bezier(.2,1.4,.4,1) both}
 .parada.chegou .pinwrap::after{content:"";position:absolute;inset:-14px;border-radius:40%;box-shadow:0 0 0 0 rgba(233,178,80,.8);animation:pulsaProx 1.6s .5s ease-out 3}
 @keyframes celEntra{from{opacity:0}to{opacity:1}}
@@ -3804,7 +3804,11 @@ async function imagemCarimbo(l) {
   try { await document.fonts.ready; } catch (e) {}
   const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
   const v = eu() || {}, d = diaDe(l.dia), ls = S.locais.filter(y => y.insignia).sort(byOrdem), qtd = ls.filter(aberto).length;
-  let foto = v.foto ? await carregaLivre(blob(v.foto)) : null;
+  // a foto do passaporte da pessoa; se ainda estiver chegando da internet, espera um pouco (só sem foto entra o explorador)
+  let foto = null;
+  if (v.foto) { let u = blob(v.foto);
+    if (/^data:image\/gif/.test(u)) { await new Promise(ok => { const f = () => { window.removeEventListener("caravana-foto", f); ok(); }; window.addEventListener("caravana-foto", f); setTimeout(f, 5000); }); u = blob(v.foto); }
+    foto = await carregaLivre(u); if (foto && foto.width < 4) foto = null; }
   if (!foto) { try { const sv = bonecoSvg(bonecoDe(S.uid)); sv.setAttribute("xmlns", "http://www.w3.org/2000/svg"); sv.setAttribute("width", 240); sv.setAttribute("height", 360);
     foto = await carregaLivre(URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(sv)], { type: "image/svg+xml" }))); } catch (e) {} }
   const [im, logo] = await Promise.all([carregaLivre(badgeSrc(l)), carregaLivre("img/simbolo-marrom.png")]);
@@ -3891,7 +3895,7 @@ async function compartilharCarimbo(l, bt, salvar) {
     const b = await imagemCarimbo(l); if (!b) throw 0;
     const nome = "carimbo-" + norm(l.nome || "caravana").replace(/[^a-z0-9]+/g, "-") + ".jpg", f = new File([b], nome, { type: "image/jpeg" });
     if (!salvar && navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], text: "Ganhei o carimbo " + l.nome + " na Caravana do Céu ✦" }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
-    let msg = bt.parentNode.nextElementSibling; if (!msg || !msg.classList.contains("carmsg")) { msg = h("p", { class: "msg carmsg", role: "status" }); bt.parentNode.after(msg); }
+    let msg = bt.parentNode.nextElementSibling; if (!msg || !msg.hasAttribute("data-carmsg")) { msg = h("p", { class: "msg carmsg", role: "status", "data-carmsg": "1" }); bt.parentNode.after(msg); }
     salvarNoRolo(Promise.resolve(b), nome, msg);
   } catch (e) { avisoReacao("Não consegui preparar a imagem do carimbo."); }
   finally { bt.disabled = false; bt.textContent = txt0; }
@@ -9911,11 +9915,11 @@ async function salvarNoRolo(blobP, nome, msg) {
     // a lista não abriu (o celular pede um toque novo depois de baixar): um botão para abrir de novo, ou baixar o arquivo
     msg.replaceChildren(h("span", { text: "Toque para salvar: " }),
       h("button", { type: "button", class: "linkbtn", onclick: () => compartilha() }, "Salvar na galeria"), h("span", { text: " · " }),
-      h("button", { type: "button", class: "linkbtn", onclick: () => { baixa(); msg.textContent = `Baixado! ${ehVideo ? "O filme" : "A foto"} fica na pasta Download (na Galeria, abra o álbum "Download").`; msg.className = "msg ok"; } }, "Baixar arquivo"));
+      h("button", { type: "button", class: "linkbtn", onclick: () => { baixa(); msg.textContent = ehVideo ? "Filme salvo no celular." : "Foto salva no celular."; msg.className = "msg ok"; } }, "Baixar arquivo"));
     msg.className = "msg"; return;
   }
   baixa();
-  msg.textContent = ehIphone() ? (ehVideo ? "Filme salvo." : "Foto salva.") : `Baixado! ${ehVideo ? "O filme" : "A foto"} fica na pasta Download (na Galeria, abra o álbum "Download").`; msg.className = "msg ok";
+  msg.textContent = ehVideo ? "Filme salvo no celular." : "Foto salva no celular."; msg.className = "msg ok";
 }
 // apagar foto da galeria (a foto em si também sai do banco, para não ocupar espaço)
 async function apagaFotoMural(f) {
