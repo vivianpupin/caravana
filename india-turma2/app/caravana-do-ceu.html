@@ -3911,9 +3911,11 @@ async function imagemPassaporteCarimbo(l) {
 async function imagemCarimbo(l) {
   // na ordem em que a pessoa ganhou os carimbos: cada carimbo novo sai num estilo diferente do anterior
   const mt = minhas(), tsDe = y => typeof mt[y.id] === "number" ? mt[y.id] : Infinity;
-  const ganhos = S.locais.filter(y => y.insignia && (aberto(y) || y.id === l.id)).sort((a, b) => tsDe(a) - tsDe(b) || byOrdem(a, b)), i = ganhos.findIndex(y => y.id === l.id);
-  if (l.preparo || i <= 0) return imagemPassaporteCarimbo(l);
-  return [estiloVistos, estiloNoite, estiloBilhete, estiloMapa][(i - 1) % 4](l);
+  // a página de dados do passaporte (foto, nome, categoria) só no carimbo de Delhi, a chegada na Índia
+  const delhi = S.locais.find(y => y.insignia && y.id === "india") || S.locais.filter(y => y.insignia && y.cidadeId === "delhi").sort(byOrdem)[0];
+  if (delhi && l.id === delhi.id) return imagemPassaporteCarimbo(l);
+  const ganhos = S.locais.filter(y => y.insignia && y !== delhi && (aberto(y) || y.id === l.id)).sort((a, b) => tsDe(a) - tsDe(b) || byOrdem(a, b)), i = Math.max(0, ganhos.findIndex(y => y.id === l.id));
+  return [estiloVistos, estiloNoite, estiloBilhete, estiloMapa][i % 4](l);
 }
 // o que todos os estilos usam: carimbo, cidade, dia, data, coordenadas e o carimbo vermelho da data
 async function baseCarimbo(l) {
@@ -4050,6 +4052,7 @@ async function compartilharCarimbo(l, bt, salvar) {
   try {
     const b = await imagemCarimbo(l); if (!b) throw 0;
     const nome = "carimbo-" + norm(l.nome || "caravana").replace(/[^a-z0-9]+/g, "-") + ".jpg", f = new File([b], nome, { type: "image/jpeg" });
+    if (salvar && navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f] }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
     if (!salvar && navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], text: "Ganhei o carimbo " + l.nome + " na Caravana do Céu ✦" }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
     let msg = bt.parentNode.nextElementSibling; if (!msg || !msg.hasAttribute("data-carmsg")) { msg = h("p", { class: "msg carmsg", role: "status", "data-carmsg": "1" }); bt.parentNode.after(msg); }
     salvarNoRolo(Promise.resolve(b), nome, msg);
