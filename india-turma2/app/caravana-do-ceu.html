@@ -5824,7 +5824,7 @@ const FILTROS = [
   { id: "cam-couro-quente", cat: "Câmeras", nome: "Delhi 1955 quente", m: [1.08, .04, -.02, .03, 1, 0, -.03, .02, .84], lift: 16, con: 1.48, sat: 1.12, split: [[62, 32, 14], [255, 222, 172]], add: [16, 6, -16], vin: .48, grao: 16, pelicula: 1 },
   { id: "cam-couro-frio", cat: "Câmeras", nome: "Delhi 1955 fria", m: [.94, .02, .02, .01, 1, .02, .02, .04, 1.08], lift: 16, con: 1.46, sat: .98, split: [[20, 36, 50], [240, 238, 228]], add: [-4, 1, 10], vin: .46, grao: 16, pelicula: 1 },
   // Rajastão 35, botão Taj: preto e branco lisinho, de bastante contraste e pretos fundos (como foto clássica no Taj), sem grão
-  { id: "cam-couro-pb", cat: "Câmeras", nome: "Rajastão 35 Taj", m: [.46, .44, .10, .46, .44, .10, .46, .44, .10], con: 1.32, add: [14, 14, 14], split: [[0, 0, 0], [255, 255, 255]], vin: .22, grao: 0 },
+  { id: "cam-couro-pb", cat: "Câmeras", nome: "Rajastão 35 Taj", m: [.46, .44, .10, .46, .44, .10, .46, .44, .10], con: 1.32, add: [14, 14, 14], split: [[0, 0, 0], [255, 255, 255]], vin: .22, grao: 0, liso: 1 },
   { id: "cam-cinematic", cat: "Câmeras", nome: "Cinematic", m: [1.14, 0, 0, 0, 1.1, 0, 0, 0, 1.08], lift: 8, con: 1.24, sat: 1.28, split: [[18, 62, 72], [255, 178, 118]], add: [6, 3, -2], vin: .5, grao: 28, cinema: 1 },
   { id: "cam-noturno", cat: "Câmeras", nome: "Blue Lassi", noite: 1, con: 1.22, vin: .45, grao: 30, cinema: 2 },
   // o mesmo brilho, halo e grão dos Lassi, mas com as cores de verdade (sem pintar de azul, laranja ou rosa)
@@ -7418,7 +7418,7 @@ async function revelaFoto(img, c, extra) {
     const Fx = { ...S.foto, ...(extra || {}), img, vivo: false, final: true }; if (Fx.molduraFinal) Fx.moldura = Fx.molduraFinal; // o visor mostra só a cena; a moldura branca aparece na foto revelada
     await montaFoto(out, Fx);
     // cores Lassi da Super 8: foto limpa, sem riscos, poeira, tremido nem luz vazando da película
-    const fF = FILTROS.find(y => y.id === Fx.filtro) || {}, limpa = fF.cinema === 2;
+    const fF = FILTROS.find(y => y.id === Fx.filtro) || {}, limpa = fF.cinema === 2 || fF.liso; // Taj (Rajastão): P&B liso, sem grão, poeira, pelinhos nem cabelos
     // Rajastão Color: o grão da câmera fica, mas sem os riscos, fiapos e poeira de filme velho
     // Kodak FunSaver: limpa como a original (sem poeira, fiapos nem luz vazando)
     if (!limpa) { personalidade(out, Fx.geo, c, fF.semFiapos); if (!fF.semFiapos && !fF.limpo) variaFilme(out, Fx.geo, c, fF.semLuz); }
