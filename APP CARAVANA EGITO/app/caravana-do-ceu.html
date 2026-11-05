@@ -4717,6 +4717,7 @@ function vExplorador() {
   if (!S.bonecoRasc) {
     const salvo = (S.viajantes.find(x => x.id === S.uid) || {}).boneco;
     // quem ainda não montou começa do zero: só o básico, para ir vestindo
+    S.bonecoDoSalvo = salvo ? JSON.stringify(salvo) : null;
     S.bonecoRasc = salvo ? maosSeparadas(bonecoDe(S.uid)) : { ...bonecoPadrao(S.uid), roupa: "basico", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum", pet: "nenhum", deus: "nenhum", barba: "nao" };
   }
   if (!S.bonecoBase) S.bonecoBase = JSON.stringify(S.bonecoRasc);
@@ -4771,6 +4772,16 @@ const pngDe = cv => new Promise(ok => cv.toBlob(ok, "image/png"));
 async function salvaExplorador(msg) {
   if (S.salvandoExp || !S.bonecoRasc || !S.db) return;
   const bon = { ...S.bonecoRasc }; S.salvandoExp = true;
+  // trava final: antes do 1º salvamento da visita, confere no banco (internet) se já existe um explorador salvo.
+  // Se existir e não for o que a pessoa abriu para editar, recupera o salvo em vez de gravar por cima. Sem conseguir conferir, não salva.
+  if (S.expConferido !== S.uid) {
+    let srv; try { const sn = await S.db.doc("viajantes/" + S.uid).get(); srv = sn && sn.exists ? (sn.data() || {}).boneco : null; }
+    catch (e) { S.salvandoExp = false; if (msg) { msg.textContent = "Sem internet agora: seu explorador fica aqui e é salvo assim que a conexão voltar."; msg.className = "msg"; } return; }
+    if (srv && S.bonecoDoSalvo !== JSON.stringify(srv) && JSON.stringify(srv) !== JSON.stringify(bon)) {
+      S.bonecoRasc = maosSeparadas({ ...bonecoPadrao(S.uid), ...srv }); S.bonecoBase = JSON.stringify(S.bonecoRasc); S.bonecoDoSalvo = JSON.stringify(srv); S.expConferido = S.uid;
+      S.salvandoExp = false; S.expMsg = "Seu explorador salvo foi carregado. Agora é só ajustar."; render(); return; }
+    S.expConferido = S.uid;
+  }
   try { await S.db.doc("viajantes/" + S.uid).update({ boneco: bon }); S.bonecoRasc = bon; delete adesivoCache.eu; if (S.fotoAdesThumbs) delete S.fotoAdesThumbs.eu; S.expMsg = "Explorador salvo. Ele já aparece no mapa e na Caravana."; if (msg) { msg.textContent = S.expMsg; msg.className = "msg ok"; } setTimeout(() => { S.expMsg = null; }, 6000); }
   catch (e) { if (msg) { msg.textContent = "Não consegui salvar. Tente de novo."; msg.className = "msg err"; } }
   S.salvandoExp = false;
