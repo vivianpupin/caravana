@@ -237,7 +237,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .celeye{margin:6px 0 0;font:600 12px/1 var(--ui);letter-spacing:.28em;text-transform:uppercase;color:#E2BE78;animation:celSobe .5s 1.2s both}
 .celnome{margin:0;font-family:"Cinzel",Georgia,serif;font-size:30px;color:#FFF1D6;animation:celSobe .5s 1.3s both}
 .celsub{margin:0 0 10px;color:#E8D3AE;font-size:14px;animation:celSobe .5s 1.4s both}
-.celebra .actions{animation:celSobe .5s 1.55s both}.celfecha{color:#E8D3AE!important;border-color:rgba(232,211,174,.4)!important}
+.celebra .actions{animation:celSobe .5s 1.55s both}.celfecha{color:#E8D3AE!important;border-color:rgba(232,211,174,.4)!important}.celcomp{background:rgba(255,248,236,.12)!important;color:#F3D9A4!important;border-color:rgba(243,217,164,.55)!important}
 .parada.chegou .pinwrap{animation:celChegou 1.4s .3s cubic-bezier(.2,1.4,.4,1) both}
 .parada.chegou .pinwrap::after{content:"";position:absolute;inset:-14px;border-radius:40%;box-shadow:0 0 0 0 rgba(233,178,80,.8);animation:pulsaProx 1.6s .5s ease-out 3}
 @keyframes celEntra{from{opacity:0}to{opacity:1}}
@@ -3763,6 +3763,39 @@ const paginaDoSelo = id => 2 + Math.floor(insigniaLocais().findIndex(l => l.id =
 // ---------- Passaporte ----------
 // selo conquistado: um check verde no canto do patch
 const checkSelo = cls => h("span", { class: "checksel " + cls, "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M5 12.5l4.5 4.5L19 7.5", fill: "none", stroke: "#fff", "stroke-width": 3.2, "stroke-linecap": "round", "stroke-linejoin": "round" })));
+// imagem do carimbo para compartilhar (formato Stories, 1080 x 1920): papel de passaporte, o carimbo grande e o nome do lugar
+async function imagemCarimbo(l) {
+  try { await document.fonts.ready; } catch (e) {}
+  const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d"); papelPass(x, W, H, 1);
+  const [im, logo] = await Promise.all([carregaLivre(badgeSrc(l)), carregaLivre("img/simbolo-marrom.png")]);
+  const d = diaDe(l.dia), ls = S.locais.filter(y => y.insignia).sort(byOrdem), qtd = ls.filter(aberto).length, v = eu() || {};
+  x.textAlign = "center";
+  if (logo) { const lw = 120, lh = lw * logo.height / logo.width; x.drawImage(logo, W / 2 - lw / 2, 150, lw, lh); }
+  x.fillStyle = "#3B2A1C"; x.font = '600 50px "Cinzel",Georgia,serif'; x.fillText("CARAVANA DO CÉU", W / 2, 360);
+  x.fillStyle = "#8A6B43"; x.font = '500 28px "Poppins",sans-serif'; x.fillText("ÍNDIA SAGRADA · 2026", W / 2, 408);
+  const g = x.createRadialGradient(W / 2, 880, 40, W / 2, 880, 480); g.addColorStop(0, "rgba(255,205,110,.6)"); g.addColorStop(1, "rgba(255,205,110,0)"); x.fillStyle = g; x.fillRect(0, 380, W, 1000);
+  if (im) { const pw = 600, ph = pw * im.height / im.width; x.save(); x.translate(W / 2, 880); x.rotate(-.07); x.shadowColor = "rgba(60,40,20,.45)"; x.shadowBlur = 40; x.shadowOffsetY = 16; x.drawImage(im, -pw / 2, -ph / 2, pw, ph); x.restore(); }
+  x.fillStyle = "#B4322A"; x.font = '600 30px "Poppins",sans-serif'; if ("letterSpacing" in x) x.letterSpacing = "8px"; x.fillText("CARIMBADO", W / 2, 1290); if ("letterSpacing" in x) x.letterSpacing = "0px";
+  // o nome do lugar, em até duas linhas
+  x.fillStyle = "#282722"; x.font = '600 74px "Cinzel",Georgia,serif'; const pal = String(l.nome || "").split(" "), linhas = [""];
+  pal.forEach(w => { const t = (linhas[linhas.length - 1] + " " + w).trim(); if (x.measureText(t).width > W - 140 && linhas[linhas.length - 1]) linhas.push(w); else linhas[linhas.length - 1] = t; });
+  linhas.slice(0, 2).forEach((t, i) => x.fillText(t, W / 2, 1390 + i * 86, W - 120));
+  const y2 = 1390 + Math.min(2, linhas.length) * 86;
+  x.fillStyle = "#8A6B43"; x.font = '500 32px "Poppins",sans-serif'; x.fillText([d ? `Dia ${d.n} · ${d.cidade}` : "", `${qtd} de ${ls.length} carimbos`].filter(Boolean).join("  ·  "), W / 2, y2 + 10);
+  x.fillStyle = "#5A3F22"; x.font = 'italic 34px "Lora",Georgia,serif'; x.fillText(v.nome ? "Passaporte de " + v.nome : "Travessia da Índia Sagrada", W / 2, 1780);
+  return new Promise(ok => c.toBlob(ok, "image/jpeg", .92));
+}
+async function compartilharCarimbo(l, bt) {
+  const txt0 = bt.textContent; bt.disabled = true; bt.textContent = "Preparando…";
+  try {
+    const b = await imagemCarimbo(l); if (!b) throw 0;
+    const nome = "carimbo-" + norm(l.nome || "caravana").replace(/[^a-z0-9]+/g, "-") + ".jpg", f = new File([b], nome, { type: "image/jpeg" });
+    if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], text: "Ganhei o carimbo " + l.nome + " na Caravana do Céu ✦" }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
+    let msg = bt.parentNode.nextElementSibling; if (!msg || !msg.classList.contains("carmsg")) { msg = h("p", { class: "msg carmsg", role: "status" }); bt.parentNode.after(msg); }
+    salvarNoRolo(Promise.resolve(b), nome, msg);
+  } catch (e) { avisoReacao("Não consegui preparar a imagem do carimbo."); }
+  finally { bt.disabled = false; bt.textContent = txt0; }
+}
 // Festa do carimbo: o selo cai do céu, o carimbo bate, estrelas douradas explodem
 function celebraSelo(l) {
   document.querySelector(".celebra")?.remove();
@@ -3783,6 +3816,7 @@ function celebraSelo(l) {
       h("p", { class: "celsub", text: [d ? `Dia ${d.n} · ${d.cidade}` : "", `${qtd} de ${ls.length} carimbos`].filter(Boolean).join("  ·  ") }),
       h("div", { class: "actions", style: "justify-content:center" },
         h("button", { class: "btn gold", type: "button", onclick: () => { fechar(); S.trilhaChegou = l.id; setTimeout(() => { if (S.trilhaChegou === l.id) S.trilhaChegou = null; }, 3000); if (S.tab !== "passaporte") go("passaporte"); else render(); setTimeout(() => document.querySelector(".parada.chegou")?.scrollIntoView({ block: "center", behavior: "smooth" }), 120); } }, "Ver meu passaporte"),
+        h("button", { class: "btn celcomp", type: "button", onclick: e => compartilharCarimbo(l, e.currentTarget) }, "Compartilhar"),
         h("button", { class: "btn ghost celfecha", type: "button", onclick: fechar }, "Fechar"))));
   document.body.append(ov);
 }
@@ -4282,6 +4316,8 @@ function conteudoInsignia(l) {
     !on && l.preparo ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => { closeSheets(); go("travessia"); requestAnimationFrame(() => document.querySelector(".missoes")?.scrollIntoView({ block: "start", behavior: "smooth" })); } }, "Ver as missões")) : null,
     S.unlockMsg ? h("p", { class: "msg " + (S.unlockMsg.ok ? "ok" : "err"), style: "text-align:center", role: "status", text: S.unlockMsg.text }) : null,
     on && S.unlockMsg && S.unlockMsg.ok ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirLivro(paginaDoSelo(l.id)) }, "Folhear meu passaporte")) : null,
+    // carimbo ganho: botão para compartilhar a imagem do carimbo (Stories, WhatsApp...)
+    on ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn", type: "button", onclick: e => compartilharCarimbo(l, e.currentTarget) }, "Compartilhar carimbo")) : null,
     on ? saberes.map(e => h("div", { class: "saber" }, h("p", { class: "eyebrow", text: "O saber deste carimbo" }), h("h3", { text: e.titulo }),
       String(e.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })), e.fonte ? h("p", { class: "src", text: "Fontes: " + e.fonte }) : null)) : null,
     l.preparo ? null : h("div", { class: "actions", style: "justify-content:center" },
