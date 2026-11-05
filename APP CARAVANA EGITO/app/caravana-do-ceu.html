@@ -6703,7 +6703,7 @@ async function filma(c) {
   // o primeiro quadro já sai com a imagem (antes saía preto, e o vídeo salvo no celular aparecia com a capa preta na galeria)
   desenha(); const copia = setInterval(desenha, 1000 / 24);
   const tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || "";
-  const mr = new MediaRecorder(rec.captureStream(24), tipo ? { mimeType: tipo, videoBitsPerSecond: 3.5e6 } : undefined), partes = [];
+  const mr = new MediaRecorder(rec.captureStream(24), tipo ? { mimeType: tipo, videoBitsPerSecond: 12e6 } : undefined), partes = [];
   mr.ondataavailable = e => e.data && e.data.size && partes.push(e.data);
   mr.onstop = async () => { clearInterval(copia); clearTimeout(limite); S.gravando = null; mostraGravando();
     const b = new Blob(partes, { type: (tipo || "video/webm").split(";")[0] }); if (b.size) { await guardaNoDiario(b, c, capa ? { capa } : null); S.fotosDiario = await lerDiario(); if (S.camSel === c.id) mostraGravando(true);
@@ -7247,7 +7247,9 @@ function quadroCam() {
   if (v0.videoWidth && !C.ocupado && !C.pausa) {
     const v = videoCam(C);
     const f = FILTROS.find(y => y.id === F.filtro) || FILTROS[0], G = !(f.arco || f.holi) && glVivo(C);
-    const lado = G ? 960 : 640, // tamanho do visor ao vivo: maior que isso o iPhone fica sem memória e some com as fotos das câmeras
+    // tamanho do visor ao vivo: maior que isso o iPhone fica sem memória e some com as fotos das câmeras
+    // filmando, a imagem sobe para Full HD (só enquanto grava), para o vídeo não sair quadriculado
+    const lado = G ? (S.gravando ? 1920 : 960) : (S.gravando ? 1280 : 640),
       k = lado / Math.max(v.videoWidth, v.videoHeight), w = Math.round(v.videoWidth * k), hh = Math.round(v.videoHeight * k);
     // o visor já recorta no formato da foto (ex.: 9:16) antes dos efeitos, para a vinheta e as luzes caírem nas bordas certas, como na foto final
     let sx = 0, sy = 0, sw = w, sh = hh; const rec = F.recorte;
@@ -9013,7 +9015,8 @@ async function filmeMenor(blob, aviso) {
   v.style.cssText = "position:fixed;left:0;top:0;width:2px;height:2px;opacity:.01;pointer-events:none"; document.body.append(v);
   try {
     await new Promise((ok, no) => { v.onloadedmetadata = ok; v.onerror = no; setTimeout(no, 8000); });
-    const k = Math.min(1, 540 / Math.max(v.videoWidth, v.videoHeight)), c = document.createElement("canvas"); c.width = Math.round(v.videoWidth * k / 2) * 2; c.height = Math.round(v.videoHeight * k / 2) * 2;
+    // cópia para enviar: até 1280 de altura, com a qualidade que couber em ~10 MB (antes era 540 e saía quadriculado)
+    const k = Math.min(1, 1280 / Math.max(v.videoWidth, v.videoHeight)), c = document.createElement("canvas"); c.width = Math.round(v.videoWidth * k / 2) * 2; c.height = Math.round(v.videoHeight * k / 2) * 2;
     const x = c.getContext("2d"), tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported(t)) || "";
     const mr = new MediaRecorder(c.captureStream(24), tipo ? { mimeType: tipo, videoBitsPerSecond: 6e5 } : undefined), partes = [];
     mr.ondataavailable = e => e.data && e.data.size && partes.push(e.data);

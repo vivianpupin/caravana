@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "04/11 · 23:00";</script>
+<script>window.__VERSAO = "04/11 · 23:02";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -7337,15 +7337,16 @@ async function filma2(c) {
   // o som: pede o microfone (na primeira vez o celular pergunta); sem permissão, grava assim mesmo, só a imagem
   let mic = null; try { mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true }, video: false }); } catch (e) { mic = null; }
   if (!mic) avisoReacao("🔇 Filmando sem som: o microfone não foi liberado. Para gravar com som, permita o microfone para o app nos Ajustes do celular.");
-  // 720 x 1280: imagem boa no celular e um filme leve, que vai inteiro, com som, para o chat e a Galeria
-  const W = 720, H = 1280, rec = document.createElement("canvas"); rec.width = W; rec.height = H; const x = rec.getContext("2d");
+  // 1080 x 1920 (Full HD em pé) com bastante dados por segundo: sem quadriculado, nem com o grão do filme
+  // (4K não dá: o filtro é refeito a cada quadro no celular e o iPhone fica sem memória; para o chat e a Galeria o app faz uma cópia menor)
+  const W = 1080, H = 1920, rec = document.createElement("canvas"); rec.width = W; rec.height = H; const x = rec.getContext("2d");
   const marca = document.createElement("canvas"); marca.width = W; marca.height = H; await marcaCaravana(marca, { ox: 0, oy: 0, w: W, hh: H }, c && c.id === "rajastao");
   const desenha = () => { const e = Math.max(W / tela.width, H / tela.height), w = tela.width * e, hh = tela.height * e; x.fillStyle = "#000"; x.fillRect(0, 0, W, H); x.drawImage(tela, (W - w) / 2, (H - hh) / 2, w, hh); x.drawImage(marca, 0, 0); };
   // o primeiro quadro já sai com a imagem (antes saía preto, e o vídeo salvo no celular aparecia com a capa preta na galeria)
   desenha(); const copia = setInterval(desenha, 1000 / 24);
   const tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || "";
   const fluxo = new MediaStream([...rec.captureStream(24).getVideoTracks(), ...(mic ? mic.getAudioTracks() : [])]);
-  const mr = new MediaRecorder(fluxo, tipo ? { mimeType: tipo, videoBitsPerSecond: 1.1e6, audioBitsPerSecond: 80000 } : undefined), partes = [];
+  const mr = new MediaRecorder(fluxo, tipo ? { mimeType: tipo, videoBitsPerSecond: 12e6, audioBitsPerSecond: 128000 } : undefined), partes = [];
   mr.ondataavailable = e => e.data && e.data.size && partes.push(e.data);
   const solta = () => { clearInterval(copia); clearTimeout(limite); mr.stream && mr.stream.getTracks().forEach(t => t.stop()); mic && mic.getTracks().forEach(t => t.stop()); if (S.gravando === mr) S.gravando = null; mostraGravando(); };
   mr.onerror = () => { solta(); avisoReacao("Não consegui gravar o filme neste celular."); };
@@ -7994,7 +7995,9 @@ function quadroCam() {
   if (v0.videoWidth && !C.ocupado && !C.pausa) {
     const v = videoCam(C);
     const f = FILTROS.find(y => y.id === F.filtro) || FILTROS[0], G = !(f.arco || f.holi) && glVivo(C);
-    const lado = G ? 960 : 640, // tamanho do visor ao vivo: maior que isso o iPhone fica sem memória e some com as fotos das câmeras
+    // tamanho do visor ao vivo: maior que isso o iPhone fica sem memória e some com as fotos das câmeras
+    // filmando, a imagem sobe para Full HD (só enquanto grava), para o vídeo não sair quadriculado
+    const lado = G ? (S.gravando ? 1920 : 960) : (S.gravando ? 1280 : 640),
       k = lado / Math.max(v.videoWidth, v.videoHeight), w = Math.round(v.videoWidth * k), hh = Math.round(v.videoHeight * k);
     // o visor já recorta no formato da foto (ex.: 9:16) antes dos efeitos, para a vinheta e as luzes caírem nas bordas certas, como na foto final
     let sx = 0, sy = 0, sw = w, sh = hh; const rec = F.recorte;
@@ -10027,7 +10030,7 @@ function somDosFilmes() {
   try { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; const ac = somDosFilmes.ac || (somDosFilmes.ac = new AC()); if (ac.state === "suspended") ac.resume().catch(() => {}); return ac; } catch (e) { return null; }
 }
 async function filmeMenor(blob, aviso) {
-  if (blob.size <= 9e6 || !window.MediaRecorder) return blob; // até 9 MB vai inteiro (com som); maior, é diminuído
+  if (blob.size <= 12e6 || !window.MediaRecorder) return blob; // até 12 MB vai inteiro (com som); maior, é diminuído
   // primeiro tenta com som; se o celular travar o vídeo (o iPhone trava quando o som não foi liberado), tenta de novo só com a imagem
   return (await encolheFilme(blob, aviso, true)) || (await encolheFilme(blob, aviso, false)) || blob;
 }
@@ -10036,11 +10039,12 @@ async function encolheFilme(blob, aviso, comSom) {
   v.style.cssText = "position:fixed;left:0;top:0;width:2px;height:2px;opacity:.01;pointer-events:none"; document.body.append(v);
   try {
     await new Promise((ok, no) => { v.onloadedmetadata = ok; v.onerror = no; setTimeout(no, 8000); });
-    const k = Math.min(1, 540 / Math.max(v.videoWidth, v.videoHeight)), c = document.createElement("canvas"); c.width = Math.round(v.videoWidth * k / 2) * 2; c.height = Math.round(v.videoHeight * k / 2) * 2;
+    // cópia para enviar: até 1280 de altura, com a qualidade que couber em ~10 MB (antes era 540 e saía quadriculado)
+    const k = Math.min(1, 1280 / Math.max(v.videoWidth, v.videoHeight)), c = document.createElement("canvas"); c.width = Math.round(v.videoWidth * k / 2) * 2; c.height = Math.round(v.videoHeight * k / 2) * 2;
     const x = c.getContext("2d"), tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported(t)) || "";
     // tenta levar o som junto: o áudio do vídeo passa pelo Web Audio e entra no filme menor (se o celular não deixar, vai só a imagem)
     let som = []; try { const ac = comSom ? somDosFilmes() : null; if (ac && ac.state === "running") { const fonte = ac.createMediaElementSource(v), destino = ac.createMediaStreamDestination(); fonte.connect(destino); som = destino.stream.getAudioTracks(); v.muted = false; v.removeAttribute("muted"); } } catch (e) { som = []; }
-    const mr = new MediaRecorder(new MediaStream([...c.captureStream(24).getVideoTracks(), ...som]), tipo ? { mimeType: tipo, videoBitsPerSecond: 6e5, audioBitsPerSecond: 64000 } : undefined), partes = [];
+    const mr = new MediaRecorder(new MediaStream([...c.captureStream(24).getVideoTracks(), ...som]), tipo ? { mimeType: tipo, videoBitsPerSecond: Math.round(Math.max(8e5, Math.min(4e6, 8e7 / Math.max(5, Math.min(30, isFinite(v.duration) ? v.duration : 30)) - 96000))), audioBitsPerSecond: 96000 } : undefined), partes = [];
     mr.ondataavailable = e => e.data && e.data.size && partes.push(e.data);
     const dur = Math.min(30, isFinite(v.duration) ? v.duration : 30);
     const pronto = new Promise(r => { mr.onstop = r; });
