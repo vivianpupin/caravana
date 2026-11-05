@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "04/11 · 23:06";</script>
+<script>window.__VERSAO = "04/11 · 23:11";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -271,7 +271,7 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .celeye{margin:6px 0 0;font:600 12px/1 var(--ui);letter-spacing:.28em;text-transform:uppercase;color:#E2BE78;animation:celSobe .5s 1.2s both}
 .celnome{margin:0;font-family:"Cinzel",Georgia,serif;font-size:30px;color:#FFF1D6;animation:celSobe .5s 1.3s both}
 .celsub{margin:0 0 10px;color:#E8D3AE;font-size:14px;animation:celSobe .5s 1.4s both}
-.celebra .actions{animation:celSobe .5s 1.55s both}.celfecha{color:#E8D3AE!important;border-color:rgba(232,211,174,.4)!important}.celcomp{background:rgba(255,248,236,.12)!important;color:#F3D9A4!important;border-color:rgba(243,217,164,.55)!important}
+.celebra .actions{animation:celSobe .5s 1.55s both}.celfecha{color:#E8D3AE!important;border-color:rgba(232,211,174,.4)!important}.celebra .carmsg{color:#F3D9A4;max-width:320px}.celebra .carmsg .linkbtn{color:#FFE2A8}.celcomp{background:rgba(255,248,236,.12)!important;color:#F3D9A4!important;border-color:rgba(243,217,164,.55)!important}
 .parada.chegou .pinwrap{animation:celChegou 1.4s .3s cubic-bezier(.2,1.4,.4,1) both}
 .parada.chegou .pinwrap::after{content:"";position:absolute;inset:-14px;border-radius:40%;box-shadow:0 0 0 0 rgba(233,178,80,.8);animation:pulsaProx 1.6s .5s ease-out 3}
 @keyframes celEntra{from{opacity:0}to{opacity:1}}
@@ -3816,15 +3816,25 @@ async function imagemCarimbo(l) {
   linhas.slice(0, 2).forEach((t, i) => x.fillText(t, W / 2, 1390 + i * 86, W - 120));
   const y2 = 1390 + Math.min(2, linhas.length) * 86;
   x.fillStyle = "#8A6B43"; x.font = '500 32px "Poppins",sans-serif'; x.fillText([d ? `Dia ${d.n} · ${d.cidade}` : "", `${qtd} de ${ls.length} carimbos`].filter(Boolean).join("  ·  "), W / 2, y2 + 10);
+  // latitude e longitude do lugar (ou da cidade), em graus, minutos e segundos, entre filetes dourados
+  const cid = typeof cidadeDe === "function" ? cidadeDe(l.cidadeId) : null, la = isFinite(+l.lat) && l.lat !== "" && l.lat != null ? +l.lat : cid && isFinite(+cid.lat) ? +cid.lat : null, lo = la != null ? (isFinite(+l.lat) && l.lat !== "" && l.lat != null ? +l.lng : +cid.lng) : null;
+  if (la != null && isFinite(lo)) {
+    const gms = (v, p, n) => { const a = Math.abs(v), g = Math.floor(a), m = Math.floor((a - g) * 60), s2 = Math.round(((a - g) * 60 - m) * 60); return `${g}°${String(m).padStart(2, "0")}′${String(Math.min(59, s2)).padStart(2, "0")}″ ${v >= 0 ? p : n}`; };
+    const yc = y2 + 110, txt = gms(la, "N", "S") + "   " + gms(lo, "L", "O");
+    x.font = '400 34px "Courier Prime",monospace'; if ("letterSpacing" in x) x.letterSpacing = "3px"; const tw = x.measureText(txt).width; x.fillStyle = "#9A7240"; x.fillText(txt, W / 2, yc); if ("letterSpacing" in x) x.letterSpacing = "0px";
+    x.strokeStyle = "rgba(168,131,79,.7)"; x.lineWidth = 2; const yl = yc - 11, a0 = W / 2 - tw / 2 - 30, a1 = W / 2 + tw / 2 + 30;
+    x.beginPath(); x.moveTo(Math.max(60, a0 - 100), yl); x.lineTo(a0 - 12, yl); x.moveTo(a1 + 12, yl); x.lineTo(Math.min(W - 60, a1 + 100), yl); x.stroke();
+    x.fillStyle = "#A8834F"; [a0, a1].forEach(cx => { x.save(); x.translate(cx, yl); x.rotate(Math.PI / 4); x.fillRect(-5, -5, 10, 10); x.restore(); });
+  }
   x.fillStyle = "#5A3F22"; x.font = 'italic 34px "Lora",Georgia,serif'; x.fillText(v.nome ? "Passaporte de " + v.nome : "Travessia da Índia Sagrada", W / 2, 1780);
   return new Promise(ok => c.toBlob(ok, "image/jpeg", .92));
 }
-async function compartilharCarimbo(l, bt) {
+async function compartilharCarimbo(l, bt, salvar) {
   const txt0 = bt.textContent; bt.disabled = true; bt.textContent = "Preparando…";
   try {
     const b = await imagemCarimbo(l); if (!b) throw 0;
     const nome = "carimbo-" + norm(l.nome || "caravana").replace(/[^a-z0-9]+/g, "-") + ".jpg", f = new File([b], nome, { type: "image/jpeg" });
-    if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], text: "Ganhei o carimbo " + l.nome + " na Caravana do Céu ✦" }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
+    if (!salvar && navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], text: "Ganhei o carimbo " + l.nome + " na Caravana do Céu ✦" }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
     let msg = bt.parentNode.nextElementSibling; if (!msg || !msg.classList.contains("carmsg")) { msg = h("p", { class: "msg carmsg", role: "status" }); bt.parentNode.after(msg); }
     salvarNoRolo(Promise.resolve(b), nome, msg);
   } catch (e) { avisoReacao("Não consegui preparar a imagem do carimbo."); }
@@ -3851,6 +3861,7 @@ function celebraSelo(l) {
       h("div", { class: "actions", style: "justify-content:center" },
         h("button", { class: "btn gold", type: "button", onclick: () => { fechar(); S.trilhaChegou = l.id; setTimeout(() => { if (S.trilhaChegou === l.id) S.trilhaChegou = null; }, 3000); if (S.tab !== "passaporte") go("passaporte"); else render(); setTimeout(() => document.querySelector(".parada.chegou")?.scrollIntoView({ block: "center", behavior: "smooth" }), 120); } }, "Ver meu passaporte"),
         h("button", { class: "btn celcomp", type: "button", onclick: e => compartilharCarimbo(l, e.currentTarget) }, "Compartilhar"),
+        h("button", { class: "btn celcomp", type: "button", onclick: e => compartilharCarimbo(l, e.currentTarget, true) }, "Salvar no celular"),
         h("button", { class: "btn ghost celfecha", type: "button", onclick: fechar }, "Fechar"))));
   document.body.append(ov);
 }
@@ -4351,7 +4362,8 @@ function conteudoInsignia(l) {
     S.unlockMsg ? h("p", { class: "msg " + (S.unlockMsg.ok ? "ok" : "err"), style: "text-align:center", role: "status", text: S.unlockMsg.text }) : null,
     on && S.unlockMsg && S.unlockMsg.ok ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirLivro(paginaDoSelo(l.id)) }, "Folhear meu passaporte")) : null,
     // carimbo ganho: botão para compartilhar a imagem do carimbo (Stories, WhatsApp...)
-    on ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn", type: "button", onclick: e => compartilharCarimbo(l, e.currentTarget) }, "Compartilhar carimbo")) : null,
+    on ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn", type: "button", onclick: e => compartilharCarimbo(l, e.currentTarget) }, "Compartilhar carimbo"),
+      h("button", { class: "btn", type: "button", onclick: e => compartilharCarimbo(l, e.currentTarget, true) }, "Salvar no celular")) : null,
     on ? saberes.map(e => h("div", { class: "saber" }, h("p", { class: "eyebrow", text: "O saber deste carimbo" }), h("h3", { text: e.titulo }),
       String(e.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })), e.fonte ? h("p", { class: "src", text: "Fontes: " + e.fonte }) : null)) : null,
     l.preparo ? null : h("div", { class: "actions", style: "justify-content:center" },
