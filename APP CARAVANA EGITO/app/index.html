@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "04/11 · 23:29";</script>
+<script>window.__VERSAO = "05/11 · 00:03";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2302,6 +2302,10 @@ function vCadastro() {
       const doc = { nome: nome.value.trim(), cidade: cid.value.trim(), genero: S.cadGenero, viagensAntes: (S.cadViagens || {}).n || 0, ts: Date.now(), insignias: { ...S.local } };
       if (S.cadFoto) doc.foto = S.cadFoto;
       if (S.isOwner) doc.lider = true;
+      // quem já tem passaporte não perde explorador, selos nem missões: só atualiza nome, cidade e foto; sem internet, não emite
+      let ant; try { ant = await S.db.doc("viajantes/" + S.uid).get(); } catch (err) { erro.textContent = "Sem internet agora. Tente de novo em instantes."; return; }
+      if (ant && ant.exists) { const { ts, insignias, ...resto } = doc; try { await S.db.doc("viajantes/" + S.uid).update(resto); S.tab = "passaporte"; render(); } catch (err) { erro.textContent = "Não consegui atualizar seu passaporte. Tente de novo com internet."; } return; }
+      if (!ant) { erro.textContent = "Sem internet agora. Tente de novo em instantes."; return; }
       try { await S.db.doc("viajantes/" + S.uid).set(doc); S.tab = "passaporte"; }
       catch (err) { erro.textContent = "Não consegui emitir seu passaporte. Peça à líder um convite com permissão para participar."; }
     } },
@@ -4748,13 +4752,19 @@ function vExplorador() {
     S.bonecoRasc = salvo ? maosSeparadas(bonecoDe(S.uid)) : { ...bonecoPadrao(S.uid), roupa: "basico", chapeu: "sem", acessorio: "nenhum", acessorio2: "nenhum", colar: "nenhum", testa: "nada", oculos: "nenhum", pet: "nenhum", deus: "nenhum", barba: "nao" };
   }
   if (!S.bonecoBase) S.bonecoBase = JSON.stringify(S.bonecoRasc);
+  // o explorador salvo chegou da internet depois de a aba abrir (sinal fraco): enquanto a pessoa não mexeu, mostra o salvo
+  // (antes o rascunho em branco era salvo por cima do explorador de verdade)
+  { const salvo2 = (S.viajantes.find(x => x.id === S.uid) || {}).boneco;
+    if (salvo2 && JSON.stringify(S.bonecoRasc) === S.bonecoBase && S.bonecoDoSalvo !== JSON.stringify(salvo2)) {
+      S.bonecoRasc = maosSeparadas(bonecoDe(S.uid)); S.bonecoBase = JSON.stringify(S.bonecoRasc); S.bonecoDoSalvo = JSON.stringify(salvo2); } }
   const b = S.bonecoRasc, set = (k, val) => { S.bonecoRasc = { ...S.bonecoRasc, [k]: val }; render(); };
   const chips = (k, ops) => h("div", { class: "opts" }, ops.map(([val, lab]) => h("button", { type: "button", class: "opt", "aria-pressed": String(b[k] === val), onclick: () => set(k, val) }, lab)));
   const cores = (k, arr, rot) => h("div", { class: "opts" }, arr.map(c => h("button", { type: "button", class: "sw", style: `background:${c}`, "aria-label": rot, "aria-pressed": String(b[k] === c), onclick: () => set(k, c) })));
   const msg = h("p", { id: "exp-msg", class: "msg" + (S.expMsg ? " ok" : ""), role: "status", text: S.expMsg || "" });
   // salva sozinho a cada escolha: o botão "Salvar" fica lá embaixo e muita gente saía da aba sem chegar nele
   const jaSalvo = JSON.stringify((S.viajantes.find(x => x.id === S.uid) || {}).boneco || null), agora = JSON.stringify(b);
-  if (v && S.db && agora !== jaSalvo && (jaSalvo !== "null" || agora !== S.bonecoBase)) { clearTimeout(S.expAutoT); S.expAutoT = setTimeout(() => salvaExplorador(document.getElementById("exp-msg")), 1200); }
+  // só salva sozinho quando a pessoa mudou algo nesta visita e a lista de viajantes já chegou da internet
+  if (v && S.db && S.viajantesOk && agora !== jaSalvo && agora !== S.bonecoBase) { clearTimeout(S.expAutoT); S.expAutoT = setTimeout(() => salvaExplorador(document.getElementById("exp-msg")), 1200); }
   return h("section", { class: "view" },
 
     h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Mapa da Expedição" }), h("h1", { text: "Monte seu explorador" }))),
