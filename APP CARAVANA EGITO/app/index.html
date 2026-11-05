@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "04/11 · 23:11";</script>
+<script>window.__VERSAO = "04/11 · 23:14";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3427,34 +3427,89 @@ const paginaDoSelo = id => 2 + Math.floor(insigniaLocais().findIndex(l => l.id =
 const checkSelo = cls => h("span", { class: "checksel " + cls, "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M5 12.5l4.5 4.5L19 7.5", fill: "none", stroke: "#fff", "stroke-width": 3.2, "stroke-linecap": "round", "stroke-linejoin": "round" })));
 // imagem do carimbo para compartilhar (formato Stories, 1080 x 1920): papel de passaporte, o carimbo grande e o nome do lugar
 async function imagemCarimbo(l) {
+  // a imagem é uma página do passaporte da pessoa (como o documento do app): foto, nome, categoria, viagens, número,
+  // o carimbo batido como visto, a latitude e a longitude do lugar e as linhas de código no rodapé
   try { await document.fonts.ready; } catch (e) {}
-  const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d"); papelPass(x, W, H, 1);
-  const [im, logo] = await Promise.all([carregaLivre(badgeSrc(l)), carregaLivre("img/simbolo-marrom.png")]);
-  const d = diaDe(l.dia), ls = S.locais.filter(y => y.insignia).sort(byOrdem), qtd = ls.filter(aberto).length, v = eu() || {};
-  x.textAlign = "center";
-  if (logo) { const lw = 120, lh = lw * logo.height / logo.width; x.drawImage(logo, W / 2 - lw / 2, 150, lw, lh); }
-  x.fillStyle = "#3B2A1C"; x.font = '600 50px "Cinzel",Georgia,serif'; x.fillText("CARAVANA DO CÉU", W / 2, 360);
-  x.fillStyle = "#8A6B43"; x.font = '500 28px "Poppins",sans-serif'; x.fillText("ÍNDIA SAGRADA · 2026", W / 2, 408);
-  const g = x.createRadialGradient(W / 2, 880, 40, W / 2, 880, 480); g.addColorStop(0, "rgba(255,205,110,.6)"); g.addColorStop(1, "rgba(255,205,110,0)"); x.fillStyle = g; x.fillRect(0, 380, W, 1000);
-  if (im) { const pw = 600, ph = pw * im.height / im.width; x.save(); x.translate(W / 2, 880); x.rotate(-.07); x.shadowColor = "rgba(60,40,20,.45)"; x.shadowBlur = 40; x.shadowOffsetY = 16; x.drawImage(im, -pw / 2, -ph / 2, pw, ph); x.restore(); }
-  x.fillStyle = "#B4322A"; x.font = '600 30px "Poppins",sans-serif'; if ("letterSpacing" in x) x.letterSpacing = "8px"; x.fillText("CARIMBADO", W / 2, 1290); if ("letterSpacing" in x) x.letterSpacing = "0px";
-  // o nome do lugar, em até duas linhas
-  x.fillStyle = "#282722"; x.font = '600 74px "Cinzel",Georgia,serif'; const pal = String(l.nome || "").split(" "), linhas = [""];
-  pal.forEach(w => { const t = (linhas[linhas.length - 1] + " " + w).trim(); if (x.measureText(t).width > W - 140 && linhas[linhas.length - 1]) linhas.push(w); else linhas[linhas.length - 1] = t; });
-  linhas.slice(0, 2).forEach((t, i) => x.fillText(t, W / 2, 1390 + i * 86, W - 120));
-  const y2 = 1390 + Math.min(2, linhas.length) * 86;
-  x.fillStyle = "#8A6B43"; x.font = '500 32px "Poppins",sans-serif'; x.fillText([d ? `Dia ${d.n} · ${d.cidade}` : "", `${qtd} de ${ls.length} carimbos`].filter(Boolean).join("  ·  "), W / 2, y2 + 10);
-  // latitude e longitude do lugar (ou da cidade), em graus, minutos e segundos, entre filetes dourados
-  const cid = typeof cidadeDe === "function" ? cidadeDe(l.cidadeId) : null, la = isFinite(+l.lat) && l.lat !== "" && l.lat != null ? +l.lat : cid && isFinite(+cid.lat) ? +cid.lat : null, lo = la != null ? (isFinite(+l.lat) && l.lat !== "" && l.lat != null ? +l.lng : +cid.lng) : null;
+  const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
+  const v = eu() || {}, d = diaDe(l.dia), ls = S.locais.filter(y => y.insignia).sort(byOrdem), qtd = ls.filter(aberto).length;
+  let foto = v.foto ? await carregaLivre(blob(v.foto)) : null;
+  if (!foto) { try { const sv = bonecoSvg(bonecoDe(S.uid)); sv.setAttribute("xmlns", "http://www.w3.org/2000/svg"); sv.setAttribute("width", 240); sv.setAttribute("height", 360);
+    foto = await carregaLivre(URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(sv)], { type: "image/svg+xml" }))); } catch (e) {} }
+  const [im, logo] = await Promise.all([carregaLivre(badgeSrc(l)), carregaLivre("img/simbolo-dourado.png")]);
+  const esp = px => { if ("letterSpacing" in x) x.letterSpacing = px + "px"; };
+  // capa azul-marinho com filete dourado em volta da página
+  x.fillStyle = "#0F1B2E"; x.fillRect(0, 0, W, H);
+  x.strokeStyle = "rgba(201,162,92,.55)"; x.lineWidth = 2; x.strokeRect(22, 22, W - 44, H - 44);
+  const M = 48, PW = W - 2 * M, PH = H - 2 * M - 70;
+  // a página de papel
+  x.save(); x.shadowColor = "rgba(0,0,0,.5)"; x.shadowBlur = 30; x.shadowOffsetY = 10;
+  const pg = x.createLinearGradient(0, M, 0, M + PH); pg.addColorStop(0, "#FBF5E8"); pg.addColorStop(1, "#F1E5CC"); x.fillStyle = pg;
+  x.beginPath(); x.roundRect ? x.roundRect(M, M, PW, PH, 26) : x.rect(M, M, PW, PH); x.fill(); x.restore();
+  x.save(); x.beginPath(); x.roundRect ? x.roundRect(M, M, PW, PH, 26) : x.rect(M, M, PW, PH); x.clip();
+  // guilhoché: ondas finas, como em papel de documento
+  x.lineWidth = 1.2;
+  for (let k = 0; k < 26; k++) { x.strokeStyle = k % 2 ? "rgba(63,122,110,.09)" : "rgba(160,110,60,.10)"; x.beginPath();
+    for (let X = M; X <= M + PW; X += 8) { const Y = M + 40 + k * 68 + Math.sin((X - M) / PW * Math.PI * 5 + k * .7) * 18; X === M ? x.moveTo(X, Y) : x.lineTo(X, Y); } x.stroke(); }
+  x.fillStyle = "rgba(90,63,34,.06)"; x.font = '500 13px "Courier Prime",monospace';
+  for (let Y = M + 24; Y < M + PH; Y += 34) x.fillText("CARAVANA DO CÉU · ÍNDIA SAGRADA · TRAVESSIA 2026 · ".repeat(3), M - ((Y * 7) % 90), Y);
+  if (logo) { x.globalAlpha = .07; const lw = 620, lh = lw * logo.height / logo.width; x.drawImage(logo, W / 2 - lw / 2, 900 - lh / 2, lw, lh); x.globalAlpha = 1; }
+  x.restore();
+  const L0 = M + 50, R0 = M + PW - 50;
+  // cabeçalho
+  x.fillStyle = "#3B2A1C"; x.font = '700 27px "Courier Prime",monospace'; esp(2);
+  x.fillText("REPÚBLICA DA CARAVANA · PASSAPORTE", L0, M + 72); x.fillStyle = "#8A6B43"; x.font = '400 24px "Courier Prime",monospace'; x.fillText("REPUBLIC OF CARAVANA · PASSPORT", L0, M + 106); esp(0);
+  x.strokeStyle = "rgba(90,63,34,.35)"; x.lineWidth = 2; x.beginPath(); x.moveTo(L0, M + 130); x.lineTo(R0, M + 130); x.stroke();
+  // foto 3x4
+  const fx0 = L0, fy0 = M + 165, fw = 290, fh = 370;
+  x.fillStyle = "#E9DCC0"; x.fillRect(fx0, fy0, fw, fh);
+  if (foto) { const k = Math.max(fw / foto.width, fh / foto.height), sw = fw / k, sh = fh / k; x.drawImage(foto, (foto.width - sw) / 2, (foto.height - sh) / 2, sw, sh, fx0, fy0, fw, fh); }
+  x.strokeStyle = "rgba(90,63,34,.45)"; x.lineWidth = 2; x.strokeRect(fx0, fy0, fw, fh);
+  // campos
+  const cx0 = fx0 + fw + 40, larg = R0 - cx0;
+  const campoC = (pt, en, val, y, grande) => { x.fillStyle = "#8A6B43"; x.font = '400 21px "Courier Prime",monospace'; esp(1); x.fillText((pt + " / " + en).toUpperCase(), cx0, y); esp(0);
+    x.fillStyle = "#282722"; x.font = `700 ${grande ? 46 : 36}px "Courier Prime",monospace`; x.fillText(val, cx0, y + (grande ? 50 : 42), larg); };
+  campoC("Categoria", "Rank", tituloViajante(v).toUpperCase(), fy0 + 20);
+  campoC("Viagens", "Trips", String(totalViagens(v)), fy0 + 110);
+  campoC("Nº do passaporte", "Passport No.", numPassaporte(S.uid), fy0 + 200);
+  campoC("Nome", "Name", (v.nome || "Viajante").toUpperCase(), fy0 + 290, 1);
+  const yb = fy0 + fh + 60;
+  x.fillStyle = "#8A6B43"; x.font = '400 21px "Courier Prime",monospace'; esp(1);
+  x.fillText(v.lider ? "FUNÇÃO / ROLE" : "VIAJANTE / TRAVELLER", L0, yb); x.fillText("ORIGEM / PLACE OF ORIGIN", L0 + 330, yb); esp(0);
+  x.fillStyle = "#282722"; x.font = '700 36px "Courier Prime",monospace';
+  x.fillText(v.lider ? "LÍDER" : "Nº " + nn(numeros()[S.uid] || 0), L0, yb + 42); x.fillText((v.cidade || "—").toUpperCase(), L0 + 330, yb + 42, R0 - L0 - 330);
+  // faixa do visto
+  const yv = yb + 100; x.strokeStyle = "rgba(90,63,34,.35)"; x.lineWidth = 2; x.beginPath(); x.moveTo(L0, yv); x.lineTo(R0, yv); x.stroke();
+  x.textAlign = "center"; x.fillStyle = "#8A6B43"; x.font = '700 24px "Courier Prime",monospace'; esp(4); x.fillText("VISTO · CARIMBO DA TRAVESSIA", W / 2, yv + 46); esp(0);
+  // o carimbo, batido torto sobre a página
+  const cy = yv + 330;
+  const gl = x.createRadialGradient(W / 2, cy, 30, W / 2, cy, 330); gl.addColorStop(0, "rgba(255,205,110,.45)"); gl.addColorStop(1, "rgba(255,205,110,0)"); x.fillStyle = gl; x.fillRect(M, cy - 330, PW, 660);
+  if (im) { const pw = 440, ph = pw * im.height / im.width; x.save(); x.translate(W / 2 - 40, cy); x.rotate(-.08); x.shadowColor = "rgba(60,40,20,.45)"; x.shadowBlur = 30; x.shadowOffsetY = 12; x.drawImage(im, -pw / 2, -ph / 2, pw, ph); x.restore(); }
+  // carimbo de tinta vermelha com a data, por cima do canto
+  const ts = minhas()[l.id], quando = dataDoc(typeof ts === "number" ? ts : Date.now()), cid = cidadeDe(l.cidadeId);
+  x.save(); x.translate(W / 2 + 230, cy + 150); x.rotate(.22); x.globalAlpha = .82; x.strokeStyle = "#B4322A"; x.fillStyle = "#B4322A";
+  x.lineWidth = 6; x.beginPath(); x.arc(0, 0, 118, 0, Math.PI * 2); x.stroke(); x.lineWidth = 2.5; x.beginPath(); x.arc(0, 0, 100, 0, Math.PI * 2); x.stroke();
+  x.textAlign = "center"; x.font = '700 25px "Courier Prime",monospace'; esp(2); x.fillText("CARIMBADO", 0, -18, 180); esp(0);
+  x.fillRect(-78, -4, 156, 2.5); x.font = '700 24px "Courier Prime",monospace'; x.fillText(quando, 0, 30, 180);
+  x.font = '700 17px "Courier Prime",monospace'; esp(3); x.fillText((cid ? cid.nome : d ? d.cidade : "ÍNDIA").toUpperCase(), 0, 64, 150); esp(0); x.restore();
+  // nome do lugar, dia e coordenadas
+  let yt = cy + 340; x.fillStyle = "#282722"; x.font = '600 66px "Cinzel",Georgia,serif'; const pal = String(l.nome || "").split(" "), linhas = [""];
+  pal.forEach(w => { const t = (linhas[linhas.length - 1] + " " + w).trim(); if (x.measureText(t).width > PW - 120 && linhas[linhas.length - 1]) linhas.push(w); else linhas[linhas.length - 1] = t; });
+  linhas.slice(0, 2).forEach((t, i) => x.fillText(t, W / 2, yt + i * 76, PW - 100)); yt += Math.min(2, linhas.length) * 76 - 20;
+  x.fillStyle = "#8A6B43"; x.font = '500 30px "Poppins",sans-serif'; x.fillText([d ? `Dia ${d.n} · ${d.cidade}` : "", `${qtd} de ${ls.length} carimbos`].filter(Boolean).join("  ·  "), W / 2, yt + 30);
+  const temLa = l.lat != null && l.lat !== "" && isFinite(+l.lat), la = temLa ? +l.lat : cid && isFinite(+cid.lat) ? +cid.lat : null, lo = temLa ? +l.lng : cid ? +cid.lng : null;
   if (la != null && isFinite(lo)) {
-    const gms = (v, p, n) => { const a = Math.abs(v), g = Math.floor(a), m = Math.floor((a - g) * 60), s2 = Math.round(((a - g) * 60 - m) * 60); return `${g}°${String(m).padStart(2, "0")}′${String(Math.min(59, s2)).padStart(2, "0")}″ ${v >= 0 ? p : n}`; };
-    const yc = y2 + 110, txt = gms(la, "N", "S") + "   " + gms(lo, "L", "O");
-    x.font = '400 34px "Courier Prime",monospace'; if ("letterSpacing" in x) x.letterSpacing = "3px"; const tw = x.measureText(txt).width; x.fillStyle = "#9A7240"; x.fillText(txt, W / 2, yc); if ("letterSpacing" in x) x.letterSpacing = "0px";
-    x.strokeStyle = "rgba(168,131,79,.7)"; x.lineWidth = 2; const yl = yc - 11, a0 = W / 2 - tw / 2 - 30, a1 = W / 2 + tw / 2 + 30;
-    x.beginPath(); x.moveTo(Math.max(60, a0 - 100), yl); x.lineTo(a0 - 12, yl); x.moveTo(a1 + 12, yl); x.lineTo(Math.min(W - 60, a1 + 100), yl); x.stroke();
-    x.fillStyle = "#A8834F"; [a0, a1].forEach(cx => { x.save(); x.translate(cx, yl); x.rotate(Math.PI / 4); x.fillRect(-5, -5, 10, 10); x.restore(); });
+    const gms = (v2, p, n) => { const a = Math.abs(v2), g = Math.floor(a), m = Math.floor((a - g) * 60), s2 = Math.round(((a - g) * 60 - m) * 60); return `${g}°${String(m).padStart(2, "0")}′${String(Math.min(59, s2)).padStart(2, "0")}″ ${v2 >= 0 ? p : n}`; };
+    const yc = yt + 100, txt = gms(la, "N", "S") + "   " + gms(lo, "L", "O");
+    x.font = '400 32px "Courier Prime",monospace'; esp(3); const tw = x.measureText(txt).width; x.fillStyle = "#9A7240"; x.fillText(txt, W / 2, yc); esp(0);
+    x.strokeStyle = "rgba(168,131,79,.7)"; x.lineWidth = 2; const yl = yc - 10, a0 = W / 2 - tw / 2 - 30, a1 = W / 2 + tw / 2 + 30;
+    x.beginPath(); x.moveTo(Math.max(L0, a0 - 90), yl); x.lineTo(a0 - 12, yl); x.moveTo(a1 + 12, yl); x.lineTo(Math.min(R0, a1 + 90), yl); x.stroke();
+    x.fillStyle = "#A8834F"; [a0, a1].forEach(px => { x.save(); x.translate(px, yl); x.rotate(Math.PI / 4); x.fillRect(-5, -5, 10, 10); x.restore(); });
   }
-  x.fillStyle = "#5A3F22"; x.font = 'italic 34px "Lora",Georgia,serif'; x.fillText(v.nome ? "Passaporte de " + v.nome : "Travessia da Índia Sagrada", W / 2, 1780);
+  // linhas de código do passaporte (como as de verdade)
+  x.textAlign = "start"; x.fillStyle = "rgba(40,39,34,.8)"; x.font = '500 33px "Courier Prime",monospace';
+  mrzDe(v, qtd).split("\n").forEach((t, i) => x.fillText(t, L0 - 10, M + PH - 92 + i * 46, PW - 80));
+  // rodapé na capa
+  x.textAlign = "center"; x.fillStyle = "#C9A25C"; x.font = '600 34px "Cinzel",Georgia,serif'; esp(6); x.fillText("CARAVANA DO CÉU", W / 2, H - 52); esp(0);
   return new Promise(ok => c.toBlob(ok, "image/jpeg", .92));
 }
 async function compartilharCarimbo(l, bt, salvar) {
