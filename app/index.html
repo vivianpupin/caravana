@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "06/11 · 04:03";</script>
+<script>window.__VERSAO = "06/11 · 04:15";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -8529,12 +8529,15 @@ const avisoEnvio = (() => {
   let n = 0, fimT = 0;
   const pinta = () => { const b = document.getElementById("envio-maleta"); if (!b) return; const e = S.envio;
     b.className = "envmaleta" + (e ? " on" + (e.ok ? " ok" : "") : ""); b.textContent = e ? e.txt : ""; };
+  let lote = null; // {pct} enquanto a líder envia fotos para a Galeria
   const mostra = () => { clearTimeout(fimT);
-    if (n > 0) S.envio = { txt: "⬆️ Enviando para a caravana… Deixe o app aberto com internet." };
+    if (lote) S.envio = { txt: `⬆️ Enviando para a caravana… ${lote.pct}%. Deixe o app aberto com internet.` };
+    else if (n > 0) S.envio = { txt: "⬆️ Enviando para a caravana… Deixe o app aberto com internet." };
     else { S.envio = { txt: "✓ Tudo enviado para a caravana.", ok: 1 }; fimT = setTimeout(() => { S.envio = null; pinta(); }, 4000); }
     pinta(); };
   window.addEventListener("caravana-pendente", e => { n = e.detail.n; mostra(); });
   window.addEventListener("caravana-enviado", e => { n = e.detail.n; mostra(); });
+  window.addEventListener("caravana-lote", e => { lote = e.detail.fim ? null : { pct: e.detail.pct }; if (e.detail.fim) n = 0; mostra(); });
   // ao abrir o app: se ficou envio pela metade de outra vez (o app foi fechado no meio), avisa na Maleta até terminar
   setTimeout(() => { if (!window.__esperaEnvios) return; let acabou = false;
     window.__esperaEnvios().then(() => { acabou = true; if (S.envio && S.envio.antigo && n <= 0) mostra(); }).catch(() => {});
@@ -10265,7 +10268,12 @@ function campoAddGaleria() {
     const fs = [...fi.files]; fi.value = ""; soltaArquivo(); if (!fs.length) return;
     const aviso = (txt, cls) => { S.muralAdd = [txt, cls || ""]; const m = document.getElementById("mural-add-msg"); if (m) { m.textContent = txt; m.className = "msg " + (cls || ""); } };
     const cidade = S.muralAddAlbum != null ? S.muralAddAlbum : Date.now() < INICIO_VIAGEM ? "" : (S.muralAddCidade || cidadeHoje() || ""); let ok = 0, motivo = "", subindo = 0, chegaram = 0, falhas = 0; const fila = [], grandes = [];
-    const mostraFila = () => aviso(`Enviadas ${chegaram} de ${fs.length} para a caravana… deixe o app aberto com internet.`);
+    let grandesOk = 0, prontos = 0; const nFotos = fs.filter(f => !(/^video\//.test(f.type) || /\.(mov|mp4|m4v|webm|hevc|3gp)$/i.test(f.name || ""))).length, nVid = fs.length - nFotos;
+    const pesoTotal = nFotos * (S.assets.uploadPar ? 10 : 1) + nVid * 10;
+    const pct = () => Math.min(99, Math.floor(((chegaram * 1 + grandesOk * 9 * (S.assets.uploadPar ? 1 : 0)) + prontos * 10) / Math.max(1, pesoTotal) * 100));
+    const lote = fim => window.dispatchEvent(new CustomEvent("caravana-lote", { detail: fim ? { fim: true } : { pct: pct() } }));
+    const mostraFila = () => { aviso(chegaram < nFotos || !S.assets.uploadPar ? `Enviando para a caravana… ${pct()}% · ${chegaram} de ${nFotos} já aparecem para todos. Deixe o app aberto com internet.`
+      : `Enviando… ${pct()}% · as ${chegaram} já aparecem para todos; falta a versão em alta para baixar (${grandesOk} de ${nFotos}). Deixe o app aberto.`, chegaram < nFotos ? "" : "ok"); lote(); };
     for (const [k, file] of fs.entries()) {
       aviso(fila.length ? `Preparando ${k + 1} de ${fs.length} · enviadas ${chegaram}…` : `Enviando ${k + 1} de ${fs.length}…`);
       try {
@@ -10274,7 +10282,7 @@ function campoAddGaleria() {
         if (/^video\//.test(file.type) || /\.(mov|mp4|m4v|webm|hevc|3gp)$/i.test(file.name || "")) {
           const msg = { set textContent(t) { aviso((fs.length > 1 ? `${k + 1} de ${fs.length} · ` : "") + t); }, set className(c) { if (c.includes("err")) S.muralAdd[1] = "err"; } };
           S.muralAdd = ["", ""]; await enviaFilmeGaleria({ blob: file, cidade, camera: "" }, msg);
-          if (S.muralAdd[1] === "err") { motivo = S.muralAdd[0]; continue; } ok++;
+          if (S.muralAdd[1] === "err") { motivo = S.muralAdd[0]; continue; } ok++; prontos++; lote();
         } else {
           // fotos: entram todas na fila de uma vez (sem esperar cada uma chegar) e o contador mostra quantas já chegaram de verdade
           window.__envioRapido = true;
@@ -10290,12 +10298,14 @@ function campoAddGaleria() {
     }
     // só diz "enviado" quando as fotos chegaram de verdade no banco (as outras pessoas já veem)
     // as versões grandes (para baixar) entram na fila depois de todas as leves: todo mundo vê as fotos antes
-    let grandesOk = 0, cadeia = Promise.resolve(); const filaG = [];
-    for (const g of grandes) { cadeia = cadeia.then(() => g()).then(() => { grandesOk++; }, () => {}); filaG.push(cadeia); }
+    let cadeia = Promise.resolve(); const filaG = [];
+    for (const g of grandes) { cadeia = cadeia.then(() => g()).then(() => { grandesOk++; if (grandesOk < filaG.length) mostraFila(); }, () => {}); filaG.push(cadeia); }
     if (fila.length) { mostraFila(); await Promise.all(fila); ok -= falhas; if (falhas) motivo = `${falhas} não ${falhas === 1 ? "subiu" : "subiram"} (o banco recusou: pode ser o limite do dia). Tente de novo mais tarde.`; }
-    if (filaG.length) { const conta = setInterval(() => { if (grandesOk < filaG.length) aviso(`${chegaram} enviadas, todo mundo já vê. Versões para baixar: ${grandesOk} de ${filaG.length}… deixe o app aberto.`, "ok"); }, 800);
-      Promise.all(filaG).then(() => { clearInterval(conta); aviso(grandesOk === filaG.length ? `${chegaram} enviadas ${cidade ? "em " + cidade : "na Galeria"}. Prontas também para baixar em alta.` : `${chegaram} enviadas. ${grandesOk} de ${filaG.length} já estão em alta para baixar; as outras baixam na versão leve.`, "ok"); }); }
-    aviso(ok === fs.length ? (ok === 1 ? (fila.length ? "Enviada " : "Adicionado ") + (cidade ? "em " + cidade : "na Galeria") + "." : `${ok} ${fila.length ? "enviadas" : "adicionados"} ${cidade ? "em " + cidade : "na Galeria"}.`) : `${ok} de ${fs.length} adicionados.` + (motivo ? " " + motivo : "") + (subindo ? " Ainda estão subindo para a caravana: deixe o app aberto até aparecer “Tudo enviado”." : "") + (fila.length ? " Todo mundo já vê." : ""), ok ? "ok" : "err");
+    if (filaG.length) { const fala = () => { if (grandesOk < filaG.length) aviso(`Enviando… ${pct()}% · as ${chegaram} já aparecem para todos; falta a versão em alta para baixar (${grandesOk} de ${filaG.length}). Deixe o app aberto.`, "ok"); }, conta = setInterval(fala, 800); fala();
+      Promise.all(filaG).then(() => { clearInterval(conta); lote(true); aviso(grandesOk === filaG.length ? `${chegaram} enviadas ${cidade ? "em " + cidade : "na Galeria"}. Prontas também para baixar em alta.` : `${chegaram} enviadas. ${grandesOk} de ${filaG.length} já estão em alta para baixar; as outras baixam na versão leve.`, "ok"); }); }
+    if (!filaG.length) lote(true);
+    // com versões em alta ainda subindo, a mensagem fica na porcentagem (o "enviadas" só aparece no fim)
+    if (!(filaG.length && grandesOk < filaG.length && ok === fs.length)) aviso(ok === fs.length ? (ok === 1 ? (fila.length ? "Enviada " : "Adicionado ") + (cidade ? "em " + cidade : "na Galeria") + "." : `${ok} ${fila.length ? "enviadas" : "adicionados"} ${cidade ? "em " + cidade : "na Galeria"}.`) : `${ok} de ${fs.length} adicionados.` + (motivo ? " " + motivo : "") + (subindo ? " Ainda estão subindo para a caravana: deixe o app aberto até aparecer “Tudo enviado”." : "") + (fila.length ? " Todo mundo já vê." : ""), ok ? "ok" : "err");
   } });
   document.body.append(fi); return fi;
 }
