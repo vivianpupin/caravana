@@ -10192,7 +10192,7 @@ function campoAddGaleria() {
     somDosFilmes();
     const fs = [...fi.files]; fi.value = ""; soltaArquivo(); if (!fs.length) return;
     const aviso = (txt, cls) => { S.muralAdd = [txt, cls || ""]; const m = document.getElementById("mural-add-msg"); if (m) { m.textContent = txt; m.className = "msg " + (cls || ""); } };
-    const cidade = Date.now() < INICIO_VIAGEM ? "" : (S.muralAddCidade || cidadeHoje() || ""); let ok = 0, motivo = "";
+    const cidade = S.muralAddAlbum != null ? S.muralAddAlbum : Date.now() < INICIO_VIAGEM ? "" : (S.muralAddCidade || cidadeHoje() || ""); let ok = 0, motivo = "";
     for (const [k, file] of fs.entries()) {
       aviso(`Enviando ${k + 1} de ${fs.length}…`);
       try {
@@ -10206,7 +10206,7 @@ function campoAddGaleria() {
       }
       catch (e) { motivo = /^video\//.test(file.type) || /\.(mov|mp4|m4v|webm|hevc|3gp)$/i.test(file.name || "") ? "Não consegui preparar esse vídeo" + (e && e.message ? " (" + String(e.message).slice(0, 60) + ")" : "") + "." : erroFoto(e); aviso(motivo, "err"); }
     }
-    aviso(ok === fs.length ? (ok === 1 ? "Adicionado na Galeria." : `${ok} adicionados na Galeria.`) : `${ok} de ${fs.length} adicionados.` + (motivo ? " " + motivo : ""), ok ? "ok" : "err");
+    aviso(ok === fs.length ? (ok === 1 ? "Adicionado " + (cidade ? "em " + cidade : "na Galeria") + "." : `${ok} adicionados ${cidade ? "em " + cidade : "na Galeria"}.`) : `${ok} de ${fs.length} adicionados.` + (motivo ? " " + motivo : ""), ok ? "ok" : "err");
   } });
   document.body.append(fi); return fi;
 }
@@ -10214,7 +10214,7 @@ function addGaleriaLider() {
   if (!S.isOwner || !S.assets) return null;
   const [txt, cls] = S.muralAdd || ["", ""], antes = Date.now() < INICIO_VIAGEM, sel = S.muralAddCidade || cidadeHoje() || "";
   return h("div", { class: "madd" },
-    h("button", { class: "btn gold", type: "button", onclick: () => { if (!antes && !sel) { S.muralAdd = ["Escolha a cidade das fotos num dos balões.", "err"]; render(); return; } S.muralAddCidade = sel; S.muralAdd = null; campoAddGaleria().click(); } }, "＋ Adicionar fotos e vídeos"),
+    h("button", { class: "btn gold", type: "button", onclick: () => { if (!antes && !sel) { S.muralAdd = ["Escolha a cidade das fotos num dos balões.", "err"]; render(); return; } S.muralAddCidade = sel; S.muralAddAlbum = null; S.muralAdd = null; campoAddGaleria().click(); } }, "＋ Adicionar fotos e vídeos"),
     antes ? h("span", { class: "small", text: "Antes do embarque, as fotos entram no álbum Prelúdio." })
       : h("div", { class: "opts", role: "group", "aria-label": "Cidade das fotos" }, cidadesMural().map(c => h("button", { type: "button", class: "opt", "aria-pressed": String(sel === c), onclick: () => { S.muralAddCidade = c; S.muralAdd = null; render(); } }, c))),
     h("p", { id: "mural-add-msg", class: "msg " + cls, role: "status", text: txt }));
@@ -10243,6 +10243,9 @@ function vMural() {
     return h("section", { class: "view" }, ...topo,
       h("div", { class: "mvolta" }, h("button", { type: "button", class: "btn ghost", onclick: () => { S.muralCidade = ""; render(); scrollTo(0, 0); } }, "‹ Álbuns"),
         h("b", { text: nome }), h("small", { text: fotos.length === 1 ? "1 item" : fotos.length + " itens" })),
+      S.isOwner && S.assets && (cid.length > 1 || cid === "~") ? (() => { const destino = cid === "~" ? "" : cid, [txt, cls] = S.muralAdd || ["", ""];
+        return h("div", { class: "madd" }, h("button", { class: "btn gold", type: "button", onclick: () => { S.muralAddAlbum = destino; S.muralAdd = null; campoAddGaleria().click(); } }, "＋ Adicionar fotos e vídeos neste álbum"),
+          h("p", { id: "mural-add-msg", class: "msg " + cls, role: "status", text: txt })); })() : null,
       fotos.length ? h("div", { class: "mural g3" }, fotos.map(f => miniGaleria(f, fotos))) : h("p", { class: "small", text: "Ainda não tem nada aqui." }),
       (cid === "*" || cid.length > 1) && fotos.some(f => !f.video) ? blocoAlbum(cid === "*" ? "" : cid) : null);
   }
