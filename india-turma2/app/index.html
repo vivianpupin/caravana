@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "06/11 · 03:45";</script>
+<script>window.__VERSAO = "06/11 · 03:57";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -4461,9 +4461,15 @@ async function abrirHabilidade(id, nova) {
 // ao abrir o app, a habilidade que ainda não virou foto aparece (uma vez por abertura; "Guardar para depois" deixa para a próxima)
 function checaHabilidades() {
   if (S.habAdiada || S.habMostrou || !eu() || document.querySelector(".sheet,.abertura")) return;
-  const pend = minhasHab().filter(id => !habFeitas().includes(id));
+  // cada habilidade nova aparece sozinha UMA vez só (depois fica em "Minhas habilidades", no Passaporte)
+  // (só as que a pessoa ganhou de verdade: para a líder, as que ela liberou para a caravana não aparecem sozinhas)
+  const minhas0 = (eu() || {}).habilidades || {};
+  let vistas = null; try { vistas = JSON.parse(lsGet("cdi-hab-vistas") || "null"); } catch (e) {}
+  // primeira vez com esta versão: as habilidades de mais de 2 horas a pessoa já viu (antes apareciam a cada abertura)
+  if (!Array.isArray(vistas)) { vistas = Object.entries(minhas0).filter(([, ts]) => Date.now() - ts > 2 * 3600e3).map(([id]) => id); lsSet("cdi-hab-vistas", JSON.stringify(vistas)); }
+  const pend = Object.entries(minhas0).filter(([id]) => habDe(id)).sort((a, b) => a[1] - b[1]).map(([id]) => id).filter(id => !habFeitas().includes(id) && !vistas.includes(id));
   if (!pend.length) return;
-  S.habMostrou = true; setTimeout(() => { if (!document.querySelector(".sheet,.abertura")) abrirHabilidade(pend[pend.length - 1], true); else S.habMostrou = false; }, 900);
+  S.habMostrou = true; setTimeout(() => { if (!document.querySelector(".sheet,.abertura")) { const id = pend[pend.length - 1]; abrirHabilidade(id, true); lsSet("cdi-hab-vistas", JSON.stringify([...new Set([...vistas, id])])); } else S.habMostrou = false; }, 900);
 }
 function vMinhasHabilidades() {
   const ids = minhasHab(); if (!ids.length) return null;
