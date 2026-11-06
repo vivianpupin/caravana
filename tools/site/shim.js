@@ -512,16 +512,16 @@ window.__blobUrl = (id, soOlha) => {
   }
   return VAZIO;
 };
-async function comprime(blob) {
+async function comprime(blob, ladoMax, qIni, limite) {
   // foto direto da câmera: o <img> já vira para a posição certa
   let bmp; try { const u = URL.createObjectURL(blob), im = new Image(); im.src = u; await im.decode(); bmp = im; setTimeout(() => URL.revokeObjectURL(u), 1000); } catch (e) { bmp = await createImageBitmap(blob); }
-  let lado = 1600, q = .86, url = ""; const bw = bmp.naturalWidth || bmp.width, bh = bmp.naturalHeight || bmp.height;
+  let lado = ladoMax || 1600, q = qIni || .86, url = ""; const bw = bmp.naturalWidth || bmp.width, bh = bmp.naturalHeight || bmp.height;
   for (let i = 0; i < 8; i++) {
     const k = Math.min(1, lado / Math.max(bw, bh));
     const c = document.createElement("canvas"); c.width = Math.round(bw * k); c.height = Math.round(bh * k);
     const g = c.getContext("2d"); g.imageSmoothingQuality = "high"; g.drawImage(bmp, 0, 0, c.width, c.height);
     url = c.toDataURL("image/jpeg", q);
-    if (url.length < 620000) break;
+    if (url.length < (limite || 620000)) break;
     q = Math.max(.6, q - .06); lado = Math.round(lado * .82);
   }
   return url;
@@ -534,6 +534,15 @@ const assets = {
     const r = fs.collection("fotos").doc(); fotos[r.id] = data;
     const x = await semEsperar(r.set({ data, autor: me.id, ts: Date.now() }));
     return { id: r.id, url: data, sizeBytes: data.length, contentType: "image/jpeg", pendente: x.pendente, enviado: x.enviado };
+  },
+  // Galeria: duas versões da mesma foto. A leve (1080 px) é a que todos veem e sobe primeiro;
+  // a de baixar (1600 px, qualidade máxima) sobe depois, quando o app chamar enviaGrande()
+  uploadPar: async blob => {
+    const mini = await comprime(blob, 1080, .82, 300000), data = await comprime(blob, 1600, .92, 900000);
+    const rm = fs.collection("fotos").doc(); fotos[rm.id] = mini;
+    const xm = await semEsperar(rm.set({ data: mini, autor: me.id, ts: Date.now() }));
+    const rf = fs.collection("fotos").doc(); fotos[rf.id] = data;
+    return { id: rm.id, orig: rf.id, pendente: xm.pendente, enviado: xm.enviado, enviaGrande: () => semEsperar(rf.set({ data, autor: me.id, ts: Date.now() })).then(x => x.enviado) };
   },
   list: async () => ({ assets: [], usage: {} }),
   delete: async id => fs.doc("fotos/" + id).delete(),
