@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "05/11 · 22:22";</script>
+<script>window.__VERSAO = "05/11 · 22:49";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -4225,7 +4225,10 @@ const HABILIDADES = [
 const habDe = id => HABILIDADES.find(x => x[0] === id);
 const habTexto = (id, gen) => { const x = habDe(id); if (!x) return null; const o = gen === "o"; return { nome: o ? x[2] : x[1], frase: o ? (x[4] || x[3]) : x[3], local: x[5] }; };
 const habDoLocal = lid => minhasHab().filter(id => (habDe(id) || [])[5] === lid);
-const minhasHab = () => Object.entries((eu() || {}).habilidades || {}).filter(([id]) => habDe(id)).sort((a, b) => a[1] - b[1]).map(([id]) => id);
+// a líder também tem as suas: as que ganhou e todas as que já liberou para a caravana (com a data da 1ª vez)
+const minhasHab = () => { const m = { ...((eu() || {}).habilidades || {}) };
+  if (S.isOwner) S.viajantes.forEach(v => Object.entries(v.habilidades || {}).forEach(([id, ts]) => { if (!m[id] || ts < m[id]) m[id] = ts; }));
+  return Object.entries(m).filter(([id]) => habDe(id)).sort((a, b) => a[1] - b[1]).map(([id]) => id); };
 const habFeitas = () => { try { return JSON.parse(lsGet("cdi-hab-feitas") || "[]"); } catch (e) { return []; } };
 const marcaHabFeita = id => { const f = habFeitas(); if (!f.includes(id)) { f.push(id); lsSet("cdi-hab-feitas", JSON.stringify(f)); } };
 // a caixinha (papel envelhecido, borda tracejada, carimbo da Caravana), desenhada para virar adesivo da foto
@@ -4406,7 +4409,8 @@ function checaHabilidades() {
 function vMinhasHabilidades() {
   const ids = minhasHab(); if (!ids.length) return null;
   const gen = (eu() || {}).genero;
-  return dobraLider("minhashab", "panel", h("div", null, h("p", { class: "eyebrow", text: "Minhas habilidades" }), h("h2", { text: ids.length === 1 ? "1 habilidade" : ids.length + " habilidades" })),
+  // a líder vê as habilidades dela aberta, igual aos viajantes
+  return ((resumo, ...resto) => h("div", { class: "panel" }, ...resumo.childNodes, ...resto))(h("div", null, h("p", { class: "eyebrow", text: "Minhas habilidades" }), h("h2", { text: ids.length === 1 ? "1 habilidade" : ids.length + " habilidades" })),
     h("div", { class: "hablista" }, ids.map(id => { const t = habTexto(id, gen); return h("button", { type: "button", class: "habitem", onclick: () => abrirHabilidade(id) },
       h("b", { text: t.nome, style: "--n:" + t.nome.length }), h("span", { text: t.frase }),
       h("small", { text: [localDe(t.local) ? "📍 " + localDe(t.local).nome : "", habFeitas().includes(id) ? "📸 Fazer outra foto" : "📸 Fazer a foto"].filter(Boolean).join("  ·  ") })); })),
