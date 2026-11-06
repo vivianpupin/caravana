@@ -554,7 +554,7 @@ const assets = {
     const xm = await semEsperar(rm.set({ data: mini, autor: me.id, ts: Date.now() }));
     const base = rm.id + "_g";
     const enviaGrande = async () => {
-      const grande = await comprime(blob, 2800, .9, 1e12), TAM = 900000, n = Math.ceil(grande.length / TAM);
+      const grande = await comprime(blob, 2800, .9, 1e12), TAM = 300000, n = Math.ceil(grande.length / TAM);
       for (let k = 0; k < n; k++) await vigia(fs.doc("fotos/" + base + k).set({ data: grande.slice(k * TAM, (k + 1) * TAM), ...(k ? {} : { partes: n }), autor: me.id, ts: Date.now() }));
     };
     return { id: rm.id, orig: base, pendente: xm.pendente, enviado: xm.enviado, enviaGrande };
