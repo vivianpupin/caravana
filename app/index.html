@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "06/11 · 03:34";</script>
+<script>window.__VERSAO = "06/11 · 03:37";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -8515,7 +8515,7 @@ const avisoEnvio = (() => {
   let n = 0, el = null, fimT = 0;
   const caixa = () => el || (el = document.body.appendChild(h("div", { class: "envbar", role: "status" })));
   const mostra = () => { const b = caixa(); clearTimeout(fimT);
-    if (n > 0) { b.className = "envbar on"; b.textContent = `⬆️ Enviando para a caravana… ${n === 1 ? "falta 1" : "faltam " + n}. Deixe o app aberto com internet.`; }
+    if (n > 0) { b.className = "envbar on"; b.textContent = "⬆️ Enviando para a caravana… Deixe o app aberto com internet."; }
     else { b.className = "envbar on ok"; b.textContent = "✓ Tudo enviado para a caravana."; fimT = setTimeout(() => { b.className = "envbar"; }, 3500); } };
   window.addEventListener("caravana-pendente", e => { n = e.detail.n; mostra(); });
   window.addEventListener("caravana-enviado", e => { n = e.detail.n; mostra(); });
@@ -10244,9 +10244,10 @@ function campoAddGaleria() {
     somDosFilmes();
     const fs = [...fi.files]; fi.value = ""; soltaArquivo(); if (!fs.length) return;
     const aviso = (txt, cls) => { S.muralAdd = [txt, cls || ""]; const m = document.getElementById("mural-add-msg"); if (m) { m.textContent = txt; m.className = "msg " + (cls || ""); } };
-    const cidade = S.muralAddAlbum != null ? S.muralAddAlbum : Date.now() < INICIO_VIAGEM ? "" : (S.muralAddCidade || cidadeHoje() || ""); let ok = 0, motivo = "", subindo = 0;
+    const cidade = S.muralAddAlbum != null ? S.muralAddAlbum : Date.now() < INICIO_VIAGEM ? "" : (S.muralAddCidade || cidadeHoje() || ""); let ok = 0, motivo = "", subindo = 0, chegaram = 0, falhas = 0; const fila = [];
+    const mostraFila = () => aviso(`Enviadas ${chegaram} de ${fs.length} para a caravana… deixe o app aberto com internet.`);
     for (const [k, file] of fs.entries()) {
-      aviso(`Enviando ${k + 1} de ${fs.length}…`);
+      aviso(fila.length ? `Preparando ${k + 1} de ${fs.length} · enviadas ${chegaram}…` : `Enviando ${k + 1} de ${fs.length}…`);
       try {
         // vídeo: vai como os filmes da Super 8 (capa, versão menor de até 30 segundos e o filme em partes)
         // vídeo: pelo tipo ou, quando o iPhone não informa o tipo, pela extensão do arquivo
@@ -10254,11 +10255,19 @@ function campoAddGaleria() {
           const msg = { set textContent(t) { aviso((fs.length > 1 ? `${k + 1} de ${fs.length} · ` : "") + t); }, set className(c) { if (c.includes("err")) S.muralAdd[1] = "err"; } };
           S.muralAdd = ["", ""]; await enviaFilmeGaleria({ blob: file, cidade, camera: "" }, msg);
           if (S.muralAdd[1] === "err") { motivo = S.muralAdd[0]; continue; } ok++;
-        } else { const r = await S.assets.upload(file); const m = await addMural({ autor: S.uid, fotoId: r.id, cidade, legenda: "", ts: Date.now() }); if ((r && r.pendente) || (m && m.pendente)) subindo++; ok++; }
+        } else {
+          // fotos: entram todas na fila de uma vez (sem esperar cada uma chegar) e o contador mostra quantas já chegaram de verdade
+          window.__envioRapido = true;
+          try { const r = await S.assets.upload(file); const m = await S.db.collection("mural").add({ autor: S.uid, fotoId: r.id, cidade, legenda: "", ts: Date.now() + k });
+            fila.push(Promise.all([r && r.enviado, m && m.enviado].filter(Boolean)).then(() => { chegaram++; mostraFila(); }, () => { falhas++; })); }
+          finally { window.__envioRapido = false; }
+          ok++; }
       }
       catch (e) { motivo = /^video\//.test(file.type) || /\.(mov|mp4|m4v|webm|hevc|3gp)$/i.test(file.name || "") ? "Não consegui preparar esse vídeo" + (e && e.message ? " (" + String(e.message).slice(0, 60) + ")" : "") + "." : erroFoto(e); aviso(motivo, "err"); }
     }
-    aviso(ok === fs.length ? (ok === 1 ? "Adicionado " + (cidade ? "em " + cidade : "na Galeria") + "." : `${ok} adicionados ${cidade ? "em " + cidade : "na Galeria"}.`) : `${ok} de ${fs.length} adicionados.` + (motivo ? " " + motivo : "") + (subindo ? " Ainda estão subindo para a caravana: deixe o app aberto até aparecer “Tudo enviado”." : ""), ok ? "ok" : "err");
+    // só diz "enviado" quando as fotos chegaram de verdade no banco (as outras pessoas já veem)
+    if (fila.length) { mostraFila(); await Promise.all(fila); ok -= falhas; if (falhas) motivo = `${falhas} não ${falhas === 1 ? "subiu" : "subiram"} (o banco recusou: pode ser o limite do dia). Tente de novo mais tarde.`; }
+    aviso(ok === fs.length ? (ok === 1 ? (fila.length ? "Enviada " : "Adicionado ") + (cidade ? "em " + cidade : "na Galeria") + "." : `${ok} ${fila.length ? "enviadas" : "adicionados"} ${cidade ? "em " + cidade : "na Galeria"}.`) : `${ok} de ${fs.length} adicionados.` + (motivo ? " " + motivo : "") + (subindo ? " Ainda estão subindo para a caravana: deixe o app aberto até aparecer “Tudo enviado”." : "") + (fila.length ? " Todo mundo já vê." : ""), ok ? "ok" : "err");
   } });
   document.body.append(fi); return fi;
 }

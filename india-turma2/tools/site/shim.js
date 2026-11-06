@@ -431,7 +431,8 @@ const vigia = p => p.catch(e => { if (ehCota(e)) marcaCota(true); throw e; });
 let pendentes = 0;
 const semEsperar = p => {
   const v = vigia(p); v.catch(() => {});
-  const espera = navigator.onLine === false ? 300 : 5000;
+  // envio em lote (várias fotos da Galeria): não espera cada uma; o app acompanha pelo "enviado" de cada envio
+  const espera = window.__envioRapido ? 0 : navigator.onLine === false ? 300 : 5000;
   return Promise.race([v.then(() => ({ pendente: false, enviado: v })), new Promise(r => setTimeout(() => r({ pendente: true, enviado: v }), espera))]).then(x => {
     if (x.pendente) {
       pendentes++; window.dispatchEvent(new CustomEvent("caravana-pendente", { detail: { n: pendentes } }));
@@ -514,13 +515,13 @@ window.__blobUrl = (id, soOlha) => {
 async function comprime(blob) {
   // foto direto da câmera: o <img> já vira para a posição certa
   let bmp; try { const u = URL.createObjectURL(blob), im = new Image(); im.src = u; await im.decode(); bmp = im; setTimeout(() => URL.revokeObjectURL(u), 1000); } catch (e) { bmp = await createImageBitmap(blob); }
-  let lado = 1600, q = .92, url = ""; const bw = bmp.naturalWidth || bmp.width, bh = bmp.naturalHeight || bmp.height;
+  let lado = 1600, q = .86, url = ""; const bw = bmp.naturalWidth || bmp.width, bh = bmp.naturalHeight || bmp.height;
   for (let i = 0; i < 8; i++) {
     const k = Math.min(1, lado / Math.max(bw, bh));
     const c = document.createElement("canvas"); c.width = Math.round(bw * k); c.height = Math.round(bh * k);
     const g = c.getContext("2d"); g.imageSmoothingQuality = "high"; g.drawImage(bmp, 0, 0, c.width, c.height);
     url = c.toDataURL("image/jpeg", q);
-    if (url.length < 900000) break;
+    if (url.length < 620000) break;
     q = Math.max(.6, q - .06); lado = Math.round(lado * .82);
   }
   return url;
@@ -532,7 +533,7 @@ const assets = {
     const data = await comprime(blob);
     const r = fs.collection("fotos").doc(); fotos[r.id] = data;
     const x = await semEsperar(r.set({ data, autor: me.id, ts: Date.now() }));
-    return { id: r.id, url: data, sizeBytes: data.length, contentType: "image/jpeg", pendente: x.pendente };
+    return { id: r.id, url: data, sizeBytes: data.length, contentType: "image/jpeg", pendente: x.pendente, enviado: x.enviado };
   },
   list: async () => ({ assets: [], usage: {} }),
   delete: async id => fs.doc("fotos/" + id).delete(),
