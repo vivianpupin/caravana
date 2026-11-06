@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "06/11 · 03:57";</script>
+<script>window.__VERSAO = "06/11 · 04:03";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2139,8 +2139,8 @@ video.mgrande{max-height:70vh;background:#000}
 .marca figcaption{font:13px "Rock Salt","Caveat",cursive;opacity:.8;display:flex;align-items:center;gap:6px;text-shadow:0 -1px 0 rgba(0,0,0,.8),0 1px 0 rgba(255,228,190,.3)}
 .marca .apaga{background:none;border:0;color:inherit;opacity:.7;font-size:18px;padding:0 4px;cursor:pointer}
 .rocha .vazia{grid-column:1/-1;text-align:center;color:#E0B889;font:18px/1.6 "Rock Salt","Caveat",cursive;margin:auto}
-.envbar{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:60;max-width:calc(100vw - 32px);width:max-content;background:#3B2A1C;color:#F6E7C8;font:500 13px/1.35 Poppins,system-ui,sans-serif;padding:10px 16px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;text-align:center}
-.envbar.on{opacity:1;transform:translate(-50%,0)}.envbar.ok{background:#3F4938}
+.envmaleta{display:none}.envmaleta.on{display:block;margin:10px 0 12px;padding:9px 14px;border-radius:12px;background:#F3E6CC;color:#5A3F22;font:500 13px/1.35 Poppins,system-ui,sans-serif;text-align:center}
+.envmaleta.on.ok{background:#E3EADB;color:#3F4938}
 </style>
 
 <div class="app">
@@ -8573,20 +8573,24 @@ const noSite = () => !!window.__VERSAO && (location.protocol === "https:" || loc
 // sem sinal: a foto ou mensagem fica guardada no celular e sai sozinha quando a internet volta
 // aviso de envio: enquanto fotos, vídeos e mensagens ainda estão subindo para a caravana, mostra quantos faltam
 // (antes aparecia "41 adicionados" na hora, mas o envio de verdade continuava por trás e ninguém sabia que precisava esperar)
+// aviso de envio: só aparece dentro da Maleta (embaixo das abas Câmeras, Cabine de Fotos e Galeria), nunca fixo sobre o app
 const avisoEnvio = (() => {
-  let n = 0, el = null, fimT = 0;
-  const caixa = () => el || (el = document.body.appendChild(h("div", { class: "envbar", role: "status" })));
-  const mostra = () => { const b = caixa(); clearTimeout(fimT);
-    if (n > 0) { b.className = "envbar on"; b.textContent = "⬆️ Enviando para a caravana… Deixe o app aberto com internet."; }
-    else { b.className = "envbar on ok"; b.textContent = "✓ Tudo enviado para a caravana."; fimT = setTimeout(() => { b.className = "envbar"; }, 3500); } };
+  let n = 0, fimT = 0;
+  const pinta = () => { const b = document.getElementById("envio-maleta"); if (!b) return; const e = S.envio;
+    b.className = "envmaleta" + (e ? " on" + (e.ok ? " ok" : "") : ""); b.textContent = e ? e.txt : ""; };
+  const mostra = () => { clearTimeout(fimT);
+    if (n > 0) S.envio = { txt: "⬆️ Enviando para a caravana… Deixe o app aberto com internet." };
+    else { S.envio = { txt: "✓ Tudo enviado para a caravana.", ok: 1 }; fimT = setTimeout(() => { S.envio = null; pinta(); }, 4000); }
+    pinta(); };
   window.addEventListener("caravana-pendente", e => { n = e.detail.n; mostra(); });
   window.addEventListener("caravana-enviado", e => { n = e.detail.n; mostra(); });
-  // ao abrir o app: se ficou envio pela metade de outra vez (o app foi fechado no meio), avisa até terminar
+  // ao abrir o app: se ficou envio pela metade de outra vez (o app foi fechado no meio), avisa na Maleta até terminar
   setTimeout(() => { if (!window.__esperaEnvios) return; let acabou = false;
-    window.__esperaEnvios().then(() => { acabou = true; if (el && el.dataset.antigo && n <= 0) { delete el.dataset.antigo; mostra(); } }).catch(() => {});
-    setTimeout(() => { if (acabou || n > 0) return; const b = caixa(); b.dataset.antigo = "1"; b.className = "envbar on"; b.textContent = "⬆️ Terminando de enviar o que ficou de antes… Deixe o app aberto com internet."; }, 2500); }, 4000);
+    window.__esperaEnvios().then(() => { acabou = true; if (S.envio && S.envio.antigo && n <= 0) mostra(); }).catch(() => {});
+    setTimeout(() => { if (acabou || n > 0) return; S.envio = { txt: "⬆️ Terminando de enviar o que ficou de antes… Deixe o app aberto com internet.", antigo: 1 }; pinta(); }, 2500); }, 4000);
   return mostra;
 })();
+const linhaEnvio = () => h("p", { id: "envio-maleta", class: "envmaleta" + (S.envio ? " on" + (S.envio.ok ? " ok" : "") : ""), role: "status", text: S.envio ? S.envio.txt : "" });
 const avisoSemSinal = () => avisoReacao("📶 Sem sinal agora. Fica guardado e envia sozinho quando a internet voltar.");
 async function addMural(d) { const r = await S.db.collection("mural").add(d); if (r && r.pendente) avisoSemSinal(); return r; }
 async function addChat(d) {
@@ -10171,8 +10175,8 @@ function vOffline() {
 const CIDADES_MURAL = ["Delhi", "Agra", "Varanasi", "Jaipur", "Rishikesh"]; // na ordem do roteiro da Turma 2
 function abasFotos() {
   const a = S.fotoAba || "estudio";
-  return h("div", { class: "fcats", role: "tablist", style: "margin-top:-4px" },
-    [["estudio", "Câmeras"], ["tira", "Cabine de Fotos"], ["mural", "Galeria da Caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n)));
+  return [h("div", { class: "fcats", role: "tablist", style: "margin-top:-4px" },
+    [["estudio", "Câmeras"], ["tira", "Cabine de Fotos"], ["mural", "Galeria da Caravana"]].map(([id, n]) => h("button", { type: "button", role: "tab", class: "fcat", "aria-selected": String(a === id), onclick: () => { S.fotoAba = id; render(); } }, n))), linhaEnvio()];
 }
 // Salvar foto no rolo da câmera: no celular abre o menu de compartilhar, onde aparece "Salvar imagem"
 const podeRolo = () => { try { return !!(navigator.canShare && navigator.canShare({ files: [new File([new Blob(["x"], { type: "image/jpeg" })], "t.jpg", { type: "image/jpeg" })] })); } catch (e) { return false; } };
