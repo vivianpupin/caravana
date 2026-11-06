@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "06/11 · 05:06";</script>
+<script>window.__VERSAO = "06/11 · 05:17";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -10301,7 +10301,9 @@ function campoAddGaleria() {
     // só diz "enviado" quando as fotos chegaram de verdade no banco (as outras pessoas já veem)
     // as versões grandes (para baixar) entram na fila depois de todas as leves: todo mundo vê as fotos antes
     let cadeia = Promise.resolve(); const filaG = [];
-    for (const g of grandes) { cadeia = cadeia.then(() => g()).then(() => { grandesOk++; if (grandesOk < filaG.length) mostraFila(); }, () => {}); filaG.push(cadeia); }
+    // prepara uma em alta de cada vez (memória do celular) e põe na fila do banco sem esperar chegar: a fila fica guardada no celular
+    for (const g of grandes) { const pronta = cadeia.then(() => g()); cadeia = pronta.then(() => {}, () => {});
+      filaG.push(pronta.then(x => x && x.chegou).then(() => { grandesOk++; if (grandesOk < filaG.length) mostraFila(); }, () => {})); }
     if (fila.length) { mostraFila(); await Promise.all(fila); ok -= falhas; if (falhas) motivo = `${falhas} não ${falhas === 1 ? "subiu" : "subiram"} (o banco recusou: pode ser o limite do dia). Tente de novo mais tarde.`; }
     if (filaG.length) { const fala = () => { if (grandesOk < filaG.length) aviso(`Enviando… ${pct()}% · as ${chegaram} já aparecem para todos; falta a versão em alta para baixar (${grandesOk} de ${filaG.length}). Deixe o app aberto.`, "ok"); }, conta = setInterval(fala, 800); fala();
       Promise.all(filaG).then(() => { clearInterval(conta); lote(true); aviso(grandesOk === filaG.length ? `${chegaram} enviadas ${cidade ? "em " + cidade : "na Galeria"}. Prontas também para baixar em alta.` : `${chegaram} enviadas. ${grandesOk} de ${filaG.length} já estão em alta para baixar; as outras baixam na versão leve.`, "ok"); }); }

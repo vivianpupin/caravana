@@ -523,13 +523,13 @@ window.__blobUrl = (id, soOlha) => {
 async function comprime(blob, ladoMax, qIni, limite) {
   // foto direto da câmera: o <img> já vira para a posição certa
   let bmp; try { const u = URL.createObjectURL(blob), im = new Image(); im.src = u; await im.decode(); bmp = im; setTimeout(() => URL.revokeObjectURL(u), 1000); } catch (e) { bmp = await createImageBitmap(blob); }
-  let lado = ladoMax || 1600, q = qIni || .86, url = ""; const bw = bmp.naturalWidth || bmp.width, bh = bmp.naturalHeight || bmp.height;
+  let lado = ladoMax || 1600, q = qIni || .92, url = ""; const bw = bmp.naturalWidth || bmp.width, bh = bmp.naturalHeight || bmp.height;
   for (let i = 0; i < 8; i++) {
     const k = Math.min(1, lado / Math.max(bw, bh));
     const c = document.createElement("canvas"); c.width = Math.round(bw * k); c.height = Math.round(bh * k);
     const g = c.getContext("2d"); g.imageSmoothingQuality = "high"; g.drawImage(bmp, 0, 0, c.width, c.height);
     url = c.toDataURL("image/jpeg", q);
-    if (url.length < (limite || 620000)) break;
+    if (url.length < (limite || 900000)) break;
     q = Math.max(.6, q - .06); lado = Math.round(lado * .82);
   }
   return url;
@@ -549,13 +549,16 @@ const assets = {
   // A de baixar, em alta (até 2800 px, qualidade .9), é preparada e enviada só quando o app chamar enviaGrande():
   // como passa de 1 MB, vai em partes (fotos/<id>_g0, _g1…; a primeira guarda quantas partes são)
   uploadPar: async blob => {
-    const mini = await comprime(blob, 1080, .82, 300000);
+    const mini = await comprime(blob, 1200, .84, 400000);
     const rm = fs.collection("fotos").doc(); fotos[rm.id] = mini;
     const xm = await semEsperar(rm.set({ data: mini, autor: me.id, ts: Date.now() }));
     const base = rm.id + "_g";
+    // alta qualidade para baixar: até 3200 px, .92. As partes entram na fila do banco (que fica guardada no celular)
+    // assim que ficam prontas: se o app fechar, continuam subindo quando ele abrir de novo. Devolve quando elas chegam.
     const enviaGrande = async () => {
-      const grande = await comprime(blob, 2800, .9, 1e12), TAM = 300000, n = Math.ceil(grande.length / TAM);
-      for (let k = 0; k < n; k++) await vigia(fs.doc("fotos/" + base + k).set({ data: grande.slice(k * TAM, (k + 1) * TAM), ...(k ? {} : { partes: n }), autor: me.id, ts: Date.now() }));
+      const grande = await comprime(blob, 3200, .92, 1e12), TAM = 300000, n = Math.ceil(grande.length / TAM), envios = [];
+      for (let k = 0; k < n; k++) envios.push(vigia(fs.doc("fotos/" + base + k).set({ data: grande.slice(k * TAM, (k + 1) * TAM), ...(k ? {} : { partes: n }), autor: me.id, ts: Date.now() })));
+      return { chegou: Promise.all(envios) };
     };
     return { id: rm.id, orig: base, pendente: xm.pendente, enviado: xm.enviado, enviaGrande };
   },
