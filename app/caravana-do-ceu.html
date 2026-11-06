@@ -2165,7 +2165,12 @@ const FRESCO = 3 * 60 * 60 * 1000;
 const BLANK = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
 // espera a foto chegar da internet (até 20 s) antes de usar: sem isso, salvava uma imagem vazia
 // para baixar: a versão grande da Galeria; se ela ainda não chegou (a líder está enviando), a versão de ver
-const fotoParaBaixar = async f => { if (f.fotoOrig && noSite()) { try { const d = await S.db.doc("fotos/" + f.fotoOrig).get(); const u = d.exists && d.data().data; if (u) return u; } catch (e) {} } return fotoPronta(f.fotoId); };
+const fotoParaBaixar = async f => {
+  if (f.fotoOrig && noSite()) { try { const g0 = await S.db.doc("fotos/" + f.fotoOrig + "0").get();
+    if (g0.exists) { const d0 = g0.data() || {}, n = d0.partes || 1; let u = d0.data || "";
+      for (let k = 1; k < n; k++) { const dk = await S.db.doc("fotos/" + f.fotoOrig + k).get(); if (!dk.exists) throw 0; u += (dk.data() || {}).data || ""; }
+      if (u.startsWith("data:")) return u; } } catch (e) {} }
+  return fotoPronta(f.fotoId); };
 const fotoPronta = id => new Promise(ok => { const t0 = Date.now(), olha = () => { const u = blob(id); if (u !== BLANK || Date.now() - t0 > 20000) ok(u); else setTimeout(olha, 300); }; olha(); });
 const nn = n => String(n).padStart(2, "0");
 const MES = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
@@ -10113,14 +10118,14 @@ async function salvarNoRolo(blobP, nome, msg) {
 async function apagaFotoMural(f) {
   await S.db.doc("mural/" + f.id).delete();
   if (f.fotoId && !S.chat.some(m => m.fotoId === f.fotoId)) { try { await S.assets?.delete(f.fotoId); } catch (e) {} }
-  if (f.fotoOrig) { try { await S.assets?.delete(f.fotoOrig); } catch (e) {} }
+  if (f.fotoOrig) { try { const g0 = await S.db.doc("fotos/" + f.fotoOrig + "0").get(); const n = g0.exists ? (g0.data() || {}).partes || 1 : 0; for (let k = 0; k < n; k++) await S.db.doc("fotos/" + f.fotoOrig + k).delete().catch(() => {}); } catch (e) {} }
   for (const id of (f.video && f.video.partes) || []) { try { await S.assets?.delete(id); } catch (e) {} }
 }
 // Álbum da tribo: todas as fotos da galeria (e do chat) num arquivo .zip só
 function carregaScript(src) { return new Promise((ok, erro) => { if (document.querySelector(`script[src="${src}"]`)) return ok(); const sc = document.createElement("script"); sc.src = src; sc.onload = ok; sc.onerror = erro; document.head.append(sc); }); }
 async function baixarAlbum(st, cid) {
   const rolo = noSite() && podeRolo();
-  const itens = [...S.mural.filter(f => f.fotoId && (!cid || f.cidade === cid)).map(f => ({ id: f.fotoOrig || f.fotoId, alt: f.fotoOrig ? f.fotoId : null, autor: f.autor, cidade: f.cidade, ts: f.ts })),
+  const itens = [...S.mural.filter(f => f.fotoId && (!cid || f.cidade === cid)).map(f => ({ id: f.fotoId, orig: f.fotoOrig || null, autor: f.autor, cidade: f.cidade, ts: f.ts })),
     ...(cid ? [] : S.chat.filter(m => m.tipo === "foto" && m.fotoId).map(m => ({ id: m.fotoId, autor: m.autor, cidade: "chat", ts: m.ts })))].sort((a, b) => (a.ts || 0) - (b.ts || 0));
   if (!itens.length) { st.textContent = "Ainda não tem fotos no álbum."; return; }
   try {
@@ -10130,12 +10135,12 @@ async function baixarAlbum(st, cid) {
     let feitas = 0;
     for (const [i, f] of itens.entries()) {
       let dados = null;
-      try {
+      // foto da Galeria com versão em alta: baixa a alta primeiro (se ainda não chegou, vai a de ver)
+      if (f.orig && noSite()) { try { const g0 = await S.db.doc("fotos/" + f.orig + "0").get(); if (g0.exists) { const u = await fotoParaBaixar({ fotoOrig: f.orig, fotoId: f.id }); if (u && u.startsWith("data:image")) dados = u.split(",")[1]; } } catch (e) {} }
+      if (!dados) try {
         if (noSite()) { const d = await S.db.doc("fotos/" + f.id).get(); const u = d.exists && d.data().data; if (u) dados = u.split(",")[1]; }
         else { const r = await fetch(blob(f.id)); if (r.ok) dados = await r.blob(); }
       } catch (e) {}
-      // a versão grande ainda não chegou: vai a versão de ver
-      if (!dados && f.alt) { try { if (noSite()) { const d = await S.db.doc("fotos/" + f.alt).get(); const u = d.exists && d.data().data; if (u) dados = u.split(",")[1]; } else { const r = await fetch(blob(f.alt)); if (r.ok) dados = await r.blob(); } } catch (e) {} }
       if (dados) { zip.file(`${String(i + 1).padStart(3, "0")}-${limpa(f.cidade) || "caravana"}-${limpa(nomeDe(f.autor).split(" ")[0]) || "viajante"}.jpg`, dados, typeof dados === "string" ? { base64: true } : {}); feitas++; }
       st.textContent = `Juntando as fotos… ${i + 1} de ${itens.length}`;
     }
@@ -10241,11 +10246,11 @@ function campoAddGaleria() {
     }
     // só diz "enviado" quando as fotos chegaram de verdade no banco (as outras pessoas já veem)
     // as versões grandes (para baixar) entram na fila depois de todas as leves: todo mundo vê as fotos antes
-    let grandesOk = 0; const filaG = [];
-    if (grandes.length) { window.__envioRapido = true; try { for (const g of grandes) filaG.push(g().then(() => { grandesOk++; }, () => {})); } finally { window.__envioRapido = false; } }
+    let grandesOk = 0, cadeia = Promise.resolve(); const filaG = [];
+    for (const g of grandes) { cadeia = cadeia.then(() => g()).then(() => { grandesOk++; }, () => {}); filaG.push(cadeia); }
     if (fila.length) { mostraFila(); await Promise.all(fila); ok -= falhas; if (falhas) motivo = `${falhas} não ${falhas === 1 ? "subiu" : "subiram"} (o banco recusou: pode ser o limite do dia). Tente de novo mais tarde.`; }
     if (filaG.length) { const conta = setInterval(() => { if (grandesOk < filaG.length) aviso(`${chegaram} enviadas, todo mundo já vê. Versões para baixar: ${grandesOk} de ${filaG.length}… deixe o app aberto.`, "ok"); }, 800);
-      Promise.all(filaG).then(() => { clearInterval(conta); aviso(`${chegaram} enviadas ${cidade ? "em " + cidade : "na Galeria"}. Prontas também para baixar em tamanho grande.`, "ok"); }); }
+      Promise.all(filaG).then(() => { clearInterval(conta); aviso(grandesOk === filaG.length ? `${chegaram} enviadas ${cidade ? "em " + cidade : "na Galeria"}. Prontas também para baixar em alta.` : `${chegaram} enviadas. ${grandesOk} de ${filaG.length} já estão em alta para baixar; as outras baixam na versão leve.`, "ok"); }); }
     aviso(ok === fs.length ? (ok === 1 ? (fila.length ? "Enviada " : "Adicionado ") + (cidade ? "em " + cidade : "na Galeria") + "." : `${ok} ${fila.length ? "enviadas" : "adicionados"} ${cidade ? "em " + cidade : "na Galeria"}.`) : `${ok} de ${fs.length} adicionados.` + (motivo ? " " + motivo : "") + (subindo ? " Ainda estão subindo para a caravana: deixe o app aberto até aparecer “Tudo enviado”." : "") + (fila.length ? " Todo mundo já vê." : ""), ok ? "ok" : "err");
   } });
   document.body.append(fi); return fi;

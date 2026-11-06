@@ -537,12 +537,19 @@ const assets = {
   },
   // Galeria: duas versões da mesma foto. A leve (1080 px) é a que todos veem e sobe primeiro;
   // a de baixar (1600 px, qualidade máxima) sobe depois, quando o app chamar enviaGrande()
+  // Galeria: duas versões da mesma foto. A leve (1080 px) é a que todos veem e sobe primeiro.
+  // A de baixar, em alta (até 2800 px, qualidade .9), é preparada e enviada só quando o app chamar enviaGrande():
+  // como passa de 1 MB, vai em partes (fotos/<id>_g0, _g1…; a primeira guarda quantas partes são)
   uploadPar: async blob => {
-    const mini = await comprime(blob, 1080, .82, 300000), data = await comprime(blob, 1600, .92, 900000);
+    const mini = await comprime(blob, 1080, .82, 300000);
     const rm = fs.collection("fotos").doc(); fotos[rm.id] = mini;
     const xm = await semEsperar(rm.set({ data: mini, autor: me.id, ts: Date.now() }));
-    const rf = fs.collection("fotos").doc(); fotos[rf.id] = data;
-    return { id: rm.id, orig: rf.id, pendente: xm.pendente, enviado: xm.enviado, enviaGrande: () => semEsperar(rf.set({ data, autor: me.id, ts: Date.now() })).then(x => x.enviado) };
+    const base = rm.id + "_g";
+    const enviaGrande = async () => {
+      const grande = await comprime(blob, 2800, .9, 1e12), TAM = 900000, n = Math.ceil(grande.length / TAM);
+      for (let k = 0; k < n; k++) await vigia(fs.doc("fotos/" + base + k).set({ data: grande.slice(k * TAM, (k + 1) * TAM), ...(k ? {} : { partes: n }), autor: me.id, ts: Date.now() }));
+    };
+    return { id: rm.id, orig: base, pendente: xm.pendente, enviado: xm.enviado, enviaGrande };
   },
   list: async () => ({ assets: [], usage: {} }),
   delete: async id => fs.doc("fotos/" + id).delete(),
