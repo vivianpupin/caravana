@@ -435,7 +435,7 @@ const semEsperar = p => {
   return Promise.race([v.then(() => ({ pendente: false, enviado: v })), new Promise(r => setTimeout(() => r({ pendente: true, enviado: v }), espera))]).then(x => {
     if (x.pendente) {
       pendentes++; window.dispatchEvent(new CustomEvent("caravana-pendente", { detail: { n: pendentes } }));
-      v.then(() => { pendentes = Math.max(0, pendentes - 1); window.dispatchEvent(new CustomEvent("caravana-enviado", { detail: { n: pendentes } })); }, () => { pendentes = Math.max(0, pendentes - 1); });
+      v.then(() => { pendentes = Math.max(0, pendentes - 1); window.dispatchEvent(new CustomEvent("caravana-enviado", { detail: { n: pendentes } })); }, () => { pendentes = Math.max(0, pendentes - 1); window.dispatchEvent(new CustomEvent("caravana-enviado", { detail: { n: pendentes, falhou: true } })); });
     }
     return x;
   });
@@ -525,6 +525,8 @@ async function comprime(blob) {
   }
   return url;
 }
+// o app pergunta se ainda há envios na fila (também os que ficaram de uma abertura anterior)
+window.__esperaEnvios = () => fs ? fs.waitForPendingWrites() : Promise.resolve();
 const assets = {
   upload: async blob => {
     const data = await comprime(blob);

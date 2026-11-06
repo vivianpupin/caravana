@@ -2106,6 +2106,8 @@ video.mgrande{max-height:70vh;background:#000}
 .marca figcaption{font:13px "Rock Salt","Caveat",cursive;opacity:.8;display:flex;align-items:center;gap:6px;text-shadow:0 -1px 0 rgba(0,0,0,.8),0 1px 0 rgba(255,228,190,.3)}
 .marca .apaga{background:none;border:0;color:inherit;opacity:.7;font-size:18px;padding:0 4px;cursor:pointer}
 .rocha .vazia{grid-column:1/-1;text-align:center;color:#E0B889;font:18px/1.6 "Rock Salt","Caveat",cursive;margin:auto}
+.envbar{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:60;max-width:calc(100vw - 32px);width:max-content;background:#3B2A1C;color:#F6E7C8;font:500 13px/1.35 Poppins,system-ui,sans-serif;padding:10px 16px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;text-align:center}
+.envbar.on{opacity:1;transform:translate(-50%,0)}.envbar.ok{background:#3F4938}
 </style>
 
 <div class="app">
@@ -8523,6 +8525,22 @@ async function pararPos() { try { await S.db.doc("posicoes/" + S.uid).delete(); 
 const AVISAR = "/.netlify/functions/avisar";
 const noSite = () => !!window.__VERSAO && (location.protocol === "https:" || location.hostname === "localhost");
 // sem sinal: a foto ou mensagem fica guardada no celular e sai sozinha quando a internet volta
+// aviso de envio: enquanto fotos, vídeos e mensagens ainda estão subindo para a caravana, mostra quantos faltam
+// (antes aparecia "41 adicionados" na hora, mas o envio de verdade continuava por trás e ninguém sabia que precisava esperar)
+const avisoEnvio = (() => {
+  let n = 0, el = null, fimT = 0;
+  const caixa = () => el || (el = document.body.appendChild(h("div", { class: "envbar", role: "status" })));
+  const mostra = () => { const b = caixa(); clearTimeout(fimT);
+    if (n > 0) { b.className = "envbar on"; b.textContent = `⬆️ Enviando para a caravana… ${n === 1 ? "falta 1" : "faltam " + n}. Deixe o app aberto com internet.`; }
+    else { b.className = "envbar on ok"; b.textContent = "✓ Tudo enviado para a caravana."; fimT = setTimeout(() => { b.className = "envbar"; }, 3500); } };
+  window.addEventListener("caravana-pendente", e => { n = e.detail.n; mostra(); });
+  window.addEventListener("caravana-enviado", e => { n = e.detail.n; mostra(); });
+  // ao abrir o app: se ficou envio pela metade de outra vez (o app foi fechado no meio), avisa até terminar
+  setTimeout(() => { if (!window.__esperaEnvios) return; let acabou = false;
+    window.__esperaEnvios().then(() => { acabou = true; if (el && el.dataset.antigo && n <= 0) { delete el.dataset.antigo; mostra(); } }).catch(() => {});
+    setTimeout(() => { if (acabou || n > 0) return; const b = caixa(); b.dataset.antigo = "1"; b.className = "envbar on"; b.textContent = "⬆️ Terminando de enviar o que ficou de antes… Deixe o app aberto com internet."; }, 2500); }, 4000);
+  return mostra;
+})();
 const avisoSemSinal = () => avisoReacao("📶 Sem sinal agora. Fica guardado e envia sozinho quando a internet voltar.");
 async function addMural(d) { const r = await S.db.collection("mural").add(d); if (r && r.pendente) avisoSemSinal(); return r; }
 async function addChat(d) {
@@ -10242,7 +10260,7 @@ function campoAddGaleria() {
     somDosFilmes();
     const fs = [...fi.files]; fi.value = ""; soltaArquivo(); if (!fs.length) return;
     const aviso = (txt, cls) => { S.muralAdd = [txt, cls || ""]; const m = document.getElementById("mural-add-msg"); if (m) { m.textContent = txt; m.className = "msg " + (cls || ""); } };
-    const cidade = S.muralAddAlbum != null ? S.muralAddAlbum : Date.now() < INICIO_VIAGEM ? "" : (S.muralAddCidade || cidadeHoje() || ""); let ok = 0, motivo = "";
+    const cidade = S.muralAddAlbum != null ? S.muralAddAlbum : Date.now() < INICIO_VIAGEM ? "" : (S.muralAddCidade || cidadeHoje() || ""); let ok = 0, motivo = "", subindo = 0;
     for (const [k, file] of fs.entries()) {
       aviso(`Enviando ${k + 1} de ${fs.length}…`);
       try {
@@ -10252,11 +10270,11 @@ function campoAddGaleria() {
           const msg = { set textContent(t) { aviso((fs.length > 1 ? `${k + 1} de ${fs.length} · ` : "") + t); }, set className(c) { if (c.includes("err")) S.muralAdd[1] = "err"; } };
           S.muralAdd = ["", ""]; await enviaFilmeGaleria({ blob: file, cidade, camera: "" }, msg);
           if (S.muralAdd[1] === "err") { motivo = S.muralAdd[0]; continue; } ok++;
-        } else { const r = await S.assets.upload(file); await addMural({ autor: S.uid, fotoId: r.id, cidade, legenda: "", ts: Date.now() }); ok++; }
+        } else { const r = await S.assets.upload(file); const m = await addMural({ autor: S.uid, fotoId: r.id, cidade, legenda: "", ts: Date.now() }); if ((r && r.pendente) || (m && m.pendente)) subindo++; ok++; }
       }
       catch (e) { motivo = /^video\//.test(file.type) || /\.(mov|mp4|m4v|webm|hevc|3gp)$/i.test(file.name || "") ? "Não consegui preparar esse vídeo" + (e && e.message ? " (" + String(e.message).slice(0, 60) + ")" : "") + "." : erroFoto(e); aviso(motivo, "err"); }
     }
-    aviso(ok === fs.length ? (ok === 1 ? "Adicionado " + (cidade ? "em " + cidade : "na Galeria") + "." : `${ok} adicionados ${cidade ? "em " + cidade : "na Galeria"}.`) : `${ok} de ${fs.length} adicionados.` + (motivo ? " " + motivo : ""), ok ? "ok" : "err");
+    aviso(ok === fs.length ? (ok === 1 ? "Adicionado " + (cidade ? "em " + cidade : "na Galeria") + "." : `${ok} adicionados ${cidade ? "em " + cidade : "na Galeria"}.`) : `${ok} de ${fs.length} adicionados.` + (motivo ? " " + motivo : "") + (subindo ? " Ainda estão subindo para a caravana: deixe o app aberto até aparecer “Tudo enviado”." : ""), ok ? "ok" : "err");
   } });
   document.body.append(fi); return fi;
 }
