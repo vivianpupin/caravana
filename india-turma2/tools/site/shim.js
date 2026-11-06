@@ -420,6 +420,12 @@ function achata(obj, pre = "", out = {}) {
   return out;
 }
 const snapDoc = s => ({ id: s.id, exists: s.exists, data: () => s.data() || {} });
+const semPend = d => { if (d && typeof d === "object" && "_pend" in d) { const { _pend, ...resto } = d; return resto; } return d; };
+const snapPend = s => ({ id: s.id, exists: s.exists, data: () => s.metadata && s.metadata.hasPendingWrites ? { ...(s.data() || {}), _pend: 1 } : (s.data() || {}) });
+// envio parado há muito tempo: pergunta ao servidor se é o limite diário do Firebase (o banco não avisa os envios, só as leituras)
+let testouCota = 0;
+const testaCota = () => { if (!fs || Date.now() - testouCota < 60000) return; testouCota = Date.now();
+  fs.collection("locais").limit(1).get({ source: "server" }).then(() => marcaCota(false), e => { if (ehCota(e)) marcaCota(true); }); };
 // cota do Firebase: quando o limite grátis do dia acaba, o banco recusa com "resource-exhausted".
 // Avisa o app (faixa para a líder e para os viajantes) e tenta de novo a cada 2 min até o banco voltar.
 let cotaEsgotada = false;
@@ -436,15 +442,16 @@ const semEsperar = p => {
   return Promise.race([v.then(() => ({ pendente: false, enviado: v })), new Promise(r => setTimeout(() => r({ pendente: true, enviado: v }), espera))]).then(x => {
     if (x.pendente) {
       pendentes++; window.dispatchEvent(new CustomEvent("caravana-pendente", { detail: { n: pendentes } }));
+      { let feito = false; v.then(() => { feito = true; }, () => { feito = true; }); setTimeout(() => { if (!feito && navigator.onLine !== false) testaCota(); }, 25000); }
       v.then(() => { pendentes = Math.max(0, pendentes - 1); window.dispatchEvent(new CustomEvent("caravana-enviado", { detail: { n: pendentes } })); }, () => { pendentes = Math.max(0, pendentes - 1); window.dispatchEvent(new CustomEvent("caravana-enviado", { detail: { n: pendentes, falhou: true } })); });
     }
     return x;
   });
 };
 // escuta que se refaz sozinha depois de uma recusa por cota (o Firestore encerra a escuta quando dá erro)
-function ouve(q, conv, cb, err) {
+function ouve(q, conv, cb, err, meta) {
   let off = null, parou = false, t = null;
-  const liga = () => { off = q.onSnapshot(s => { if (!s.metadata.fromCache) marcaCota(false); cb(conv(s)); }, e => {
+  const liga = () => { off = q.onSnapshot(...(meta ? [{ includeMetadataChanges: true }] : []), s => { if (!s.metadata.fromCache) marcaCota(false); cb(conv(s)); }, e => {
     if (ehCota(e)) { marcaCota(true); if (!parou) t = setTimeout(liga, 120000); }
     (err || (() => {}))(e);
   }); };
@@ -455,7 +462,7 @@ function refDoc(r) {
   return {
     id: r.id,
     get: async () => snapDoc(await vigia(r.get())),
-    set: d => semEsperar(r.set(d)),
+    set: d => semEsperar(r.set(semPend(d))),
     update: d => semEsperar(r.update(achata(d))),
     delete: () => semEsperar(r.delete()),
     onSnapshot: (cb, err) => ouve(r, snapDoc, cb, err),
@@ -467,9 +474,10 @@ function refCol(q, base) {
     orderBy: (f, d) => refCol(q.orderBy(f, d || "asc"), base),
     limit: n => refCol(q.limit(n), base),
     where: (a, op, b) => refCol(q.where(a, op === "eq" ? "==" : op, b), base),
-    onSnapshot: (cb, err) => ouve(q, qs => ({ docs: qs.docs.map(snapDoc), size: qs.size, empty: qs.empty }), cb, err),
+    // listas: cada item que ainda está só neste celular (não chegou no banco) vem marcado com _pend
+    onSnapshot: (cb, err) => ouve(q, qs => ({ docs: qs.docs.map(snapPend), size: qs.size, empty: qs.empty }), cb, err, true),
     get: async () => { const qs = await vigia(q.get()); return { docs: qs.docs.map(snapDoc), size: qs.size, empty: qs.empty }; },
-    add: async d => { const ref = base.doc(), x = await semEsperar(ref.set(d)); return { id: ref.id, pendente: x.pendente, enviado: x.enviado }; },
+    add: async d => { const ref = base.doc(), x = await semEsperar(ref.set(semPend(d))); return { id: ref.id, pendente: x.pendente, enviado: x.enviado }; },
     doc: id => refDoc(id ? base.doc(id) : base.doc()),
   };
 }

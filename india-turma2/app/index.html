@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "06/11 · 04:15";</script>
+<script>window.__VERSAO = "06/11 · 04:58";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2141,6 +2141,7 @@ video.mgrande{max-height:70vh;background:#000}
 .rocha .vazia{grid-column:1/-1;text-align:center;color:#E0B889;font:18px/1.6 "Rock Salt","Caveat",cursive;margin:auto}
 .envmaleta{display:none}.envmaleta.on{display:block;margin:10px 0 12px;padding:9px 14px;border-radius:12px;background:#F3E6CC;color:#5A3F22;font:500 13px/1.35 Poppins,system-ui,sans-serif;text-align:center}
 .envmaleta.on.ok{background:#E3EADB;color:#3F4938}
+.mfoto .mpend{position:absolute;top:5px;left:5px;background:rgba(255,248,236,.92);border-radius:999px;padding:2px 6px;font-size:12px;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 </style>
 
 <div class="app">
@@ -10284,7 +10285,8 @@ async function curtir(f) {
 function miniGaleria(f, lista, extra) {
   const n = curtidasDe(f);
   return h("button", { type: "button", class: "mfoto" + (ehPista(f) ? " pista" : "") + (extra ? " " + extra : ""), onclick: () => abrirFotoMural(f, lista), "aria-label": (f.legenda || (f.video ? "Vídeo" : "Foto")) + " de " + nomeDe(f.autor) }, muralMini(f),
-    n ? h("span", { class: "mcurte", text: "♥ " + n }) : null);
+    n ? h("span", { class: "mcurte", text: "♥ " + n }) : null,
+    f._pend ? h("span", { class: "mpend", title: "Ainda não chegou para a caravana", text: "⏳" }) : null);
 }
 // comentários de uma foto: só carregam quando a foto está aberta (economiza a cota do banco)
 function painelComentarios(f, fecha) {
@@ -10391,6 +10393,7 @@ function vMural() {
     return h("section", { class: "view" }, ...topo,
       h("div", { class: "mvolta" }, h("button", { type: "button", class: "btn ghost", onclick: () => { S.muralCidade = ""; render(); scrollTo(0, 0); } }, "‹ Álbuns"),
         h("b", { text: nome }), h("small", { text: fotos.length === 1 ? "1 item" : fotos.length + " itens" })),
+      fotos.some(f => f._pend) ? h("p", { class: "msg", style: "margin:4px 0 10px", text: `⏳ ${fotos.filter(f => f._pend).length} ainda não chegaram para a caravana (as marcadas com ⏳). Deixe o app aberto com internet: elas sobem sozinhas. Não precisa postar de novo.` }) : null,
       S.isOwner && S.assets && (cid.length > 1 || cid === "~") ? (() => { const destino = cid === "~" ? "" : cid, [txt, cls] = S.muralAdd || ["", ""];
         return h("div", { class: "madd" }, h("button", { class: "btn gold", type: "button", onclick: () => { S.muralAddAlbum = destino; S.muralAdd = null; campoAddGaleria().click(); } }, "＋ Adicionar fotos e vídeos neste álbum"),
           h("p", { id: "mural-add-msg", class: "msg " + cls, role: "status", text: txt })); })() : null,
@@ -10400,7 +10403,9 @@ function vMural() {
   const albuns = [["Prelúdio", S.mural.filter(ehPista), "?"], ...cidadesMural().map(c => [c, S.mural.filter(f => f.cidade === c && !ehPista(f))])].filter(([, fs]) => fs.length);
   // só os álbuns: as pistas num álbum só e, conforme a viagem anda, um álbum para cada cidade (fotos e vídeos juntos)
   const semCidade = S.mural.filter(f => !f.cidade && !ehPista(f));
+  const pendG = S.mural.filter(f => f._pend).length;
   return h("section", { class: "view" }, ...topo, addGaleriaLider(),
+    pendG ? h("p", { class: "msg", style: "margin:4px 0 10px", text: `⏳ ${pendG} ${pendG === 1 ? "foto ainda não chegou" : "fotos ainda não chegaram"} para a caravana. Deixe o app aberto com internet: sobem sozinhas. Não precisa postar de novo.` }) : null,
     h("div", { class: "malbuns" }, [...albuns, ...(semCidade.length ? [["Caravana", semCidade, "~"]] : [])].map(([c, fs, alvo]) => { const capa = capaAlbum(fs);
       return h("button", { type: "button", class: "malbum", onclick: () => { S.muralCidade = alvo || c; render(); scrollTo(0, 0); } },
         capa && capa.video && !(capa.video.partes || capa.capaId) ? muralMini(capa) : h("img", { ...fotoTardia(capa.fotoId), alt: "" }),
