@@ -1945,6 +1945,8 @@ nav.tabs button{position:relative}
 /* Galeria da Caravana: destaques, álbuns por cidade, vídeos e a foto aberta em tela cheia */
 .madd{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:0 0 14px}
 .madd.panel{flex-direction:column;align-items:stretch;gap:10px;padding:16px}.madd.panel .opts{margin:0}.madd.panel .btn{align-self:stretch}
+.maddaba{display:flex;align-items:center;justify-content:space-between;width:100%;margin:0 0 14px;padding:14px 16px;border:1px solid #E2D4BA;border-radius:16px;background:#FFFDF8;color:#3B2A1C;font:500 16px/1.2 Poppins,system-ui,sans-serif;cursor:pointer;box-shadow:0 2px 8px rgba(60,40,20,.06)}
+.maddaba.aberta{margin:0;padding:0 0 4px;border:0;background:none;box-shadow:none;font-size:17px}.maddseta{color:#8A6B43;font-size:14px}
 .maddtit{font-family:var(--display,Lora),Georgia,serif;font-size:19px;font-weight:500;color:#3B2A1C}.maddpasso{font-size:13px;font-weight:600;color:#8A6B43}.maddnota{color:#8A7B63;font-size:12px;line-height:1.4}
 .madd .msg{flex-basis:100%;margin:0}.madd .msg:empty{display:none}
 .mdestaq{margin:2px 0 6px}
@@ -10287,9 +10289,13 @@ function addGaleriaLider() {
   const antes = Date.now() < INICIO_VIAGEM;
   if (antes && !S.isOwner) return null; // antes do embarque, o que entra na Galeria vira pista do Prelúdio (só a líder)
   const [txt, cls] = S.muralAdd || ["", ""], sel = S.muralAddCidade || cidadeHoje() || "";
+  // fechado: só a abinha "Adicionar fotos na Galeria"; tocando, abre com o passo a passo (fica aberto enquanto envia)
+  if (!S.maddAberto && !txt) return h("button", { type: "button", class: "maddaba", "aria-expanded": "false", onclick: () => { S.maddAberto = true; render(); } },
+    h("span", { text: "📷 Adicionar fotos na Galeria" }), h("span", { class: "maddseta", "aria-hidden": "true", text: "▾" }));
   const envia = () => { if (!antes && !sel) { S.muralAdd = ["Primeiro escolha a cidade das fotos.", "err"]; render(); return; } S.muralAddCidade = sel; S.muralAddAlbum = null; S.muralAdd = null; campoAddGaleria().click(); };
   return h("div", { class: "madd panel" },
-    h("b", { class: "maddtit", text: "📷 Coloque suas fotos na Galeria" }),
+    h("button", { type: "button", class: "maddaba aberta", "aria-expanded": "true", onclick: () => { S.maddAberto = false; S.muralAdd = null; render(); } },
+      h("span", { text: "📷 Adicionar fotos na Galeria" }), h("span", { class: "maddseta", "aria-hidden": "true", text: "▴" })),
     antes ? h("span", { class: "small", text: "Antes do embarque, as fotos entram no álbum Prelúdio." })
       : [h("span", { class: "maddpasso", text: "1. Escolha a cidade das fotos" }),
         h("div", { class: "opts", role: "group", "aria-label": "Cidade das fotos" }, cidadesMural().map(c => h("button", { type: "button", class: "opt", "aria-pressed": String(sel === c), onclick: () => { S.muralAddCidade = c; S.muralAdd = null; render(); } }, c))),
