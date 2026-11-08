@@ -1977,6 +1977,8 @@ nav.tabs button{position:relative}
 .mural{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
 /* Galeria da Caravana: destaques, álbuns por cidade, vídeos e a foto aberta em tela cheia */
 .madd{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:0 0 14px}
+.madd.panel{flex-direction:column;align-items:stretch;gap:10px;padding:16px}.madd.panel .opts{margin:0}.madd.panel .btn{align-self:stretch}
+.maddtit{font-family:var(--display,Lora),Georgia,serif;font-size:19px;font-weight:500;color:#3B2A1C}.maddpasso{font-size:13px;font-weight:600;color:#8A6B43}.maddnota{color:#8A7B63;font-size:12px;line-height:1.4}
 .madd .msg{flex-basis:100%;margin:0}.madd .msg:empty{display:none}
 .mdestaq{margin:2px 0 6px}
 .mdtrilho{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:18px;scrollbar-width:none;box-shadow:var(--shadow)}
@@ -10329,13 +10331,21 @@ function campoAddGaleria() {
   } });
   document.body.append(fi); return fi;
 }
+// todos podem pôr fotos e vídeos do celular na Galeria (antes era só a líder): um cartão claro, em 2 passos
 function addGaleriaLider() {
-  if (!S.isOwner || !S.assets) return null;
-  const [txt, cls] = S.muralAdd || ["", ""], antes = Date.now() < INICIO_VIAGEM, sel = S.muralAddCidade || cidadeHoje() || "";
-  return h("div", { class: "madd" },
-    h("button", { class: "btn gold", type: "button", onclick: () => { if (!antes && !sel) { S.muralAdd = ["Escolha a cidade das fotos num dos balões.", "err"]; render(); return; } S.muralAddCidade = sel; S.muralAddAlbum = null; S.muralAdd = null; campoAddGaleria().click(); } }, "＋ Adicionar fotos e vídeos"),
+  if (!S.assets || !eu()) return null;
+  const antes = Date.now() < INICIO_VIAGEM;
+  if (antes && !S.isOwner) return null; // antes do embarque, o que entra na Galeria vira pista do Prelúdio (só a líder)
+  const [txt, cls] = S.muralAdd || ["", ""], sel = S.muralAddCidade || cidadeHoje() || "";
+  const envia = () => { if (!antes && !sel) { S.muralAdd = ["Primeiro escolha a cidade das fotos.", "err"]; render(); return; } S.muralAddCidade = sel; S.muralAddAlbum = null; S.muralAdd = null; campoAddGaleria().click(); };
+  return h("div", { class: "madd panel" },
+    h("b", { class: "maddtit", text: "📷 Coloque suas fotos na Galeria" }),
     antes ? h("span", { class: "small", text: "Antes do embarque, as fotos entram no álbum Prelúdio." })
-      : h("div", { class: "opts", role: "group", "aria-label": "Cidade das fotos" }, cidadesMural().map(c => h("button", { type: "button", class: "opt", "aria-pressed": String(sel === c), onclick: () => { S.muralAddCidade = c; S.muralAdd = null; render(); } }, c))),
+      : [h("span", { class: "maddpasso", text: "1. Escolha a cidade das fotos" }),
+        h("div", { class: "opts", role: "group", "aria-label": "Cidade das fotos" }, cidadesMural().map(c => h("button", { type: "button", class: "opt", "aria-pressed": String(sel === c), onclick: () => { S.muralAddCidade = c; S.muralAdd = null; render(); } }, c))),
+        h("span", { class: "maddpasso", text: "2. Escolha as fotos e vídeos do seu celular" })],
+    h("button", { class: "btn gold", type: "button", onclick: envia }, sel && !antes ? `＋ Adicionar fotos e vídeos em ${sel}` : "＋ Adicionar fotos e vídeos"),
+    h("small", { class: "maddnota", text: "Pode escolher várias de uma vez. Todo mundo da caravana vê. Deixe o app aberto até terminar de enviar." }),
     h("p", { id: "mural-add-msg", class: "msg " + cls, role: "status", text: txt }));
 }
 function blocoAlbum(cid) {
@@ -10353,7 +10363,7 @@ function vMural() {
   const topo = [h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Galeria da Caravana" }))), abasFotos()];
   if (!S.mural.length) return h("section", { class: "view" }, ...topo, addGaleriaLider(),
     h("div", { class: "fotovazia" }, h("img", { src: "img/simbolo-marrom.png", alt: "" }), h("b", { text: "A galeria está esperando" }),
-      h("span", { text: "Monte sua foto no Estúdio e toque em Enviar para a galeria da caravana." }),
+      h("span", { text: "Use o cartão acima para pôr fotos do seu celular, ou monte uma foto nas Câmeras e toque em Na Galeria." }),
       h("button", { class: "btn gold", type: "button", onclick: () => { S.fotoAba = "estudio"; render(); } }, "Ir para o Estúdio")));
   // dentro de um álbum: todas as fotos da cidade (ou todas, ou só os vídeos), em grade de 3
   if (cid) {
@@ -10363,7 +10373,7 @@ function vMural() {
       h("div", { class: "mvolta" }, h("button", { type: "button", class: "btn ghost", onclick: () => { S.muralCidade = ""; render(); scrollTo(0, 0); } }, "‹ Álbuns"),
         h("b", { text: nome }), h("small", { text: fotos.length === 1 ? "1 item" : fotos.length + " itens" })),
       fotos.some(f => f._pend) ? h("p", { class: "msg", style: "margin:4px 0 10px", text: `⏳ ${fotos.filter(f => f._pend).length} ainda não chegaram para a caravana (as marcadas com ⏳). Deixe o app aberto com internet: elas sobem sozinhas. Não precisa postar de novo.` }) : null,
-      S.isOwner && S.assets && (cid.length > 1 || cid === "~") ? (() => { const destino = cid === "~" ? "" : cid, [txt, cls] = S.muralAdd || ["", ""];
+      S.assets && eu() && (S.isOwner || Date.now() >= INICIO_VIAGEM) && (cid.length > 1 || cid === "~") ? (() => { const destino = cid === "~" ? "" : cid, [txt, cls] = S.muralAdd || ["", ""];
         return h("div", { class: "madd" }, h("button", { class: "btn gold", type: "button", onclick: () => { S.muralAddAlbum = destino; S.muralAdd = null; campoAddGaleria().click(); } }, "＋ Adicionar fotos e vídeos neste álbum"),
           h("p", { id: "mural-add-msg", class: "msg " + cls, role: "status", text: txt })); })() : null,
       fotos.length ? h("div", { class: "mural g3" }, fotos.map(f => miniGaleria(f, fotos))) : h("p", { class: "small", text: "Ainda não tem nada aqui." }),
