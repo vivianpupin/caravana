@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/11 · 00:39";</script>
+<script>window.__VERSAO = "12/11 · 00:41";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3245,8 +3245,8 @@ const PASSEIOS = {
       { nome: "Trayambakeshwar · Tera Manzil", lat: 30.12649, lng: 78.33098, raio: 50, destino: "Trayambakeshwar Temple, Laxman Jhula, Rishikesh", quando: "O templo de 13 andares, logo depois da ponte",
         texto: "Tera quer dizer treze, e manzil quer dizer andar: são 13 andares dedicados a Shiva. Tryambaka é Shiva de três olhos, o mesmo nome do mantra Om Tryambakam Yajamahe. Cada andar tem altares de divindades diferentes. Suba com calma até o topo, de onde se vê o Ganges e as pontes lá embaixo.",
         dica: "A entrada é gratuita. Tire o sapato na porta e leve uma meia: o chão pode estar frio." },
-      { nome: "Ram Jhula e Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 80, quando: "Desça pela margem leste, rio abaixo, passando pela Ganga Beach",
-        texto: "São uns 20 minutos a pé pela margem do rio, entre ashrams e lojinhas, passando pela Ganga Beach, a praia de areia do Ganges. A Ram Jhula é a ponte de ferro que liga o Sivananda Ashram ao Swarg Ashram e leva o nome de Rama. Na cabeceira deste lado ficam o mercado de Swarg Ashram, o Chotiwala para o almoço e o Gita Bhawan.",
+      { nome: "Ram Jhula e Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 80, via: [[30.12430, 78.31775]], quando: "Desça pela beira do rio, pela rua dos ashrams e lojinhas, passando pela Ganga Beach",
+        texto: "Vá por baixo, pela beira do rio: é o caminho com mais vida, entre ashrams, lojinhas e cafés, e passa pela Ganga Beach, a praia de areia do Ganges. A estrada de cima, pelo mato, é mais vazia. São uns 20 a 25 minutos a pé. A Ram Jhula é a ponte de ferro que liga o Sivananda Ashram ao Swarg Ashram e leva o nome de Rama. Na cabeceira deste lado ficam o mercado de Swarg Ashram, o Chotiwala para o almoço e o Gita Bhawan.",
         dica: "O Chotiwala é o restaurante mais famoso de Rishikesh, aberto em 1958: peça o thali vegetariano (há dois Chotiwala lado a lado, de dois ramos da mesma família). O Gita Bhawan tem os versos do Bhagavad Gita nas paredes e uma cooperativa de preço fixo. A Ram Jhula passou por obras e pode estar fechada: não precisa atravessar.",
         lojas: [
           ["Ganga Beach", "a praia de areia do Ganges, na margem leste", "Ganga Beach Swarg Ashram Rishikesh", 30.12430, 78.31775, false, "lugar"],
@@ -3282,11 +3282,13 @@ const distTxt = km => km < 1 ? Math.max(10, Math.round(km * 1000 / 10) * 10) + "
 // ---------- rotas a pé pelas ruas (servidor de rotas do OpenStreetMap, o mesmo do openstreetmap.org) ----------
 const ROTA_PE = "https://routing.openstreetmap.de/routed-foot/route/v1/driving/";
 const rotasMem = (() => { try { return JSON.parse(lsGet("cdi-rotas-pe") || "{}"); } catch (e) { return {}; } })();
-async function rotaPe(a, b) {
-  const k = [a.lat, a.lng, b.lat, b.lng].map(x => (+x).toFixed(5)).join(",");
+async function rotaPe(a, b, via) {
+  // via: pontos por onde a linha tem que passar (ex.: a beira do rio, em vez da estrada de cima)
+  const pts = [a, ...(via || []), b];
+  const k = pts.map(q => (+q.lat).toFixed(5) + "," + (+q.lng).toFixed(5)).join(";");
   if (rotasMem[k]) return rotasMem[k];
-  const reta = distKm(a, b) * 1000;
-  const r = await fetch(ROTA_PE + `${(+a.lng).toFixed(6)},${(+a.lat).toFixed(6)};${(+b.lng).toFixed(6)},${(+b.lat).toFixed(6)}?overview=full&geometries=geojson&steps=false`);
+  let reta = 0; for (let i = 0; i < pts.length - 1; i++) reta += distKm(pts[i], pts[i + 1]) * 1000;
+  const r = await fetch(ROTA_PE + pts.map(q => `${(+q.lng).toFixed(6)},${(+q.lat).toFixed(6)}`).join(";") + "?overview=full&geometries=geojson&steps=false");
   if (!r.ok) throw new Error("rota " + r.status);
   const j = await r.json(), rt = j && j.code === "Ok" && j.routes && j.routes[0];
   if (!rt || !rt.geometry || !rt.geometry.coordinates || rt.geometry.coordinates.length < 2) throw new Error("sem rota");
@@ -3376,7 +3378,7 @@ function abrirPasseio(id) {
   const voltou = () => { if (!document.hidden && box.isConnected) { aarti(); try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {} } };
   document.addEventListener("visibilitychange", voltou);
   try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {}
-  const vai = i => { est.i = Math.max(0, Math.min(ps.length - 1, i)); guarda(); tendencia = null; amostra = null; agora = null; desenhaAgora(); desenha(); pinta(); pedeRota(true); if (mapa) mapa.easeTo({ center: [ps[est.i].lng, ps[est.i].lat], zoom: Math.max(mapa.getZoom(), 15.5) }); };
+  const vai = i => { est.i = Math.max(0, Math.min(ps.length - 1, i)); guarda(); tendencia = null; amostra = null; agora = null; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pinta(); pedeRota(true); if (mapa) mapa.easeTo({ center: [ps[est.i].lng, ps[est.i].lat], zoom: Math.max(mapa.getZoom(), 15.5) }); };
   const conclui = () => { if (!est.feitos.includes(est.i)) est.feitos.push(est.i); guarda(); if (est.i < ps.length - 1) vai(est.i + 1); else { desenha(); pinta(); } };
   function enquadra(animar) {
     if (!mapa) return; const b = new maplibregl.LngLatBounds();
@@ -3392,6 +3394,9 @@ function abrirPasseio(id) {
   const fc = features => ({ type: "FeatureCollection", features });
   const linha = (coords, props) => ({ type: "Feature", properties: props || {}, geometry: { type: "LineString", coordinates: coords } });
   const pernas = ps.map((p, k) => ({ de: k ? ps[k - 1] : P.saida, para: p, coords: null }));
+  const viaP = p => (p.via || []).map(([lat, lng]) => ({ lat, lng }));
+  // pontos de passagem que ainda estão à frente (mais perto do destino do que a pessoa)
+  const viaAFrente = p => eu ? viaP(p).filter(v => distKm(v, p) < distKm(eu, p) - .03) : viaP(p);
   function desenhaDia() {
     const s = mapa && mapa.getSource("dia"); if (!s) return;
     s.setData(fc(pernas.map(pn => linha(pn.coords || [[pn.de.lng, pn.de.lat], [pn.para.lng, pn.para.lat]], { reta: !pn.coords }))));
@@ -3405,7 +3410,7 @@ function abrirPasseio(id) {
   async function carregaDia() {
     for (const pn of pernas) {
       if (!box.isConnected) return;
-      try { const r = await rotaPe(pn.de, pn.para); r.fixa = true; pn.coords = r.coords; rotaPe.__salva(); desenhaDia(); } catch (e) {}
+      try { const r = await rotaPe(pn.de, pn.para, viaP(pn.para)); r.fixa = true; pn.coords = r.coords; rotaPe.__salva(); desenhaDia(); } catch (e) {}
     }
   }
   rotaPe.__salva = () => lsSet("cdi-rotas-pe", JSON.stringify(Object.fromEntries(Object.entries(rotasMem).filter(([, v]) => v.fixa))));
@@ -3416,7 +3421,7 @@ function abrirPasseio(id) {
     if (!forca && agoraPara === est.i && !andou && !saiu) return;
     if (!forca && Date.now() - agoraEm < 12000) return;
     pedindo = true; agoraEm = Date.now(); const de = { lat: eu.lat, lng: eu.lng }, para = est.i;
-    try { const r = await rotaPe(de, p); if (para === est.i) { agora = r; agoraDe = de; agoraPara = para; } }
+    try { const r = await rotaPe(de, p, viaAFrente(p)); if (para === est.i) { agora = r; agoraDe = de; agoraPara = para; } }
     catch (e) { if (para === est.i) { agora = null; agoraDe = de; agoraPara = para; } }
     pedindo = false; desenhaAgora(); desenha();
   }
@@ -3463,7 +3468,7 @@ function abrirPasseio(id) {
     const reta = eu ? distKm(eu, p) : null, nr = eu && agora && agoraPara === est.i ? naRota(agora.coords, eu) : null;
     const d = nr ? nr.falta : reta, perto = reta != null && reta * 1000 <= (p.raio || 80) + Math.min(eu.prec || 0, 25);
     const alvo = nr && nr.fora < .04 ? nr.alvo : p, r = eu ? rumo(eu, alvo) : null; rumoAlvo = r ? r.g : null;
-    const rota = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(p.destino || p.lat + "," + p.lng) + "&travelmode=walking";
+    const vs = viaAFrente(p), rota = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(p.destino || p.lat + "," + p.lng) + (vs.length ? "&waypoints=" + encodeURIComponent(vs.map(v => v.lat + "," + v.lng).join("|")) : "") + "&travelmode=walking";
     const aqui = perto || est.chegou.includes(est.i), prox = ps[est.i + 1];
     const sinal = !eu || aqui ? null : nr && nr.fora > .04 ? ["fora", "Você saiu do caminho. Volte para a linha azul ou siga a seta."]
       : tendencia === "indo" ? ["indo", "✓ Você está indo na direção certa"] : tendencia === "volta" ? ["volta", "↩ Você está se afastando. Vire e siga a seta."] : ["neutro", "Ande um pouco: o app mostra se você está indo para o lado certo."];
