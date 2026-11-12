@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/11 · 01:39";</script>
+<script>window.__VERSAO = "12/11 · 01:43";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3479,7 +3479,7 @@ function abrirPasseio(id) {
   const painel = h("div", { class: "passpainel" });
   const chipAarti = h("button", { type: "button", class: "passaarti", hidden: true, onclick: () => vai(P.aarti.parada) });
   const pararBussola = () => { if (bussola) { window.removeEventListener(bussola.ev, bussola.fn, true); bussola = null; } };
-  const fecha = () => { lsSet("cdi-passeio-aberto", ""); document.removeEventListener("visibilitychange", voltou); clearInterval(relogio); pararBussola(); if (watch != null) navigator.geolocation.clearWatch(watch); try { trava && trava.release(); } catch (e) {} try { mapa && mapa.remove(); } catch (e) {} box.remove(); };
+  const fecha = () => { lsSet("cdi-passeio-aberto", ""); document.removeEventListener("visibilitychange", voltou); try { clearInterval(vigiaGps); document.removeEventListener("visibilitychange", religaGps); window.removeEventListener("pageshow", religaGps); window.removeEventListener("focus", religaGps); } catch (e) {} clearInterval(relogio); pararBussola(); if (watch != null) navigator.geolocation.clearWatch(watch); try { trava && trava.release(); } catch (e) {} try { mapa && mapa.remove(); } catch (e) {} box.remove(); };
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   let seguir = false;
   const centraEu = () => { if (eu && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 17), duration: 600 }); };
@@ -3690,11 +3690,13 @@ function abrirPasseio(id) {
     if (!navigator.geolocation) { S.passGpsMsg = "Este celular não informa a localização."; desenha(); return; }
     S.passGpsMsg = "Procurando você…"; S.passGpsCod = null; desenha();
     navigator.geolocation.getCurrentPosition(pos => { recebe(pos); if (mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 17), duration: 600 }); }, erroLoc, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 });
-    if (watch == null) watch = navigator.geolocation.watchPosition(recebe, erroLoc, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
+    iniciaGps();
   }
   const recebe = pos => {
-    S.passGpsCod = null;
     const novo = { lat: pos.coords.latitude, lng: pos.coords.longitude, prec: Math.round(pos.coords.accuracy || 0) };
+    // posição bem pior que a atual (a rápida, por wi-fi, ao religar o GPS) não tira o ponto do lugar certo
+    if (eu && eu.em && Date.now() - eu.em < 120000 && novo.prec > 100 && novo.prec > eu.prec * 3) return;
+    novo.em = Date.now(); S.passGpsCod = null; ultimoFix = Date.now();
     eu = novo; S.passGpsMsg = "";
     if (isFinite(pos.coords.heading) && pos.coords.heading !== null && (pos.coords.speed || 0) > .6) gpsG = pos.coords.heading;
     if (mapa && !euMarca) euMarca = new maplibregl.Marker({ element: elEu() }).setLngLat([eu.lng, eu.lat]).addTo(mapa);
@@ -3726,7 +3728,20 @@ function abrirPasseio(id) {
     if (seguir && mapa && !mapa.isMoving()) mapa.easeTo({ center: [eu.lng, eu.lat], duration: 400 });
     if (rolarTexto && !vendo) { rolarTexto = false; requestAnimationFrame(() => { const t = painel.querySelector(".passtexto"); if (t) painel.scrollTo({ top: t.offsetTop - painel.offsetTop - 8, behavior: "smooth" }); }); }
   };
-  if (navigator.geolocation) watch = navigator.geolocation.watchPosition(recebe, erroLoc, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
+  // no iPhone o GPS para de mandar posição quando o app vai para o fundo ou fica um tempo parado:
+  // ao voltar para o app e quando passa 25 s sem posição nova, ele é religado sozinho (antes era preciso sair e entrar)
+  let ultimoFix = 0, ligadoEm = 0;
+  function iniciaGps() {
+    if (!navigator.geolocation || !box.isConnected) return;
+    if (watch != null) navigator.geolocation.clearWatch(watch);
+    ligadoEm = Date.now();
+    navigator.geolocation.getCurrentPosition(recebe, () => {}, { enableHighAccuracy: false, maximumAge: 60000, timeout: 8000 });
+    watch = navigator.geolocation.watchPosition(recebe, erroLoc, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
+  }
+  const vigiaGps = setInterval(() => { if (!document.hidden && S.passGpsCod !== 1 && Date.now() - Math.max(ultimoFix, ligadoEm) > 25000) iniciaGps(); }, 10000);
+  const religaGps = () => { if (!document.hidden && box.isConnected) iniciaGps(); };
+  document.addEventListener("visibilitychange", religaGps); window.addEventListener("pageshow", religaGps); window.addEventListener("focus", religaGps);
+  if (navigator.geolocation) iniciaGps();
   else S.passGpsMsg = "Este celular não informa a localização. O mapa e as histórias funcionam mesmo assim.";
   desenha();
   carregaGlobo().then(() => {
