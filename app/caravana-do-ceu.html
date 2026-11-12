@@ -2102,6 +2102,10 @@ video.mgrande{max-height:70vh;background:#000}
 .passpin{width:30px;height:30px;border-radius:50%;border:2px solid var(--panel);background:var(--sand);color:var(--ink);display:grid;place-items:center;font:600 13px/1 var(--ui);box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer;padding:0}
 .passpin.feito{background:var(--moss);color:var(--on-dark)}
 .passpin.atual{background:var(--terra);color:var(--on-dark);width:38px;height:38px;font-size:15px;z-index:3}
+.passloja{display:flex;align-items:center;gap:4px;text-decoration:none;color:var(--ink);font:600 11px/1.1 var(--ui)}
+.passloja i{width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.3);flex:none}
+.passloja span{background:var(--panel);padding:2px 6px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.15);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+.passmapa.longe .passloja span{display:none}
 .passeu{width:16px;height:16px;border-radius:50%;background:#2F7BEA;border:3px solid #fff;box-shadow:0 0 0 8px rgba(47,123,234,.22)}
 .passpainel{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
 .passprog{display:flex;flex-direction:column;gap:6px}
@@ -3102,43 +3106,53 @@ function abrirGuardiao(passo) {
   abre();
 }
 // ---------- Passeio guiado: o mapa leva de parada em parada e conta a história de cada lugar ----------
-// coordenadas conferidas: Janki Setu, Lakshman Jhula e Bajrang Setu (Bridgemeister), Ram Jhula e Parmarth Niketan (Wikipedia),
-// Trayambakeshwar (plus code do Google 48GJ+H9X, igual ao guia Evendo). Nas pontes o ponto é o meio da ponte e o raio vai até as cabeceiras.
-// "destino": o que vai para o Google Maps no botão do caminho; nome do lugar leva até a entrada (portão), coordenada leva até a ponte
+// roteiro do dia ao contrário: começa em Tapovan, atravessa pela Bajrang Setu, desce a margem leste até o Parmarth (Aarti) e termina no hotel.
+// coordenadas: Lakshman Jhula e Bajrang Setu (Bridgemeister), Ram Jhula, Parmarth e Beatles Ashram (Wikipedia), Tattv Cafe (Zomato),
+// plus codes do Google: Trayambakeshwar 48GJ+H9X, Lakshman Temple 48GG+MHW, Gita Bhawan 48C7+PQQ, Yog Niketan 48C5+PFC.
+// As três lojas da rua da ponte não têm endereço publicado: pino aproximado (o toque abre a loja pelo nome no Google Maps).
+// "destino": o que vai para o Google Maps no botão do caminho; nome do lugar leva até a entrada, coordenada leva até a ponte
 const mapsBusca = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
 const PASSEIOS = {
   pontes: {
-    titulo: "As pontes do Ganges", sub: "Do Yog Niketan ao templo de 13 andares, pela margem do rio",
-    total: "cerca de 4 km a pé", saida: "Yoga Niketan Ashram, Muni Ki Reti, Rishikesh",
+    titulo: "As pontes do Ganges", sub: "Da Laxman Jhula ao Parmarth, e de volta ao hotel",
+    total: "cerca de 7 km a pé", saida: "Yoga Niketan Ashram, Muni Ki Reti, Rishikesh",
     paradas: [
-      { nome: "Janki Setu", lat: 30.11647, lng: 78.30873, raio: 180, quando: "Atravesse para a margem leste",
-        texto: "Janki é um dos nomes de Sita, a esposa de Rama. Esta é a ponte mais nova de Rishikesh, aberta em 2020, com faixa separada para quem anda a pé. Atravesse para a margem leste. No meio da ponte, olhe rio acima: dá para ver a Ram Jhula e as primeiras montanhas do Himalaia.",
-        dica: "As motos também passam por aqui. Ande pela faixa de pedestres e segure bem a bolsa: os macacos gostam de sacolas." },
-      { nome: "Parmarth Niketan e Gita Bhawan", lat: 30.11923, lng: 78.31221, raio: 130, destino: "Parmarth Niketan Ashram, Swarg Ashram, Rishikesh", quando: "Siga pela rua dos ashrams, rio acima",
-        texto: "O Parmarth Niketan é um dos maiores ashrams de Rishikesh. Na beira do rio fica a grande estátua de Shiva sentado em meditação, e é nos degraus em frente a ela que acontece a Ganga Aarti: voltamos aqui às 17h. Um pouco adiante fica o Gita Bhawan, com os versos do Bhagavad Gita pintados nas paredes.",
-        dica: "No Gita Bhawan há uma cooperativa de preço fixo, boa para comprar sem pechinchar.",
-        lojas: [["Gita Bhawan", "cooperativa de preço fixo: roupas, ayurveda e livros", "Gita Bhawan Swarg Ashram Rishikesh"]] },
-      { nome: "Ram Jhula e o mercado de Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 130, quando: "Continue pela margem leste",
-        texto: "A Ram Jhula é a ponte pênsil de ferro que liga o Sivananda Ashram, em Muni ki Reti, ao Swarg Ashram. Leva o nome de Rama. Na cabeceira deste lado fica o mercado de Swarg Ashram, com livros espirituais, rudraksha, gemas e incensos. Daqui até o templo de 13 andares são uns 20 minutos a pé pela margem do rio.",
-        dica: "A Ram Jhula passou por obras e pode estar fechada. Não precisa atravessar: o caminho segue por este lado do rio.",
-        lojas: [["Mercado de Ram Jhula e Swarg Ashram", "livros espirituais, rudraksha, gemas e incensos", "Swarg Ashram Market Ram Jhula Rishikesh"]] },
-      { nome: "Trayambakeshwar · Tera Manzil", lat: 30.12649, lng: 78.33098, raio: 50, destino: "Trayambakeshwar Temple, Laxman Jhula, Rishikesh", quando: "O templo de 13 andares", destaque: true,
-        texto: "Tera quer dizer treze, e manzil quer dizer andar: são 13 andares dedicados a Shiva. Tryambaka é Shiva de três olhos, o mesmo nome do mantra Om Tryambakam Yajamahe. Cada andar tem altares de divindades diferentes. Vá subindo com calma até o topo, de onde se vê o Ganges e as pontes lá embaixo.",
-        dica: "A entrada é gratuita. Tire o sapato na porta e leve uma meia: o chão pode estar frio. Costuma abrir das 6h às 19h." },
-      { nome: "Lakshman Jhula e Bajrang Setu", lat: 30.12625, lng: 78.32992, raio: 55, quando: "As duas pontes, lado a lado",
-        texto: "A tradição conta que Lakshmana, irmão de Rama, atravessou o Ganges aqui pendurado numa corda de juta. A ponte de ferro é de 1929 e está fechada desde 2022. Ao lado foi construída a Bajrang Setu, com piso de vidro: Bajrang é um dos nomes de Hanuman. Se ela estiver aberta, atravesse por ela para a margem oeste.",
-        dica: "Se a Bajrang Setu estiver fechada, volte pela margem leste até a Janki Setu." },
-      { nome: "Tapovan: templos, compras e café", lat: 30.12630, lng: 78.32850, raio: 75, quando: "Do outro lado da ponte",
-        texto: "Tapovan quer dizer floresta da penitência. Aqui fica o Lakshman Temple, no lugar onde, segundo a tradição, Lakshmana fez penitência, e o Kailash Niketan Mandir, outro templo de 13 andares. A rua que sobe da ponte é a melhor de Rishikesh para compras: tigelas tibetanas, xales, cristais e roupas de yoga.",
-        dica: "Para voltar, um tuk-tuk até o Yog Niketan custa uns ₹200. A Aarti no Parmarth começa às 17h: chegue por volta das 16h40.",
+      { nome: "Tattv Cafe", lat: 30.12800, lng: 78.32220, raio: 60, destino: "Tattv Cafe, Tapovan, Rishikesh", quando: "Comece com um café em Tapovan",
+        texto: "Café de comida natural e vegana, com vista para as montanhas, na estrada de Badrinath, perto do posto policial de Laxman Jhula. Bom para um café da manhã reforçado ou um lanche antes de descer até a ponte.",
+        dica: "Do Yog Niketan até aqui são uns 1,5 km de subida pela estrada. Um tuk-tuk do hotel até Tapovan custa uns ₹200. Fecha às 22h." },
+      { nome: "Lakshman Temple", lat: 30.12674, lng: 78.32645, raio: 50, destino: "Lakshman Temple, Tapovan, Rishikesh", quando: "O templo de Lakshmana",
+        texto: "A tradição conta que Lakshmana, irmão de Rama, fez penitência neste ponto do rio. É por isso que a ponte ao lado leva o nome dele. Um templo antigo e tranquilo, para uns 20 a 30 minutos.",
+        dica: "Tire o sapato na porta." },
+      { nome: "Lojas de Laxman Jhula e Tapovan", lat: 30.12640, lng: 78.32900, raio: 40, destino: "Laxman Jhula Market, Tapovan, Rishikesh", quando: "A rua que desce até a ponte",
+        texto: "A rua que desce até a ponte é a melhor de Rishikesh para compras: rudraksha, tigelas tibetanas, roupas de yoga, cristais, incensos e estátuas de madeira. As lojas que você escolheu estão marcadas no mapa.",
+        dica: "As três lojas não têm endereço exato publicado: o pino delas é aproximado, na rua da ponte. Toque no nome da loja para o Google Maps levar até a porta.",
         lojas: [
-          ["Lakshman Temple", "templo de Lakshmana, 20 a 30 minutos", "Lakshman Temple Laxman Jhula Rishikesh"],
-          ["Kailash Niketan Mandir", "o outro templo de 13 andares", "Kailash Niketan Mandir Rishikesh"],
-          ["Mercado de Laxman Jhula e Tapovan", "rudraksha, tigelas tibetanas, roupas de yoga, cristais e incensos", "Tapovan Market Laxman Jhula Rishikesh"],
-          ["Namaste Rishikesh Pashmina Store", "pashminas e xales da Caxemira · 4,7 ★", "Namaste Rishikesh Pashmina Store"],
-          ["Tibetan Handicraft", "perto do Rani Mandir: bandeiras de oração, estátuas e joias · 4,7 ★", "Tibetan Handicraft Laxman Jhula Rishikesh"],
-          ["Antic Himalaya", "singing bowls e artesanato do Himalaia · 5,0 ★", "Antic Himalaya Laxman Jhula Rishikesh"],
-          ["Tattv Cafe", "comida natural e vegana, vista para as montanhas · fecha 22h", "Tattv Cafe Tapovan Rishikesh"]] }
+          ["Namaste Rishikesh Pashmina Store", "pashminas e xales da Caxemira · 4,7 ★ · na praça da ponte", "Namaste Rishikesh Pashmina Store", 30.12648, 78.32885, true],
+          ["Tibetan Handicraft", "perto do Rani Mandir: cerimoniais, bandeiras de oração, estátuas e joias do Himalaia · 4,7 ★", "Tibetan Handicraft near Rani Mandir Laxman Jhula Rishikesh", 30.12615, 78.32860, true],
+          ["Antic Himalaya", "Laxman Jhula Road, perto do correio: singing bowls e artesanato do Himalaia · 5,0 ★", "Antic Himalaya Laxman Jhula Road Rishikesh", 30.12592, 78.32835, true],
+          ["Mercado de Laxman Jhula e Tapovan", "a rua inteira de lojas até a ponte", "Laxman Jhula Market Tapovan Rishikesh"]] },
+      { nome: "Lakshman Jhula e Bajrang Setu", lat: 30.12625, lng: 78.32992, raio: 45, quando: "Atravesse para a margem leste pela ponte de vidro",
+        texto: "A ponte de ferro de 1929 leva o nome de Lakshmana, que segundo a tradição atravessou o Ganges aqui numa corda de juta. Ela está fechada desde 2022. Ao lado foi construída a Bajrang Setu, com piso de vidro (Bajrang é um dos nomes de Hanuman). Atravesse por ela para a margem leste.",
+        dica: "Se a Bajrang Setu estiver fechada, veja o templo de 13 andares daqui e siga de tuk-tuk até a Ram Jhula ou a Janki Setu para atravessar." },
+      { nome: "Trayambakeshwar · Tera Manzil", lat: 30.12649, lng: 78.33098, raio: 50, destino: "Trayambakeshwar Temple, Laxman Jhula, Rishikesh", quando: "O templo de 13 andares, logo depois da ponte",
+        texto: "Tera quer dizer treze, e manzil quer dizer andar: são 13 andares dedicados a Shiva. Tryambaka é Shiva de três olhos, o mesmo nome do mantra Om Tryambakam Yajamahe. Cada andar tem altares de divindades diferentes. Suba com calma até o topo, de onde se vê o Ganges e as pontes lá embaixo.",
+        dica: "A entrada é gratuita. Tire o sapato na porta e leve uma meia: o chão pode estar frio." },
+      { nome: "Ram Jhula e o mercado de Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 90, quando: "Desça pela margem leste, rio abaixo",
+        texto: "São uns 20 minutos a pé pela margem do rio, entre ashrams e lojinhas. A Ram Jhula é a ponte de ferro que liga o Sivananda Ashram ao Swarg Ashram e leva o nome de Rama. Na cabeceira deste lado fica o mercado de Swarg Ashram, com livros espirituais, rudraksha, gemas e incensos.",
+        dica: "A Ram Jhula passou por obras e pode estar fechada. Não precisa atravessar: o caminho segue por este lado do rio." },
+      { nome: "Gita Bhawan", lat: 30.12184, lng: 78.31448, raio: 60, destino: "Gita Bhawan, Swarg Ashram, Rishikesh", quando: "Logo adiante, na rua dos ashrams",
+        texto: "Um grande ashram com os versos do Bhagavad Gita pintados nas paredes. Tem uma cooperativa de preço fixo com roupas, produtos de ayurveda e livros.",
+        dica: "Bom lugar para comprar sem pechinchar." },
+      { nome: "Beatles Ashram", lat: 30.10975, lng: 78.31277, raio: 120, destino: "Beatles Ashram, Rishikesh", quando: "Confirme se está aberto antes de ir", opcional: true,
+        texto: "As ruínas do ashram do Maharishi Mahesh Yogi, onde os Beatles passaram uma temporada em 1968 e compuseram boa parte do Álbum Branco. Hoje é um lugar de murais coloridos e cúpulas de meditação no meio da mata.",
+        dica: "Fica uns 15 minutos a pé depois do Parmarth, seguindo o rio. A entrada é paga. Se estiver fechado, toque em Pular e siga para a Aarti." },
+      { nome: "Parmarth Niketan · Ganga Aarti", lat: 30.11923, lng: 78.31221, raio: 130, destino: "Parmarth Niketan Ashram, Swarg Ashram, Rishikesh", quando: "A Aarti das 17h: chegue por volta das 16h40",
+        texto: "O Parmarth Niketan é um dos maiores ashrams de Rishikesh. Na beira do rio fica a grande estátua de Shiva sentado em meditação, e é nos degraus em frente a ela que acontece a Ganga Aarti, a cerimônia do fogo para o rio, ao pôr do sol.",
+        dica: "Chegue por volta das 16h40 para pegar lugar nos degraus. Leve um casaco: esfria rápido depois que o sol se põe." },
+      { nome: "Yog Niketan · de volta ao hotel", lat: 30.12181, lng: 78.30864, raio: 120, retorno: true, destino: "Yoga Niketan Ashram, Muni Ki Reti, Rishikesh", quando: "Atravesse pela Janki Setu e suba até o hotel",
+        texto: "A Janki Setu, a ponte mais perto do Parmarth, leva de volta a Muni ki Reti. Janki é um dos nomes de Sita, esposa de Rama. Do outro lado, é só subir até o Yog Niketan. O jantar é às 19h30.",
+        dica: "Opções de jantar perto do hotel: Kaafe (5 min), Aroma By Taste (10 min) e RamJhula Restaurant (15 min).",
+        lojas: [["Kaafe", "indiana, café, massas, pizzas, sanduíches · uns 5 min", "Kaafe Rishikesh"], ["Aroma By Taste", "indiana, vegetariana, pizzas · uns 10 min", "Aroma By Taste Rishikesh"], ["RamJhula Restaurant", "indiana, vegetariana, continental e café · uns 15 min", "RamJhula Restaurant Rishikesh"]] }
     ] }
 };
 // por enquanto o passeio guiado aparece só para a Vivian, para testar em Rishikesh antes de abrir para a turma.
@@ -3163,7 +3177,7 @@ function cartaoPasseio(id) {
 function abrirPasseio(id) {
   const P = PASSEIOS[id]; if (!P) return;
   document.querySelector(".passeio")?.__fecha?.();
-  const chave = "cdi-passeio-" + id;
+  const chave = "cdi-passeio-" + id + "-v2"; // v2: ordem nova das paradas
   let est = { i: 0, feitos: [], chegou: [] }; try { est = { ...est, ...JSON.parse(lsGet(chave) || "{}") }; } catch (e) {}
   const guarda = () => lsSet(chave, JSON.stringify({ i: est.i, feitos: est.feitos, chegou: est.chegou }));
   let eu = null, watch = null, mapa = null, marcas = [], euMarca = null, trava = null, chegouAvisado = {}, rolarTexto = false, centrou = false;
@@ -3227,16 +3241,15 @@ function abrirPasseio(id) {
                 eu.prec > 60 ? h("small", { class: "passprec", text: `GPS impreciso agora (±${eu.prec} m). Fica melhor ao ar livre.` }) : null))
             : h("p", { class: "passdist", text: S.passGpsMsg || "Procurando você no mapa…" }),
           h("a", { class: "btn gold passbig", href: rota, target: "_blank", rel: "noopener" }, "Abrir o caminho no Google Maps"),
-          h("button", { class: "btn passbig", type: "button", onclick: () => { if (!est.chegou.includes(est.i)) est.chegou.push(est.i); guarda(); desenha(); painel.scrollTo({ top: 0 }); } }, "Já cheguei")),
+          h("button", { class: "btn passbig", type: "button", onclick: () => { if (!est.chegou.includes(est.i)) est.chegou.push(est.i); guarda(); desenha(); painel.scrollTo({ top: 0 }); } }, "Já cheguei"),
+          p.opcional && prox ? h("button", { class: "btn ghost passbig", type: "button", onclick: () => vai(est.i + 1) }, "Pular: está fechado") : null),
       h("div", { class: "passtexto" + (aqui ? " chegou" : "") },
         aqui ? h("p", { class: "eyebrow", text: "A história deste lugar" }) : null,
         h("p", { text: p.texto }),
         p.dica ? h("p", { class: "passdica", text: p.dica }) : null,
         p.lojas ? h("div", { class: "passlojas" }, h("p", { class: "eyebrow rule", text: "Neste trecho" }),
-          p.lojas.map(([n, t, q]) => h("a", { href: mapsBusca(q), target: "_blank", rel: "noopener" }, h("b", { text: n }), h("span", { text: t }), h("i", { text: "Mapa ›" })))) : null,
-        fim ? h("div", { class: "passfim" }, h("p", { class: "eyebrow", text: "Passeio feito" }), h("p", { text: "Às 17h tem Aarti no Parmarth Niketan. Chegue por volta das 16h40 para pegar lugar nos degraus." }),
-          h("div", { class: "actions" }, h("a", { class: "btn gold", href: "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(P.saida) + "&travelmode=walking", target: "_blank", rel: "noopener" }, "Voltar ao Yog Niketan"),
-            h("a", { class: "btn", href: "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(ps[1].destino) + "&travelmode=walking", target: "_blank", rel: "noopener" }, "Ir para a Aarti"))) : null,
+          p.lojas.map(([n, t, q, , , aprox]) => h("a", { href: mapsBusca(q), target: "_blank", rel: "noopener" }, h("b", { text: n }), h("span", { text: t + (aprox ? " · pino aproximado" : "") }), h("i", { text: "Mapa ›" })))) : null,
+        fim ? h("div", { class: "passfim" }, h("p", { class: "eyebrow", text: "Passeio completo" }), h("p", { text: "Você passou por todas as paradas do dia. Bom descanso e bom jantar!" })) : null,
         h("p", { class: "small passnota", text: "A linha do mapa liga as paradas em reta. Para o caminho pelas ruas, toque em Como chegar: abre o Google Maps e depois é só voltar para o app." })));
   }
   const recebe = pos => {
@@ -3246,8 +3259,10 @@ function abrirPasseio(id) {
     eu.prec = Math.round(pos.coords.accuracy || 0);
     const folga = Math.min(eu.prec || 0, 25), dentro = q => distKm(eu, q) * 1000 <= (q.raio || 80) + folga;
     // chegou numa parada mais à frente (pulou alguma): o passeio vai junto
-    const k = ps.findIndex((q, n) => n !== est.i && !est.feitos.includes(n) && dentro(q));
-    if (k > -1 && !dentro(ps[est.i])) { est.i = k; guarda(); }
+    // o hotel é o ponto de partida e também o fim: estar nele não pula o passeio para o final
+    const k = ps.findIndex((q, n) => n !== est.i && !q.retorno && !est.feitos.includes(n) && dentro(q));
+    // indo para uma parada opcional (Beatles Ashram) passa-se em frente a outras: aí só muda com o botão Pular
+    if (k > -1 && !dentro(ps[est.i]) && !ps[est.i].opcional) { est.i = k; guarda(); }
     const p = ps[est.i];
     if (dentro(p) && !chegouAvisado[est.i]) {
       chegouAvisado[est.i] = true; try { navigator.vibrate && navigator.vibrate([30, 80, 30]); } catch (e) {}
@@ -3269,7 +3284,11 @@ function abrirPasseio(id) {
           { id: "ruas", type: "raster", source: "ruas", paint: { "raster-fade-duration": 0, "raster-saturation": -.2, "raster-opacity": .85 } },
           { id: "rota", type: "line", source: "rota", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#8A3F32", "line-width": 3, "line-dasharray": [1.5, 1.8], "line-opacity": .8 } }] } });
     mapa.touchZoomRotate.disableRotation();
+    // nomes das lojas só aparecem com o mapa de perto (de longe embolam)
+    const longe = () => caixaMapa.classList.toggle("longe", mapa.getZoom() < 16.3); mapa.on("zoom", longe); longe();
     marcas = ps.map((p, k) => new maplibregl.Marker({ element: h("button", { type: "button", class: "passpin", "aria-label": p.nome, onclick: () => vai(k) }, h("b", { text: String(k + 1) })) }).setLngLat([p.lng, p.lat]).addTo(mapa));
+    ps.forEach(p => (p.lojas || []).filter(l => isFinite(l[3])).forEach(([n, , q, la, lo]) =>
+      new maplibregl.Marker({ element: h("a", { class: "passloja", href: mapsBusca(q), target: "_blank", rel: "noopener", "aria-label": n }, h("span", { text: n }), h("i", { "aria-hidden": "true" })), anchor: "right", offset: [6, 0] }).setLngLat([lo, la]).addTo(mapa)));
     if (eu) { euMarca = new maplibregl.Marker({ element: h("div", { class: "passeu" }) }).setLngLat([eu.lng, eu.lat]).addTo(mapa); }
     enquadra(false); if (eu) centrou = true; pinta();
   }, () => { caixaMapa.querySelector(".globoaviso").textContent = "Não consegui abrir o mapa. Confira a internet; as histórias continuam abaixo."; });
