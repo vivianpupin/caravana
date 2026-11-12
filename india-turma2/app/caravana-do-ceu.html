@@ -3223,10 +3223,13 @@ const PASSEIOS = {
       { nome: "Parmarth Niketan · Ganga Aarti", lat: 30.11923, lng: 78.31221, raio: 130, destino: "Parmarth Niketan Ashram, Swarg Ashram, Rishikesh", quando: "Ganga Aarti às 17h · chegue até 16h30",
         texto: "O Parmarth Niketan é um dos maiores ashrams de Rishikesh. Na beira do rio fica a grande estátua de Shiva sentado em meditação, e é nos degraus em frente a ela que acontece a Ganga Aarti, a cerimônia do fogo para o rio, ao pôr do sol.",
         dica: "Horário da Aarti: no inverno ela começa no pôr do sol, por volta das 17h, e dura uns 45 minutos (alguns guias dão entre 16h30 e 17h30). Chegue até 16h30 para pegar lugar nos degraus. Leve um casaco: esfria rápido depois que o sol se põe." },
-      { nome: "Yog Niketan · de volta ao hotel", lat: 30.12181, lng: 78.30864, raio: 120, retorno: true, destino: "Yoga Niketan Ashram, Muni Ki Reti, Rishikesh", quando: "Atravesse pela Janki Setu e suba até o hotel",
-        texto: "A Janki Setu, a ponte mais perto do Parmarth, leva de volta a Muni ki Reti. Janki é um dos nomes de Sita, esposa de Rama. Do outro lado, é só subir até o Yog Niketan. O jantar é às 19h30.",
-        dica: "Opções de jantar perto do hotel: Kaafe (5 min), Aroma By Taste (10 min) e RamJhula Restaurant (15 min).",
-        lojas: [["Kaafe", "indiana, café, massas, pizzas, sanduíches · uns 5 min", "Kaafe Rishikesh"], ["Aroma By Taste", "indiana, vegetariana, pizzas · uns 10 min", "Aroma By Taste Rishikesh"], ["RamJhula Restaurant", "indiana, vegetariana, continental e café · uns 15 min", "RamJhula Restaurant Rishikesh"]] }
+      { nome: "Jantar no Aroma By Taste", lat: 30.12440, lng: 78.30620, raio: 50, destino: "Aroma By Taste, Sterling Palm Bliss, Rishikesh", quando: "Jantar às 19h30 · atravesse pela Janki Setu",
+        texto: "Depois da Aarti, a Janki Setu, a ponte mais perto do Parmarth, leva de volta a Muni ki Reti (Janki é um dos nomes de Sita, esposa de Rama). O Aroma By Taste fica no térreo do hotel Sterling Palm Bliss, na Badrinath Bypass Road, em frente ao Vithal Ashram: comida indiana e vegetariana, pizzas e opções veganas.",
+        dica: "4,8 ★ no Tripadvisor (umas 80 avaliações). Aceita só dinheiro e fica aberto até as 23h. Do restaurante até o Yog Niketan são uns 5 minutos a pé." },
+      { nome: "Yog Niketan · de volta ao hotel", lat: 30.12181, lng: 78.30864, raio: 120, retorno: true, destino: "Yoga Niketan Ashram, Muni Ki Reti, Rishikesh", quando: "Fim do dia: de volta ao hotel",
+        texto: "De volta ao Yog Niketan, o ashram fundado em 1964 por Swami Yogeshwarananda. Fim do passeio das pontes do Ganges.",
+        dica: "Outras opções de jantar perto do hotel, se quiser variar: Kaafe (5 min) e RamJhula Restaurant (15 min).",
+        lojas: [["Kaafe", "indiana, café, massas, pizzas, sanduíches · uns 5 min", "Kaafe Rishikesh"], ["RamJhula Restaurant", "indiana, vegetariana, continental e café · uns 15 min", "RamJhula Restaurant Rishikesh"]] }
     ] }
 };
 // por enquanto o passeio guiado aparece só para a Vivian, para testar em Rishikesh antes de abrir para a turma.
@@ -3289,7 +3292,7 @@ function cartaoPasseio(id) {
 function abrirPasseio(id) {
   const P = PASSEIOS[id]; if (!P) return;
   document.querySelector(".passeio")?.__fecha?.();
-  const chave = "cdi-passeio-" + id + "-v4"; // v4: só os pontos principais são paradas; o resto virou pino no caminho
+  const chave = "cdi-passeio-" + id + "-v5"; // v4: só os pontos principais são paradas; o resto virou pino no caminho
   let est = { i: 0, feitos: [], chegou: [] }; try { est = { ...est, ...JSON.parse(lsGet(chave) || "{}") }; } catch (e) {}
   const guarda = () => lsSet(chave, JSON.stringify({ i: est.i, feitos: est.feitos, chegou: est.chegou }));
   let eu = null, watch = null, mapa = null, marcas = [], euMarca = null, trava = null, chegouAvisado = {}, rolarTexto = false, centrou = false;
