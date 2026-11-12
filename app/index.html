@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/11 · 00:21";</script>
+<script>window.__VERSAO = "12/11 · 00:29";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2140,6 +2140,17 @@ video.mgrande{max-height:70vh;background:#000}
 .passloja i{width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.3);flex:none}
 .passloja span{background:var(--panel);padding:2px 6px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.15);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
 .passmapa.longe .passloja span{display:none}
+.passaarti{flex:none;display:flex;flex-direction:column;align-items:center;gap:0;padding:5px 10px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font:inherit;cursor:pointer;line-height:1.15}
+.passaarti small{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra);font-weight:600}
+.passaarti b{font-size:16px}
+.passaarti span{font-size:11px;color:var(--soft)}
+.passaarti.logo{border-color:var(--terra);background:var(--terra);color:var(--on-dark)}
+.passaarti.logo small,.passaarti.logo span{color:var(--on-dark)}
+.passsinal{margin:0;padding:8px 12px;border-radius:12px;font-size:14px;font-weight:600;background:var(--panel2);color:var(--soft)}
+.passsinal.indo{background:rgba(63,107,58,.12);color:var(--ok)}
+.passsinal.volta,.passsinal.fora{background:rgba(160,64,47,.12);color:var(--err)}
+.passbus{font-size:12.5px;color:var(--moss)}
+.passbus:empty{display:none}
 .passeu{width:16px;height:16px;border-radius:50%;background:#2F7BEA;border:3px solid #fff;box-shadow:0 0 0 8px rgba(47,123,234,.22)}
 .passpainel{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
 .passprog{display:flex;flex-direction:column;gap:6px}
@@ -3145,11 +3156,15 @@ function abrirGuardiao(passo) {
 // plus codes do Google: Trayambakeshwar 48GJ+H9X, Lakshman Temple 48GG+MHW, Gita Bhawan 48C7+PQQ, Yog Niketan 48C5+PFC.
 // As três lojas da rua da ponte não têm endereço publicado: pino aproximado (o toque abre a loja pelo nome no Google Maps).
 // "destino": o que vai para o Google Maps no botão do caminho; nome do lugar leva até a entrada, coordenada leva até a ponte
+// Chotiwala: plus code 48C7+QJX (Wanderboat, sem confirmação); Lhasa Tibet Shop: plus code 48FH+CPG.
+// A linha até a próxima parada segue as ruas pelo servidor de rotas a pé do OpenStreetMap (routing.openstreetmap.de).
 const mapsBusca = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
 const PASSEIOS = {
   pontes: {
     titulo: "As pontes do Ganges", sub: "Da Laxman Jhula ao Parmarth, e de volta ao hotel",
-    total: "cerca de 7 km a pé", saida: "Yoga Niketan Ashram, Muni Ki Reti, Rishikesh",
+    total: "cerca de 7 km a pé", saida: { lat: 30.12181, lng: 78.30864 },
+    // Aarti do Parmarth: no inverno começa no pôr do sol; as fontes dão entre 16h30 e 17h30
+    aarti: { h: 17, m: 0, chegar: "16h30", parada: 8 },
     paradas: [
       { nome: "Tattv Cafe", lat: 30.12800, lng: 78.32220, raio: 60, destino: "Tattv Cafe, Tapovan, Rishikesh", quando: "Comece com um café em Tapovan",
         texto: "Café de comida natural e vegana, com vista para as montanhas, na estrada de Badrinath, perto do posto policial de Laxman Jhula. Bom para um café da manhã reforçado ou um lanche antes de descer até a ponte.",
@@ -3158,12 +3173,15 @@ const PASSEIOS = {
         texto: "A tradição conta que Lakshmana, irmão de Rama, fez penitência neste ponto do rio. É por isso que a ponte ao lado leva o nome dele. Um templo antigo e tranquilo, para uns 20 a 30 minutos.",
         dica: "Tire o sapato na porta." },
       { nome: "Lojas de Laxman Jhula e Tapovan", lat: 30.12640, lng: 78.32900, raio: 40, destino: "Laxman Jhula Market, Tapovan, Rishikesh", quando: "A rua que desce até a ponte",
-        texto: "A rua que desce até a ponte é a melhor de Rishikesh para compras: rudraksha, tigelas tibetanas, roupas de yoga, cristais, incensos e estátuas de madeira. As lojas que você escolheu estão marcadas no mapa.",
-        dica: "As três lojas não têm endereço exato publicado: o pino delas é aproximado, na rua da ponte. Toque no nome da loja para o Google Maps levar até a porta.",
+        texto: "A rua que desce até a ponte é a melhor de Rishikesh para compras: rudraksha, tigelas tibetanas, roupas de yoga, cristais, incensos e estátuas de madeira. As lojas que você escolheu e outras bem avaliadas estão marcadas no mapa com bolinhas douradas.",
+        dica: "Algumas lojas não têm endereço exato publicado: o pino delas é aproximado. Toque no nome da loja e o Google Maps leva até a porta.",
         lojas: [
           ["Namaste Rishikesh Pashmina Store", "pashminas e xales da Caxemira · 4,7 ★ · na praça da ponte", "Namaste Rishikesh Pashmina Store", 30.12648, 78.32885, true],
-          ["Tibetan Handicraft", "perto do Rani Mandir: cerimoniais, bandeiras de oração, estátuas e joias do Himalaia · 4,7 ★", "Tibetan Handicraft near Rani Mandir Laxman Jhula Rishikesh", 30.12615, 78.32860, true],
+          ["Tibetan Handicraft", "perto do Rani Mandir: tigelas tibetanas, bandeiras de oração, estátuas e joias · 4,7 ★", "Tibetan Handicraft near Rani Mandir Laxman Jhula Rishikesh", 30.12615, 78.32860, true],
           ["Antic Himalaya", "Laxman Jhula Road, perto do correio: singing bowls e artesanato do Himalaia · 5,0 ★", "Antic Himalaya Laxman Jhula Road Rishikesh", 30.12592, 78.32835, true],
+          ["Scorpion Handicrafts", "artesanato, 2ª loja mais bem avaliada de Rishikesh no Tripadvisor (113 avaliações)", "Scorpion Handicrafts Tapovan Rishikesh", 30.12660, 78.32760, true],
+          ["Uttarakhand Gaurav Emporium", "gemas, rudraksha e artesanato · 4,4 ★ no Justdial", "Uttarakhand Gaurav Emporium Gems Handicraft Laxman Jhula Road Tapovan", 30.12610, 78.32800, true],
+          ["Lhasa Tibet Shop", "artigos tibetanos: tigelas, malas e estátuas", "Lhasa Tibet Shop Laxman Jhula Rishikesh", 30.12356, 78.32933],
           ["Mercado de Laxman Jhula e Tapovan", "a rua inteira de lojas até a ponte", "Laxman Jhula Market Tapovan Rishikesh"]] },
       { nome: "Lakshman Jhula e Bajrang Setu", lat: 30.12625, lng: 78.32992, raio: 45, quando: "Atravesse para a margem leste pela ponte de vidro",
         texto: "A ponte de ferro de 1929 leva o nome de Lakshmana, que segundo a tradição atravessou o Ganges aqui numa corda de juta. Ela está fechada desde 2022. Ao lado foi construída a Bajrang Setu, com piso de vidro (Bajrang é um dos nomes de Hanuman). Atravesse por ela para a margem leste.",
@@ -3171,18 +3189,22 @@ const PASSEIOS = {
       { nome: "Trayambakeshwar · Tera Manzil", lat: 30.12649, lng: 78.33098, raio: 50, destino: "Trayambakeshwar Temple, Laxman Jhula, Rishikesh", quando: "O templo de 13 andares, logo depois da ponte",
         texto: "Tera quer dizer treze, e manzil quer dizer andar: são 13 andares dedicados a Shiva. Tryambaka é Shiva de três olhos, o mesmo nome do mantra Om Tryambakam Yajamahe. Cada andar tem altares de divindades diferentes. Suba com calma até o topo, de onde se vê o Ganges e as pontes lá embaixo.",
         dica: "A entrada é gratuita. Tire o sapato na porta e leve uma meia: o chão pode estar frio." },
-      { nome: "Ram Jhula e o mercado de Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 90, quando: "Desça pela margem leste, rio abaixo",
+      { nome: "Ram Jhula e o mercado de Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 80, quando: "Desça pela margem leste, rio abaixo",
         texto: "São uns 20 minutos a pé pela margem do rio, entre ashrams e lojinhas. A Ram Jhula é a ponte de ferro que liga o Sivananda Ashram ao Swarg Ashram e leva o nome de Rama. Na cabeceira deste lado fica o mercado de Swarg Ashram, com livros espirituais, rudraksha, gemas e incensos.",
-        dica: "A Ram Jhula passou por obras e pode estar fechada. Não precisa atravessar: o caminho segue por este lado do rio." },
-      { nome: "Gita Bhawan", lat: 30.12184, lng: 78.31448, raio: 60, destino: "Gita Bhawan, Swarg Ashram, Rishikesh", quando: "Logo adiante, na rua dos ashrams",
-        texto: "Um grande ashram com os versos do Bhagavad Gita pintados nas paredes. Tem uma cooperativa de preço fixo com roupas, produtos de ayurveda e livros.",
-        dica: "Bom lugar para comprar sem pechinchar." },
+        dica: "A Ram Jhula passou por obras e pode estar fechada. Não precisa atravessar: o caminho segue por este lado do rio.",
+        lojas: [
+          ["Mercado de Ram Jhula e Swarg Ashram", "livros espirituais, rudraksha, gemas, incensos e óleos de ayurveda", "Swarg Ashram Market Ram Jhula Rishikesh"],
+          ["Brijwasi Gems and Jewellers", "rudraksha, cristais, pedras e pingentes", "Brijwasi Gems and Jewellers Swarg Ashram Rishikesh", 30.12290, 78.31470, true]] },
+      { nome: "Almoço no Chotiwala e o Gita Bhawan", lat: 30.12199, lng: 78.31411, raio: 55, destino: "Chotiwala Restaurant, Swarg Ashram, Rishikesh", quando: "Almoço e a cooperativa do Gita Bhawan",
+        texto: "O Chotiwala é o restaurante mais famoso de Rishikesh, aberto em 1958, conhecido pelo homem com o rosto pintado e o choti (o topete dos brâmanes) sentado na porta. Peça o thali vegetariano. Logo ao lado fica o Gita Bhawan, um grande ashram com os versos do Bhagavad Gita pintados nas paredes e uma cooperativa de preço fixo com roupas, ayurveda e livros.",
+        dica: "Há dois Chotiwala lado a lado, de dois ramos da mesma família, e os dois servem thali. No Gita Bhawan dá para comprar sem pechinchar.",
+        lojas: [["Gita Bhawan", "cooperativa de preço fixo: roupas, ayurveda e livros", "Gita Bhawan Swarg Ashram Rishikesh", 30.12184, 78.31448]] },
       { nome: "Beatles Ashram", lat: 30.10975, lng: 78.31277, raio: 120, destino: "Beatles Ashram, Rishikesh", quando: "Confirme se está aberto antes de ir", opcional: true,
         texto: "As ruínas do ashram do Maharishi Mahesh Yogi, onde os Beatles passaram uma temporada em 1968 e compuseram boa parte do Álbum Branco. Hoje é um lugar de murais coloridos e cúpulas de meditação no meio da mata.",
         dica: "Fica uns 15 minutos a pé depois do Parmarth, seguindo o rio. A entrada é paga. Se estiver fechado, toque em Pular e siga para a Aarti." },
-      { nome: "Parmarth Niketan · Ganga Aarti", lat: 30.11923, lng: 78.31221, raio: 130, destino: "Parmarth Niketan Ashram, Swarg Ashram, Rishikesh", quando: "A Aarti das 17h: chegue por volta das 16h40",
+      { nome: "Parmarth Niketan · Ganga Aarti", lat: 30.11923, lng: 78.31221, raio: 130, destino: "Parmarth Niketan Ashram, Swarg Ashram, Rishikesh", quando: "Ganga Aarti às 17h · chegue até 16h30",
         texto: "O Parmarth Niketan é um dos maiores ashrams de Rishikesh. Na beira do rio fica a grande estátua de Shiva sentado em meditação, e é nos degraus em frente a ela que acontece a Ganga Aarti, a cerimônia do fogo para o rio, ao pôr do sol.",
-        dica: "Chegue por volta das 16h40 para pegar lugar nos degraus. Leve um casaco: esfria rápido depois que o sol se põe." },
+        dica: "Horário da Aarti: no inverno ela começa no pôr do sol, por volta das 17h, e dura uns 45 minutos (alguns guias dão entre 16h30 e 17h30). Chegue até 16h30 para pegar lugar nos degraus. Leve um casaco: esfria rápido depois que o sol se põe." },
       { nome: "Yog Niketan · de volta ao hotel", lat: 30.12181, lng: 78.30864, raio: 120, retorno: true, destino: "Yoga Niketan Ashram, Muni Ki Reti, Rishikesh", quando: "Atravesse pela Janki Setu e suba até o hotel",
         texto: "A Janki Setu, a ponte mais perto do Parmarth, leva de volta a Muni ki Reti. Janki é um dos nomes de Sita, esposa de Rama. Do outro lado, é só subir até o Yog Niketan. O jantar é às 19h30.",
         dica: "Opções de jantar perto do hotel: Kaafe (5 min), Aroma By Taste (10 min) e RamJhula Restaurant (15 min).",
@@ -3199,32 +3221,77 @@ function rumo(a, b) {
   const g = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360; return { g, nome: RUMOS[Math.round(g / 45) % 8] };
 }
 const distTxt = km => km < 1 ? Math.max(10, Math.round(km * 1000 / 10) * 10) + " m" : km.toFixed(1).replace(".", ",") + " km";
+// ---------- rotas a pé pelas ruas (servidor de rotas do OpenStreetMap, o mesmo do openstreetmap.org) ----------
+const ROTA_PE = "https://routing.openstreetmap.de/routed-foot/route/v1/driving/";
+const rotasMem = (() => { try { return JSON.parse(lsGet("cdi-rotas-pe") || "{}"); } catch (e) { return {}; } })();
+async function rotaPe(a, b) {
+  const k = [a.lat, a.lng, b.lat, b.lng].map(x => (+x).toFixed(5)).join(",");
+  if (rotasMem[k]) return rotasMem[k];
+  const reta = distKm(a, b) * 1000;
+  const r = await fetch(ROTA_PE + `${(+a.lng).toFixed(6)},${(+a.lat).toFixed(6)};${(+b.lng).toFixed(6)},${(+b.lat).toFixed(6)}?overview=full&geometries=geojson&steps=false`);
+  if (!r.ok) throw new Error("rota " + r.status);
+  const j = await r.json(), rt = j && j.code === "Ok" && j.routes && j.routes[0];
+  if (!rt || !rt.geometry || !rt.geometry.coordinates || rt.geometry.coordinates.length < 2) throw new Error("sem rota");
+  // o roteador pode não conhecer uma ponte nova (Bajrang Setu) e mandar dar uma volta enorme: aí fica a linha reta
+  if (rt.distance > reta * 3 + 400) throw new Error("volta grande");
+  // começa e termina nos pontos de verdade (o roteador encosta o começo e o fim na rua mais perto)
+  const coords = [[+a.lng, +a.lat], ...rt.geometry.coordinates.map(([x, y]) => [+x.toFixed(6), +y.toFixed(6)]), [+b.lng, +b.lat]];
+  const res = { coords, m: Math.round(rt.distance) };
+  rotasMem[k] = res;
+  return res;
+}
+const ptDe = c => ({ lat: c[1], lng: c[0] });
+// quanto falta pela rota a partir de onde a pessoa está, quão longe ela está da linha e para onde seguir (um ponto uns 25 m à frente)
+function naRota(coords, eu) {
+  // mede até a linha (cada trecho entre duas curvas), não só até as curvas: ruas retas têm trechos longos
+  const kx = 111.32 * Math.cos(eu.lat * Math.PI / 180), ky = 110.57;
+  const xy = c => [(c[0] - eu.lng) * kx, (c[1] - eu.lat) * ky];
+  let md = Infinity, mi = 0, mt = 0;
+  for (let i = 0; i < coords.length - 1; i++) {
+    const [ax, ay] = xy(coords[i]), [bx, by] = xy(coords[i + 1]), dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy;
+    const t = l2 ? Math.max(0, Math.min(1, -(ax * dx + ay * dy) / l2)) : 0, px = ax + t * dx, py = ay + t * dy, d = Math.hypot(px, py);
+    if (d < md) { md = d; mi = i; mt = t; }
+  }
+  const seg = i => distKm(ptDe(coords[i]), ptDe(coords[i + 1]));
+  let falta = md + seg(mi) * (1 - mt); for (let i = mi + 1; i < coords.length - 1; i++) falta += seg(i);
+  // para onde seguir: um ponto uns 25 m à frente pela linha
+  let ad = seg(mi) * (1 - mt), alvo = coords[mi + 1];
+  for (let i = mi + 1; ad < .025 && i < coords.length - 1; i++) { ad += seg(i); alvo = coords[i + 1]; }
+  return { falta, fora: md, alvo: ptDe(alvo) };
+}
 // cartão no dia: abre o passeio
 function cartaoPasseio(id) {
   const p = PASSEIOS[id]; if (!p) return null;
   return h("button", { type: "button", class: "passcard", onclick: () => abrirPasseio(id) },
     h("span", { class: "passico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 26, height: 26 }, h("path", { d: "M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linejoin": "round" }))),
     h("span", { class: "tx" }, h("small", { text: "Passeio guiado" }), h("b", { text: p.titulo }),
-      h("span", { text: `${p.paradas.length} paradas · ${p.total}. O mapa te leva de uma a outra e mostra a história de cada lugar.` })),
+      h("span", { text: `${p.paradas.length} paradas · ${p.total}. O mapa te leva de uma a outra pelas ruas e mostra a história de cada lugar.` })),
     h("span", { class: "passchev", "aria-hidden": "true", text: "›" }));
 }
 function abrirPasseio(id) {
   const P = PASSEIOS[id]; if (!P) return;
   document.querySelector(".passeio")?.__fecha?.();
-  const chave = "cdi-passeio-" + id + "-v2"; // v2: ordem nova das paradas
+  const chave = "cdi-passeio-" + id + "-v3"; // v3: Chotiwala entrou e o Gita Bhawan virou loja
   let est = { i: 0, feitos: [], chegou: [] }; try { est = { ...est, ...JSON.parse(lsGet(chave) || "{}") }; } catch (e) {}
   const guarda = () => lsSet(chave, JSON.stringify({ i: est.i, feitos: est.feitos, chegou: est.chegou }));
   let eu = null, watch = null, mapa = null, marcas = [], euMarca = null, trava = null, chegouAvisado = {}, rolarTexto = false, centrou = false;
+  // trilho: rota até a próxima parada, por onde a pessoa andou (rastro), se está se aproximando, e a bússola
+  let agora = null, agoraDe = null, agoraEm = 0, agoraPara = -1, pedindo = false, tendencia = null, amostra = null, bussola = null, rumoAlvo = null;
+  const hoje = new Date().toISOString().slice(0, 10);
+  let rastro = []; try { const r = JSON.parse(lsGet("cdi-passeio-rastro") || "{}"); if (r.dia === hoje) rastro = r.pts || []; } catch (e) {}
   const ps = P.paradas;
   const caixaMapa = h("div", { class: "passmapa" }, h("p", { class: "globoaviso", text: "Abrindo o mapa…" }));
   const painel = h("div", { class: "passpainel" });
-  const fecha = () => { lsSet("cdi-passeio-aberto", ""); document.removeEventListener("visibilitychange", voltou); if (watch != null) navigator.geolocation.clearWatch(watch); try { trava && trava.release(); } catch (e) {} try { mapa && mapa.remove(); } catch (e) {} box.remove(); };
+  const chipAarti = h("button", { type: "button", class: "passaarti", hidden: true, onclick: () => vai(P.aarti.parada) });
+  const pararBussola = () => { if (bussola) { window.removeEventListener(bussola.ev, bussola.fn, true); bussola = null; } };
+  const fecha = () => { lsSet("cdi-passeio-aberto", ""); document.removeEventListener("visibilitychange", voltou); clearInterval(relogio); pararBussola(); if (watch != null) navigator.geolocation.clearWatch(watch); try { trava && trava.release(); } catch (e) {} try { mapa && mapa.remove(); } catch (e) {} box.remove(); };
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
-  const btnEu = h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => { if (eu && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 16) }); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0"));
+  const btnEu = h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => { if (eu && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 16.5) }); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0"));
   const box = h("div", { class: "passeio", role: "dialog", "aria-label": "Passeio guiado: " + P.titulo },
     h("div", { class: "passtopo" },
       h("button", { type: "button", class: "passx", "aria-label": "Fechar o passeio", onclick: fecha }, "×"),
-      h("div", null, h("p", { class: "eyebrow", text: "Passeio guiado" }), h("h2", { text: P.titulo }))),
+      h("div", { style: "flex:1;min-width:0" }, h("p", { class: "eyebrow", text: "Passeio guiado" }), h("h2", { text: P.titulo })),
+      chipAarti),
     h("div", { class: "passmapawrap" }, caixaMapa,
       h("div", { class: "mapctl" },
         h("button", { type: "button", "aria-label": "Aproximar", onclick: () => mapa && mapa.easeTo({ zoom: mapa.getZoom() + 1 }) }, ic("M12 5v14M5 12h14")),
@@ -3235,11 +3302,23 @@ function abrirPasseio(id) {
   box.__fecha = fecha;
   document.body.append(box);
   lsSet("cdi-passeio-aberto", id + "|" + Date.now());
+  // horário da Aarti no topo, com quanto falta (relógio do celular, que já está na hora da Índia)
+  const aarti = () => {
+    const a = P.aarti; if (!a) return; const n = new Date(), ini = new Date(n); ini.setHours(a.h, a.m, 0, 0);
+    const min = Math.round((ini - n) / 60000);
+    if (min < -50) { chipAarti.hidden = true; return; }
+    chipAarti.hidden = false;
+    chipAarti.replaceChildren(h("small", { text: "Aarti" }), h("b", { text: `${a.h}h${a.m ? String(a.m).padStart(2, "0") : ""}` }),
+      h("span", { text: min <= 0 ? "acontecendo agora" : min < 60 ? `faltam ${min} min` : `faltam ${Math.floor(min / 60)}h${String(min % 60).padStart(2, "0")}` }));
+    chipAarti.classList.toggle("logo", min <= 90);
+    chipAarti.setAttribute("aria-label", `Aarti no Parmarth às ${a.h}h. Chegue até ${a.chegar}. Toque para ver a parada.`);
+  };
+  aarti(); const relogio = setInterval(aarti, 30000);
   // a tela apagada desliga a trava; quando a pessoa volta (do Google Maps, por exemplo), pede de novo
-  const voltou = () => { if (!document.hidden && box.isConnected) { try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {} } };
+  const voltou = () => { if (!document.hidden && box.isConnected) { aarti(); try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {} } };
   document.addEventListener("visibilitychange", voltou);
   try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {}
-  const vai = i => { est.i = Math.max(0, Math.min(ps.length - 1, i)); guarda(); desenha(); pinta(); if (mapa) mapa.easeTo({ center: [ps[est.i].lng, ps[est.i].lat], zoom: Math.max(mapa.getZoom(), 15.5) }); };
+  const vai = i => { est.i = Math.max(0, Math.min(ps.length - 1, i)); guarda(); tendencia = null; amostra = null; agora = null; desenhaAgora(); desenha(); pinta(); pedeRota(true); if (mapa) mapa.easeTo({ center: [ps[est.i].lng, ps[est.i].lat], zoom: Math.max(mapa.getZoom(), 15.5) }); };
   const conclui = () => { if (!est.feitos.includes(est.i)) est.feitos.push(est.i); guarda(); if (est.i < ps.length - 1) vai(est.i + 1); else { desenha(); pinta(); } };
   function enquadra(animar) {
     if (!mapa) return; const b = new maplibregl.LngLatBounds();
@@ -3249,13 +3328,71 @@ function abrirPasseio(id) {
   function pinta() {
     // troca só as classes do passeio: a do mapa (maplibregl-marker) posiciona o número no lugar certo
     marcas.forEach((m, k) => { const el = m.getElement(); el.classList.toggle("atual", k === est.i); el.classList.toggle("feito", k !== est.i && est.feitos.includes(k)); });
-    if (euMarca) euMarca.setLngLat([eu.lng, eu.lat]);
+    if (euMarca && eu) euMarca.setLngLat([eu.lng, eu.lat]);
+  }
+  // ---- linhas do mapa: o dia inteiro pelas ruas (clarinho), o trecho de agora (azul) e o rastro de onde já andou ----
+  const fc = features => ({ type: "FeatureCollection", features });
+  const linha = (coords, props) => ({ type: "Feature", properties: props || {}, geometry: { type: "LineString", coordinates: coords } });
+  const pernas = ps.map((p, k) => ({ de: k ? ps[k - 1] : P.saida, para: p, coords: null }));
+  function desenhaDia() {
+    const s = mapa && mapa.getSource("dia"); if (!s) return;
+    s.setData(fc(pernas.map(pn => linha(pn.coords || [[pn.de.lng, pn.de.lat], [pn.para.lng, pn.para.lat]], { reta: !pn.coords }))));
+  }
+  function desenhaAgora() {
+    const s = mapa && mapa.getSource("agora"); if (!s) return;
+    const p = ps[est.i];
+    s.setData(fc(agora ? [linha(agora.coords, { reta: false })] : eu ? [linha([[eu.lng, eu.lat], [p.lng, p.lat]], { reta: true })] : []));
+  }
+  function desenhaRastro() { const s = mapa && mapa.getSource("rastro"); if (s) s.setData(fc(rastro.length > 1 ? [linha(rastro)] : [])); }
+  async function carregaDia() {
+    for (const pn of pernas) {
+      if (!box.isConnected) return;
+      try { const r = await rotaPe(pn.de, pn.para); r.fixa = true; pn.coords = r.coords; rotaPe.__salva(); desenhaDia(); } catch (e) {}
+    }
+  }
+  rotaPe.__salva = () => lsSet("cdi-rotas-pe", JSON.stringify(Object.fromEntries(Object.entries(rotasMem).filter(([, v]) => v.fixa))));
+  // rota de onde a pessoa está até a próxima parada: pede de novo quando ela andou uns 30 m ou saiu da linha (no máximo a cada 12 s)
+  async function pedeRota(forca) {
+    if (!eu || pedindo) return; const p = ps[est.i];
+    const andou = !agoraDe || distKm(agoraDe, eu) > .03, saiu = agora && naRota(agora.coords, eu).fora > .04;
+    if (!forca && agoraPara === est.i && !andou && !saiu) return;
+    if (!forca && Date.now() - agoraEm < 12000) return;
+    pedindo = true; agoraEm = Date.now(); const de = { lat: eu.lat, lng: eu.lng }, para = est.i;
+    try { const r = await rotaPe(de, p); if (para === est.i) { agora = r; agoraDe = de; agoraPara = para; } }
+    catch (e) { if (para === est.i) { agora = null; agoraDe = de; agoraPara = para; } }
+    pedindo = false; desenhaAgora(); desenha();
+  }
+  // bússola: com o celular deitado na mão, a seta aponta para onde andar
+  function ligaBussola() {
+    if (bussola) { pararBussola(); desenha(); return; }
+    const liga = () => {
+      const ev = "ondeviceorientationabsolute" in window ? "deviceorientationabsolute" : "deviceorientation";
+      const fn = e => {
+        const g = e.webkitCompassHeading != null ? e.webkitCompassHeading : e.absolute || ev === "deviceorientationabsolute" ? (360 - (e.alpha || 0)) % 360 : null;
+        if (g == null || !bussola) return; bussola.g = g; giraSeta();
+      };
+      bussola = { ev, fn, g: null }; window.addEventListener(ev, fn, true); desenha();
+    };
+    try {
+      if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function")
+        DeviceOrientationEvent.requestPermission().then(r => { if (r === "granted") liga(); else { S.passBussolaMsg = "A bússola foi recusada. Dá para liberar em Ajustes > Safari > Movimento e orientação."; desenha(); } }).catch(() => { S.passBussolaMsg = "Este celular não liberou a bússola."; desenha(); });
+      else liga();
+    } catch (e) { S.passBussolaMsg = "Este celular não tem bússola."; desenha(); }
+  }
+  function giraSeta() {
+    const s = painel.querySelector(".seta"); if (!s || rumoAlvo == null) return;
+    const g = bussola && bussola.g != null ? rumoAlvo - bussola.g : rumoAlvo;
+    s.style.transform = `rotate(${Math.round(g)}deg)`;
   }
   function desenha() {
     const p = ps[est.i], fim = est.feitos.length === ps.length;
-    const d = eu ? distKm(eu, p) : null, r = eu ? rumo(eu, p) : null, perto = d != null && d * 1000 <= (p.raio || 80) + Math.min(eu.prec || 0, 25);
+    const reta = eu ? distKm(eu, p) : null, nr = eu && agora && agoraPara === est.i ? naRota(agora.coords, eu) : null;
+    const d = nr ? nr.falta : reta, perto = reta != null && reta * 1000 <= (p.raio || 80) + Math.min(eu.prec || 0, 25);
+    const alvo = nr && nr.fora < .04 ? nr.alvo : p, r = eu ? rumo(eu, alvo) : null; rumoAlvo = r ? r.g : null;
     const rota = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(p.destino || p.lat + "," + p.lng) + "&travelmode=walking";
     const aqui = perto || est.chegou.includes(est.i), prox = ps[est.i + 1];
+    const sinal = !eu || aqui ? null : nr && nr.fora > .04 ? ["fora", "Você saiu do caminho. Volte para a linha azul ou siga a seta."]
+      : tendencia === "indo" ? ["indo", "✓ Você está indo na direção certa"] : tendencia === "volta" ? ["volta", "↩ Você está se afastando. Vire e siga a seta."] : ["neutro", "Ande um pouco: o app mostra se você está indo para o lado certo."];
     painel.replaceChildren(
       // progresso: uma barrinha por parada (toque para ir direto a uma delas)
       h("div", { class: "passprog" },
@@ -3269,11 +3406,15 @@ function abrirPasseio(id) {
           h("p", { class: "passrot", text: "Agora, vá até" }),
           h("h3", { text: p.nome }),
           h("p", { class: "passinst", text: p.quando }),
+          sinal ? h("p", { class: "passsinal " + sinal[0], role: "status", text: sinal[1] }) : null,
           d != null ? h("div", { class: "passdir" },
-              h("span", { class: "seta", style: `transform:rotate(${Math.round(r.g)}deg)`, "aria-hidden": "true", text: "↑" }),
-              h("div", null, h("b", { text: distTxt(d) }), h("span", { text: `uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé · ao ${r.nome}` }),
+              h("span", { class: "seta", "aria-hidden": "true", text: "↑" }),
+              h("div", null, h("b", { text: distTxt(d) }),
+                h("span", { text: `uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé ${nr ? "pelas ruas" : "em linha reta"}` + (bussola ? "" : ` · siga para o ${r.nome}`) }),
+                h("small", { class: "passbus", text: bussola ? (bussola.g == null ? "Bússola ligada: deite o celular na mão e gire devagar." : "Bússola ligada: a seta aponta para onde andar.") : (S.passBussolaMsg || "") }),
                 eu.prec > 60 ? h("small", { class: "passprec", text: `GPS impreciso agora (±${eu.prec} m). Fica melhor ao ar livre.` }) : null))
             : h("p", { class: "passdist", text: S.passGpsMsg || "Procurando você no mapa…" }),
+          d != null ? h("button", { class: "btn ghost passbig", type: "button", "aria-pressed": String(!!bussola), onclick: ligaBussola }, bussola ? "Desligar a bússola" : "🧭 Ligar a bússola (a seta gira com você)") : null,
           h("a", { class: "btn gold passbig", href: rota, target: "_blank", rel: "noopener" }, "Abrir o caminho no Google Maps"),
           h("button", { class: "btn passbig", type: "button", onclick: () => { if (!est.chegou.includes(est.i)) est.chegou.push(est.i); guarda(); desenha(); painel.scrollTo({ top: 0 }); } }, "Já cheguei"),
           p.opcional && prox ? h("button", { class: "btn ghost passbig", type: "button", onclick: () => vai(est.i + 1) }, "Pular: está fechado") : null),
@@ -3284,25 +3425,37 @@ function abrirPasseio(id) {
         p.lojas ? h("div", { class: "passlojas" }, h("p", { class: "eyebrow rule", text: "Neste trecho" }),
           p.lojas.map(([n, t, q, , , aprox]) => h("a", { href: mapsBusca(q), target: "_blank", rel: "noopener" }, h("b", { text: n }), h("span", { text: t + (aprox ? " · pino aproximado" : "") }), h("i", { text: "Mapa ›" })))) : null,
         fim ? h("div", { class: "passfim" }, h("p", { class: "eyebrow", text: "Passeio completo" }), h("p", { text: "Você passou por todas as paradas do dia. Bom descanso e bom jantar!" })) : null,
-        h("p", { class: "small passnota", text: "A linha do mapa liga as paradas em reta. Para o caminho pelas ruas, toque em Como chegar: abre o Google Maps e depois é só voltar para o app." })));
+        h("p", { class: "small passnota", text: "No mapa: a linha azul é o caminho pelas ruas até a próxima parada; a linha fina é por onde você já andou. Se a linha aparecer tracejada, o mapa não achou o caminho pelas ruas: use o botão do Google Maps." })));
+    giraSeta();
   }
   const recebe = pos => {
-    eu = { lat: pos.coords.latitude, lng: pos.coords.longitude }; S.passGpsMsg = "";
+    const novo = { lat: pos.coords.latitude, lng: pos.coords.longitude, prec: Math.round(pos.coords.accuracy || 0) };
+    eu = novo; S.passGpsMsg = "";
     if (mapa && !euMarca) euMarca = new maplibregl.Marker({ element: h("div", { class: "passeu" }) }).setLngLat([eu.lng, eu.lat]).addTo(mapa);
     if (mapa && !centrou) { centrou = true; enquadra(false); }
-    eu.prec = Math.round(pos.coords.accuracy || 0);
+    // rastro: guarda um ponto a cada 8 m andados, só com GPS bom
+    if (eu.prec <= 50) { const u = rastro[rastro.length - 1]; if (!u || distKm(ptDe(u), eu) > .008) { rastro.push([+eu.lng.toFixed(6), +eu.lat.toFixed(6)]); if (rastro.length > 3000) rastro.shift(); lsSet("cdi-passeio-rastro", JSON.stringify({ dia: hoje, pts: rastro })); desenhaRastro(); } }
     const folga = Math.min(eu.prec || 0, 25), dentro = q => distKm(eu, q) * 1000 <= (q.raio || 80) + folga;
     // chegou numa parada mais à frente (pulou alguma): o passeio vai junto
     // o hotel é o ponto de partida e também o fim: estar nele não pula o passeio para o final
-    const k = ps.findIndex((q, n) => n !== est.i && !q.retorno && !est.feitos.includes(n) && dentro(q));
+    // só olha as duas próximas paradas: passar perto de uma parada lá do fim do dia não muda o passeio
+    const k = ps.findIndex((q, n) => n > est.i && n <= est.i + 2 && !q.retorno && !est.feitos.includes(n) && dentro(q));
     // indo para uma parada opcional (Beatles Ashram) passa-se em frente a outras: aí só muda com o botão Pular
-    if (k > -1 && !dentro(ps[est.i]) && !ps[est.i].opcional) { est.i = k; guarda(); }
+    if (k > -1 && !dentro(ps[est.i]) && !ps[est.i].opcional) { est.i = k; guarda(); tendencia = null; amostra = null; agora = null; }
     const p = ps[est.i];
+    // para frente ou para trás: compara quanto falta (pelas ruas, se tiver a rota) a cada uns 12 m andados
+    const falta = agora && agoraPara === est.i ? naRota(agora.coords, eu).falta : distKm(eu, p);
+    if (!amostra || amostra.i !== est.i) amostra = { i: est.i, pt: { lat: eu.lat, lng: eu.lng }, falta };
+    else if (distKm(amostra.pt, eu) > .012 && eu.prec <= 60) {
+      const dif = (amostra.falta - falta) * 1000;
+      if (dif > 6) tendencia = "indo"; else if (dif < -6) tendencia = "volta";
+      amostra = { i: est.i, pt: { lat: eu.lat, lng: eu.lng }, falta };
+    }
     if (dentro(p) && !chegouAvisado[est.i]) {
       chegouAvisado[est.i] = true; try { navigator.vibrate && navigator.vibrate([30, 80, 30]); } catch (e) {}
       rolarTexto = true;
     }
-    pinta(); desenha();
+    pinta(); desenhaAgora(); desenha(); pedeRota(false);
     if (rolarTexto) { rolarTexto = false; requestAnimationFrame(() => { const t = painel.querySelector(".passtexto"); if (t) painel.scrollTo({ top: t.offsetTop - painel.offsetTop - 8, behavior: "smooth" }); }); }
   };
   if (navigator.geolocation) watch = navigator.geolocation.watchPosition(recebe, e => { S.passGpsMsg = e.code === 1 ? "A localização está bloqueada para o app. Libere nos ajustes do celular para o mapa te acompanhar." : "Não consegui achar você agora. O mapa e as histórias funcionam mesmo assim."; desenha(); }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
@@ -3310,13 +3463,20 @@ function abrirPasseio(id) {
   desenha();
   carregaGlobo().then(() => {
     if (!box.isConnected) return; caixaMapa.replaceChildren();
+    const vazio = fc([]);
     mapa = new maplibregl.Map({ container: caixaMapa, attributionControl: false, center: [ps[est.i].lng, ps[est.i].lat], zoom: 15, maxZoom: 19, dragRotate: false, pitchWithRotate: false, fadeDuration: 0,
       style: { version: 8, sources: {
           ruas: { type: "raster", tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize: 256, maxzoom: 19 },
-          rota: { type: "geojson", data: { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: ps.map(p => [p.lng, p.lat]) } } } },
+          dia: { type: "geojson", data: vazio }, agora: { type: "geojson", data: vazio }, rastro: { type: "geojson", data: vazio } },
         layers: [{ id: "fundo", type: "background", paint: { "background-color": "#EAD6A8" } },
           { id: "ruas", type: "raster", source: "ruas", paint: { "raster-fade-duration": 0, "raster-saturation": -.2, "raster-opacity": .85 } },
-          { id: "rota", type: "line", source: "rota", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#8A3F32", "line-width": 3, "line-dasharray": [1.5, 1.8], "line-opacity": .8 } }] } });
+          // o dia inteiro: pelas ruas em linha cheia; trecho sem rota (ponte nova, por exemplo) tracejado
+          { id: "dia", type: "line", source: "dia", filter: ["!=", ["get", "reta"], true], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#8A3F32", "line-width": 3, "line-opacity": .45 } },
+          { id: "diareta", type: "line", source: "dia", filter: ["==", ["get", "reta"], true], layout: { "line-cap": "round" }, paint: { "line-color": "#8A3F32", "line-width": 2.5, "line-dasharray": [1.5, 1.8], "line-opacity": .5 } },
+          { id: "rastro", type: "line", source: "rastro", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#5B6B8C", "line-width": 3, "line-opacity": .7 } },
+          { id: "agorafundo", type: "line", source: "agora", filter: ["!=", ["get", "reta"], true], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#FFFFFF", "line-width": 8 } },
+          { id: "agora", type: "line", source: "agora", filter: ["!=", ["get", "reta"], true], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#2F7BEA", "line-width": 5 } },
+          { id: "agorareta", type: "line", source: "agora", filter: ["==", ["get", "reta"], true], layout: { "line-cap": "round" }, paint: { "line-color": "#2F7BEA", "line-width": 3, "line-dasharray": [1, 1.6] } }] } });
     mapa.touchZoomRotate.disableRotation();
     // nomes das lojas só aparecem com o mapa de perto (de longe embolam)
     const longe = () => caixaMapa.classList.toggle("longe", mapa.getZoom() < 16.3); mapa.on("zoom", longe); longe();
@@ -3324,6 +3484,8 @@ function abrirPasseio(id) {
     ps.forEach(p => (p.lojas || []).filter(l => isFinite(l[3])).forEach(([n, , q, la, lo]) =>
       new maplibregl.Marker({ element: h("a", { class: "passloja", href: mapsBusca(q), target: "_blank", rel: "noopener", "aria-label": n }, h("span", { text: n }), h("i", { "aria-hidden": "true" })), anchor: "right", offset: [6, 0] }).setLngLat([lo, la]).addTo(mapa)));
     if (eu) { euMarca = new maplibregl.Marker({ element: h("div", { class: "passeu" }) }).setLngLat([eu.lng, eu.lat]).addTo(mapa); }
+    const pronto = () => { desenhaDia(); desenhaAgora(); desenhaRastro(); carregaDia(); pedeRota(true); };
+    if (mapa.isStyleLoaded()) pronto(); else mapa.once("load", pronto);
     enquadra(false); if (eu) centrou = true; pinta();
   }, () => { caixaMapa.querySelector(".globoaviso").textContent = "Não consegui abrir o mapa. Confira a internet; as histórias continuam abaixo."; });
 }
