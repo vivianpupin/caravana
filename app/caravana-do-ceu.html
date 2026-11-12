@@ -2092,6 +2092,7 @@ video.mgrande{max-height:70vh;background:#000}
 .passcard .tx span{font-size:13.5px;color:var(--soft);line-height:1.45}
 .passcard .passchev{font-size:26px;color:var(--moss)}
 .rotaslista{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.rotasbloco{margin-bottom:12px}
 .passoff{margin-top:18px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--soft)}
 .passoff p{margin:0}
 .passoff.ok p:first-child{color:var(--ok);font-weight:600}
@@ -2108,6 +2109,7 @@ video.mgrande{max-height:70vh;background:#000}
 .passmapa{position:absolute;inset:0;background:#EAD6A8}
 .passmapa .globoaviso{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:var(--soft);font-size:14px;text-align:center;padding:16px}
 .passmapawrap .mapctl{position:absolute;right:10px;top:10px;transform:none;display:flex;flex-direction:column;gap:6px;z-index:2}
+.passmapawrap .mapctl button[aria-pressed="true"]{background:#2F7BEA;color:#fff;border-color:#2F7BEA}
 .passmapawrap .mapctl button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);color:var(--ink);display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer}
 .passpin{width:30px;height:30px;border-radius:50%;border:2px solid var(--panel);background:var(--sand);color:var(--ink);display:grid;place-items:center;font:600 13px/1 var(--ui);box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer;padding:0}
 .passpin.feito{background:var(--moss);color:var(--on-dark)}
@@ -3184,8 +3186,8 @@ const PASSEIOS = {
       { nome: "Trayambakeshwar · Tera Manzil", lat: 30.12649, lng: 78.33098, raio: 50, destino: "Trayambakeshwar Temple, Laxman Jhula, Rishikesh", quando: "O templo de 13 andares, logo depois da ponte",
         texto: "Tera quer dizer treze, e manzil quer dizer andar: são 13 andares dedicados a Shiva. Tryambaka é Shiva de três olhos, o mesmo nome do mantra Om Tryambakam Yajamahe. Cada andar tem altares de divindades diferentes. Suba com calma até o topo, de onde se vê o Ganges e as pontes lá embaixo.",
         dica: "A entrada é gratuita. Tire o sapato na porta e leve uma meia: o chão pode estar frio." },
-      { nome: "Ram Jhula e Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 80, via: [[30.12430, 78.31775]], quando: "Desça pela beira do rio, pela rua dos ashrams e lojinhas, passando pela Ganga Beach",
-        texto: "Vá por baixo, pela beira do rio: é o caminho com mais vida, entre ashrams, lojinhas e cafés, e passa pela Ganga Beach, a praia de areia do Ganges. A estrada de cima, pelo mato, é mais vazia. São uns 20 a 25 minutos a pé. A Ram Jhula é a ponte de ferro que liga o Sivananda Ashram ao Swarg Ashram e leva o nome de Rama. Na cabeceira deste lado ficam o mercado de Swarg Ashram, o Chotiwala para o almoço e o Gita Bhawan.",
+      { nome: "Ram Jhula e Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 80, via: [[30.12430, 78.31775]], trilha: [[30.12609, 78.33057], [30.12430, 78.31775]], quando: "Desça pela beira do rio, pela rua dos ashrams e lojinhas, passando pela Ganga Beach",
+        texto: "Vá por baixo, pela beira do rio: é o caminho com mais vida, entre ashrams, lojinhas e cafés, e passa pela Ganga Beach, a praia de areia do Ganges. A estrada de cima, pelo mato, é mais vazia. São uns 20 a 25 minutos a pé. Neste trecho a linha do mapa é tracejada: ela mostra a direção pela beira do rio; siga a rua junto ao rio e não suba para a estrada. A Ram Jhula é a ponte de ferro que liga o Sivananda Ashram ao Swarg Ashram e leva o nome de Rama. Na cabeceira deste lado ficam o mercado de Swarg Ashram, o Chotiwala para o almoço e o Gita Bhawan.",
         dica: "O Chotiwala é o restaurante mais famoso de Rishikesh, aberto em 1958: peça o thali vegetariano (há dois Chotiwala lado a lado, de dois ramos da mesma família). O Gita Bhawan tem os versos do Bhagavad Gita nas paredes e uma cooperativa de preço fixo. A Ram Jhula passou por obras e pode estar fechada: não precisa atravessar.",
         lojas: [
           ["Ganga Beach", "A praia de areia branca na margem leste do Ganges, entre a Lakshman Jhula e a Ram Jhula. Bom lugar para sentar, molhar os pés e ver o rio passar. A água é gelada e a correnteza é forte: fique só na beirinha.", "Ganga Beach Swarg Ashram Rishikesh", 30.12430, 78.31775, false, "lugar"],
@@ -3223,8 +3225,7 @@ PASSEIOS.kunjapuri = {
       dica: "Separe a roupa para molhar, a toalha, a muda seca e um saco para a roupa molhada: o batismo no Ganges é logo depois da meditação." },
     { nome: "Vashishta Gufa · meditação e batismo", lat: 30.11426, lng: 78.43203, raio: 150, carro: true, quando: "10h meditação na caverna · 12h batismo no Ganges",
       texto: "Rio acima, numa caverna à beira do Ganges, a tradição diz que meditou o sábio Vasishtha, mestre de Rama. A caverna é longa e escura, com um Shiva lingam no fundo, e fica num ashram cercado de figueiras (gular). Depois da meditação, descemos até a praia do rio para a vivência de batismo: entramos juntos nas águas frias do Ganges, um gesto de devoção e renovação.",
-      dica: "Da estrada até a caverna é uma descida curta a pé, com degraus. Dentro da caverna, silêncio. Ao lado fica a caverna de Arundhati, esposa de Vasishtha (o pino roxo no mapa).",
-      lojas: [["Arundhati Guha", "A caverna de Arundhati, esposa do sábio Vasishtha, a poucos metros da caverna principal. Menor e mais silenciosa.", "Arundhati Cave Vashishta Gufa", 30.11403, 78.43085, false, "lugar"]] },
+      dica: "Da estrada até a caverna é uma descida curta a pé, com degraus. Dentro da caverna, silêncio." },
     { nome: "Puja à beira do Ganges · Ganga Beach", lat: 30.12430, lng: 78.31775, raio: 80, carro: true, aprox: true, quando: "17h · a puja do fim da tarde",
       texto: "A praia de areia do Ganges, na margem leste, onde fazemos a puja do fim da tarde, com flores, luz e o rio passando.",
       dica: "Confirme com a equipe o ponto exato da praia: há mais de uma Ganga Beach em Rishikesh, e o pino é o da praia de Swarg Ashram." },
@@ -3278,6 +3279,13 @@ PASSEIOS.pontes.rotulo = "Dia 2"; PASSEIOS.pontes.diaN = 9;
 PASSEIOS.kunjapuri.rotulo = "Dia 3"; PASSEIOS.kunjapuri.diaN = 10;
 
 
+// Varanasi (Turma 1): os 3 dias seguindo o roteiro; coordenadas: hotel Ganges View (Tripadvisor, Planet of Hotels e Flyin iguais),
+// Assi, Dashashwamedh e Manikarnika Ghat, Nepali Mandir, Durga Mandir e Sankat Mochan (Wikipedia), Kashi Vishwanath (Wikipedia),
+// Annapurna (Bhakti Bharat), Harmony Book Shop e Blue Lassi (duas fontes cada). Pinos aproximados marcados como aproximados.
+PASSEIOS.varanasi1 = {"titulo": "Chegada à cidade de Shiva", "rotulo": "Dia 1", "diaN": 5, "total": "a pé, em volta do Assi Ghat", "saida": {"lat": 25.28888, "lng": 83.00597}, "aarti": {"h": 18, "m": 0, "chegar": "17h40", "parada": 0}, "paradas": [{"nome": "Assi Ghat · Ganga Aarti", "lat": 25.28865, "lng": 83.00676, "raio": 45, "quando": "18h · a primeira Ganga Aarti", "texto": "O Assi Ghat é o ghat do extremo sul de Varanasi, onde o pequeno rio Assi encontra o Ganges. Ao anoitecer, os sacerdotes erguem as lamparinas e oferecem a luz ao rio, ao som de sinos e conchas. Na noite do Diwali, o rio se enche de lamparinas: Diwali celebra a vitória da luz sobre a escuridão.", "dica": "Kashi vem da raiz sânscrita kash, brilhar: a cidade da luz. Fica a uns 2 minutos a pé do hotel."}, {"nome": "Ganges View · jantar", "lat": 25.28888, "lng": 83.00597, "raio": 40, "retorno": true, "quando": "20h · jantar no hotel", "texto": "De volta ao Ganges View, o hotel em frente ao Assi Ghat, para o jantar."}]};
+PASSEIOS.varanasi2 = {"titulo": "Os ghats de Kashi", "rotulo": "Dia 2", "diaN": 6, "total": "a pé e de carro", "saida": {"lat": 25.28888, "lng": 83.00597}, "aarti": {"h": 18, "m": 0, "chegar": "17h40", "parada": 5}, "paradas": [{"nome": "Assi Ghat · barco ao nascer do sol", "lat": 25.28865, "lng": 83.00676, "raio": 45, "quando": "5h barco no Ganges · 5h30 aarti do amanhecer e yoga", "texto": "Do barco, ao nascer do sol, os ghats aparecem inteiros: gente se banhando, rezando, lavando roupa, meditando. Depois, no Assi Ghat, a aarti do amanhecer (Subah-e-Banaras), com música e yoga na beira do rio.", "dica": "Leve um casaco: de madrugada o rio é frio."}, {"nome": "Café da manhã no Ganges View", "lat": 25.28888, "lng": 83.00597, "raio": 40, "retorno": true, "quando": "8h · café da manhã no hotel", "texto": "Café da manhã no hotel antes da caminhada pela cidade antiga."}, {"nome": "Kashi Vishwanath", "lat": 25.31078, "lng": 83.01061, "raio": 70, "carro": true, "quando": "8h45 · a caminhada pelos templos da cidade antiga", "texto": "O templo de Shiva como Vishwanath, o senhor do universo: um dos doze Jyotirlingas, os santuários de Shiva como pilar de luz, e o coração de Kashi. A cúpula é coberta de ouro. Em volta ficam as vielas da cidade antiga, com templos pequenos em cada esquina. Do lado fica o templo de Annapurna, a deusa do alimento.", "dica": "Celular, câmera e bolsas não entram no templo: há armários na entrada. Do hotel até aqui o carro deixa perto de Godowlia; o fim é a pé pelas vielas.", "lojas": [["Annapurna Mandir", "O templo de Annapurna, a deusa do alimento, uma forma de Parvati, a poucos passos do Kashi Vishwanath. A tradição diz que em Kashi ninguém passa fome por causa dela.", "Annapurna Temple Varanasi", 25.3105, 83.0101, false, "lugar"], ["Kashi Chat Bhandar", "O chaat mais famoso da cidade, em Godowlia: experimente o tamatar chaat. Pino aproximado.", "Kashi Chaat Bhandar Godowlia Varanasi", 25.3088, 83.006, true, "comida"], ["Vandana Silks", "Sáris e tecidos de seda de Banaras, em Godowlia, desde 1974. Pino aproximado.", "Vandana Silks Godowlia Varanasi", 25.30885, 83.0056, true, "loja"]]}, {"nome": "Nepali Mandir", "lat": 25.30982, "lng": 83.01286, "raio": 40, "quando": "15h · templos e Manikarnika Ghat", "texto": "Um templo de Shiva em estilo nepalês, com madeira entalhada, erguido no século XIX por um rei do Nepal, no Lalita Ghat.", "lojas": [["Blue Lassi", "A casa de lassi mais famosa de Varanasi, desde 1925, numa viela perto do Manikarnika: lassi de frutas servido em copo de barro.", "Blue Lassi Shop Varanasi", 25.31237, 83.01145, false, "comida"]]}, {"nome": "Manikarnika Ghat", "lat": 25.31087, "lng": 83.01409, "raio": 45, "quando": "O fogo que não se apaga", "texto": "O principal crematório a céu aberto de Varanasi. Para os hindus, ser cremado aqui liberta a alma do ciclo de nascimentos e mortes. O fogo, dizem, não se apaga há séculos. Ao lado fica o Ratneshwar Mahadev, o templo inclinado.", "dica": "Não fotografe as cremações: é um lugar de luto para as famílias.", "lojas": [["Ratneshwar Mahadev", "O templo inclinado de Shiva, ao lado do Manikarnika, que passa boa parte do ano com a base dentro do rio. O pino é aproximado: fica na beira do Manikarnika Ghat.", "Ratneshwar Mahadev Temple Varanasi", 25.3106, 83.0144, true, "lugar"]]}, {"nome": "Dashashwamedh Ghat · Ganga Aarti", "lat": 25.30717, "lng": 83.01034, "raio": 50, "quando": "18h · a grande Ganga Aarti", "texto": "Dashashwamedh quer dizer dez sacrifícios de cavalo: a tradição conta que Brahma os ofereceu aqui. Todas as noites, sacerdotes erguem lamparinas de muitos braços e oferecem a luz ao rio, ao som de sinos, conchas e canto.", "dica": "Chegue antes das 17h40 para pegar lugar nos degraus, ou assista de um barco.", "lojas": [["Kedar Ghat", "Ghat colorido, com o templo de Kedareshwar, um dos mais sagrados para Shiva no sul da cidade. Pino aproximado.", "Kedar Ghat Varanasi", 25.2983, 83.0086, true, "lugar"]]}, {"nome": "Ganges View · jantar", "lat": 25.28888, "lng": 83.00597, "raio": 40, "carro": true, "retorno": true, "quando": "20h · jantar no hotel", "texto": "De volta ao hotel, no Assi Ghat, para o jantar."}]};
+PASSEIOS.varanasi3 = {"titulo": "A Mãe e o servidor", "rotulo": "Dia 3", "diaN": 7, "total": "de carro e a pé", "saida": {"lat": 25.28888, "lng": 83.00597}, "paradas": [{"nome": "Assi Ghat · aarti do amanhecer e yoga", "lat": 25.28865, "lng": 83.00676, "raio": 45, "quando": "5h30 · aarti do amanhecer e yoga", "texto": "A Subah-e-Banaras, a aarti do amanhecer no Assi Ghat, com música e yoga na beira do rio."}, {"nome": "Café da manhã no Ganges View", "lat": 25.28888, "lng": 83.00597, "raio": 40, "retorno": true, "quando": "8h · café da manhã no hotel", "texto": "Café da manhã no hotel."}, {"nome": "Durga Kund", "lat": 25.28862, "lng": 82.99928, "raio": 60, "carro": true, "quando": "9h30 · o templo vermelho", "texto": "Templo do século XVIII dedicado a Durga, pintado de ocre vermelho, ao lado de um tanque sagrado (kund). Durga é a Mãe guerreira, que vence o demônio búfalo."}, {"nome": "Sankat Mochan", "lat": 25.28211, "lng": 82.99998, "raio": 60, "quando": "11h · o templo de Hanuman", "texto": "Sankat Mochan quer dizer aquele que livra das aflições. O templo de Hanuman, o servidor de Rama, foi fundado segundo a tradição pelo poeta Tulsidas, autor do Ramcharitmanas. Às terças e sábados fica cheio de devotos.", "dica": "Fica uns 700 m ao sul do Durga Kund. Cuidado com os macacos."}, {"nome": "Barco à noite (opcional)", "lat": 25.28865, "lng": 83.00676, "raio": 45, "opcional": true, "quando": "18h30 · passeio de barco à noite", "texto": "O rio à noite, com as lamparinas das aartis nos ghats vistas da água.", "dica": "Opcional: se não for, toque em Pular."}, {"nome": "Ganges View · jantar", "lat": 25.28888, "lng": 83.00597, "raio": 40, "retorno": true, "quando": "20h · jantar no hotel", "texto": "De volta ao hotel para o jantar. Amanhã cedo, a saída para o aeroporto."}], "dica": "Compras e massagens ayurvédicas às 13h30"};
+PASSEIOS.varanasiTudo = { titulo: "Mapa dos 3 dias", rotulo: "Os 3 dias juntos", total: "os três dias num mapa só", saida: PASSEIOS.varanasi1.saida, paradas: [...PASSEIOS.varanasi1.paradas.map(p => ({ ...p, dia: "Dia 1" })), ...PASSEIOS.varanasi2.paradas.map(p => ({ ...p, dia: "Dia 2" })), ...PASSEIOS.varanasi3.paradas.map(p => ({ ...p, dia: "Dia 3" }))] };
 // por enquanto o passeio guiado aparece só para a Vivian, para testar em Rishikesh antes de abrir para a turma.
 // O login não informa o e-mail (só id, nome, foto e se é líder): vale para quem é líder e não é a Vanessa
 const podePasseio = () => !!(S.isOwner && S.me && !/vanessa/i.test(String(S.me.name || "")));
@@ -3331,7 +3339,7 @@ function naRota(coords, eu) {
 }
 // ---------- passeio sem internet: guarda no celular os pedaços do mapa em volta de todas as paradas e atrativos, e as rotas do dia ----------
 // (cache "caravana-rotas": o service worker não apaga; o GPS, a seta, a distância e o aviso de direção funcionam sem internet)
-const OFF_CACHE = "caravana-rotas", OFF_VERSAO = "1";
+const OFF_CACHE = "caravana-rotas", OFF_VERSAO = "2";
 function tilesEm(lat, lng, z, raio) {
   const n = 2 ** z, dLat = raio / 110540, dLng = raio / (111320 * Math.cos(lat * Math.PI / 180));
   const tx = x => Math.floor((x + 180) / 360 * n), ty = y => { const r = y * Math.PI / 180; return Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n); };
@@ -3345,6 +3353,8 @@ function listaOffline() {
   for (const q of pts) for (const [z, r] of [[12, 3000], [13, 1500], [14, 800], [15, 400], [16, 220], [17, 120]]) tilesEm(+q.lat, +q.lng, z, r).forEach(u => urls.add(u));
   // o corredor a pé do Dia 2 (de Tapovan ao Parmarth, pelas duas margens), inteiro, de perto
   for (let la = 30.115; la <= 30.131; la += .002) for (let lo = 78.303; lo <= 78.335; lo += .0025) for (const z of [15, 16, 17]) tilesEm(la, lo, z, 60).forEach(u => urls.add(u));
+  // a beira do rio de Varanasi, do Assi Ghat ao Manikarnika
+  for (let la = 25.285; la <= 25.313; la += .002) for (let lo = 83.004; lo <= 83.016; lo += .0025) for (const z of [15, 16, 17]) tilesEm(la, lo, z, 60).forEach(u => urls.add(u));
   return [...urls];
 }
 const offStatus = () => { try { return JSON.parse(lsGet("cdi-offline") || "null"); } catch (e) { return null; } };
@@ -3363,7 +3373,7 @@ async function guardaOffline(aoMudar) {
     await Promise.all([trabalha(), trabalha(), trabalha()]);
     // rotas de todos os dias (a pé e de carro), guardadas no celular
     for (const P of Object.values(PASSEIOS)) { if (P.livre) continue; let de = P.saida;
-      for (const p of P.paradas) { try { const r = await rotaPe(de, p, (p.via || []).map(([lat, lng]) => ({ lat, lng })), !!p.carro); r.fixa = true; } catch (e) {} de = p; } }
+      for (const p of P.paradas) { if (!p.trilha) { try { const r = await rotaPe(de, p, (p.via || []).map(([lat, lng]) => ({ lat, lng })), !!p.carro); r.fixa = true; } catch (e) {} } de = p; } }
     lsSet("cdi-rotas-pe", JSON.stringify(Object.fromEntries(Object.entries(rotasMem).filter(([, v]) => v.fixa))));
     if (falhas > urls.length * .2) S.offMsg = "Parte do mapa não baixou (sinal fraco). Toque para tentar de novo com wi-fi.";
     else lsSet("cdi-offline", JSON.stringify({ v: OFF_VERSAO, em: Date.now(), n: urls.length - falhas }));
@@ -3396,12 +3406,14 @@ function cartaoPasseio(id) {
     h("span", { class: "passchev", "aria-hidden": "true", text: "›" }));
 }
 // aba Rotas (só a líder): cada cidade abre as rotas dela
+const CIDADES_ROTAS = [["Varanasi", ["varanasi1", "varanasi2", "varanasi3", "varanasiTudo"]], ["Rishikesh", ["chegada", "pontes", "kunjapuri", "tudo", "extras"]]];
 function vRotas() {
-  const aberta = S.rotasCidade !== null;
   return h("section", { class: "view rotasview" },
-    h("button", { type: "button", class: "rotascidade", "aria-expanded": String(aberta), onclick: () => { S.rotasCidade = aberta ? null : "rishikesh"; render(); } },
-      h("b", { text: "Rishikesh" }), h("span", { class: "rotaschev", "aria-hidden": "true", text: "▾" })),
-    aberta ? h("div", { class: "rotaslista" }, ["chegada", "pontes", "kunjapuri", "tudo", "extras"].map(cartaoPasseio)) : null,
+    CIDADES_ROTAS.map(([nome, ids]) => { const aberta = S.rotasCidade === nome;
+      return h("div", { class: "rotasbloco" },
+        h("button", { type: "button", class: "rotascidade", "aria-expanded": String(aberta), onclick: () => { S.rotasCidade = aberta ? null : nome; render(); } },
+          h("b", { text: nome }), h("span", { class: "rotaschev", "aria-hidden": "true", text: "▾" })),
+        aberta ? h("div", { class: "rotaslista" }, ids.map(cartaoPasseio)) : null); }),
     blocoOffline(render));
 }
 function abrirPasseio(id) {
@@ -3424,7 +3436,14 @@ function abrirPasseio(id) {
   const pararBussola = () => { if (bussola) { window.removeEventListener(bussola.ev, bussola.fn, true); bussola = null; } };
   const fecha = () => { lsSet("cdi-passeio-aberto", ""); document.removeEventListener("visibilitychange", voltou); clearInterval(relogio); pararBussola(); if (watch != null) navigator.geolocation.clearWatch(watch); try { trava && trava.release(); } catch (e) {} try { mapa && mapa.remove(); } catch (e) {} box.remove(); };
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
-  const btnEu = h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => { if (eu && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 16.5) }); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0"));
+  let seguir = false;
+  const centraEu = () => { if (eu && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 16.5), duration: 600 }); };
+  const marcaSeguir = v => { seguir = v; btnEu.setAttribute("aria-pressed", String(v)); };
+  const btnEu = h("button", { type: "button", "aria-label": "Onde eu estou", "aria-pressed": "false", onclick: () => {
+      marcaSeguir(true);
+      if (eu) centraEu();
+      else if (navigator.geolocation) { S.passGpsMsg = "Procurando você…"; desenha(); navigator.geolocation.getCurrentPosition(pos => { recebe(pos); centraEu(); }, () => {}, { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }); }
+    } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0"));
   const box = h("div", { class: "passeio", role: "dialog", "aria-label": "Passeio guiado: " + P.titulo },
     h("div", { class: "passtopo" },
       h("button", { type: "button", class: "passx", "aria-label": "Fechar o passeio", onclick: fecha }, "×"),
@@ -3477,19 +3496,24 @@ function abrirPasseio(id) {
   const viaP = p => (p.via || []).map(([lat, lng]) => ({ lat, lng }));
   // pontos de passagem que ainda estão à frente (mais perto do destino do que a pessoa)
   const viaAFrente = p => eu ? viaP(p).filter(v => distKm(v, p) < distKm(eu, p) - .03) : viaP(p);
+  // trilha desenhada à mão (beira do rio): no lugar da rota do servidor, que nesse trecho sobe pela estrada do mato
+  const trilhaP = p => (p.trilha || []).map(([lat, lng]) => ({ lat, lng }));
+  const trilhaAFrente = p => eu ? trilhaP(p).filter(v => distKm(v, p) < distKm(eu, p) - .03) : trilhaP(p);
+  const rotaTrilha = (de, p, pts) => ({ coords: [de, ...pts, p].map(q => [+q.lng, +q.lat]), m: 0, trilha: true });
   function desenhaDia() {
     const s = mapa && mapa.getSource("dia"); if (!s) return;
-    s.setData(fc(pernas.map(pn => linha(pn.coords || [[pn.de.lng, pn.de.lat], [pn.para.lng, pn.para.lat]], { reta: !pn.coords }))));
+    s.setData(fc(pernas.map(pn => linha(pn.coords || [[pn.de.lng, pn.de.lat], [pn.para.lng, pn.para.lat]], { reta: !pn.coords || !!pn.trilha }))));
   }
   function desenhaAgora() {
     const s = mapa && mapa.getSource("agora"); if (!s) return;
     const p = alvoAt();
-    s.setData(fc(agora ? [linha(agora.coords, { reta: false })] : eu ? [linha([[eu.lng, eu.lat], [p.lng, p.lat]], { reta: true })] : []));
+    s.setData(fc(agora ? [linha(agora.coords, { reta: !!agora.trilha })] : eu ? [linha([[eu.lng, eu.lat], [p.lng, p.lat]], { reta: true })] : []));
   }
   function desenhaRastro() { const s = mapa && mapa.getSource("rastro"); if (s) s.setData(fc(rastro.length > 1 ? [linha(rastro)] : [])); }
   async function carregaDia() {
     for (const pn of pernas) {
       if (!box.isConnected) return;
+      if (pn.para.trilha) { pn.coords = rotaTrilha(pn.de, pn.para, trilhaP(pn.para)).coords; pn.trilha = true; desenhaDia(); continue; }
       try { const r = await rotaPe(pn.de, pn.para, viaP(pn.para), !!pn.para.carro); r.fixa = true; pn.coords = r.coords; rotaPe.__salva(); desenhaDia(); } catch (e) {}
     }
   }
@@ -3501,7 +3525,7 @@ function abrirPasseio(id) {
     if (!forca && agoraPara === kAlvo() && !andou && !saiu) return;
     if (!forca && Date.now() - agoraEm < 12000) return;
     pedindo = true; agoraEm = Date.now(); const de = { lat: eu.lat, lng: eu.lng }, para = kAlvo();
-    try { const r = await rotaPe(de, p, extra ? [] : viaAFrente(p), !extra && !!p.carro); if (para === kAlvo()) { agora = r; agoraDe = de; agoraPara = para; } }
+    try { const r = !extra && p.trilha ? rotaTrilha(de, p, trilhaAFrente(p)) : await rotaPe(de, p, extra ? [] : viaAFrente(p), !extra && !!p.carro); if (para === kAlvo()) { agora = r; agoraDe = de; agoraPara = para; } }
     catch (e) { if (para === kAlvo()) { agora = null; agoraDe = de; agoraPara = para; } }
     pedindo = false; desenhaAgora(); desenha();
   }
@@ -3593,7 +3617,7 @@ function abrirPasseio(id) {
           d != null ? h("div", { class: "passdir" },
               h("span", { class: "seta", "aria-hidden": "true", text: "↑" }),
               h("div", null, h("b", { text: distTxt(d) }),
-                h("span", { text: (!extra && p.carro ? `uns ${Math.max(1, Math.round(nr && agora.s && agora.m ? agora.s / 60 * (d * 1000 / agora.m) : d * 60 / 25))} min de carro ${nr ? "pela estrada" : "(distância em linha reta)"}` : `uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé ${nr ? "pelas ruas" : "em linha reta"}`) + (direcao() != null ? "" : ` · siga para o ${r.nome}`) }),
+                h("span", { text: (!extra && p.carro ? `uns ${Math.max(1, Math.round(nr && agora.s && agora.m ? agora.s / 60 * (d * 1000 / agora.m) : d * 60 / 25))} min de carro ${nr ? "pela estrada" : "(distância em linha reta)"}` : `uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé ${nr ? (agora && agora.trilha ? "pela beira do rio" : "pelas ruas") : "em linha reta"}`) + (direcao() != null ? "" : ` · siga para o ${r.nome}`) }),
                 h("small", { class: "passbus", text: direcao() != null ? "A seta e o feixe azul do mapa giram com o celular: a seta aponta para onde andar." : (S.passBussolaMsg || "") }),
                 eu.prec > 60 ? h("small", { class: "passprec", text: `GPS impreciso agora (±${eu.prec} m). Fica melhor ao ar livre.` }) : null))
             : h("p", { class: "passdist", text: S.passGpsMsg || "Procurando você no mapa…" }),
@@ -3641,6 +3665,7 @@ function abrirPasseio(id) {
       rolarTexto = true;
     }
     pinta(); desenhaAgora(); desenha(); giraSeta(); pedeRota(false);
+    if (seguir && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], duration: 500 });
     if (rolarTexto && !vendo) { rolarTexto = false; requestAnimationFrame(() => { const t = painel.querySelector(".passtexto"); if (t) painel.scrollTo({ top: t.offsetTop - painel.offsetTop - 8, behavior: "smooth" }); }); }
   };
   if (navigator.geolocation) watch = navigator.geolocation.watchPosition(recebe, e => { S.passGpsMsg = e.code === 1 ? "A localização está bloqueada para o app. Libere nos ajustes do celular para o mapa te acompanhar." : "Não consegui achar você agora. O mapa e as histórias funcionam mesmo assim."; desenha(); }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
@@ -3662,7 +3687,9 @@ function abrirPasseio(id) {
           { id: "agorafundo", type: "line", source: "agora", filter: ["!=", ["get", "reta"], true], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#FFFFFF", "line-width": 8 } },
           { id: "agora", type: "line", source: "agora", filter: ["!=", ["get", "reta"], true], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#2F7BEA", "line-width": 5 } },
           { id: "agorareta", type: "line", source: "agora", filter: ["==", ["get", "reta"], true], layout: { "line-cap": "round" }, paint: { "line-color": "#2F7BEA", "line-width": 3, "line-dasharray": [1, 1.6] } }] } });
-    mapa.touchZoomRotate.disableRotation();
+    mapa.touchZoomRotate.disableRotation(); caixaMapa.__mapa = mapa;
+    // arrastar o mapa com o dedo para de acompanhar a pessoa (o botão "onde eu estou" liga de novo)
+    mapa.on("dragstart", () => marcaSeguir(false));
     // nomes das lojas só aparecem com o mapa de perto (de longe embolam)
     const longe = () => caixaMapa.classList.toggle("longe", mapa.getZoom() < 16.3); mapa.on("zoom", longe); longe();
     marcas = ps.map((p, k) => new maplibregl.Marker({ element: h("button", { type: "button", class: "passpin", "aria-label": p.nome, onclick: () => vai(k) }, h("b", { text: String(k + 1) })) }).setLngLat([p.lng, p.lat]).addTo(mapa));
@@ -3693,7 +3720,7 @@ function vDia(d, open, isToday, abrir) {
         [d.agenda.flatMap(p => p.itens)].map(itens => [
           h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
       // passeio guiado do dia: Dia 10 é o de Kunjapuri e Vashishta; os outros dias de Rishikesh, o das pontes
-      podePasseio() && d.cidade === "Rishikesh" ? cartaoPasseio({ 8: "chegada", 9: "pontes", 10: "kunjapuri", 11: "extras" }[d.n]) : null,
+      podePasseio() ? cartaoPasseio(Object.keys(PASSEIOS).find(k => PASSEIOS[k].diaN === d.n) || (d.cidade === "Rishikesh" && d.n === 11 ? "extras" : null)) : null,
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
         l.dados && l.dados.length ? h("div", { class: "stats" }, l.dados.map(x => h("div", null, h("b", { text: x.v }), h("span", { text: x.l })))) : null)),
@@ -6506,7 +6533,7 @@ function vPerto() {
       h("div", { class: "mapctl" },
         h("button", { type: "button", "aria-label": "Aproximar", onclick: () => zoom(.5) }, ic("M12 5v14M5 12h14")),
         h("button", { type: "button", "aria-label": "Afastar", onclick: () => zoom(2) }, ic("M5 12h14")),
-        h("button", { type: "button", "aria-label": "Centralizar em mim", class: S.pertoCentro ? "" : "on", onclick: () => { S.pertoCentro = null; render(); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")),
+        h("button", { type: "button", "aria-label": "Centralizar em mim", class: S.pertoCentro ? "" : "on", onclick: () => { S.pertoCentro = null; if (!minhaPos() && S.gpsWatch == null) ligarGps(true); render(); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")),
         perto.length ? h("button", { type: "button", "aria-label": "Ver todos", onclick: verTodos }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")) : null),
       null),
     // créditos das imagens fora do mapa, pequenininhos
