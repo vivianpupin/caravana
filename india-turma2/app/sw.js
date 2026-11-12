@@ -64,6 +64,8 @@ self.addEventListener("fetch", e => {
   // letras (Google Fonts) e o zip do álbum: guardadas depois da primeira vez
   if (/^(fonts\.googleapis\.com|fonts\.gstatic\.com|cdnjs\.cloudflare\.com)$/.test(u.hostname)) return e.respondWith(guardadoPrimeiro(EXTRA, req));
   // pedacinhos do mapa já vistos ficam guardados para abrir sem sinal (os do passeio guiado ficam em "caravana-rotas", que não é apagado)
+  // fotos das fachadas do passeio guiado (Wikipédia): guardadas junto com o mapa do passeio
+  if (u.hostname === "upload.wikimedia.org") return e.respondWith(guardadoPrimeiro("caravana-rotas", req));
   if (/(^|\.)tile\.openstreetmap\.org$|server\.arcgisonline\.com$/.test(u.hostname)) return e.respondWith(mapa(req).catch(() => Response.error()));
 });
 // notificações de mensagem nova no chat
