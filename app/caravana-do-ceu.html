@@ -3102,31 +3102,33 @@ function abrirGuardiao(passo) {
   abre();
 }
 // ---------- Passeio guiado: o mapa leva de parada em parada e conta a história de cada lugar ----------
-// coordenadas conferidas: Janki Setu e Lakshman Jhula (Bridgemeister), Ram Jhula e Parmarth Niketan (Wikipedia), Trayambakeshwar (guia Evendo)
+// coordenadas conferidas: Janki Setu, Lakshman Jhula e Bajrang Setu (Bridgemeister), Ram Jhula e Parmarth Niketan (Wikipedia),
+// Trayambakeshwar (plus code do Google 48GJ+H9X, igual ao guia Evendo). Nas pontes o ponto é o meio da ponte e o raio vai até as cabeceiras.
+// "destino": o que vai para o Google Maps no botão do caminho; nome do lugar leva até a entrada (portão), coordenada leva até a ponte
 const mapsBusca = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
 const PASSEIOS = {
   pontes: {
     titulo: "As pontes do Ganges", sub: "Do Yog Niketan ao templo de 13 andares, pela margem do rio",
     total: "cerca de 4 km a pé", saida: "Yoga Niketan Ashram, Muni Ki Reti, Rishikesh",
     paradas: [
-      { nome: "Janki Setu", lat: 30.11647, lng: 78.30873, raio: 90, quando: "Atravesse para a margem leste",
+      { nome: "Janki Setu", lat: 30.11647, lng: 78.30873, raio: 180, quando: "Atravesse para a margem leste",
         texto: "Janki é um dos nomes de Sita, a esposa de Rama. Esta é a ponte mais nova de Rishikesh, aberta em 2020, com faixa separada para quem anda a pé. Atravesse para a margem leste. No meio da ponte, olhe rio acima: dá para ver a Ram Jhula e as primeiras montanhas do Himalaia.",
         dica: "As motos também passam por aqui. Ande pela faixa de pedestres e segure bem a bolsa: os macacos gostam de sacolas." },
-      { nome: "Parmarth Niketan e Gita Bhawan", lat: 30.11923, lng: 78.31221, raio: 90, quando: "Siga pela rua dos ashrams, rio acima",
+      { nome: "Parmarth Niketan e Gita Bhawan", lat: 30.11923, lng: 78.31221, raio: 130, destino: "Parmarth Niketan Ashram, Swarg Ashram, Rishikesh", quando: "Siga pela rua dos ashrams, rio acima",
         texto: "O Parmarth Niketan é um dos maiores ashrams de Rishikesh. Na beira do rio fica a grande estátua de Shiva sentado em meditação, e é nos degraus em frente a ela que acontece a Ganga Aarti: voltamos aqui às 17h. Um pouco adiante fica o Gita Bhawan, com os versos do Bhagavad Gita pintados nas paredes.",
         dica: "No Gita Bhawan há uma cooperativa de preço fixo, boa para comprar sem pechinchar.",
         lojas: [["Gita Bhawan", "cooperativa de preço fixo: roupas, ayurveda e livros", "Gita Bhawan Swarg Ashram Rishikesh"]] },
-      { nome: "Ram Jhula e o mercado de Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 90, quando: "Continue pela margem leste",
+      { nome: "Ram Jhula e o mercado de Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 130, quando: "Continue pela margem leste",
         texto: "A Ram Jhula é a ponte pênsil de ferro que liga o Sivananda Ashram, em Muni ki Reti, ao Swarg Ashram. Leva o nome de Rama. Na cabeceira deste lado fica o mercado de Swarg Ashram, com livros espirituais, rudraksha, gemas e incensos. Daqui até o templo de 13 andares são uns 20 minutos a pé pela margem do rio.",
         dica: "A Ram Jhula passou por obras e pode estar fechada. Não precisa atravessar: o caminho segue por este lado do rio.",
         lojas: [["Mercado de Ram Jhula e Swarg Ashram", "livros espirituais, rudraksha, gemas e incensos", "Swarg Ashram Market Ram Jhula Rishikesh"]] },
-      { nome: "Trayambakeshwar · Tera Manzil", lat: 30.12640, lng: 78.33096, raio: 80, quando: "O templo de 13 andares", destaque: true,
+      { nome: "Trayambakeshwar · Tera Manzil", lat: 30.12649, lng: 78.33098, raio: 50, destino: "Trayambakeshwar Temple, Laxman Jhula, Rishikesh", quando: "O templo de 13 andares", destaque: true,
         texto: "Tera quer dizer treze, e manzil quer dizer andar: são 13 andares dedicados a Shiva. Tryambaka é Shiva de três olhos, o mesmo nome do mantra Om Tryambakam Yajamahe. Cada andar tem altares de divindades diferentes. Vá subindo com calma até o topo, de onde se vê o Ganges e as pontes lá embaixo.",
         dica: "A entrada é gratuita. Tire o sapato na porta e leve uma meia: o chão pode estar frio. Costuma abrir das 6h às 19h." },
-      { nome: "Lakshman Jhula e Bajrang Setu", lat: 30.12645, lng: 78.32975, raio: 70, quando: "As duas pontes, lado a lado",
+      { nome: "Lakshman Jhula e Bajrang Setu", lat: 30.12625, lng: 78.32992, raio: 55, quando: "As duas pontes, lado a lado",
         texto: "A tradição conta que Lakshmana, irmão de Rama, atravessou o Ganges aqui pendurado numa corda de juta. A ponte de ferro é de 1929 e está fechada desde 2022. Ao lado foi construída a Bajrang Setu, com piso de vidro: Bajrang é um dos nomes de Hanuman. Se ela estiver aberta, atravesse por ela para a margem oeste.",
         dica: "Se a Bajrang Setu estiver fechada, volte pela margem leste até a Janki Setu." },
-      { nome: "Tapovan: templos, compras e café", lat: 30.12630, lng: 78.32850, raio: 120, quando: "Do outro lado da ponte",
+      { nome: "Tapovan: templos, compras e café", lat: 30.12630, lng: 78.32850, raio: 75, quando: "Do outro lado da ponte",
         texto: "Tapovan quer dizer floresta da penitência. Aqui fica o Lakshman Temple, no lugar onde, segundo a tradição, Lakshmana fez penitência, e o Kailash Niketan Mandir, outro templo de 13 andares. A rua que sobe da ponte é a melhor de Rishikesh para compras: tigelas tibetanas, xales, cristais e roupas de yoga.",
         dica: "Para voltar, um tuk-tuk até o Yog Niketan custa uns ₹200. A Aarti no Parmarth começa às 17h: chegue por volta das 16h40.",
         lojas: [
@@ -3203,8 +3205,8 @@ function abrirPasseio(id) {
   }
   function desenha() {
     const p = ps[est.i], fim = est.feitos.length === ps.length;
-    const d = eu ? distKm(eu, p) : null, r = eu ? rumo(eu, p) : null, perto = d != null && d * 1000 <= (p.raio || 80) + Math.min(eu.prec || 0, 40);
-    const rota = "https://www.google.com/maps/dir/?api=1&destination=" + p.lat + "," + p.lng + "&travelmode=walking";
+    const d = eu ? distKm(eu, p) : null, r = eu ? rumo(eu, p) : null, perto = d != null && d * 1000 <= (p.raio || 80) + Math.min(eu.prec || 0, 25);
+    const rota = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(p.destino || p.lat + "," + p.lng) + "&travelmode=walking";
     const aqui = perto || est.chegou.includes(est.i), prox = ps[est.i + 1];
     painel.replaceChildren(
       // progresso: uma barrinha por parada (toque para ir direto a uma delas)
@@ -3234,7 +3236,7 @@ function abrirPasseio(id) {
           p.lojas.map(([n, t, q]) => h("a", { href: mapsBusca(q), target: "_blank", rel: "noopener" }, h("b", { text: n }), h("span", { text: t }), h("i", { text: "Mapa ›" })))) : null,
         fim ? h("div", { class: "passfim" }, h("p", { class: "eyebrow", text: "Passeio feito" }), h("p", { text: "Às 17h tem Aarti no Parmarth Niketan. Chegue por volta das 16h40 para pegar lugar nos degraus." }),
           h("div", { class: "actions" }, h("a", { class: "btn gold", href: "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(P.saida) + "&travelmode=walking", target: "_blank", rel: "noopener" }, "Voltar ao Yog Niketan"),
-            h("a", { class: "btn", href: "https://www.google.com/maps/dir/?api=1&destination=" + ps[1].lat + "," + ps[1].lng + "&travelmode=walking", target: "_blank", rel: "noopener" }, "Ir para a Aarti"))) : null,
+            h("a", { class: "btn", href: "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(ps[1].destino) + "&travelmode=walking", target: "_blank", rel: "noopener" }, "Ir para a Aarti"))) : null,
         h("p", { class: "small passnota", text: "A linha do mapa liga as paradas em reta. Para o caminho pelas ruas, toque em Como chegar: abre o Google Maps e depois é só voltar para o app." })));
   }
   const recebe = pos => {
@@ -3242,7 +3244,7 @@ function abrirPasseio(id) {
     if (mapa && !euMarca) euMarca = new maplibregl.Marker({ element: h("div", { class: "passeu" }) }).setLngLat([eu.lng, eu.lat]).addTo(mapa);
     if (mapa && !centrou) { centrou = true; enquadra(false); }
     eu.prec = Math.round(pos.coords.accuracy || 0);
-    const folga = Math.min(eu.prec || 0, 40), dentro = q => distKm(eu, q) * 1000 <= (q.raio || 80) + folga;
+    const folga = Math.min(eu.prec || 0, 25), dentro = q => distKm(eu, q) * 1000 <= (q.raio || 80) + folga;
     // chegou numa parada mais à frente (pulou alguma): o passeio vai junto
     const k = ps.findIndex((q, n) => n !== est.i && !est.feitos.includes(n) && dentro(q));
     if (k > -1 && !dentro(ps[est.i])) { est.i = k; guarda(); }
