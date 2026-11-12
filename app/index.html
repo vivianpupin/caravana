@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "08/11 · 03:02";</script>
+<script>window.__VERSAO = "11/11 · 23:49";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2114,6 +2114,57 @@ video.mgrande{max-height:70vh;background:#000}
 .envmaleta{display:none}.envmaleta.on{display:block;margin:10px 0 12px;padding:9px 14px;border-radius:12px;background:#F3E6CC;color:#5A3F22;font:500 13px/1.35 Poppins,system-ui,sans-serif;text-align:center}
 .envmaleta.on.ok{background:#E3EADB;color:#3F4938}
 .mfoto .mpend{position:absolute;top:5px;left:5px;background:rgba(255,248,236,.92);border-radius:999px;padding:2px 6px;font-size:12px;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+/* Passeio guiado: cartão no dia e tela cheia com mapa, paradas e a história de cada lugar */
+.passcard{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 16px;border-radius:18px;border:1px solid var(--moss);background:var(--panel);color:var(--ink);font:inherit;cursor:pointer}
+.passcard:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.passcard .passico{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--moss);color:var(--on-dark)}
+.passcard .tx{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.passcard small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);font-weight:600}
+.passcard b{font-family:var(--display);font-size:18px;font-weight:600;line-height:1.25}
+.passcard .tx span{font-size:13.5px;color:var(--soft);line-height:1.45}
+.passcard .chev{font-size:26px;color:var(--moss)}
+.passeio{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;overflow:hidden;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.passtopo{display:flex;align-items:center;gap:12px;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
+.passtopo h2{font-size:20px}
+.passtopo .eyebrow{margin:0}
+.passx{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);font-size:24px;line-height:1;color:var(--ink);cursor:pointer}
+.passmapawrap{position:relative;flex:none;height:42vh;min-height:220px}
+.passmapa{position:absolute;inset:0;background:#EAD6A8}
+.passmapa .globoaviso{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:var(--soft);font-size:14px;text-align:center;padding:16px}
+.passmapawrap .mapctl{position:absolute;right:10px;top:10px;transform:none;display:flex;flex-direction:column;gap:6px;z-index:2}
+.passmapawrap .mapctl button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);color:var(--ink);display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer}
+.passpin{width:30px;height:30px;border-radius:50%;border:2px solid var(--panel);background:var(--sand);color:var(--ink);display:grid;place-items:center;font:600 13px/1 var(--ui);box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer;padding:0}
+.passpin.feito{background:var(--moss);color:var(--on-dark)}
+.passpin.atual{background:var(--terra);color:var(--on-dark);width:38px;height:38px;font-size:15px;z-index:3}
+.passeu{width:16px;height:16px;border-radius:50%;background:#2F7BEA;border:3px solid #fff;box-shadow:0 0 0 8px rgba(47,123,234,.22)}
+.passpainel{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+.passpassos{display:flex;gap:6px;flex-wrap:wrap}
+.passpassos button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);color:var(--soft);font:600 13px var(--ui);cursor:pointer}
+.passpassos button.feito{background:var(--moss);border-color:var(--moss);color:var(--on-dark)}
+.passpassos button[aria-selected="true"]{background:var(--terra);border-color:var(--terra);color:var(--on-dark)}
+.passatual{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:16px;background:var(--panel);border:1px solid var(--line)}
+.passatual.chegou{border-color:var(--moss);box-shadow:0 0 0 3px rgba(63,73,56,.15)}
+.passatual .eyebrow{margin:0}
+.passatual h3{font-size:22px}
+.passdist{margin:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:var(--soft);font-size:14.5px}
+.passdist b{color:var(--ink);font-size:17px;font-variant-numeric:tabular-nums}
+.passdist .seta{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--terra);color:var(--on-dark);font-weight:700;transition:transform .4s}
+.passatual .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.passtexto{display:flex;flex-direction:column;gap:12px;font-size:15.5px;line-height:1.65}
+.passtexto>p{margin:0;max-width:62ch}
+.passdica{padding:10px 12px;border-radius:12px;background:var(--panel2);border-left:3px solid var(--gold);font-size:14.5px;color:var(--soft)}
+.passlojas{display:flex;flex-direction:column;gap:2px}
+.passlojas a{display:grid;grid-template-columns:1fr auto;gap:0 10px;padding:10px 0;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}
+.passlojas a b{font-weight:600;font-size:14.5px}
+.passlojas a span{grid-column:1;font-size:13px;color:var(--soft);line-height:1.45}
+.passlojas a i{grid-column:2;grid-row:1/3;align-self:center;font-style:normal;font-size:13px;font-weight:600;color:var(--terra)}
+.passfim{padding:14px;border-radius:16px;background:var(--panel3);display:flex;flex-direction:column;gap:8px}
+.passfim p{margin:0}
+.passfim .actions{display:flex;flex-wrap:wrap;gap:8px}
+.passvoz{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--soft)}
+.passvoz input{margin-top:3px;accent-color:var(--moss)}
+.passnota{color:var(--faint);margin:0}
+@media (prefers-reduced-motion:reduce){.passdist .seta{transition:none}}
 </style>
 
 <div class="app">
@@ -3072,6 +3123,158 @@ function abrirGuardiao(passo) {
   }
   abre();
 }
+// ---------- Passeio guiado: o mapa leva de parada em parada e conta a história de cada lugar ----------
+// coordenadas conferidas: Janki Setu e Lakshman Jhula (Bridgemeister), Ram Jhula e Parmarth Niketan (Wikipedia), Trayambakeshwar (guia Evendo)
+const mapsBusca = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+const PASSEIOS = {
+  pontes: {
+    titulo: "As pontes do Ganges", sub: "Do Yog Niketan ao templo de 13 andares, pela margem do rio",
+    total: "cerca de 4 km a pé", saida: "Yoga Niketan Ashram, Muni Ki Reti, Rishikesh",
+    paradas: [
+      { nome: "Janki Setu", lat: 30.11647, lng: 78.30873, raio: 90, quando: "Atravesse para a margem leste",
+        texto: "Janki é um dos nomes de Sita, a esposa de Rama. Esta é a ponte mais nova de Rishikesh, aberta em 2020, com faixa separada para quem anda a pé. Atravesse para a margem leste. No meio da ponte, olhe rio acima: dá para ver a Ram Jhula e as primeiras montanhas do Himalaia.",
+        dica: "As motos também passam por aqui. Ande pela faixa de pedestres e segure bem a bolsa: os macacos gostam de sacolas." },
+      { nome: "Parmarth Niketan e Gita Bhawan", lat: 30.11923, lng: 78.31221, raio: 90, quando: "Siga pela rua dos ashrams, rio acima",
+        texto: "O Parmarth Niketan é um dos maiores ashrams de Rishikesh. Na beira do rio fica a grande estátua de Shiva sentado em meditação, e é nos degraus em frente a ela que acontece a Ganga Aarti: voltamos aqui às 17h. Um pouco adiante fica o Gita Bhawan, com os versos do Bhagavad Gita pintados nas paredes.",
+        dica: "No Gita Bhawan há uma cooperativa de preço fixo, boa para comprar sem pechinchar.",
+        lojas: [["Gita Bhawan", "cooperativa de preço fixo: roupas, ayurveda e livros", "Gita Bhawan Swarg Ashram Rishikesh"]] },
+      { nome: "Ram Jhula e o mercado de Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 90, quando: "Continue pela margem leste",
+        texto: "A Ram Jhula é a ponte pênsil de ferro que liga o Sivananda Ashram, em Muni ki Reti, ao Swarg Ashram. Leva o nome de Rama. Na cabeceira deste lado fica o mercado de Swarg Ashram, com livros espirituais, rudraksha, gemas e incensos. Daqui até o templo de 13 andares são uns 20 minutos a pé pela margem do rio.",
+        dica: "A Ram Jhula passou por obras e pode estar fechada. Não precisa atravessar: o caminho segue por este lado do rio.",
+        lojas: [["Mercado de Ram Jhula e Swarg Ashram", "livros espirituais, rudraksha, gemas e incensos", "Swarg Ashram Market Ram Jhula Rishikesh"]] },
+      { nome: "Trayambakeshwar · Tera Manzil", lat: 30.12640, lng: 78.33096, raio: 80, quando: "O templo de 13 andares", destaque: true,
+        texto: "Tera quer dizer treze, e manzil quer dizer andar: são 13 andares dedicados a Shiva. Tryambaka é Shiva de três olhos, o mesmo nome do mantra Om Tryambakam Yajamahe. Cada andar tem altares de divindades diferentes. Vá subindo com calma até o topo, de onde se vê o Ganges e as pontes lá embaixo.",
+        dica: "A entrada é gratuita. Tire o sapato na porta e leve uma meia: o chão pode estar frio. Costuma abrir das 6h às 19h." },
+      { nome: "Lakshman Jhula e Bajrang Setu", lat: 30.12645, lng: 78.32975, raio: 70, quando: "As duas pontes, lado a lado",
+        texto: "A tradição conta que Lakshmana, irmão de Rama, atravessou o Ganges aqui pendurado numa corda de juta. A ponte de ferro é de 1929 e está fechada desde 2022. Ao lado foi construída a Bajrang Setu, com piso de vidro: Bajrang é um dos nomes de Hanuman. Se ela estiver aberta, atravesse por ela para a margem oeste.",
+        dica: "Se a Bajrang Setu estiver fechada, volte pela margem leste até a Janki Setu." },
+      { nome: "Tapovan: templos, compras e café", lat: 30.12630, lng: 78.32850, raio: 120, quando: "Do outro lado da ponte",
+        texto: "Tapovan quer dizer floresta da penitência. Aqui fica o Lakshman Temple, no lugar onde, segundo a tradição, Lakshmana fez penitência, e o Kailash Niketan Mandir, outro templo de 13 andares. A rua que sobe da ponte é a melhor de Rishikesh para compras: tigelas tibetanas, xales, cristais e roupas de yoga.",
+        dica: "Para voltar, um tuk-tuk até o Yog Niketan custa uns ₹200. A Aarti no Parmarth começa às 17h: chegue por volta das 16h40.",
+        lojas: [
+          ["Lakshman Temple", "templo de Lakshmana, 20 a 30 minutos", "Lakshman Temple Laxman Jhula Rishikesh"],
+          ["Kailash Niketan Mandir", "o outro templo de 13 andares", "Kailash Niketan Mandir Rishikesh"],
+          ["Mercado de Laxman Jhula e Tapovan", "rudraksha, tigelas tibetanas, roupas de yoga, cristais e incensos", "Tapovan Market Laxman Jhula Rishikesh"],
+          ["Namaste Rishikesh Pashmina Store", "pashminas e xales da Caxemira · 4,7 ★", "Namaste Rishikesh Pashmina Store"],
+          ["Tibetan Handicraft", "perto do Rani Mandir: bandeiras de oração, estátuas e joias · 4,7 ★", "Tibetan Handicraft Laxman Jhula Rishikesh"],
+          ["Antic Himalaya", "singing bowls e artesanato do Himalaia · 5,0 ★", "Antic Himalaya Laxman Jhula Rishikesh"],
+          ["Tattv Cafe", "comida natural e vegana, vista para as montanhas · fecha 22h", "Tattv Cafe Tapovan Rishikesh"]] }
+    ] }
+};
+const RUMOS = ["norte", "nordeste", "leste", "sudeste", "sul", "sudoeste", "oeste", "noroeste"];
+function rumo(a, b) {
+  const r = x => x * Math.PI / 180, y = Math.sin(r(b.lng - a.lng)) * Math.cos(r(b.lat)),
+    x = Math.cos(r(a.lat)) * Math.sin(r(b.lat)) - Math.sin(r(a.lat)) * Math.cos(r(b.lat)) * Math.cos(r(b.lng - a.lng));
+  const g = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360; return { g, nome: RUMOS[Math.round(g / 45) % 8] };
+}
+const distTxt = km => km < 1 ? Math.max(10, Math.round(km * 1000 / 10) * 10) + " m" : km.toFixed(1).replace(".", ",") + " km";
+// cartão no dia: abre o passeio
+function cartaoPasseio(id) {
+  const p = PASSEIOS[id]; if (!p) return null;
+  return h("button", { type: "button", class: "passcard", onclick: () => abrirPasseio(id) },
+    h("span", { class: "passico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 26, height: 26 }, h("path", { d: "M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linejoin": "round" }))),
+    h("span", { class: "tx" }, h("small", { text: "Passeio guiado" }), h("b", { text: p.titulo }),
+      h("span", { text: `${p.paradas.length} paradas · ${p.total}. O mapa te leva de uma a outra e conta a história de cada lugar.` })),
+    h("span", { class: "chev", "aria-hidden": "true", text: "›" }));
+}
+function abrirPasseio(id) {
+  const P = PASSEIOS[id]; if (!P) return;
+  document.querySelector(".passeio")?.__fecha?.();
+  const chave = "cdi-passeio-" + id;
+  let est = { i: 0, feitos: [] }; try { est = { ...est, ...JSON.parse(lsGet(chave) || "{}") }; } catch (e) {}
+  const guarda = () => lsSet(chave, JSON.stringify({ i: est.i, feitos: est.feitos }));
+  let eu = null, watch = null, mapa = null, marcas = [], euMarca = null, trava = null, chegouAvisado = {}, narrar = lsGet("cdi-passeio-voz") !== "0", centrou = false;
+  const ps = P.paradas;
+  const caixaMapa = h("div", { class: "passmapa" }, h("p", { class: "globoaviso", text: "Abrindo o mapa…" }));
+  const painel = h("div", { class: "passpainel" });
+  const fecha = () => { if (watch != null) navigator.geolocation.clearWatch(watch); try { trava && trava.release(); } catch (e) {} pararFala(); try { mapa && mapa.remove(); } catch (e) {} box.remove(); };
+  const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+  const btnEu = h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => { if (eu && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 16) }); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0"));
+  const box = h("div", { class: "passeio", role: "dialog", "aria-label": "Passeio guiado: " + P.titulo },
+    h("div", { class: "passtopo" },
+      h("button", { type: "button", class: "passx", "aria-label": "Fechar o passeio", onclick: fecha }, "×"),
+      h("div", null, h("p", { class: "eyebrow", text: "Passeio guiado" }), h("h2", { text: P.titulo }))),
+    h("div", { class: "passmapawrap" }, caixaMapa,
+      h("div", { class: "mapctl" },
+        h("button", { type: "button", "aria-label": "Aproximar", onclick: () => mapa && mapa.easeTo({ zoom: mapa.getZoom() + 1 }) }, ic("M12 5v14M5 12h14")),
+        h("button", { type: "button", "aria-label": "Afastar", onclick: () => mapa && mapa.easeTo({ zoom: mapa.getZoom() - 1 }) }, ic("M5 12h14")),
+        btnEu,
+        h("button", { type: "button", "aria-label": "Ver o passeio inteiro", onclick: () => enquadra(true) }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")))),
+    painel);
+  box.__fecha = fecha;
+  document.body.append(box);
+  try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {}
+  const fala = p => { if (!podeFalar) return; falarEm(p.nome + ". " + p.texto + (p.dica ? " " + p.dica : ""), "pt-BR", .95); };
+  const vai = i => { est.i = Math.max(0, Math.min(ps.length - 1, i)); guarda(); desenha(); pinta(); if (mapa) mapa.easeTo({ center: [ps[est.i].lng, ps[est.i].lat], zoom: Math.max(mapa.getZoom(), 15.5) }); };
+  const conclui = () => { if (!est.feitos.includes(est.i)) est.feitos.push(est.i); guarda(); if (est.i < ps.length - 1) vai(est.i + 1); else { desenha(); pinta(); } };
+  function enquadra(animar) {
+    if (!mapa) return; const b = new maplibregl.LngLatBounds();
+    ps.forEach(p => b.extend([p.lng, p.lat])); if (eu && distKm(eu, ps[0]) < 5) b.extend([eu.lng, eu.lat]);
+    mapa.fitBounds(b, { padding: { top: 40, bottom: 40, left: 40, right: 60 }, duration: animar ? 600 : 0, maxZoom: 16 });
+  }
+  function pinta() {
+    // troca só as classes do passeio: a do mapa (maplibregl-marker) posiciona o número no lugar certo
+    marcas.forEach((m, k) => { const el = m.getElement(); el.classList.toggle("atual", k === est.i); el.classList.toggle("feito", k !== est.i && est.feitos.includes(k)); });
+    if (euMarca) euMarca.setLngLat([eu.lng, eu.lat]);
+  }
+  function desenha() {
+    const p = ps[est.i], fim = est.feitos.length === ps.length;
+    const d = eu ? distKm(eu, p) : null, r = eu ? rumo(eu, p) : null, perto = d != null && d * 1000 <= (p.raio || 80);
+    const rota = "https://www.google.com/maps/dir/?api=1&destination=" + p.lat + "," + p.lng + "&travelmode=walking";
+    painel.replaceChildren(
+      h("div", { class: "passpassos", role: "tablist", "aria-label": "Paradas" }, ps.map((q, k) => h("button", { type: "button", role: "tab", "aria-selected": String(k === est.i), class: est.feitos.includes(k) ? "feito" : "", "aria-label": `Parada ${k + 1}: ${q.nome}`, onclick: () => vai(k) }, est.feitos.includes(k) ? "✓" : String(k + 1)))),
+      h("div", { class: "passatual" + (perto ? " chegou" : "") },
+        h("p", { class: "eyebrow", text: perto ? "Você chegou" : `Parada ${est.i + 1} de ${ps.length} · ${p.quando}` }),
+        h("h3", { text: p.nome }),
+        d != null ? h("p", { class: "passdist" }, perto ? "Você está aqui." : [h("b", { text: distTxt(d) }), ` ao ${r.nome} · uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé`],
+          !perto ? h("span", { class: "seta", style: `transform:rotate(${Math.round(r.g)}deg)`, "aria-hidden": "true", text: "↑" }) : null)
+          : h("p", { class: "passdist", text: S.passGpsMsg || "Procurando você no mapa…" }),
+        h("div", { class: "actions" },
+          h("a", { class: "btn gold", href: rota, target: "_blank", rel: "noopener" }, "Como chegar"),
+          podeFalar ? h("button", { class: "btn", type: "button", onclick: () => fala(p) }, "▶ Ouvir") : null,
+          est.i < ps.length - 1 ? h("button", { class: "btn", type: "button", onclick: conclui }, "Próxima parada ›")
+            : !est.feitos.includes(est.i) ? h("button", { class: "btn", type: "button", onclick: conclui }, "Terminar o passeio") : null)),
+      h("div", { class: "passtexto" },
+        h("p", { text: p.texto }),
+        p.dica ? h("p", { class: "passdica", text: p.dica }) : null,
+        p.lojas ? h("div", { class: "passlojas" }, h("p", { class: "eyebrow rule", text: "Neste trecho" }),
+          p.lojas.map(([n, t, q]) => h("a", { href: mapsBusca(q), target: "_blank", rel: "noopener" }, h("b", { text: n }), h("span", { text: t }), h("i", { text: "Mapa ›" })))) : null,
+        fim ? h("div", { class: "passfim" }, h("p", { class: "eyebrow", text: "Passeio feito" }), h("p", { text: "Às 17h tem Aarti no Parmarth Niketan. Chegue por volta das 16h40 para pegar lugar nos degraus." }),
+          h("div", { class: "actions" }, h("a", { class: "btn gold", href: "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(P.saida) + "&travelmode=walking", target: "_blank", rel: "noopener" }, "Voltar ao Yog Niketan"),
+            h("a", { class: "btn", href: "https://www.google.com/maps/dir/?api=1&destination=" + ps[1].lat + "," + ps[1].lng + "&travelmode=walking", target: "_blank", rel: "noopener" }, "Ir para a Aarti"))) : null,
+        h("label", { class: "passvoz", for: "passvoz-" + id }, h("input", { type: "checkbox", id: "passvoz-" + id, checked: narrar, onchange: e => { narrar = e.target.checked; lsSet("cdi-passeio-voz", narrar ? "1" : "0"); if (!narrar) pararFala(); } }),
+          h("span", { text: "Contar a história em voz alta quando eu chegar em cada parada" })),
+        h("p", { class: "small passnota", text: "A linha do mapa liga as paradas em reta. Para o caminho pelas ruas, toque em Como chegar: abre o Google Maps e depois é só voltar para o app." })));
+  }
+  const recebe = pos => {
+    eu = { lat: pos.coords.latitude, lng: pos.coords.longitude }; S.passGpsMsg = "";
+    if (mapa && !euMarca) euMarca = new maplibregl.Marker({ element: h("div", { class: "passeu" }) }).setLngLat([eu.lng, eu.lat]).addTo(mapa);
+    if (mapa && !centrou) { centrou = true; enquadra(false); }
+    const p = ps[est.i];
+    if (distKm(eu, p) * 1000 <= (p.raio || 80) && !chegouAvisado[est.i]) {
+      chegouAvisado[est.i] = true; try { navigator.vibrate && navigator.vibrate([30, 80, 30]); } catch (e) {}
+      if (narrar) fala(p);
+    }
+    pinta(); desenha();
+  };
+  if (navigator.geolocation) watch = navigator.geolocation.watchPosition(recebe, e => { S.passGpsMsg = e.code === 1 ? "A localização está bloqueada para o app. Libere nos ajustes do celular para o mapa te acompanhar." : "Não consegui achar você agora. O mapa e as histórias funcionam mesmo assim."; desenha(); }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
+  else S.passGpsMsg = "Este celular não informa a localização. O mapa e as histórias funcionam mesmo assim.";
+  desenha();
+  carregaGlobo().then(() => {
+    if (!box.isConnected) return; caixaMapa.replaceChildren();
+    mapa = new maplibregl.Map({ container: caixaMapa, attributionControl: false, center: [ps[est.i].lng, ps[est.i].lat], zoom: 15, maxZoom: 19, dragRotate: false, pitchWithRotate: false, fadeDuration: 0,
+      style: { version: 8, sources: {
+          ruas: { type: "raster", tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize: 256, maxzoom: 19 },
+          rota: { type: "geojson", data: { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: ps.map(p => [p.lng, p.lat]) } } } },
+        layers: [{ id: "fundo", type: "background", paint: { "background-color": "#EAD6A8" } },
+          { id: "ruas", type: "raster", source: "ruas", paint: { "raster-fade-duration": 0, "raster-saturation": -.2, "raster-opacity": .85 } },
+          { id: "rota", type: "line", source: "rota", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#8A3F32", "line-width": 3, "line-dasharray": [1.5, 1.8], "line-opacity": .8 } }] } });
+    mapa.touchZoomRotate.disableRotation();
+    marcas = ps.map((p, k) => new maplibregl.Marker({ element: h("button", { type: "button", class: "passpin", "aria-label": p.nome, onclick: () => vai(k) }, h("b", { text: String(k + 1) })) }).setLngLat([p.lng, p.lat]).addTo(mapa));
+    if (eu) { euMarca = new maplibregl.Marker({ element: h("div", { class: "passeu" }) }).setLngLat([eu.lng, eu.lat]).addTo(mapa); }
+    enquadra(false); if (eu) centrou = true; pinta();
+  }, () => { caixaMapa.querySelector(".globoaviso").textContent = "Não consegui abrir o mapa. Confira a internet; as histórias continuam abaixo."; });
+}
 function vDia(d, open, isToday, abrir) {
   const ls = (d.pins || []).map(localDe).filter(Boolean);
   const head = h("button", { class: "dayhead", type: "button", "aria-expanded": String(open), onclick: () => abrir(d.n) },
@@ -3090,6 +3293,7 @@ function vDia(d, open, isToday, abrir) {
         // agenda corrida, sem separar em manhã, tarde e noite
         [d.agenda.flatMap(p => p.itens)].map(itens => [
           h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
+      d.passeio && PASSEIOS[d.passeio] ? cartaoPasseio(d.passeio) : null,
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
         l.dados && l.dados.length ? h("div", { class: "stats" }, l.dados.map(x => h("div", null, h("b", { text: x.v }), h("span", { text: x.l })))) : null)),
