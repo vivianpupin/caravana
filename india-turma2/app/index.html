@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/11 · 01:28";</script>
+<script>window.__VERSAO = "12/11 · 01:30";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3513,7 +3513,7 @@ function abrirPasseio(id) {
   const fecha = () => { lsSet("cdi-passeio-aberto", ""); document.removeEventListener("visibilitychange", voltou); clearInterval(relogio); pararBussola(); if (watch != null) navigator.geolocation.clearWatch(watch); try { trava && trava.release(); } catch (e) {} try { mapa && mapa.remove(); } catch (e) {} box.remove(); };
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   let seguir = false;
-  const centraEu = () => { if (eu && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 16.5), duration: 600 }); };
+  const centraEu = () => { if (eu && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 17), duration: 600 }); };
   const marcaSeguir = v => { seguir = v; btnEu.setAttribute("aria-pressed", String(v)); };
   const btnEu = h("button", { type: "button", "aria-label": "Onde eu estou", "aria-pressed": "false", onclick: () => {
       marcaSeguir(true);
@@ -3741,7 +3741,8 @@ function abrirPasseio(id) {
       rolarTexto = true;
     }
     pinta(); desenhaAgora(); desenha(); giraSeta(); pedeRota(false);
-    if (seguir && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], duration: 500 });
+    // acompanhando: recentra devagar, só quando o mapa está parado (nunca no meio de um gesto)
+    if (seguir && mapa && !mapa.isMoving()) mapa.easeTo({ center: [eu.lng, eu.lat], duration: 400 });
     if (rolarTexto && !vendo) { rolarTexto = false; requestAnimationFrame(() => { const t = painel.querySelector(".passtexto"); if (t) painel.scrollTo({ top: t.offsetTop - painel.offsetTop - 8, behavior: "smooth" }); }); }
   };
   if (navigator.geolocation) watch = navigator.geolocation.watchPosition(recebe, e => { S.passGpsMsg = e.code === 1 ? "A localização está bloqueada para o app. Libere nos ajustes do celular para o mapa te acompanhar." : "Não consegui achar você agora. O mapa e as histórias funcionam mesmo assim."; desenha(); }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
@@ -3765,7 +3766,7 @@ function abrirPasseio(id) {
           { id: "agorareta", type: "line", source: "agora", filter: ["==", ["get", "reta"], true], layout: { "line-cap": "round" }, paint: { "line-color": "#2F7BEA", "line-width": 3, "line-dasharray": [1, 1.6] } }] } });
     mapa.touchZoomRotate.disableRotation(); caixaMapa.__mapa = mapa;
     // arrastar o mapa com o dedo para de acompanhar a pessoa (o botão "onde eu estou" liga de novo)
-    mapa.on("dragstart", () => marcaSeguir(false));
+    mapa.on("movestart", e => { if (e.originalEvent) marcaSeguir(false); });
     // nomes das lojas só aparecem com o mapa de perto (de longe embolam)
     const longe = () => caixaMapa.classList.toggle("longe", mapa.getZoom() < 16.3); mapa.on("zoom", longe); longe();
     marcas = ps.map((p, k) => new maplibregl.Marker({ element: h("button", { type: "button", class: "passpin", "aria-label": p.nome, onclick: () => vai(k) }, h("b", { text: String(k + 1) })) }).setLngLat([p.lng, p.lat]).addTo(mapa));
@@ -6611,7 +6612,7 @@ function vPerto() {
       h("div", { class: "mapctl" },
         h("button", { type: "button", "aria-label": "Aproximar", onclick: () => zoom(.5) }, ic("M12 5v14M5 12h14")),
         h("button", { type: "button", "aria-label": "Afastar", onclick: () => zoom(2) }, ic("M5 12h14")),
-        h("button", { type: "button", "aria-label": "Centralizar em mim", class: S.pertoCentro ? "" : "on", onclick: () => { S.pertoCentro = null; if (!minhaPos() && S.gpsWatch == null) ligarGps(true); render(); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")),
+        h("button", { type: "button", "aria-label": "Centralizar em mim", class: S.pertoCentro ? "" : "on", onclick: () => { S.pertoCentro = null; S.pertoKm = .25; if (!minhaPos() && S.gpsWatch == null) ligarGps(true); render(); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")),
         perto.length ? h("button", { type: "button", "aria-label": "Ver todos", onclick: verTodos }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")) : null),
       null),
     // créditos das imagens fora do mapa, pequenininhos
@@ -6690,7 +6691,7 @@ function vMundo() {
       h("div", { class: "mapctl" },
         h("button", { type: "button", "aria-label": "Aproximar", onclick: () => zoom(1) }, ic("M12 5v14M5 12h14")),
         h("button", { type: "button", "aria-label": "Afastar", onclick: () => zoom(-1) }, ic("M5 12h14")),
-        eu0 ? h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => vaiPara(eu0) }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")) : null,
+        eu0 ? h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => S.globo && S.globo.flyTo({ center: [+eu0.lng, +eu0.lat], zoom: Math.max(S.globo.getZoom(), 16), duration: 2500 }) }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")) : null,
         h("button", { type: "button", "aria-label": "Ver todos", onclick: () => enquadraGlobo(true) }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")))),
     h("p", { class: "mapcred", text: sat ? "Satélite: Esri, Maxar" : "Mapa: © OpenStreetMap" }),
     !S.gpsOn ? gpsDesligado()
