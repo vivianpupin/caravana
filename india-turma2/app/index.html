@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/11 · 01:35";</script>
+<script>window.__VERSAO = "12/11 · 01:39";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2246,6 +2246,9 @@ video.mgrande{max-height:70vh;background:#000}
 .passtexto.chegou{padding:14px;border-radius:16px;background:var(--panel);border:1px solid var(--moss)}
 .passtexto .eyebrow{margin:0}
 .passnota{color:var(--faint);margin:0}
+.passloc{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:12px;background:var(--panel2);font-size:14px;color:var(--soft)}
+.passloc p{margin:0}
+.passloc.erro{background:rgba(160,64,47,.1);color:var(--err)}
 .passprec{flex-basis:100%;font-size:12.5px;color:var(--terra)}
 @media (prefers-reduced-motion:reduce){.passeio .seta{transition:none}}
 </style>
@@ -3532,7 +3535,7 @@ function abrirPasseio(id) {
   const btnEu = h("button", { type: "button", "aria-label": "Onde eu estou", "aria-pressed": "false", onclick: () => {
       marcaSeguir(true);
       if (eu) centraEu();
-      else if (navigator.geolocation) { S.passGpsMsg = "Procurando você…"; desenha(); navigator.geolocation.getCurrentPosition(pos => { recebe(pos); centraEu(); }, () => {}, { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }); }
+      else { pedeLoc(); painel.scrollTo({ top: 0 }); }
     } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0"));
   const box = h("div", { class: "passeio", role: "dialog", "aria-label": "Passeio guiado: " + P.titulo },
     h("div", { class: "passtopo" },
@@ -3709,8 +3712,10 @@ function abrirPasseio(id) {
               h("div", null, h("b", { text: distTxt(d) }),
                 h("span", { text: (!extra && p.carro ? `uns ${Math.max(1, Math.round(nr && agora.s && agora.m ? agora.s / 60 * (d * 1000 / agora.m) : d * 60 / 25))} min de carro ${nr ? "pela estrada" : "(distância em linha reta)"}` : `uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé ${nr ? (agora && agora.trilha ? "pela beira do rio" : "pelas ruas") : "em linha reta"}`) + (direcao() != null ? "" : ` · siga para o ${r.nome}`) }),
                 h("small", { class: "passbus", text: direcao() != null ? "A seta e o feixe azul do mapa giram com o celular: a seta aponta para onde andar." : (S.passBussolaMsg || "") }),
-                eu.prec > 60 ? h("small", { class: "passprec", text: `GPS impreciso agora (±${eu.prec} m). Fica melhor ao ar livre.` }) : null))
-            : h("p", { class: "passdist", text: S.passGpsMsg || "Procurando você no mapa…" }),
+                eu.prec > 300 ? h("small", { class: "passprec", text: `Sua localização está aproximada (±${eu.prec} m). No iPhone: Ajustes → Privacidade e Segurança → Serviços de Localização → Safari (ou o app) → ligue "Localização Precisa".` })
+                  : eu.prec > 60 ? h("small", { class: "passprec", text: `GPS impreciso agora (±${eu.prec} m). Fica melhor ao ar livre.` }) : null))
+            : h("div", { class: "passloc" + (S.passGpsCod ? " erro" : "") }, h("p", { text: S.passGpsMsg || "Procurando você no mapa… Se demorar, toque abaixo." }),
+                h("button", { class: "btn gold passbig", type: "button", onclick: pedeLoc }, "📍 Mostrar minha localização")),
           d != null && !(bussola && bussola.g != null) ? h("button", { class: "btn ghost passbig", type: "button", onclick: ligaBussola }, "🧭 Mostrar para onde o celular aponta") : null,
           h("button", { class: "btn passbig", type: "button", onclick: () => { if (extra) extra.chegou = true; else if (!est.chegou.includes(est.i)) est.chegou.push(est.i); guarda(); desenha(); painel.scrollTo({ top: 0 }); } }, "Já cheguei"),
           extra ? h("button", { class: "btn ghost passbig", type: "button", onclick: sairExtra }, `Voltar ao roteiro: ${parada.nome}`) : null,
@@ -3726,7 +3731,17 @@ function abrirPasseio(id) {
         linkGoogle(p, "Se precisar, o passo a passo também no Google Maps")));
     giraSeta();
   }
+  // GPS não respondeu: diz o motivo e como liberar (antes falhava em silêncio)
+  function erroLoc(e) { if (eu && e && e.code !== 1) return; S.passGpsMsg = erroGps(e); S.passGpsCod = e && e.code; desenha(); }
+  // pede a localização de novo (um toque da pessoa: no iPhone isso faz aparecer o pedido de permissão)
+  function pedeLoc() {
+    if (!navigator.geolocation) { S.passGpsMsg = "Este celular não informa a localização."; desenha(); return; }
+    S.passGpsMsg = "Procurando você…"; S.passGpsCod = null; desenha();
+    navigator.geolocation.getCurrentPosition(pos => { recebe(pos); if (mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 17), duration: 600 }); }, erroLoc, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 });
+    if (watch == null) watch = navigator.geolocation.watchPosition(recebe, erroLoc, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
+  }
   const recebe = pos => {
+    S.passGpsCod = null;
     const novo = { lat: pos.coords.latitude, lng: pos.coords.longitude, prec: Math.round(pos.coords.accuracy || 0) };
     eu = novo; S.passGpsMsg = "";
     if (isFinite(pos.coords.heading) && pos.coords.heading !== null && (pos.coords.speed || 0) > .6) gpsG = pos.coords.heading;
@@ -3759,7 +3774,7 @@ function abrirPasseio(id) {
     if (seguir && mapa && !mapa.isMoving()) mapa.easeTo({ center: [eu.lng, eu.lat], duration: 400 });
     if (rolarTexto && !vendo) { rolarTexto = false; requestAnimationFrame(() => { const t = painel.querySelector(".passtexto"); if (t) painel.scrollTo({ top: t.offsetTop - painel.offsetTop - 8, behavior: "smooth" }); }); }
   };
-  if (navigator.geolocation) watch = navigator.geolocation.watchPosition(recebe, e => { S.passGpsMsg = e.code === 1 ? "A localização está bloqueada para o app. Libere nos ajustes do celular para o mapa te acompanhar." : "Não consegui achar você agora. O mapa e as histórias funcionam mesmo assim."; desenha(); }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
+  if (navigator.geolocation) watch = navigator.geolocation.watchPosition(recebe, erroLoc, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
   else S.passGpsMsg = "Este celular não informa a localização. O mapa e as histórias funcionam mesmo assim.";
   desenha();
   carregaGlobo().then(() => {
