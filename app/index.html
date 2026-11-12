@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/11 · 23:49";</script>
+<script>window.__VERSAO = "11/11 · 23:51";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2123,7 +2123,7 @@ video.mgrande{max-height:70vh;background:#000}
 .passcard b{font-family:var(--display);font-size:18px;font-weight:600;line-height:1.25}
 .passcard .tx span{font-size:13.5px;color:var(--soft);line-height:1.45}
 .passcard .chev{font-size:26px;color:var(--moss)}
-.passeio{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;overflow:hidden;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.passeio{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;overflow:hidden;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .passtopo{display:flex;align-items:center;gap:12px;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
 .passtopo h2{font-size:20px}
 .passtopo .eyebrow{margin:0}
@@ -2164,6 +2164,7 @@ video.mgrande{max-height:70vh;background:#000}
 .passvoz{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--soft)}
 .passvoz input{margin-top:3px;accent-color:var(--moss)}
 .passnota{color:var(--faint);margin:0}
+.passprec{flex-basis:100%;font-size:12.5px;color:var(--terra)}
 @media (prefers-reduced-motion:reduce){.passdist .seta{transition:none}}
 </style>
 
@@ -3161,6 +3162,9 @@ const PASSEIOS = {
           ["Tattv Cafe", "comida natural e vegana, vista para as montanhas · fecha 22h", "Tattv Cafe Tapovan Rishikesh"]] }
     ] }
 };
+// por enquanto o passeio guiado aparece só para a Vivian (líder), para testar em Rishikesh antes de abrir para a turma
+const PASSEIO_SO_PARA = "vivianpupin@gmail.com";
+const podePasseio = () => !!(S.isOwner && S.me && String(S.me.email || "").toLowerCase() === PASSEIO_SO_PARA);
 const RUMOS = ["norte", "nordeste", "leste", "sudeste", "sul", "sudoeste", "oeste", "noroeste"];
 function rumo(a, b) {
   const r = x => x * Math.PI / 180, y = Math.sin(r(b.lng - a.lng)) * Math.cos(r(b.lat)),
@@ -3187,7 +3191,7 @@ function abrirPasseio(id) {
   const ps = P.paradas;
   const caixaMapa = h("div", { class: "passmapa" }, h("p", { class: "globoaviso", text: "Abrindo o mapa…" }));
   const painel = h("div", { class: "passpainel" });
-  const fecha = () => { if (watch != null) navigator.geolocation.clearWatch(watch); try { trava && trava.release(); } catch (e) {} pararFala(); try { mapa && mapa.remove(); } catch (e) {} box.remove(); };
+  const fecha = () => { lsSet("cdi-passeio-aberto", ""); document.removeEventListener("visibilitychange", voltou); if (watch != null) navigator.geolocation.clearWatch(watch); try { trava && trava.release(); } catch (e) {} pararFala(); try { mapa && mapa.remove(); } catch (e) {} box.remove(); };
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   const btnEu = h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => { if (eu && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 16) }); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0"));
   const box = h("div", { class: "passeio", role: "dialog", "aria-label": "Passeio guiado: " + P.titulo },
@@ -3203,6 +3207,12 @@ function abrirPasseio(id) {
     painel);
   box.__fecha = fecha;
   document.body.append(box);
+  lsSet("cdi-passeio-aberto", id + "|" + Date.now());
+  // som e voz: o iPhone só deixa falar sozinho depois de um toque na tela; o primeiro toque no passeio já libera
+  box.addEventListener("click", () => { try { const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); } catch (e) {} }, { once: true });
+  // a tela apagada desliga a trava; quando a pessoa volta (do Google Maps, por exemplo), pede de novo
+  const voltou = () => { if (!document.hidden && box.isConnected) { try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {} } };
+  document.addEventListener("visibilitychange", voltou);
   try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {}
   const fala = p => { if (!podeFalar) return; falarEm(p.nome + ". " + p.texto + (p.dica ? " " + p.dica : ""), "pt-BR", .95); };
   const vai = i => { est.i = Math.max(0, Math.min(ps.length - 1, i)); guarda(); desenha(); pinta(); if (mapa) mapa.easeTo({ center: [ps[est.i].lng, ps[est.i].lat], zoom: Math.max(mapa.getZoom(), 15.5) }); };
@@ -3219,7 +3229,7 @@ function abrirPasseio(id) {
   }
   function desenha() {
     const p = ps[est.i], fim = est.feitos.length === ps.length;
-    const d = eu ? distKm(eu, p) : null, r = eu ? rumo(eu, p) : null, perto = d != null && d * 1000 <= (p.raio || 80);
+    const d = eu ? distKm(eu, p) : null, r = eu ? rumo(eu, p) : null, perto = d != null && d * 1000 <= (p.raio || 80) + Math.min(eu.prec || 0, 40);
     const rota = "https://www.google.com/maps/dir/?api=1&destination=" + p.lat + "," + p.lng + "&travelmode=walking";
     painel.replaceChildren(
       h("div", { class: "passpassos", role: "tablist", "aria-label": "Paradas" }, ps.map((q, k) => h("button", { type: "button", role: "tab", "aria-selected": String(k === est.i), class: est.feitos.includes(k) ? "feito" : "", "aria-label": `Parada ${k + 1}: ${q.nome}`, onclick: () => vai(k) }, est.feitos.includes(k) ? "✓" : String(k + 1)))),
@@ -3227,7 +3237,8 @@ function abrirPasseio(id) {
         h("p", { class: "eyebrow", text: perto ? "Você chegou" : `Parada ${est.i + 1} de ${ps.length} · ${p.quando}` }),
         h("h3", { text: p.nome }),
         d != null ? h("p", { class: "passdist" }, perto ? "Você está aqui." : [h("b", { text: distTxt(d) }), ` ao ${r.nome} · uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé`],
-          !perto ? h("span", { class: "seta", style: `transform:rotate(${Math.round(r.g)}deg)`, "aria-hidden": "true", text: "↑" }) : null)
+          !perto ? h("span", { class: "seta", style: `transform:rotate(${Math.round(r.g)}deg)`, "aria-hidden": "true", text: "↑" }) : null,
+          eu.prec > 60 ? h("small", { class: "passprec", text: `GPS impreciso agora (±${eu.prec} m). Fica melhor ao ar livre.` }) : null)
           : h("p", { class: "passdist", text: S.passGpsMsg || "Procurando você no mapa…" }),
         h("div", { class: "actions" },
           h("a", { class: "btn gold", href: rota, target: "_blank", rel: "noopener" }, "Como chegar"),
@@ -3250,8 +3261,13 @@ function abrirPasseio(id) {
     eu = { lat: pos.coords.latitude, lng: pos.coords.longitude }; S.passGpsMsg = "";
     if (mapa && !euMarca) euMarca = new maplibregl.Marker({ element: h("div", { class: "passeu" }) }).setLngLat([eu.lng, eu.lat]).addTo(mapa);
     if (mapa && !centrou) { centrou = true; enquadra(false); }
+    eu.prec = Math.round(pos.coords.accuracy || 0);
+    const folga = Math.min(eu.prec || 0, 40), dentro = q => distKm(eu, q) * 1000 <= (q.raio || 80) + folga;
+    // chegou numa parada mais à frente (pulou alguma): o passeio vai junto
+    const k = ps.findIndex((q, n) => n !== est.i && !est.feitos.includes(n) && dentro(q));
+    if (k > -1 && !dentro(ps[est.i])) { est.i = k; guarda(); }
     const p = ps[est.i];
-    if (distKm(eu, p) * 1000 <= (p.raio || 80) && !chegouAvisado[est.i]) {
+    if (dentro(p) && !chegouAvisado[est.i]) {
       chegouAvisado[est.i] = true; try { navigator.vibrate && navigator.vibrate([30, 80, 30]); } catch (e) {}
       if (narrar) fala(p);
     }
@@ -3293,7 +3309,7 @@ function vDia(d, open, isToday, abrir) {
         // agenda corrida, sem separar em manhã, tarde e noite
         [d.agenda.flatMap(p => p.itens)].map(itens => [
           h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
-      d.passeio && PASSEIOS[d.passeio] ? cartaoPasseio(d.passeio) : null,
+      podePasseio() && (d.passeio || (d.cidade === "Rishikesh" && d.n >= 9 && "pontes")) ? cartaoPasseio(d.passeio || "pontes") : null,
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
         l.dados && l.dados.length ? h("div", { class: "stats" }, l.dados.map(x => h("div", null, h("b", { text: x.v }), h("span", { text: x.l })))) : null)),
@@ -11298,6 +11314,7 @@ render();
     }, () => {});
   }
   if (user) { const me = await user.me(); S.me = me; S.uid = me.id; S.isOwner = me.isOwner; perfis([me.id]); }
+  { const [pid, quando] = String(lsGet("cdi-passeio-aberto") || "").split("|"); if (pid && PASSEIOS[pid] && podePasseio() && Date.now() - +quando < 8 * 3600e3) setTimeout(() => abrirPasseio(pid), 1200); }
   // no site o app fica escondido até aqui; na primeira vez entra a tela de boas-vindas, nas outras espera os viajantes
   let viajantesProntos; const vProntos = new Promise(r => { viajantesProntos = r; });
   // o app aparece e, no mesmo instante, sai o cartão de entrar (que ficou "Abrindo a travessia…" até aqui)
