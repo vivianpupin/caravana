@@ -19,7 +19,7 @@ self.addEventListener("install", e => {
 // completa o que faltou guardar (se a instalação pegou sinal fraco, algum arquivo ficou de fora e faltava sem internet)
 function completa() { return Promise.all([caches.open(CACHE), caches.open(MARCAS)]).then(([c, m]) => Promise.all(["./", ...ARQUIVOS].map(a => c.match(a).then(g => g || guardaUm(c, m, a, true)).catch(() => {})))); }
 self.addEventListener("message", e => { if (e.data === "completa") e.waitUntil(completa()); });
-self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => ![CACHE, EXTRA, MAPA, MARCAS, "caravana-bolinha"].includes(k)).map(k => caches.delete(k))))); self.clients.claim(); });
+self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => ![CACHE, EXTRA, MAPA, MARCAS, "caravana-bolinha", "caravana-rotas"].includes(k)).map(k => caches.delete(k))))); self.clients.claim(); });
 const guarda = (nome, req, r) => { if (r && (r.ok || r.type === "opaque")) { const cp = r.clone(); caches.open(nome).then(c => c.put(req, cp)); } return r; };
 // mostra o guardado na hora e atualiza por trás, para a próxima vez
 function guardadoPrimeiro(nome, req) {
@@ -65,7 +65,7 @@ self.addEventListener("fetch", e => {
   }
   // letras (Google Fonts) e o zip do álbum: guardadas depois da primeira vez
   if (/^(fonts\.googleapis\.com|fonts\.gstatic\.com|cdnjs\.cloudflare\.com)$/.test(u.hostname)) return e.respondWith(guardadoPrimeiro(EXTRA, req));
-  // pedacinhos do mapa já vistos ficam guardados para abrir sem sinal
+  // pedacinhos do mapa já vistos ficam guardados para abrir sem sinal (os do passeio guiado ficam em "caravana-rotas", que não é apagado)
   if (/(^|\.)tile\.openstreetmap\.org$|server\.arcgisonline\.com$/.test(u.hostname)) return e.respondWith(mapa(req).catch(() => Response.error()));
 });
 // notificações de mensagem nova no chat
