@@ -2120,7 +2120,11 @@ video.mgrande{max-height:70vh;background:#000}
 .passsinal.volta,.passsinal.fora{background:rgba(160,64,47,.12);color:var(--err)}
 .passbus{font-size:12.5px;color:var(--moss)}
 .passbus:empty{display:none}
-.passeu{width:16px;height:16px;border-radius:50%;background:#2F7BEA;border:3px solid #fff;box-shadow:0 0 0 8px rgba(47,123,234,.22)}
+.passeuw{position:relative;width:22px;height:22px}
+.passeu{position:absolute;inset:0;border-radius:50%;background:#2F7BEA;border:3px solid #fff;box-shadow:0 0 0 8px rgba(47,123,234,.22),0 1px 4px rgba(0,0,0,.3)}
+.passcone{display:none;position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px 0 0 -45px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from -28deg,rgba(47,123,234,.5) 0deg,rgba(47,123,234,.5) 56deg,transparent 56deg);
+  -webkit-mask:radial-gradient(circle,#000 0,#000 30%,transparent 70%);mask:radial-gradient(circle,#000 0,#000 30%,transparent 70%)}
 .passpainel{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
 .passprog{display:flex;flex-direction:column;gap:6px}
 .passprog p{margin:0;font-size:13px;font-weight:600;color:var(--soft);letter-spacing:.02em}
@@ -3334,27 +3338,43 @@ function abrirPasseio(id) {
     catch (e) { if (para === est.i) { agora = null; agoraDe = de; agoraPara = para; } }
     pedindo = false; desenhaAgora(); desenha();
   }
-  // bússola: com o celular deitado na mão, a seta aponta para onde andar
+  // direção do celular, como no Google Maps: o feixe azul do ponto mostra para onde a frente do celular está virada
+  // (bússola do celular; enquanto ela não responde, usa a direção em que a pessoa está andando, pelo GPS)
+  let gpsG = null, girando = 0;
   function ligaBussola() {
-    if (bussola) { pararBussola(); desenha(); return; }
+    if (bussola) return;
     const liga = () => {
+      if (bussola) return;
       const ev = "ondeviceorientationabsolute" in window ? "deviceorientationabsolute" : "deviceorientation";
       const fn = e => {
         const g = e.webkitCompassHeading != null ? e.webkitCompassHeading : e.absolute || ev === "deviceorientationabsolute" ? (360 - (e.alpha || 0)) % 360 : null;
-        if (g == null || !bussola) return; bussola.g = g; giraSeta();
+        if (g == null || !bussola) return;
+        // o ângulo da tela deitada de lado (paisagem) entra na conta
+        const tela = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
+        const primeira = bussola.g == null; bussola.g = (g + tela + 360) % 360;
+        if (primeira) desenha();
+        if (!girando) girando = requestAnimationFrame(() => { girando = 0; giraSeta(); });
       };
-      bussola = { ev, fn, g: null }; window.addEventListener(ev, fn, true); desenha();
+      bussola = { ev, fn, g: null }; window.addEventListener(ev, fn, true);
     };
     try {
       if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function")
-        DeviceOrientationEvent.requestPermission().then(r => { if (r === "granted") liga(); else { S.passBussolaMsg = "A bússola foi recusada. Dá para liberar em Ajustes > Safari > Movimento e orientação."; desenha(); } }).catch(() => { S.passBussolaMsg = "Este celular não liberou a bússola."; desenha(); });
+        DeviceOrientationEvent.requestPermission().then(r => { if (r === "granted") liga(); else { S.passBussolaMsg = "A direção do celular foi recusada. Dá para liberar em Ajustes > Safari > Movimento e orientação."; desenha(); } }).catch(() => {});
       else liga();
-    } catch (e) { S.passBussolaMsg = "Este celular não tem bússola."; desenha(); }
+    } catch (e) {}
   }
+  // no iPhone a bússola só liga depois de um toque: o primeiro toque na tela do passeio já pede
+  if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") box.addEventListener("click", ligaBussola, { capture: true, once: true });
+  else ligaBussola();
+  const elEu = () => h("div", { class: "passeuw" }, h("i", { class: "passcone", "aria-hidden": "true" }), h("div", { class: "passeu" }));
+  const direcao = () => bussola && bussola.g != null ? bussola.g : gpsG;
   function giraSeta() {
+    const dir = direcao();
+    // feixe do ponto azul: o mapa fica com o norte para cima, então o feixe gira o mesmo que a frente do celular
+    const cone = euMarca && euMarca.getElement().querySelector(".passcone");
+    if (cone) { cone.style.display = dir == null ? "none" : "block"; if (dir != null) cone.style.transform = `rotate(${Math.round(dir)}deg)`; }
     const s = painel.querySelector(".seta"); if (!s || rumoAlvo == null) return;
-    const g = bussola && bussola.g != null ? rumoAlvo - bussola.g : rumoAlvo;
-    s.style.transform = `rotate(${Math.round(g)}deg)`;
+    s.style.transform = `rotate(${Math.round(dir != null ? rumoAlvo - dir : rumoAlvo)}deg)`;
   }
   function desenha() {
     const p = ps[est.i], fim = est.feitos.length === ps.length;
@@ -3382,11 +3402,11 @@ function abrirPasseio(id) {
           d != null ? h("div", { class: "passdir" },
               h("span", { class: "seta", "aria-hidden": "true", text: "↑" }),
               h("div", null, h("b", { text: distTxt(d) }),
-                h("span", { text: `uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé ${nr ? "pelas ruas" : "em linha reta"}` + (bussola ? "" : ` · siga para o ${r.nome}`) }),
-                h("small", { class: "passbus", text: bussola ? (bussola.g == null ? "Bússola ligada: deite o celular na mão e gire devagar." : "Bússola ligada: a seta aponta para onde andar.") : (S.passBussolaMsg || "") }),
+                h("span", { text: `uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé ${nr ? "pelas ruas" : "em linha reta"}` + (direcao() != null ? "" : ` · siga para o ${r.nome}`) }),
+                h("small", { class: "passbus", text: direcao() != null ? "A seta e o feixe azul do mapa giram com o celular: a seta aponta para onde andar." : (S.passBussolaMsg || "") }),
                 eu.prec > 60 ? h("small", { class: "passprec", text: `GPS impreciso agora (±${eu.prec} m). Fica melhor ao ar livre.` }) : null))
             : h("p", { class: "passdist", text: S.passGpsMsg || "Procurando você no mapa…" }),
-          d != null ? h("button", { class: "btn ghost passbig", type: "button", "aria-pressed": String(!!bussola), onclick: ligaBussola }, bussola ? "Desligar a bússola" : "🧭 Ligar a bússola (a seta gira com você)") : null,
+          d != null && !(bussola && bussola.g != null) ? h("button", { class: "btn ghost passbig", type: "button", onclick: ligaBussola }, "🧭 Mostrar para onde o celular aponta") : null,
           h("a", { class: "btn gold passbig", href: rota, target: "_blank", rel: "noopener" }, "Abrir o caminho no Google Maps"),
           h("button", { class: "btn passbig", type: "button", onclick: () => { if (!est.chegou.includes(est.i)) est.chegou.push(est.i); guarda(); desenha(); painel.scrollTo({ top: 0 }); } }, "Já cheguei"),
           p.opcional && prox ? h("button", { class: "btn ghost passbig", type: "button", onclick: () => vai(est.i + 1) }, "Pular: está fechado") : null),
@@ -3403,7 +3423,8 @@ function abrirPasseio(id) {
   const recebe = pos => {
     const novo = { lat: pos.coords.latitude, lng: pos.coords.longitude, prec: Math.round(pos.coords.accuracy || 0) };
     eu = novo; S.passGpsMsg = "";
-    if (mapa && !euMarca) euMarca = new maplibregl.Marker({ element: h("div", { class: "passeu" }) }).setLngLat([eu.lng, eu.lat]).addTo(mapa);
+    if (isFinite(pos.coords.heading) && pos.coords.heading !== null && (pos.coords.speed || 0) > .6) gpsG = pos.coords.heading;
+    if (mapa && !euMarca) euMarca = new maplibregl.Marker({ element: elEu() }).setLngLat([eu.lng, eu.lat]).addTo(mapa);
     if (mapa && !centrou) { centrou = true; enquadra(false); }
     // rastro: guarda um ponto a cada 8 m andados, só com GPS bom
     if (eu.prec <= 50) { const u = rastro[rastro.length - 1]; if (!u || distKm(ptDe(u), eu) > .008) { rastro.push([+eu.lng.toFixed(6), +eu.lat.toFixed(6)]); if (rastro.length > 3000) rastro.shift(); lsSet("cdi-passeio-rastro", JSON.stringify({ dia: hoje, pts: rastro })); desenhaRastro(); } }
@@ -3427,7 +3448,7 @@ function abrirPasseio(id) {
       chegouAvisado[est.i] = true; try { navigator.vibrate && navigator.vibrate([30, 80, 30]); } catch (e) {}
       rolarTexto = true;
     }
-    pinta(); desenhaAgora(); desenha(); pedeRota(false);
+    pinta(); desenhaAgora(); desenha(); giraSeta(); pedeRota(false);
     if (rolarTexto) { rolarTexto = false; requestAnimationFrame(() => { const t = painel.querySelector(".passtexto"); if (t) painel.scrollTo({ top: t.offsetTop - painel.offsetTop - 8, behavior: "smooth" }); }); }
   };
   if (navigator.geolocation) watch = navigator.geolocation.watchPosition(recebe, e => { S.passGpsMsg = e.code === 1 ? "A localização está bloqueada para o app. Libere nos ajustes do celular para o mapa te acompanhar." : "Não consegui achar você agora. O mapa e as histórias funcionam mesmo assim."; desenha(); }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
@@ -3455,7 +3476,7 @@ function abrirPasseio(id) {
     marcas = ps.map((p, k) => new maplibregl.Marker({ element: h("button", { type: "button", class: "passpin", "aria-label": p.nome, onclick: () => vai(k) }, h("b", { text: String(k + 1) })) }).setLngLat([p.lng, p.lat]).addTo(mapa));
     ps.forEach(p => (p.lojas || []).filter(l => isFinite(l[3])).forEach(([n, , q, la, lo, , tipo]) =>
       new maplibregl.Marker({ element: h("a", { class: "passloja " + (tipo || "loja"), href: mapsBusca(q), target: "_blank", rel: "noopener", "aria-label": n }, h("span", { text: n }), h("i", { "aria-hidden": "true" })), anchor: "right", offset: [6, 0] }).setLngLat([lo, la]).addTo(mapa)));
-    if (eu) { euMarca = new maplibregl.Marker({ element: h("div", { class: "passeu" }) }).setLngLat([eu.lng, eu.lat]).addTo(mapa); }
+    if (eu) { euMarca = new maplibregl.Marker({ element: elEu() }).setLngLat([eu.lng, eu.lat]).addTo(mapa); }
     const pronto = () => { desenhaDia(); desenhaAgora(); desenhaRastro(); carregaDia(); pedeRota(true); };
     if (mapa.isStyleLoaded()) pronto(); else mapa.once("load", pronto);
     enquadra(false); if (eu) centrou = true; pinta();
