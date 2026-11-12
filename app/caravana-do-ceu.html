@@ -5206,7 +5206,11 @@ function vHabilidadesLider() {
   const gente = S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome).localeCompare(String(b.nome)));
   return dobraLider("habilidades", "panel", h("div", null, h("p", { class: "eyebrow", text: "Habilidades" }), h("h2", { text: "Liberar habilidades" })),
     h("p", { class: "small", text: "Quando liberar, todos recebem um aviso no celular e a caixinha para fazer a foto. Ninguém vê esta lista." }),
-    h("ul", { class: "hablider" }, HABILIDADES.map(([id, nA, nO, fA, fO, lid]) => {
+    // já liberada para todos: sai da lista (fica só o nome, embaixo, para saber o que já foi)
+    ...(() => { const todos = id => gente.length && gente.every(v => (v.habilidades || {})[id]);
+      const falta = HABILIDADES.filter(x => !todos(x[0])), feitas = HABILIDADES.filter(x => todos(x[0]));
+      return [falta.length ? null : h("p", { class: "small", text: "Todas as habilidades já foram liberadas ✓" }),
+      h("ul", { class: "hablider" }, falta.map(([id, nA, nO, fA, fO, lid]) => {
       const tem = gente.filter(v => (v.habilidades || {})[id]);
       return h("li", null,
         h("b", { text: nA === nO ? nA : nA + " / " + nO.split(" ")[0] }), h("span", { class: "small", text: fA }),
@@ -5214,7 +5218,8 @@ function vHabilidadesLider() {
         h("span", { class: "small", text: tem.length ? `Já ganharam: ${tem.length === gente.length ? "todos" : tem.map(v => String(v.nome).split(" ")[0]).join(", ")}` : "Ninguém ganhou ainda" }),
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: () => { if (confirm("Liberar \"" + nA + "\" para todos?")) darHabilidade(id, gente.map(v => v.id)); } }, "Liberar para todos")));
-    })));
+    })),
+      feitas.length ? h("p", { class: "small", text: "Já liberadas para todos: " + feitas.map(x => x[1]).join(", ") + "." }) : null]; })());
 }
 // Só a líder: ver e trocar a palavra-chave que abre o app (fica guardada no Firebase, em privado/acesso)
 // ---------- Só a líder: liga o guardião de cada passagem ao passaporte de cada viajante ----------
