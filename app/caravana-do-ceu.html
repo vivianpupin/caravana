@@ -2127,8 +2127,8 @@ video.mgrande{max-height:70vh;background:#000}
 .passfim{padding:14px;border-radius:16px;background:var(--panel3);display:flex;flex-direction:column;gap:8px}
 .passfim p{margin:0}
 .passfim .actions{display:flex;flex-wrap:wrap;gap:8px}
-.passvoz{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--soft)}
-.passvoz input{margin-top:3px;accent-color:var(--moss)}
+.passtexto.chegou{padding:14px;border-radius:16px;background:var(--panel);border:1px solid var(--moss)}
+.passtexto .eyebrow{margin:0}
 .passnota{color:var(--faint);margin:0}
 .passprec{flex-basis:100%;font-size:12.5px;color:var(--terra)}
 @media (prefers-reduced-motion:reduce){.passdist .seta{transition:none}}
@@ -3144,7 +3144,7 @@ function cartaoPasseio(id) {
   return h("button", { type: "button", class: "passcard", onclick: () => abrirPasseio(id) },
     h("span", { class: "passico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 26, height: 26 }, h("path", { d: "M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linejoin": "round" }))),
     h("span", { class: "tx" }, h("small", { text: "Passeio guiado" }), h("b", { text: p.titulo }),
-      h("span", { text: `${p.paradas.length} paradas · ${p.total}. O mapa te leva de uma a outra e conta a história de cada lugar.` })),
+      h("span", { text: `${p.paradas.length} paradas · ${p.total}. O mapa te leva de uma a outra e mostra a história de cada lugar.` })),
     h("span", { class: "chev", "aria-hidden": "true", text: "›" }));
 }
 function abrirPasseio(id) {
@@ -3153,11 +3153,11 @@ function abrirPasseio(id) {
   const chave = "cdi-passeio-" + id;
   let est = { i: 0, feitos: [] }; try { est = { ...est, ...JSON.parse(lsGet(chave) || "{}") }; } catch (e) {}
   const guarda = () => lsSet(chave, JSON.stringify({ i: est.i, feitos: est.feitos }));
-  let eu = null, watch = null, mapa = null, marcas = [], euMarca = null, trava = null, chegouAvisado = {}, narrar = lsGet("cdi-passeio-voz") !== "0", centrou = false;
+  let eu = null, watch = null, mapa = null, marcas = [], euMarca = null, trava = null, chegouAvisado = {}, rolarTexto = false, centrou = false;
   const ps = P.paradas;
   const caixaMapa = h("div", { class: "passmapa" }, h("p", { class: "globoaviso", text: "Abrindo o mapa…" }));
   const painel = h("div", { class: "passpainel" });
-  const fecha = () => { lsSet("cdi-passeio-aberto", ""); document.removeEventListener("visibilitychange", voltou); if (watch != null) navigator.geolocation.clearWatch(watch); try { trava && trava.release(); } catch (e) {} pararFala(); try { mapa && mapa.remove(); } catch (e) {} box.remove(); };
+  const fecha = () => { lsSet("cdi-passeio-aberto", ""); document.removeEventListener("visibilitychange", voltou); if (watch != null) navigator.geolocation.clearWatch(watch); try { trava && trava.release(); } catch (e) {} try { mapa && mapa.remove(); } catch (e) {} box.remove(); };
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
   const btnEu = h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => { if (eu && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 16) }); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0"));
   const box = h("div", { class: "passeio", role: "dialog", "aria-label": "Passeio guiado: " + P.titulo },
@@ -3174,13 +3174,10 @@ function abrirPasseio(id) {
   box.__fecha = fecha;
   document.body.append(box);
   lsSet("cdi-passeio-aberto", id + "|" + Date.now());
-  // som e voz: o iPhone só deixa falar sozinho depois de um toque na tela; o primeiro toque no passeio já libera
-  box.addEventListener("click", () => { try { const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); } catch (e) {} }, { once: true });
   // a tela apagada desliga a trava; quando a pessoa volta (do Google Maps, por exemplo), pede de novo
   const voltou = () => { if (!document.hidden && box.isConnected) { try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {} } };
   document.addEventListener("visibilitychange", voltou);
   try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {}
-  const fala = p => { if (!podeFalar) return; falarEm(p.nome + ". " + p.texto + (p.dica ? " " + p.dica : ""), "pt-BR", .95); };
   const vai = i => { est.i = Math.max(0, Math.min(ps.length - 1, i)); guarda(); desenha(); pinta(); if (mapa) mapa.easeTo({ center: [ps[est.i].lng, ps[est.i].lat], zoom: Math.max(mapa.getZoom(), 15.5) }); };
   const conclui = () => { if (!est.feitos.includes(est.i)) est.feitos.push(est.i); guarda(); if (est.i < ps.length - 1) vai(est.i + 1); else { desenha(); pinta(); } };
   function enquadra(animar) {
@@ -3208,10 +3205,10 @@ function abrirPasseio(id) {
           : h("p", { class: "passdist", text: S.passGpsMsg || "Procurando você no mapa…" }),
         h("div", { class: "actions" },
           h("a", { class: "btn gold", href: rota, target: "_blank", rel: "noopener" }, "Como chegar"),
-          podeFalar ? h("button", { class: "btn", type: "button", onclick: () => fala(p) }, "▶ Ouvir") : null,
           est.i < ps.length - 1 ? h("button", { class: "btn", type: "button", onclick: conclui }, "Próxima parada ›")
             : !est.feitos.includes(est.i) ? h("button", { class: "btn", type: "button", onclick: conclui }, "Terminar o passeio") : null)),
-      h("div", { class: "passtexto" },
+      h("div", { class: "passtexto" + (perto ? " chegou" : "") },
+        perto ? h("p", { class: "eyebrow", text: "A história deste lugar" }) : null,
         h("p", { text: p.texto }),
         p.dica ? h("p", { class: "passdica", text: p.dica }) : null,
         p.lojas ? h("div", { class: "passlojas" }, h("p", { class: "eyebrow rule", text: "Neste trecho" }),
@@ -3219,8 +3216,6 @@ function abrirPasseio(id) {
         fim ? h("div", { class: "passfim" }, h("p", { class: "eyebrow", text: "Passeio feito" }), h("p", { text: "Às 17h tem Aarti no Parmarth Niketan. Chegue por volta das 16h40 para pegar lugar nos degraus." }),
           h("div", { class: "actions" }, h("a", { class: "btn gold", href: "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(P.saida) + "&travelmode=walking", target: "_blank", rel: "noopener" }, "Voltar ao Yog Niketan"),
             h("a", { class: "btn", href: "https://www.google.com/maps/dir/?api=1&destination=" + ps[1].lat + "," + ps[1].lng + "&travelmode=walking", target: "_blank", rel: "noopener" }, "Ir para a Aarti"))) : null,
-        h("label", { class: "passvoz", for: "passvoz-" + id }, h("input", { type: "checkbox", id: "passvoz-" + id, checked: narrar, onchange: e => { narrar = e.target.checked; lsSet("cdi-passeio-voz", narrar ? "1" : "0"); if (!narrar) pararFala(); } }),
-          h("span", { text: "Contar a história em voz alta quando eu chegar em cada parada" })),
         h("p", { class: "small passnota", text: "A linha do mapa liga as paradas em reta. Para o caminho pelas ruas, toque em Como chegar: abre o Google Maps e depois é só voltar para o app." })));
   }
   const recebe = pos => {
@@ -3235,9 +3230,10 @@ function abrirPasseio(id) {
     const p = ps[est.i];
     if (dentro(p) && !chegouAvisado[est.i]) {
       chegouAvisado[est.i] = true; try { navigator.vibrate && navigator.vibrate([30, 80, 30]); } catch (e) {}
-      if (narrar) fala(p);
+      rolarTexto = true;
     }
     pinta(); desenha();
+    if (rolarTexto) { rolarTexto = false; requestAnimationFrame(() => { const t = painel.querySelector(".passtexto"); if (t) painel.scrollTo({ top: t.offsetTop - painel.offsetTop - 8, behavior: "smooth" }); }); }
   };
   if (navigator.geolocation) watch = navigator.geolocation.watchPosition(recebe, e => { S.passGpsMsg = e.code === 1 ? "A localização está bloqueada para o app. Libere nos ajustes do celular para o mapa te acompanhar." : "Não consegui achar você agora. O mapa e as histórias funcionam mesmo assim."; desenha(); }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
   else S.passGpsMsg = "Este celular não informa a localização. O mapa e as histórias funcionam mesmo assim.";
