@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/11 · 00:41";</script>
+<script>window.__VERSAO = "12/11 · 00:43";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2136,7 +2136,7 @@ video.mgrande{max-height:70vh;background:#000}
 .passpin{width:30px;height:30px;border-radius:50%;border:2px solid var(--panel);background:var(--sand);color:var(--ink);display:grid;place-items:center;font:600 13px/1 var(--ui);box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer;padding:0}
 .passpin.feito{background:var(--moss);color:var(--on-dark)}
 .passpin.atual{background:var(--terra);color:var(--on-dark);width:38px;height:38px;font-size:15px;z-index:3}
-.passloja{display:flex;align-items:center;gap:4px;text-decoration:none;color:var(--ink);font:600 11px/1.1 var(--ui)}
+.passloja{display:flex;align-items:center;gap:4px;text-decoration:none;color:var(--ink);font:600 11px/1.1 var(--ui);background:none;border:0;padding:4px;cursor:pointer}
 .passloja i{width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.3);flex:none}
 .passloja span{background:var(--panel);padding:2px 6px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.15);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
 .passmapa.longe .passloja span{display:none}
@@ -2154,6 +2154,11 @@ video.mgrande{max-height:70vh;background:#000}
 .passsinal.volta,.passsinal.fora{background:rgba(160,64,47,.12);color:var(--err)}
 .passbus{font-size:12.5px;color:var(--moss)}
 .passbus:empty{display:none}
+.passgoogle{font-size:13px;color:var(--soft);text-decoration:underline;align-self:flex-start}
+.passatual.poi .passrot{color:var(--gold)}
+.passatual.poi.comida .passrot{color:var(--moss)}
+.passatual.poi.lugar .passrot{color:#7A4FA0}
+.passpoitx{margin:0;font-size:15.5px;line-height:1.6}
 .passeuw{position:relative;width:22px;height:22px}
 .passeu{position:absolute;inset:0;border-radius:50%;background:#2F7BEA;border:3px solid #fff;box-shadow:0 0 0 8px rgba(47,123,234,.22),0 1px 4px rgba(0,0,0,.3)}
 .passcone{display:none;position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px 0 0 -45px;border-radius:50%;pointer-events:none;
@@ -2187,10 +2192,10 @@ video.mgrande{max-height:70vh;background:#000}
 .passtexto>p{margin:0;max-width:62ch}
 .passdica{padding:10px 12px;border-radius:12px;background:var(--panel2);border-left:3px solid var(--gold);font-size:14.5px;color:var(--soft)}
 .passlojas{display:flex;flex-direction:column;gap:2px}
-.passlojas a{display:grid;grid-template-columns:1fr auto;gap:0 10px;padding:10px 0;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}
-.passlojas a b{font-weight:600;font-size:14.5px}
-.passlojas a span{grid-column:1;font-size:13px;color:var(--soft);line-height:1.45}
-.passlojas a i{grid-column:2;grid-row:1/3;align-self:center;font-style:normal;font-size:13px;font-weight:600;color:var(--terra)}
+.passlojas a,.passpoi{width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);font:inherit;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:0 10px;padding:10px 0;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}
+.passlojas .passpoi b,.passlojas a b{font-weight:600;font-size:14.5px}
+.passlojas .passpoi span,.passlojas a span{grid-column:1;font-size:13px;color:var(--soft);line-height:1.45}
+.passlojas .passpoi i,.passlojas a i{grid-column:2;grid-row:1/3;align-self:center;font-style:normal;font-size:13px;font-weight:600;color:var(--terra)}
 .passfim{padding:14px;border-radius:16px;background:var(--panel3);display:flex;flex-direction:column;gap:8px}
 .passfim p{margin:0}
 .passfim .actions{display:flex;flex-wrap:wrap;gap:8px}
@@ -3180,7 +3185,7 @@ const PASSEIOS = {
         dica: "Do Yog Niketan até Tapovan são uns 2 km de subida pela estrada: um tuk-tuk custa uns ₹200. No caminho, o Tattv Cafe é uma boa parada para um café. Tire o sapato na porta do templo.",
         lojas: [
           ["Tattv Cafe", "café de comida natural e vegana, vista para as montanhas · fecha 22h", "Tattv Cafe, Tapovan, Rishikesh", 30.12800, 78.32220, false, "comida"],
-          ["MVT Guesthouse & Restaurant", "em Upper Tapovan, na Balaknath Road", "MVT Guesthouse & Restaurant Rishikesh", 30.13087, 78.32182, false, "lugar"]] },
+          ["MVT Guesthouse & Restaurant", "Guesthouse com restaurante em Upper Tapovan, na Balaknath Road, um pouco acima do Tattv Cafe · 4,6 ★ no Google (umas 800 avaliações).", "MVT Guesthouse & Restaurant Rishikesh", 30.13087, 78.32182, false, "lugar"]] },
       { nome: "Lakshman Jhula e Bajrang Setu", lat: 30.12625, lng: 78.32992, raio: 45, quando: "Desça a rua das lojas e atravesse pela ponte de vidro",
         texto: "A ponte de ferro de 1929 leva o nome de Lakshmana, que segundo a tradição atravessou o Ganges aqui numa corda de juta. Ela está fechada desde 2022. Ao lado foi construída a Bajrang Setu, com piso de vidro (Bajrang é um dos nomes de Hanuman). Atravesse por ela para a margem leste. A rua que desce até a ponte é a melhor de Rishikesh para compras: as lojas estão marcadas no mapa com bolinhas douradas.",
         dica: "Se a Bajrang Setu estiver fechada, veja o templo de 13 andares daqui e siga de tuk-tuk até a Ram Jhula ou a Janki Setu para atravessar. Algumas lojas não têm endereço publicado: o pino delas é aproximado, e o toque no nome abre a loja certa no Google Maps.",
@@ -3201,7 +3206,7 @@ const PASSEIOS = {
         texto: "Vá por baixo, pela beira do rio: é o caminho com mais vida, entre ashrams, lojinhas e cafés, e passa pela Ganga Beach, a praia de areia do Ganges. A estrada de cima, pelo mato, é mais vazia. São uns 20 a 25 minutos a pé. A Ram Jhula é a ponte de ferro que liga o Sivananda Ashram ao Swarg Ashram e leva o nome de Rama. Na cabeceira deste lado ficam o mercado de Swarg Ashram, o Chotiwala para o almoço e o Gita Bhawan.",
         dica: "O Chotiwala é o restaurante mais famoso de Rishikesh, aberto em 1958: peça o thali vegetariano (há dois Chotiwala lado a lado, de dois ramos da mesma família). O Gita Bhawan tem os versos do Bhagavad Gita nas paredes e uma cooperativa de preço fixo. A Ram Jhula passou por obras e pode estar fechada: não precisa atravessar.",
         lojas: [
-          ["Ganga Beach", "a praia de areia do Ganges, na margem leste", "Ganga Beach Swarg Ashram Rishikesh", 30.12430, 78.31775, false, "lugar"],
+          ["Ganga Beach", "A praia de areia branca na margem leste do Ganges, entre a Lakshman Jhula e a Ram Jhula. Bom lugar para sentar, molhar os pés e ver o rio passar. A água é gelada e a correnteza é forte: fique só na beirinha.", "Ganga Beach Swarg Ashram Rishikesh", 30.12430, 78.31775, false, "lugar"],
           ["Chotiwala", "almoço: o restaurante mais famoso de Rishikesh, desde 1958 · thali vegetariano", "Chotiwala Restaurant, Swarg Ashram, Rishikesh", 30.12199, 78.31411, true, "comida"],
           ["Gita Bhawan", "cooperativa de preço fixo: roupas, ayurveda e livros", "Gita Bhawan Swarg Ashram Rishikesh", 30.12184, 78.31448, false, "loja"],
           ["Brijwasi Gems and Jewellers", "rudraksha, cristais, pedras e pingentes", "Brijwasi Gems and Jewellers Swarg Ashram Rishikesh", 30.12290, 78.31470, true, "loja"],
@@ -3288,7 +3293,8 @@ function abrirPasseio(id) {
   const guarda = () => lsSet(chave, JSON.stringify({ i: est.i, feitos: est.feitos, chegou: est.chegou }));
   let eu = null, watch = null, mapa = null, marcas = [], euMarca = null, trava = null, chegouAvisado = {}, rolarTexto = false, centrou = false;
   // trilho: rota até a próxima parada, por onde a pessoa andou (rastro), se está se aproximando, e a bússola
-  let agora = null, agoraDe = null, agoraEm = 0, agoraPara = -1, pedindo = false, tendencia = null, amostra = null, bussola = null, rumoAlvo = null;
+  let agora = null, agoraDe = null, agoraEm = 0, agoraPara = -1, pedindo = false, tendencia = null, amostra = null, bussola = null, rumoAlvo = null, extra = null, vendo = null;
+  const alvoAt = () => extra || ps[est.i], kAlvo = () => extra ? "x" + extra.nome : est.i;
   const hoje = new Date().toISOString().slice(0, 10);
   let rastro = []; try { const r = JSON.parse(lsGet("cdi-passeio-rastro") || "{}"); if (r.dia === hoje) rastro = r.pts || []; } catch (e) {}
   const ps = P.paradas;
@@ -3330,7 +3336,7 @@ function abrirPasseio(id) {
   const voltou = () => { if (!document.hidden && box.isConnected) { aarti(); try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {} } };
   document.addEventListener("visibilitychange", voltou);
   try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {}
-  const vai = i => { est.i = Math.max(0, Math.min(ps.length - 1, i)); guarda(); tendencia = null; amostra = null; agora = null; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pinta(); pedeRota(true); if (mapa) mapa.easeTo({ center: [ps[est.i].lng, ps[est.i].lat], zoom: Math.max(mapa.getZoom(), 15.5) }); };
+  const vai = i => { est.i = Math.max(0, Math.min(ps.length - 1, i)); extra = null; vendo = null; guarda(); tendencia = null; amostra = null; agora = null; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pinta(); pedeRota(true); if (mapa) mapa.easeTo({ center: [ps[est.i].lng, ps[est.i].lat], zoom: Math.max(mapa.getZoom(), 15.5) }); };
   const conclui = () => { if (!est.feitos.includes(est.i)) est.feitos.push(est.i); guarda(); if (est.i < ps.length - 1) vai(est.i + 1); else { desenha(); pinta(); } };
   function enquadra(animar) {
     if (!mapa) return; const b = new maplibregl.LngLatBounds();
@@ -3355,7 +3361,7 @@ function abrirPasseio(id) {
   }
   function desenhaAgora() {
     const s = mapa && mapa.getSource("agora"); if (!s) return;
-    const p = ps[est.i];
+    const p = alvoAt();
     s.setData(fc(agora ? [linha(agora.coords, { reta: false })] : eu ? [linha([[eu.lng, eu.lat], [p.lng, p.lat]], { reta: true })] : []));
   }
   function desenhaRastro() { const s = mapa && mapa.getSource("rastro"); if (s) s.setData(fc(rastro.length > 1 ? [linha(rastro)] : [])); }
@@ -3368,13 +3374,13 @@ function abrirPasseio(id) {
   rotaPe.__salva = () => lsSet("cdi-rotas-pe", JSON.stringify(Object.fromEntries(Object.entries(rotasMem).filter(([, v]) => v.fixa))));
   // rota de onde a pessoa está até a próxima parada: pede de novo quando ela andou uns 30 m ou saiu da linha (no máximo a cada 12 s)
   async function pedeRota(forca) {
-    if (!eu || pedindo) return; const p = ps[est.i];
+    if (!eu || pedindo) return; const p = alvoAt();
     const andou = !agoraDe || distKm(agoraDe, eu) > .03, saiu = agora && naRota(agora.coords, eu).fora > .04;
-    if (!forca && agoraPara === est.i && !andou && !saiu) return;
+    if (!forca && agoraPara === kAlvo() && !andou && !saiu) return;
     if (!forca && Date.now() - agoraEm < 12000) return;
-    pedindo = true; agoraEm = Date.now(); const de = { lat: eu.lat, lng: eu.lng }, para = est.i;
-    try { const r = await rotaPe(de, p, viaAFrente(p)); if (para === est.i) { agora = r; agoraDe = de; agoraPara = para; } }
-    catch (e) { if (para === est.i) { agora = null; agoraDe = de; agoraPara = para; } }
+    pedindo = true; agoraEm = Date.now(); const de = { lat: eu.lat, lng: eu.lng }, para = kAlvo();
+    try { const r = await rotaPe(de, p, extra ? [] : viaAFrente(p)); if (para === kAlvo()) { agora = r; agoraDe = de; agoraPara = para; } }
+    catch (e) { if (para === kAlvo()) { agora = null; agoraDe = de; agoraPara = para; } }
     pedindo = false; desenhaAgora(); desenha();
   }
   // direção do celular, como no Google Maps: o feixe azul do ponto mostra para onde a frente do celular está virada
@@ -3415,28 +3421,51 @@ function abrirPasseio(id) {
     const s = painel.querySelector(".seta"); if (!s || rumoAlvo == null) return;
     s.style.transform = `rotate(${Math.round(dir != null ? rumoAlvo - dir : rumoAlvo)}deg)`;
   }
+  // atrativo (loja, café, lugar): tocar abre a descrição aqui mesmo; "Me leve até aqui" faz o app guiar até ele
+  const TIPO = { loja: "Loja", comida: "Para comer", lugar: "Lugar" };
+  const poiDe = l => ({ nome: l[0], desc: l[1], q: l[2], lat: l[3], lng: l[4], aprox: !!l[5], tipo: l[6] || "loja", raio: 35, poi: true });
+  function abrirPoi(o) { vendo = o; desenha(); painel.scrollTo({ top: 0 }); if (mapa && isFinite(o.lat)) mapa.easeTo({ center: [o.lng, o.lat], zoom: Math.max(mapa.getZoom(), 16.5) }); }
+  function irPoi(o) { extra = { ...o, chegou: false }; vendo = null; tendencia = null; amostra = null; agora = null; chegouAvisado["x" + o.nome] = false; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pedeRota(true); }
+  function sairExtra() { extra = null; vendo = null; tendencia = null; amostra = null; agora = null; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pedeRota(true); }
+  const linkGoogle = (o, txt) => h("a", { class: "passgoogle", href: o.poi ? mapsBusca(o.q) : "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(o.destino || o.lat + "," + o.lng) + "&travelmode=walking", target: "_blank", rel: "noopener" }, txt);
   function desenha() {
-    const p = ps[est.i], fim = est.feitos.length === ps.length;
-    const reta = eu ? distKm(eu, p) : null, nr = eu && agora && agoraPara === est.i ? naRota(agora.coords, eu) : null;
+    const p = alvoAt(), parada = ps[est.i], fim = est.feitos.length === ps.length;
+    const reta = eu ? distKm(eu, p) : null, nr = eu && agora && agoraPara === kAlvo() ? naRota(agora.coords, eu) : null;
     const d = nr ? nr.falta : reta, perto = reta != null && reta * 1000 <= (p.raio || 80) + Math.min(eu.prec || 0, 25);
     const alvo = nr && nr.fora < .04 ? nr.alvo : p, r = eu ? rumo(eu, alvo) : null; rumoAlvo = r ? r.g : null;
-    const vs = viaAFrente(p), rota = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(p.destino || p.lat + "," + p.lng) + (vs.length ? "&waypoints=" + encodeURIComponent(vs.map(v => v.lat + "," + v.lng).join("|")) : "") + "&travelmode=walking";
-    const aqui = perto || est.chegou.includes(est.i), prox = ps[est.i + 1];
+    const aqui = perto || (extra ? extra.chegou : est.chegou.includes(est.i)), prox = ps[est.i + 1];
     const sinal = !eu || aqui ? null : nr && nr.fora > .04 ? ["fora", "Você saiu do caminho. Volte para a linha azul ou siga a seta."]
       : tendencia === "indo" ? ["indo", "✓ Você está indo na direção certa"] : tendencia === "volta" ? ["volta", "↩ Você está se afastando. Vire e siga a seta."] : ["neutro", "Ande um pouco: o app mostra se você está indo para o lado certo."];
-    painel.replaceChildren(
-      // progresso: uma barrinha por parada (toque para ir direto a uma delas)
-      h("div", { class: "passprog" },
-        h("p", { text: fim ? "Passeio completo ✓" : `Parada ${est.i + 1} de ${ps.length}` }),
-        h("div", { class: "passbarra", role: "tablist", "aria-label": "Paradas" }, ps.map((q, k) => h("button", { type: "button", role: "tab", "aria-selected": String(k === est.i), class: est.feitos.includes(k) ? "feito" : "", "aria-label": `Parada ${k + 1}: ${q.nome}`, onclick: () => vai(k) })))),
+    const progresso = h("div", { class: "passprog" },
+      h("p", { text: fim ? "Passeio completo ✓" : `Parada ${est.i + 1} de ${ps.length}` + (extra ? " · desvio até um atrativo" : "") }),
+      h("div", { class: "passbarra", role: "tablist", "aria-label": "Paradas" }, ps.map((q, k) => h("button", { type: "button", role: "tab", "aria-selected": String(k === est.i), class: est.feitos.includes(k) ? "feito" : "", "aria-label": `Parada ${k + 1}: ${q.nome}`, onclick: () => vai(k) }))));
+    // descrição de um atrativo (sem sair do app)
+    if (vendo) {
+      const o = vendo, dv = eu && isFinite(o.lat) ? distKm(eu, o) : null;
+      painel.replaceChildren(progresso,
+        h("div", { class: "passatual poi " + o.tipo },
+          h("p", { class: "passrot", text: TIPO[o.tipo] || "Atrativo" }),
+          h("h3", { text: o.nome }),
+          h("p", { class: "passpoitx", text: o.desc }),
+          dv != null ? h("p", { class: "passinst", text: `A ${distTxt(dv)} de você, em linha reta.` }) : null,
+          isFinite(o.lat) ? h("button", { class: "btn gold passbig", type: "button", onclick: () => irPoi(o) }, "Me leve até aqui") : null,
+          h("button", { class: "btn passbig", type: "button", onclick: () => { vendo = null; desenha(); painel.scrollTo({ top: 0 }); } }, extra ? "Voltar" : `Voltar para: ${parada.nome}`),
+          o.aprox ? h("p", { class: "small passnota", text: "O pino deste lugar é aproximado: o endereço exato não está publicado. Chegando perto, procure pelo nome na rua." }) : null,
+          !isFinite(o.lat) ? h("p", { class: "small passnota", text: "Este lugar não tem posição marcada no mapa." }) : null,
+          o.aprox || !isFinite(o.lat) ? linkGoogle(o, "Ver o endereço no Google Maps") : null));
+      giraSeta(); return;
+    }
+    const itemPoi = l => { const o = poiDe(l); return h("button", { type: "button", class: "passpoi " + o.tipo, onclick: () => abrirPoi(o) }, h("b", { text: o.nome }), h("span", { text: o.desc + (o.aprox ? " · pino aproximado" : "") }), h("i", { text: "Ver ›" })); };
+    painel.replaceChildren(progresso,
       aqui ? h("div", { class: "passatual chegou" },
           h("p", { class: "passrot", text: "✓ Você chegou" }),
           h("h3", { text: p.nome }),
-          h("button", { class: "btn gold passbig", type: "button", onclick: conclui }, prox ? `Seguir para: ${prox.nome} ›` : est.feitos.includes(est.i) ? "Passeio feito ✓" : "Terminar o passeio ✓"))
-        : h("div", { class: "passatual" },
-          h("p", { class: "passrot", text: "Agora, vá até" }),
+          extra ? h("button", { class: "btn gold passbig", type: "button", onclick: sairExtra }, `Voltar ao roteiro: ${parada.nome} ›`)
+            : h("button", { class: "btn gold passbig", type: "button", onclick: conclui }, prox ? `Seguir para: ${prox.nome} ›` : est.feitos.includes(est.i) ? "Passeio feito ✓" : "Terminar o passeio ✓"))
+        : h("div", { class: "passatual" + (extra ? " poi " + extra.tipo : "") },
+          h("p", { class: "passrot", text: extra ? "Agora, vá até (fora do roteiro)" : "Agora, vá até" }),
           h("h3", { text: p.nome }),
-          h("p", { class: "passinst", text: p.quando }),
+          h("p", { class: "passinst", text: extra ? (extra.aprox ? "Pino aproximado: chegando perto, procure pelo nome na rua." : TIPO[extra.tipo] || "") : p.quando }),
           sinal ? h("p", { class: "passsinal " + sinal[0], role: "status", text: sinal[1] }) : null,
           d != null ? h("div", { class: "passdir" },
               h("span", { class: "seta", "aria-hidden": "true", text: "↑" }),
@@ -3446,17 +3475,17 @@ function abrirPasseio(id) {
                 eu.prec > 60 ? h("small", { class: "passprec", text: `GPS impreciso agora (±${eu.prec} m). Fica melhor ao ar livre.` }) : null))
             : h("p", { class: "passdist", text: S.passGpsMsg || "Procurando você no mapa…" }),
           d != null && !(bussola && bussola.g != null) ? h("button", { class: "btn ghost passbig", type: "button", onclick: ligaBussola }, "🧭 Mostrar para onde o celular aponta") : null,
-          h("a", { class: "btn gold passbig", href: rota, target: "_blank", rel: "noopener" }, "Abrir o caminho no Google Maps"),
-          h("button", { class: "btn passbig", type: "button", onclick: () => { if (!est.chegou.includes(est.i)) est.chegou.push(est.i); guarda(); desenha(); painel.scrollTo({ top: 0 }); } }, "Já cheguei"),
-          p.opcional && prox ? h("button", { class: "btn ghost passbig", type: "button", onclick: () => vai(est.i + 1) }, "Pular: está fechado") : null),
+          h("button", { class: "btn passbig", type: "button", onclick: () => { if (extra) extra.chegou = true; else if (!est.chegou.includes(est.i)) est.chegou.push(est.i); guarda(); desenha(); painel.scrollTo({ top: 0 }); } }, "Já cheguei"),
+          extra ? h("button", { class: "btn ghost passbig", type: "button", onclick: sairExtra }, `Voltar ao roteiro: ${parada.nome}`) : null,
+          !extra && p.opcional && prox ? h("button", { class: "btn ghost passbig", type: "button", onclick: () => vai(est.i + 1) }, "Pular: está fechado") : null),
       h("div", { class: "passtexto" + (aqui ? " chegou" : "") },
-        aqui ? h("p", { class: "eyebrow", text: "A história deste lugar" }) : null,
-        h("p", { text: p.texto }),
-        p.dica ? h("p", { class: "passdica", text: p.dica }) : null,
-        p.lojas ? h("div", { class: "passlojas" }, h("p", { class: "eyebrow rule", text: "No caminho até aqui" }),
-          p.lojas.map(([n, t, q, , , aprox, tipo]) => h("a", { href: mapsBusca(q), target: "_blank", rel: "noopener", class: tipo || "" }, h("b", { text: n }), h("span", { text: t + (aprox ? " · pino aproximado" : "") }), h("i", { text: "Mapa ›" })))) : null,
-        fim ? h("div", { class: "passfim" }, h("p", { class: "eyebrow", text: "Passeio completo" }), h("p", { text: "Você passou por todas as paradas do dia. Bom descanso e bom jantar!" })) : null,
-        h("p", { class: "small passnota", text: "No mapa: a linha azul é o caminho pelas ruas até a próxima parada; a linha fina é por onde você já andou. Se a linha aparecer tracejada, o mapa não achou o caminho pelas ruas: use o botão do Google Maps." })));
+        aqui ? h("p", { class: "eyebrow", text: extra ? "Sobre este lugar" : "A história deste lugar" }) : null,
+        h("p", { text: extra ? extra.desc : p.texto }),
+        !extra && p.dica ? h("p", { class: "passdica", text: p.dica }) : null,
+        !extra && p.lojas ? h("div", { class: "passlojas" }, h("p", { class: "eyebrow rule", text: "No caminho até aqui" }), p.lojas.map(itemPoi)) : null,
+        fim && !extra ? h("div", { class: "passfim" }, h("p", { class: "eyebrow", text: "Passeio completo" }), h("p", { text: "Você passou por todas as paradas do dia. Bom descanso e bom jantar!" })) : null,
+        h("p", { class: "small passnota", text: "No mapa: a linha azul é o caminho pelas ruas até onde você está indo; a linha cinza é por onde você já andou. Toque nas bolinhas do mapa para ver os atrativos." }),
+        linkGoogle(p, "Se precisar, o passo a passo também no Google Maps")));
     giraSeta();
   }
   const recebe = pos => {
@@ -3473,22 +3502,22 @@ function abrirPasseio(id) {
     // só olha as duas próximas paradas: passar perto de uma parada lá do fim do dia não muda o passeio
     const k = ps.findIndex((q, n) => n > est.i && n <= est.i + 2 && !q.retorno && !est.feitos.includes(n) && dentro(q));
     // indo para uma parada opcional (Beatles Ashram) passa-se em frente a outras: aí só muda com o botão Pular
-    if (k > -1 && !dentro(ps[est.i]) && !ps[est.i].opcional) { est.i = k; guarda(); tendencia = null; amostra = null; agora = null; }
-    const p = ps[est.i];
+    if (!extra && k > -1 && !dentro(ps[est.i]) && !ps[est.i].opcional) { est.i = k; guarda(); tendencia = null; amostra = null; agora = null; }
+    const p = alvoAt(), ka = kAlvo();
     // para frente ou para trás: compara quanto falta (pelas ruas, se tiver a rota) a cada uns 12 m andados
-    const falta = agora && agoraPara === est.i ? naRota(agora.coords, eu).falta : distKm(eu, p);
-    if (!amostra || amostra.i !== est.i) amostra = { i: est.i, pt: { lat: eu.lat, lng: eu.lng }, falta };
+    const falta = agora && agoraPara === ka ? naRota(agora.coords, eu).falta : distKm(eu, p);
+    if (!amostra || amostra.i !== ka) amostra = { i: ka, pt: { lat: eu.lat, lng: eu.lng }, falta };
     else if (distKm(amostra.pt, eu) > .012 && eu.prec <= 60) {
       const dif = (amostra.falta - falta) * 1000;
       if (dif > 6) tendencia = "indo"; else if (dif < -6) tendencia = "volta";
-      amostra = { i: est.i, pt: { lat: eu.lat, lng: eu.lng }, falta };
+      amostra = { i: ka, pt: { lat: eu.lat, lng: eu.lng }, falta };
     }
-    if (dentro(p) && !chegouAvisado[est.i]) {
-      chegouAvisado[est.i] = true; try { navigator.vibrate && navigator.vibrate([30, 80, 30]); } catch (e) {}
+    if (dentro(p) && !chegouAvisado[ka]) {
+      chegouAvisado[ka] = true; if (extra) extra.chegou = true; try { navigator.vibrate && navigator.vibrate([30, 80, 30]); } catch (e) {}
       rolarTexto = true;
     }
     pinta(); desenhaAgora(); desenha(); giraSeta(); pedeRota(false);
-    if (rolarTexto) { rolarTexto = false; requestAnimationFrame(() => { const t = painel.querySelector(".passtexto"); if (t) painel.scrollTo({ top: t.offsetTop - painel.offsetTop - 8, behavior: "smooth" }); }); }
+    if (rolarTexto && !vendo) { rolarTexto = false; requestAnimationFrame(() => { const t = painel.querySelector(".passtexto"); if (t) painel.scrollTo({ top: t.offsetTop - painel.offsetTop - 8, behavior: "smooth" }); }); }
   };
   if (navigator.geolocation) watch = navigator.geolocation.watchPosition(recebe, e => { S.passGpsMsg = e.code === 1 ? "A localização está bloqueada para o app. Libere nos ajustes do celular para o mapa te acompanhar." : "Não consegui achar você agora. O mapa e as histórias funcionam mesmo assim."; desenha(); }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
   else S.passGpsMsg = "Este celular não informa a localização. O mapa e as histórias funcionam mesmo assim.";
@@ -3513,8 +3542,8 @@ function abrirPasseio(id) {
     // nomes das lojas só aparecem com o mapa de perto (de longe embolam)
     const longe = () => caixaMapa.classList.toggle("longe", mapa.getZoom() < 16.3); mapa.on("zoom", longe); longe();
     marcas = ps.map((p, k) => new maplibregl.Marker({ element: h("button", { type: "button", class: "passpin", "aria-label": p.nome, onclick: () => vai(k) }, h("b", { text: String(k + 1) })) }).setLngLat([p.lng, p.lat]).addTo(mapa));
-    ps.forEach(p => (p.lojas || []).filter(l => isFinite(l[3])).forEach(([n, , q, la, lo, , tipo]) =>
-      new maplibregl.Marker({ element: h("a", { class: "passloja " + (tipo || "loja"), href: mapsBusca(q), target: "_blank", rel: "noopener", "aria-label": n }, h("span", { text: n }), h("i", { "aria-hidden": "true" })), anchor: "right", offset: [6, 0] }).setLngLat([lo, la]).addTo(mapa)));
+    ps.forEach(p => (p.lojas || []).filter(l => isFinite(l[3])).forEach(l => { const o = poiDe(l);
+      new maplibregl.Marker({ element: h("button", { type: "button", class: "passloja " + o.tipo, "aria-label": o.nome, onclick: () => abrirPoi(o) }, h("span", { text: o.nome }), h("i", { "aria-hidden": "true" })), anchor: "right", offset: [6, 0] }).setLngLat([o.lng, o.lat]).addTo(mapa); }));
     if (eu) { euMarca = new maplibregl.Marker({ element: elEu() }).setLngLat([eu.lng, eu.lat]).addTo(mapa); }
     const pronto = () => { desenhaDia(); desenhaAgora(); desenhaRastro(); carregaDia(); pedeRota(true); };
     if (mapa.isStyleLoaded()) pronto(); else mapa.once("load", pronto);
