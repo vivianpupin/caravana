@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/11 · 00:53";</script>
+<script>window.__VERSAO = "12/11 · 00:58";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3443,7 +3443,8 @@ function abrirPasseio(id) {
   // ---- linhas do mapa: o dia inteiro pelas ruas (clarinho), o trecho de agora (azul) e o rastro de onde já andou ----
   const fc = features => ({ type: "FeatureCollection", features });
   const linha = (coords, props) => ({ type: "Feature", properties: props || {}, geometry: { type: "LineString", coordinates: coords } });
-  const pernas = ps.map((p, k) => ({ de: k ? ps[k - 1] : P.saida, para: p, coords: null }));
+  // nas opções soltas (templos e atividades) não há linha do dia: só a linha azul até a opção escolhida
+  const pernas = P.livre ? [] : ps.map((p, k) => ({ de: k ? ps[k - 1] : P.saida, para: p, coords: null }));
   const viaP = p => (p.via || []).map(([lat, lng]) => ({ lat, lng }));
   // pontos de passagem que ainda estão à frente (mais perto do destino do que a pessoa)
   const viaAFrente = p => eu ? viaP(p).filter(v => distKm(v, p) < distKm(eu, p) - .03) : viaP(p);
@@ -3519,7 +3520,8 @@ function abrirPasseio(id) {
   function abrirPoi(o) { vendo = o; desenha(); painel.scrollTo({ top: 0 }); if (mapa && isFinite(o.lat)) mapa.easeTo({ center: [o.lng, o.lat], zoom: Math.max(mapa.getZoom(), 16.5) }); }
   function irPoi(o) { extra = { ...o, chegou: false }; vendo = null; tendencia = null; amostra = null; agora = null; chegouAvisado["x" + o.nome] = false; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pedeRota(true); }
   function sairExtra() { extra = null; vendo = null; tendencia = null; amostra = null; agora = null; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pedeRota(true); }
-  const linkGoogle = (o, txt) => h("a", { class: "passgoogle", href: o.poi ? mapsBusca(o.q) : "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(o.destino || o.lat + "," + o.lng) + "&travelmode=walking", target: "_blank", rel: "noopener" }, txt);
+  const linkGoogle = (o, txt) => { const vs = o.poi ? [] : viaAFrente(o);
+    return h("a", { class: "passgoogle", href: o.poi ? mapsBusca(o.q) : "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(o.destino || o.lat + "," + o.lng) + (vs.length ? "&waypoints=" + encodeURIComponent(vs.map(v => v.lat + "," + v.lng).join("|")) : "") + "&travelmode=" + (o.carro ? "driving" : "walking"), target: "_blank", rel: "noopener" }, txt); };
   function desenha() {
     const p = alvoAt(), parada = ps[est.i], fim = est.feitos.length === ps.length;
     const reta = eu ? distKm(eu, p) : null, nr = eu && agora && agoraPara === kAlvo() ? naRota(agora.coords, eu) : null;
