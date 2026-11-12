@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/11 · 00:43";</script>
+<script>window.__VERSAO = "12/11 · 00:50";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -696,6 +696,8 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .me:not(.bubble) b{color:#E2BE78}
 nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(11,minmax(56px,1fr));overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
+/* a aba Rotas (só a líder) entra como 12ª coluna, na mesma linha das outras */
+nav.tabs:has(button[data-tab="rotas"]:not([hidden])){grid-template-columns:repeat(12,minmax(56px,1fr))}
 
 /* ---------- Jogo: Moksha Patam ---------- */
 .jogoview{gap:14px}
@@ -2155,6 +2157,8 @@ video.mgrande{max-height:70vh;background:#000}
 .passcard b{font-family:var(--display);font-size:18px;font-weight:600;line-height:1.25}
 .passcard .tx span{font-size:13.5px;color:var(--soft);line-height:1.45}
 .passcard .passchev{font-size:26px;color:var(--moss)}
+.rotaslista{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.rotasview .lede{margin-top:6px}
 .passeio{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;overflow:hidden;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .passtopo{display:flex;align-items:center;gap:12px;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
 .passtopo h2{font-size:20px}
@@ -2178,6 +2182,7 @@ video.mgrande{max-height:70vh;background:#000}
 .passaarti{flex:none;display:flex;flex-direction:column;align-items:center;gap:0;padding:5px 10px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font:inherit;cursor:pointer;line-height:1.15}
 .passaarti small{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra);font-weight:600}
 .passaarti b{font-size:16px}
+.passaarti[hidden]{display:none}
 .passaarti span{font-size:11px;color:var(--soft)}
 .passaarti.logo{border-color:var(--terra);background:var(--terra);color:var(--on-dark)}
 .passaarti.logo small,.passaarti.logo span{color:var(--on-dark)}
@@ -2258,6 +2263,7 @@ video.mgrande{max-height:70vh;background:#000}
     <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
     <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Pedra</button>
     <button data-tab="pombo"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.6c-.3-1.2-.2-2.3.5-2.9l3.1.2-2.4 1.2c-.4.4-.8 1-1.2 1.5z"/><path d="M12 6.6l.1 9.4"/><path d="M12 9.4C9.4 7.2 6.4 6.9 2.8 8.4M12 9.4c2.6-2.2 5.6-2.5 9.2-1M5 8l-.6 2.4M7.4 7.5l-.4 2.6M9.8 8.1l-.3 2.3M19 8l.6 2.4M16.6 7.5l.4 2.6M14.2 8.1l.3 2.3"/><path d="M12.1 16l-3 4.2M12.1 16l.1 4.8M12.1 16l3 4.2"/></svg></span>Pombo</button>
+    <button data-tab="rotas" hidden><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l-6 3V6l6-3 6 3 6-3v15l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/></svg></span>Rotas</button>
   </nav>
 </div>
 
@@ -2625,6 +2631,7 @@ function render() {
     const velho = $("#chatlog"), novo = vConversa().querySelector("#chatlog");
     if (velho && novo) { const topo = velho.scrollTop; velho.replaceWith(novo); grudaChat(novo, topo); tickRelogios(); return; }
   }
+  { const bR = document.querySelector('#tabs button[data-tab="rotas"]'); if (bR) bR.hidden = !podePasseio(); }
   for (const b of document.querySelectorAll("#tabs button")) {
     if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
   }
@@ -2644,7 +2651,7 @@ function render() {
   let jaTeve = false; try { if (S.uid && eu()) localStorage.setItem("cdi-passaporte-" + S.uid, "1"); jaTeve = !!S.uid && localStorage.getItem("cdi-passaporte-" + S.uid) === "1"; } catch (e) {}
   const precisaCadastro = S.db && S.uid && S.vReady && S.viajantesOk && S.viajantes.length > 0 && !eu() && !S.pularCadastro && !jaTeve;
   main.replaceChildren(precisaCadastro ? vCadastro() :
-    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "pombo" ? vPombo() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
+    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "pombo" ? vPombo() : S.tab === "rotas" && podePasseio() ? vRotas() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
   // aviso novo da líder (15 min): aparece no topo de qualquer aba
   // último dia: o passaporte completo avisa que o vídeo está pronto (no Roteiro e no Passaporte)
   if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte")) { const c = avisoVideo(), v = main.firstElementChild; if (c && v) v.prepend(c); }
@@ -3274,6 +3281,36 @@ const PASSEIOS = {
         lojas: [["Kaafe", "indiana, café, massas, pizzas, sanduíches · uns 5 min", "Kaafe Rishikesh"], ["RamJhula Restaurant", "indiana, vegetariana, continental e café · uns 15 min", "RamJhula Restaurant Rishikesh"]] }
     ] }
 };
+// Dia 10: de carro. Kunjapuri (posição aproximada: foto do templo no Wikimedia Commons, bate com a trilha do Wikiloc);
+// Vashishta Gufa: 30.11426, 78.43203 (ashramsofindia.com) e 30.11455, 78.43189 (WorldPlaces) concordam.
+PASSEIOS.kunjapuri = {
+  titulo: "Nascer do sol e a caverna dos sábios", rotulo: "Dia 10 · de carro",
+  total: "de carro, com o motorista", saida: { lat: 30.12181, lng: 78.30864 },
+  aarti: { h: 17, m: 0, chegar: "16h45", parada: 3, rot: "Puja" },
+  paradas: [
+    { nome: "Kunjapuri Devi · nascer do sol", lat: 30.17364, lng: 78.31429, raio: 150, carro: true, aprox: true, quando: "Saída às 4h30 de carro · o sol nasce por volta das 6h40",
+      texto: "A cerca de 1.600 metros de altitude, o templo de Kunjapuri é um dos Shakti Peethas, os assentos da Deusa. A tradição conta que Sati se entregou ao fogo, Shiva dançou pelo mundo com o corpo dela nos braços e Vishnu o dividiu para acalmá-lo: em cada lugar onde uma parte caiu nasceu um templo da Deusa. Em Kunjapuri teria caído a parte superior do corpo de Sati. Daqui o sol nasce atrás dos picos do Himalaia.",
+      dica: "Casaco quente e lanterna: a madrugada é fria. Do estacionamento até o templo sobe-se uma escadaria. O pino do templo é aproximado; o motorista conhece o caminho." },
+    { nome: "Café da manhã no Yog Niketan", lat: 30.12181, lng: 78.30864, raio: 120, carro: true, retorno: true, quando: "8h · de volta ao hotel",
+      texto: "Volta da montanha para o café da manhã no ashram. Às 10h saímos de novo, de carro, para a caverna de Vashishta.",
+      dica: "Separe a roupa para molhar, a toalha, a muda seca e um saco para a roupa molhada: o batismo no Ganges é logo depois da meditação." },
+    { nome: "Vashishta Gufa · meditação e batismo", lat: 30.11426, lng: 78.43203, raio: 150, carro: true, quando: "10h meditação na caverna · 12h batismo no Ganges",
+      texto: "Rio acima, numa caverna à beira do Ganges, a tradição diz que meditou o sábio Vasishtha, mestre de Rama. A caverna é longa e escura, com um Shiva lingam no fundo, e fica num ashram cercado de figueiras (gular). Depois da meditação, descemos até a praia do rio para a vivência de batismo: entramos juntos nas águas frias do Ganges, um gesto de devoção e renovação.",
+      dica: "Da estrada até a caverna é uma descida curta a pé, com degraus. Dentro da caverna, silêncio. Ao lado fica a caverna de Arundhati, esposa de Vasishtha (o pino roxo no mapa).",
+      lojas: [["Arundhati Guha", "A caverna de Arundhati, esposa do sábio Vasishtha, a poucos metros da caverna principal. Menor e mais silenciosa.", "Arundhati Cave Vashishta Gufa", 30.11403, 78.43085, false, "lugar"]] },
+    { nome: "Puja à beira do Ganges · Ganga Beach", lat: 30.12430, lng: 78.31775, raio: 80, carro: true, aprox: true, quando: "17h · a puja do fim da tarde",
+      texto: "A praia de areia do Ganges, na margem leste, onde fazemos a puja do fim da tarde, com flores, luz e o rio passando.",
+      dica: "Confirme com a equipe o ponto exato da praia: há mais de uma Ganga Beach em Rishikesh, e o pino é o da praia de Swarg Ashram." },
+    { nome: "Yog Niketan · jantar às 20h", lat: 30.12181, lng: 78.30864, raio: 120, carro: true, retorno: true, quando: "Fim do dia: de volta ao hotel",
+      texto: "De volta ao Yog Niketan para o jantar às 20h. Amanhã é um dia mais lento, de práticas." }
+  ] };
+// o grande mapa: os dois dias juntos, numa rota só
+PASSEIOS.tudo = {
+  titulo: "Rishikesh inteira", rotulo: "Dias 9 e 10 · o grande mapa",
+  total: "os dois dias num mapa só", saida: PASSEIOS.pontes.saida,
+  paradas: [...PASSEIOS.pontes.paradas.map(p => ({ ...p, dia: "Dia 9" })), ...PASSEIOS.kunjapuri.paradas.map(p => ({ ...p, dia: "Dia 10" }))] };
+PASSEIOS.pontes.rotulo = "Dia 9 · a pé";
+
 // por enquanto o passeio guiado aparece só para a Vivian, para testar em Rishikesh antes de abrir para a turma.
 // O login não informa o e-mail (só id, nome, foto e se é líder): vale para quem é líder e não é a Vanessa
 const podePasseio = () => !!(S.isOwner && S.me && !/vanessa/i.test(String(S.me.name || "")));
@@ -3285,23 +3322,24 @@ function rumo(a, b) {
 }
 const distTxt = km => km < 1 ? Math.max(10, Math.round(km * 1000 / 10) * 10) + " m" : km.toFixed(1).replace(".", ",") + " km";
 // ---------- rotas a pé pelas ruas (servidor de rotas do OpenStreetMap, o mesmo do openstreetmap.org) ----------
-const ROTA_PE = "https://routing.openstreetmap.de/routed-foot/route/v1/driving/";
+const ROTA_PE = "https://routing.openstreetmap.de/routed-foot/route/v1/driving/", ROTA_CARRO = "https://routing.openstreetmap.de/routed-car/route/v1/driving/";
 const rotasMem = (() => { try { return JSON.parse(lsGet("cdi-rotas-pe") || "{}"); } catch (e) { return {}; } })();
-async function rotaPe(a, b, via) {
+async function rotaPe(a, b, via, carro) {
   // via: pontos por onde a linha tem que passar (ex.: a beira do rio, em vez da estrada de cima)
   const pts = [a, ...(via || []), b];
-  const k = pts.map(q => (+q.lat).toFixed(5) + "," + (+q.lng).toFixed(5)).join(";");
+  const k = (carro ? "c:" : "") + pts.map(q => (+q.lat).toFixed(5) + "," + (+q.lng).toFixed(5)).join(";");
   if (rotasMem[k]) return rotasMem[k];
   let reta = 0; for (let i = 0; i < pts.length - 1; i++) reta += distKm(pts[i], pts[i + 1]) * 1000;
-  const r = await fetch(ROTA_PE + pts.map(q => `${(+q.lng).toFixed(6)},${(+q.lat).toFixed(6)}`).join(";") + "?overview=full&geometries=geojson&steps=false");
+  const r = await fetch((carro ? ROTA_CARRO : ROTA_PE) + pts.map(q => `${(+q.lng).toFixed(6)},${(+q.lat).toFixed(6)}`).join(";") + "?overview=full&geometries=geojson&steps=false");
   if (!r.ok) throw new Error("rota " + r.status);
   const j = await r.json(), rt = j && j.code === "Ok" && j.routes && j.routes[0];
   if (!rt || !rt.geometry || !rt.geometry.coordinates || rt.geometry.coordinates.length < 2) throw new Error("sem rota");
   // o roteador pode não conhecer uma ponte nova (Bajrang Setu) e mandar dar uma volta enorme: aí fica a linha reta
-  if (rt.distance > reta * 3 + 400) throw new Error("volta grande");
+  // de carro na serra a estrada faz muitas curvas: a folga é maior
+  if (rt.distance > reta * (carro ? 6 : 3) + 400) throw new Error("volta grande");
   // começa e termina nos pontos de verdade (o roteador encosta o começo e o fim na rua mais perto)
   const coords = [[+a.lng, +a.lat], ...rt.geometry.coordinates.map(([x, y]) => [+x.toFixed(6), +y.toFixed(6)]), [+b.lng, +b.lat]];
-  const res = { coords, m: Math.round(rt.distance) };
+  const res = { coords, m: Math.round(rt.distance), s: Math.round(rt.duration || 0) };
   rotasMem[k] = res;
   return res;
 }
@@ -3329,9 +3367,16 @@ function cartaoPasseio(id) {
   const p = PASSEIOS[id]; if (!p) return null;
   return h("button", { type: "button", class: "passcard", onclick: () => abrirPasseio(id) },
     h("span", { class: "passico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 26, height: 26 }, h("path", { d: "M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linejoin": "round" }))),
-    h("span", { class: "tx" }, h("small", { text: "Passeio guiado" }), h("b", { text: p.titulo }),
+    h("span", { class: "tx" }, h("small", { text: p.rotulo || "Passeio guiado" }), h("b", { text: p.titulo }),
       h("span", { text: `${p.paradas.length} paradas · ${p.total}. No caminho, os pinos das lojas, dos cafés e dos lugares de interesse.` })),
     h("span", { class: "passchev", "aria-hidden": "true", text: "›" }));
+}
+// aba Rotas (só a líder): os passeios guiados de Rishikesh e o grande mapa, num lugar só
+function vRotas() {
+  return h("section", { class: "view rotasview" },
+    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Só você vê" }), h("h1", { text: "Rotas" }))),
+    h("p", { class: "lede", text: "Os passeios guiados de Rishikesh: o mapa te leva de um ponto a outro e conta a história de cada lugar." }),
+    h("div", { class: "rotaslista" }, ["pontes", "kunjapuri", "tudo"].map(cartaoPasseio)));
 }
 function abrirPasseio(id) {
   const P = PASSEIOS[id]; if (!P) return;
@@ -3374,10 +3419,10 @@ function abrirPasseio(id) {
     const min = Math.round((ini - n) / 60000);
     if (min < -50) { chipAarti.hidden = true; return; }
     chipAarti.hidden = false;
-    chipAarti.replaceChildren(h("small", { text: "Aarti" }), h("b", { text: `${a.h}h${a.m ? String(a.m).padStart(2, "0") : ""}` }),
+    chipAarti.replaceChildren(h("small", { text: a.rot || "Aarti" }), h("b", { text: `${a.h}h${a.m ? String(a.m).padStart(2, "0") : ""}` }),
       h("span", { text: min <= 0 ? "acontecendo agora" : min < 60 ? `faltam ${min} min` : `faltam ${Math.floor(min / 60)}h${String(min % 60).padStart(2, "0")}` }));
     chipAarti.classList.toggle("logo", min <= 90);
-    chipAarti.setAttribute("aria-label", `Aarti no Parmarth às ${a.h}h. Chegue até ${a.chegar}. Toque para ver a parada.`);
+    chipAarti.setAttribute("aria-label", `${a.rot || "Aarti"} às ${a.h}h. Chegue até ${a.chegar}. Toque para ver a parada.`);
   };
   aarti(); const relogio = setInterval(aarti, 30000);
   // a tela apagada desliga a trava; quando a pessoa volta (do Google Maps, por exemplo), pede de novo
@@ -3416,7 +3461,7 @@ function abrirPasseio(id) {
   async function carregaDia() {
     for (const pn of pernas) {
       if (!box.isConnected) return;
-      try { const r = await rotaPe(pn.de, pn.para, viaP(pn.para)); r.fixa = true; pn.coords = r.coords; rotaPe.__salva(); desenhaDia(); } catch (e) {}
+      try { const r = await rotaPe(pn.de, pn.para, viaP(pn.para), !!pn.para.carro); r.fixa = true; pn.coords = r.coords; rotaPe.__salva(); desenhaDia(); } catch (e) {}
     }
   }
   rotaPe.__salva = () => lsSet("cdi-rotas-pe", JSON.stringify(Object.fromEntries(Object.entries(rotasMem).filter(([, v]) => v.fixa))));
@@ -3427,7 +3472,7 @@ function abrirPasseio(id) {
     if (!forca && agoraPara === kAlvo() && !andou && !saiu) return;
     if (!forca && Date.now() - agoraEm < 12000) return;
     pedindo = true; agoraEm = Date.now(); const de = { lat: eu.lat, lng: eu.lng }, para = kAlvo();
-    try { const r = await rotaPe(de, p, extra ? [] : viaAFrente(p)); if (para === kAlvo()) { agora = r; agoraDe = de; agoraPara = para; } }
+    try { const r = await rotaPe(de, p, extra ? [] : viaAFrente(p), !extra && !!p.carro); if (para === kAlvo()) { agora = r; agoraDe = de; agoraPara = para; } }
     catch (e) { if (para === kAlvo()) { agora = null; agoraDe = de; agoraPara = para; } }
     pedindo = false; desenhaAgora(); desenha();
   }
@@ -3485,7 +3530,7 @@ function abrirPasseio(id) {
     const sinal = !eu || aqui ? null : nr && nr.fora > .04 ? ["fora", "Você saiu do caminho. Volte para a linha azul ou siga a seta."]
       : tendencia === "indo" ? ["indo", "✓ Você está indo na direção certa"] : tendencia === "volta" ? ["volta", "↩ Você está se afastando. Vire e siga a seta."] : ["neutro", "Ande um pouco: o app mostra se você está indo para o lado certo."];
     const progresso = h("div", { class: "passprog" },
-      h("p", { text: fim ? "Passeio completo ✓" : `Parada ${est.i + 1} de ${ps.length}` + (extra ? " · desvio até um atrativo" : "") }),
+      h("p", { text: fim ? "Passeio completo ✓" : `Parada ${est.i + 1} de ${ps.length}` + (parada.dia ? " · " + parada.dia : "") + (extra ? " · desvio até um atrativo" : "") }),
       h("div", { class: "passbarra", role: "tablist", "aria-label": "Paradas" }, ps.map((q, k) => h("button", { type: "button", role: "tab", "aria-selected": String(k === est.i), class: est.feitos.includes(k) ? "feito" : "", "aria-label": `Parada ${k + 1}: ${q.nome}`, onclick: () => vai(k) }))));
     // descrição de um atrativo (sem sair do app)
     if (vendo) {
@@ -3518,7 +3563,7 @@ function abrirPasseio(id) {
           d != null ? h("div", { class: "passdir" },
               h("span", { class: "seta", "aria-hidden": "true", text: "↑" }),
               h("div", null, h("b", { text: distTxt(d) }),
-                h("span", { text: `uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé ${nr ? "pelas ruas" : "em linha reta"}` + (direcao() != null ? "" : ` · siga para o ${r.nome}`) }),
+                h("span", { text: (!extra && p.carro ? `uns ${Math.max(1, Math.round(nr && agora.s && agora.m ? agora.s / 60 * (d * 1000 / agora.m) : d * 60 / 25))} min de carro ${nr ? "pela estrada" : "(distância em linha reta)"}` : `uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé ${nr ? "pelas ruas" : "em linha reta"}`) + (direcao() != null ? "" : ` · siga para o ${r.nome}`) }),
                 h("small", { class: "passbus", text: direcao() != null ? "A seta e o feixe azul do mapa giram com o celular: a seta aponta para onde andar." : (S.passBussolaMsg || "") }),
                 eu.prec > 60 ? h("small", { class: "passprec", text: `GPS impreciso agora (±${eu.prec} m). Fica melhor ao ar livre.` }) : null))
             : h("p", { class: "passdist", text: S.passGpsMsg || "Procurando você no mapa…" }),
@@ -3616,7 +3661,8 @@ function vDia(d, open, isToday, abrir) {
         // agenda corrida, sem separar em manhã, tarde e noite
         [d.agenda.flatMap(p => p.itens)].map(itens => [
           h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
-      podePasseio() && (d.passeio || (d.cidade === "Rishikesh" && d.n >= 9 && "pontes")) ? cartaoPasseio(d.passeio || "pontes") : null,
+      // passeio guiado do dia: Dia 10 é o de Kunjapuri e Vashishta; os outros dias de Rishikesh, o das pontes
+      podePasseio() && d.cidade === "Rishikesh" && d.n >= 9 ? cartaoPasseio(d.n === 10 ? "kunjapuri" : d.passeio || "pontes") : null,
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       // o calendário sagrado é o roteiro de bolso da líder: os viajantes não veem
       d.calendario && S.isOwner ? vCalendarioSagrado(d.calendario, d.iso) : null,
