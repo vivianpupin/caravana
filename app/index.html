@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/11 · 00:50";</script>
+<script>window.__VERSAO = "12/11 · 00:53";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2126,7 +2126,10 @@ video.mgrande{max-height:70vh;background:#000}
 .passcard .tx span{font-size:13.5px;color:var(--soft);line-height:1.45}
 .passcard .passchev{font-size:26px;color:var(--moss)}
 .rotaslista{display:flex;flex-direction:column;gap:12px;margin-top:14px}
-.rotasview .lede{margin-top:6px}
+.rotascidade{width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:18px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font:inherit;cursor:pointer}
+.rotascidade b{font-family:var(--display);font-size:24px;font-weight:600}
+.rotaschev{font-size:18px;color:var(--terra);transition:transform .2s}
+.rotascidade[aria-expanded="true"] .rotaschev{transform:rotate(180deg)}
 .passeio{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;overflow:hidden;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .passtopo{display:flex;align-items:center;gap:12px;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
 .passtopo h2{font-size:20px}
@@ -2243,6 +2246,7 @@ video.mgrande{max-height:70vh;background:#000}
 const S = {
   tab: "travessia",
   roteiro: null, roteiroErro: false,
+  rotasCidade: null,
   dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [], cartas: [], diarios: [], pedra: [], membros: [], mural: [], cartasP: [], pombosIn: [], pombosOut: [], fotoAba: "estudio", muralCidade: "",
   vReady: false, dbReady: false, pularCadastro: false,
   uid: null, me: null, isOwner: false, canChat: null,
@@ -3192,7 +3196,9 @@ const PASSEIOS = {
         dica: "Do Yog Niketan até Tapovan são uns 2 km de subida pela estrada: um tuk-tuk custa uns ₹200. No caminho, o Tattv Cafe é uma boa parada para um café. Tire o sapato na porta do templo.",
         lojas: [
           ["Tattv Cafe", "café de comida natural e vegana, vista para as montanhas · fecha 22h", "Tattv Cafe, Tapovan, Rishikesh", 30.12800, 78.32220, false, "comida"],
-          ["MVT Guesthouse & Restaurant", "Guesthouse com restaurante em Upper Tapovan, na Balaknath Road, um pouco acima do Tattv Cafe · 4,6 ★ no Google (umas 800 avaliações).", "MVT Guesthouse & Restaurant Rishikesh", 30.13087, 78.32182, false, "lugar"]] },
+          ["MVT Guesthouse & Restaurant", "Guesthouse com restaurante em Upper Tapovan, na Balaknath Road, um pouco acima do Tattv Cafe · 4,6 ★ no Google (umas 800 avaliações).", "MVT Guesthouse & Restaurant Rishikesh", 30.13087, 78.32182, false, "lugar"],
+          ["Rafting · largada em Shivpuri", "A largada mais comum do rafting, uns 16 km rio acima: de lá até a NIM Beach são 16 km de rio, com corredeiras de grau II e III. O pino é aproximado; confirme com a agência o ponto de encontro.", "Shivpuri Rafting Point Rishikesh", 30.13420, 78.38630, true, "lugar"],
+          ["NIM Beach · chegada do rafting", "A praia da margem leste onde termina o rafting que sai de Shivpuri, um pouco antes da Lakshman Jhula.", "Nim Beach Rishikesh", 30.13334, 78.33211, false, "lugar"]] },
       { nome: "Lakshman Jhula e Bajrang Setu", lat: 30.12625, lng: 78.32992, raio: 45, quando: "Desça a rua das lojas e atravesse pela ponte de vidro",
         texto: "A ponte de ferro de 1929 leva o nome de Lakshmana, que segundo a tradição atravessou o Ganges aqui numa corda de juta. Ela está fechada desde 2022. Ao lado foi construída a Bajrang Setu, com piso de vidro (Bajrang é um dos nomes de Hanuman). Atravesse por ela para a margem leste. A rua que desce até a ponte é a melhor de Rishikesh para compras: as lojas estão marcadas no mapa com bolinhas douradas.",
         dica: "Se a Bajrang Setu estiver fechada, veja o templo de 13 andares daqui e siga de tuk-tuk até a Ram Jhula ou a Janki Setu para atravessar. Algumas lojas não têm endereço publicado: o pino delas é aproximado, e o toque no nome abre a loja certa no Google Maps.",
@@ -3236,7 +3242,7 @@ const PASSEIOS = {
 // Dia 10: de carro. Kunjapuri (posição aproximada: foto do templo no Wikimedia Commons, bate com a trilha do Wikiloc);
 // Vashishta Gufa: 30.11426, 78.43203 (ashramsofindia.com) e 30.11455, 78.43189 (WorldPlaces) concordam.
 PASSEIOS.kunjapuri = {
-  titulo: "Nascer do sol e a caverna dos sábios", rotulo: "Dia 10 · de carro",
+  titulo: "Nascer do sol e a caverna dos sábios", rotulo: "Dia 3",
   total: "de carro, com o motorista", saida: { lat: 30.12181, lng: 78.30864 },
   aarti: { h: 17, m: 0, chegar: "16h45", parada: 3, rot: "Puja" },
   paradas: [
@@ -3256,12 +3262,52 @@ PASSEIOS.kunjapuri = {
     { nome: "Yog Niketan · jantar às 20h", lat: 30.12181, lng: 78.30864, raio: 120, carro: true, retorno: true, quando: "Fim do dia: de volta ao hotel",
       texto: "De volta ao Yog Niketan para o jantar às 20h. Amanhã é um dia mais lento, de práticas." }
   ] };
-// o grande mapa: os dois dias juntos, numa rota só
+// Dia 1 em Rishikesh (chegada): Aarti no Parmarth e o MVT Guesthouse
+PASSEIOS.chegada = {
+  titulo: "Chegada: a Aarti e o MVT", rotulo: "Dia 1", diaN: 8,
+  total: "a pé e de carro", saida: { lat: 30.12181, lng: 78.30864 },
+  aarti: { h: 17, m: 0, chegar: "16h30", parada: 0 },
+  paradas: [
+    { nome: "Parmarth Niketan · Ganga Aarti", lat: 30.11923, lng: 78.31221, raio: 130, via: [[30.11647, 78.30873]], quando: "Ganga Aarti às 17h · atravesse pela Janki Setu",
+      texto: "Depois do check-in no Yog Niketan, a primeira Ganga Aarti: nos degraus em frente à grande estátua de Shiva sentado, no Parmarth Niketan, a cerimônia do fogo para o rio ao pôr do sol. O caminho do hotel passa pela Janki Setu, a ponte mais perto.",
+      dica: "Chegue até 16h30 para pegar lugar nos degraus. Leve um casaco." },
+    { nome: "MVT Guesthouse & Restaurant", lat: 30.13087, lng: 78.32182, raio: 80, carro: true, destino: "MVT Guesthouse & Restaurant Rishikesh", quando: "Em Upper Tapovan, na Balaknath Road",
+      texto: "Guesthouse com restaurante em Upper Tapovan, na Balaknath Road, um pouco acima do Tattv Cafe. 4,6 ★ no Google, com umas 800 avaliações.",
+      dica: "Fica no alto de Tapovan: o melhor é ir de carro ou de tuk-tuk." },
+    { nome: "Yog Niketan · de volta ao hotel", lat: 30.12181, lng: 78.30864, raio: 120, carro: true, retorno: true, quando: "Fim do dia: de volta ao hotel",
+      texto: "De volta ao Yog Niketan, o ashram fundado em 1964 por Swami Yogeshwarananda." }
+  ] };
+// Templos e atividades: opções soltas, escolha uma e o app leva
+PASSEIOS.extras = {
+  titulo: "Templos e atividades", rotulo: "Mais opções em Rishikesh", livre: true,
+  total: "escolha uma opção e o app te leva", saida: { lat: 30.12181, lng: 78.30864 },
+  paradas: [
+    { nome: "Rafting · largada em Shivpuri", lat: 30.13420, lng: 78.38630, raio: 250, carro: true, aprox: true, destino: "Shivpuri Rafting Point Rishikesh", quando: "16 km de rafting até a NIM Beach",
+      texto: "Shivpuri, uns 16 km rio acima, é a largada mais comum do rafting de Rishikesh: daqui até a NIM Beach são 16 km de rio, com corredeiras de grau II e III, cerca de 1h30 a 2h na água. As agências costumam buscar em Tapovan e levar de carro até a largada.",
+      dica: "O pino é aproximado: fica ao lado do ponto de rafting de Shivpuri, na estrada de Badrinath. Confirme com a agência o ponto de encontro." },
+    { nome: "NIM Beach · chegada do rafting", lat: 30.13334, lng: 78.33211, raio: 120, carro: true, destino: "Nim Beach Rishikesh", quando: "Onde o rafting termina",
+      texto: "A praia da margem leste onde termina o rafting que sai de Shivpuri, um pouco antes da Lakshman Jhula. Boa para ver os botes chegando." },
+    { nome: "Triveni Ghat", lat: 30.10355, lng: 78.29896, raio: 120, carro: true, destino: "Triveni Ghat Rishikesh", quando: "O ghat mais tradicional da cidade · aarti no fim da tarde",
+      texto: "Triveni quer dizer três correntes: a tradição celebra aqui o encontro simbólico do Ganges, do Yamuna e do invisível Saraswati. É o ghat mais tradicional de Rishikesh, e a aarti do fim da tarde é popular e cheia de gente local, bem diferente da do Parmarth.",
+      dica: "Fica no centro da cidade, uns 3 km ao sul do hotel: melhor ir de carro ou tuk-tuk. A aarti acompanha o pôr do sol." },
+    { nome: "Bharat Mandir", lat: 30.10509, lng: 78.29999, raio: 120, carro: true, aprox: true, destino: "Shri Bharat Mandir Rishikesh", quando: "O templo mais antigo de Rishikesh, perto do Triveni Ghat",
+      texto: "Considerado o templo mais antigo de Rishikesh, dedicado a Vishnu como Hrishikesha, o senhor dos sentidos, que dá nome à cidade. A tradição atribui a fundação a Adi Shankaracharya.",
+      dica: "O pino é aproximado: o templo fica na Ghat Road, a uns 400 m do Triveni Ghat. Dá para fazer os dois juntos." },
+    { nome: "Cachoeira Neer Garh", lat: 30.14442, lng: 78.34017, raio: 200, carro: true, aprox: true, destino: "Neer Garh Waterfall Rishikesh", quando: "Cachoeira na mata, acima de Tapovan",
+      texto: "Uma cachoeira em degraus no meio da mata, uns 4 a 5 km acima de Tapovan. Do estacionamento se sobe a pé por uma trilha curta até as quedas, com poços de água fria.",
+      dica: "Há uma pequena taxa de entrada. Leve tênis: a trilha tem pedras molhadas. O pino é aproximado." },
+    { nome: "Neelkanth Mahadev", lat: 30.08070, lng: 78.34090, raio: 200, carro: true, destino: "Neelkanth Mahadev Temple", quando: "Templo de Shiva na serra, a uns 32 km",
+      texto: "O templo marca o lugar onde, segundo a tradição, Shiva bebeu o veneno que surgiu quando deuses e demônios bateram o oceano de leite. O veneno ficou na garganta e a deixou azul: Neelkanth, o de garganta azul. É um dos templos mais visitados da região.",
+      dica: "Ida de carro pela serra, de 1h a 1h30 de Rishikesh. Leve dinheiro para as oferendas." }
+  ] };
+// o grande mapa: os 3 dias juntos
 PASSEIOS.tudo = {
-  titulo: "Rishikesh inteira", rotulo: "Dias 9 e 10 · o grande mapa",
-  total: "os dois dias num mapa só", saida: PASSEIOS.pontes.saida,
-  paradas: [...PASSEIOS.pontes.paradas.map(p => ({ ...p, dia: "Dia 9" })), ...PASSEIOS.kunjapuri.paradas.map(p => ({ ...p, dia: "Dia 10" }))] };
-PASSEIOS.pontes.rotulo = "Dia 9 · a pé";
+  titulo: "Mapa dos 3 dias", rotulo: "Os 3 dias juntos",
+  total: "os três dias num mapa só", saida: { lat: 30.12181, lng: 78.30864 },
+  paradas: [...PASSEIOS.chegada.paradas.map(p => ({ ...p, dia: "Dia 1" })), ...PASSEIOS.pontes.paradas.map(p => ({ ...p, dia: "Dia 2" })), ...PASSEIOS.kunjapuri.paradas.map(p => ({ ...p, dia: "Dia 3" }))] };
+PASSEIOS.pontes.rotulo = "Dia 2"; PASSEIOS.pontes.diaN = 9;
+PASSEIOS.kunjapuri.rotulo = "Dia 3"; PASSEIOS.kunjapuri.diaN = 10;
+
 
 // por enquanto o passeio guiado aparece só para a Vivian, para testar em Rishikesh antes de abrir para a turma.
 // O login não informa o e-mail (só id, nome, foto e se é líder): vale para quem é líder e não é a Vanessa
@@ -3319,16 +3365,17 @@ function cartaoPasseio(id) {
   const p = PASSEIOS[id]; if (!p) return null;
   return h("button", { type: "button", class: "passcard", onclick: () => abrirPasseio(id) },
     h("span", { class: "passico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 26, height: 26 }, h("path", { d: "M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linejoin": "round" }))),
-    h("span", { class: "tx" }, h("small", { text: p.rotulo || "Passeio guiado" }), h("b", { text: p.titulo }),
-      h("span", { text: `${p.paradas.length} paradas · ${p.total}. No caminho, os pinos das lojas, dos cafés e dos lugares de interesse.` })),
+    h("span", { class: "tx" }, h("small", { text: (p.rotulo || "Passeio guiado") + (() => { const d = p.diaN && S.roteiro && (S.roteiro.dias || []).find(x => x.n === p.diaN); return d ? " · " + d.data : ""; })() }), h("b", { text: p.titulo }),
+      h("span", { text: p.livre ? `${p.paradas.length} opções · ${p.total}.` : `${p.paradas.length} paradas · ${p.total}.` })),
     h("span", { class: "passchev", "aria-hidden": "true", text: "›" }));
 }
-// aba Rotas (só a líder): os passeios guiados de Rishikesh e o grande mapa, num lugar só
+// aba Rotas (só a líder): cada cidade abre as rotas dela
 function vRotas() {
+  const aberta = S.rotasCidade !== null;
   return h("section", { class: "view rotasview" },
-    h("div", { class: "head" }, h("div", null, h("p", { class: "eyebrow", text: "Só você vê" }), h("h1", { text: "Rotas" }))),
-    h("p", { class: "lede", text: "Os passeios guiados de Rishikesh: o mapa te leva de um ponto a outro e conta a história de cada lugar." }),
-    h("div", { class: "rotaslista" }, ["pontes", "kunjapuri", "tudo"].map(cartaoPasseio)));
+    h("button", { type: "button", class: "rotascidade", "aria-expanded": String(aberta), onclick: () => { S.rotasCidade = aberta ? null : "rishikesh"; render(); } },
+      h("b", { text: "Rishikesh" }), h("span", { class: "rotaschev", "aria-hidden": "true", text: "▾" })),
+    aberta ? h("div", { class: "rotaslista" }, ["chegada", "pontes", "kunjapuri", "tudo", "extras"].map(cartaoPasseio)) : null);
 }
 function abrirPasseio(id) {
   const P = PASSEIOS[id]; if (!P) return;
@@ -3382,7 +3429,7 @@ function abrirPasseio(id) {
   document.addEventListener("visibilitychange", voltou);
   try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {}
   const vai = i => { est.i = Math.max(0, Math.min(ps.length - 1, i)); extra = null; vendo = null; guarda(); tendencia = null; amostra = null; agora = null; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pinta(); pedeRota(true); if (mapa) mapa.easeTo({ center: [ps[est.i].lng, ps[est.i].lat], zoom: Math.max(mapa.getZoom(), 15.5) }); };
-  const conclui = () => { if (!est.feitos.includes(est.i)) est.feitos.push(est.i); guarda(); if (est.i < ps.length - 1) vai(est.i + 1); else { desenha(); pinta(); } };
+  const conclui = () => { if (!est.feitos.includes(est.i)) est.feitos.push(est.i); guarda(); if (est.i < ps.length - 1) vai(est.i + 1); else if (P.livre) vai(0); else { desenha(); pinta(); } };
   function enquadra(animar) {
     if (!mapa) return; const b = new maplibregl.LngLatBounds();
     ps.forEach(p => b.extend([p.lng, p.lat])); if (eu && distKm(eu, ps[0]) < 5) b.extend([eu.lng, eu.lat]);
@@ -3482,7 +3529,7 @@ function abrirPasseio(id) {
     const sinal = !eu || aqui ? null : nr && nr.fora > .04 ? ["fora", "Você saiu do caminho. Volte para a linha azul ou siga a seta."]
       : tendencia === "indo" ? ["indo", "✓ Você está indo na direção certa"] : tendencia === "volta" ? ["volta", "↩ Você está se afastando. Vire e siga a seta."] : ["neutro", "Ande um pouco: o app mostra se você está indo para o lado certo."];
     const progresso = h("div", { class: "passprog" },
-      h("p", { text: fim ? "Passeio completo ✓" : `Parada ${est.i + 1} de ${ps.length}` + (parada.dia ? " · " + parada.dia : "") + (extra ? " · desvio até um atrativo" : "") }),
+      h("p", { text: P.livre ? `Opção ${est.i + 1} de ${ps.length} · toque nas barrinhas ou nos números para escolher` : (fim ? "Passeio completo ✓" : `Parada ${est.i + 1} de ${ps.length}`) + (parada.dia ? " · " + parada.dia : "") + (extra ? " · desvio até um atrativo" : "") }),
       h("div", { class: "passbarra", role: "tablist", "aria-label": "Paradas" }, ps.map((q, k) => h("button", { type: "button", role: "tab", "aria-selected": String(k === est.i), class: est.feitos.includes(k) ? "feito" : "", "aria-label": `Parada ${k + 1}: ${q.nome}`, onclick: () => vai(k) }))));
     // descrição de um atrativo (sem sair do app)
     if (vendo) {
@@ -3506,11 +3553,11 @@ function abrirPasseio(id) {
           h("p", { class: "passrot", text: "✓ Você chegou" }),
           h("h3", { text: p.nome }),
           extra ? h("button", { class: "btn gold passbig", type: "button", onclick: sairExtra }, `Voltar ao roteiro: ${parada.nome} ›`)
-            : h("button", { class: "btn gold passbig", type: "button", onclick: conclui }, prox ? `Seguir para: ${prox.nome} ›` : est.feitos.includes(est.i) ? "Passeio feito ✓" : "Terminar o passeio ✓"))
+            : h("button", { class: "btn gold passbig", type: "button", onclick: conclui }, P.livre ? (prox ? `Ver a próxima opção: ${prox.nome} ›` : "Ver as opções do começo ›") : prox ? `Seguir para: ${prox.nome} ›` : est.feitos.includes(est.i) ? "Passeio feito ✓" : "Terminar o passeio ✓"))
         : h("div", { class: "passatual" + (extra ? " poi " + extra.tipo : "") },
           h("p", { class: "passrot", text: extra ? "Agora, vá até (fora do roteiro)" : "Agora, vá até" }),
           h("h3", { text: p.nome }),
-          h("p", { class: "passinst", text: extra ? (extra.aprox ? "Pino aproximado: chegando perto, procure pelo nome na rua." : TIPO[extra.tipo] || "") : p.quando }),
+          h("p", { class: "passinst", text: extra ? (extra.aprox ? "Pino aproximado: chegando perto, procure pelo nome na rua." : TIPO[extra.tipo] || "") : p.quando + (p.aprox ? " · pino aproximado" : "") }),
           sinal ? h("p", { class: "passsinal " + sinal[0], role: "status", text: sinal[1] }) : null,
           d != null ? h("div", { class: "passdir" },
               h("span", { class: "seta", "aria-hidden": "true", text: "↑" }),
@@ -3547,7 +3594,7 @@ function abrirPasseio(id) {
     // só olha as duas próximas paradas: passar perto de uma parada lá do fim do dia não muda o passeio
     const k = ps.findIndex((q, n) => n > est.i && n <= est.i + 2 && !q.retorno && !est.feitos.includes(n) && dentro(q));
     // indo para uma parada opcional (Beatles Ashram) passa-se em frente a outras: aí só muda com o botão Pular
-    if (!extra && k > -1 && !dentro(ps[est.i]) && !ps[est.i].opcional) { est.i = k; guarda(); tendencia = null; amostra = null; agora = null; }
+    if (!P.livre && !extra && k > -1 && !dentro(ps[est.i]) && !ps[est.i].opcional) { est.i = k; guarda(); tendencia = null; amostra = null; agora = null; }
     const p = alvoAt(), ka = kAlvo();
     // para frente ou para trás: compara quanto falta (pelas ruas, se tiver a rota) a cada uns 12 m andados
     const falta = agora && agoraPara === ka ? naRota(agora.coords, eu).falta : distKm(eu, p);
@@ -3614,7 +3661,7 @@ function vDia(d, open, isToday, abrir) {
         [d.agenda.flatMap(p => p.itens)].map(itens => [
           h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
       // passeio guiado do dia: Dia 10 é o de Kunjapuri e Vashishta; os outros dias de Rishikesh, o das pontes
-      podePasseio() && d.cidade === "Rishikesh" && d.n >= 9 ? cartaoPasseio(d.n === 10 ? "kunjapuri" : d.passeio || "pontes") : null,
+      podePasseio() && d.cidade === "Rishikesh" ? cartaoPasseio({ 8: "chegada", 9: "pontes", 10: "kunjapuri", 11: "extras" }[d.n]) : null,
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
         l.dados && l.dados.length ? h("div", { class: "stats" }, l.dados.map(x => h("div", null, h("b", { text: x.v }), h("span", { text: x.l })))) : null)),
