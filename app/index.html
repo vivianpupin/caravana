@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "11/11 · 23:52";</script>
+<script>window.__VERSAO = "11/11 · 23:56";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2128,7 +2128,7 @@ video.mgrande{max-height:70vh;background:#000}
 .passtopo h2{font-size:20px}
 .passtopo .eyebrow{margin:0}
 .passx{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);font-size:24px;line-height:1;color:var(--ink);cursor:pointer}
-.passmapawrap{position:relative;flex:none;height:42vh;min-height:220px}
+.passmapawrap{position:relative;flex:none;height:36vh;min-height:200px}
 .passmapa{position:absolute;inset:0;background:#EAD6A8}
 .passmapa .globoaviso{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:var(--soft);font-size:14px;text-align:center;padding:16px}
 .passmapawrap .mapctl{position:absolute;right:10px;top:10px;transform:none;display:flex;flex-direction:column;gap:6px;z-index:2}
@@ -2138,17 +2138,28 @@ video.mgrande{max-height:70vh;background:#000}
 .passpin.atual{background:var(--terra);color:var(--on-dark);width:38px;height:38px;font-size:15px;z-index:3}
 .passeu{width:16px;height:16px;border-radius:50%;background:#2F7BEA;border:3px solid #fff;box-shadow:0 0 0 8px rgba(47,123,234,.22)}
 .passpainel{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
-.passpassos{display:flex;gap:6px;flex-wrap:wrap}
-.passpassos button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);color:var(--soft);font:600 13px var(--ui);cursor:pointer}
-.passpassos button.feito{background:var(--moss);border-color:var(--moss);color:var(--on-dark)}
-.passpassos button[aria-selected="true"]{background:var(--terra);border-color:var(--terra);color:var(--on-dark)}
+.passprog{display:flex;flex-direction:column;gap:6px}
+.passprog p{margin:0;font-size:13px;font-weight:600;color:var(--soft);letter-spacing:.02em}
+.passbarra{display:flex;gap:5px}
+.passbarra button{flex:1;height:8px;border-radius:99px;border:0;padding:0;background:var(--panel3);cursor:pointer}
+.passbarra button.feito{background:var(--moss)}
+.passbarra button[aria-selected="true"]{background:var(--terra)}
+.passrot{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--terra)}
+.passatual.chegou .passrot{color:var(--moss)}
+.passinst{margin:0;font-size:15px;color:var(--soft)}
+.passdir{display:flex;align-items:center;gap:14px;padding:6px 0}
+
+.passdir div{display:flex;flex-direction:column;min-width:0}
+.passdir b{font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.passdir span{font-size:14px;color:var(--soft)}
+.passbig{width:100%;justify-content:center;padding:13px 18px;font-size:15.5px}
 .passatual{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:16px;background:var(--panel);border:1px solid var(--line)}
 .passatual.chegou{border-color:var(--moss);box-shadow:0 0 0 3px rgba(63,73,56,.15)}
 .passatual .eyebrow{margin:0}
 .passatual h3{font-size:22px}
 .passdist{margin:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:var(--soft);font-size:14.5px}
 .passdist b{color:var(--ink);font-size:17px;font-variant-numeric:tabular-nums}
-.passdist .seta{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--terra);color:var(--on-dark);font-weight:700;transition:transform .4s}
+.passeio .seta{flex:none;display:inline-grid;place-items:center;width:52px;height:52px;font-size:26px;border-radius:50%;background:var(--terra);color:var(--on-dark);font-weight:700;transition:transform .4s}
 .passatual .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
 .passtexto{display:flex;flex-direction:column;gap:12px;font-size:15.5px;line-height:1.65}
 .passtexto>p{margin:0;max-width:62ch}
@@ -2165,7 +2176,7 @@ video.mgrande{max-height:70vh;background:#000}
 .passtexto .eyebrow{margin:0}
 .passnota{color:var(--faint);margin:0}
 .passprec{flex-basis:100%;font-size:12.5px;color:var(--terra)}
-@media (prefers-reduced-motion:reduce){.passdist .seta{transition:none}}
+@media (prefers-reduced-motion:reduce){.passeio .seta{transition:none}}
 </style>
 
 <div class="app">
@@ -3185,8 +3196,8 @@ function abrirPasseio(id) {
   const P = PASSEIOS[id]; if (!P) return;
   document.querySelector(".passeio")?.__fecha?.();
   const chave = "cdi-passeio-" + id;
-  let est = { i: 0, feitos: [] }; try { est = { ...est, ...JSON.parse(lsGet(chave) || "{}") }; } catch (e) {}
-  const guarda = () => lsSet(chave, JSON.stringify({ i: est.i, feitos: est.feitos }));
+  let est = { i: 0, feitos: [], chegou: [] }; try { est = { ...est, ...JSON.parse(lsGet(chave) || "{}") }; } catch (e) {}
+  const guarda = () => lsSet(chave, JSON.stringify({ i: est.i, feitos: est.feitos, chegou: est.chegou }));
   let eu = null, watch = null, mapa = null, marcas = [], euMarca = null, trava = null, chegouAvisado = {}, rolarTexto = false, centrou = false;
   const ps = P.paradas;
   const caixaMapa = h("div", { class: "passmapa" }, h("p", { class: "globoaviso", text: "Abrindo o mapa…" }));
@@ -3228,21 +3239,29 @@ function abrirPasseio(id) {
     const p = ps[est.i], fim = est.feitos.length === ps.length;
     const d = eu ? distKm(eu, p) : null, r = eu ? rumo(eu, p) : null, perto = d != null && d * 1000 <= (p.raio || 80) + Math.min(eu.prec || 0, 40);
     const rota = "https://www.google.com/maps/dir/?api=1&destination=" + p.lat + "," + p.lng + "&travelmode=walking";
+    const aqui = perto || est.chegou.includes(est.i), prox = ps[est.i + 1];
     painel.replaceChildren(
-      h("div", { class: "passpassos", role: "tablist", "aria-label": "Paradas" }, ps.map((q, k) => h("button", { type: "button", role: "tab", "aria-selected": String(k === est.i), class: est.feitos.includes(k) ? "feito" : "", "aria-label": `Parada ${k + 1}: ${q.nome}`, onclick: () => vai(k) }, est.feitos.includes(k) ? "✓" : String(k + 1)))),
-      h("div", { class: "passatual" + (perto ? " chegou" : "") },
-        h("p", { class: "eyebrow", text: perto ? "Você chegou" : `Parada ${est.i + 1} de ${ps.length} · ${p.quando}` }),
-        h("h3", { text: p.nome }),
-        d != null ? h("p", { class: "passdist" }, perto ? "Você está aqui." : [h("b", { text: distTxt(d) }), ` ao ${r.nome} · uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé`],
-          !perto ? h("span", { class: "seta", style: `transform:rotate(${Math.round(r.g)}deg)`, "aria-hidden": "true", text: "↑" }) : null,
-          eu.prec > 60 ? h("small", { class: "passprec", text: `GPS impreciso agora (±${eu.prec} m). Fica melhor ao ar livre.` }) : null)
-          : h("p", { class: "passdist", text: S.passGpsMsg || "Procurando você no mapa…" }),
-        h("div", { class: "actions" },
-          h("a", { class: "btn gold", href: rota, target: "_blank", rel: "noopener" }, "Como chegar"),
-          est.i < ps.length - 1 ? h("button", { class: "btn", type: "button", onclick: conclui }, "Próxima parada ›")
-            : !est.feitos.includes(est.i) ? h("button", { class: "btn", type: "button", onclick: conclui }, "Terminar o passeio") : null)),
-      h("div", { class: "passtexto" + (perto ? " chegou" : "") },
-        perto ? h("p", { class: "eyebrow", text: "A história deste lugar" }) : null,
+      // progresso: uma barrinha por parada (toque para ir direto a uma delas)
+      h("div", { class: "passprog" },
+        h("p", { text: fim ? "Passeio completo ✓" : `Parada ${est.i + 1} de ${ps.length}` }),
+        h("div", { class: "passbarra", role: "tablist", "aria-label": "Paradas" }, ps.map((q, k) => h("button", { type: "button", role: "tab", "aria-selected": String(k === est.i), class: est.feitos.includes(k) ? "feito" : "", "aria-label": `Parada ${k + 1}: ${q.nome}`, onclick: () => vai(k) })))),
+      aqui ? h("div", { class: "passatual chegou" },
+          h("p", { class: "passrot", text: "✓ Você chegou" }),
+          h("h3", { text: p.nome }),
+          h("button", { class: "btn gold passbig", type: "button", onclick: conclui }, prox ? `Seguir para: ${prox.nome} ›` : est.feitos.includes(est.i) ? "Passeio feito ✓" : "Terminar o passeio ✓"))
+        : h("div", { class: "passatual" },
+          h("p", { class: "passrot", text: "Agora, vá até" }),
+          h("h3", { text: p.nome }),
+          h("p", { class: "passinst", text: p.quando }),
+          d != null ? h("div", { class: "passdir" },
+              h("span", { class: "seta", style: `transform:rotate(${Math.round(r.g)}deg)`, "aria-hidden": "true", text: "↑" }),
+              h("div", null, h("b", { text: distTxt(d) }), h("span", { text: `uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé · ao ${r.nome}` }),
+                eu.prec > 60 ? h("small", { class: "passprec", text: `GPS impreciso agora (±${eu.prec} m). Fica melhor ao ar livre.` }) : null))
+            : h("p", { class: "passdist", text: S.passGpsMsg || "Procurando você no mapa…" }),
+          h("a", { class: "btn gold passbig", href: rota, target: "_blank", rel: "noopener" }, "Abrir o caminho no Google Maps"),
+          h("button", { class: "btn passbig", type: "button", onclick: () => { if (!est.chegou.includes(est.i)) est.chegou.push(est.i); guarda(); desenha(); painel.scrollTo({ top: 0 }); } }, "Já cheguei")),
+      h("div", { class: "passtexto" + (aqui ? " chegou" : "") },
+        aqui ? h("p", { class: "eyebrow", text: "A história deste lugar" }) : null,
         h("p", { text: p.texto }),
         p.dica ? h("p", { class: "passdica", text: p.dica }) : null,
         p.lojas ? h("div", { class: "passlojas" }, h("p", { class: "eyebrow rule", text: "Neste trecho" }),
