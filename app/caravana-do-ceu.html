@@ -2106,6 +2106,9 @@ video.mgrande{max-height:70vh;background:#000}
 .passloja i{width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.3);flex:none}
 .passloja span{background:var(--panel);padding:2px 6px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.15);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
 .passmapa.longe .passloja span{display:none}
+.passloja.comida i{background:var(--moss)}
+.passloja.lugar i{background:#7A4FA0}
+.passmapa.longe .passloja.lugar span{display:block}
 .passaarti{flex:none;display:flex;flex-direction:column;align-items:center;gap:0;padding:5px 10px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font:inherit;cursor:pointer;line-height:1.15}
 .passaarti small{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra);font-weight:600}
 .passaarti b{font-size:16px}
@@ -3128,43 +3131,41 @@ const mapsBusca = q => "https://www.google.com/maps/search/?api=1&query=" + enco
 const PASSEIOS = {
   pontes: {
     titulo: "As pontes do Ganges", sub: "Da Laxman Jhula ao Parmarth, e de volta ao hotel",
-    total: "cerca de 7 km a pé", saida: { lat: 30.12181, lng: 78.30864 },
+    total: "cerca de 6 km a pé", saida: { lat: 30.12181, lng: 78.30864 },
     // Aarti do Parmarth: no inverno começa no pôr do sol; as fontes dão entre 16h30 e 17h30
-    aarti: { h: 17, m: 0, chegar: "16h30", parada: 8 },
+    aarti: { h: 17, m: 0, chegar: "16h30", parada: 5 },
+    // paradas = os pontos principais; "lojas" = pinos de interesse no caminho até aquela parada
+    // [nome, descrição, busca no Google Maps, lat, lng, pino aproximado?, tipo: loja | comida | lugar]
     paradas: [
-      { nome: "Tattv Cafe", lat: 30.12800, lng: 78.32220, raio: 60, destino: "Tattv Cafe, Tapovan, Rishikesh", quando: "Comece com um café em Tapovan",
-        texto: "Café de comida natural e vegana, com vista para as montanhas, na estrada de Badrinath, perto do posto policial de Laxman Jhula. Bom para um café da manhã reforçado ou um lanche antes de descer até a ponte.",
-        dica: "Do Yog Niketan até aqui são uns 1,5 km de subida pela estrada. Um tuk-tuk do hotel até Tapovan custa uns ₹200. Fecha às 22h." },
-      { nome: "Lakshman Temple", lat: 30.12674, lng: 78.32645, raio: 50, destino: "Lakshman Temple, Tapovan, Rishikesh", quando: "O templo de Lakshmana",
+      { nome: "Lakshman Temple", lat: 30.12674, lng: 78.32645, raio: 50, destino: "Lakshman Temple, Tapovan, Rishikesh", quando: "Comece pelo templo de Lakshmana, em Tapovan",
         texto: "A tradição conta que Lakshmana, irmão de Rama, fez penitência neste ponto do rio. É por isso que a ponte ao lado leva o nome dele. Um templo antigo e tranquilo, para uns 20 a 30 minutos.",
-        dica: "Tire o sapato na porta." },
-      { nome: "Lojas de Laxman Jhula e Tapovan", lat: 30.12640, lng: 78.32900, raio: 40, destino: "Laxman Jhula Market, Tapovan, Rishikesh", quando: "A rua que desce até a ponte",
-        texto: "A rua que desce até a ponte é a melhor de Rishikesh para compras: rudraksha, tigelas tibetanas, roupas de yoga, cristais, incensos e estátuas de madeira. As lojas que você escolheu e outras bem avaliadas estão marcadas no mapa com bolinhas douradas.",
-        dica: "Algumas lojas não têm endereço exato publicado: o pino delas é aproximado. Toque no nome da loja e o Google Maps leva até a porta.",
+        dica: "Do Yog Niketan até Tapovan são uns 2 km de subida pela estrada: um tuk-tuk custa uns ₹200. No caminho, o Tattv Cafe é uma boa parada para um café. Tire o sapato na porta do templo.",
         lojas: [
-          ["Namaste Rishikesh Pashmina Store", "pashminas e xales da Caxemira · 4,7 ★ · na praça da ponte", "Namaste Rishikesh Pashmina Store", 30.12648, 78.32885, true],
-          ["Tibetan Handicraft", "perto do Rani Mandir: tigelas tibetanas, bandeiras de oração, estátuas e joias · 4,7 ★", "Tibetan Handicraft near Rani Mandir Laxman Jhula Rishikesh", 30.12615, 78.32860, true],
-          ["Antic Himalaya", "Laxman Jhula Road, perto do correio: singing bowls e artesanato do Himalaia · 5,0 ★", "Antic Himalaya Laxman Jhula Road Rishikesh", 30.12592, 78.32835, true],
-          ["Scorpion Handicrafts", "artesanato, 2ª loja mais bem avaliada de Rishikesh no Tripadvisor (113 avaliações)", "Scorpion Handicrafts Tapovan Rishikesh", 30.12660, 78.32760, true],
-          ["Uttarakhand Gaurav Emporium", "gemas, rudraksha e artesanato · 4,4 ★ no Justdial", "Uttarakhand Gaurav Emporium Gems Handicraft Laxman Jhula Road Tapovan", 30.12610, 78.32800, true],
-          ["Lhasa Tibet Shop", "artigos tibetanos: tigelas, malas e estátuas", "Lhasa Tibet Shop Laxman Jhula Rishikesh", 30.12356, 78.32933],
+          ["Tattv Cafe", "café de comida natural e vegana, vista para as montanhas · fecha 22h", "Tattv Cafe, Tapovan, Rishikesh", 30.12800, 78.32220, false, "comida"],
+          ["MVT Guesthouse & Restaurant", "em Upper Tapovan, na Balaknath Road", "MVT Guesthouse & Restaurant Rishikesh", 30.13087, 78.32182, false, "lugar"]] },
+      { nome: "Lakshman Jhula e Bajrang Setu", lat: 30.12625, lng: 78.32992, raio: 45, quando: "Desça a rua das lojas e atravesse pela ponte de vidro",
+        texto: "A ponte de ferro de 1929 leva o nome de Lakshmana, que segundo a tradição atravessou o Ganges aqui numa corda de juta. Ela está fechada desde 2022. Ao lado foi construída a Bajrang Setu, com piso de vidro (Bajrang é um dos nomes de Hanuman). Atravesse por ela para a margem leste. A rua que desce até a ponte é a melhor de Rishikesh para compras: as lojas estão marcadas no mapa com bolinhas douradas.",
+        dica: "Se a Bajrang Setu estiver fechada, veja o templo de 13 andares daqui e siga de tuk-tuk até a Ram Jhula ou a Janki Setu para atravessar. Algumas lojas não têm endereço publicado: o pino delas é aproximado, e o toque no nome abre a loja certa no Google Maps.",
+        lojas: [
+          ["Namaste Rishikesh Pashmina Store", "pashminas e xales da Caxemira · 4,7 ★ · na praça da ponte", "Namaste Rishikesh Pashmina Store", 30.12648, 78.32885, true, "loja"],
+          ["Tibetan Handicraft", "perto do Rani Mandir: tigelas tibetanas, bandeiras de oração, estátuas e joias · 4,7 ★", "Tibetan Handicraft near Rani Mandir Laxman Jhula Rishikesh", 30.12615, 78.32860, true, "loja"],
+          ["Antic Himalaya", "Laxman Jhula Road, perto do correio: singing bowls e artesanato do Himalaia · 5,0 ★", "Antic Himalaya Laxman Jhula Road Rishikesh", 30.12592, 78.32835, true, "loja"],
+          ["Scorpion Handicrafts", "artesanato, 2ª loja mais bem avaliada de Rishikesh no Tripadvisor (113 avaliações)", "Scorpion Handicrafts Tapovan Rishikesh", 30.12660, 78.32760, true, "loja"],
+          ["Uttarakhand Gaurav Emporium", "gemas, rudraksha e artesanato · 4,4 ★ no Justdial", "Uttarakhand Gaurav Emporium Gems Handicraft Laxman Jhula Road Tapovan", 30.12610, 78.32800, true, "loja"],
+          ["Lhasa Tibet Shop", "artigos tibetanos: tigelas, malas e estátuas", "Lhasa Tibet Shop Laxman Jhula Rishikesh", 30.12356, 78.32933, false, "loja"],
           ["Mercado de Laxman Jhula e Tapovan", "a rua inteira de lojas até a ponte", "Laxman Jhula Market Tapovan Rishikesh"]] },
-      { nome: "Lakshman Jhula e Bajrang Setu", lat: 30.12625, lng: 78.32992, raio: 45, quando: "Atravesse para a margem leste pela ponte de vidro",
-        texto: "A ponte de ferro de 1929 leva o nome de Lakshmana, que segundo a tradição atravessou o Ganges aqui numa corda de juta. Ela está fechada desde 2022. Ao lado foi construída a Bajrang Setu, com piso de vidro (Bajrang é um dos nomes de Hanuman). Atravesse por ela para a margem leste.",
-        dica: "Se a Bajrang Setu estiver fechada, veja o templo de 13 andares daqui e siga de tuk-tuk até a Ram Jhula ou a Janki Setu para atravessar." },
       { nome: "Trayambakeshwar · Tera Manzil", lat: 30.12649, lng: 78.33098, raio: 50, destino: "Trayambakeshwar Temple, Laxman Jhula, Rishikesh", quando: "O templo de 13 andares, logo depois da ponte",
         texto: "Tera quer dizer treze, e manzil quer dizer andar: são 13 andares dedicados a Shiva. Tryambaka é Shiva de três olhos, o mesmo nome do mantra Om Tryambakam Yajamahe. Cada andar tem altares de divindades diferentes. Suba com calma até o topo, de onde se vê o Ganges e as pontes lá embaixo.",
         dica: "A entrada é gratuita. Tire o sapato na porta e leve uma meia: o chão pode estar frio." },
-      { nome: "Ram Jhula e o mercado de Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 80, quando: "Desça pela margem leste, rio abaixo",
-        texto: "São uns 20 minutos a pé pela margem do rio, entre ashrams e lojinhas. A Ram Jhula é a ponte de ferro que liga o Sivananda Ashram ao Swarg Ashram e leva o nome de Rama. Na cabeceira deste lado fica o mercado de Swarg Ashram, com livros espirituais, rudraksha, gemas e incensos.",
-        dica: "A Ram Jhula passou por obras e pode estar fechada. Não precisa atravessar: o caminho segue por este lado do rio.",
+      { nome: "Ram Jhula e Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 80, quando: "Desça pela margem leste, rio abaixo, passando pela Ganga Beach",
+        texto: "São uns 20 minutos a pé pela margem do rio, entre ashrams e lojinhas, passando pela Ganga Beach, a praia de areia do Ganges. A Ram Jhula é a ponte de ferro que liga o Sivananda Ashram ao Swarg Ashram e leva o nome de Rama. Na cabeceira deste lado ficam o mercado de Swarg Ashram, o Chotiwala para o almoço e o Gita Bhawan.",
+        dica: "O Chotiwala é o restaurante mais famoso de Rishikesh, aberto em 1958: peça o thali vegetariano (há dois Chotiwala lado a lado, de dois ramos da mesma família). O Gita Bhawan tem os versos do Bhagavad Gita nas paredes e uma cooperativa de preço fixo. A Ram Jhula passou por obras e pode estar fechada: não precisa atravessar.",
         lojas: [
-          ["Mercado de Ram Jhula e Swarg Ashram", "livros espirituais, rudraksha, gemas, incensos e óleos de ayurveda", "Swarg Ashram Market Ram Jhula Rishikesh"],
-          ["Brijwasi Gems and Jewellers", "rudraksha, cristais, pedras e pingentes", "Brijwasi Gems and Jewellers Swarg Ashram Rishikesh", 30.12290, 78.31470, true]] },
-      { nome: "Almoço no Chotiwala e o Gita Bhawan", lat: 30.12199, lng: 78.31411, raio: 55, destino: "Chotiwala Restaurant, Swarg Ashram, Rishikesh", quando: "Almoço e a cooperativa do Gita Bhawan",
-        texto: "O Chotiwala é o restaurante mais famoso de Rishikesh, aberto em 1958, conhecido pelo homem com o rosto pintado e o choti (o topete dos brâmanes) sentado na porta. Peça o thali vegetariano. Logo ao lado fica o Gita Bhawan, um grande ashram com os versos do Bhagavad Gita pintados nas paredes e uma cooperativa de preço fixo com roupas, ayurveda e livros.",
-        dica: "Há dois Chotiwala lado a lado, de dois ramos da mesma família, e os dois servem thali. No Gita Bhawan dá para comprar sem pechinchar.",
-        lojas: [["Gita Bhawan", "cooperativa de preço fixo: roupas, ayurveda e livros", "Gita Bhawan Swarg Ashram Rishikesh", 30.12184, 78.31448]] },
+          ["Ganga Beach", "a praia de areia do Ganges, na margem leste", "Ganga Beach Swarg Ashram Rishikesh", 30.12430, 78.31775, false, "lugar"],
+          ["Chotiwala", "almoço: o restaurante mais famoso de Rishikesh, desde 1958 · thali vegetariano", "Chotiwala Restaurant, Swarg Ashram, Rishikesh", 30.12199, 78.31411, true, "comida"],
+          ["Gita Bhawan", "cooperativa de preço fixo: roupas, ayurveda e livros", "Gita Bhawan Swarg Ashram Rishikesh", 30.12184, 78.31448, false, "loja"],
+          ["Brijwasi Gems and Jewellers", "rudraksha, cristais, pedras e pingentes", "Brijwasi Gems and Jewellers Swarg Ashram Rishikesh", 30.12290, 78.31470, true, "loja"],
+          ["Mercado de Ram Jhula e Swarg Ashram", "livros espirituais, rudraksha, gemas, incensos e óleos de ayurveda", "Swarg Ashram Market Ram Jhula Rishikesh"]] },
       { nome: "Beatles Ashram", lat: 30.10975, lng: 78.31277, raio: 120, destino: "Beatles Ashram, Rishikesh", quando: "Confirme se está aberto antes de ir", opcional: true,
         texto: "As ruínas do ashram do Maharishi Mahesh Yogi, onde os Beatles passaram uma temporada em 1968 e compuseram boa parte do Álbum Branco. Hoje é um lugar de murais coloridos e cúpulas de meditação no meio da mata.",
         dica: "Fica uns 15 minutos a pé depois do Parmarth, seguindo o rio. A entrada é paga. Se estiver fechado, toque em Pular e siga para a Aarti." },
@@ -3231,13 +3232,13 @@ function cartaoPasseio(id) {
   return h("button", { type: "button", class: "passcard", onclick: () => abrirPasseio(id) },
     h("span", { class: "passico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 26, height: 26 }, h("path", { d: "M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linejoin": "round" }))),
     h("span", { class: "tx" }, h("small", { text: "Passeio guiado" }), h("b", { text: p.titulo }),
-      h("span", { text: `${p.paradas.length} paradas · ${p.total}. O mapa te leva de uma a outra pelas ruas e mostra a história de cada lugar.` })),
+      h("span", { text: `${p.paradas.length} paradas · ${p.total}. No caminho, os pinos das lojas, dos cafés e dos lugares de interesse.` })),
     h("span", { class: "passchev", "aria-hidden": "true", text: "›" }));
 }
 function abrirPasseio(id) {
   const P = PASSEIOS[id]; if (!P) return;
   document.querySelector(".passeio")?.__fecha?.();
-  const chave = "cdi-passeio-" + id + "-v3"; // v3: Chotiwala entrou e o Gita Bhawan virou loja
+  const chave = "cdi-passeio-" + id + "-v4"; // v4: só os pontos principais são paradas; o resto virou pino no caminho
   let est = { i: 0, feitos: [], chegou: [] }; try { est = { ...est, ...JSON.parse(lsGet(chave) || "{}") }; } catch (e) {}
   const guarda = () => lsSet(chave, JSON.stringify({ i: est.i, feitos: est.feitos, chegou: est.chegou }));
   let eu = null, watch = null, mapa = null, marcas = [], euMarca = null, trava = null, chegouAvisado = {}, rolarTexto = false, centrou = false;
@@ -3388,8 +3389,8 @@ function abrirPasseio(id) {
         aqui ? h("p", { class: "eyebrow", text: "A história deste lugar" }) : null,
         h("p", { text: p.texto }),
         p.dica ? h("p", { class: "passdica", text: p.dica }) : null,
-        p.lojas ? h("div", { class: "passlojas" }, h("p", { class: "eyebrow rule", text: "Neste trecho" }),
-          p.lojas.map(([n, t, q, , , aprox]) => h("a", { href: mapsBusca(q), target: "_blank", rel: "noopener" }, h("b", { text: n }), h("span", { text: t + (aprox ? " · pino aproximado" : "") }), h("i", { text: "Mapa ›" })))) : null,
+        p.lojas ? h("div", { class: "passlojas" }, h("p", { class: "eyebrow rule", text: "No caminho até aqui" }),
+          p.lojas.map(([n, t, q, , , aprox, tipo]) => h("a", { href: mapsBusca(q), target: "_blank", rel: "noopener", class: tipo || "" }, h("b", { text: n }), h("span", { text: t + (aprox ? " · pino aproximado" : "") }), h("i", { text: "Mapa ›" })))) : null,
         fim ? h("div", { class: "passfim" }, h("p", { class: "eyebrow", text: "Passeio completo" }), h("p", { text: "Você passou por todas as paradas do dia. Bom descanso e bom jantar!" })) : null,
         h("p", { class: "small passnota", text: "No mapa: a linha azul é o caminho pelas ruas até a próxima parada; a linha fina é por onde você já andou. Se a linha aparecer tracejada, o mapa não achou o caminho pelas ruas: use o botão do Google Maps." })));
     giraSeta();
@@ -3447,8 +3448,8 @@ function abrirPasseio(id) {
     // nomes das lojas só aparecem com o mapa de perto (de longe embolam)
     const longe = () => caixaMapa.classList.toggle("longe", mapa.getZoom() < 16.3); mapa.on("zoom", longe); longe();
     marcas = ps.map((p, k) => new maplibregl.Marker({ element: h("button", { type: "button", class: "passpin", "aria-label": p.nome, onclick: () => vai(k) }, h("b", { text: String(k + 1) })) }).setLngLat([p.lng, p.lat]).addTo(mapa));
-    ps.forEach(p => (p.lojas || []).filter(l => isFinite(l[3])).forEach(([n, , q, la, lo]) =>
-      new maplibregl.Marker({ element: h("a", { class: "passloja", href: mapsBusca(q), target: "_blank", rel: "noopener", "aria-label": n }, h("span", { text: n }), h("i", { "aria-hidden": "true" })), anchor: "right", offset: [6, 0] }).setLngLat([lo, la]).addTo(mapa)));
+    ps.forEach(p => (p.lojas || []).filter(l => isFinite(l[3])).forEach(([n, , q, la, lo, , tipo]) =>
+      new maplibregl.Marker({ element: h("a", { class: "passloja " + (tipo || "loja"), href: mapsBusca(q), target: "_blank", rel: "noopener", "aria-label": n }, h("span", { text: n }), h("i", { "aria-hidden": "true" })), anchor: "right", offset: [6, 0] }).setLngLat([lo, la]).addTo(mapa)));
     if (eu) { euMarca = new maplibregl.Marker({ element: h("div", { class: "passeu" }) }).setLngLat([eu.lng, eu.lat]).addTo(mapa); }
     const pronto = () => { desenhaDia(); desenhaAgora(); desenhaRastro(); carregaDia(); pedeRota(true); };
     if (mapa.isStyleLoaded()) pronto(); else mapa.once("load", pronto);
