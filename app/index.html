@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "12/11 · 00:10";</script>
+<script>window.__VERSAO = "12/11 · 00:13";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2122,7 +2122,7 @@ video.mgrande{max-height:70vh;background:#000}
 .passcard small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);font-weight:600}
 .passcard b{font-family:var(--display);font-size:18px;font-weight:600;line-height:1.25}
 .passcard .tx span{font-size:13.5px;color:var(--soft);line-height:1.45}
-.passcard .chev{font-size:26px;color:var(--moss)}
+.passcard .passchev{font-size:26px;color:var(--moss)}
 .passeio{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;overflow:hidden;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .passtopo{display:flex;align-items:center;gap:12px;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
 .passtopo h2{font-size:20px}
@@ -3192,7 +3192,7 @@ function cartaoPasseio(id) {
     h("span", { class: "passico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 26, height: 26 }, h("path", { d: "M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linejoin": "round" }))),
     h("span", { class: "tx" }, h("small", { text: "Passeio guiado" }), h("b", { text: p.titulo }),
       h("span", { text: `${p.paradas.length} paradas · ${p.total}. O mapa te leva de uma a outra e mostra a história de cada lugar.` })),
-    h("span", { class: "chev", "aria-hidden": "true", text: "›" }));
+    h("span", { class: "passchev", "aria-hidden": "true", text: "›" }));
 }
 function abrirPasseio(id) {
   const P = PASSEIOS[id]; if (!P) return;
