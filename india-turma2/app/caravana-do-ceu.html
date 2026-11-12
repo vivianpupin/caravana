@@ -3190,9 +3190,9 @@ const PASSEIOS = {
           ["Tattv Cafe", "comida natural e vegana, vista para as montanhas · fecha 22h", "Tattv Cafe Tapovan Rishikesh"]] }
     ] }
 };
-// por enquanto o passeio guiado aparece só para a Vivian (líder), para testar em Rishikesh antes de abrir para a turma
-const PASSEIO_SO_PARA = "vivianpupin@gmail.com";
-const podePasseio = () => !!(S.isOwner && S.me && String(S.me.email || "").toLowerCase() === PASSEIO_SO_PARA);
+// por enquanto o passeio guiado aparece só para a Vivian, para testar em Rishikesh antes de abrir para a turma.
+// O login não informa o e-mail (só id, nome, foto e se é líder): vale para quem é líder e não é a Vanessa
+const podePasseio = () => !!(S.isOwner && S.me && !/vanessa/i.test(String(S.me.name || "")));
 const RUMOS = ["norte", "nordeste", "leste", "sudeste", "sul", "sudoeste", "oeste", "noroeste"];
 function rumo(a, b) {
   const r = x => x * Math.PI / 180, y = Math.sin(r(b.lng - a.lng)) * Math.cos(r(b.lat)),
