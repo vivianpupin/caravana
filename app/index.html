@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "13/11 · 05:17";</script>
+<script>window.__VERSAO = "13/11 · 05:19";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3226,6 +3226,7 @@ const PASSEIOS = {
         texto: "A ponte de ferro de 1929 leva o nome de Lakshmana, que segundo a tradição atravessou o Ganges aqui numa corda de juta. Ela está fechada desde 2022. Ao lado foi construída a Bajrang Setu, com piso de vidro (Bajrang é um dos nomes de Hanuman). Atravesse por ela para a margem leste. A rua que desce até a ponte é a melhor de Rishikesh para compras.",
         dica: "Se a Bajrang Setu estiver fechada, veja o templo de 13 andares daqui e siga de tuk-tuk até a Ram Jhula ou a Janki Setu para atravessar.",
         lojas: [
+          ["Sacred Ink Tattoo", "O estúdio de tatuagem onde a turma vai tatuar, na margem de Tapovan, junto da Lakshman Jhula · 5,0 ★ (148 avaliações) · aberto até as 19h. Pino aproximado.", "Sacred Ink Tattoo Rishikesh", 30.12585, 78.32935, true, "loja"], 
           ["Namaste Rishikesh Pashmina Store", "pashminas e xales da Caxemira · 4,7 ★ · na praça da ponte", "Namaste Rishikesh Pashmina Store", 30.12648, 78.32885, true, "loja"],
           ["Tibetan Handicraft", "perto do Rani Mandir: tigelas tibetanas, bandeiras de oração, estátuas e joias · 4,7 ★", "Tibetan Handicraft near Rani Mandir Laxman Jhula Rishikesh", 30.12615, 78.32860, true, "loja"],
           ["Antic Himalaya", "Laxman Jhula Road, perto do correio: singing bowls e artesanato do Himalaia · 5,0 ★", "Antic Himalaya Laxman Jhula Road Rishikesh", 30.12592, 78.32835, true, "loja"],
@@ -3528,7 +3529,7 @@ PASSEIOS.pontos = { titulo: "Pontos de interesse", rotulo: "Rishikesh", livre: t
   // contagem regressiva da puja (só no dia dela); tocar mostra o lugar
   aarti: { h: 19, m: 0, chegar: "18h45", rot: "Puja", data: "2026-11-13", lugar: "Ganga Beach" },
   // a Ram Jhula está fechada: fica fora do mapa dos viajantes
-  paradas: (() => { const DESTAQUES = ["Lakshman Jhula e Bajrang Setu", "Trayambakeshwar · Tera Manzil", "Lakshman Temple", "Parmarth Niketan", "Beatles Ashram"];
+  paradas: (() => { const DESTAQUES = ["Lakshman Jhula e Bajrang Setu", "Trayambakeshwar · Tera Manzil", "Sacred Ink Tattoo", "Lakshman Temple", "Parmarth Niketan", "Beatles Ashram"];
     const os = pontosDe(["chegada", "pontes", "kunjapuri"]).filter(o => !/^(Rafting|NIM Beach|Ram Jhula)/.test(o.nome));
     os.forEach(o => { const k = DESTAQUES.indexOf(o.nome); if (k > -1) o.destaque = k + 1; });
     return os.sort((a, b) => (a.destaque || 99) - (b.destaque || 99)); })() };
