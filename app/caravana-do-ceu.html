@@ -2114,6 +2114,7 @@ video.mgrande{max-height:70vh;background:#000}
 .passfotobox{display:flex;flex-direction:column;gap:4px;margin:8px 0 6px}
 .passfoto{margin:0;border-radius:12px;overflow:hidden;border:1px solid var(--line2);background:var(--panel)}
 .passfoto[hidden]{display:none}
+.passfotobox .passgoogle{background:none;border:0;padding:2px 0;font:inherit;font-size:13px;cursor:pointer}
 .passfoto img{display:block;width:100%;height:160px;object-fit:cover}
 .passfoto figcaption{font-size:12.5px;line-height:1.4;padding:6px 10px;color:var(--soft)}
 .passgiro{font-size:12.5px;color:var(--soft);margin:4px 0 0}
@@ -3309,9 +3310,9 @@ PASSEIOS.varanasi3 = {"titulo": "A Mãe e o servidor", "rotulo": "Dia 3", "diaN"
 // os passeios guiados (aba Rotas e cartões nos dias): as líderes (Vivian e Vanessa) veem todos;
 // as cidades em ROTAS_TODOS ficam liberadas para todos os viajantes da turma
 const podePasseio = () => !!(S.isOwner && S.me);
-const ROTAS_TODOS = ["Rishikesh"];
-const podeRotas = () => podePasseio() || (!!S.me && ROTAS_TODOS.length > 0);
-const cidadesRotas = () => CIDADES_ROTAS.filter(([n]) => podePasseio() || ROTAS_TODOS.includes(n));
+const ROTAS_TODOS = { Rishikesh: ["pontos"] };
+const podeRotas = () => podePasseio() || (!!S.me && Object.keys(ROTAS_TODOS).length > 0);
+const cidadesRotas = () => podePasseio() ? CIDADES_ROTAS : CIDADES_ROTAS.filter(([n]) => ROTAS_TODOS[n]).map(([n, ids]) => [n, ids.filter(i => ROTAS_TODOS[n].includes(i))]);
 const podeVerPasseio = id => !!id && !!PASSEIOS[id] && (podePasseio() || (!!S.me && cidadesRotas().some(([, ids]) => ids.includes(id))));
 const passeiosVer = () => Object.keys(PASSEIOS).filter(podeVerPasseio).map(k => PASSEIOS[k]);
 const RUMOS = ["norte", "nordeste", "leste", "sudeste", "sul", "sudoeste", "oeste", "noroeste"];
@@ -3452,11 +3453,39 @@ function cartaoPasseio(id) {
   return h("button", { type: "button", class: "passcard", onclick: () => abrirPasseio(id) },
     h("span", { class: "passico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 26, height: 26 }, h("path", { d: "M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linejoin": "round" }))),
     h("span", { class: "tx" }, h("small", { text: (p.rotulo || "Passeio guiado") + (() => { const d = p.diaN && S.roteiro && (S.roteiro.dias || []).find(x => x.n === p.diaN); return d ? " · " + d.data : ""; })() }), h("b", { text: p.titulo }),
-      h("span", { text: p.livre ? `${p.paradas.length} opções · ${p.total}.` : `${p.paradas.length} paradas · ${p.total}.` })),
+      h("span", { text: p.explorar ? `${p.paradas.length} lugares no mapa: templos, ghats, onde comer e lojas.` : p.livre ? `${p.paradas.length} opções · ${p.total}.` : `${p.paradas.length} paradas · ${p.total}.` })),
     h("span", { class: "passchev", "aria-hidden": "true", text: "›" }));
 }
 // aba Rotas: cada cidade abre as rotas dela (viajantes veem só as cidades liberadas)
-const CIDADES_ROTAS = [["Varanasi", ["varanasi1", "varanasi2", "varanasi3"]], ["Rishikesh", ["chegada", "pontes", "kunjapuri", "extras"]]];
+// Rishikesh para os viajantes: só os pontos de interesse, sem roteiro (tocar no lugar mostra o que é; "Me leve até aqui" leva)
+function pontosDe(ids) {
+  const out = [], visto = new Set(), saida = PASSEIOS[ids[0]].saida;
+  const km = (a, b) => { const r = x => x * Math.PI / 180, q = Math.sin(r(b.lat - a.lat) / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(r(b.lng - a.lng) / 2) ** 2; return 12742 * Math.asin(Math.sqrt(q)); };
+  const hotel = n => /Yog Niketan/.test(n);
+  const limpa = n => hotel(n) ? "Yog Niketan · o hotel" : n.replace(/^(Jantar|Café da manhã) no /, "").replace(/^Puja à beira do Ganges · /, "")
+    .replace(/ · (Ganga Aarti|nascer do sol|meditação e batismo|satsang|kirtan|chegada do rafting)$/, "").replace(/^Rafting · largada em Shivpuri$/, "Rafting em Shivpuri").replace(/^Bungee jump · Jumpin Heights$/, "Jumpin Heights · bungee jump");
+  const add = o => { if (!isFinite(o.lat) || visto.has(o.nome) || /^Ganga Aarti e kirtan/.test(o.nome)) return; visto.add(o.nome); o.carro = km(o, saida) > 4; out.push(o); };
+  const lojas = ids.flatMap(k => PASSEIOS[k].paradas.flatMap(q => q.lojas || []));
+  // o texto das paradas fala do roteiro; aqui fica só o que o lugar é
+  const DESC = {
+    "Parmarth Niketan": "O maior ashram de Rishikesh, com a grande estátua de Shiva sentado na beira do Ganges. Todo fim de tarde acontece ali a Ganga Aarti, a cerimônia do fogo para o rio, com cantos e lamparinas.",
+    "Lakshman Temple": "Templo dedicado a Lakshmana, o irmão de Rama, perto da ponte que leva o nome dele. A tradição diz que ele fez penitência neste lugar.",
+    "Lakshman Jhula e Bajrang Setu": "A ponte de ferro de 1929 leva o nome de Lakshmana, que segundo a tradição atravessou o Ganges aqui numa corda de juta. Está fechada desde 2022; ao lado fica a Bajrang Setu, a ponte nova com piso de vidro. A rua que desce até as pontes é a melhor de Rishikesh para compras.",
+    "Trayambakeshwar · Tera Manzil": "O templo de 13 andares na margem leste, junto da Lakshman Jhula. Cada andar tem altares de deuses diferentes, e lá de cima se vê o rio e as pontes.",
+    "Ram Jhula e Swarg Ashram": "A ponte suspensa de 1986 liga Sivananda Nagar ao Swarg Ashram, a margem dos ashrams, dos templos e das lojinhas, onde não entram carros.",
+    "Beatles Ashram": "O antigo ashram de Maharishi Mahesh Yogi, onde os Beatles passaram 1968 e compuseram boa parte do Álbum Branco. Hoje são ruínas no meio da mata, com as cúpulas de meditação e paredes grafitadas. Paga entrada.",
+    "Kunjapuri Devi": "Templo da Deusa no alto de um morro, a uns 25 km de Rishikesh, um dos Shakti Peethas da região. Ao nascer do sol, dá para ver os picos do Himalaia.",
+    "Vashishta Gufa": "A caverna onde, segundo a tradição, o sábio Vashishta meditou, na beira do Ganges, a uns 25 km de Rishikesh. Lugar de silêncio e meditação, com uma praia de areia logo abaixo.",
+    "Aroma By Taste": "Restaurante no térreo do hotel Sterling Palm Bliss, na Badrinath Bypass Road: comida indiana e vegetariana, pizzas e opções veganas. Aceita só dinheiro. Fica a uns 5 minutos a pé do Yog Niketan." };
+  for (const id of ids) for (const p of PASSEIOS[id].paradas) {
+    const nome = limpa(p.nome), igual = lojas.find(l => limpa(l[0]) === nome);
+    add({ nome, desc: hotel(p.nome) ? "O hotel da caravana, na beira do Ganges, em Tapovan." : DESC[nome] || (igual ? igual[1] : p.texto), q: nome, lat: +p.lat, lng: +p.lng, aprox: !!p.aprox, tipo: /Aroma|MVT/.test(nome) ? "comida" : igual ? igual[6] || "loja" : "lugar", raio: p.raio || 60, poi: true });
+    for (const l of p.lojas || []) add({ nome: limpa(l[0]), desc: l[1], q: l[2], lat: l[3], lng: l[4], aprox: !!l[5], tipo: l[6] || "loja", raio: 35, poi: true });
+  }
+  const ordem = { lugar: 0, comida: 1, loja: 2 }; return out.sort((a, b) => (ordem[a.tipo] ?? 3) - (ordem[b.tipo] ?? 3));
+}
+PASSEIOS.pontos = { titulo: "Pontos de interesse", rotulo: "Rishikesh", livre: true, explorar: true, saida: PASSEIOS.pontes.saida, paradas: pontosDe(["chegada", "pontes", "kunjapuri", "extras"]) };
+const CIDADES_ROTAS = [["Varanasi", ["varanasi1", "varanasi2", "varanasi3"]], ["Rishikesh", ["chegada", "pontes", "kunjapuri", "extras", "pontos"]]];
 function vRotas() {
   return h("section", { class: "view rotasview" },
     cidadesRotas().map(([nome, ids]) => { const aberta = S.rotasCidade === nome;
@@ -3476,7 +3505,8 @@ function abrirPasseio(id) {
   // trilho: rota até a próxima parada, por onde a pessoa andou (rastro), se está se aproximando, e a bússola
   let agora = null, agoraDe = null, agoraEm = 0, agoraPara = -1, pedindo = false, tendencia = null, amostra = null, bussola = null, rumoAlvo = null, extra = null, vendo = null;
   try { const x = JSON.parse(lsGet(chave + "-x") || "null"); if (x && isFinite(x.lat)) extra = x; } catch (e) {}
-  const alvoAt = () => extra || ps[est.i], kAlvo = () => extra ? "x" + extra.nome : est.i;
+  const X = !!P.explorar; // só os pontos de interesse: sem paradas, sem roteiro
+  const alvoAt = () => extra || (X ? null : ps[est.i]), kAlvo = () => extra ? "x" + extra.nome : est.i;
   const hoje = new Date().toISOString().slice(0, 10);
   let rastro = []; try { const r = JSON.parse(lsGet("cdi-passeio-rastro") || "{}"); if (r.dia === hoje) rastro = r.pts || []; } catch (e) {}
   const ps = P.paradas;
@@ -3507,7 +3537,7 @@ function abrirPasseio(id) {
   const box = h("div", { class: "passeio", role: "dialog", "aria-label": "Passeio guiado: " + P.titulo },
     h("div", { class: "passtopo" },
       h("button", { type: "button", class: "passx", "aria-label": "Fechar o passeio", onclick: fecha }, "×"),
-      h("div", { style: "flex:1;min-width:0" }, h("p", { class: "eyebrow", text: "Passeio guiado" }), h("h2", { text: P.titulo })),
+      h("div", { style: "flex:1;min-width:0" }, h("p", { class: "eyebrow", text: X ? P.rotulo : "Passeio guiado" }), h("h2", { text: P.titulo })),
       chipAarti),
     h("div", { class: "passmapawrap" }, caixaMapa,
       h("div", { class: "mapctl" },
@@ -3540,7 +3570,7 @@ function abrirPasseio(id) {
   const conclui = () => { if (!est.feitos.includes(est.i)) est.feitos.push(est.i); guarda(); if (est.i < ps.length - 1) vai(est.i + 1); else if (P.livre) vai(0); else { desenha(); pinta(); } };
   function enquadra(animar) {
     if (!mapa) return; const b = new maplibregl.LngLatBounds();
-    ps.forEach(p => b.extend([p.lng, p.lat])); if (eu && distKm(eu, ps[0]) < 5) b.extend([eu.lng, eu.lat]);
+    (X ? ps.filter(p => distKm(p, P.saida) < 2.5) : ps).forEach(p => b.extend([p.lng, p.lat])); if (eu && distKm(eu, ps[0]) < 5) b.extend([eu.lng, eu.lat]);
     mapa.fitBounds(b, { padding: { top: 40, bottom: 40, left: 40, right: 60 }, duration: animar ? 600 : 0, maxZoom: 16 });
   }
   function pinta() {
@@ -3566,7 +3596,7 @@ function abrirPasseio(id) {
   }
   function desenhaAgora() {
     const s = mapa && mapa.getSource("agora"); if (!s) return;
-    const p = alvoAt();
+    const p = alvoAt(); if (!p) { s.setData(fc([])); return; }
     s.setData(fc(agora ? [linha(agora.coords, { reta: !!agora.trilha })] : eu ? [linha([[eu.lng, eu.lat], [p.lng, p.lat]], { reta: true })] : []));
   }
   function desenhaRastro() { const s = mapa && mapa.getSource("rastro"); if (s) s.setData(fc(rastro.length > 1 ? [linha(rastro)] : [])); }
@@ -3580,12 +3610,12 @@ function abrirPasseio(id) {
   rotaPe.__salva = () => lsSet("cdi-rotas-pe", JSON.stringify(Object.fromEntries(Object.entries(rotasMem).filter(([, v]) => v.fixa))));
   // rota de onde a pessoa está até a próxima parada: pede de novo quando ela andou uns 30 m ou saiu da linha (no máximo a cada 12 s)
   async function pedeRota(forca) {
-    if (!eu || pedindo) return; const p = alvoAt();
+    if (!eu || pedindo) return; const p = alvoAt(); if (!p) return;
     const andou = !agoraDe || distKm(agoraDe, eu) > .03, saiu = agora && naRota(agora.coords, eu).fora > .04;
     if (!forca && agoraPara === kAlvo() && !andou && !saiu) return;
     if (!forca && Date.now() - agoraEm < 12000) return;
     pedindo = true; agoraEm = Date.now(); const de = { lat: eu.lat, lng: eu.lng }, para = kAlvo();
-    try { const r = !extra && p.trilha ? rotaTrilha(de, p, trilhaAFrente(p)) : await rotaPe(de, p, extra ? [] : viaAFrente(p), !extra && !!p.carro); if (para === kAlvo()) { agora = r; agoraDe = de; agoraPara = para; } }
+    try { const r = !extra && p.trilha ? rotaTrilha(de, p, trilhaAFrente(p)) : await rotaPe(de, p, extra ? [] : viaAFrente(p), (X || !extra) && !!p.carro); if (para === kAlvo()) { agora = r; agoraDe = de; agoraPara = para; } }
     catch (e) { if (para === kAlvo()) { agora = null; agoraDe = de; agoraPara = para; } }
     pedindo = false; desenhaAgora(); desenha();
   }
@@ -3666,15 +3696,26 @@ function abrirPasseio(id) {
   }
   const linkGoogle = (o, txt) => { const vs = o.poi ? [] : viaAFrente(o);
     return h("a", { class: "passgoogle", href: o.poi ? mapsBusca(o.q) : "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(o.destino || o.lat + "," + o.lng) + (vs.length ? "&waypoints=" + encodeURIComponent(vs.map(v => v.lat + "," + v.lng).join("|")) : "") + "&travelmode=" + (o.carro ? "driving" : "walking"), target: "_blank", rel: "noopener" }, txt); };
+  // modo explorar: a lista de todos os lugares (os mais perto primeiro, quando o GPS acha a pessoa)
+  function listaPontos() {
+    const tit = { lugar: "Lugares", comida: "Para comer", loja: "Lojas" }, por = {};
+    const dist = o => eu ? distKm(eu, o) : null, curta = t => String(t || "").split(/(?<=[.!?])\s/)[0];
+    ps.forEach(o => (por[o.tipo] = por[o.tipo] || []).push(o));
+    return h("div", { class: "passlojas pontos" }, Object.keys(tit).filter(t => por[t]).map(t => [
+      h("p", { class: "eyebrow rule", text: tit[t] }),
+      (eu ? por[t].slice().sort((a, b) => dist(a) - dist(b)) : por[t]).map(o => h("button", { type: "button", class: "passpoi " + o.tipo, onclick: () => abrirPoi(o) },
+        h("b", { text: o.nome }), h("span", { text: (eu ? distTxt(dist(o)) + " · " : "") + curta(o.desc) }), h("i", { text: "Ver ›" })))]));
+  }
   function desenha() {
-    const p = alvoAt(), parada = ps[est.i], fim = est.feitos.length === ps.length;
+    if (X && !extra && !vendo) { painel.replaceChildren(listaPontos()); return; }
+    const p = alvoAt() || ps[est.i], parada = ps[est.i], fim = est.feitos.length === ps.length;
     const reta = eu ? distKm(eu, p) : null, nr = eu && agora && agoraPara === kAlvo() ? naRota(agora.coords, eu) : null;
     const d = nr ? nr.falta : reta, perto = reta != null && reta * 1000 <= (p.raio || 80) + Math.min(eu.prec || 0, 25);
     const alvo = nr && nr.fora < .04 ? nr.alvo : p, r = eu ? rumo(eu, alvo) : null; rumoAlvo = r ? r.g : null;
     const aqui = perto || (extra ? extra.chegou : est.chegou.includes(est.i)), prox = ps[est.i + 1];
     const sinal = !eu || aqui ? null : !navigator.onLine && !nr ? ["neutro", "Sem internet"] : nr && nr.fora > .04 ? ["fora", "Você saiu do caminho"]
       : tendencia === "indo" ? ["indo", "✓ Na direção certa"] : tendencia === "volta" ? ["volta", "↩ Você está se afastando"] : null;
-    const progresso = h("div", { class: "passprog" },
+    const progresso = X ? "" : h("div", { class: "passprog" },
       h("p", { text: P.livre ? `Opção ${est.i + 1} de ${ps.length}` : (fim ? "Passeio completo ✓" : `Parada ${est.i + 1} de ${ps.length}`) + (parada.dia ? " · " + parada.dia : "") + (extra ? " · desvio até um atrativo" : "") }),
       h("div", { class: "passbarra", role: "tablist", "aria-label": "Paradas" }, ps.map((q, k) => h("button", { type: "button", role: "tab", "aria-selected": String(k === est.i), class: est.feitos.includes(k) ? "feito" : "", "aria-label": `Parada ${k + 1}: ${q.nome}`, onclick: () => vai(k) }))));
     // descrição de um atrativo (sem sair do app)
@@ -3688,10 +3729,10 @@ function abrirPasseio(id) {
           h("p", { class: "passpoitx", text: o.desc }),
           dv != null ? h("p", { class: "passinst", text: `A ${distTxt(dv)} de você, em linha reta.` }) : null,
           isFinite(o.lat) ? h("button", { class: "btn gold passbig", type: "button", onclick: () => irPoi(o) }, "Me leve até aqui") : null,
-          h("button", { class: "btn passbig", type: "button", onclick: () => { vendo = null; desenha(); painel.scrollTo({ top: 0 }); } }, extra ? "Voltar" : `Voltar para: ${parada.nome}`),
+          h("button", { class: "btn passbig", type: "button", onclick: () => { vendo = null; desenha(); painel.scrollTo({ top: 0 }); } }, extra ? "Voltar" : X ? "Ver todos os lugares" : `Voltar para: ${parada.nome}`),
           o.aprox ? h("p", { class: "small passnota", text: "Pino aproximado." }) : null,
           !isFinite(o.lat) ? h("p", { class: "small passnota", text: "Este lugar não tem posição marcada no mapa." }) : null,
-          o.aprox || !isFinite(o.lat) ? linkGoogle(o, "Ver o endereço no Google Maps") : null));
+          !X && (o.aprox || !isFinite(o.lat)) ? linkGoogle(o, "Ver o endereço no Google Maps") : null));
       giraSeta(); return;
     }
     const itemPoi = l => { const o = poiDe(l); return h("button", { type: "button", class: "passpoi " + o.tipo, onclick: () => abrirPoi(o) }, h("b", { text: o.nome }), h("span", { text: o.desc + (o.aprox ? " · pino aproximado" : "") }), h("i", { text: "Ver ›" })); };
@@ -3700,17 +3741,17 @@ function abrirPasseio(id) {
           h("p", { class: "passrot", text: "✓ Você chegou" }),
           h("h3", { text: p.nome }),
           fotoEl(p.nome),
-          extra ? h("button", { class: "btn gold passbig", type: "button", onclick: sairExtra }, `Voltar ao roteiro: ${parada.nome} ›`)
+          extra ? h("button", { class: "btn gold passbig", type: "button", onclick: sairExtra }, X ? "Ver todos os lugares" : `Voltar ao roteiro: ${parada.nome} ›`)
             : h("button", { class: "btn gold passbig", type: "button", onclick: conclui }, P.livre ? (prox ? `Ver a próxima opção: ${prox.nome} ›` : "Ver as opções do começo ›") : prox ? `Seguir para: ${prox.nome} ›` : est.feitos.includes(est.i) ? "Passeio feito ✓" : "Terminar o passeio ✓"))
         : h("div", { class: "passatual" + (extra ? " poi " + extra.tipo : "") },
-          h("p", { class: "passrot", text: extra ? "Agora, vá até (fora do roteiro)" : "Agora, vá até" }),
+          h("p", { class: "passrot", text: X ? "Indo para" : extra ? "Agora, vá até (fora do roteiro)" : "Agora, vá até" }),
           h("h3", { text: p.nome }),
           h("p", { class: "passinst", text: extra ? (extra.aprox ? "Pino aproximado" : TIPO[extra.tipo] || "") : p.quando + (p.aprox ? " · pino aproximado" : "") }),
           sinal ? h("p", { class: "passsinal " + sinal[0], role: "status", text: sinal[1] }) : null,
           d != null ? h("div", { class: "passdir" },
               h("span", { class: "seta", "aria-hidden": "true", text: "↑" }),
               h("div", null, h("b", { text: distTxt(d) }),
-                h("span", { text: (!extra && p.carro ? `uns ${Math.max(1, Math.round(nr && agora.s && agora.m ? agora.s / 60 * (d * 1000 / agora.m) : d * 60 / 25))} min de carro ${nr ? "pela estrada" : "(distância em linha reta)"}` : `uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé ${nr ? (agora && agora.trilha ? "pela beira do rio" : "pelas ruas") : "em linha reta"}`) + (direcao() != null ? "" : ` · siga para o ${r.nome}`) }),
+                h("span", { text: ((X || !extra) && p.carro ? `uns ${Math.max(1, Math.round(nr && agora.s && agora.m ? agora.s / 60 * (d * 1000 / agora.m) : d * 60 / 25))} min de carro ${nr ? "pela estrada" : "(distância em linha reta)"}` : `uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé ${nr ? (agora && agora.trilha ? "pela beira do rio" : "pelas ruas") : "em linha reta"}`) + (direcao() != null ? "" : ` · siga para o ${r.nome}`) }),
                 direcao() == null && S.passBussolaMsg ? h("small", { class: "passbus", text: S.passBussolaMsg }) : null,
                 eu.prec > 300 ? h("small", { class: "passprec", text: `Sua localização está aproximada (±${eu.prec} m). No iPhone: Ajustes → Privacidade e Segurança → Serviços de Localização → Safari (ou o app) → ligue "Localização Precisa".` })
                   : eu.prec > 60 ? h("small", { class: "passprec", text: `GPS impreciso agora (±${eu.prec} m). Fica melhor ao ar livre.` }) : null))
@@ -3720,7 +3761,7 @@ function abrirPasseio(id) {
           fotoEl(p.nome),
           d != null && !(bussola && bussola.g != null) ? h("button", { class: "btn ghost passbig", type: "button", onclick: ligaBussola }, "🧭 Mostrar para onde o celular aponta") : null,
           h("button", { class: "btn passbig", type: "button", onclick: () => { if (extra) extra.chegou = true; else if (!est.chegou.includes(est.i)) est.chegou.push(est.i); guarda(); desenha(); painel.scrollTo({ top: 0 }); } }, "Já cheguei"),
-          extra ? h("button", { class: "btn ghost passbig", type: "button", onclick: sairExtra }, `Voltar ao roteiro: ${parada.nome}`) : null,
+          extra ? h("button", { class: "btn ghost passbig", type: "button", onclick: sairExtra }, X ? "Ver todos os lugares" : `Voltar ao roteiro: ${parada.nome}`) : null,
           !extra && p.opcional && prox ? h("button", { class: "btn ghost passbig", type: "button", onclick: () => vai(est.i + 1) }, "Pular: está fechado") : null),
       h("div", { class: "passtexto" + (aqui ? " chegou" : "") },
         aqui ? h("p", { class: "eyebrow", text: extra ? "Sobre este lugar" : "A história deste lugar" }) : null,
@@ -3729,7 +3770,7 @@ function abrirPasseio(id) {
         !extra && p.lojas ? h("div", { class: "passlojas" }, h("p", { class: "eyebrow rule", text: "No caminho até aqui" }), p.lojas.map(itemPoi)) : null,
         fim && !extra ? h("div", { class: "passfim" }, h("p", { class: "eyebrow", text: "Passeio completo" }), h("p", { text: "Você passou por todas as paradas do dia. Bom descanso e bom jantar!" })) : null,
         S.offRodando && S.offProg ? h("p", { class: "small passnota", text: `Guardando o mapa para usar sem internet… ${Math.round(S.offProg.feitos / Math.max(1, S.offProg.total) * 100)}%` }) : null,
-        linkGoogle(p, "Se precisar, o passo a passo também no Google Maps")));
+        X ? null : linkGoogle(p, "Se precisar, o passo a passo também no Google Maps")));
     giraSeta();
   }
   // GPS não respondeu: diz o motivo e como liberar (antes falhava em silêncio)
@@ -3760,6 +3801,7 @@ function abrirPasseio(id) {
     // indo para uma parada opcional (Beatles Ashram) passa-se em frente a outras: aí só muda com o botão Pular
     if (!P.livre && !extra && k > -1 && !dentro(ps[est.i]) && !ps[est.i].opcional) { est.i = k; guarda(); tendencia = null; amostra = null; agora = null; }
     const p = alvoAt(), ka = kAlvo();
+    if (p) {
     // para frente ou para trás: compara quanto falta (pelas ruas, se tiver a rota) a cada uns 12 m andados
     const falta = agora && agoraPara === ka ? naRota(agora.coords, eu).falta : distKm(eu, p);
     if (!amostra || amostra.i !== ka) amostra = { i: ka, pt: { lat: eu.lat, lng: eu.lng }, falta };
@@ -3771,6 +3813,7 @@ function abrirPasseio(id) {
     if (dentro(p) && !chegouAvisado[ka]) {
       chegouAvisado[ka] = true; if (extra) extra.chegou = true; try { navigator.vibrate && navigator.vibrate([30, 80, 30]); } catch (e) {}
       rolarTexto = true;
+    }
     }
     pinta(); desenhaAgora(); desenha(); giraSeta(); pedeRota(false);
     // acompanhando: recentra devagar, só quando o mapa está parado (nunca no meio de um gesto)
@@ -3817,9 +3860,9 @@ function abrirPasseio(id) {
       const cone = euMarca && euMarca.getElement().querySelector(".passcone"), dir = direcao(); if (cone && dir != null) cone.style.transform = `rotate(${Math.round(dir - g)}deg)`; });
     // nomes das lojas só aparecem com o mapa de perto (de longe embolam)
     const longe = () => caixaMapa.classList.toggle("longe", mapa.getZoom() < 16.3); mapa.on("zoom", longe); longe();
-    marcas = ps.map((p, k) => new maplibregl.Marker({ element: h("button", { type: "button", class: "passpin", "aria-label": p.nome, onclick: () => vai(k) }, h("b", { text: String(k + 1) })) }).setLngLat([p.lng, p.lat]).addTo(mapa));
-    ps.forEach(p => (p.lojas || []).filter(l => isFinite(l[3])).forEach(l => { const o = poiDe(l);
-      new maplibregl.Marker({ element: h("button", { type: "button", class: "passloja " + o.tipo, "aria-label": o.nome, onclick: () => abrirPoi(o) }, h("span", { text: o.nome }), h("i", { "aria-hidden": "true" })), anchor: "right", offset: [6, 0] }).setLngLat([o.lng, o.lat]).addTo(mapa); }));
+    marcas = X ? [] : ps.map((p, k) => new maplibregl.Marker({ element: h("button", { type: "button", class: "passpin", "aria-label": p.nome, onclick: () => vai(k) }, h("b", { text: String(k + 1) })) }).setLngLat([p.lng, p.lat]).addTo(mapa));
+    (X ? ps : ps.flatMap(p => (p.lojas || []).filter(l => isFinite(l[3])).map(poiDe))).forEach(o => {
+      new maplibregl.Marker({ element: h("button", { type: "button", class: "passloja " + o.tipo, "aria-label": o.nome, onclick: () => abrirPoi(o) }, h("span", { text: o.nome }), h("i", { "aria-hidden": "true" })), anchor: "right", offset: [6, 0] }).setLngLat([o.lng, o.lat]).addTo(mapa); });
     if (eu) { euMarca = new maplibregl.Marker({ element: elEu() }).setLngLat([eu.lng, eu.lat]).addTo(mapa); }
     const pronto = () => { desenhaDia(); desenhaAgora(); desenhaRastro(); carregaDia(); pedeRota(true); };
     if (mapa.isStyleLoaded()) pronto(); else mapa.once("load", pronto);
@@ -3845,7 +3888,7 @@ function vDia(d, open, isToday, abrir) {
         [d.agenda.flatMap(p => p.itens)].map(itens => [
           h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
       // passeio guiado do dia: Dia 10 é o de Kunjapuri e Vashishta; os outros dias de Rishikesh, o das pontes
-      (pid => podeVerPasseio(pid) ? cartaoPasseio(pid) : null)(Object.keys(PASSEIOS).find(k => PASSEIOS[k].diaN === d.n) || (d.cidade === "Rishikesh" && d.n === 11 ? "extras" : null)),
+      (pid => podeVerPasseio(pid) ? cartaoPasseio(pid) : null)(podePasseio() ? Object.keys(PASSEIOS).find(k => PASSEIOS[k].diaN === d.n) || (d.cidade === "Rishikesh" && d.n === 11 ? "extras" : null) : d.cidade === "Rishikesh" ? "pontos" : null),
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       (d.lugares || []).map(l => h("div", { class: "place" }, h("p", { class: "sub", text: l.sub }), h("h4", { text: l.nome }), h("p", { text: l.texto }),
         l.dados && l.dados.length ? h("div", { class: "stats" }, l.dados.map(x => h("div", null, h("b", { text: x.v }), h("span", { text: x.l })))) : null)),
