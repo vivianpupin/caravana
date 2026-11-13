@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "13/11 · 04:05";</script>
+<script>window.__VERSAO = "13/11 · 04:09";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2160,6 +2160,12 @@ video.mgrande{max-height:70vh;background:#000}
 .passloja i{width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.3);flex:none}
 .passloja span{background:var(--panel);padding:2px 6px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.15);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
 .passmapa.longe .passloja span{display:none}
+.passmapa.longe .passloja.destaque span,.passmapa.filtrado .passloja span{display:block}
+.passmapa .passloja.destaque i{width:18px;height:18px;background:#C9A227;border-width:3px}
+.passmapa .passloja.destaque span{font-size:12px;font-weight:700}
+.passfiltros{display:grid;grid-template-columns:1.25fr 1fr 1.2fr .9fr;gap:5px;padding:2px 0 12px}
+.passfiltros button{flex:none;border:1px solid var(--line2);background:var(--panel);color:var(--ink);border-radius:999px;padding:10px 2px;font:600 13px/1 var(--ui);cursor:pointer;white-space:nowrap;text-align:center}
+.passfiltros button[aria-pressed="true"]{background:#3F4938;border-color:#3F4938;color:#F6EDDA}
 .passloja.comida i{background:var(--moss)}
 .passloja.lugar i{background:#7A4FA0}
 .passmapa.longe .passloja.lugar span{display:block}
@@ -3521,7 +3527,11 @@ function pontosDe(ids) {
 PASSEIOS.pontos = { titulo: "Pontos de interesse", rotulo: "Rishikesh", livre: true, explorar: true, saida: PASSEIOS.pontes.saida,
   // contagem regressiva da puja (só no dia dela); tocar mostra o lugar
   aarti: { h: 19, m: 0, chegar: "18h45", rot: "Puja", data: "2026-11-13", lugar: "Ganga Beach" },
-  paradas: pontosDe(["chegada", "pontes", "kunjapuri"]).filter(o => !/^(Rafting|NIM Beach)/.test(o.nome)) };
+  // a Ram Jhula está fechada: fica fora do mapa dos viajantes
+  paradas: (() => { const DESTAQUES = ["Lakshman Jhula e Bajrang Setu", "Trayambakeshwar · Tera Manzil", "Lakshman Temple", "Parmarth Niketan", "Beatles Ashram"];
+    const os = pontosDe(["chegada", "pontes", "kunjapuri"]).filter(o => !/^(Rafting|NIM Beach|Ram Jhula)/.test(o.nome));
+    os.forEach(o => { const k = DESTAQUES.indexOf(o.nome); if (k > -1) o.destaque = k + 1; });
+    return os.sort((a, b) => (a.destaque || 99) - (b.destaque || 99)); })() };
 const CIDADES_ROTAS = [["Varanasi", ["varanasi1", "varanasi2", "varanasi3"]], ["Rishikesh", ["pontos", "chegada", "pontes", "kunjapuri", "extras"]]];
 function vRotas() {
   return h("section", { class: "view rotasview" },
@@ -3608,7 +3618,7 @@ function abrirPasseio(id) {
   const conclui = () => { if (!est.feitos.includes(est.i)) est.feitos.push(est.i); guarda(); if (est.i < ps.length - 1) vai(est.i + 1); else if (P.livre) vai(0); else { desenha(); pinta(); } };
   function enquadra(animar) {
     if (!mapa) return; const b = new maplibregl.LngLatBounds();
-    (X ? ps.filter(p => distKm(p, P.saida) < 2.5) : ps).forEach(p => b.extend([p.lng, p.lat])); if (eu && distKm(eu, ps[0]) < 5) b.extend([eu.lng, eu.lat]);
+    (X ? ps.filter(p => passa(p) && distKm(p, P.saida) < 3) : ps).forEach(p => b.extend([p.lng, p.lat])); if (eu && distKm(eu, ps[0]) < 5) b.extend([eu.lng, eu.lat]);
     mapa.fitBounds(b, { padding: { top: 40, bottom: 40, left: 40, right: 60 }, duration: animar ? 600 : 0, maxZoom: 16 });
   }
   function pinta() {
@@ -3723,17 +3733,29 @@ function abrirPasseio(id) {
   }
   const linkGoogle = (o, txt) => { const vs = o.poi ? [] : viaAFrente(o);
     return h("a", { class: "passgoogle", href: o.poi ? mapsBusca(o.q) : "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(o.destino || o.lat + "," + o.lng) + (vs.length ? "&waypoints=" + encodeURIComponent(vs.map(v => v.lat + "," + v.lng).join("|")) : "") + "&travelmode=" + (o.carro ? "driving" : "walking"), target: "_blank", rel: "noopener" }, txt); };
-  // modo explorar: a lista de todos os lugares (os mais perto primeiro, quando o GPS acha a pessoa)
+  // modo explorar: botões para escolher o que ver (destaques, lugares, onde comer, lojas); a lista e os pinos do mapa mostram só isso
+  let filtro = "destaque"; const pinsX = [];
+  const FILTROS = [["destaque", "★ Destaques"], ["lugar", "Lugares"], ["comida", "Para comer"], ["loja", "Lojas"]];
+  const passa = o => filtro === "destaque" ? !!o.destaque : o.tipo === filtro;
+  function filtraPins() {
+    pinsX.forEach(({ o, m }) => { m.getElement().style.display = passa(o) || (extra && extra.nome === o.nome) || (vendo && vendo.nome === o.nome) ? "" : "none"; });
+  }
+  function mostraFiltro() {
+    if (!mapa) return; const b = new maplibregl.LngLatBounds(); let n = 0;
+    ps.filter(o => passa(o) && distKm(o, P.saida) < 3).forEach(o => { b.extend([o.lng, o.lat]); n++; });
+    if (n) mapa.fitBounds(b, { padding: { top: 50, bottom: 40, left: 60, right: 70 }, duration: 500, maxZoom: 16.5 });
+  }
   function listaPontos() {
-    const tit = { lugar: "Lugares", comida: "Para comer", loja: "Lojas" }, por = {};
     const dist = o => eu ? distKm(eu, o) : null, curta = t => String(t || "").split(/(?<=[.!?])\s/)[0];
-    ps.forEach(o => (por[o.tipo] = por[o.tipo] || []).push(o));
-    return h("div", { class: "passlojas pontos" }, Object.keys(tit).filter(t => por[t]).map(t => [
-      h("p", { class: "eyebrow rule", text: tit[t] }),
-      (eu ? por[t].slice().sort((a, b) => dist(a) - dist(b)) : por[t]).map(o => h("button", { type: "button", class: "passpoi " + o.tipo, onclick: () => abrirPoi(o) },
-        h("b", { text: o.nome }), h("span", { text: (eu ? distTxt(dist(o)) + " · " : "") + curta(o.desc) }), h("i", { text: "Ver ›" })))]));
+    const os = ps.filter(passa);
+    return h("div", { class: "passlojas pontos" },
+      h("div", { class: "passfiltros", role: "group", "aria-label": "O que ver" }, FILTROS.filter(([k]) => ps.some(o => k === "destaque" ? o.destaque : o.tipo === k)).map(([k, t]) =>
+        h("button", { type: "button", "aria-pressed": String(filtro === k), onclick: () => { filtro = k; marcaSeguir(false); desenha(); mostraFiltro(); painel.scrollTo({ top: 0 }); } }, t))),
+      (eu && filtro !== "destaque" ? os.slice().sort((a, b) => dist(a) - dist(b)) : os).map(o => h("button", { type: "button", class: "passpoi " + o.tipo + (o.destaque ? " destaque" : ""), onclick: () => abrirPoi(o) },
+        h("b", { text: o.nome }), h("span", { text: (eu ? distTxt(dist(o)) + " · " : "") + curta(o.desc) }), h("i", { text: "Ver ›" }))));
   }
   function desenha() {
+    if (X) { filtraPins(); caixaMapa.classList.add("filtrado"); }
     if (X && !extra && !vendo) { painel.replaceChildren(listaPontos()); return; }
     const p = alvoAt() || ps[est.i], parada = ps[est.i], fim = est.feitos.length === ps.length;
     const reta = eu ? distKm(eu, p) : null, nr = eu && agora && agoraPara === kAlvo() ? naRota(agora.coords, eu) : null;
@@ -3889,7 +3911,9 @@ function abrirPasseio(id) {
     const longe = () => caixaMapa.classList.toggle("longe", mapa.getZoom() < 16.3); mapa.on("zoom", longe); longe();
     marcas = X ? [] : ps.map((p, k) => new maplibregl.Marker({ element: h("button", { type: "button", class: "passpin", "aria-label": p.nome, onclick: () => vai(k) }, h("b", { text: String(k + 1) })) }).setLngLat([p.lng, p.lat]).addTo(mapa));
     (X ? ps : ps.flatMap(p => (p.lojas || []).filter(l => isFinite(l[3])).map(poiDe))).forEach(o => {
-      new maplibregl.Marker({ element: h("button", { type: "button", class: "passloja " + o.tipo, "aria-label": o.nome, onclick: () => abrirPoi(o) }, h("span", { text: o.nome }), h("i", { "aria-hidden": "true" })), anchor: "right", offset: [6, 0] }).setLngLat([o.lng, o.lat]).addTo(mapa); });
+      const m = new maplibregl.Marker({ element: h("button", { type: "button", class: "passloja " + o.tipo + (X && o.destaque ? " destaque" : ""), "aria-label": o.nome, onclick: () => abrirPoi(o) }, h("span", { text: o.nome }), h("i", { "aria-hidden": "true" })), anchor: "right", offset: [6, 0] }).setLngLat([o.lng, o.lat]).addTo(mapa);
+      if (X) pinsX.push({ o, m }); });
+    if (X) filtraPins();
     if (eu) { euMarca = new maplibregl.Marker({ element: elEu() }).setLngLat([eu.lng, eu.lat]).addTo(mapa); }
     const pronto = () => { desenhaDia(); desenhaAgora(); desenhaRastro(); carregaDia(); pedeRota(true); };
     if (mapa.isStyleLoaded()) pronto(); else mapa.once("load", pronto);
