@@ -34,12 +34,36 @@ function redePrimeiro(req, ms, ev) {
     // resposta estranha (página de login do wi-fi do hotel, erro do servidor): abre o guardado e não guarda por cima
     const salva = rede.then(r => {
       if (!(r && r.ok && !r.redirected && r.type === "basic")) return (req.mode === "navigate" ? caches.match("./") : caches.match(req)).then(g => fim(g || (r && r.redirected ? Response.redirect(r.url, 302) : r)));
-      const cp = r.clone(); fim(r); return caches.open(CACHE).then(c => c.put(req.mode === "navigate" ? "./" : req, cp)); });
+      const cp = r.clone(); fim(r); return req.mode === "navigate" ? guardaPagina(cp) : caches.open(CACHE).then(c => c.put(req, cp)); });
     if (ev) ev.waitUntil(salva.catch(() => {}));
     salva
       .catch(() => (req.mode === "navigate" ? caches.match("./") : caches.match(req)).then(g => fim(g || Response.error())));
     setTimeout(() => (req.mode === "navigate" ? caches.match("./").then(g => g || caches.match("index.html")) : caches.match(req)).then(fim), ms);
   });
+}
+// guarda a página do app e a versão dela (está no começo do arquivo: window.__VERSAO = "...")
+async function guardaPagina(r) {
+  const [c, m] = await Promise.all([caches.open(CACHE), caches.open(MARCAS)]), cp = r.clone();
+  await c.put("./", r);
+  try { const t = (await cp.text()).slice(0, 6000), v = (t.match(/window\.__VERSAO = "([^"]*)"/) || [])[1]; if (v) await m.put("versao-pagina", new Response(v)); } catch (e) {}
+}
+// abrir o app: confere só a versão publicada (versao.json, pequenino); se for a mesma guardada, abre o guardado na hora
+// (antes baixava a página inteira, 1,6 MB, a cada abertura: com o wi-fi fraco do hotel ficava vários segundos em branco)
+async function abreApp(req, ev) {
+  const [c, m] = await Promise.all([caches.open(CACHE), caches.open(MARCAS)]);
+  const g = await c.match("./"), vg = await m.match("versao-pagina").then(r => r ? r.text() : null).catch(() => null);
+  if (!g || !vg) return redePrimeiro(req, 3500, ev);
+  const pub = fetch("versao.json?sw=" + Date.now(), { cache: "no-store" }).then(r => r.ok ? r.json() : null).then(j => (j && j.v) || null).catch(() => null);
+  const vp = await Promise.race([pub, new Promise(ok => setTimeout(() => ok(undefined), 1500))]);
+  // mesma versão, ou sem internet: abre o guardado na hora
+  if (vp === vg || vp === null) return g;
+  // a internet demorou: abre o guardado agora e, se houver versão nova, baixa por trás para a próxima vez
+  if (vp === undefined) {
+    ev.waitUntil(pub.then(v => v && v !== vg ? fetch(new Request(req.url, { cache: "no-store" })).then(r => r && r.ok && !r.redirected && r.type === "basic" ? guardaPagina(r) : null) : null).catch(() => {}));
+    return g;
+  }
+  // versão nova publicada: baixa a página nova (se demorar mais de 3,5 s, abre a guardada)
+  return redePrimeiro(req, 3500, ev);
 }
 async function mapa(req) {
   const g = await caches.match(req); if (g) return g;
@@ -54,7 +78,8 @@ self.addEventListener("fetch", e => {
     // login do Google (/__/auth/...) e funções do Netlify: sempre direto da internet, nunca do guardado
     if (u.pathname.startsWith("/__/") || u.pathname.includes("/.netlify/")) return;
     if (req.mode === "navigate" && !/^\/(index\.html)?$/.test(u.pathname)) return;
-    if (req.mode === "navigate" || u.pathname.endsWith("/index.html")) return e.respondWith(redePrimeiro(req, 3500, e));
+    if (req.mode === "navigate") return e.respondWith(abreApp(req, e).catch(() => redePrimeiro(req, 3500, e)));
+    if (u.pathname.endsWith("/index.html")) return e.respondWith(redePrimeiro(req, 3500, e));
     if (u.pathname.endsWith("versao.json")) return e.respondWith(fetch(req).catch(() => caches.match(req).then(g => g || new Response("{}"))));
     // arquivos do app já guardados saem direto do celular, sem consultar a internet (a atualização do app troca só os que mudaram)
     const rel = u.pathname.replace(/^\//, "");
