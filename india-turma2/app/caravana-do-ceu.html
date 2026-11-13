@@ -3695,18 +3695,7 @@ function abrirPasseio(id) {
     const mostra = (src, de) => { leg.textContent = de; img.src = src; };
     if (minha) mostra(minha, "foto sua");
     else if (ws) fotoWiki(ws).then(u => { if (u) mostra(u, "foto da Wikipédia"); });
-    const inp = h("input", { type: "file", accept: "image/*", hidden: true, onchange: () => { const f = inp.files && inp.files[0]; if (f) fotoMinha(nome, f); } });
-    return fotoEls[nome] = h("div", { class: "passfotobox" }, fig, h("button", { type: "button", class: "passgoogle", onclick: () => inp.click() }, minha ? "📷 Trocar a foto" : "📷 Pôr a sua foto"), inp);
-  }
-  function fotoMinha(nome, f) {
-    const u = URL.createObjectURL(f), im = new Image();
-    im.onload = () => {
-      const k = Math.min(1, 900 / Math.max(im.width, im.height)), c = document.createElement("canvas");
-      c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(u);
-      try { localStorage.setItem("cdi-foto:" + nome, c.toDataURL("image/jpeg", .7)); } catch (e) { alert("Não coube mais foto guardada neste celular."); return; }
-      delete fotoEls[nome]; desenha();
-    };
-    im.onerror = () => URL.revokeObjectURL(u); im.src = u;
+    return fotoEls[nome] = h("div", { class: "passfotobox" }, fig);
   }
   const linkGoogle = (o, txt) => { const vs = o.poi ? [] : viaAFrente(o);
     return h("a", { class: "passgoogle", href: o.poi ? mapsBusca(o.q) : "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(o.destino || o.lat + "," + o.lng) + (vs.length ? "&waypoints=" + encodeURIComponent(vs.map(v => v.lat + "," + v.lng).join("|")) : "") + "&travelmode=" + (o.carro ? "driving" : "walking"), target: "_blank", rel: "noopener" }, txt); };
