@@ -3203,7 +3203,7 @@ const PASSEIOS = {
         dica: "O Chotiwala é o restaurante mais famoso de Rishikesh, aberto em 1958: peça o thali vegetariano (há dois Chotiwala lado a lado, de dois ramos da mesma família). O Gita Bhawan tem os versos do Bhagavad Gita nas paredes e uma cooperativa de preço fixo. A Ram Jhula passou por obras e pode estar fechada: não precisa atravessar.",
         lojas: [
           ["Ganga Beach", "A praia de areia branca na margem leste do Ganges, entre a Lakshman Jhula e a Ram Jhula. Bom lugar para sentar, molhar os pés e ver o rio passar. A água é gelada e a correnteza é forte: fique só na beirinha.", "Ganga Beach Swarg Ashram Rishikesh", 30.12430, 78.31775, false, "lugar"],
-          ["Chotiwala", "almoço: o restaurante mais famoso de Rishikesh, desde 1958 · thali vegetariano", "Chotiwala Restaurant, Swarg Ashram, Rishikesh", 30.12199, 78.31411, true, "comida"],
+          ["Chotiwala · Swarg Ashram", "o Chotiwala original, o restaurante mais famoso de Rishikesh, desde 1958 · thali vegetariano", "Chotiwala Restaurant, Swarg Ashram, Rishikesh", 30.12199, 78.31411, true, "comida"],
           ["Gita Bhawan", "cooperativa de preço fixo: roupas, ayurveda e livros", "Gita Bhawan Swarg Ashram Rishikesh", 30.12184, 78.31448, false, "loja"],
           ["Brijwasi Gems and Jewellers", "rudraksha, cristais, pedras e pingentes", "Brijwasi Gems and Jewellers Swarg Ashram Rishikesh", 30.12290, 78.31470, true, "loja"],
           ["Mercado de Ram Jhula e Swarg Ashram", "livros espirituais, rudraksha, gemas, incensos e óleos de ayurveda", "Swarg Ashram Market Ram Jhula Rishikesh"]] },
@@ -3219,7 +3219,7 @@ const PASSEIOS = {
       { nome: "Yog Niketan · de volta ao hotel", lat: 30.12181, lng: 78.30864, raio: 120, retorno: true, destino: "Yoga Niketan Ashram, Muni Ki Reti, Rishikesh", quando: "Fim do dia: de volta ao hotel",
         texto: "De volta ao Yog Niketan, o ashram fundado em 1964 por Swami Yogeshwarananda. Fim do passeio das pontes do Ganges.",
         dica: "Outras opções de jantar perto do hotel, se quiser variar: Kaafe (5 min) e RamJhula Restaurant (15 min).",
-        lojas: [["Kaafe", "indiana, café, massas, pizzas, sanduíches · uns 5 min", "Kaafe Rishikesh"], ["RamJhula Restaurant", "indiana, vegetariana, continental e café · uns 15 min", "RamJhula Restaurant Rishikesh"]] }
+        lojas: [["Chotiwala · ao lado do hotel", "A filial do Chotiwala, o restaurante vegetariano mais famoso de Rishikesh (desde 1958), em Muni ki Reti, ao lado do Yog Niketan: thali, comida do norte da Índia e lassi. Pino aproximado.", "Chotiwala Muni Ki Reti Rishikesh", 30.12205, 78.30905, true, "comida"], ["Kaafe", "indiana, café, massas, pizzas, sanduíches · uns 5 min", "Kaafe Rishikesh"], ["RamJhula Restaurant", "indiana, vegetariana, continental e café · uns 15 min", "RamJhula Restaurant Rishikesh"]] }
     ] }
 };
 // Dia 10: de carro. Kunjapuri (posição aproximada: foto do templo no Wikimedia Commons, bate com a trilha do Wikiloc);
@@ -3227,7 +3227,7 @@ const PASSEIOS = {
 PASSEIOS.kunjapuri = {
   titulo: "Nascer do sol e a caverna dos sábios", rotulo: "Dia 3",
   total: "de carro, com o motorista", saida: { lat: 30.12181, lng: 78.30864 },
-  aarti: { h: 17, m: 0, chegar: "16h45", parada: 3, rot: "Puja" },
+  aarti: { h: 19, m: 0, chegar: "18h45", parada: 3, rot: "Puja" },
   paradas: [
     { nome: "Kunjapuri Devi · nascer do sol", lat: 30.17364, lng: 78.31429, raio: 150, carro: true, aprox: true, quando: "Saída às 4h30 de carro · o sol nasce por volta das 6h40",
       texto: "A cerca de 1.600 metros de altitude, o templo de Kunjapuri é um dos Shakti Peethas, os assentos da Deusa. A tradição conta que Sati se entregou ao fogo, Shiva dançou pelo mundo com o corpo dela nos braços e Vishnu o dividiu para acalmá-lo: em cada lugar onde uma parte caiu nasceu um templo da Deusa. Em Kunjapuri teria caído a parte superior do corpo de Sati. Daqui o sol nasce atrás dos picos do Himalaia.",
@@ -3238,7 +3238,7 @@ PASSEIOS.kunjapuri = {
     { nome: "Vashishta Gufa · meditação e batismo", lat: 30.11426, lng: 78.43203, raio: 150, carro: true, quando: "10h meditação na caverna · 12h batismo no Ganges",
       texto: "Rio acima, numa caverna à beira do Ganges, a tradição diz que meditou o sábio Vasishtha, mestre de Rama. A caverna é longa e escura, com um Shiva lingam no fundo, e fica num ashram cercado de figueiras (gular). Depois da meditação, descemos até a praia do rio para a vivência de batismo: entramos juntos nas águas frias do Ganges, um gesto de devoção e renovação.",
       dica: "Da estrada até a caverna é uma descida curta a pé, com degraus. Dentro da caverna, silêncio." },
-    { nome: "Puja à beira do Ganges · Ganga Beach", lat: 30.12430, lng: 78.31775, raio: 80, carro: true, aprox: true, quando: "17h · a puja do fim da tarde",
+    { nome: "Puja à beira do Ganges · Ganga Beach", lat: 30.12430, lng: 78.31775, raio: 80, carro: true, aprox: true, quando: "19h · a puja à beira do Ganges",
       texto: "A praia de areia do Ganges, na margem leste, onde fazemos a puja do fim da tarde, com flores, luz e o rio passando.",
       dica: "Confirme com a equipe o ponto exato da praia: há mais de uma Ganga Beach em Rishikesh, e o pino é o da praia de Swarg Ashram." },
     { nome: "Yog Niketan · jantar às 20h", lat: 30.12181, lng: 78.30864, raio: 120, carro: true, retorno: true, quando: "Fim do dia: de volta ao hotel",
@@ -3484,8 +3484,11 @@ function pontosDe(ids) {
   }
   const ordem = { lugar: 0, comida: 1, loja: 2 }; return out.sort((a, b) => (ordem[a.tipo] ?? 3) - (ordem[b.tipo] ?? 3));
 }
-PASSEIOS.pontos = { titulo: "Pontos de interesse", rotulo: "Rishikesh", livre: true, explorar: true, saida: PASSEIOS.pontes.saida, paradas: pontosDe(["chegada", "pontes", "kunjapuri", "extras"]) };
-const CIDADES_ROTAS = [["Varanasi", ["varanasi1", "varanasi2", "varanasi3"]], ["Rishikesh", ["chegada", "pontes", "kunjapuri", "extras", "pontos"]]];
+PASSEIOS.pontos = { titulo: "Pontos de interesse", rotulo: "Rishikesh", livre: true, explorar: true, saida: PASSEIOS.pontes.saida,
+  // contagem regressiva da puja (só no dia dela); tocar mostra o lugar
+  aarti: { h: 19, m: 0, chegar: "18h45", rot: "Puja", data: "2026-11-13", lugar: "Ganga Beach" },
+  paradas: pontosDe(["chegada", "pontes", "kunjapuri"]).filter(o => !/^(Rafting|NIM Beach)/.test(o.nome)) };
+const CIDADES_ROTAS = [["Varanasi", ["varanasi1", "varanasi2", "varanasi3"]], ["Rishikesh", ["pontos", "chegada", "pontes", "kunjapuri", "extras"]]];
 function vRotas() {
   return h("section", { class: "view rotasview" },
     cidadesRotas().map(([nome, ids]) => { const aberta = S.rotasCidade === nome;
@@ -3512,7 +3515,7 @@ function abrirPasseio(id) {
   const ps = P.paradas;
   const caixaMapa = h("div", { class: "passmapa" }, h("p", { class: "globoaviso", text: "Abrindo o mapa…" }));
   const painel = h("div", { class: "passpainel" });
-  const chipAarti = h("button", { type: "button", class: "passaarti", hidden: true, onclick: () => vai(P.aarti.parada) });
+  const chipAarti = h("button", { type: "button", class: "passaarti", hidden: true, onclick: () => { if (P.aarti.lugar) { const o = ps.find(q => q.nome === P.aarti.lugar); if (o) abrirPoi(o); } else vai(P.aarti.parada); } });
   const pararBussola = () => { if (bussola) { window.removeEventListener(bussola.ev, bussola.fn, true); bussola = null; } };
   const fecha = () => { lsSet("cdi-passeio-aberto", ""); document.removeEventListener("visibilitychange", voltou); try { clearInterval(vigiaGps); document.removeEventListener("visibilitychange", religaGps); window.removeEventListener("pageshow", religaGps); window.removeEventListener("focus", religaGps); } catch (e) {} clearInterval(relogio); pararBussola(); if (watch != null) navigator.geolocation.clearWatch(watch); try { trava && trava.release(); } catch (e) {} try { mapa && mapa.remove(); } catch (e) {} box.remove(); };
   const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
@@ -3553,13 +3556,14 @@ function abrirPasseio(id) {
   // horário da Aarti no topo, com quanto falta (relógio do celular, que já está na hora da Índia)
   const aarti = () => {
     const a = P.aarti; if (!a) return; const n = new Date(), ini = new Date(n); ini.setHours(a.h, a.m, 0, 0);
+    if (a.data && `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}` !== a.data) { chipAarti.hidden = true; return; }
     const min = Math.round((ini - n) / 60000);
     if (min < -50) { chipAarti.hidden = true; return; }
     chipAarti.hidden = false;
     chipAarti.replaceChildren(h("small", { text: a.rot || "Aarti" }), h("b", { text: `${a.h}h${a.m ? String(a.m).padStart(2, "0") : ""}` }),
       h("span", { text: min <= 0 ? "acontecendo agora" : min < 60 ? `faltam ${min} min` : `faltam ${Math.floor(min / 60)}h${String(min % 60).padStart(2, "0")}` }));
     chipAarti.classList.toggle("logo", min <= 90);
-    chipAarti.setAttribute("aria-label", `${a.rot || "Aarti"} às ${a.h}h. Chegue até ${a.chegar}. Toque para ver a parada.`);
+    chipAarti.setAttribute("aria-label", `${a.rot || "Aarti"} às ${a.h}h. Chegue até ${a.chegar}.`);
   };
   aarti(); const relogio = setInterval(aarti, 30000);
   // a tela apagada desliga a trava; quando a pessoa volta (do Google Maps, por exemplo), pede de novo
