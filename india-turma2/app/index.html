@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "14/11 · 00:18";</script>
+<script>window.__VERSAO = "14/11 · 00:20";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3524,7 +3524,7 @@ function reabrePasseio() {
   if (S._passReaberto || document.querySelector(".passeio") || !podePasseio()) return;
   const [pid, quando] = String(lsGet("cdi-passeio-aberto") || "").split("|");
   S._passReaberto = true;
-  if (pid && PASSEIOS[pid] && Date.now() - +quando < 12 * 3600e3) setTimeout(() => { if (!document.querySelector(".passeio")) abrirPasseio(pid); }, 300);
+  if (pid && PASSEIOS[pid] && Date.now() - +quando < 24 * 3600e3) setTimeout(() => { if (!document.querySelector(".passeio")) abrirPasseio(pid); }, 300);
 }
 // cartão no dia: abre o passeio
 function cartaoPasseio(id) {
@@ -3611,9 +3611,12 @@ function abrirPasseio(id) {
     chipAarti.classList.toggle("logo", min <= 90);
     chipAarti.setAttribute("aria-label", `${a.rot || "Aarti"} às ${a.h}h. Chegue até ${a.chegar}. Toque para ver a parada.`);
   };
-  aarti(); const relogio = setInterval(aarti, 30000);
+  // enquanto o passeio está na tela, renova a marca de "aberto": fechou o app e voltou (mesmo muitas horas depois), abre no mesmo lugar
+  const marcaAberto = () => { if (box.isConnected) lsSet("cdi-passeio-aberto", id + "|" + Date.now()); };
+  window.addEventListener("pagehide", marcaAberto);
+  aarti(); const relogio = setInterval(() => { aarti(); marcaAberto(); }, 30000);
   // a tela apagada desliga a trava; quando a pessoa volta (do Google Maps, por exemplo), pede de novo
-  const voltou = () => { if (!document.hidden && box.isConnected) { aarti(); try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {} } };
+  const voltou = () => { if (document.hidden) marcaAberto(); if (!document.hidden && box.isConnected) { aarti(); marcaAberto(); try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {} } };
   document.addEventListener("visibilitychange", voltou);
   try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {}
   const vai = i => { est.i = Math.max(0, Math.min(ps.length - 1, i)); extra = null; vendo = null; lsSet(chave + "-x", ""); guarda(); tendencia = null; amostra = null; agora = null; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pinta(); pedeRota(true); if (mapa) mapa.easeTo({ center: [ps[est.i].lng, ps[est.i].lat], zoom: Math.max(mapa.getZoom(), 15.5) }); };
@@ -3718,6 +3721,8 @@ function abrirPasseio(id) {
   // atrativo (loja, café, lugar): tocar abre a descrição aqui mesmo; "Me leve até aqui" faz o app guiar até ele
   const TIPO = { loja: "Loja", comida: "Para comer", lugar: "Lugar" };
   const poiDe = l => ({ nome: l[0], desc: l[1], q: l[2], lat: l[3], lng: l[4], aprox: !!l[5], tipo: l[6] || "loja", raio: 35, poi: true });
+  // volta com o mesmo atrativo aberto
+  try { const v = JSON.parse(lsGet(chave + "-v") || "null"); if (v && v.v && !extra) vendo = ps.flatMap(p => (p.lojas || []).map(poiDe)).find(o => o.nome === v.v) || null; } catch (e) {}
   function abrirPoi(o) { vendo = o; desenha(); painel.scrollTo({ top: 0 }); if (mapa && isFinite(o.lat)) mapa.easeTo({ center: [o.lng, o.lat], zoom: Math.max(mapa.getZoom(), 16.5) }); }
   function irPoi(o) { extra = { ...o, chegou: false }; lsSet(chave + "-x", JSON.stringify(extra)); vendo = null; tendencia = null; amostra = null; agora = null; chegouAvisado["x" + o.nome] = false; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pedeRota(true); }
   function sairExtra() { extra = null; lsSet(chave + "-x", ""); vendo = null; tendencia = null; amostra = null; agora = null; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pedeRota(true); }
@@ -3736,6 +3741,7 @@ function abrirPasseio(id) {
   const linkGoogle = (o, txt) => { const vs = o.poi ? [] : viaAFrente(o);
     return h("a", { class: "passgoogle", href: o.poi ? mapsBusca(o.q) : "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(o.destino || o.lat + "," + o.lng) + (vs.length ? "&waypoints=" + encodeURIComponent(vs.map(v => v.lat + "," + v.lng).join("|")) : "") + "&travelmode=" + (o.carro ? "driving" : "walking"), target: "_blank", rel: "noopener" }, txt); };
   function desenha() {
+    lsSet(chave + "-v", JSON.stringify({ v: vendo ? vendo.nome : null }));
     const p = alvoAt(), parada = ps[est.i], fim = est.feitos.length === ps.length;
     const reta = eu ? distKm(eu, p) : null, nr = eu && agora && agoraPara === kAlvo() ? naRota(agora.coords, eu) : null;
     const d = nr ? nr.falta : reta, perto = reta != null && reta * 1000 <= (p.raio || 80) + Math.min(eu.prec || 0, 25);

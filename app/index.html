@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "14/11 · 00:18";</script>
+<script>window.__VERSAO = "14/11 · 00:20";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3484,12 +3484,12 @@ function blocoOffline(aoMudar) {
     S.offMsg ? h("p", { class: "small", text: S.offMsg }) : null,
     ok && !S.offRodando ? h("button", { type: "button", class: "passgoogle", onclick: () => { lsSet("cdi-offline", ""); guardaOffline(aoMudar); } }, "Baixar de novo") : null);
 }
-// fechou e abriu o app no meio de um passeio: volta para o mesmo passeio, na mesma parada, acompanhando o GPS (até 12 horas depois)
+// fechou e abriu o app no meio de um passeio: volta para o mesmo passeio, na mesma parada e no mesmo lugar aberto, acompanhando o GPS (até 24 horas depois do último uso)
 function reabrePasseio() {
   if (S._passReaberto || document.querySelector(".passeio") || !podeRotas()) return;
   const [pid, quando] = String(lsGet("cdi-passeio-aberto") || "").split("|");
   S._passReaberto = true;
-  if (pid && podeVerPasseio(pid) && Date.now() - +quando < 12 * 3600e3) setTimeout(() => { if (!document.querySelector(".passeio")) abrirPasseio(pid); }, 300);
+  if (pid && podeVerPasseio(pid) && Date.now() - +quando < 24 * 3600e3) setTimeout(() => { if (!document.querySelector(".passeio")) abrirPasseio(pid); }, 300);
 }
 // cartão no dia: abre o passeio
 function cartaoPasseio(id) {
@@ -3613,9 +3613,12 @@ function abrirPasseio(id) {
     chipAarti.classList.toggle("logo", min <= 90);
     chipAarti.setAttribute("aria-label", `${a.rot || "Aarti"} às ${a.h}h. Chegue até ${a.chegar}.`);
   };
-  aarti(); const relogio = setInterval(aarti, 30000);
+  // enquanto o passeio está na tela, renova a marca de "aberto": fechou o app e voltou (mesmo muitas horas depois), abre no mesmo lugar
+  const marcaAberto = () => { if (box.isConnected) lsSet("cdi-passeio-aberto", id + "|" + Date.now()); };
+  window.addEventListener("pagehide", marcaAberto);
+  aarti(); const relogio = setInterval(() => { aarti(); marcaAberto(); }, 30000);
   // a tela apagada desliga a trava; quando a pessoa volta (do Google Maps, por exemplo), pede de novo
-  const voltou = () => { if (!document.hidden && box.isConnected) { aarti(); try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {} } };
+  const voltou = () => { if (document.hidden) marcaAberto(); if (!document.hidden && box.isConnected) { aarti(); marcaAberto(); try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {} } };
   document.addEventListener("visibilitychange", voltou);
   try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {}
   const vai = i => { est.i = Math.max(0, Math.min(ps.length - 1, i)); extra = null; vendo = null; lsSet(chave + "-x", ""); guarda(); tendencia = null; amostra = null; agora = null; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pinta(); pedeRota(true); if (mapa) mapa.easeTo({ center: [ps[est.i].lng, ps[est.i].lat], zoom: Math.max(mapa.getZoom(), 15.5) }); };
@@ -3739,6 +3742,9 @@ function abrirPasseio(id) {
     return h("a", { class: "passgoogle", href: o.poi ? mapsBusca(o.q) : "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(o.destino || o.lat + "," + o.lng) + (vs.length ? "&waypoints=" + encodeURIComponent(vs.map(v => v.lat + "," + v.lng).join("|")) : "") + "&travelmode=" + (o.carro ? "driving" : "walking"), target: "_blank", rel: "noopener" }, txt); };
   // modo explorar: botões para escolher o que ver (destaques, lugares, onde comer, lojas); a lista e os pinos do mapa mostram só isso
   let filtro = "destaque"; const pinsX = [];
+  // volta com o mesmo botão escolhido e o mesmo lugar aberto
+  try { const v = JSON.parse(lsGet(chave + "-v") || "null"); if (v) { if (["destaque", "lugar", "comida", "loja"].includes(v.f)) filtro = v.f;
+    if (v.v && !extra) vendo = (X ? ps : ps.flatMap(p => (p.lojas || []).map(poiDe))).find(o => o.nome === v.v) || null; } } catch (e) {}
   const FILTROS = [["destaque", "★ Destaques"], ["lugar", "Lugares"], ["comida", "Para comer"], ["loja", "Lojas"]];
   const passa = o => filtro === "destaque" ? !!o.destaque : o.tipo === filtro;
   function filtraPins() {
@@ -3759,6 +3765,7 @@ function abrirPasseio(id) {
         h("b", { text: o.nome }), h("span", { text: (eu ? distTxt(dist(o)) + " · " : "") + curta(o.desc) }), h("i", { text: "Ver ›" }))));
   }
   function desenha() {
+    lsSet(chave + "-v", JSON.stringify({ f: filtro, v: vendo ? vendo.nome : null }));
     if (X) { filtraPins(); caixaMapa.classList.add("filtrado"); }
     if (X && !extra && !vendo) { painel.replaceChildren(listaPontos()); return; }
     const p = alvoAt() || ps[est.i], parada = ps[est.i], fim = est.feitos.length === ps.length;
