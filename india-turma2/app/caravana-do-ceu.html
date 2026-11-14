@@ -5187,8 +5187,10 @@ async function imagemHabilidade(id) {
 async function compartilharHabilidade(id, bt, salvar) {
   const txt0 = bt.textContent; bt.disabled = true; bt.textContent = "Preparando…";
   try {
-    const b = await imagemHabilidade(id); if (!b) throw 0;
-    const t = habTexto(id, (eu() || {}).genero) || { nome: "habilidade" }, nome = "habilidade-" + norm(t.nome).replace(/[^a-z0-9]+/g, "-") + ".jpg", f = new File([b], nome, { type: "image/jpeg" });
+    // salvar: PNG sem fundo, só a caixinha (dá para pôr por cima de um vídeo nos Stories); compartilhar: a imagem com fundo, para os Stories
+    const gen = (eu() || {}).genero, png = !!salvar;
+    const b = png ? await caixaHabilidade(id, gen).then(c => new Promise(ok => c.toBlob(ok, "image/png"))) : await imagemHabilidade(id); if (!b) throw 0;
+    const t = habTexto(id, gen) || { nome: "habilidade" }, nome = "habilidade-" + norm(t.nome).replace(/[^a-z0-9]+/g, "-") + (png ? ".png" : ".jpg"), f = new File([b], nome, { type: png ? "image/png" : "image/jpeg" });
     if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share(salvar ? { files: [f] } : { files: [f], text: "Desbloqueei a habilidade " + t.nome + " na Caravana do Céu ✦" }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
     let msg = bt.parentNode.nextElementSibling; if (!msg || !msg.hasAttribute("data-carmsg")) { msg = h("p", { class: "msg", role: "status", "data-carmsg": "1" }); bt.parentNode.after(msg); }
     salvarNoRolo(Promise.resolve(b), nome, msg);
@@ -5208,7 +5210,7 @@ async function abrirHabilidade(id, nova) {
       h("button", { class: "btn gold", type: "button", onclick: () => podeAoVivo ? cameraHabilidade(id) : entradaFoto(id, true) }, "📸 Câmera"),
       h("button", { class: "btn", type: "button", onclick: () => entradaFoto(id, false) }, "Escolher da galeria"),
       h("div", { class: "habcomp" }, h("button", { class: "btn", type: "button", onclick: e => compartilharHabilidade(id, e.currentTarget) }, "Compartilhar"),
-        h("button", { class: "btn", type: "button", onclick: e => compartilharHabilidade(id, e.currentTarget, true) }, "Salvar no celular")),
+        h("button", { class: "btn", type: "button", onclick: e => compartilharHabilidade(id, e.currentTarget, true) }, "Salvar sem fundo (PNG)")),
       nova ? h("button", { class: "btn ghost", type: "button", onclick: () => { S.habAdiada = true; closeSheets(); } }, "Guardar no meu passaporte")
         : h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")));
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) { S.habAdiada = true; closeSheets(); } } }, box);
