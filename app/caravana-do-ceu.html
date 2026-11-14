@@ -5188,35 +5188,36 @@ async function cameraHabilidade(id) {
 }
 // a caixinha da habilidade com as opções de foto
 // imagem da habilidade para compartilhar (Stories, 1080 x 1920): a caixinha de papel sobre um fundo escuro e quente, com brilho dourado
-async function imagemHabilidade(id) {
+// semFundo: a mesma imagem, com todos os escritos, mas com o fundo transparente (PNG), para pôr por cima de um vídeo
+async function imagemHabilidade(id, semFundo) {
   const gen = (eu() || {}).genero, t = habTexto(id, gen); if (!t) throw new Error("habilidade");
   try { await document.fonts.ready; } catch (e) {}
   const [cx, logo] = await Promise.all([caixaHabilidade(id, gen), carregaLivre("img/simbolo-dourado.png")]);
   const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
   const esp = px => { if ("letterSpacing" in x) x.letterSpacing = px + "px"; };
-  const g = x.createRadialGradient(W / 2, 900, 80, W / 2, 900, 1150); g.addColorStop(0, "#5A3A20"); g.addColorStop(.55, "#2E1E12"); g.addColorStop(1, "#140C06"); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const g = x.createRadialGradient(W / 2, 900, 80, W / 2, 900, 1150); g.addColorStop(0, "#5A3A20"); g.addColorStop(.55, "#2E1E12"); g.addColorStop(1, "#140C06"); x.fillStyle = g; if (!semFundo) x.fillRect(0, 0, W, H);
   let s0 = 17; const rnd = () => (s0 = (s0 * 16807) % 2147483647) / 2147483647;
-  for (let k = 0; k < 120; k++) { x.fillStyle = `rgba(255,214,140,${.12 + rnd() * .5})`; const r = .8 + rnd() * 2.4; x.beginPath(); x.arc(rnd() * W, rnd() * H, r, 0, Math.PI * 2); x.fill(); }
+  if (!semFundo) for (let k = 0; k < 120; k++) { x.fillStyle = `rgba(255,214,140,${.12 + rnd() * .5})`; const r = .8 + rnd() * 2.4; x.beginPath(); x.arc(rnd() * W, rnd() * H, r, 0, Math.PI * 2); x.fill(); }
   // faíscas douradas em volta da caixinha
   x.fillStyle = "rgba(242,205,130,.85)"; x.font = '40px serif'; x.textAlign = "center";
   [[170, 560], [910, 610], [140, 1250], [940, 1200], [260, 420], [820, 1380]].forEach(([px, py], k) => { x.globalAlpha = .4 + (k % 3) * .2; x.fillText("✦", px, py); }); x.globalAlpha = 1;
   if (logo) { const lw = 100, lh = lw * logo.height / logo.width; x.drawImage(logo, W / 2 - lw / 2, 150, lw, lh); }
   x.fillStyle = "#E2BE78"; x.font = '600 30px "Poppins",sans-serif'; esp(10); x.fillText("HABILIDADE", W / 2, 340); x.fillText("DESBLOQUEADA", W / 2, 386); esp(0);
   x.strokeStyle = "rgba(226,190,120,.6)"; x.lineWidth = 2; x.beginPath(); x.moveTo(W / 2 - 160, 420); x.lineTo(W / 2 + 160, 420); x.stroke();
-  const gl = x.createRadialGradient(W / 2, 900, 40, W / 2, 900, 560); gl.addColorStop(0, "rgba(255,200,110,.45)"); gl.addColorStop(1, "rgba(255,200,110,0)"); x.fillStyle = gl; x.fillRect(0, 0, W, H);
+  const gl = x.createRadialGradient(W / 2, 900, 40, W / 2, 900, 560); gl.addColorStop(0, "rgba(255,200,110,.45)"); gl.addColorStop(1, "rgba(255,200,110,0)"); x.fillStyle = gl; if (!semFundo) x.fillRect(0, 0, W, H);
   const cw = 980, ch = cw * cx.height / cx.width; x.drawImage(cx, W / 2 - cw / 2, 900 - ch / 2, cw, ch);
   const loc = localDe(t.local), yb = 900 + ch / 2 + 110;
   if (loc) { x.fillStyle = "rgba(251,240,216,.85)"; x.font = 'italic 40px "Lora",Georgia,serif'; x.fillText("conquistada em " + loc.nome, W / 2, yb); }
   const n = minhasHab().length; x.fillStyle = "rgba(226,190,120,.8)"; x.font = '500 30px "Poppins",sans-serif'; x.fillText(n > 1 ? `${n} habilidades na travessia` : "a primeira habilidade da travessia", W / 2, yb + (loc ? 70 : 0));
   x.fillStyle = "#C9A25C"; x.font = '600 30px "Cinzel",Georgia,serif'; esp(6); x.fillText("CARAVANA DO CÉU · ÍNDIA SAGRADA 2026", W / 2, H - 90); esp(0);
-  return new Promise(ok => c.toBlob(ok, "image/jpeg", .92));
+  return new Promise(ok => semFundo ? c.toBlob(ok, "image/png") : c.toBlob(ok, "image/jpeg", .92));
 }
 async function compartilharHabilidade(id, bt, salvar) {
   const txt0 = bt.textContent; bt.disabled = true; bt.textContent = "Preparando…";
   try {
-    // salvar: PNG sem fundo, só a caixinha (dá para pôr por cima de um vídeo nos Stories); compartilhar: a imagem com fundo, para os Stories
+    // salvar: a mesma imagem dos Stories, com todos os escritos, mas sem o fundo (PNG transparente, para pôr por cima de um vídeo); compartilhar: com o fundo
     const gen = (eu() || {}).genero, png = !!salvar;
-    const b = png ? await caixaHabilidade(id, gen).then(c => new Promise(ok => c.toBlob(ok, "image/png"))) : await imagemHabilidade(id); if (!b) throw 0;
+    const b = await imagemHabilidade(id, png); if (!b) throw 0;
     const t = habTexto(id, gen) || { nome: "habilidade" }, nome = "habilidade-" + norm(t.nome).replace(/[^a-z0-9]+/g, "-") + (png ? ".png" : ".jpg"), f = new File([b], nome, { type: png ? "image/png" : "image/jpeg" });
     if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share(salvar ? { files: [f] } : { files: [f], text: "Desbloqueei a habilidade " + t.nome + " na Caravana do Céu ✦" }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
     let msg = bt.parentNode.nextElementSibling; if (!msg || !msg.hasAttribute("data-carmsg")) { msg = h("p", { class: "msg", role: "status", "data-carmsg": "1" }); bt.parentNode.after(msg); }
