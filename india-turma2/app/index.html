@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "14/11 · 00:21";</script>
+<script>window.__VERSAO = "14/11 · 04:17";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3519,12 +3519,13 @@ function blocoOffline(aoMudar) {
     S.offMsg ? h("p", { class: "small", text: S.offMsg }) : null,
     ok && !S.offRodando ? h("button", { type: "button", class: "passgoogle", onclick: () => { lsSet("cdi-offline", ""); guardaOffline(aoMudar); } }, "Baixar de novo") : null);
 }
-// fechou e abriu o app no meio de um passeio: volta para o mesmo passeio, na mesma parada, acompanhando o GPS (até 12 horas depois)
+// fechou e abriu o app no meio de um passeio (até 1 hora depois do último uso): volta direto para o mesmo passeio, acompanhando o GPS;
+// depois disso o app abre normal, e o passeio, quando aberto de novo, volta no mesmo lugar
 function reabrePasseio() {
   if (S._passReaberto || document.querySelector(".passeio") || !podePasseio()) return;
   const [pid, quando] = String(lsGet("cdi-passeio-aberto") || "").split("|");
   S._passReaberto = true;
-  if (pid && PASSEIOS[pid] && Date.now() - +quando < 24 * 3600e3) setTimeout(() => { if (!document.querySelector(".passeio")) abrirPasseio(pid); }, 300);
+  if (pid && PASSEIOS[pid] && Date.now() - +quando < 60 * 60e3) setTimeout(() => { if (!document.querySelector(".passeio")) abrirPasseio(pid); }, 300);
 }
 // cartão no dia: abre o passeio
 function cartaoPasseio(id) {
