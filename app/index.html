@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "14/11 · 04:21";</script>
+<script>window.__VERSAO = "14/11 · 04:22";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -5249,10 +5249,11 @@ async function imagemHabilidade(id, semFundo) {
 async function compartilharHabilidade(id, bt, salvar) {
   const txt0 = bt.textContent; bt.disabled = true; bt.textContent = "Preparando…";
   try {
-    // salvar: a mesma imagem dos Stories, com todos os escritos, mas sem o fundo (PNG transparente, para pôr por cima de um vídeo); compartilhar: com o fundo
-    const gen = (eu() || {}).genero, png = !!salvar;
-    const b = await imagemHabilidade(id, png); if (!b) throw 0;
-    const t = habTexto(id, gen) || { nome: "habilidade" }, nome = "habilidade-" + norm(t.nome).replace(/[^a-z0-9]+/g, "-") + (png ? ".png" : ".jpg"), f = new File([b], nome, { type: png ? "image/png" : "image/jpeg" });
+    // as duas em PNG sem fundo (para pôr por cima de um vídeo):
+    // compartilhar = a imagem dos Stories com todos os escritos; baixar (salvar) = só o ticket da habilidade
+    const gen = (eu() || {}).genero;
+    const b = salvar ? await caixaHabilidade(id, gen).then(c => new Promise(ok => c.toBlob(ok, "image/png"))) : await imagemHabilidade(id, true); if (!b) throw 0;
+    const t = habTexto(id, gen) || { nome: "habilidade" }, nome = "habilidade-" + norm(t.nome).replace(/[^a-z0-9]+/g, "-") + (salvar ? "-ticket" : "") + ".png", f = new File([b], nome, { type: "image/png" });
     if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share(salvar ? { files: [f] } : { files: [f], text: "Desbloqueei a habilidade " + t.nome + " na Caravana do Céu ✦" }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
     let msg = bt.parentNode.nextElementSibling; if (!msg || !msg.hasAttribute("data-carmsg")) { msg = h("p", { class: "msg", role: "status", "data-carmsg": "1" }); bt.parentNode.after(msg); }
     salvarNoRolo(Promise.resolve(b), nome, msg);
@@ -5271,8 +5272,8 @@ async function abrirHabilidade(id, nova) {
     h("div", { class: "habacoes" },
       h("button", { class: "btn gold", type: "button", onclick: () => podeAoVivo ? cameraHabilidade(id) : entradaFoto(id, true) }, "📸 Câmera"),
       h("button", { class: "btn", type: "button", onclick: () => entradaFoto(id, false) }, "Escolher da galeria"),
-      h("div", { class: "habcomp" }, h("button", { class: "btn", type: "button", onclick: e => compartilharHabilidade(id, e.currentTarget) }, "Compartilhar"),
-        h("button", { class: "btn", type: "button", onclick: e => compartilharHabilidade(id, e.currentTarget, true) }, "Salvar sem fundo (PNG)")),
+      h("div", { class: "habcomp" }, h("button", { class: "btn", type: "button", onclick: e => compartilharHabilidade(id, e.currentTarget) }, "Compartilhar PNG"),
+        h("button", { class: "btn", type: "button", onclick: e => compartilharHabilidade(id, e.currentTarget, true) }, "Baixar PNG (só a habilidade)")),
       nova ? h("button", { class: "btn ghost", type: "button", onclick: () => { S.habAdiada = true; closeSheets(); } }, "Guardar no meu passaporte")
         : h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")));
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) { S.habAdiada = true; closeSheets(); } } }, box);
