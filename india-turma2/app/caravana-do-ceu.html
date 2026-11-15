@@ -5,6 +5,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@400;500;600&family=Raleway:wght@300&family=Cinzel:wght@500;600;700;900&family=Jost:wght@500;600&family=Julius+Sans+One&family=Caveat:wght@400;600&family=Rock+Salt&family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap">
 <style>
+/* segurar o dedo na tela não seleciona nem copia o texto (só nos campos de escrever) */
+html{-webkit-user-select:none;user-select:none}a{-webkit-touch-callout:none}
+input,textarea,select,[contenteditable],[contenteditable] *{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 /* Visual claro da Caravana do Céu: papel, carvão, musgo, terracota e areia. */
 :root{
   color-scheme:light;
@@ -661,8 +664,9 @@ details.guide .gb p{line-height:1.75;color:#3C3A33}
 .brand span{color:#C9A56A;letter-spacing:.24em}
 .me:not(.bubble){background:rgba(241,226,188,.08);border:1px solid rgba(226,190,120,.35);box-shadow:none}
 .me:not(.bubble) b{color:#E2BE78}
-nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:repeat(11,minmax(56px,1fr));overflow-x:auto;scrollbar-width:none}
+nav.tabs{background:linear-gradient(0deg,#2B1F14,#3B2A1C);border-top:1px solid #1E150D;box-shadow:inset 0 1px 0 rgba(226,190,120,.22);grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(56px,1fr);overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
+/* todas as abas numa linha só, quantas forem (a aba Rotas da líder entra sem quebrar a linha) */
 
 /* ---------- Jogo: Moksha Patam ---------- */
 .jogoview{gap:14px}
@@ -2113,6 +2117,119 @@ video.mgrande{max-height:70vh;background:#000}
 .envmaleta{display:none}.envmaleta.on{display:block;margin:10px 0 12px;padding:9px 14px;border-radius:12px;background:#F3E6CC;color:#5A3F22;font:500 13px/1.35 Poppins,system-ui,sans-serif;text-align:center}
 .envmaleta.on.ok{background:#E3EADB;color:#3F4938}
 .mfoto .mpend{position:absolute;top:5px;left:5px;background:rgba(255,248,236,.92);border-radius:999px;padding:2px 6px;font-size:12px;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+/* Passeio guiado: cartão no dia e tela cheia com mapa, paradas e a história de cada lugar */
+.passcard{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 16px;border-radius:18px;border:1px solid var(--moss);background:var(--panel);color:var(--ink);font:inherit;cursor:pointer}
+.passcard:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.passcard .passico{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--moss);color:var(--on-dark)}
+.passcard .tx{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.passcard small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);font-weight:600}
+.passcard b{font-family:var(--display);font-size:18px;font-weight:600;line-height:1.25}
+.passcard .tx span{font-size:13.5px;color:var(--soft);line-height:1.45}
+.passcard .passchev{font-size:26px;color:var(--moss)}
+.rotaslista{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.rotasbloco{margin-bottom:12px}
+.passoff{margin-top:18px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--soft)}
+.passoff p{margin:0}
+.passoff.ok p:first-child{color:var(--ok);font-weight:600}
+.rotascidade{width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:18px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font:inherit;cursor:pointer}
+.rotascidade b{font-family:var(--display);font-size:24px;font-weight:600}
+.rotaschev{font-size:18px;color:var(--terra);transition:transform .2s}
+.rotascidade[aria-expanded="true"] .rotaschev{transform:rotate(180deg)}
+.passeio{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;overflow:hidden;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.passtopo{display:flex;align-items:center;gap:12px;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
+.passtopo h2{font-size:20px}
+.passtopo .eyebrow{margin:0}
+.passx{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);font-size:24px;line-height:1;color:var(--ink);cursor:pointer}
+.passmapawrap{position:relative;flex:none;height:36vh;min-height:200px}
+.passmapa{position:absolute;inset:0;background:#EAD6A8}
+.passmapa .globoaviso{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:var(--soft);font-size:14px;text-align:center;padding:16px}
+.passmapawrap .mapctl{position:absolute;right:10px;top:10px;transform:none;display:flex;flex-direction:column;gap:6px;z-index:2}
+.passmapawrap .mapctl button[aria-pressed="true"]{background:#2F7BEA;color:#fff;border-color:#2F7BEA}
+.passmapawrap .mapctl button.bus svg{transition:transform .15s linear}
+.passmapawrap .mapctl button.bus[aria-pressed="true"] svg path:first-child{fill:#fff}
+.passfotobox{display:flex;flex-direction:column;gap:4px;margin:8px 0 6px}
+.passfoto{margin:0;border-radius:12px;overflow:hidden;border:1px solid var(--line2);background:var(--panel)}
+.passfoto[hidden]{display:none}
+.passfotobox .passgoogle{background:none;border:0;padding:2px 0;font:inherit;font-size:13px;cursor:pointer}
+.passfoto img{display:block;width:100%;height:160px;object-fit:cover}
+.passfoto figcaption{font-size:12.5px;line-height:1.4;padding:6px 10px;color:var(--soft)}
+.passgiro{font-size:12.5px;color:var(--soft);margin:4px 0 0}
+.passmapawrap .mapctl button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);color:var(--ink);display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer}
+.passpin{width:30px;height:30px;border-radius:50%;border:2px solid var(--panel);background:var(--sand);color:var(--ink);display:grid;place-items:center;font:600 13px/1 var(--ui);box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer;padding:0}
+.passpin.feito{background:var(--moss);color:var(--on-dark)}
+.passpin.atual{background:var(--terra);color:var(--on-dark);width:38px;height:38px;font-size:15px;z-index:3}
+.passloja{display:flex;align-items:center;gap:4px;text-decoration:none;color:var(--ink);font:600 11px/1.1 var(--ui);background:none;border:0;padding:4px;cursor:pointer}
+.passloja i{width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.3);flex:none}
+.passloja span{background:var(--panel);padding:2px 6px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.15);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+.passmapa.longe .passloja span{display:none}
+.passloja.comida i{background:var(--moss)}
+.passloja.lugar i{background:#7A4FA0}
+.passmapa.longe .passloja.lugar span{display:block}
+.passaarti{flex:none;display:flex;flex-direction:column;align-items:center;gap:0;padding:5px 10px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font:inherit;cursor:pointer;line-height:1.15}
+.passaarti small{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra);font-weight:600}
+.passaarti b{font-size:16px}
+.passaarti[hidden]{display:none}
+.passaarti span{font-size:11px;color:var(--soft)}
+.passaarti.logo{border-color:var(--terra);background:var(--terra);color:var(--on-dark)}
+.passaarti.logo small,.passaarti.logo span{color:var(--on-dark)}
+.passsinal{margin:0;padding:8px 12px;border-radius:12px;font-size:14px;font-weight:600;background:var(--panel2);color:var(--soft)}
+.passsinal.indo{background:rgba(63,107,58,.12);color:var(--ok)}
+.passsinal.volta,.passsinal.fora{background:rgba(160,64,47,.12);color:var(--err)}
+.passbus{font-size:12.5px;color:var(--moss)}
+.passbus:empty{display:none}
+.passgoogle{font-size:13px;color:var(--soft);text-decoration:underline;align-self:flex-start}
+.passatual.poi .passrot{color:var(--gold)}
+.passatual.poi.comida .passrot{color:var(--moss)}
+.passatual.poi.lugar .passrot{color:#7A4FA0}
+.passpoitx{margin:0;font-size:15.5px;line-height:1.6}
+.passeuw{position:relative;width:22px;height:22px}
+.passeu{position:absolute;inset:0;border-radius:50%;background:#2F7BEA;border:3px solid #fff;box-shadow:0 0 0 8px rgba(47,123,234,.22),0 1px 4px rgba(0,0,0,.3)}
+.passcone{display:none;position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px 0 0 -45px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from -28deg,rgba(47,123,234,.5) 0deg,rgba(47,123,234,.5) 56deg,transparent 56deg);
+  -webkit-mask:radial-gradient(circle,#000 0,#000 30%,transparent 70%);mask:radial-gradient(circle,#000 0,#000 30%,transparent 70%)}
+.passpainel{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+.passprog{display:flex;flex-direction:column;gap:6px}
+.passprog p{margin:0;font-size:13px;font-weight:600;color:var(--soft);letter-spacing:.02em}
+.passbarra{display:flex;gap:5px}
+.passbarra button{flex:1;height:8px;border-radius:99px;border:0;padding:0;background:var(--panel3);cursor:pointer}
+.passbarra button.feito{background:var(--moss)}
+.passbarra button[aria-selected="true"]{background:var(--terra)}
+.passrot{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--terra)}
+.passatual.chegou .passrot{color:var(--moss)}
+.passinst{margin:0;font-size:15px;color:var(--soft)}
+.passdir{display:flex;align-items:center;gap:14px;padding:6px 0}
+
+.passdir div{display:flex;flex-direction:column;min-width:0}
+.passdir b{font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.passdir span{font-size:14px;color:var(--soft)}
+.passbig{width:100%;justify-content:center;padding:13px 18px;font-size:15.5px}
+.passatual{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:16px;background:var(--panel);border:1px solid var(--line)}
+.passatual.chegou{border-color:var(--moss);box-shadow:0 0 0 3px rgba(63,73,56,.15)}
+.passatual .eyebrow{margin:0}
+.passatual h3{font-size:22px}
+.passdist{margin:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:var(--soft);font-size:14.5px}
+.passdist b{color:var(--ink);font-size:17px;font-variant-numeric:tabular-nums}
+.passeio .seta{flex:none;display:inline-grid;place-items:center;width:52px;height:52px;font-size:26px;border-radius:50%;background:var(--terra);color:var(--on-dark);font-weight:700;transition:transform .4s}
+.passatual .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.passtexto{display:flex;flex-direction:column;gap:12px;font-size:15.5px;line-height:1.65}
+.passtexto>p{margin:0;max-width:62ch}
+.passdica{padding:10px 12px;border-radius:12px;background:var(--panel2);border-left:3px solid var(--gold);font-size:14.5px;color:var(--soft)}
+.passlojas{display:flex;flex-direction:column;gap:2px}
+.passlojas a,.passpoi{width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);font:inherit;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:0 10px;padding:10px 0;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}
+.passlojas .passpoi b,.passlojas a b{font-weight:600;font-size:14.5px}
+.passlojas .passpoi span,.passlojas a span{grid-column:1;font-size:13px;color:var(--soft);line-height:1.45}
+.passlojas .passpoi i,.passlojas a i{grid-column:2;grid-row:1/3;align-self:center;font-style:normal;font-size:13px;font-weight:600;color:var(--terra)}
+.passfim{padding:14px;border-radius:16px;background:var(--panel3);display:flex;flex-direction:column;gap:8px}
+.passfim p{margin:0}
+.passfim .actions{display:flex;flex-wrap:wrap;gap:8px}
+.passtexto.chegou{padding:14px;border-radius:16px;background:var(--panel);border:1px solid var(--moss)}
+.passtexto .eyebrow{margin:0}
+.passnota{color:var(--faint);margin:0}
+.passloc{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:12px;background:var(--panel2);font-size:14px;color:var(--soft)}
+.passloc p{margin:0}
+.passloc.erro{background:rgba(160,64,47,.1);color:var(--err)}
+.passprec{flex-basis:100%;font-size:12.5px;color:var(--terra)}
+@media (prefers-reduced-motion:reduce){.passeio .seta{transition:none}}
 </style>
 
 <div class="app">
@@ -2135,6 +2252,7 @@ video.mgrande{max-height:70vh;background:#000}
     <button data-tab="tradutor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M6 5c0 3 2 5.5 5 6.5M10 5c-.5 3-2.6 5.8-6 7"/><path d="M12.5 21l4-9 4 9M13.8 18h5.4"/></svg></span>Tradutor</button>
     <button data-tab="pedra"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5v-6.2L5.2 10a1.4 1.4 0 0 1 2.3-1.6L9 10.5V4.8a1.4 1.4 0 0 1 2.8 0V10V3.8a1.4 1.4 0 0 1 2.8 0V10V5a1.4 1.4 0 0 1 2.8 0v7.5c0 4.3-2.3 8-6.3 8"/></svg></span>Pedra</button>
     <button data-tab="pombo"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.6c-.3-1.2-.2-2.3.5-2.9l3.1.2-2.4 1.2c-.4.4-.8 1-1.2 1.5z"/><path d="M12 6.6l.1 9.4"/><path d="M12 9.4C9.4 7.2 6.4 6.9 2.8 8.4M12 9.4c2.6-2.2 5.6-2.5 9.2-1M5 8l-.6 2.4M7.4 7.5l-.4 2.6M9.8 8.1l-.3 2.3M19 8l.6 2.4M16.6 7.5l.4 2.6M14.2 8.1l.3 2.3"/><path d="M12.1 16l-3 4.2M12.1 16l.1 4.8M12.1 16l3 4.2"/></svg></span>Pombo</button>
+    <button data-tab="rotas" hidden><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l-6 3V6l6-3 6 3 6-3v15l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/></svg></span>Rotas</button>
   </nav>
 </div>
 
@@ -2146,6 +2264,7 @@ video.mgrande{max-height:70vh;background:#000}
 const S = {
   tab: "travessia",
   roteiro: null, roteiroErro: false,
+  rotasCidade: null,
   dias: [], cidades: [], locais: [], ens: [], chat: [], posicoes: [], viajantes: [], cartas: [], diarios: [], pedra: [], membros: [], mural: [], cartasP: [], pombosIn: [], pombosOut: [], fotoAba: "estudio", muralCidade: "",
   vReady: false, dbReady: false, pularCadastro: false,
   uid: null, me: null, isOwner: false, canChat: null,
@@ -2496,12 +2615,14 @@ function render() {
   if (S.arrastando && S.tab === "mapa") { S.pendente = true; return; }
   // galeria do celular aberta (escolhendo foto): não redesenha agora, senão a foto escolhida se perde; redesenha quando ela fecha
   if (S.arquivoAberto && Date.now() - S.arquivoAberto < 120000) { S.renderEspera = true; return; }
-  marcaChat(); marcaPombos(); convidaAvisos(); registraApp(); checaHabilidades(); localizacaoAoAbrir();
+  marcaChat(); marcaPombos(); convidaAvisos(); registraApp(); checaHabilidades(); localizacaoAoAbrir(); reabrePasseio();
   // escrevendo no chat e chegou mensagem: troca só a lista de mensagens; a caixa de texto fica como está (o cursor e o teclado não pulam)
   if (S.tab === "conversa" && document.activeElement && document.activeElement.id === "chat-input" && S._abaDesenhada && S._abaDesenhada.startsWith("conversa|")) {
     const velho = $("#chatlog"), novo = vConversa().querySelector("#chatlog");
     if (velho && novo) { const topo = velho.scrollTop; velho.replaceWith(novo); grudaChat(novo, topo); tickRelogios(); return; }
   }
+  // a aba Rotas aparece ou some: a faixa da setinha (›) no canto da barra é medida de novo
+  { const bR = document.querySelector('#tabs button[data-tab="rotas"]'); if (bR && bR.hidden !== !podePasseio()) { bR.hidden = !podePasseio(); requestAnimationFrame(marcaMaisAbas); } }
   for (const b of document.querySelectorAll("#tabs button")) {
     if (b.dataset.tab === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
   }
@@ -2521,7 +2642,7 @@ function render() {
   let jaTeve = false; try { if (S.uid && eu()) localStorage.setItem("cdi-passaporte-" + S.uid, "1"); jaTeve = !!S.uid && localStorage.getItem("cdi-passaporte-" + S.uid) === "1"; } catch (e) {}
   const precisaCadastro = S.db && S.uid && S.vReady && S.viajantesOk && S.viajantes.length > 0 && !eu() && !S.pularCadastro && !jaTeve;
   main.replaceChildren(precisaCadastro ? vCadastro() :
-    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "pombo" ? vPombo() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
+    S.tab === "passaporte" ? vPassaporte() : S.tab === "ensinamentos" ? vSaberes() : S.tab === "mapa" ? vMapa() : S.tab === "explorador" ? vExplorador() : S.tab === "fotos" ? vFotos() : S.tab === "conversa" ? vConversa() : S.tab === "pedra" ? vPedra() : S.tab === "pombo" ? vPombo() : S.tab === "rotas" && podePasseio() ? vRotas() : S.tab === "cambio" ? vCambio() : S.tab === "tradutor" ? vTradutor() : vTravessia());
   // aviso novo da líder (15 min): aparece no topo de qualquer aba
   // último dia: o passaporte completo avisa que o vídeo está pronto (no Roteiro e no Passaporte)
   if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte")) { const c = avisoVideo(), v = main.firstElementChild; if (c && v) v.prepend(c); }
@@ -3087,6 +3208,667 @@ function vCalendarioSagrado(c, iso) {
           h("ul", null, g.itens.map(t => h("li", { text: t })))))) : null,
       c.nota ? h("p", { class: "calnota", text: c.nota }) : null));
 }
+// ---------- Passeio guiado: o mapa leva de parada em parada e conta a história de cada lugar ----------
+// roteiro do dia ao contrário: começa em Tapovan, atravessa pela Bajrang Setu, desce a margem leste até o Parmarth (Aarti) e termina no hotel.
+// coordenadas: Lakshman Jhula e Bajrang Setu (Bridgemeister), Ram Jhula, Parmarth e Beatles Ashram (Wikipedia), Tattv Cafe (Zomato),
+// plus codes do Google: Trayambakeshwar 48GJ+H9X, Lakshman Temple 48GG+MHW, Gita Bhawan 48C7+PQQ, Yog Niketan 48C5+PFC.
+// As três lojas da rua da ponte não têm endereço publicado: pino aproximado (o toque abre a loja pelo nome no Google Maps).
+// "destino": o que vai para o Google Maps no botão do caminho; nome do lugar leva até a entrada, coordenada leva até a ponte
+// Chotiwala: plus code 48C7+QJX (Wanderboat, sem confirmação); Lhasa Tibet Shop: plus code 48FH+CPG.
+// A linha até a próxima parada segue as ruas pelo servidor de rotas a pé do OpenStreetMap (routing.openstreetmap.de).
+const mapsBusca = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+const PASSEIOS = {
+  pontes: {
+    titulo: "As pontes do Ganges", sub: "Da Laxman Jhula ao Parmarth, e de volta ao hotel",
+    total: "cerca de 6 km a pé", saida: { lat: 30.12181, lng: 78.30864 },
+    // Aarti do Parmarth: no inverno começa no pôr do sol; as fontes dão entre 16h30 e 17h30
+    aarti: { h: 17, m: 0, chegar: "16h30", parada: 5 },
+    // paradas = os pontos principais; "lojas" = pinos de interesse no caminho até aquela parada
+    // [nome, descrição, busca no Google Maps, lat, lng, pino aproximado?, tipo: loja | comida | lugar]
+    paradas: [
+      { nome: "Lakshman Temple", lat: 30.12674, lng: 78.32645, raio: 50, destino: "Lakshman Temple, Tapovan, Rishikesh", quando: "Comece pelo templo de Lakshmana, em Tapovan",
+        texto: "A tradição conta que Lakshmana, irmão de Rama, fez penitência neste ponto do rio. É por isso que a ponte ao lado leva o nome dele. Um templo antigo e tranquilo, para uns 20 a 30 minutos.",
+        dica: "Do Yog Niketan até Tapovan são uns 2 km de subida pela estrada: um tuk-tuk custa uns ₹200. No caminho, o Tattv Cafe é uma boa parada para um café. Tire o sapato na porta do templo.",
+        lojas: [
+          ["Tattv Cafe", "café de comida natural e vegana, vista para as montanhas · fecha 22h", "Tattv Cafe, Tapovan, Rishikesh", 30.12800, 78.32220, false, "comida"],
+          ["MVT Guesthouse & Restaurant", "Guesthouse com restaurante em Upper Tapovan, na Balaknath Road, um pouco acima do Tattv Cafe · 4,6 ★ no Google (umas 800 avaliações).", "MVT Guesthouse & Restaurant Rishikesh", 30.13087, 78.32182, false, "lugar"],
+          ["Rafting · largada em Shivpuri", "A largada mais comum do rafting, uns 16 km rio acima: de lá até a NIM Beach são 16 km de rio, com corredeiras de grau II e III. O pino é aproximado; confirme com a agência o ponto de encontro.", "Shivpuri Rafting Point Rishikesh", 30.13420, 78.38630, true, "lugar"],
+          ["NIM Beach · chegada do rafting", "A praia da margem leste onde termina o rafting que sai de Shivpuri, um pouco antes da Lakshman Jhula.", "Nim Beach Rishikesh", 30.13334, 78.33211, false, "lugar"]] },
+      { nome: "Lakshman Jhula e Bajrang Setu", lat: 30.12625, lng: 78.32992, raio: 45, quando: "Desça a rua das lojas e atravesse pela ponte de vidro",
+        texto: "A ponte de ferro de 1929 leva o nome de Lakshmana, que segundo a tradição atravessou o Ganges aqui numa corda de juta. Ela está fechada desde 2022. Ao lado foi construída a Bajrang Setu, com piso de vidro (Bajrang é um dos nomes de Hanuman). Atravesse por ela para a margem leste. A rua que desce até a ponte é a melhor de Rishikesh para compras.",
+        dica: "Se a Bajrang Setu estiver fechada, veja o templo de 13 andares daqui e siga de tuk-tuk até a Ram Jhula ou a Janki Setu para atravessar.",
+        lojas: [
+          ["Namaste Rishikesh Pashmina Store", "pashminas e xales da Caxemira · 4,7 ★ · na praça da ponte", "Namaste Rishikesh Pashmina Store", 30.12648, 78.32885, true, "loja"],
+          ["Tibetan Handicraft", "perto do Rani Mandir: tigelas tibetanas, bandeiras de oração, estátuas e joias · 4,7 ★", "Tibetan Handicraft near Rani Mandir Laxman Jhula Rishikesh", 30.12615, 78.32860, true, "loja"],
+          ["Antic Himalaya", "Laxman Jhula Road, perto do correio: singing bowls e artesanato do Himalaia · 5,0 ★", "Antic Himalaya Laxman Jhula Road Rishikesh", 30.12592, 78.32835, true, "loja"],
+          ["Scorpion Handicrafts", "artesanato, 2ª loja mais bem avaliada de Rishikesh no Tripadvisor (113 avaliações)", "Scorpion Handicrafts Tapovan Rishikesh", 30.12660, 78.32760, true, "loja"],
+          ["Uttarakhand Gaurav Emporium", "gemas, rudraksha e artesanato · 4,4 ★ no Justdial", "Uttarakhand Gaurav Emporium Gems Handicraft Laxman Jhula Road Tapovan", 30.12610, 78.32800, true, "loja"],
+          ["Lhasa Tibet Shop", "artigos tibetanos: tigelas, malas e estátuas", "Lhasa Tibet Shop Laxman Jhula Rishikesh", 30.12356, 78.32933, false, "loja"],
+          ["Rock India Music Store", "loja de música: harmônio, flautas e instrumentos indianos · perto do Sant Sewa Ashram", "Rock India Music Store Laxman Jhula Rishikesh", 30.12580, 78.32815, true, "loja"],
+          ["Ganesha Music Store", "loja de música na Laxman Jhula Road", "Ganesha Music Store Laxman Jhula Road Rishikesh", 30.12630, 78.32735, true, "loja"],
+          ["Mercado de Laxman Jhula e Tapovan", "a rua inteira de lojas até a ponte", "Laxman Jhula Market Tapovan Rishikesh"]] },
+      { nome: "Trayambakeshwar · Tera Manzil", lat: 30.12649, lng: 78.33098, raio: 50, destino: "Trayambakeshwar Temple, Laxman Jhula, Rishikesh", quando: "O templo de 13 andares, logo depois da ponte",
+        texto: "Tera quer dizer treze, e manzil quer dizer andar: são 13 andares dedicados a Shiva. Tryambaka é Shiva de três olhos, o mesmo nome do mantra Om Tryambakam Yajamahe. Cada andar tem altares de divindades diferentes. Suba com calma até o topo, de onde se vê o Ganges e as pontes lá embaixo.",
+        dica: "A entrada é gratuita. Tire o sapato na porta e leve uma meia: o chão pode estar frio." },
+      { nome: "Ram Jhula e Swarg Ashram", lat: 30.12324, lng: 78.31453, raio: 80, via: [[30.12430, 78.31775]], trilha: [[30.12609, 78.33057], [30.12430, 78.31775]], quando: "Desça pela beira do rio, pela rua dos ashrams e lojinhas, passando pela Ganga Beach",
+        texto: "Vá por baixo, pela beira do rio: é o caminho com mais vida, entre ashrams, lojinhas e cafés, e passa pela Ganga Beach, a praia de areia do Ganges. A estrada de cima, pelo mato, é mais vazia. São uns 20 a 25 minutos a pé. Neste trecho a linha do mapa é tracejada: ela mostra a direção pela beira do rio; siga a rua junto ao rio e não suba para a estrada. A Ram Jhula é a ponte de ferro que liga o Sivananda Ashram ao Swarg Ashram e leva o nome de Rama. Na cabeceira deste lado ficam o mercado de Swarg Ashram, o Chotiwala para o almoço e o Gita Bhawan.",
+        dica: "O Chotiwala é o restaurante mais famoso de Rishikesh, aberto em 1958: peça o thali vegetariano (há dois Chotiwala lado a lado, de dois ramos da mesma família). O Gita Bhawan tem os versos do Bhagavad Gita nas paredes e uma cooperativa de preço fixo. A Ram Jhula passou por obras e pode estar fechada: não precisa atravessar.",
+        lojas: [
+          ["Ganga Beach", "A praia de areia branca na margem leste do Ganges, entre a Lakshman Jhula e a Ram Jhula. Bom lugar para sentar, molhar os pés e ver o rio passar. A água é gelada e a correnteza é forte: fique só na beirinha.", "Ganga Beach Swarg Ashram Rishikesh", 30.12430, 78.31775, false, "lugar"],
+          ["Chotiwala", "almoço: o restaurante mais famoso de Rishikesh, desde 1958 · thali vegetariano", "Chotiwala Restaurant, Swarg Ashram, Rishikesh", 30.12199, 78.31411, true, "comida"],
+          ["Gita Bhawan", "cooperativa de preço fixo: roupas, ayurveda e livros", "Gita Bhawan Swarg Ashram Rishikesh", 30.12184, 78.31448, false, "loja"],
+          ["Brijwasi Gems and Jewellers", "rudraksha, cristais, pedras e pingentes", "Brijwasi Gems and Jewellers Swarg Ashram Rishikesh", 30.12290, 78.31470, true, "loja"],
+          ["Mercado de Ram Jhula e Swarg Ashram", "livros espirituais, rudraksha, gemas, incensos e óleos de ayurveda", "Swarg Ashram Market Ram Jhula Rishikesh"]] },
+      { nome: "Beatles Ashram", lat: 30.10975, lng: 78.31277, raio: 120, destino: "Beatles Ashram, Rishikesh", quando: "Confirme se está aberto antes de ir", opcional: true,
+        texto: "As ruínas do ashram do Maharishi Mahesh Yogi, onde os Beatles passaram uma temporada em 1968 e compuseram boa parte do Álbum Branco. Hoje é um lugar de murais coloridos e cúpulas de meditação no meio da mata.",
+        dica: "Fica uns 15 minutos a pé depois do Parmarth, seguindo o rio. A entrada é paga." },
+      { nome: "Parmarth Niketan · Ganga Aarti", lat: 30.11923, lng: 78.31221, raio: 130, destino: "Parmarth Niketan Ashram, Swarg Ashram, Rishikesh", quando: "Ganga Aarti às 17h · chegue até 16h30",
+        texto: "O Parmarth Niketan é um dos maiores ashrams de Rishikesh. Na beira do rio fica a grande estátua de Shiva sentado em meditação, e é nos degraus em frente a ela que acontece a Ganga Aarti, a cerimônia do fogo para o rio, ao pôr do sol.",
+        dica: "Horário da Aarti: no inverno ela começa no pôr do sol, por volta das 17h, e dura uns 45 minutos (alguns guias dão entre 16h30 e 17h30). Chegue até 16h30 para pegar lugar nos degraus. Leve um casaco: esfria rápido depois que o sol se põe." },
+      { nome: "Jantar no Aroma By Taste", lat: 30.12440, lng: 78.30620, raio: 50, destino: "Aroma By Taste, Sterling Palm Bliss, Rishikesh", quando: "Jantar às 19h30 · atravesse pela Janki Setu",
+        texto: "Depois da Aarti, a Janki Setu, a ponte mais perto do Parmarth, leva de volta a Muni ki Reti (Janki é um dos nomes de Sita, esposa de Rama). O Aroma By Taste fica no térreo do hotel Sterling Palm Bliss, na Badrinath Bypass Road, em frente ao Vithal Ashram: comida indiana e vegetariana, pizzas e opções veganas.",
+        dica: "4,8 ★ no Tripadvisor (umas 80 avaliações). Aceita só dinheiro e fica aberto até as 23h. Do restaurante até o Yog Niketan são uns 5 minutos a pé." },
+      { nome: "Yog Niketan · de volta ao hotel", lat: 30.12181, lng: 78.30864, raio: 120, retorno: true, destino: "Yoga Niketan Ashram, Muni Ki Reti, Rishikesh", quando: "Fim do dia: de volta ao hotel",
+        texto: "De volta ao Yog Niketan, o ashram fundado em 1964 por Swami Yogeshwarananda. Fim do passeio das pontes do Ganges.",
+        dica: "Outras opções de jantar perto do hotel, se quiser variar: Kaafe (5 min) e RamJhula Restaurant (15 min).",
+        lojas: [["Kaafe", "indiana, café, massas, pizzas, sanduíches · uns 5 min", "Kaafe Rishikesh"], ["RamJhula Restaurant", "indiana, vegetariana, continental e café · uns 15 min", "RamJhula Restaurant Rishikesh"]] }
+    ] }
+};
+// Dia 10: de carro. Kunjapuri (posição aproximada: foto do templo no Wikimedia Commons, bate com a trilha do Wikiloc);
+// Vashishta Gufa: 30.11426, 78.43203 (ashramsofindia.com) e 30.11455, 78.43189 (WorldPlaces) concordam.
+PASSEIOS.kunjapuri = {
+  titulo: "Nascer do sol e a caverna dos sábios", rotulo: "Dia 3",
+  total: "de carro, com o motorista", saida: { lat: 30.12181, lng: 78.30864 },
+  aarti: { h: 17, m: 0, chegar: "16h45", parada: 3, rot: "Puja" },
+  paradas: [
+    { nome: "Kunjapuri Devi · nascer do sol", lat: 30.17364, lng: 78.31429, raio: 150, carro: true, aprox: true, quando: "Saída às 4h30 de carro · o sol nasce por volta das 6h40",
+      texto: "A cerca de 1.600 metros de altitude, o templo de Kunjapuri é um dos Shakti Peethas, os assentos da Deusa. A tradição conta que Sati se entregou ao fogo, Shiva dançou pelo mundo com o corpo dela nos braços e Vishnu o dividiu para acalmá-lo: em cada lugar onde uma parte caiu nasceu um templo da Deusa. Em Kunjapuri teria caído a parte superior do corpo de Sati. Daqui o sol nasce atrás dos picos do Himalaia.",
+      dica: "Casaco quente e lanterna: a madrugada é fria. Do estacionamento até o templo sobe-se uma escadaria. O pino do templo é aproximado; o motorista conhece o caminho." },
+    { nome: "Café da manhã no Yog Niketan", lat: 30.12181, lng: 78.30864, raio: 120, carro: true, retorno: true, quando: "8h · de volta ao hotel",
+      texto: "Volta da montanha para o café da manhã no ashram. Às 10h saímos de novo, de carro, para a caverna de Vashishta.",
+      dica: "Separe a roupa para molhar, a toalha, a muda seca e um saco para a roupa molhada: o batismo no Ganges é logo depois da meditação." },
+    { nome: "Vashishta Gufa · meditação e batismo", lat: 30.11426, lng: 78.43203, raio: 150, carro: true, quando: "10h meditação na caverna · 12h batismo no Ganges",
+      texto: "Rio acima, numa caverna à beira do Ganges, a tradição diz que meditou o sábio Vasishtha, mestre de Rama. A caverna é longa e escura, com um Shiva lingam no fundo, e fica num ashram cercado de figueiras (gular). Depois da meditação, descemos até a praia do rio para a vivência de batismo: entramos juntos nas águas frias do Ganges, um gesto de devoção e renovação.",
+      dica: "Da estrada até a caverna é uma descida curta a pé, com degraus. Dentro da caverna, silêncio." },
+    { nome: "Puja à beira do Ganges · Ganga Beach", lat: 30.12430, lng: 78.31775, raio: 80, carro: true, aprox: true, quando: "17h · a puja do fim da tarde",
+      texto: "A praia de areia do Ganges, na margem leste, onde fazemos a puja do fim da tarde, com flores, luz e o rio passando.",
+      dica: "Confirme com a equipe o ponto exato da praia: há mais de uma Ganga Beach em Rishikesh, e o pino é o da praia de Swarg Ashram." },
+    { nome: "Yog Niketan · jantar às 20h", lat: 30.12181, lng: 78.30864, raio: 120, carro: true, retorno: true, quando: "Fim do dia: de volta ao hotel",
+      texto: "De volta ao Yog Niketan para o jantar às 20h. Amanhã é um dia mais lento, de práticas." }
+  ] };
+// Dia 1 em Rishikesh (chegada): Aarti no Parmarth e o MVT Guesthouse
+PASSEIOS.chegada = {
+  titulo: "Chegada: a Aarti e o MVT", rotulo: "Dia 1", diaN: 8,
+  total: "a pé e de carro", saida: { lat: 30.12181, lng: 78.30864 },
+  aarti: { h: 17, m: 0, chegar: "16h30", parada: 0 },
+  paradas: [
+    { nome: "Parmarth Niketan · Ganga Aarti", lat: 30.11923, lng: 78.31221, raio: 130, via: [[30.11647, 78.30873]], quando: "Ganga Aarti às 17h · atravesse pela Janki Setu",
+      texto: "Depois do check-in no Yog Niketan, a primeira Ganga Aarti: nos degraus em frente à grande estátua de Shiva sentado, no Parmarth Niketan, a cerimônia do fogo para o rio ao pôr do sol. O caminho do hotel passa pela Janki Setu, a ponte mais perto.",
+      dica: "Chegue até 16h30 para pegar lugar nos degraus. Leve um casaco." },
+    { nome: "MVT Guesthouse & Restaurant", lat: 30.13087, lng: 78.32182, raio: 80, carro: true, destino: "MVT Guesthouse & Restaurant Rishikesh", quando: "Em Upper Tapovan, na Balaknath Road",
+      texto: "Guesthouse com restaurante em Upper Tapovan, na Balaknath Road, um pouco acima do Tattv Cafe. 4,6 ★ no Google, com umas 800 avaliações.",
+      dica: "Fica no alto de Tapovan: o melhor é ir de carro ou de tuk-tuk." },
+    { nome: "Yog Niketan · de volta ao hotel", lat: 30.12181, lng: 78.30864, raio: 120, carro: true, retorno: true, quando: "Fim do dia: de volta ao hotel",
+      texto: "De volta ao Yog Niketan, o ashram fundado em 1964 por Swami Yogeshwarananda." }
+  ] };
+// Templos e atividades: opções soltas, escolha uma e o app leva
+PASSEIOS.extras = {
+  titulo: "Templos e atividades", rotulo: "Mais opções em Rishikesh", livre: true,
+  total: "templos, kirtans e atividades", saida: { lat: 30.12181, lng: 78.30864 },
+  paradas: [
+    { nome: "Sivananda Ashram · satsang", lat: 30.12470, lng: 78.31220, raio: 90, destino: "Sivananda Ashram Divine Life Society Rishikesh", quando: "O ashram de Swami Sivananda, ao lado da Ram Jhula",
+      texto: "Fundado em 1936 por Swami Sivananda, um dos grandes mestres do yoga do século XX, é a sede da Divine Life Society. O lema dele cabe numa linha: servir, amar, dar, purificar, meditar, realizar. À noite há satsang, com cantos devocionais, leitura e silêncio, aberto a visitantes.",
+      dica: "Fica em Muni ki Reti, na cabeceira oeste da Ram Jhula, perto do hotel. Confirme o horário do satsang na portaria. Roupa discreta." },
+    { nome: "Anand Prakash Ashram · kirtan", lat: 30.13146, lng: 78.32617, raio: 70, destino: "Anand Prakash Yoga Ashram Tapovan Rishikesh", quando: "Kirtan, fogo sagrado e meditação em Tapovan",
+      texto: "Ashram em Tapovan, na estrada de Badrinath, conhecido pelo kirtan: os cantos devocionais em roda, em que um puxa o mantra e todos respondem. Também há havan, a cerimônia do fogo, e meditação guiada, abertos à comunidade.",
+      dica: "Confirme os horários direto no ashram: o kirtan costuma ser no começo da noite. Fica perto do Tattv Cafe." },
+    { nome: "Ganga Aarti e kirtan no Parmarth", lat: 30.11923, lng: 78.31221, raio: 130, destino: "Parmarth Niketan Ashram, Swarg Ashram, Rishikesh", quando: "Todo fim de tarde, no pôr do sol",
+      texto: "A Ganga Aarti mais famosa de Rishikesh: nos degraus em frente à grande estátua de Shiva, os jovens do ashram cantam bhajans e kirtan com os sacerdotes antes de erguer as lamparinas para o rio.",
+      dica: "Chegue meia hora antes para pegar lugar nos degraus." },
+    { nome: "Bhootnath Temple", lat: 30.11659, lng: 78.31811, raio: 90, aprox: true, destino: "Bhootnath Temple Rishikesh", quando: "O templo de Shiva atrás do Parmarth, em Swarg Ashram",
+      texto: "Um templo de Shiva em vários andares, no alto de Swarg Ashram, atrás do Parmarth Niketan. Bhootnath é Shiva como senhor de todos os seres. Do alto se vê o Ganges e Rishikesh inteira. É um dos templos mais bem avaliados da cidade.",
+      dica: "O pino é aproximado. Fica uns 400 a 500 m da Ram Jhula, subindo a partir da rua dos ashrams." },
+    { nome: "Rafting · largada em Shivpuri", lat: 30.13420, lng: 78.38630, raio: 250, carro: true, aprox: true, destino: "Shivpuri Rafting Point Rishikesh", quando: "16 km de rafting até a NIM Beach",
+      texto: "Shivpuri, uns 16 km rio acima, é a largada mais comum do rafting de Rishikesh: daqui até a NIM Beach são 16 km de rio, com corredeiras de grau II e III, cerca de 1h30 a 2h na água. As agências costumam buscar em Tapovan e levar de carro até a largada.",
+      dica: "O pino é aproximado: fica ao lado do ponto de rafting de Shivpuri, na estrada de Badrinath. Confirme com a agência o ponto de encontro." },
+    { nome: "NIM Beach · chegada do rafting", lat: 30.13334, lng: 78.33211, raio: 120, carro: true, destino: "Nim Beach Rishikesh", quando: "Onde o rafting termina",
+      texto: "A praia da margem leste onde termina o rafting que sai de Shivpuri, um pouco antes da Lakshman Jhula. Boa para ver os botes chegando." },
+    { nome: "Triveni Ghat", lat: 30.10355, lng: 78.29896, raio: 120, carro: true, destino: "Triveni Ghat Rishikesh", quando: "O ghat mais tradicional da cidade · aarti no fim da tarde",
+      texto: "Triveni quer dizer três correntes: a tradição celebra aqui o encontro simbólico do Ganges, do Yamuna e do invisível Saraswati. É o ghat mais tradicional de Rishikesh, e a aarti do fim da tarde é popular e cheia de gente local, bem diferente da do Parmarth.",
+      dica: "Fica no centro da cidade, uns 3 km ao sul do hotel: melhor ir de carro ou tuk-tuk. A aarti acompanha o pôr do sol." },
+    { nome: "Bharat Mandir", lat: 30.10509, lng: 78.29999, raio: 120, carro: true, aprox: true, destino: "Shri Bharat Mandir Rishikesh", quando: "O templo mais antigo de Rishikesh, perto do Triveni Ghat",
+      texto: "Considerado o templo mais antigo de Rishikesh, dedicado a Vishnu como Hrishikesha, o senhor dos sentidos, que dá nome à cidade. A tradição atribui a fundação a Adi Shankaracharya.",
+      dica: "O pino é aproximado: o templo fica na Ghat Road, a uns 400 m do Triveni Ghat. Dá para fazer os dois juntos." },
+    { nome: "Cachoeira Neer Garh", lat: 30.14442, lng: 78.34017, raio: 200, carro: true, aprox: true, destino: "Neer Garh Waterfall Rishikesh", quando: "Cachoeira na mata, acima de Tapovan",
+      texto: "Uma cachoeira em degraus no meio da mata, uns 4 a 5 km acima de Tapovan. Do estacionamento se sobe a pé por uma trilha curta até as quedas, com poços de água fria.",
+      dica: "Há uma pequena taxa de entrada. Leve tênis: a trilha tem pedras molhadas. O pino é aproximado." },
+    { nome: "Bungee jump · Jumpin Heights", lat: 30.13130, lng: 78.32580, raio: 120, aprox: true, destino: "Jumpin Heights Tapovan Rishikesh", quando: "O bungee mais alto da Índia, 83 m",
+      texto: "O Jumpin Heights tem o bungee jump mais alto da Índia, de 83 metros, sobre um vale do rio em Mohan Chatti, a uns 15 a 25 km de Rishikesh. Também tem giant swing e tirolesa.",
+      dica: "O pino é o escritório em Tapovan, na estrada de Badrinath, perto do banco SBI: é dali que sai o transporte até o salto. Precisa reservar antes." },
+    { nome: "Neelkanth Mahadev", lat: 30.08070, lng: 78.34090, raio: 200, carro: true, destino: "Neelkanth Mahadev Temple", quando: "Templo de Shiva na serra, a uns 32 km",
+      texto: "O templo marca o lugar onde, segundo a tradição, Shiva bebeu o veneno que surgiu quando deuses e demônios bateram o oceano de leite. O veneno ficou na garganta e a deixou azul: Neelkanth, o de garganta azul. É um dos templos mais visitados da região.",
+      dica: "Ida de carro pela serra, de 1h a 1h30 de Rishikesh. Leve dinheiro para as oferendas." }
+  ] };
+PASSEIOS.pontes.rotulo = "Dia 2"; PASSEIOS.pontes.diaN = 9;
+PASSEIOS.kunjapuri.rotulo = "Dia 3"; PASSEIOS.kunjapuri.diaN = 10;
+
+
+// Varanasi (Turma 2): os 3 dias seguindo o roteiro; coordenadas: hotel Ganges View (Tripadvisor, Planet of Hotels e Flyin iguais),
+// Assi, Dashashwamedh e Manikarnika Ghat, Nepali Mandir, Durga Mandir e Sankat Mochan (Wikipedia), Kashi Vishwanath (Wikipedia),
+// Annapurna (Bhakti Bharat), Harmony Book Shop e Blue Lassi (duas fontes cada). Pinos aproximados marcados como aproximados.
+PASSEIOS.varanasi1 = {"titulo": "Chegada à cidade de Shiva", "rotulo": "Dia 1", "diaN": 3, "total": "a pé, em volta do Assi Ghat", "saida": {"lat": 25.28888, "lng": 83.00597}, "aarti": {"h": 18, "m": 0, "chegar": "17h40", "parada": 1}, "paradas": [{"nome": "Harmony Book Shop", "lat": 25.28853, "lng": 83.00596, "raio": 25, "quando": "16h · a livraria do Assi Ghat", "texto": "Uma das livrarias mais queridas de Varanasi, ao lado do Assi Ghat: livros de espiritualidade, filosofia indiana, yoga, música e a própria cidade, muitos em inglês.", "dica": "Fica a poucos passos do hotel."}, {"nome": "Assi Ghat · Ganga Aarti", "lat": 25.28865, "lng": 83.00676, "raio": 45, "quando": "18h · a primeira Ganga Aarti", "texto": "O Assi Ghat é o ghat do extremo sul de Varanasi, onde o pequeno rio Assi encontra o Ganges. Ao anoitecer, os sacerdotes erguem as lamparinas e oferecem a luz ao rio, ao som de sinos e conchas. Soltamos diyas, as lamparinas de barro ou de folha com uma chama e flores, no rio.", "dica": "Kashi vem da raiz sânscrita kash, brilhar: a cidade da luz. Fica a uns 2 minutos a pé do hotel."}, {"nome": "Ganges View · jantar", "lat": 25.28888, "lng": 83.00597, "raio": 40, "retorno": true, "quando": "20h · jantar no hotel", "texto": "De volta ao Ganges View, o hotel em frente ao Assi Ghat, para o jantar."}]};
+PASSEIOS.varanasi2 = {"titulo": "Os ghats de Kashi", "rotulo": "Dia 2", "diaN": 4, "total": "a pé e de carro", "saida": {"lat": 25.28888, "lng": 83.00597}, "aarti": {"h": 18, "m": 0, "chegar": "17h40", "parada": 5}, "paradas": [{"nome": "Assi Ghat · barco ao nascer do sol", "lat": 25.28865, "lng": 83.00676, "raio": 45, "quando": "5h barco no Ganges · 5h30 aarti do amanhecer e yoga", "texto": "Do barco, ao nascer do sol, os ghats aparecem inteiros: gente se banhando, rezando, lavando roupa, meditando. Depois, no Assi Ghat, a aarti do amanhecer (Subah-e-Banaras), com música e yoga na beira do rio.", "dica": "Leve um casaco: de madrugada o rio é frio."}, {"nome": "Café da manhã no Ganges View", "lat": 25.28888, "lng": 83.00597, "raio": 40, "retorno": true, "quando": "8h · café da manhã no hotel", "texto": "Café da manhã no hotel antes da caminhada pela cidade antiga."}, {"nome": "Kashi Vishwanath", "lat": 25.31078, "lng": 83.01061, "raio": 70, "carro": true, "quando": "8h45 · a caminhada pelos templos da cidade antiga", "texto": "O templo de Shiva como Vishwanath, o senhor do universo: um dos doze Jyotirlingas, os santuários de Shiva como pilar de luz, e o coração de Kashi. A cúpula é coberta de ouro. Em volta ficam as vielas da cidade antiga, com templos pequenos em cada esquina. Do lado fica o templo de Annapurna, a deusa do alimento, e daqui seguimos para uma fábrica de sáris de Banaras.", "dica": "Celular, câmera e bolsas não entram no templo: há armários na entrada. Do hotel até aqui o carro deixa perto de Godowlia; o fim é a pé pelas vielas.", "lojas": [["Annapurna Mandir", "O templo de Annapurna, a deusa do alimento, uma forma de Parvati, a poucos passos do Kashi Vishwanath. A tradição diz que em Kashi ninguém passa fome por causa dela.", "Annapurna Temple Varanasi", 25.3105, 83.0101, false, "lugar"], ["Kashi Chat Bhandar", "O chaat mais famoso da cidade, em Godowlia: experimente o tamatar chaat. Pino aproximado.", "Kashi Chaat Bhandar Godowlia Varanasi", 25.3088, 83.006, true, "comida"], ["Vandana Silks", "Sáris e tecidos de seda de Banaras, em Godowlia, desde 1974. Pino aproximado.", "Vandana Silks Godowlia Varanasi", 25.30885, 83.0056, true, "loja"]]}, {"nome": "Nepali Mandir", "lat": 25.30982, "lng": 83.01286, "raio": 40, "quando": "15h · templos e Manikarnika Ghat", "texto": "Um templo de Shiva em estilo nepalês, com madeira entalhada, erguido no século XIX por um rei do Nepal, no Lalita Ghat.", "lojas": [["Blue Lassi", "A casa de lassi mais famosa de Varanasi, desde 1925, numa viela perto do Manikarnika: lassi de frutas servido em copo de barro.", "Blue Lassi Shop Varanasi", 25.31237, 83.01145, false, "comida"]]}, {"nome": "Manikarnika Ghat", "lat": 25.31087, "lng": 83.01409, "raio": 45, "quando": "O fogo que não se apaga", "texto": "O principal crematório a céu aberto de Varanasi. Para os hindus, ser cremado aqui liberta a alma do ciclo de nascimentos e mortes. O fogo, dizem, não se apaga há séculos. Ao lado fica o Ratneshwar Mahadev, o templo inclinado.", "dica": "Não fotografe as cremações: é um lugar de luto para as famílias.", "lojas": [["Ratneshwar Mahadev", "O templo inclinado de Shiva, ao lado do Manikarnika, que passa boa parte do ano com a base dentro do rio. O pino é aproximado: fica na beira do Manikarnika Ghat.", "Ratneshwar Mahadev Temple Varanasi", 25.3106, 83.0144, true, "lugar"]]}, {"nome": "Dashashwamedh Ghat · Ganga Aarti", "lat": 25.30717, "lng": 83.01034, "raio": 50, "quando": "18h · a grande Ganga Aarti", "texto": "Dashashwamedh quer dizer dez sacrifícios de cavalo: a tradição conta que Brahma os ofereceu aqui. Todas as noites, sacerdotes erguem lamparinas de muitos braços e oferecem a luz ao rio, ao som de sinos, conchas e canto.", "dica": "Chegue antes das 17h40 para pegar lugar nos degraus, ou assista de um barco.", "lojas": [["Kedar Ghat", "Ghat colorido, com o templo de Kedareshwar, um dos mais sagrados para Shiva no sul da cidade. Pino aproximado.", "Kedar Ghat Varanasi", 25.2983, 83.0086, true, "lugar"]]}, {"nome": "Ganges View · jantar", "lat": 25.28888, "lng": 83.00597, "raio": 40, "carro": true, "retorno": true, "quando": "20h · jantar no hotel", "texto": "De volta ao hotel, no Assi Ghat, para o jantar."}]};
+PASSEIOS.varanasi3 = {"titulo": "A Mãe e o servidor", "rotulo": "Dia 3", "diaN": 5, "total": "de carro e a pé", "saida": {"lat": 25.28888, "lng": 83.00597}, "paradas": [{"nome": "Assi Ghat · aarti do amanhecer e yoga", "lat": 25.28865, "lng": 83.00676, "raio": 45, "quando": "5h30 · aarti do amanhecer e yoga", "texto": "A Subah-e-Banaras, a aarti do amanhecer no Assi Ghat, com música e yoga na beira do rio."}, {"nome": "Café da manhã no Ganges View", "lat": 25.28888, "lng": 83.00597, "raio": 40, "retorno": true, "quando": "8h · café da manhã no hotel", "texto": "Café da manhã no hotel."}, {"nome": "Durga Kund", "lat": 25.28862, "lng": 82.99928, "raio": 60, "carro": true, "quando": "9h30 · o templo vermelho", "texto": "Templo do século XVIII dedicado a Durga, pintado de ocre vermelho, ao lado de um tanque sagrado (kund). Durga é a Mãe guerreira, que vence o demônio búfalo."}, {"nome": "Sankat Mochan", "lat": 25.28211, "lng": 82.99998, "raio": 60, "quando": "11h30 · o templo de Hanuman", "texto": "Sankat Mochan quer dizer aquele que livra das aflições. O templo de Hanuman, o servidor de Rama, foi fundado segundo a tradição pelo poeta Tulsidas, autor do Ramcharitmanas. Às terças e sábados fica cheio de devotos.", "dica": "Fica uns 700 m ao sul do Durga Kund. Cuidado com os macacos."}, {"nome": "Compras e massagens ayurvédicas", "lat": 25.3088, "lng": 83.0058, "raio": 120, "carro": true, "aprox": true, "quando": "13h30 · compras em Godowlia e massagens ayurvédicas", "texto": "Godowlia é o centro de compras da cidade antiga: daqui saem as vielas da Vishwanath Gali (sedas, rudraksha, artigos de puja) e, mais adiante, o Thatheri Bazaar, a rua do latão e do cobre. Varanasi é famosa pela seda de Banaras, os sáris com brocado de fios dourados. Perto do hotel, no Assi Ghat, há lojas menores de sáris, artesanato e livros. As massagens ayurvédicas ficam com a equipe.", "dica": "Para seda de verdade, procure o selo Silk Mark. Pechinchar faz parte. O pino de Godowlia é aproximado: é o cruzamento central da cidade antiga.", "lojas": [["Vishwanath Gali", "A viela que leva ao Kashi Vishwanath: sedas, artigos de puja, rudraksha, miniaturas de Shiva lingam e doces. Alguns preços são de turista: pechinche. Pino aproximado.", "Vishwanath Gali Varanasi", 25.3095, 83.0095, true, "loja"], ["Vandana Silks", "Sáris e tecidos de seda de Banaras, na Girja Ghar Chauraha, em Godowlia, desde 1974. Pino aproximado.", "Vandana Silks Godowlia Varanasi", 25.30885, 83.0056, true, "loja"], ["Thatheri Bazaar", "A rua do latão e do cobre: lamparinas, utensílios e artigos de puja feitos à mão; também tem lojas de seda no atacado. Pechinchar uns 15 a 25% é normal. Pino aproximado.", "Thatheri Bazaar Varanasi", 25.3125, 83.0085, true, "loja"], ["Kashi Chat Bhandar", "O chaat mais famoso da cidade, em Godowlia: experimente o tamatar chaat. Pino aproximado.", "Kashi Chaat Bhandar Godowlia Varanasi", 25.3088, 83.006, true, "comida"], ["The Shakuntla Sarees", "Sáris tecidos à mão, perto do Assi Ghat · 4,9 ★ (237 avaliações). Pino aproximado, perto do hotel.", "The Shakuntla Sarees Assi Ghat Varanasi", 25.2884, 83.0063, true, "loja"], ["Bala Ji Handicraft", "Algodões, sedas, joias, pashminas e echarpes de seda, na Assi Ghat Road (B1/153), a poucos passos do hotel. Pino aproximado.", "Bala Ji Handicraft Assi Ghat Varanasi", 25.2887, 83.0058, true, "loja"], ["Anjora", "Sáris e dupattas de seda katan com brocado, na Ganga Mahal Kothi, um casarão na beira do rio junto ao Assi Ghat. Pino aproximado.", "Anjora Ganga Mahal Assi Ghat Varanasi", 25.2895, 83.0072, true, "loja"], ["Harmony Book Shop", "A livraria do Assi Ghat: espiritualidade, filosofia indiana, yoga e música.", "Harmony Book Shop Assi Ghat Varanasi", 25.28853, 83.00596, false, "loja"]]}, {"nome": "Barco à noite (opcional)", "lat": 25.28865, "lng": 83.00676, "raio": 45, "opcional": true, "quando": "18h30 · passeio de barco à noite", "texto": "O rio à noite, com as lamparinas das aartis nos ghats vistas da água.", "dica": "Opcional."}, {"nome": "Ganges View · jantar", "lat": 25.28888, "lng": 83.00597, "raio": 40, "retorno": true, "quando": "20h · jantar no hotel", "texto": "De volta ao hotel para o jantar. Amanhã cedo, a saída para o aeroporto."}], "dica": "Compras e massagens ayurvédicas às 13h30"};
+// os passeios guiados (aba Rotas e cartões nos dias) aparecem para as líderes (Vivian e Vanessa); os viajantes não veem
+const podePasseio = () => !!(S.isOwner && S.me);
+const RUMOS = ["norte", "nordeste", "leste", "sudeste", "sul", "sudoeste", "oeste", "noroeste"];
+function rumo(a, b) {
+  const r = x => x * Math.PI / 180, y = Math.sin(r(b.lng - a.lng)) * Math.cos(r(b.lat)),
+    x = Math.cos(r(a.lat)) * Math.sin(r(b.lat)) - Math.sin(r(a.lat)) * Math.cos(r(b.lat)) * Math.cos(r(b.lng - a.lng));
+  const g = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360; return { g, nome: RUMOS[Math.round(g / 45) % 8] };
+}
+const distTxt = km => km < 1 ? Math.max(10, Math.round(km * 1000 / 10) * 10) + " m" : km.toFixed(1).replace(".", ",") + " km";
+// ---------- rotas a pé pelas ruas (servidor de rotas do OpenStreetMap, o mesmo do openstreetmap.org) ----------
+const ROTA_PE = "https://routing.openstreetmap.de/routed-foot/route/v1/driving/", ROTA_CARRO = "https://routing.openstreetmap.de/routed-car/route/v1/driving/";
+const rotasMem = (() => { try { return JSON.parse(lsGet("cdi-rotas-pe") || "{}"); } catch (e) { return {}; } })();
+async function rotaPe(a, b, via, carro) {
+  // via: pontos por onde a linha tem que passar (ex.: a beira do rio, em vez da estrada de cima)
+  const pts = [a, ...(via || []), b];
+  const k = (carro ? "c:" : "") + pts.map(q => (+q.lat).toFixed(5) + "," + (+q.lng).toFixed(5)).join(";");
+  if (rotasMem[k]) return rotasMem[k];
+  let reta = 0; for (let i = 0; i < pts.length - 1; i++) reta += distKm(pts[i], pts[i + 1]) * 1000;
+  const r = await fetch((carro ? ROTA_CARRO : ROTA_PE) + pts.map(q => `${(+q.lng).toFixed(6)},${(+q.lat).toFixed(6)}`).join(";") + "?overview=full&geometries=geojson&steps=false");
+  if (!r.ok) throw new Error("rota " + r.status);
+  const j = await r.json(), rt = j && j.code === "Ok" && j.routes && j.routes[0];
+  if (!rt || !rt.geometry || !rt.geometry.coordinates || rt.geometry.coordinates.length < 2) throw new Error("sem rota");
+  // o roteador pode não conhecer uma ponte nova (Bajrang Setu) e mandar dar uma volta enorme: aí fica a linha reta
+  // de carro na serra a estrada faz muitas curvas: a folga é maior
+  if (rt.distance > reta * (carro ? 6 : 3) + 400) throw new Error("volta grande");
+  // começa e termina nos pontos de verdade (o roteador encosta o começo e o fim na rua mais perto)
+  const coords = [[+a.lng, +a.lat], ...rt.geometry.coordinates.map(([x, y]) => [+x.toFixed(6), +y.toFixed(6)]), [+b.lng, +b.lat]];
+  const res = { coords, m: Math.round(rt.distance), s: Math.round(rt.duration || 0) };
+  rotasMem[k] = res;
+  return res;
+}
+const ptDe = c => ({ lat: c[1], lng: c[0] });
+// quanto falta pela rota a partir de onde a pessoa está, quão longe ela está da linha e para onde seguir (um ponto uns 25 m à frente)
+function naRota(coords, eu) {
+  // mede até a linha (cada trecho entre duas curvas), não só até as curvas: ruas retas têm trechos longos
+  const kx = 111.32 * Math.cos(eu.lat * Math.PI / 180), ky = 110.57;
+  const xy = c => [(c[0] - eu.lng) * kx, (c[1] - eu.lat) * ky];
+  let md = Infinity, mi = 0, mt = 0;
+  for (let i = 0; i < coords.length - 1; i++) {
+    const [ax, ay] = xy(coords[i]), [bx, by] = xy(coords[i + 1]), dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy;
+    const t = l2 ? Math.max(0, Math.min(1, -(ax * dx + ay * dy) / l2)) : 0, px = ax + t * dx, py = ay + t * dy, d = Math.hypot(px, py);
+    if (d < md) { md = d; mi = i; mt = t; }
+  }
+  const seg = i => distKm(ptDe(coords[i]), ptDe(coords[i + 1]));
+  let falta = md + seg(mi) * (1 - mt); for (let i = mi + 1; i < coords.length - 1; i++) falta += seg(i);
+  // para onde seguir: um ponto uns 25 m à frente pela linha
+  let ad = seg(mi) * (1 - mt), alvo = coords[mi + 1];
+  for (let i = mi + 1; ad < .025 && i < coords.length - 1; i++) { ad += seg(i); alvo = coords[i + 1]; }
+  return { falta, fora: md, alvo: ptDe(alvo) };
+}
+// ---------- fotos dos lugares (a foto principal do artigo da Wikipédia), para conferir a fachada ----------
+const FOTOS_WIKI = [[/^Lakshman Jhula/, "Lakshman_Jhula"], [/^Ram Jhula/, "Ram_Jhula"], [/^Beatles Ashram/, "Beatles_Ashram"], [/Parmarth/, "Parmarth_Niketan"],
+  [/^Trayambakeshwar/, ["Tera_Manzil_Temple", "Trimbakeshwar_Temple,_Rishikesh"]], [/^Kunjapuri/, ["Kunjapuri_Temple", "Kunjapuri"]], [/^Vashishta Gufa/, ["Vashishta_Gufa", "Vasishtha_Gufa"]],
+  [/^Triveni Ghat/, "Triveni_Ghat"], [/^Neelkanth/, "Neelkanth_Mahadev_Temple"], [/^Bharat Mandir/, "Bharat_Mandir"], [/^Gita Bhawan/, "Gita_Bhawan"], [/^Cachoeira Neer Garh/, ["Neer_Garh_Waterfall", "Neergarh_Waterfall"]],
+  [/^Assi Ghat/, "Assi_Ghat"], [/^Kashi Vishwanath/, "Kashi_Vishwanath_Temple"], [/^Nepali Mandir/, ["Nepali_Temple", "Kathwala_Temple"]], [/^Manikarnika/, "Manikarnika_Ghat"],
+  [/^Dashashwamedh/, "Dashashwamedh_Ghat"], [/^Durga Kund/, ["Durga_Temple,_Varanasi", "Durga_Kund_Mandir"]], [/^Sankat Mochan/, "Sankat_Mochan_Hanuman_Temple"],
+  [/^Annapurna/, ["Annapurna_Devi_Mandir", "Annapurna_Temple,_Varanasi"]], [/^Kedar Ghat/, "Kedar_Ghat"], [/^Ratneshwar/, ["Ratneshwar_Mahadev_Temple", "Ratneshwar_Mahadev_temple"]],
+  [/^Vishwanath Gali/, "Vishwanath_Gali"], [/^Sarnath|^Dhamek/, "Dhamek_Stupa"]];
+const wikiDe = nome => { const f = FOTOS_WIKI.find(([re]) => re.test(nome)); return f ? [].concat(f[1]) : null; };
+const fotoProm = {};
+function fotoWiki(ts) {
+  const k = ts.join("|"); let mem = {}; try { mem = JSON.parse(lsGet("cdi-fotos-wiki") || "{}"); } catch (e) {}
+  if (mem[k]) return Promise.resolve(mem[k]);
+  return fotoProm[k] = fotoProm[k] || (async () => {
+    for (const t of ts) { try {
+      const r = await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(t)); if (!r.ok) continue;
+      const j = await r.json(), o = j.originalimage, th = j.thumbnail;
+      const u = o && o.width <= 1000 ? o.source : th ? th.source.replace(/\/\d+px-/, "/800px-") : null;
+      if (u) { try { mem = JSON.parse(lsGet("cdi-fotos-wiki") || "{}"); } catch (e) {} mem[k] = u; lsSet("cdi-fotos-wiki", JSON.stringify(mem)); return u; }
+    } catch (e) {} }
+    delete fotoProm[k]; return null; })();
+}
+// ---------- passeio sem internet: guarda no celular os pedaços do mapa em volta de todas as paradas e atrativos, e as rotas do dia ----------
+// (cache "caravana-rotas": o service worker não apaga; o GPS, a seta, a distância e o aviso de direção funcionam sem internet)
+const OFF_CACHE = "caravana-rotas", OFF_VERSAO = "3";
+function tilesEm(lat, lng, z, raio) {
+  const n = 2 ** z, dLat = raio / 110540, dLng = raio / (111320 * Math.cos(lat * Math.PI / 180));
+  const tx = x => Math.floor((x + 180) / 360 * n), ty = y => { const r = y * Math.PI / 180; return Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n); };
+  const out = []; for (let x = tx(lng - dLng); x <= tx(lng + dLng); x++) for (let y = ty(lat + dLat); y <= ty(lat - dLat); y++) out.push(`https://tile.openstreetmap.org/${z}/${x}/${y}.png`);
+  return out;
+}
+function listaOffline() {
+  const pts = [], urls = new Set();
+  for (const P of Object.values(PASSEIOS)) { pts.push(P.saida); for (const p of P.paradas) { pts.push(p); (p.via || []).forEach(([lat, lng]) => pts.push({ lat, lng })); (p.lojas || []).filter(l => isFinite(l[3])).forEach(l => pts.push({ lat: l[3], lng: l[4] })); } }
+  // em volta de cada ponto: de longe (para se localizar) até de perto (para andar)
+  for (const q of pts) for (const [z, r] of [[12, 3000], [13, 1500], [14, 800], [15, 400], [16, 220], [17, 120]]) tilesEm(+q.lat, +q.lng, z, r).forEach(u => urls.add(u));
+  // o corredor a pé do Dia 2 (de Tapovan ao Parmarth, pelas duas margens), inteiro, de perto
+  for (let la = 30.115; la <= 30.131; la += .002) for (let lo = 78.303; lo <= 78.335; lo += .0025) for (const z of [15, 16, 17]) tilesEm(la, lo, z, 60).forEach(u => urls.add(u));
+  // a beira do rio de Varanasi, do Assi Ghat ao Manikarnika
+  for (let la = 25.285; la <= 25.313; la += .002) for (let lo = 83.004; lo <= 83.016; lo += .0025) for (const z of [15, 16, 17]) tilesEm(la, lo, z, 60).forEach(u => urls.add(u));
+  return [...urls];
+}
+const offStatus = () => { try { return JSON.parse(lsGet("cdi-offline") || "null"); } catch (e) { return null; } };
+async function guardaOffline(aoMudar) {
+  if (S.offRodando || !("caches" in window)) return; if (!navigator.onLine) { S.offMsg = "Sem internet agora: o mapa é guardado quando o celular tiver sinal."; aoMudar && aoMudar(); return; }
+  S.offRodando = true; S.offMsg = "";
+  try {
+    const c = await caches.open(OFF_CACHE), urls = listaOffline();
+    // a biblioteca do mapa também precisa estar guardada
+    for (const a of ["vendor/maplibre-gl.js", "vendor/maplibre-gl.css"]) { try { if (!(await caches.match(a))) await fetch(a); } catch (e) {} }
+    let feitos = 0, falhas = 0; S.offProg = { feitos, total: urls.length }; aoMudar && aoMudar();
+    const fila = urls.slice();
+    const trabalha = async () => { while (fila.length) { const u = fila.shift();
+      try { if (!(await c.match(u))) { const r = await fetch(u, { mode: "cors" }); if (r.ok) await c.put(u, r); else falhas++; } } catch (e) { falhas++; }
+      feitos++; if (feitos % 15 === 0 || feitos === urls.length) { S.offProg = { feitos, total: urls.length }; aoMudar && aoMudar(); } } };
+    await Promise.all([trabalha(), trabalha(), trabalha()]);
+    // rotas de todos os dias (a pé e de carro), guardadas no celular
+    for (const P of Object.values(PASSEIOS)) { if (P.livre) continue; let de = P.saida;
+      for (const p of P.paradas) { if (!p.trilha) { try { const r = await rotaPe(de, p, (p.via || []).map(([lat, lng]) => ({ lat, lng })), !!p.carro); r.fixa = true; } catch (e) {} } de = p; } }
+    // fotos das fachadas, para aparecerem sem internet
+    const nomes = new Set(); for (const P of Object.values(PASSEIOS)) for (const p of P.paradas) { nomes.add(p.nome); (p.lojas || []).forEach(l => nomes.add(l[0])); }
+    for (const n of nomes) { const ws = wikiDe(n); if (!ws) continue; try { const u = await fotoWiki(ws); if (u && !(await c.match(u))) await c.put(u, await fetch(u, { mode: "no-cors" })); } catch (e) {} }
+    lsSet("cdi-rotas-pe", JSON.stringify(Object.fromEntries(Object.entries(rotasMem).filter(([, v]) => v.fixa))));
+    if (falhas > urls.length * .2) S.offMsg = "Parte do mapa não baixou (sinal fraco). Toque para tentar de novo com wi-fi.";
+    else lsSet("cdi-offline", JSON.stringify({ v: OFF_VERSAO, em: Date.now(), n: urls.length - falhas }));
+  } catch (e) { S.offMsg = "Não deu para guardar o mapa agora. Tente de novo com wi-fi."; }
+  S.offRodando = false; S.offProg = null; aoMudar && aoMudar();
+}
+function blocoOffline(aoMudar) {
+  const st = offStatus(), ok = st && st.v === OFF_VERSAO;
+  return h("div", { class: "passoff" + (ok ? " ok" : "") },
+    S.offRodando && S.offProg ? h("p", { text: `Guardando o mapa para usar sem internet… ${Math.round(S.offProg.feitos / Math.max(1, S.offProg.total) * 100)}%` })
+      : ok ? h("p", { text: `✓ Mapas e rotas guardados no celular: funcionam sem internet.` })
+      : h("button", { type: "button", class: "btn passbig", onclick: () => guardaOffline(aoMudar) }, "📥 Guardar mapas e rotas para usar sem internet (uns 5 MB)"),
+    S.offMsg ? h("p", { class: "small", text: S.offMsg }) : null,
+    ok && !S.offRodando ? h("button", { type: "button", class: "passgoogle", onclick: () => { lsSet("cdi-offline", ""); guardaOffline(aoMudar); } }, "Baixar de novo") : null);
+}
+// fechou e abriu o app no meio de um passeio (até 1 hora depois do último uso): volta direto para o mesmo passeio, acompanhando o GPS;
+// depois disso o app abre normal, e o passeio, quando aberto de novo, volta no mesmo lugar
+function reabrePasseio() {
+  if (S._passReaberto || document.querySelector(".passeio") || !podePasseio()) return;
+  const [pid, quando] = String(lsGet("cdi-passeio-aberto") || "").split("|");
+  S._passReaberto = true;
+  if (pid && PASSEIOS[pid] && Date.now() - +quando < 60 * 60e3) setTimeout(() => { if (!document.querySelector(".passeio")) abrirPasseio(pid); }, 300);
+}
+// cartão no dia: abre o passeio
+function cartaoPasseio(id) {
+  const p = PASSEIOS[id]; if (!p) return null;
+  return h("button", { type: "button", class: "passcard", onclick: () => abrirPasseio(id) },
+    h("span", { class: "passico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 26, height: 26 }, h("path", { d: "M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linejoin": "round" }))),
+    h("span", { class: "tx" }, h("small", { text: (p.rotulo || "Passeio guiado") + (() => { const d = p.diaN && S.roteiro && (S.roteiro.dias || []).find(x => x.n === p.diaN); return d ? " · " + d.data : ""; })() }), h("b", { text: p.titulo }),
+      h("span", { text: p.livre ? `${p.paradas.length} opções · ${p.total}.` : `${p.paradas.length} paradas · ${p.total}.` })),
+    h("span", { class: "passchev", "aria-hidden": "true", text: "›" }));
+}
+// aba Rotas (só a líder): cada cidade abre as rotas dela
+const CIDADES_ROTAS = [["Varanasi", ["varanasi1", "varanasi2", "varanasi3"]], ["Rishikesh", ["chegada", "pontes", "kunjapuri", "extras"]]];
+function vRotas() {
+  return h("section", { class: "view rotasview" },
+    CIDADES_ROTAS.map(([nome, ids]) => { const aberta = S.rotasCidade === nome;
+      return h("div", { class: "rotasbloco" },
+        h("button", { type: "button", class: "rotascidade", "aria-expanded": String(aberta), onclick: () => { S.rotasCidade = aberta ? null : nome; render(); } },
+          h("b", { text: nome }), h("span", { class: "rotaschev", "aria-hidden": "true", text: "▾" })),
+        aberta ? h("div", { class: "rotaslista" }, ids.map(cartaoPasseio)) : null); }),
+    blocoOffline(render));
+}
+function abrirPasseio(id) {
+  const P = PASSEIOS[id]; if (!P) return;
+  document.querySelector(".passeio")?.__fecha?.();
+  const chave = "cdi-passeio-" + id + "-v5"; // v4: só os pontos principais são paradas; o resto virou pino no caminho
+  let est = { i: 0, feitos: [], chegou: [] }; try { est = { ...est, ...JSON.parse(lsGet(chave) || "{}") }; } catch (e) {}
+  const guarda = () => lsSet(chave, JSON.stringify({ i: est.i, feitos: est.feitos, chegou: est.chegou }));
+  let eu = null, watch = null, mapa = null, marcas = [], euMarca = null, trava = null, chegouAvisado = {}, rolarTexto = false, centrou = false;
+  // trilho: rota até a próxima parada, por onde a pessoa andou (rastro), se está se aproximando, e a bússola
+  let agora = null, agoraDe = null, agoraEm = 0, agoraPara = -1, pedindo = false, tendencia = null, amostra = null, bussola = null, rumoAlvo = null, extra = null, vendo = null;
+  try { const x = JSON.parse(lsGet(chave + "-x") || "null"); if (x && isFinite(x.lat)) extra = x; } catch (e) {}
+  const alvoAt = () => extra || ps[est.i], kAlvo = () => extra ? "x" + extra.nome : est.i;
+  const hoje = new Date().toISOString().slice(0, 10);
+  let rastro = []; try { const r = JSON.parse(lsGet("cdi-passeio-rastro") || "{}"); if (r.dia === hoje) rastro = r.pts || []; } catch (e) {}
+  const ps = P.paradas;
+  const caixaMapa = h("div", { class: "passmapa" }, h("p", { class: "globoaviso", text: "Abrindo o mapa…" }));
+  const painel = h("div", { class: "passpainel" });
+  const chipAarti = h("button", { type: "button", class: "passaarti", hidden: true, onclick: () => vai(P.aarti.parada) });
+  const pararBussola = () => { if (bussola) { window.removeEventListener(bussola.ev, bussola.fn, true); bussola = null; } };
+  const fecha = () => { lsSet("cdi-passeio-aberto", ""); document.removeEventListener("visibilitychange", voltou); try { clearInterval(vigiaGps); document.removeEventListener("visibilitychange", religaGps); window.removeEventListener("pageshow", religaGps); window.removeEventListener("focus", religaGps); } catch (e) {} clearInterval(relogio); pararBussola(); if (watch != null) navigator.geolocation.clearWatch(watch); try { trava && trava.release(); } catch (e) {} try { mapa && mapa.remove(); } catch (e) {} box.remove(); };
+  const ic = d => h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+  let seguir = false, girar = lsGet("cdi-passeio-girar") === "1", ultGiro = 0;
+  const centraEu = () => { if (eu && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 17), duration: 600 }); };
+  const marcaSeguir = v => { seguir = v; btnEu.setAttribute("aria-pressed", String(v)); };
+  const btnEu = h("button", { type: "button", "aria-label": "Onde eu estou", "aria-pressed": "false", onclick: () => {
+      marcaSeguir(true);
+      if (eu) centraEu();
+      else { pedeLoc(); painel.scrollTo({ top: 0 }); }
+    } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0"));
+  // mapa girando com você (como no Google Maps): a frente do celular fica sempre para cima; tocar de novo volta o norte para cima
+  // a agulha do botão aponta sempre para o norte
+  const btnBus = h("button", { type: "button", class: "bus", "aria-label": "Mapa girando com você", "aria-pressed": String(girar), onclick: () => {
+      girar = !girar; lsSet("cdi-passeio-girar", girar ? "1" : ""); btnBus.setAttribute("aria-pressed", String(girar));
+      if (girar) { ligaBussola(); marcaSeguir(true); if (eu && mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 17), ...(direcao() != null ? { bearing: direcao() } : {}), duration: 600 }); }
+      else if (mapa) mapa.easeTo({ bearing: 0, duration: 500 });
+      desenha();
+    } }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22, "aria-hidden": "true" },
+      h("path", { d: "M12 2.5l4.2 9.5H7.8z", fill: "#C0392B" }),
+      h("path", { d: "M12 21.5L7.8 12h8.4z", fill: "none", stroke: "currentColor", "stroke-width": 1.6, "stroke-linejoin": "round" })));
+  const box = h("div", { class: "passeio", role: "dialog", "aria-label": "Passeio guiado: " + P.titulo },
+    h("div", { class: "passtopo" },
+      h("button", { type: "button", class: "passx", "aria-label": "Fechar o passeio", onclick: fecha }, "×"),
+      h("div", { style: "flex:1;min-width:0" }, h("p", { class: "eyebrow", text: "Passeio guiado" }), h("h2", { text: P.titulo })),
+      chipAarti),
+    h("div", { class: "passmapawrap" }, caixaMapa,
+      h("div", { class: "mapctl" },
+        h("button", { type: "button", "aria-label": "Aproximar", onclick: () => mapa && mapa.easeTo({ zoom: mapa.getZoom() + 1 }) }, ic("M12 5v14M5 12h14")),
+        h("button", { type: "button", "aria-label": "Afastar", onclick: () => mapa && mapa.easeTo({ zoom: mapa.getZoom() - 1 }) }, ic("M5 12h14")),
+        btnEu, btnBus,
+        h("button", { type: "button", "aria-label": "Ver o passeio inteiro", onclick: () => { marcaSeguir(false); enquadra(true); } }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")))),
+    painel);
+  box.__fecha = fecha;
+  document.body.append(box);
+  lsSet("cdi-passeio-aberto", id + "|" + Date.now());
+  { const st = offStatus(); if (!(st && st.v === OFF_VERSAO) && navigator.onLine) guardaOffline(() => { if (box.isConnected && !vendo) desenha(); }); }
+  // horário da Aarti no topo, com quanto falta (relógio do celular, que já está na hora da Índia)
+  const aarti = () => {
+    const a = P.aarti; if (!a) return; const n = new Date(), ini = new Date(n); ini.setHours(a.h, a.m, 0, 0);
+    const min = Math.round((ini - n) / 60000);
+    if (min < -50) { chipAarti.hidden = true; return; }
+    chipAarti.hidden = false;
+    chipAarti.replaceChildren(h("small", { text: a.rot || "Aarti" }), h("b", { text: `${a.h}h${a.m ? String(a.m).padStart(2, "0") : ""}` }),
+      h("span", { text: min <= 0 ? "acontecendo agora" : min < 60 ? `faltam ${min} min` : `faltam ${Math.floor(min / 60)}h${String(min % 60).padStart(2, "0")}` }));
+    chipAarti.classList.toggle("logo", min <= 90);
+    chipAarti.setAttribute("aria-label", `${a.rot || "Aarti"} às ${a.h}h. Chegue até ${a.chegar}. Toque para ver a parada.`);
+  };
+  // enquanto o passeio está na tela, renova a marca de "aberto": fechou o app e voltou (mesmo muitas horas depois), abre no mesmo lugar
+  const marcaAberto = () => { if (box.isConnected) lsSet("cdi-passeio-aberto", id + "|" + Date.now()); };
+  window.addEventListener("pagehide", marcaAberto);
+  aarti(); const relogio = setInterval(() => { aarti(); marcaAberto(); }, 30000);
+  // a tela apagada desliga a trava; quando a pessoa volta (do Google Maps, por exemplo), pede de novo
+  const voltou = () => { if (document.hidden) marcaAberto(); if (!document.hidden && box.isConnected) { aarti(); marcaAberto(); try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {} } };
+  document.addEventListener("visibilitychange", voltou);
+  try { navigator.wakeLock && navigator.wakeLock.request("screen").then(t => { trava = t; }).catch(() => {}); } catch (e) {}
+  const vai = i => { est.i = Math.max(0, Math.min(ps.length - 1, i)); extra = null; vendo = null; lsSet(chave + "-x", ""); guarda(); tendencia = null; amostra = null; agora = null; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pinta(); pedeRota(true); if (mapa) mapa.easeTo({ center: [ps[est.i].lng, ps[est.i].lat], zoom: Math.max(mapa.getZoom(), 15.5) }); };
+  const conclui = () => { if (!est.feitos.includes(est.i)) est.feitos.push(est.i); guarda(); if (est.i < ps.length - 1) vai(est.i + 1); else if (P.livre) vai(0); else { desenha(); pinta(); } };
+  function enquadra(animar) {
+    if (!mapa) return; const b = new maplibregl.LngLatBounds();
+    ps.forEach(p => b.extend([p.lng, p.lat])); if (eu && distKm(eu, ps[0]) < 5) b.extend([eu.lng, eu.lat]);
+    mapa.fitBounds(b, { padding: { top: 40, bottom: 40, left: 40, right: 60 }, duration: animar ? 600 : 0, maxZoom: 16 });
+  }
+  function pinta() {
+    // troca só as classes do passeio: a do mapa (maplibregl-marker) posiciona o número no lugar certo
+    marcas.forEach((m, k) => { const el = m.getElement(); el.classList.toggle("atual", k === est.i); el.classList.toggle("feito", k !== est.i && est.feitos.includes(k)); });
+    if (euMarca && eu) euMarca.setLngLat([eu.lng, eu.lat]);
+  }
+  // ---- linhas do mapa: o dia inteiro pelas ruas (clarinho), o trecho de agora (azul) e o rastro de onde já andou ----
+  const fc = features => ({ type: "FeatureCollection", features });
+  const linha = (coords, props) => ({ type: "Feature", properties: props || {}, geometry: { type: "LineString", coordinates: coords } });
+  // nas opções soltas (templos e atividades) não há linha do dia: só a linha azul até a opção escolhida
+  const pernas = P.livre ? [] : ps.map((p, k) => ({ de: k ? ps[k - 1] : P.saida, para: p, coords: null }));
+  const viaP = p => (p.via || []).map(([lat, lng]) => ({ lat, lng }));
+  // pontos de passagem que ainda estão à frente (mais perto do destino do que a pessoa)
+  const viaAFrente = p => eu ? viaP(p).filter(v => distKm(v, p) < distKm(eu, p) - .03) : viaP(p);
+  // trilha desenhada à mão (beira do rio): no lugar da rota do servidor, que nesse trecho sobe pela estrada do mato
+  const trilhaP = p => (p.trilha || []).map(([lat, lng]) => ({ lat, lng }));
+  const trilhaAFrente = p => eu ? trilhaP(p).filter(v => distKm(v, p) < distKm(eu, p) - .03) : trilhaP(p);
+  const rotaTrilha = (de, p, pts) => ({ coords: [de, ...pts, p].map(q => [+q.lng, +q.lat]), m: 0, trilha: true });
+  function desenhaDia() {
+    const s = mapa && mapa.getSource("dia"); if (!s) return;
+    s.setData(fc(pernas.map(pn => linha(pn.coords || [[pn.de.lng, pn.de.lat], [pn.para.lng, pn.para.lat]], { reta: !pn.coords || !!pn.trilha }))));
+  }
+  function desenhaAgora() {
+    const s = mapa && mapa.getSource("agora"); if (!s) return;
+    const p = alvoAt();
+    s.setData(fc(agora ? [linha(agora.coords, { reta: !!agora.trilha })] : eu ? [linha([[eu.lng, eu.lat], [p.lng, p.lat]], { reta: true })] : []));
+  }
+  function desenhaRastro() { const s = mapa && mapa.getSource("rastro"); if (s) s.setData(fc(rastro.length > 1 ? [linha(rastro)] : [])); }
+  async function carregaDia() {
+    for (const pn of pernas) {
+      if (!box.isConnected) return;
+      if (pn.para.trilha) { pn.coords = rotaTrilha(pn.de, pn.para, trilhaP(pn.para)).coords; pn.trilha = true; desenhaDia(); continue; }
+      try { const r = await rotaPe(pn.de, pn.para, viaP(pn.para), !!pn.para.carro); r.fixa = true; pn.coords = r.coords; rotaPe.__salva(); desenhaDia(); } catch (e) {}
+    }
+  }
+  rotaPe.__salva = () => lsSet("cdi-rotas-pe", JSON.stringify(Object.fromEntries(Object.entries(rotasMem).filter(([, v]) => v.fixa))));
+  // rota de onde a pessoa está até a próxima parada: pede de novo quando ela andou uns 30 m ou saiu da linha (no máximo a cada 12 s)
+  async function pedeRota(forca) {
+    if (!eu || pedindo) return; const p = alvoAt();
+    const andou = !agoraDe || distKm(agoraDe, eu) > .03, saiu = agora && naRota(agora.coords, eu).fora > .04;
+    if (!forca && agoraPara === kAlvo() && !andou && !saiu) return;
+    if (!forca && Date.now() - agoraEm < 12000) return;
+    pedindo = true; agoraEm = Date.now(); const de = { lat: eu.lat, lng: eu.lng }, para = kAlvo();
+    try { const r = !extra && p.trilha ? rotaTrilha(de, p, trilhaAFrente(p)) : await rotaPe(de, p, extra ? [] : viaAFrente(p), !extra && !!p.carro); if (para === kAlvo()) { agora = r; agoraDe = de; agoraPara = para; } }
+    catch (e) { if (para === kAlvo()) { agora = null; agoraDe = de; agoraPara = para; } }
+    pedindo = false; desenhaAgora(); desenha();
+  }
+  // direção do celular, como no Google Maps: o feixe azul do ponto mostra para onde a frente do celular está virada
+  // (bússola do celular; enquanto ela não responde, usa a direção em que a pessoa está andando, pelo GPS)
+  let gpsG = null, girando = 0;
+  function ligaBussola() {
+    if (bussola) return;
+    const liga = () => {
+      if (bussola) return;
+      const ev = "ondeviceorientationabsolute" in window ? "deviceorientationabsolute" : "deviceorientation";
+      const fn = e => {
+        const g = e.webkitCompassHeading != null ? e.webkitCompassHeading : e.absolute || ev === "deviceorientationabsolute" ? (360 - (e.alpha || 0)) % 360 : null;
+        if (g == null || !bussola) return;
+        // o ângulo da tela deitada de lado (paisagem) entra na conta
+        const tela = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
+        const primeira = bussola.g == null; bussola.g = (g + tela + 360) % 360;
+        if (primeira) desenha();
+        if (!girando) girando = requestAnimationFrame(() => { girando = 0; giraSeta(); });
+      };
+      bussola = { ev, fn, g: null }; window.addEventListener(ev, fn, true);
+    };
+    try {
+      if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function")
+        DeviceOrientationEvent.requestPermission().then(r => { if (r === "granted") liga(); else { S.passBussolaMsg = "A direção do celular foi recusada. Dá para liberar em Ajustes > Safari > Movimento e orientação."; desenha(); } }).catch(() => {});
+      else liga();
+    } catch (e) {}
+  }
+  // no iPhone a bússola só liga depois de um toque: o primeiro toque na tela do passeio já pede
+  if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") box.addEventListener("click", ligaBussola, { capture: true, once: true });
+  else ligaBussola();
+  const elEu = () => h("div", { class: "passeuw" }, h("i", { class: "passcone", "aria-hidden": "true" }), h("div", { class: "passeu" }));
+  const direcao = () => bussola && bussola.g != null ? bussola.g : gpsG;
+  function giraSeta() {
+    const dir = direcao();
+    // feixe do ponto azul: gira a frente do celular menos o quanto o mapa está girado
+    const cone = euMarca && euMarca.getElement().querySelector(".passcone"), giro = mapa ? mapa.getBearing() : 0;
+    if (cone) { cone.style.display = dir == null ? "none" : "block"; if (dir != null) cone.style.transform = `rotate(${Math.round(dir - giro)}deg)`; }
+    giraMapa();
+    const s = painel.querySelector(".seta"); if (!s || rumoAlvo == null) return;
+    s.style.transform = `rotate(${Math.round(dir != null ? rumoAlvo - dir : rumoAlvo)}deg)`;
+  }
+  // mapa girando com você: acompanha a frente do celular, devagar (no máximo 4 vezes por segundo, só quando muda mais de 4 graus)
+  function giraMapa() {
+    if (!mapa || !girar || !seguir || mapa.isMoving()) return; const dir = direcao(); if (dir == null) return;
+    const dif = ((dir - mapa.getBearing()) % 360 + 540) % 360 - 180;
+    if (Math.abs(dif) < 4 || Date.now() - ultGiro < 250) return;
+    ultGiro = Date.now(); mapa.easeTo({ bearing: dir, duration: 240, easing: t => t });
+  }
+  // atrativo (loja, café, lugar): tocar abre a descrição aqui mesmo; "Me leve até aqui" faz o app guiar até ele
+  const TIPO = { loja: "Loja", comida: "Para comer", lugar: "Lugar" };
+  const poiDe = l => ({ nome: l[0], desc: l[1], q: l[2], lat: l[3], lng: l[4], aprox: !!l[5], tipo: l[6] || "loja", raio: 35, poi: true });
+  // volta com o mesmo atrativo aberto
+  try { const v = JSON.parse(lsGet(chave + "-v") || "null"); if (v && v.v && !extra) vendo = ps.flatMap(p => (p.lojas || []).map(poiDe)).find(o => o.nome === v.v) || null; } catch (e) {}
+  function abrirPoi(o) { vendo = o; desenha(); painel.scrollTo({ top: 0 }); if (mapa && isFinite(o.lat)) mapa.easeTo({ center: [o.lng, o.lat], zoom: Math.max(mapa.getZoom(), 16.5) }); }
+  function irPoi(o) { extra = { ...o, chegou: false }; lsSet(chave + "-x", JSON.stringify(extra)); vendo = null; tendencia = null; amostra = null; agora = null; chegouAvisado["x" + o.nome] = false; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pedeRota(true); }
+  function sairExtra() { extra = null; lsSet(chave + "-x", ""); vendo = null; tendencia = null; amostra = null; agora = null; desenhaAgora(); desenha(); painel.scrollTo({ top: 0 }); pedeRota(true); }
+  // foto da fachada, para conferir se é aqui mesmo: a da Wikipédia (guardada no celular) ou uma que a líder tira na hora
+  const fotoEls = {};
+  function fotoEl(nome) {
+    if (fotoEls[nome]) return fotoEls[nome];
+    const minha = lsGet("cdi-foto:" + nome), ws = wikiDe(nome);
+    const img = h("img", { alt: "Fachada: " + nome }), leg = h("figcaption"), fig = h("figure", { class: "passfoto", hidden: true }, img, leg);
+    img.onload = () => { fig.hidden = false; }; img.onerror = () => { fig.hidden = true; };
+    const mostra = (src, de) => { leg.textContent = de; img.src = src; };
+    if (minha) mostra(minha, "foto sua");
+    else if (ws) fotoWiki(ws).then(u => { if (u) mostra(u, "foto da Wikipédia"); });
+    return fotoEls[nome] = h("div", { class: "passfotobox" }, fig);
+  }
+  const linkGoogle = (o, txt) => { const vs = o.poi ? [] : viaAFrente(o);
+    return h("a", { class: "passgoogle", href: o.poi ? mapsBusca(o.q) : "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(o.destino || o.lat + "," + o.lng) + (vs.length ? "&waypoints=" + encodeURIComponent(vs.map(v => v.lat + "," + v.lng).join("|")) : "") + "&travelmode=" + (o.carro ? "driving" : "walking"), target: "_blank", rel: "noopener" }, txt); };
+  function desenha() {
+    lsSet(chave + "-v", JSON.stringify({ v: vendo ? vendo.nome : null }));
+    const p = alvoAt(), parada = ps[est.i], fim = est.feitos.length === ps.length;
+    const reta = eu ? distKm(eu, p) : null, nr = eu && agora && agoraPara === kAlvo() ? naRota(agora.coords, eu) : null;
+    const d = nr ? nr.falta : reta, perto = reta != null && reta * 1000 <= (p.raio || 80) + Math.min(eu.prec || 0, 25);
+    const alvo = nr && nr.fora < .04 ? nr.alvo : p, r = eu ? rumo(eu, alvo) : null; rumoAlvo = r ? r.g : null;
+    const aqui = perto || (extra ? extra.chegou : est.chegou.includes(est.i)), prox = ps[est.i + 1];
+    const sinal = !eu || aqui ? null : !navigator.onLine && !nr ? ["neutro", "Sem internet"] : nr && nr.fora > .04 ? ["fora", "Você saiu do caminho"]
+      : tendencia === "indo" ? ["indo", "✓ Na direção certa"] : tendencia === "volta" ? ["volta", "↩ Você está se afastando"] : null;
+    const progresso = h("div", { class: "passprog" },
+      h("p", { text: P.livre ? `Opção ${est.i + 1} de ${ps.length}` : (fim ? "Passeio completo ✓" : `Parada ${est.i + 1} de ${ps.length}`) + (parada.dia ? " · " + parada.dia : "") + (extra ? " · desvio até um atrativo" : "") }),
+      h("div", { class: "passbarra", role: "tablist", "aria-label": "Paradas" }, ps.map((q, k) => h("button", { type: "button", role: "tab", "aria-selected": String(k === est.i), class: est.feitos.includes(k) ? "feito" : "", "aria-label": `Parada ${k + 1}: ${q.nome}`, onclick: () => vai(k) }))));
+    // descrição de um atrativo (sem sair do app)
+    if (vendo) {
+      const o = vendo, dv = eu && isFinite(o.lat) ? distKm(eu, o) : null;
+      painel.replaceChildren(progresso,
+        h("div", { class: "passatual poi " + o.tipo },
+          h("p", { class: "passrot", text: TIPO[o.tipo] || "Atrativo" }),
+          h("h3", { text: o.nome }),
+          fotoEl(o.nome),
+          h("p", { class: "passpoitx", text: o.desc }),
+          dv != null ? h("p", { class: "passinst", text: `A ${distTxt(dv)} de você, em linha reta.` }) : null,
+          isFinite(o.lat) ? h("button", { class: "btn gold passbig", type: "button", onclick: () => irPoi(o) }, "Me leve até aqui") : null,
+          h("button", { class: "btn passbig", type: "button", onclick: () => { vendo = null; desenha(); painel.scrollTo({ top: 0 }); } }, extra ? "Voltar" : `Voltar para: ${parada.nome}`),
+          o.aprox ? h("p", { class: "small passnota", text: "Pino aproximado." }) : null,
+          !isFinite(o.lat) ? h("p", { class: "small passnota", text: "Este lugar não tem posição marcada no mapa." }) : null,
+          o.aprox || !isFinite(o.lat) ? linkGoogle(o, "Ver o endereço no Google Maps") : null));
+      giraSeta(); return;
+    }
+    const itemPoi = l => { const o = poiDe(l); return h("button", { type: "button", class: "passpoi " + o.tipo, onclick: () => abrirPoi(o) }, h("b", { text: o.nome }), h("span", { text: o.desc + (o.aprox ? " · pino aproximado" : "") }), h("i", { text: "Ver ›" })); };
+    painel.replaceChildren(progresso,
+      aqui ? h("div", { class: "passatual chegou" },
+          h("p", { class: "passrot", text: "✓ Você chegou" }),
+          h("h3", { text: p.nome }),
+          fotoEl(p.nome),
+          extra ? h("button", { class: "btn gold passbig", type: "button", onclick: sairExtra }, `Voltar ao roteiro: ${parada.nome} ›`)
+            : h("button", { class: "btn gold passbig", type: "button", onclick: conclui }, P.livre ? (prox ? `Ver a próxima opção: ${prox.nome} ›` : "Ver as opções do começo ›") : prox ? `Seguir para: ${prox.nome} ›` : est.feitos.includes(est.i) ? "Passeio feito ✓" : "Terminar o passeio ✓"))
+        : h("div", { class: "passatual" + (extra ? " poi " + extra.tipo : "") },
+          h("p", { class: "passrot", text: extra ? "Agora, vá até (fora do roteiro)" : "Agora, vá até" }),
+          h("h3", { text: p.nome }),
+          h("p", { class: "passinst", text: extra ? (extra.aprox ? "Pino aproximado" : TIPO[extra.tipo] || "") : p.quando + (p.aprox ? " · pino aproximado" : "") }),
+          sinal ? h("p", { class: "passsinal " + sinal[0], role: "status", text: sinal[1] }) : null,
+          d != null ? h("div", { class: "passdir" },
+              h("span", { class: "seta", "aria-hidden": "true", text: "↑" }),
+              h("div", null, h("b", { text: distTxt(d) }),
+                h("span", { text: (!extra && p.carro ? `uns ${Math.max(1, Math.round(nr && agora.s && agora.m ? agora.s / 60 * (d * 1000 / agora.m) : d * 60 / 25))} min de carro ${nr ? "pela estrada" : "(distância em linha reta)"}` : `uns ${Math.max(1, Math.round(d * 1000 / 75))} min a pé ${nr ? (agora && agora.trilha ? "pela beira do rio" : "pelas ruas") : "em linha reta"}`) + (direcao() != null ? "" : ` · siga para o ${r.nome}`) }),
+                direcao() == null && S.passBussolaMsg ? h("small", { class: "passbus", text: S.passBussolaMsg }) : null,
+                eu.prec > 300 ? h("small", { class: "passprec", text: `Sua localização está aproximada (±${eu.prec} m). No iPhone: Ajustes → Privacidade e Segurança → Serviços de Localização → Safari (ou o app) → ligue "Localização Precisa".` })
+                  : eu.prec > 60 ? h("small", { class: "passprec", text: `GPS impreciso agora (±${eu.prec} m). Fica melhor ao ar livre.` }) : null))
+            : h("div", { class: "passloc" + (S.passGpsCod ? " erro" : "") }, h("p", { text: S.passGpsMsg || "Procurando você no mapa…" }),
+                h("button", { class: "btn gold passbig", type: "button", onclick: pedeLoc }, "📍 Mostrar minha localização")),
+          // a foto vem depois da seta e da distância (o mais importante andando)
+          fotoEl(p.nome),
+          d != null && !(bussola && bussola.g != null) ? h("button", { class: "btn ghost passbig", type: "button", onclick: ligaBussola }, "🧭 Mostrar para onde o celular aponta") : null,
+          h("button", { class: "btn passbig", type: "button", onclick: () => { if (extra) extra.chegou = true; else if (!est.chegou.includes(est.i)) est.chegou.push(est.i); guarda(); desenha(); painel.scrollTo({ top: 0 }); } }, "Já cheguei"),
+          extra ? h("button", { class: "btn ghost passbig", type: "button", onclick: sairExtra }, `Voltar ao roteiro: ${parada.nome}`) : null,
+          !extra && p.opcional && prox ? h("button", { class: "btn ghost passbig", type: "button", onclick: () => vai(est.i + 1) }, "Pular: está fechado") : null),
+      h("div", { class: "passtexto" + (aqui ? " chegou" : "") },
+        aqui ? h("p", { class: "eyebrow", text: extra ? "Sobre este lugar" : "A história deste lugar" }) : null,
+        h("p", { text: extra ? extra.desc : p.texto }),
+        !extra && p.dica ? h("p", { class: "passdica", text: p.dica }) : null,
+        !extra && p.lojas ? h("div", { class: "passlojas" }, h("p", { class: "eyebrow rule", text: "No caminho até aqui" }), p.lojas.map(itemPoi)) : null,
+        fim && !extra ? h("div", { class: "passfim" }, h("p", { class: "eyebrow", text: "Passeio completo" }), h("p", { text: "Você passou por todas as paradas do dia. Bom descanso e bom jantar!" })) : null,
+        S.offRodando && S.offProg ? h("p", { class: "small passnota", text: `Guardando o mapa para usar sem internet… ${Math.round(S.offProg.feitos / Math.max(1, S.offProg.total) * 100)}%` }) : null,
+        linkGoogle(p, "Se precisar, o passo a passo também no Google Maps")));
+    giraSeta();
+  }
+  // GPS não respondeu: diz o motivo e como liberar (antes falhava em silêncio)
+  function erroLoc(e) { if (eu && e && e.code !== 1) return; S.passGpsMsg = erroGps(e); S.passGpsCod = e && e.code; desenha(); }
+  // pede a localização de novo (um toque da pessoa: no iPhone isso faz aparecer o pedido de permissão)
+  function pedeLoc() {
+    if (!navigator.geolocation) { S.passGpsMsg = "Este celular não informa a localização."; desenha(); return; }
+    S.passGpsMsg = "Procurando você…"; S.passGpsCod = null; desenha();
+    navigator.geolocation.getCurrentPosition(pos => { recebe(pos); if (mapa) mapa.easeTo({ center: [eu.lng, eu.lat], zoom: Math.max(mapa.getZoom(), 17), duration: 600 }); }, erroLoc, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 });
+    iniciaGps();
+  }
+  const recebe = pos => {
+    const novo = { lat: pos.coords.latitude, lng: pos.coords.longitude, prec: Math.round(pos.coords.accuracy || 0) };
+    // posição bem pior que a atual (a rápida, por wi-fi, ao religar o GPS) não tira o ponto do lugar certo
+    if (eu && eu.em && Date.now() - eu.em < 120000 && novo.prec > 100 && novo.prec > eu.prec * 3) return;
+    novo.em = Date.now(); S.passGpsCod = null; ultimoFix = Date.now();
+    eu = novo; S.passGpsMsg = "";
+    if (isFinite(pos.coords.heading) && pos.coords.heading !== null && (pos.coords.speed || 0) > .6) gpsG = pos.coords.heading;
+    if (mapa && !euMarca) euMarca = new maplibregl.Marker({ element: elEu() }).setLngLat([eu.lng, eu.lat]).addTo(mapa);
+    if (mapa && !centrou) { centrou = true; enquadra(false); }
+    // rastro: guarda um ponto a cada 8 m andados, só com GPS bom
+    if (eu.prec <= 50) { const u = rastro[rastro.length - 1]; if (!u || distKm(ptDe(u), eu) > .008) { rastro.push([+eu.lng.toFixed(6), +eu.lat.toFixed(6)]); if (rastro.length > 3000) rastro.shift(); lsSet("cdi-passeio-rastro", JSON.stringify({ dia: hoje, pts: rastro })); desenhaRastro(); } }
+    const folga = Math.min(eu.prec || 0, 25), dentro = q => distKm(eu, q) * 1000 <= (q.raio || 80) + folga;
+    // chegou numa parada mais à frente (pulou alguma): o passeio vai junto
+    // o hotel é o ponto de partida e também o fim: estar nele não pula o passeio para o final
+    // só olha as duas próximas paradas: passar perto de uma parada lá do fim do dia não muda o passeio
+    const k = ps.findIndex((q, n) => n > est.i && n <= est.i + 2 && !q.retorno && !est.feitos.includes(n) && dentro(q));
+    // indo para uma parada opcional (Beatles Ashram) passa-se em frente a outras: aí só muda com o botão Pular
+    if (!P.livre && !extra && k > -1 && !dentro(ps[est.i]) && !ps[est.i].opcional) { est.i = k; guarda(); tendencia = null; amostra = null; agora = null; }
+    const p = alvoAt(), ka = kAlvo();
+    // para frente ou para trás: compara quanto falta (pelas ruas, se tiver a rota) a cada uns 12 m andados
+    const falta = agora && agoraPara === ka ? naRota(agora.coords, eu).falta : distKm(eu, p);
+    if (!amostra || amostra.i !== ka) amostra = { i: ka, pt: { lat: eu.lat, lng: eu.lng }, falta };
+    else if (distKm(amostra.pt, eu) > .012 && eu.prec <= 60) {
+      const dif = (amostra.falta - falta) * 1000;
+      if (dif > 6) tendencia = "indo"; else if (dif < -6) tendencia = "volta";
+      amostra = { i: ka, pt: { lat: eu.lat, lng: eu.lng }, falta };
+    }
+    if (dentro(p) && !chegouAvisado[ka]) {
+      chegouAvisado[ka] = true; if (extra) extra.chegou = true; try { navigator.vibrate && navigator.vibrate([30, 80, 30]); } catch (e) {}
+      rolarTexto = true;
+    }
+    pinta(); desenhaAgora(); desenha(); giraSeta(); pedeRota(false);
+    // acompanhando: recentra devagar, só quando o mapa está parado (nunca no meio de um gesto)
+    if (seguir && mapa && !mapa.isMoving()) mapa.easeTo({ center: [eu.lng, eu.lat], ...(girar && direcao() != null ? { bearing: direcao() } : {}), duration: 400 });
+    if (rolarTexto && !vendo) { rolarTexto = false; requestAnimationFrame(() => { const t = painel.querySelector(".passtexto"); if (t) painel.scrollTo({ top: t.offsetTop - painel.offsetTop - 8, behavior: "smooth" }); }); }
+  };
+  // no iPhone o GPS para de mandar posição quando o app vai para o fundo ou fica um tempo parado:
+  // ao voltar para o app e quando passa 25 s sem posição nova, ele é religado sozinho (antes era preciso sair e entrar)
+  let ultimoFix = 0, ligadoEm = 0;
+  function iniciaGps() {
+    if (!navigator.geolocation || !box.isConnected) return;
+    if (watch != null) navigator.geolocation.clearWatch(watch);
+    ligadoEm = Date.now();
+    navigator.geolocation.getCurrentPosition(recebe, () => {}, { enableHighAccuracy: false, maximumAge: 60000, timeout: 8000 });
+    watch = navigator.geolocation.watchPosition(recebe, erroLoc, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
+  }
+  const vigiaGps = setInterval(() => { if (!document.hidden && S.passGpsCod !== 1 && Date.now() - Math.max(ultimoFix, ligadoEm) > 25000) iniciaGps(); }, 10000);
+  const religaGps = () => { if (!document.hidden && box.isConnected) iniciaGps(); };
+  document.addEventListener("visibilitychange", religaGps); window.addEventListener("pageshow", religaGps); window.addEventListener("focus", religaGps);
+  if (navigator.geolocation) iniciaGps();
+  else S.passGpsMsg = "Este celular não informa a localização. O mapa e as histórias funcionam mesmo assim.";
+  desenha();
+  carregaGlobo().then(() => {
+    if (!box.isConnected) return; caixaMapa.replaceChildren();
+    const vazio = fc([]);
+    mapa = new maplibregl.Map({ container: caixaMapa, attributionControl: false, center: [ps[est.i].lng, ps[est.i].lat], zoom: 15, maxZoom: 19, dragRotate: false, pitchWithRotate: false, fadeDuration: 0,
+      style: { version: 8, sources: {
+          ruas: { type: "raster", tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize: 256, maxzoom: 19 },
+          dia: { type: "geojson", data: vazio }, agora: { type: "geojson", data: vazio }, rastro: { type: "geojson", data: vazio } },
+        layers: [{ id: "fundo", type: "background", paint: { "background-color": "#EAD6A8" } },
+          { id: "ruas", type: "raster", source: "ruas", paint: { "raster-fade-duration": 0, "raster-saturation": -.2, "raster-opacity": .85 } },
+          // o dia inteiro: pelas ruas em linha cheia; trecho sem rota (ponte nova, por exemplo) tracejado
+          { id: "dia", type: "line", source: "dia", filter: ["!=", ["get", "reta"], true], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#8A3F32", "line-width": 3, "line-opacity": .45 } },
+          { id: "diareta", type: "line", source: "dia", filter: ["==", ["get", "reta"], true], layout: { "line-cap": "round" }, paint: { "line-color": "#8A3F32", "line-width": 2.5, "line-dasharray": [1.5, 1.8], "line-opacity": .5 } },
+          { id: "rastro", type: "line", source: "rastro", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#5B6B8C", "line-width": 3, "line-opacity": .7 } },
+          { id: "agorafundo", type: "line", source: "agora", filter: ["!=", ["get", "reta"], true], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#FFFFFF", "line-width": 8 } },
+          { id: "agora", type: "line", source: "agora", filter: ["!=", ["get", "reta"], true], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#2F7BEA", "line-width": 5 } },
+          { id: "agorareta", type: "line", source: "agora", filter: ["==", ["get", "reta"], true], layout: { "line-cap": "round" }, paint: { "line-color": "#2F7BEA", "line-width": 3, "line-dasharray": [1, 1.6] } }] } });
+    mapa.touchZoomRotate.disableRotation(); caixaMapa.__mapa = mapa;
+    // arrastar o mapa com o dedo para de acompanhar a pessoa (o botão "onde eu estou" liga de novo)
+    mapa.on("movestart", e => { if (e.originalEvent) marcaSeguir(false); });
+    // o mapa girou: o feixe azul e a agulha do botão acompanham
+    mapa.on("rotate", () => { const g = mapa.getBearing(), sv = btnBus.querySelector("svg"); if (sv) sv.style.transform = `rotate(${-g}deg)`;
+      const cone = euMarca && euMarca.getElement().querySelector(".passcone"), dir = direcao(); if (cone && dir != null) cone.style.transform = `rotate(${Math.round(dir - g)}deg)`; });
+    // nomes das lojas só aparecem com o mapa de perto (de longe embolam)
+    const longe = () => caixaMapa.classList.toggle("longe", mapa.getZoom() < 16.3); mapa.on("zoom", longe); longe();
+    marcas = ps.map((p, k) => new maplibregl.Marker({ element: h("button", { type: "button", class: "passpin", "aria-label": p.nome, onclick: () => vai(k) }, h("b", { text: String(k + 1) })) }).setLngLat([p.lng, p.lat]).addTo(mapa));
+    ps.forEach(p => (p.lojas || []).filter(l => isFinite(l[3])).forEach(l => { const o = poiDe(l);
+      new maplibregl.Marker({ element: h("button", { type: "button", class: "passloja " + o.tipo, "aria-label": o.nome, onclick: () => abrirPoi(o) }, h("span", { text: o.nome }), h("i", { "aria-hidden": "true" })), anchor: "right", offset: [6, 0] }).setLngLat([o.lng, o.lat]).addTo(mapa); }));
+    if (eu) { euMarca = new maplibregl.Marker({ element: elEu() }).setLngLat([eu.lng, eu.lat]).addTo(mapa); }
+    const pronto = () => { desenhaDia(); desenhaAgora(); desenhaRastro(); carregaDia(); pedeRota(true); };
+    if (mapa.isStyleLoaded()) pronto(); else mapa.once("load", pronto);
+    enquadra(false); if (eu) centrou = true; pinta();
+  }, () => { caixaMapa.querySelector(".globoaviso").textContent = "Não consegui abrir o mapa. Confira a internet; as histórias continuam abaixo."; });
+}
 function vDia(d, open, isToday, abrir) {
   const ls = (d.pins || []).map(localDe).filter(Boolean);
   const head = h("button", { class: "dayhead", type: "button", "aria-expanded": String(open), onclick: () => abrir(d.n) },
@@ -3105,6 +3887,8 @@ function vDia(d, open, isToday, abrir) {
         // agenda corrida, sem separar em manhã, tarde e noite
         [d.agenda.flatMap(p => p.itens)].map(itens => [
           h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
+      // passeio guiado do dia: Dia 10 é o de Kunjapuri e Vashishta; os outros dias de Rishikesh, o das pontes
+      podePasseio() ? cartaoPasseio(Object.keys(PASSEIOS).find(k => PASSEIOS[k].diaN === d.n) || (d.cidade === "Rishikesh" && d.n === 11 ? "extras" : null)) : null,
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
       // o calendário sagrado é o roteiro de bolso da líder: os viajantes não veem
       d.calendario && S.isOwner ? vCalendarioSagrado(d.calendario, d.iso) : null,
@@ -4410,34 +5194,38 @@ async function cameraHabilidade(id) {
 }
 // a caixinha da habilidade com as opções de foto
 // imagem da habilidade para compartilhar (Stories, 1080 x 1920): a caixinha de papel sobre um fundo escuro e quente, com brilho dourado
-async function imagemHabilidade(id) {
+// semFundo: a mesma imagem, com todos os escritos, mas com o fundo transparente (PNG), para pôr por cima de um vídeo
+async function imagemHabilidade(id, semFundo) {
   const gen = (eu() || {}).genero, t = habTexto(id, gen); if (!t) throw new Error("habilidade");
   try { await document.fonts.ready; } catch (e) {}
   const [cx, logo] = await Promise.all([caixaHabilidade(id, gen), carregaLivre("img/simbolo-dourado.png")]);
   const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
   const esp = px => { if ("letterSpacing" in x) x.letterSpacing = px + "px"; };
-  const g = x.createRadialGradient(W / 2, 900, 80, W / 2, 900, 1150); g.addColorStop(0, "#5A3A20"); g.addColorStop(.55, "#2E1E12"); g.addColorStop(1, "#140C06"); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const g = x.createRadialGradient(W / 2, 900, 80, W / 2, 900, 1150); g.addColorStop(0, "#5A3A20"); g.addColorStop(.55, "#2E1E12"); g.addColorStop(1, "#140C06"); x.fillStyle = g; if (!semFundo) x.fillRect(0, 0, W, H);
   let s0 = 17; const rnd = () => (s0 = (s0 * 16807) % 2147483647) / 2147483647;
-  for (let k = 0; k < 120; k++) { x.fillStyle = `rgba(255,214,140,${.12 + rnd() * .5})`; const r = .8 + rnd() * 2.4; x.beginPath(); x.arc(rnd() * W, rnd() * H, r, 0, Math.PI * 2); x.fill(); }
+  if (!semFundo) for (let k = 0; k < 120; k++) { x.fillStyle = `rgba(255,214,140,${.12 + rnd() * .5})`; const r = .8 + rnd() * 2.4; x.beginPath(); x.arc(rnd() * W, rnd() * H, r, 0, Math.PI * 2); x.fill(); }
   // faíscas douradas em volta da caixinha
   x.fillStyle = "rgba(242,205,130,.85)"; x.font = '40px serif'; x.textAlign = "center";
   [[170, 560], [910, 610], [140, 1250], [940, 1200], [260, 420], [820, 1380]].forEach(([px, py], k) => { x.globalAlpha = .4 + (k % 3) * .2; x.fillText("✦", px, py); }); x.globalAlpha = 1;
   if (logo) { const lw = 100, lh = lw * logo.height / logo.width; x.drawImage(logo, W / 2 - lw / 2, 150, lw, lh); }
   x.fillStyle = "#E2BE78"; x.font = '600 30px "Poppins",sans-serif'; esp(10); x.fillText("HABILIDADE", W / 2, 340); x.fillText("DESBLOQUEADA", W / 2, 386); esp(0);
   x.strokeStyle = "rgba(226,190,120,.6)"; x.lineWidth = 2; x.beginPath(); x.moveTo(W / 2 - 160, 420); x.lineTo(W / 2 + 160, 420); x.stroke();
-  const gl = x.createRadialGradient(W / 2, 900, 40, W / 2, 900, 560); gl.addColorStop(0, "rgba(255,200,110,.45)"); gl.addColorStop(1, "rgba(255,200,110,0)"); x.fillStyle = gl; x.fillRect(0, 0, W, H);
+  const gl = x.createRadialGradient(W / 2, 900, 40, W / 2, 900, 560); gl.addColorStop(0, "rgba(255,200,110,.45)"); gl.addColorStop(1, "rgba(255,200,110,0)"); x.fillStyle = gl; if (!semFundo) x.fillRect(0, 0, W, H);
   const cw = 980, ch = cw * cx.height / cx.width; x.drawImage(cx, W / 2 - cw / 2, 900 - ch / 2, cw, ch);
   const loc = localDe(t.local), yb = 900 + ch / 2 + 110;
   if (loc) { x.fillStyle = "rgba(251,240,216,.85)"; x.font = 'italic 40px "Lora",Georgia,serif'; x.fillText("conquistada em " + loc.nome, W / 2, yb); }
   const n = minhasHab().length; x.fillStyle = "rgba(226,190,120,.8)"; x.font = '500 30px "Poppins",sans-serif'; x.fillText(n > 1 ? `${n} habilidades na travessia` : "a primeira habilidade da travessia", W / 2, yb + (loc ? 70 : 0));
   x.fillStyle = "#C9A25C"; x.font = '600 30px "Cinzel",Georgia,serif'; esp(6); x.fillText("CARAVANA DO CÉU · ÍNDIA SAGRADA 2026", W / 2, H - 90); esp(0);
-  return new Promise(ok => c.toBlob(ok, "image/jpeg", .92));
+  return new Promise(ok => semFundo ? c.toBlob(ok, "image/png") : c.toBlob(ok, "image/jpeg", .92));
 }
 async function compartilharHabilidade(id, bt, salvar) {
   const txt0 = bt.textContent; bt.disabled = true; bt.textContent = "Preparando…";
   try {
-    const b = await imagemHabilidade(id); if (!b) throw 0;
-    const t = habTexto(id, (eu() || {}).genero) || { nome: "habilidade" }, nome = "habilidade-" + norm(t.nome).replace(/[^a-z0-9]+/g, "-") + ".jpg", f = new File([b], nome, { type: "image/jpeg" });
+    // as duas em PNG sem fundo (para pôr por cima de um vídeo):
+    // compartilhar = a imagem dos Stories com todos os escritos; baixar (salvar) = só o ticket da habilidade
+    const gen = (eu() || {}).genero;
+    const b = salvar ? await caixaHabilidade(id, gen).then(c => new Promise(ok => c.toBlob(ok, "image/png"))) : await imagemHabilidade(id, true); if (!b) throw 0;
+    const t = habTexto(id, gen) || { nome: "habilidade" }, nome = "habilidade-" + norm(t.nome).replace(/[^a-z0-9]+/g, "-") + (salvar ? "-ticket" : "") + ".png", f = new File([b], nome, { type: "image/png" });
     if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share(salvar ? { files: [f] } : { files: [f], text: "Desbloqueei a habilidade " + t.nome + " na Caravana do Céu ✦" }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
     let msg = bt.parentNode.nextElementSibling; if (!msg || !msg.hasAttribute("data-carmsg")) { msg = h("p", { class: "msg", role: "status", "data-carmsg": "1" }); bt.parentNode.after(msg); }
     salvarNoRolo(Promise.resolve(b), nome, msg);
@@ -4456,8 +5244,8 @@ async function abrirHabilidade(id, nova) {
     h("div", { class: "habacoes" },
       h("button", { class: "btn gold", type: "button", onclick: () => podeAoVivo ? cameraHabilidade(id) : entradaFoto(id, true) }, "📸 Câmera"),
       h("button", { class: "btn", type: "button", onclick: () => entradaFoto(id, false) }, "Escolher da galeria"),
-      h("div", { class: "habcomp" }, h("button", { class: "btn", type: "button", onclick: e => compartilharHabilidade(id, e.currentTarget) }, "Compartilhar"),
-        h("button", { class: "btn", type: "button", onclick: e => compartilharHabilidade(id, e.currentTarget, true) }, "Salvar no celular")),
+      h("div", { class: "habcomp" }, h("button", { class: "btn", type: "button", onclick: e => compartilharHabilidade(id, e.currentTarget) }, "Compartilhar PNG"),
+        h("button", { class: "btn", type: "button", onclick: e => compartilharHabilidade(id, e.currentTarget, true) }, "Baixar PNG (só a habilidade)")),
       nova ? h("button", { class: "btn ghost", type: "button", onclick: () => { S.habAdiada = true; closeSheets(); } }, "Guardar no meu passaporte")
         : h("button", { class: "btn ghost", type: "button", onclick: closeSheets }, "Fechar")));
   const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) { S.habAdiada = true; closeSheets(); } } }, box);
@@ -4505,7 +5293,11 @@ function vHabilidadesLider() {
   const gente = S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome).localeCompare(String(b.nome)));
   return dobraLider("habilidades", "panel", h("div", null, h("p", { class: "eyebrow", text: "Habilidades" }), h("h2", { text: "Liberar habilidades" })),
     h("p", { class: "small", text: "Quando liberar, todos recebem um aviso no celular e a caixinha para fazer a foto. Ninguém vê esta lista." }),
-    h("ul", { class: "hablider" }, HABILIDADES.map(([id, nA, nO, fA, fO, lid]) => {
+    // já liberada para todos: sai da lista (fica só o nome, embaixo, para saber o que já foi)
+    ...(() => { const todos = id => gente.length && gente.every(v => (v.habilidades || {})[id]);
+      const falta = HABILIDADES.filter(x => !todos(x[0])), feitas = HABILIDADES.filter(x => todos(x[0]));
+      return [falta.length ? null : h("p", { class: "small", text: "Todas as habilidades já foram liberadas ✓" }),
+      h("ul", { class: "hablider" }, falta.map(([id, nA, nO, fA, fO, lid]) => {
       const tem = gente.filter(v => (v.habilidades || {})[id]);
       return h("li", null,
         h("b", { text: nA === nO ? nA : nA + " / " + nO.split(" ")[0] }), h("span", { class: "small", text: fA }),
@@ -4513,7 +5305,8 @@ function vHabilidadesLider() {
         h("span", { class: "small", text: tem.length ? `Já ganharam: ${tem.length === gente.length ? "todos" : tem.map(v => String(v.nome).split(" ")[0]).join(", ")}` : "Ninguém ganhou ainda" }),
         h("div", { class: "actions" },
           h("button", { class: "btn gold", type: "button", onclick: () => { if (confirm("Liberar \"" + nA + "\" para todos?")) darHabilidade(id, gente.map(v => v.id)); } }, "Liberar para todos")));
-    })));
+    })),
+      feitas.length ? h("p", { class: "small", text: "Já liberadas para todos: " + feitas.map(x => x[1]).join(", ") + "." }) : null]; })());
 }
 // Só a líder: ver e trocar a palavra-chave que abre o app (fica guardada no Firebase, em privado/acesso)
 // ---------- Só a líder: liga o guardião de cada passagem ao passaporte de cada viajante ----------
@@ -5952,7 +6745,7 @@ function vPerto() {
       h("div", { class: "mapctl" },
         h("button", { type: "button", "aria-label": "Aproximar", onclick: () => zoom(.5) }, ic("M12 5v14M5 12h14")),
         h("button", { type: "button", "aria-label": "Afastar", onclick: () => zoom(2) }, ic("M5 12h14")),
-        h("button", { type: "button", "aria-label": "Centralizar em mim", class: S.pertoCentro ? "" : "on", onclick: () => { S.pertoCentro = null; render(); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")),
+        h("button", { type: "button", "aria-label": "Centralizar em mim", class: S.pertoCentro ? "" : "on", onclick: () => { S.pertoCentro = null; S.pertoKm = .25; if (!minhaPos() && S.gpsWatch == null) ligarGps(true); render(); } }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")),
         perto.length ? h("button", { type: "button", "aria-label": "Ver todos", onclick: verTodos }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")) : null),
       null),
     // créditos das imagens fora do mapa, pequenininhos
@@ -6031,7 +6824,7 @@ function vMundo() {
       h("div", { class: "mapctl" },
         h("button", { type: "button", "aria-label": "Aproximar", onclick: () => zoom(1) }, ic("M12 5v14M5 12h14")),
         h("button", { type: "button", "aria-label": "Afastar", onclick: () => zoom(-1) }, ic("M5 12h14")),
-        eu0 ? h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => vaiPara(eu0) }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")) : null,
+        eu0 ? h("button", { type: "button", "aria-label": "Onde eu estou", onclick: () => S.globo && S.globo.flyTo({ center: [+eu0.lng, +eu0.lat], zoom: Math.max(S.globo.getZoom(), 16), duration: 2500 }) }, ic("M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 .01 0")) : null,
         h("button", { type: "button", "aria-label": "Ver todos", onclick: () => enquadraGlobo(true) }, ic("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")))),
     h("p", { class: "mapcred", text: sat ? "Satélite: Esri, Maxar" : "Mapa: © OpenStreetMap" }),
     !S.gpsOn ? gpsDesligado()
@@ -11143,6 +11936,7 @@ render();
     }, () => {});
   }
   if (user) { const me = await user.me(); S.me = me; S.uid = me.id; S.isOwner = me.isOwner; perfis([me.id]); }
+  reabrePasseio();
   // no site o app fica escondido até aqui; na primeira vez entra a tela de boas-vindas, nas outras espera os viajantes
   let viajantesProntos; const vProntos = new Promise(r => { viajantesProntos = r; });
   // o app aparece e, no mesmo instante, sai o cartão de entrar (que ficou "Abrindo a travessia…" até aqui)
