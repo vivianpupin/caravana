@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "08/11 · 03:02";</script>
+<script>window.__VERSAO = "15/11 · 02:52";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3701,7 +3701,7 @@ async function montaVideoPassaporte(cv, aoFim) {
       const emVirada = tv > 0 && idx < nViradas && dentro < TVIRA, pv = emVirada ? ease(dentro / TVIRA) : 0;
       const virou = tv <= 0 ? 0 : Math.min(nViradas, emVirada ? idx : idx + 1);
       const esqI = virou * 2, dirI = virou * 2 + 1;
-      x.fillStyle = "#3A2A1C"; if (abre >= .5 || tl > TCAPA) x.fillRect(-PW - 10, -PH / 2 - 10, PW * 2 + 20, PH + 20); else x.fillRect(-2, -PH / 2 - 10, PW + 12, PH + 20); // capa de fora (bordinha)
+      x.fillStyle = "#3A2A1C"; if (tl >= TCAPA) x.fillRect(-PW - 10, -PH / 2 - 10, PW * 2 + 20, PH + 20); else x.fillRect(-2, -PH / 2 - 10, PW + 12, PH + 20); // capa de fora (bordinha)
       // a página da esquerda só aparece inteira depois que a capa terminou de abrir (antes, é a própria capa virando)
       if (tl >= TCAPA) x.drawImage(paginas[esqI], -PW, -PH / 2, PW, PH);
       x.drawImage(emVirada ? paginas[dirI + 2] : paginas[dirI], 0, -PH / 2, PW, PH);
@@ -3753,15 +3753,48 @@ async function abrirVideoPassaporte() {
   document.body.append(sheet);
   let parar = false;
   const { quadro, fim } = await montaVideoPassaporte(cv);
-  const toca = () => new Promise(ok => { const t0 = performance.now(); const passo = now => { if (parar) return ok(); const t = (now - t0) / 1000; quadro(Math.min(t, fim)); if (t < fim) requestAnimationFrame(passo); else ok(); }; requestAnimationFrame(passo); });
+  // só uma animação por vez no quadro: tocar de novo ou gerar o vídeo para a que estava passando (antes as duas desenhavam juntas e o vídeo pulava)
+  let sessao = 0;
+  const toca = () => new Promise(ok => { const meu = ++sessao, t0 = performance.now(); const passo = now => { if (parar || meu !== sessao) return ok(); const t = (now - t0) / 1000; quadro(Math.min(t, fim)); if (t < fim) requestAnimationFrame(passo); else ok(); }; requestAnimationFrame(passo); });
+  // vídeo quadro a quadro, com o tempo exato de cada quadro (30 por segundo): não engasga nem atrasa,
+  // mesmo que o celular demore para desenhar (antes gravava a tela tocando, e no iPhone pulava quadros)
+  const videoExato = async () => {
+    if (!window.VideoEncoder || !window.VideoFrame) return null;
+    let cfg = null;
+    for (const codec of ["avc1.640028", "avc1.4D4028", "avc1.42E028"]) { const c = { codec, width: 1080, height: 1920, bitrate: 10e6, framerate: 30, avc: { format: "avc" } };
+      try { if ((await VideoEncoder.isConfigSupported(c)).supported) { cfg = c; break; } } catch (e) {} }
+    if (!cfg) return null;
+    await carregaScript("mp4-muxer.min.js"); if (!window.Mp4Muxer) return null;
+    const muxer = new Mp4Muxer.Muxer({ target: new Mp4Muxer.ArrayBufferTarget(), video: { codec: "avc", width: 1080, height: 1920, frameRate: 30 }, fastStart: "in-memory" });
+    let erro = null; const enc = new VideoEncoder({ output: (ch, meta) => muxer.addVideoChunk(ch, meta), error: e => { erro = e; } });
+    enc.configure(cfg);
+    const N = Math.ceil(fim * 30), dur = Math.round(1e6 / 30);
+    for (let i = 0; i <= N; i++) {
+      if (parar || erro) { try { enc.close(); } catch (e) {} return null; }
+      quadro(Math.min(i / 30, fim));
+      const fr = new VideoFrame(cv, { timestamp: i * dur, duration: dur }); enc.encode(fr, { keyFrame: i % 60 === 0 }); fr.close();
+      // não acumula quadros na fila (memória do celular) e deixa a tela respirar
+      while (enc.encodeQueueSize > 6) await new Promise(r => setTimeout(r, 8));
+      if (i % 6 === 0) { st.textContent = `Gerando o vídeo… ${Math.round(i / N * 100)}%`; await new Promise(r => setTimeout(r, 0)); }
+    }
+    await enc.flush(); enc.close(); if (erro) return null;
+    muxer.finalize(); return new Blob([muxer.target.buffer], { type: "video/mp4" });
+  };
   const gravar = async () => {
-    const tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m));
-    if (!tipo || !cv.captureStream) { st.textContent = "Este celular não grava vídeo pelo navegador. Grave a tela enquanto o passaporte toca."; return; }
-    acoes.replaceChildren(); st.textContent = "Gravando o vídeo… deixe esta tela aberta.";
-    const rec = new MediaRecorder(cv.captureStream(30), { mimeType: tipo, videoBitsPerSecond: 8e6 }), partes = [];
-    rec.ondataavailable = e => e.data.size && partes.push(e.data);
-    const pronto = new Promise(ok => rec.onstop = ok); rec.start(200); await toca(); rec.stop(); await pronto;
-    const ext = tipo.includes("mp4") ? "mp4" : "webm", arq = new Blob(partes, { type: tipo.split(";")[0] }), nome = "passaporte-caravana." + ext;
+    acoes.replaceChildren(); st.textContent = "Gerando o vídeo… deixe esta tela aberta."; sessao++;
+    let arq = null, tipo = "video/mp4";
+    try { arq = await videoExato(); } catch (e) { arq = null; }
+    if (parar) return;
+    if (!arq) { // celular sem o codificador de vídeo: grava a tela tocando, como antes
+      tipo = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m));
+      if (!tipo || !cv.captureStream) { st.textContent = "Este celular não grava vídeo pelo navegador. Grave a tela enquanto o passaporte toca."; return; }
+      st.textContent = "Gravando o vídeo… deixe esta tela aberta.";
+      const rec = new MediaRecorder(cv.captureStream(30), { mimeType: tipo, videoBitsPerSecond: 8e6 }), partes = [];
+      rec.ondataavailable = e => e.data.size && partes.push(e.data);
+      const pronto = new Promise(ok => rec.onstop = ok); rec.start(200); await toca(); rec.stop(); await pronto;
+      arq = new Blob(partes, { type: tipo.split(";")[0] });
+    }
+    const ext = tipo.includes("mp4") ? "mp4" : "webm", nome = "passaporte-caravana." + ext;
     st.textContent = "Vídeo pronto!";
     const f = new File([arq], nome, { type: arq.type }), podeCompartilhar = !!(navigator.canShare && navigator.canShare({ files: [f] }));
     const salvar = async () => {
