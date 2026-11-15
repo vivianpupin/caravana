@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "15/11 · 02:54";</script>
+<script>window.__VERSAO = "15/11 · 03:04";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -4517,21 +4517,28 @@ async function montaVideoPassaporte(cv, aoFim) {
       // a página da esquerda só aparece inteira depois que a capa terminou de abrir (antes, é a própria capa virando)
       if (tl >= TCAPA) x.drawImage(paginas[esqI], -PW, -PH / 2, PW, PH);
       x.drawImage(emVirada ? paginas[dirI + 2] : paginas[dirI], 0, -PH / 2, PW, PH);
-      if (emVirada) folha(paginas[dirI], paginas[dirI + 1], pv * Math.PI);
+      // checks verdes nos selos: cada página já mostra os checks a partir do momento em que aparece (um selo depois do outro),
+      // e os da folha que está virando vão junto com ela (antes sumiam no começo da virada e só voltavam depois de a página parar)
+      const base = T0 + TCAPA + PAUSA;
+      // quando cada página fica à vista: a da direita aparece por baixo no começo da virada (a 1ª, quando a capa passa da metade);
+      // a da esquerda é o verso da folha, e aparece quando a folha passa do meio
+      const tVis = pi => { const sp = Math.floor(pi / 2); if (pi % 2) return sp === 0 ? T0 + TCAPA * .5 : base + (sp - 1) * ciclo; return sp === 0 ? T0 + TCAPA : base + (sp - 1) * ciclo + TVIRA * .5; };
+      // desenha os checks de uma página; cs = quanto a folha está aberta (1 = deitada; na folha virando, o cosseno do ângulo)
+      const checks = (pi, lado, cs = 1, lev = 0) => { const grupo = grupos[pi - 1]; if (!grupo) return; const tIn = tVis(pi) + .15;
+        grupo.forEach((l, i) => { if (!aberto(l)) return; const k = ease((t - tIn - i * .15) / .3); if (k <= 0) return;
+          const col = i % 2, lin = Math.floor(i / 2), px = PW / 2 + (col ? 108 : -108) + 70, oy = -PH / 2 + 190 + lin * 300 + 95;
+          const ox = cs === 1 ? (lado ? 0 : -PW) + px : (lado ? px * cs : (PW - px) * cs), u = Math.abs(ox) / PW, esc = 1 + .2 * u * lev;
+          x.save(); x.translate(ox, oy * esc - (esc - 1) * 18); x.scale(k * Math.max(.05, Math.abs(cs)) * esc, k * esc); x.fillStyle = "#3F7A3A"; x.strokeStyle = "#F4E6C4"; x.lineWidth = 4; x.beginPath(); x.arc(0, 0, 22, 0, 7); x.fill(); x.stroke();
+          x.strokeStyle = "#fff"; x.lineWidth = 5; x.lineCap = "round"; x.beginPath(); x.moveTo(-10, 1); x.lineTo(-3, 8); x.lineTo(11, -8); x.stroke(); x.restore(); }); };
+      // por baixo da folha: a página da esquerda (já assentada) e a da direita que aparece
+      if (tl >= TCAPA) checks(esqI, 0);
+      checks(emVirada ? dirI + 2 : dirI, 1);
+      if (emVirada) { const ang = pv * Math.PI, cs = Math.cos(ang); folha(paginas[dirI], paginas[dirI + 1], ang);
+        // na folha virando: a frente (direita) até ela ficar de pé, depois o verso (esquerda) já com os checks
+        if (cs >= 0) checks(dirI, 1, cs, Math.sin(ang)); else checks(dirI + 1, 0, cs, Math.sin(ang)); }
       // lombada
       g = x.createLinearGradient(-30, 0, 30, 0); g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(.5, "rgba(0,0,0,.28)"); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(-30, -PH / 2, 60, PH);
       if (tl < TCAPA && capa) folha(capa, paginas[0], abre * Math.PI);
-      // checks verdes aparecendo nos selos da página da direita/esquerda visíveis
-      const mostra = [esqI, emVirada ? dirI + 2 : dirI];
-      // o check de cada selo aparece logo depois que a página dele fica à vista
-      const base = T0 + TCAPA + PAUSA;
-      const tVis = pi => { const sp = Math.floor(pi / 2); if (sp === 0) return T0 + TCAPA; return pi % 2 ? base + (sp - 1) * ciclo + TVIRA : base + (sp - 1) * ciclo + TVIRA; };
-      mostra.forEach((pi, lado) => { const gi = pi - 1; const grupo = grupos[gi]; if (!grupo) return;
-        const tIn = tVis(pi) + .3;
-        grupo.forEach((l, i) => { if (!aberto(l)) return; const k = ease((t - tIn - i * .18) / .35); if (k <= 0) return;
-          const col = i % 2, lin = Math.floor(i / 2), ox = (lado ? 0 : -PW) + PW / 2 + (col ? 108 : -108) + 70, oy = -PH / 2 + 190 + lin * 300 + 95;
-          x.save(); x.translate(ox, oy); x.scale(k, k); x.fillStyle = "#3F7A3A"; x.strokeStyle = "#F4E6C4"; x.lineWidth = 4; x.beginPath(); x.arc(0, 0, 22, 0, 7); x.fill(); x.stroke();
-          x.strokeStyle = "#fff"; x.lineWidth = 5; x.lineCap = "round"; x.beginPath(); x.moveTo(-10, 1); x.lineTo(-3, 8); x.lineTo(11, -8); x.stroke(); x.restore(); }); });
     }
     x.restore();
     // final: brilho e assinatura
