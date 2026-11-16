@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "15/11 · 03:04";</script>
+<script>window.__VERSAO = "16/11 · 02:22";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2263,6 +2263,10 @@ video.mgrande{max-height:70vh;background:#000}
 .passloc.erro{background:rgba(160,64,47,.1);color:var(--err)}
 .passprec{flex-basis:100%;font-size:12.5px;color:var(--terra)}
 @media (prefers-reduced-motion:reduce){.passeio .seta{transition:none}}
+.cartainfo{display:flex;flex-direction:column;align-items:center;gap:6px;margin:6px 0 2px;font-size:12.5px;color:#8A6B43;text-align:center}
+.ccsituacao{margin:0 0 6px;padding:8px 12px;border-radius:10px;background:#F3E6CC;color:#5A3F22;font-size:13px;font-weight:500}
+.envcomlidos{display:flex;flex-direction:column;gap:4px}.envlidos{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:0 6px 4px;font-size:12px;color:#8A7B63}
+.vistohora{margin-left:auto;color:#8A7B63;font-size:12px}
 </style>
 
 <div class="app">
@@ -10826,6 +10830,8 @@ function abrirCarta(c, chegou) {
   const box = h("div", { role: "dialog", "aria-label": "Carta: " + (c.titulo || "correspondência"), class: "correiobox" + (chegou ? " chegou" : "") },
     chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: c.audio && c.audio.partes ? "Um pombo-correio chegou do Oriente" : c.pessoal ? "Chegou uma carta só para você!" : "Chegou uma carta por pombo-correio!" })) : null,
     pergaminhoCarta(c),
+    S.isOwner ? (() => { const { gente, viu } = leitoresCarta(c); return h("div", { class: "cartainfo" }, h("span", { text: situacaoCarta(c) }),
+      !c.rascunho && c.envio && c.envio <= Date.now() ? h("button", { type: "button", class: "vistos", onclick: () => abrirLeitoresCarta(c) }, h("span", { "aria-hidden": "true", text: "👁" }), ` Lida por ${viu.length} de ${gente.length} · ver quem`) : null); })() : null,
     h("div", { class: "foot2" }, S.isOwner ? h("button", { class: "btn ghost", type: "button", onclick: () => editarCarta(c) }, "Editar") : h("span"),
       h("button", { class: "btn", type: "button", onclick: closeSheets }, "Guardar a carta")));
   const sheet = h("div", { class: "sheet correiosheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box);
@@ -10911,6 +10917,7 @@ function editarCarta(c) {
   };
   const box = h("form", { class: "correioform", onsubmit: e => e.preventDefault() },
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: c.id ? "Editar carta" : "Nova carta" }))),
+    c.id ? h("p", { class: "ccsituacao", text: "Situação: " + situacaoCarta(c).replace(/^\S+ /, "") }) : null,
     h("p", { class: "lab", text: "Para quem" }), para,
     h("label", { class: "lab", for: "cc-tit", text: "Título" }), tit,
     h("label", { class: "lab", text: "Aviso de voz" }), gravador,
@@ -10918,6 +10925,7 @@ function editarCarta(c) {
     h("p", { class: "small", text: "Para toda a caravana, cada viajante recebe com o próprio nome no começo. Para as pessoas que você marcar, cada uma recebe a sua carta lacrada com selo de cera, e só ela lê." }),
     h("div", { class: "ccrow" }, h("div", null, h("label", { class: "lab", for: "cc-loc", text: "Enviada de" }), loc), h("div", null, h("label", { class: "lab", for: "cc-ass", text: "Assinatura" }), ass)),
     h("div", { class: "ccrow" }, h("div", null, h("label", { class: "lab", for: "cc-dia", text: "Dia da entrega" }), d), h("div", null, h("label", { class: "lab", for: "cc-hora", text: "Hora na Índia" }), hr)),
+    h("p", { class: "small", text: "O dia e a hora só valem para “Programar”. “Enviar agora” manda na hora, sem olhar a data acima." }),
     h("div", { class: "actions" },
       h("button", { class: "btn gold", type: "button", onclick: () => grava("agora") }, "Enviar agora"),
       h("button", { class: "btn", type: "button", onclick: () => grava("programar") }, "Programar para o dia e hora"),
@@ -10943,8 +10951,13 @@ function vCorrespondencia() {
   if (!abertas.length && !S.isOwner) return h("section", { class: "correio" },
     h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: "Cartas da travessia" }))),
     h("p", { class: "small", text: "Quando a líder mandar uma carta, o pombo-correio traz até aqui." }));
-  const env = (c, fut, entregue) => !S.isOwner || c.id === "final" ? env1(c, fut, entregue) : h("div", { class: "envlinha" }, env1(c, fut, entregue),
+  const env0 = (c, fut, entregue) => !S.isOwner || c.id === "final" ? env1(c, fut, entregue) : h("div", { class: "envlinha" }, env1(c, fut, entregue),
     h("button", { type: "button", class: "envapaga", "aria-label": "Apagar carta", title: "Apagar carta", onclick: () => apagarCarta(c) }, "🗑"));
+  // líder: embaixo de cada carta, quando foi enviada (ou para quando está programada) e quantos já leram
+  const env = (c, fut, entregue) => { const e = env0(c, fut, entregue); if (!S.isOwner) return e;
+    const enviada = !c.rascunho && c.envio && c.envio <= Date.now(), { gente, viu } = leitoresCarta(c);
+    return h("div", { class: "envcomlidos" }, e, h("div", { class: "envlidos" }, h("span", { text: situacaoCarta(c) }),
+      enviada ? h("button", { type: "button", class: "linkbtn", onclick: () => abrirLeitoresCarta(c) }, `👁 Lida por ${viu.length} de ${gente.length}`) : null)); };
   const env1 = (c, fut, entregue) => h("button", { type: "button", class: "envelope" + (fut && !entregue ? " fut" : ""), onclick: () => fut ? editarCarta(c) : abrirCarta(c) },
     h("span", { class: "rolinho", "aria-hidden": "true" }, h("i")),
     h("span", { class: "ctx" }, h("b", { text: (c.audio && c.audio.partes ? "🎙️ " : c.para || c.pessoal ? "💌 " : "") + (c.titulo || (c.audio && c.audio.partes ? "Aviso da Caravana" : "Carta da líder")) }),
@@ -10959,8 +10972,42 @@ function vCorrespondencia() {
       h("div", { class: "actions" }, h("button", { class: "btn gold", type: "button", onclick: () => editarCarta(null) }, "Escrever nova carta"))) : null);
 }
 function cartasVistas() { try { return JSON.parse(localStorage.getItem("cdi-cartas") || "{}") || {}; } catch (e) { return S._vistas || (S._vistas = {}); } }
-function marcaCarta(id) { const v = cartasVistas(); if (v[id]) return; v[id] = Date.now(); S._vistas = v; try { localStorage.setItem("cdi-cartas", JSON.stringify(v)); } catch (e) {} }
+function marcaCarta(id) { const v = cartasVistas(); if (v[id]) return; v[id] = Date.now(); S._vistas = v; try { localStorage.setItem("cdi-cartas", JSON.stringify(v)); } catch (e) {} avisaLeitura({ [id]: v[id] }); }
+// conta para a líder quem leu cada carta (e quando), sem apagar o resto do diário da pessoa
+function avisaLeitura(lidas) {
+  if (S.isOwner || !S.db || !S.uid || !eu() || !Object.keys(lidas).length) return;
+  const ref = S.db.doc("diarios/" + S.uid);
+  ref.update({ cartasLidas: lidas }).catch(e => /not.?found/i.test(String(e && (e.code || e.message))) ? ref.set({ cartasLidas: lidas }) : null).catch(() => {});
+}
+// cartas lidas antes desta versão (guardadas só no celular): manda uma vez para a líder ver
+function sincronizaLeituras() {
+  if (S._leiturasOk || S.isOwner || !S.db || !eu()) return; S._leiturasOk = true;
+  const v = cartasVistas(), ids = new Set([...S.cartas, ...S.cartasP].map(c => c.id)), lidas = {};
+  Object.entries(v).forEach(([id, ts]) => { if (ids.has(id) && typeof ts === "number") lidas[id] = ts; });
+  avisaLeitura(lidas);
+}
+// líder: a situação da carta (enviada, programada ou rascunho), com dia e hora na Índia
+const situacaoCarta = c => c.rascunho ? "📝 Rascunho · ninguém vê ainda" : !c.envio ? "Sem data" : c.envio > Date.now() ? `🕓 Programada para ${dataCarta(c.envio)}, às ${horaCarta(c.envio)} (Índia)` : `✉️ Enviada em ${dataCarta(c.envio)}, às ${horaCarta(c.envio)} (Índia)`;
+const leitoresCarta = c => { const gente = c.para ? S.viajantes.filter(v => v.id === c.para) : S.viajantes.filter(v => !v.lider);
+  const quando = v => ((S.diarios || []).find(p => p.id === v.id) || {}).cartasLidas?.[c.id];
+  return { gente, viu: gente.filter(v => quando(v)).sort((a, b) => quando(a) - quando(b)), quando }; };
+function abrirLeitoresCarta(c) {
+  closeSheets();
+  const { gente, viu, quando } = leitoresCarta(c), nao = gente.filter(v => !viu.includes(v)).sort((a, b) => String(a.nome).localeCompare(String(b.nome)));
+  const hora = ts => new Date(ts).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" });
+  const lista = (t, l, comHora) => h("div", { class: "vistosgrupo" }, h("p", { class: "eyebrow", text: `${t} · ${l.length}` }),
+    l.length ? h("ul", { class: "vistoslista" }, l.map(v => h("li", null, h("img", { src: avatar(v.id), alt: "" }), h("span", { text: v.nome }), comHora ? h("small", { class: "vistohora", text: hora(quando(v)) }) : null))) : h("p", { class: "small", text: "Ninguém." }));
+  const box = h("div", { role: "dialog", "aria-label": "Quem leu a carta", class: "vistosbox" },
+    h("button", { type: "button", class: "celx", "aria-label": "Fechar", onclick: closeSheets }, "×"),
+    h("h2", { text: "Quem leu a carta" }),
+    h("p", { class: "vistostexto", text: c.titulo || "Carta da travessia" }),
+    h("p", { class: "small", text: situacaoCarta(c) }),
+    lista("Já leram", viu, true), lista("Ainda não leram", nao),
+    h("p", { class: "small", text: "Conta quem abriu a carta no app (hora da Índia). Quem leu antes desta atualização aparece quando abrir o app de novo. Só você vê isso." }));
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box); document.body.append(sheet);
+}
 function checaCorreio() {
+  sincronizaLeituras();
   if (S.isOwner || !eu() || document.querySelector(".sheet,.abertura,#boasvindas,#portao")) return;
   const nova = cartasAbertas().find(c => !cartasVistas()[c.id]); if (!nova) return;
   abrirCarta(nova, true);
