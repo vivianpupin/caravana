@@ -10958,7 +10958,8 @@ function abrirAvaliacao() {
   closeSheets();
   const v = eu() || {}, nome = (v.nome || "").split(" ")[0];
   let estrelas = 0, cuidado = "", indica = ""; const tocou = new Set();
-  const locais = S.locais.filter(l => l.insignia && !l.preparo).sort(byOrdem).map(l => l.nome).concat(["A caravana"]);
+  // só os grandes momentos da travessia desta turma
+  const locais = ["Templo de Kali", "Taj Mahal", "Barco no Ganges ao amanhecer", "Manikarnika", "Ganga Aarti", "Govind Dev Ji", "Moti Dungri", "Forte Amber", "Rafting no Ganges", "Aarti no Parmarth Niketan", "Kunjapuri", "Caverna de Vashista", "Batismo no Ganges", "Nossa Puja", "A caravana"];
   const st = h("p", { class: "msg", role: "status" });
   const box = h("div", { role: "dialog", "aria-label": "Avaliação da travessia", class: "avalbox" });
   const opts = (lista, atual, muda, multi) => h("div", { class: "opts" }, lista.map(t => h("button", { type: "button", class: "opt", "aria-pressed": String(multi ? atual.has(t) : atual === t), onclick: e => { muda(t); const b = e.currentTarget;
@@ -10968,6 +10969,7 @@ function abrirAvaliacao() {
   // perguntas para a pessoa voltar lá dentro e ir lembrando (todas opcionais)
   const g = v.genero === "o" ? "o" : "a";
   const REFLEXOES = [
+    ["sempre", "✦ Que momento você levará para sempre da Travessia Índia?", "Aquele que, quando você fecha os olhos, ainda está lá…"],
     ["mudou", "✦ Qual foi o momento em que você sentiu que algo mudou dentro de você?", "Onde você estava? O que estava acontecendo à sua volta?"],
     ["voltar", "✦ Se pudesse voltar a um único instante da travessia, qual seria?", "Feche os olhos e descreva: o cheiro, o som, quem estava ao seu lado…"],
     ["desafio", "✦ O que foi mais desafiador para você na Índia?", "O caos, o cansaço, a comida, uma emoção difícil…"],
@@ -11038,7 +11040,7 @@ function vAvaliacoesLider() {
       h("div", { class: "avaltopo" }, h("img", { src: avatar(a.id), alt: "" }), h("b", { text: nomeDe(a.id) }), h("span", { class: "avalest", text: est(a.estrelas) })),
       a.relato ? h("p", { class: "avalrelato", text: a.relato }) : null,
       a.reflexoes && Object.keys(a.reflexoes).length ? h("details", { class: "avalrefl" }, h("summary", { text: `Ver as ${Object.keys(a.reflexoes).length} lembranças` }),
-        Object.entries(a.reflexoes).map(([k, t]) => h("div", null, h("small", { class: "avalrperg", text: ({ mudou: "O momento em que algo mudou", voltar: "O instante para onde voltaria", desafio: "O mais desafiador", ensinou: "O que o desafio ensinou", mostrou: "O que a Índia mostrou sobre ela", pessoa: "Quem marcou a jornada", leva: "O que leva na mala do coração", palavra: "A travessia em uma palavra" })[k] || k }), h("p", { class: "avalrelato", text: t })))) : null,
+        Object.entries(a.reflexoes).map(([k, t]) => h("div", null, h("small", { class: "avalrperg", text: ({ sempre: "O momento que leva para sempre", mudou: "O momento em que algo mudou", voltar: "O instante para onde voltaria", desafio: "O mais desafiador", ensinou: "O que o desafio ensinou", mostrou: "O que a Índia mostrou sobre ela", pessoa: "Quem marcou a jornada", leva: "O que leva na mala do coração", palavra: "A travessia em uma palavra" })[k] || k }), h("p", { class: "avalrelato", text: t })))) : null,
       h("small", { text: [a.tocou && a.tocou.length ? "Tocou: " + a.tocou.join(", ") : "", a.cuidado, a.indica ? "Indicaria: " + a.indica : ""].filter(Boolean).join(" · ") })))) : null,
     h("p", { class: "lab", text: "Link de avaliação no Google" }), inp,
     h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: salvaLink }, "Guardar link"), h("button", { class: "btn ghost", type: "button", onclick: () => abrirAvaliacaoPrevia() }, "Ver como os viajantes veem")), st);
