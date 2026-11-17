@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "17/11 · 01:53";</script>
+<script>window.__VERSAO = "17/11 · 01:56";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2251,6 +2251,17 @@ video.mgrande{max-height:70vh;background:#000}
 .avalpausa{margin:14px -4px 2px;padding:14px 14px 12px;border-radius:14px;background:linear-gradient(135deg,#F6EAD3,#EFDDBC);display:flex;flex-direction:column;gap:6px}
 .avalpausatit{margin:0;text-align:center;font-family:var(--display,Lora),Georgia,serif;font-size:19px;color:#5A3F22}
 .avalbox input[type=text]{width:100%}.avalrefl summary{cursor:pointer;color:#8A6B43;font-size:13px;margin-top:4px}.avalrperg{display:block;margin-top:8px;color:#8A6B43;font-weight:600}
+.avalcarta .pergaminho .pgm{max-height:62vh}
+.pgm.avalbox{display:flex;flex-direction:column;gap:10px}
+.pgm.avalbox .avaltexto,.pgm.avalbox .avalperg,.pgm.avalbox .avalobs{color:#3B2A1C;text-align:left}
+.pgm.avalbox .avalintro{font-style:italic}
+.pgm.avalbox .avalperg{font-family:"Special Elite","Courier Prime",monospace;font-weight:400;font-size:15px;margin-top:10px}
+.pgm.avalbox textarea,.pgm.avalbox input[type=text]{background:rgba(255,248,232,.72);border:1px solid rgba(122,90,54,.35);border-radius:10px;color:#2E2419}
+.pgm.avalbox .opt{background:rgba(255,248,232,.6);border-color:rgba(122,90,54,.35);color:#3B2A1C}
+.pgm.avalbox .opt[aria-pressed="true"]{background:#5A3F22;color:#F6EDDA;border-color:#5A3F22}
+.pgm.avalbox .avalpausa{background:rgba(255,246,226,.55);border:1px dashed rgba(122,90,54,.45)}
+.pgm.avalbox .avalestrela{color:rgba(122,90,54,.35)}.pgm.avalbox .avalestrela.on{color:#B07A1E}
+.pgm.avalbox .avalmantra{color:#7A5A36}
 </style>
 
 <div class="app">
@@ -11007,7 +11018,7 @@ function checaAvaliacao() {
   const hoje = new Date().toISOString().slice(0, 10); if (lsGet("cdi-aval-mostrou") === hoje) return;
   if (S.avalAgendada) return; S.avalAgendada = true;
   // só conta como mostrada quando abre de verdade (se outra janela estiver aberta, tenta de novo depois)
-  setTimeout(() => { S.avalAgendada = false; if (document.querySelector(".sheet,.abertura,#boasvindas,#portao") || jaAvaliou()) return; lsSet("cdi-aval-mostrou", hoje); abrirAvaliacao(); }, 1500);
+  setTimeout(() => { S.avalAgendada = false; if (document.querySelector(".sheet,.abertura,#boasvindas,#portao") || jaAvaliou()) return; lsSet("cdi-aval-mostrou", hoje); abrirAvaliacao(true); }, 1500);
 }
 // link de avaliação da Caravana do Céu no Google (a líder pode trocar no cartão "Avaliações da travessia")
 const GOOGLE_AVALIACAO = "https://g.page/r/CQ3ts3M-DenYEAE/review";
@@ -11016,14 +11027,15 @@ function botaoGoogle(relato, st) {
   const url = linkGoogle(); if (!url) return null;
   return h("button", { class: "btn gold", type: "button", onclick: () => window.open(url, "_blank", "noopener") }, "⭐ Deixar minha avaliação no Google");
 }
-function abrirAvaliacao() {
-  closeSheets();
+// a avaliação chega como o último pombo-correio da travessia: o pombo voa e o pergaminho se desenrola com as perguntas
+function abrirAvaliacao(chegou) {
+  closeSheets(); if (chegou) asas();
   const v = eu() || {}, nome = (v.nome || "").split(" ")[0];
   let estrelas = 0, cuidado = "", indica = ""; const tocou = new Set();
   // só os grandes momentos da travessia desta turma
   const locais = ["Templo de Kali", "Nossa abertura em roda", "Paharganj", "Taj Mahal", "Sheroes Hangout", "Os macacos de Agra", "O show do Taj Mahal", "A balada com os indianos", "Cerimônia do barro em Dausa", "Dança no rooftop em Jaipur", "Diwali em Jaipur", "Govind Dev Ji e o bebê Krishna", "Moti Dungri", "Forte Amber e as najas", "Os tuk-tuks", "Primeiro aarti em Varanasi", "Lamparinas no Diwali com as crianças", "Barco no Ganges ao amanhecer", "Manikarnika", "Templo de Shiva", "Ayurveda", "Pizza no chão e a Radha", "Rafting no Ganges", "Hanuman no Parmarth Niketan", "Pôr do sol no aarti do Ganges", "Kirtan para Krishna", "Nossa Puja e o casamento", "Aula de masala", "Kunjapuri ao amanhecer", "Caverna de Vashista", "Batismo no Ganges", "A busca pelo vinho", "As tatuagens", "Old Delhi", "A caravana"];
   const st = h("p", { class: "msg", role: "status" });
-  const box = h("div", { role: "dialog", "aria-label": "Avaliação da travessia", class: "avalbox" });
+  const box = h("div", { class: "pgm avalbox" });
   const opts = (lista, atual, muda, multi) => h("div", { class: "opts" }, lista.map(t => h("button", { type: "button", class: "opt", "aria-pressed": String(multi ? atual.has(t) : atual === t), onclick: e => { muda(t); const b = e.currentTarget;
     if (multi) b.setAttribute("aria-pressed", String(atual.has(t))); else b.parentNode.querySelectorAll(".opt").forEach(x => x.setAttribute("aria-pressed", String(x === b))); } }, t)));
   const estr = h("div", { class: "avalestrelas", role: "radiogroup", "aria-label": "Estrelas" }, [1, 2, 3, 4, 5].map(n => h("button", { type: "button", class: "avalestrela", "aria-label": n + (n === 1 ? " estrela" : " estrelas"), onclick: () => { estrelas = n; estr.querySelectorAll(".avalestrela").forEach((b, i) => b.classList.toggle("on", i < n)); } }, "★")));
@@ -11050,10 +11062,10 @@ function abrirAvaliacao() {
     try { await ref.update({ avaliacao }).catch(e => { if (/not.?found/i.test(String(e && (e.code || e.message)))) return ref.set({ avaliacao }); throw e; }); }
     catch (e) { bt.disabled = false; st.textContent = "Não consegui enviar. Confira a internet e tente de novo."; st.className = "msg err"; return; }
     lsSet("cdi-avaliou-" + S.uid, String(Date.now()));
+    const fb = document.querySelector(".avalcarta .foot2 .btn"); if (fb) fb.textContent = "Fechar";
     const st2 = h("p", { class: "msg", role: "status" });
     box.replaceChildren(...[
-      h("button", { type: "button", class: "celx", "aria-label": "Fechar", onclick: () => { closeSheets(); render(); } }, "×"),
-      h("h2", { class: "avaltit", text: "Gratidão por cada passo" }),
+      h("h3", { class: "pgmtit", text: "Gratidão por cada passo" }),
       h("p", { class: "avaltexto", text: "Suas palavras chegaram até nós." }),
       linkGoogle() ? h("p", { class: "avaltexto", text: "Se quiser, ajude outras pessoas a encontrarem esse caminho: deixe a sua avaliação no Google." }) : null,
       botaoGoogle(avaliacao.relato, st2), st2,
@@ -11061,17 +11073,16 @@ function abrirAvaliacao() {
   };
   if (jaAvaliou()) {
     const st2 = h("p", { class: "msg", role: "status" });
-    box.append(...[h("button", { type: "button", class: "celx", "aria-label": "Fechar", onclick: closeSheets }, "×"),
-      h("h2", { class: "avaltit", text: "Sua avaliação chegou até nós" }),
+    box.append(...[h("h3", { class: "pgmtit", text: "Sua avaliação chegou até nós" }),
       h("p", { class: "avaltexto", text: linkGoogle() ? "Gratidão! Se ainda não deixou, ajude outras pessoas a encontrarem esse caminho com a sua avaliação no Google." : "Gratidão por cada passo da travessia." }),
       botaoGoogle("", st2), st2, h("p", { class: "avalmantra", text: "लोकाः समस्ताः सुखिनो भवन्तु" })].filter(Boolean));
   } else {
     const bt = h("button", { class: "btn gold", type: "button", onclick: e => envia(e.currentTarget) }, "Enviar para a Caravana");
     box.append(
-      h("button", { type: "button", class: "celx", "aria-label": "Fechar", onclick: closeSheets }, "×"),
-      pomboSvg("pombomini"),
-      h("h2", { class: "avaltit", text: "Uma carta de volta para a Caravana" }),
-      h("p", { class: "avaltexto avalintro", text: `Seja bem-vind${v.genero === "o" ? "o" : "a"} de volta ao Brasil${nome ? ", " + nome : ""}. O corpo chegou, mas uma parte de você ainda está sentada à beira do Ganges, ouvindo os sinos do aarti. É assim mesmo: a Índia demora a voltar inteira.` }),
+      h("p", { class: "pgmdata", text: "Brasil · " + dataCarta(Date.now()) }),
+      h("h3", { class: "pgmtit", text: "Uma carta de volta para a Caravana" }),
+      h("p", { class: "pgmpara", text: "Para " + (nome || "você") + "," }),
+      h("p", { class: "avaltexto avalintro", text: `Seja bem-vind${v.genero === "o" ? "o" : "a"} de volta ao Brasil. O corpo chegou, mas uma parte de você ainda está sentada à beira do Ganges, ouvindo os sinos do aarti. É assim mesmo: a Índia demora a voltar inteira.` }),
       h("p", { class: "avaltexto", text: "Antes que a rotina apague as cores, queremos ouvir você. Como foi atravessar a Índia Sagrada com a Caravana do Céu?" }),
       h("p", { class: "avalperg", text: "✦ De 1 a 5 estrelas, como foi a sua travessia?" }), estr,
       h("p", { class: "avalperg", text: "✦ O que mais tocou o seu coração?" }), h("small", { class: "avalobs", text: "Pode escolher mais de um." }), opts(locais, tocou, t => tocou.has(t) ? tocou.delete(t) : tocou.add(t), true),
@@ -11083,7 +11094,11 @@ function abrirAvaliacao() {
       h("p", { class: "avalperg", text: "✦ Deixe aqui as suas palavras sobre a travessia" }), ta,
       bt, st);
   }
-  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box); document.body.append(sheet);
+  const caixa = h("div", { role: "dialog", "aria-label": "O último pombo-correio da travessia: avaliação", class: "correiobox avalcarta" + (chegou ? " chegou" : "") },
+    chegou ? h("div", { class: "voo" }, pomboSvg("pombo"), h("p", { text: "O último pombo-correio da travessia chegou" })) : null,
+    h("article", { class: "pergaminho" }, h("span", { class: "rolo top", "aria-hidden": "true" }), box, h("span", { class: "rolo bot", "aria-hidden": "true" })),
+    h("div", { class: "foot2" }, h("span"), h("button", { class: "btn", type: "button", onclick: () => { closeSheets(); render(); } }, jaAvaliou() ? "Fechar" : "Responder depois")));
+  const sheet = h("div", { class: "sheet correiosheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, caixa); document.body.append(sheet);
 }
 // líder: as avaliações que chegaram, a média e o link do Google
 function vAvaliacoesLider() {
