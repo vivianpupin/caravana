@@ -10987,7 +10987,7 @@ function abrirAvaliacao() {
   const v = eu() || {}, nome = (v.nome || "").split(" ")[0];
   let estrelas = 0, cuidado = "", indica = ""; const tocou = new Set();
   // só os grandes momentos da travessia desta turma
-  const locais = ["Templo de Kali", "Taj Mahal", "Govind Dev Ji", "Moti Dungri", "Forte Amber", "Varanasi no Diwali", "Barco no Ganges ao amanhecer", "Manikarnika", "Ganga Aarti", "Rafting no Ganges", "Aarti no Parmarth Niketan", "Kunjapuri", "Caverna de Vashista", "Batismo no Ganges", "Nossa Puja", "As tatuagens", "A caravana"];
+  const locais = ["Templo de Kali", "Nossa abertura em roda", "Paharganj", "Taj Mahal", "Sheroes Hangout", "Os macacos de Agra", "O show do Taj Mahal", "A balada com os indianos", "Cerimônia do barro em Dausa", "Dança no rooftop em Jaipur", "Diwali em Jaipur", "Govind Dev Ji e o bebê Krishna", "Moti Dungri", "Forte Amber e as najas", "Os tuk-tuks", "Primeiro aarti em Varanasi", "Lamparinas no Diwali com as crianças", "Barco no Ganges ao amanhecer", "Manikarnika", "Templo de Shiva", "Ayurveda", "Pizza no chão e a Radha", "Rafting no Ganges", "Hanuman no Parmarth Niketan", "Pôr do sol no aarti do Ganges", "Kirtan para Krishna", "Nossa Puja e o casamento", "Aula de masala", "Kunjapuri ao amanhecer", "Caverna de Vashista", "Batismo no Ganges", "A busca pelo vinho", "As tatuagens", "Old Delhi", "A caravana"];
   const st = h("p", { class: "msg", role: "status" });
   const box = h("div", { role: "dialog", "aria-label": "Avaliação da travessia", class: "avalbox" });
   const opts = (lista, atual, muda, multi) => h("div", { class: "opts" }, lista.map(t => h("button", { type: "button", class: "opt", "aria-pressed": String(multi ? atual.has(t) : atual === t), onclick: e => { muda(t); const b = e.currentTarget;
