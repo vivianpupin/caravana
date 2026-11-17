@@ -2232,6 +2232,7 @@ video.mgrande{max-height:70vh;background:#000}
 .pgm.avalbox .avalpausa{background:rgba(255,246,226,.55);border:1px dashed rgba(122,90,54,.45)}
 .pgm.avalbox .avalestrela{color:rgba(122,90,54,.35)}.pgm.avalbox .avalestrela.on{color:#B07A1E}
 .pgm.avalbox .avalmantra{color:#7A5A36}
+.pgm.avalbox .avaldestaque,.avaldestaque{margin:4px 0 2px;font-family:Lora,Georgia,serif;font-style:normal;font-weight:600;font-size:18px;line-height:1.4;color:#3B2A1C;text-align:center;text-wrap:balance}
 </style>
 
 <div class="app">
@@ -11053,7 +11054,8 @@ function abrirAvaliacao(chegou) {
       h("h3", { class: "pgmtit", text: "Uma carta de volta para a Caravana" }),
       h("p", { class: "pgmpara", text: "Para " + (nome || "você") + "," }),
       h("p", { class: "avaltexto avalintro", text: `Seja bem-vind${v.genero === "o" ? "o" : "a"} de volta ao Brasil. O corpo chegou, mas uma parte de você ainda está sentada à beira do Ganges, ouvindo os sinos do aarti.` }),
-      h("p", { class: "avaltexto", text: "Antes que a rotina apague as cores, queremos ouvir você. Como foi atravessar a Índia Sagrada com a Caravana do Céu?" }),
+      h("p", { class: "avaltexto", text: "Antes que a rotina apague as cores, queremos ouvir você." }),
+      h("p", { class: "avaldestaque", text: "Como foi atravessar a Índia Sagrada com a Caravana do Céu?" }),
       h("p", { class: "avalperg", text: "✦ De 1 a 5 estrelas, como foi a sua travessia?" }), estr,
       h("p", { class: "avalperg", text: "✦ O que mais tocou o seu coração?" }), h("small", { class: "avalobs", text: "Pode escolher mais de um." }), opts(locais, tocou, t => tocou.has(t) ? tocou.delete(t) : tocou.add(t), true),
       h("div", { class: "avalpausa" }, h("p", { class: "avalpausatit", text: "Volte lá por um instante" }),
