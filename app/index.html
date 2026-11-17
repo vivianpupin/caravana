@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "17/11 · 02:26";</script>
+<script>window.__VERSAO = "17/11 · 07:45";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2289,6 +2289,11 @@ video.mgrande{max-height:70vh;background:#000}
   @keyframes avalpaira{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
   @keyframes bate{from{transform:scaleY(1)}to{transform:scaleY(-.5)}}
 }
+.pombostatus{display:flex;flex-direction:column;gap:10px;margin:8px 0 4px;padding:14px;border-radius:14px;background:#FBF6EC;border:1px solid #EADFC9}
+.pombonums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.pombonums span{display:flex;flex-direction:column;align-items:center;text-align:center;font-size:11px;line-height:1.25;color:#8A7B63}.pombonums b{font-family:var(--display,Lora),Georgia,serif;font-size:24px;font-weight:500;color:#3B2A1C}
+.pombolista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}.pombolista li{display:grid;grid-template-columns:28px minmax(0,1fr);column-gap:10px;align-items:center}
+.pombolista img{grid-row:span 2;width:28px;height:28px;border-radius:50%;object-fit:cover}.pnome{font-weight:600;font-size:13.5px}.pest{font-size:12px;color:#8A7B63}
+.pombolista li.pe3 .pest{color:#3F6A3A}.pombolista li.pe0 .pest{color:#9A8B73}
 </style>
 
 <div class="app">
@@ -11074,6 +11079,8 @@ function botaoGoogle(relato, st) {
 // a avaliação chega como o último pombo-correio da travessia: o pombo voa e o pergaminho se desenrola com as perguntas
 function abrirAvaliacao(chegou) {
   closeSheets(); if (chegou) asas();
+  if (!S.isOwner && S.db && S.uid && eu() && !lsGet("cdi-aval-vista-" + S.uid)) { lsSet("cdi-aval-vista-" + S.uid, "1"); const ref = S.db.doc("diarios/" + S.uid), vista = { avaliacaoVista: Date.now() };
+    ref.update(vista).catch(e => /not.?found/i.test(String(e && (e.code || e.message))) ? ref.set(vista) : null).catch(() => {}); }
   const v = eu() || {}, nome = (v.nome || "").split(" ")[0];
   let estrelas = 0, cuidado = "", indica = ""; const tocou = new Set();
   // só os grandes momentos da travessia desta turma
@@ -11155,11 +11162,13 @@ function vAvaliacoesLider() {
   const gente = S.viajantes.filter(v => !v.lider).length;
   const inp = h("input", { type: "url", placeholder: "Cole aqui o link de avaliação do Google", value: linkGoogle() }), st = h("p", { class: "msg", role: "status" });
   const salvaLink = async () => { const u = inp.value.trim(); if (u && !/^https?:\/\//.test(u)) { st.textContent = "Cole o link inteiro, começando com https://"; st.className = "msg err"; return; }
-    try { await S.db.doc("cartas/_avaliacao").set({ google: u, rascunho: true, ts: Date.now() }); st.textContent = u ? "Link guardado. Ele aparece para os viajantes depois que avaliarem." : "Link tirado."; st.className = "msg ok"; }
+    try { const ref = S.db.doc("cartas/_avaliacao"); await ref.update({ google: u, ts: Date.now() }).catch(e => { if (/not.?found/i.test(String(e && (e.code || e.message)))) return ref.set({ google: u, rascunho: true, ts: Date.now() }); throw e; }); st.textContent = u ? "Link guardado. Ele aparece para os viajantes depois que avaliarem." : "Link tirado."; st.className = "msg ok"; }
     catch (e) { st.textContent = "Não consegui guardar. Confira a internet."; st.className = "msg err"; } };
   const est = n => "★".repeat(n) + "☆".repeat(5 - n);
   return dobraLider("avaliacoes", "panel", h("div", null, h("p", { class: "eyebrow", text: "Avaliações da travessia" }), h("h2", { text: lista.length ? `${lista.length} de ${gente} · média ${media} ★` : "Ainda ninguém avaliou" })),
     h("p", { class: "small", text: `Os viajantes recebem a avaliação quando chegam ao Brasil (ou no dia seguinte ao fim da viagem). Abre a partir de ${new Date(fimViagem()).toLocaleDateString("pt-BR", { day: "numeric", month: "long", timeZone: "Asia/Kolkata" })}.` }),
+    quadroPombo(),
+    lista.length ? h("p", { class: "eyebrow", style: "margin-top:14px", text: "As avaliações" }) : null,
     lista.length ? h("div", { class: "avallista" }, lista.map(a => h("div", { class: "avalitem" },
       h("div", { class: "avaltopo" }, h("img", { src: avatar(a.id), alt: "" }), h("b", { text: nomeDe(a.id) }), h("span", { class: "avalest", text: est(a.estrelas) })),
       a.relato ? h("p", { class: "avalrelato", text: a.relato }) : null,
@@ -11168,6 +11177,25 @@ function vAvaliacoesLider() {
       h("small", { text: [a.tocou && a.tocou.length ? "Tocou: " + a.tocou.join(", ") : "", a.cuidado, a.indica ? "Indicaria: " + a.indica : ""].filter(Boolean).join(" · ") })))) : null,
     h("p", { class: "lab", text: "Link de avaliação no Google" }), inp,
     h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: salvaLink }, "Guardar link"), h("button", { class: "btn ghost", type: "button", onclick: () => abrirAvaliacaoPrevia() }, "Ver como os viajantes veem")), st);
+}
+// quem recebeu o aviso do último pombo, quem abriu e quem respondeu (só a líder)
+function quadroPombo() {
+  const gente = S.viajantes.filter(v => !v.lider).sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || "")));
+  if (!gente.length) return null;
+  const dia = id => (S.diarios || []).find(d => d.id === id) || {}, avisados = (S.avalCfg || {}).avisados || {};
+  const quando = ts => new Date(ts).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" });
+  const estado = v => { const d = dia(v.id), a = d.avaliacao;
+    if (a && a.estrelas) return [3, "✅ Respondeu", quando(a.ts)];
+    if (d.avaliacaoVista) return [2, "👁 Abriu o pombo, ainda não respondeu", quando(d.avaliacaoVista)];
+    if (avisados[v.id]) return [1, "🔔 Recebeu a notificação, ainda não abriu", quando(avisados[v.id])];
+    return [0, "⏳ Ainda não abriu", ""]; };
+  const linhas = gente.map(v => ({ v, e: estado(v) })).sort((a, b) => a.e[0] - b.e[0] || String(a.v.nome).localeCompare(String(b.v.nome)));
+  const conta = n => linhas.filter(x => x.e[0] === n).length;
+  return h("div", { class: "pombostatus" },
+    h("p", { class: "eyebrow", text: "O último pombo-correio" }),
+    h("div", { class: "pombonums" }, [[3, "responderam"], [2, "abriram"], [1, "receberam o aviso"], [0, "ainda não abriram"]].map(([n, t]) => h("span", null, h("b", { text: String(conta(n)) }), t))),
+    h("ul", { class: "pombolista" }, linhas.map(({ v, e }) => h("li", { class: "pe" + e[0] }, h("img", { src: avatar(v.id), alt: "" }), h("span", { class: "pnome", text: v.nome || "Viajante" }), h("span", { class: "pest", text: e[1] + (e[2] ? " · " + e[2] : "") })))),
+    h("p", { class: "small", text: "“Recebeu a notificação” só aparece para quem tem os avisos do app ligados. Horários de Brasília." }));
 }
 // a líder vê a avaliação como os viajantes, sem enviar nada
 function abrirAvaliacaoPrevia() { const sal = S.isOwner; try { S.isOwner = false; const ja = lsGet("cdi-avaliou-" + S.uid); abrirAvaliacao(); if (!ja) { const b = document.querySelector(".avalbox .btn.gold"); if (b) { b.textContent = "Prévia: o envio fica para os viajantes"; b.disabled = true; } } } finally { S.isOwner = sal; } }

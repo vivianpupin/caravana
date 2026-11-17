@@ -62,6 +62,9 @@ async function avisaPomboFinal(d, agora, pegaChaves) {
   const carga = qual === "chegou"
     ? { title: "🕊️ O último pombo-correio da travessia chegou", body: "Uma carta de volta para a Caravana está esperando por você.", tag: "pombo-final", url: "./?aba=travessia&aval=1" }
     : { title: "🕊️ O último pombo-correio ainda está esperando", body: "Conte como foi a sua travessia. Leva poucos minutos.", tag: "pombo-final", url: "./?aba=travessia&aval=1" };
-  for (const v of vs.docs) { if (v.data().lider || responderam.has(v.id)) continue; n += await enviarPara(d, k, v.id, carga, 3 * 24 * 3600).catch(() => 0); }
+  // guarda para quem o aviso chegou a ir (a líder vê no cartão "Avaliações da travessia")
+  const foi = {};
+  for (const v of vs.docs) { if (v.data().lider || responderam.has(v.id)) continue; const m = await enviarPara(d, k, v.id, carga, 3 * 24 * 3600).catch(() => 0); if (m) foi[v.id] = agora; n += m; }
+  if (Object.keys(foi).length) await ref.set({ avisados: foi }, { merge: true });
   return n;
 }
