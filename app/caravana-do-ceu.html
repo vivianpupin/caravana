@@ -2207,6 +2207,13 @@ video.mgrande{max-height:70vh;background:#000}
 .ccsituacao{margin:0 0 6px;padding:8px 12px;border-radius:10px;background:#F3E6CC;color:#5A3F22;font-size:13px;font-weight:500}
 .envcomlidos{display:flex;flex-direction:column;gap:4px}.envlidos{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:0 6px 4px;font-size:12px;color:#8A7B63}
 .vistohora{margin-left:auto;color:#8A7B63;font-size:12px}
+.avalcartao .avalico{font-size:30px;line-height:1;flex:0 0 auto}
+.avalbox{display:flex;flex-direction:column;gap:10px;position:relative}.avalbox .pombomini{align-self:center}
+.avaltit{font-family:var(--display,Lora),Georgia,serif;font-weight:500;text-align:center;margin:0}.avaltexto{margin:0;font-family:Lora,Georgia,serif;font-style:italic;color:#5A4632;line-height:1.5;text-align:center}
+.avalperg{margin:8px 0 0;font-weight:600;color:#3B2A1C}.avalobs{color:#8A7B63;margin-top:-6px}.avalmantra{text-align:center;color:#A07A3E;margin:6px 0 0}
+.avalestrelas{display:flex;gap:6px;justify-content:center}.avalestrela{border:0;background:none;font-size:38px;line-height:1;color:#D9CBB0;cursor:pointer;padding:0 2px}.avalestrela.on{color:#D7A23A}
+.avallista{display:flex;flex-direction:column;gap:10px;margin:6px 0}.avalitem{padding:10px 12px;border-radius:12px;background:#FBF6EC;border:1px solid #EADFC9}
+.avaltopo{display:flex;align-items:center;gap:8px}.avaltopo img{width:28px;height:28px;border-radius:50%;object-fit:cover}.avalest{margin-left:auto;color:#D7A23A;letter-spacing:1px}.avalrelato{margin:6px 0;font-family:Lora,Georgia,serif;font-style:italic;color:#4A3A28;white-space:pre-wrap}
 </style>
 
 <div class="app">
@@ -2625,6 +2632,8 @@ function render() {
   // aviso novo da líder (15 min): aparece no topo de qualquer aba
   // último dia: o passaporte completo avisa que o vídeo está pronto (no Roteiro e no Passaporte)
   if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte")) { const c = avisoVideo(), v = main.firstElementChild; if (c && v) v.prepend(c); }
+  if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte")) { const c = cartaoAvaliacao(), v = main.firstElementChild; if (c && v) v.prepend(c); }
+  if (!precisaCadastro) checaAvaliacao();
   if (!precisaCadastro && S.tab !== "travessia" && S.tab !== "conversa" && avisoEmDestaque(avisoAtual())) { const f = avisoFixado(), v = main.firstElementChild; if (f && v) v.prepend(f); }
   if (abertos && abertos.size) chavesDet(main).forEach(([d, k]) => { if (abertos.has(k) && d.open !== abertos.get(k)) d.open = abertos.get(k); });
   if (lados && lados.length) { const novos = rolaveis(main), usados = new Set(); for (const [cls, x] of lados) { const e = novos.find(n => n.className === cls && !usados.has(n)); if (e) { usados.add(e); if (x) e.scrollLeft = x; } } }
@@ -5081,6 +5090,7 @@ function vPassaporte() {
         h("img", { src: avatar(g.id), alt: "" }),
         h("div", null, h("b", { text: g.id === S.uid ? g.nome + " (você)" : g.nome }), h("small", { text: [g.lider ? "Líder da travessia" : tituloViajante(g), totalViagens(g) > 1 ? totalViagens(g) + " viagens" : "", g.cidade].filter(Boolean).join(" · ") }), medalhasDe(g, 24)),
         h("span", { class: "c", text: `${conquistasDe(g)} / ${ls.length}` }))))) : null,
+    vAvaliacoesLider(),
     vMinhasHabilidades(), vHabilidadesLider(),
     vGuardioesLider(),
     vGenteLider(),
@@ -10938,6 +10948,111 @@ function apagarCarta(c, depois) {
   const usadoEmOutra = (S.cartasP || []).concat(S.cartas || []).some(x => x.id !== c.id && x.audio && x.audio.partes && c.audio && c.audio.partes && x.audio.partes[0] === c.audio.partes[0]);
   S.db.doc((c.para ? "cartasPessoais/" : "cartas/") + c.id).delete().then(() => { if (!usadoEmOutra) for (const id of (c.audio && c.audio.partes) || []) S.assets?.delete(id).catch(() => {}); if (depois) depois(); }, () => alert("Não consegui apagar a carta. Confira a internet e tente de novo."));
 }
+// ---------- Avaliação da travessia: quando a pessoa volta para o Brasil ----------
+// as respostas ficam no diário da pessoa (diarios/<uid>.avaliacao), que só ela escreve e só a líder lê;
+// o link do Google fica em cartas/_avaliacao (a líder cola no cartão "Avaliações")
+const fimViagem = () => { const ds = (S.roteiro && S.roteiro.dias) || []; const u = ds[ds.length - 1]; return u && u.iso ? Date.parse(u.iso + "T18:00:00+05:30") : Infinity; };
+const noBrasil = () => { const p = S.aoVivo && S.aoVivo[S.uid]; return !!(p && p.lat < 6 && p.lat > -34 && p.lng > -74 && p.lng < -34); };
+const avaliacaoAberta = () => Date.now() > fimViagem();
+const jaAvaliou = () => !!lsGet("cdi-avaliou-" + S.uid);
+function cartaoAvaliacao() {
+  if (S.isOwner || !eu() || !avaliacaoAberta()) return null;
+  const feita = jaAvaliou();
+  return h("button", { class: "avisoleitura avalcartao" + (feita ? "" : " nova"), type: "button", onclick: () => abrirAvaliacao() },
+    h("span", { class: "avalico", "aria-hidden": "true", text: "🕊️" }),
+    h("span", { class: "ctx" }, h("b", { text: feita ? "Sua avaliação chegou até nós" : "Uma carta de volta para a Caravana" }),
+      h("span", { text: feita ? "Gratidão! Toque para deixar sua avaliação no Google." : "Conte como foi a sua travessia. Leva dois minutinhos." })));
+}
+// abre sozinha uma vez por dia, depois que a viagem acabou, quando a pessoa já está no Brasil (ou no dia seguinte ao fim)
+function checaAvaliacao() {
+  if (S.isOwner || !eu() || jaAvaliou() || !avaliacaoAberta() || document.querySelector(".sheet,.abertura,#boasvindas,#portao")) return;
+  if (!noBrasil() && Date.now() < fimViagem() + 20 * 3600e3) return;
+  const hoje = new Date().toISOString().slice(0, 10); if (lsGet("cdi-aval-mostrou") === hoje) return;
+  if (S.avalAgendada) return; S.avalAgendada = true;
+  // só conta como mostrada quando abre de verdade (se outra janela estiver aberta, tenta de novo depois)
+  setTimeout(() => { S.avalAgendada = false; if (document.querySelector(".sheet,.abertura,#boasvindas,#portao") || jaAvaliou()) return; lsSet("cdi-aval-mostrou", hoje); abrirAvaliacao(); }, 1500);
+}
+function linkGoogle() { return ((S.avalCfg || {}).google || "").trim(); }
+function botaoGoogle(relato, st) {
+  const url = linkGoogle(); if (!url) return null;
+  return h("button", { class: "btn gold", type: "button", onclick: async () => {
+    if (relato) { try { await navigator.clipboard.writeText(relato); if (st) { st.textContent = "Suas palavras foram copiadas: no Google, é só colar e tocar nas estrelas."; st.className = "msg ok"; } } catch (e) {} }
+    window.open(url, "_blank", "noopener"); } }, "⭐ Deixar minha avaliação no Google");
+}
+function abrirAvaliacao() {
+  closeSheets();
+  const v = eu() || {}, nome = (v.nome || "").split(" ")[0];
+  let estrelas = 0, cuidado = "", indica = ""; const tocou = new Set();
+  const locais = S.locais.filter(l => l.insignia && !l.preparo).sort(byOrdem).map(l => l.nome).concat(["A caravana"]);
+  const st = h("p", { class: "msg", role: "status" });
+  const box = h("div", { role: "dialog", "aria-label": "Avaliação da travessia", class: "avalbox" });
+  const opts = (lista, atual, muda, multi) => h("div", { class: "opts" }, lista.map(t => h("button", { type: "button", class: "opt", "aria-pressed": String(multi ? atual.has(t) : atual === t), onclick: e => { muda(t); const b = e.currentTarget;
+    if (multi) b.setAttribute("aria-pressed", String(atual.has(t))); else b.parentNode.querySelectorAll(".opt").forEach(x => x.setAttribute("aria-pressed", String(x === b))); } }, t)));
+  const estr = h("div", { class: "avalestrelas", role: "radiogroup", "aria-label": "Estrelas" }, [1, 2, 3, 4, 5].map(n => h("button", { type: "button", class: "avalestrela", "aria-label": n + (n === 1 ? " estrela" : " estrelas"), onclick: () => { estrelas = n; estr.querySelectorAll(".avalestrela").forEach((b, i) => b.classList.toggle("on", i < n)); } }, "★")));
+  const ta = h("textarea", { rows: "6", maxlength: "3000", placeholder: "Escreva do jeito que vier: uma lembrança, um agradecimento, algo que poderia ser diferente…" });
+  const envia = async bt => {
+    if (!estrelas) { st.textContent = "Toque nas estrelas para dizer como foi."; st.className = "msg err"; return; }
+    bt.disabled = true; st.textContent = "Enviando…"; st.className = "msg";
+    const avaliacao = { estrelas, tocou: [...tocou], cuidado, indica, relato: ta.value.trim(), ts: Date.now() };
+    const ref = S.db.doc("diarios/" + S.uid);
+    try { await ref.update({ avaliacao }).catch(e => { if (/not.?found/i.test(String(e && (e.code || e.message)))) return ref.set({ avaliacao }); throw e; }); }
+    catch (e) { bt.disabled = false; st.textContent = "Não consegui enviar. Confira a internet e tente de novo."; st.className = "msg err"; return; }
+    lsSet("cdi-avaliou-" + S.uid, String(Date.now()));
+    const st2 = h("p", { class: "msg", role: "status" });
+    box.replaceChildren(...[
+      h("button", { type: "button", class: "celx", "aria-label": "Fechar", onclick: () => { closeSheets(); render(); } }, "×"),
+      h("p", { class: "eyebrow", style: "text-align:center", text: "Correspondência" }),
+      h("h2", { class: "avaltit", text: "Gratidão por cada passo" }),
+      h("p", { class: "avaltexto", text: "Suas palavras chegaram até nós." }),
+      linkGoogle() ? h("p", { class: "avaltexto", text: "Se quiser, ajude outras pessoas a encontrarem esse caminho: deixe a sua avaliação no Google. Suas palavras vão copiadas, é só colar e tocar nas estrelas." }) : null,
+      botaoGoogle(avaliacao.relato, st2), st2,
+      h("p", { class: "avalmantra", text: "लोकाः समस्ताः सुखिनो भवन्तु" })].filter(Boolean));
+  };
+  if (jaAvaliou()) {
+    const st2 = h("p", { class: "msg", role: "status" });
+    box.append(...[h("button", { type: "button", class: "celx", "aria-label": "Fechar", onclick: closeSheets }, "×"),
+      h("h2", { class: "avaltit", text: "Sua avaliação chegou até nós" }),
+      h("p", { class: "avaltexto", text: linkGoogle() ? "Gratidão! Se ainda não deixou, ajude outras pessoas a encontrarem esse caminho com a sua avaliação no Google." : "Gratidão por cada passo da travessia." }),
+      botaoGoogle("", st2), st2, h("p", { class: "avalmantra", text: "लोकाः समस्ताः सुखिनो भवन्तु" })].filter(Boolean));
+  } else {
+    const bt = h("button", { class: "btn gold", type: "button", onclick: e => envia(e.currentTarget) }, "Enviar para a Caravana");
+    box.append(
+      h("button", { type: "button", class: "celx", "aria-label": "Fechar", onclick: closeSheets }, "×"),
+      pomboSvg("pombomini"),
+      h("h2", { class: "avaltit", text: "Uma carta de volta para a Caravana" }),
+      h("p", { class: "avaltexto avalintro", text: `Seja bem-vind${v.genero === "o" ? "o" : "a"} de volta ao Brasil${nome ? ", " + nome : ""}. O corpo chegou, mas uma parte de você ainda está sentada à beira do Ganges, ouvindo os sinos do aarti. É assim mesmo: a Índia demora a voltar inteira.` }),
+      h("p", { class: "avaltexto", text: "Antes que a rotina apague as cores, queremos ouvir você. Como foi atravessar a Índia Sagrada com a Caravana do Céu?" }),
+      h("p", { class: "avalperg", text: "✦ De 1 a 5 estrelas, como foi a sua travessia?" }), estr,
+      h("p", { class: "avalperg", text: "✦ O que mais tocou o seu coração?" }), h("small", { class: "avalobs", text: "Pode escolher mais de um." }), opts(locais, tocou, t => tocou.has(t) ? tocou.delete(t) : tocou.add(t), true),
+      h("p", { class: "avalperg", text: "✦ Como você se sentiu cuidad" + (v.genero === "o" ? "o" : "a") + " pela Caravana?" }), opts(["Muito cuidad" + (v.genero === "o" ? "o" : "a"), "Cuidad" + (v.genero === "o" ? "o" : "a"), "Poderia ser melhor"], cuidado, t => { cuidado = t; }),
+      h("p", { class: "avalperg", text: "✦ Você indicaria a Caravana para alguém que ama?" }), opts(["Com certeza", "Talvez", "Não"], indica, t => { indica = t; }),
+      h("p", { class: "avalperg", text: "✦ Deixe aqui as suas palavras sobre a travessia" }), ta,
+      bt, st);
+  }
+  const sheet = h("div", { class: "sheet", onclick: e => { if (e.target === sheet) closeSheets(); } }, box); document.body.append(sheet);
+}
+// líder: as avaliações que chegaram, a média e o link do Google
+function vAvaliacoesLider() {
+  if (!S.isOwner) return null;
+  const lista = (S.diarios || []).filter(d => d.avaliacao && d.avaliacao.estrelas).map(d => ({ ...d.avaliacao, id: d.id })).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  const media = lista.length ? (lista.reduce((s, a) => s + a.estrelas, 0) / lista.length).toFixed(1).replace(".", ",") : "";
+  const gente = S.viajantes.filter(v => !v.lider).length;
+  const inp = h("input", { type: "url", placeholder: "Cole aqui o link de avaliação do Google", value: linkGoogle() }), st = h("p", { class: "msg", role: "status" });
+  const salvaLink = async () => { const u = inp.value.trim(); if (u && !/^https?:\/\//.test(u)) { st.textContent = "Cole o link inteiro, começando com https://"; st.className = "msg err"; return; }
+    try { await S.db.doc("cartas/_avaliacao").set({ google: u, rascunho: true, ts: Date.now() }); st.textContent = u ? "Link guardado. Ele aparece para os viajantes depois que avaliarem." : "Link tirado."; st.className = "msg ok"; }
+    catch (e) { st.textContent = "Não consegui guardar. Confira a internet."; st.className = "msg err"; } };
+  const est = n => "★".repeat(n) + "☆".repeat(5 - n);
+  return dobraLider("avaliacoes", "panel", h("div", null, h("p", { class: "eyebrow", text: "Avaliações da travessia" }), h("h2", { text: lista.length ? `${lista.length} de ${gente} · média ${media} ★` : "Ainda ninguém avaliou" })),
+    h("p", { class: "small", text: `Os viajantes recebem a avaliação quando chegam ao Brasil (ou no dia seguinte ao fim da viagem). Abre a partir de ${new Date(fimViagem()).toLocaleDateString("pt-BR", { day: "numeric", month: "long", timeZone: "Asia/Kolkata" })}.` }),
+    lista.length ? h("div", { class: "avallista" }, lista.map(a => h("div", { class: "avalitem" },
+      h("div", { class: "avaltopo" }, h("img", { src: avatar(a.id), alt: "" }), h("b", { text: nomeDe(a.id) }), h("span", { class: "avalest", text: est(a.estrelas) })),
+      a.relato ? h("p", { class: "avalrelato", text: a.relato }) : null,
+      h("small", { text: [a.tocou && a.tocou.length ? "Tocou: " + a.tocou.join(", ") : "", a.cuidado, a.indica ? "Indicaria: " + a.indica : ""].filter(Boolean).join(" · ") })))) : null,
+    h("p", { class: "lab", text: "Link de avaliação no Google" }), inp,
+    h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: salvaLink }, "Guardar link"), h("button", { class: "btn ghost", type: "button", onclick: () => abrirAvaliacaoPrevia() }, "Ver como os viajantes veem")), st);
+}
+// a líder vê a avaliação como os viajantes, sem enviar nada
+function abrirAvaliacaoPrevia() { const sal = S.isOwner; try { S.isOwner = false; const ja = lsGet("cdi-avaliou-" + S.uid); abrirAvaliacao(); if (!ja) { const b = document.querySelector(".avalbox .btn.gold"); if (b) { b.textContent = "Prévia: o envio fica para os viajantes"; b.disabled = true; } } } finally { S.isOwner = sal; } }
 function vCorrespondencia() {
   const abertas = cartasAbertas().slice().reverse();
   const pessoais = S.isOwner ? S.cartasP.filter(c => c.para !== S.uid) : [];
@@ -11975,6 +12090,7 @@ function listen(col, key, q, after) {
     let ass = ""; try { ass = JSON.stringify(docs); } catch (e) {}
     if (!primeira && ass && ass === assinatura) return; assinatura = ass;
     if (key === "viajantes") S.viajantesOk = true;
+    if (key === "cartas") { S.avalCfg = docs.find(d => d.id === "_avaliacao") || null; docs = docs.filter(d => d.id !== "_avaliacao"); }
     if (key === "chat") { S.chatMural = docs.filter(d => d.tipo === "comentario" || d.tipo === "curtida"); if (S.chatMural.length) docs = docs.filter(d => d.tipo !== "comentario" && d.tipo !== "curtida"); }
     S[key] = docs; if (key === "locais") S.locais = ajustaLocais(S.locais); if (key === "ens") S.ens = ajustaSaberes(S.ens); guardaCache(key);
     S.dbReady = true; if (after) after(); if (key === "chat") marcaChat();
