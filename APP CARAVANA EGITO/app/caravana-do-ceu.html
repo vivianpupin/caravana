@@ -1913,6 +1913,16 @@ video.mgrande{max-height:70vh;background:#000}
 .avalgoogle{margin-top:14px!important;font-size:13px;color:#7A5A36;text-align:center;line-height:1.5}
 .avalestrelas.falta{animation:faltaestrela .5s ease 2}.avalestrelas.falta .avalestrela{color:#C98A3A}
 @keyframes faltaestrela{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.avalcartao.nova{position:relative;border:2px solid #C9A25C!important;background:linear-gradient(135deg,#FFF6E2,#F6E3BC)!important;box-shadow:0 0 0 0 rgba(201,162,92,.55),0 10px 24px rgba(90,60,20,.18)}
+.avalcartao.nova b{font-size:17px}
+.avalpombo{flex:0 0 auto;width:58px;display:grid;place-items:center}.avalpombo .pombo{width:58px;height:auto}
+@media (prefers-reduced-motion:no-preference){
+  .avalcartao.nova{animation:avalbrilho 2.4s ease-in-out infinite}
+  .avalpombo .pombo{animation:avalpaira 2.4s ease-in-out infinite}.avalpombo .pombo .asa{transform-origin:37px 27px;animation:bate .3s ease-in-out infinite alternate}
+  @keyframes avalbrilho{0%,100%{box-shadow:0 0 0 0 rgba(201,162,92,.55),0 10px 24px rgba(90,60,20,.18)}50%{box-shadow:0 0 0 8px rgba(201,162,92,0),0 10px 24px rgba(90,60,20,.18)}}
+  @keyframes avalpaira{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  @keyframes bate{from{transform:scaleY(1)}to{transform:scaleY(-.5)}}
+}
 </style>
 
 <div class="app">
@@ -2205,7 +2215,7 @@ function render() {
   // aviso novo da líder (15 min): aparece no topo de qualquer aba
   // último dia: o passaporte completo avisa que o vídeo está pronto (no Roteiro e no Passaporte)
   if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte")) { const c = avisoVideo(), v = main.firstElementChild; if (c && v) v.prepend(c); }
-  if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte")) { const c = cartaoAvaliacao(), v = main.firstElementChild; if (c && v) v.prepend(c); }
+  if (!precisaCadastro && (S.tab === "travessia" || S.tab === "passaporte" || (S.tab !== "conversa" && !jaAvaliou()))) { const c = cartaoAvaliacao(), v = main.firstElementChild; if (c && v) v.prepend(c); }
   if (!precisaCadastro) checaAvaliacao();
   if (!precisaCadastro && S.tab !== "travessia" && S.tab !== "conversa" && avisoEmDestaque(avisoAtual())) { const f = avisoFixado(), v = main.firstElementChild; if (f && v) v.prepend(f); }
   if (abertos && abertos.size) chavesDet(main).forEach(([d, k]) => { if (abertos.has(k) && d.open !== abertos.get(k)) d.open = abertos.get(k); });
@@ -7872,14 +7882,15 @@ window.addEventListener("appinstalled", () => { S.instalar = null; render(); });
 const ABAS_LINK = ["travessia", "passaporte", "ensinamentos", "explorador", "fotos", "mapa", "conversa", "pombo"];
 function pegaLink(q) {
   const aba = q.get("aba"); if (!ABAS_LINK.includes(aba)) return null;
-  const L = { carta: q.get("carta"), pombo: q.get("pombo"), hab: q.get("hab"), selo: q.get("selo"), de: q.get("de") };
+  const L = { carta: q.get("carta"), pombo: q.get("pombo"), hab: q.get("hab"), selo: q.get("selo"), de: q.get("de"), aval: q.get("aval") };
   S.abrirLink = Object.values(L).some(Boolean) ? { ...L, ate: Date.now() + 60000 } : null;
   return aba;
 }
 function tentaAbrirLink() {
   const L = S.abrirLink; if (!L || !S.uid) return;
   if (Date.now() > L.ate) { S.abrirLink = null; return; }
-  if (L.carta) { const c = cartasAbertas().find(x => x.id === L.carta); if (!c) return; S.abrirLink = null; abrirCarta(c); }
+  if (L.aval) { if (S.isOwner || !eu()) return; S.abrirLink = null; if (!jaAvaliou()) abrirAvaliacao(true); }
+  else if (L.carta) { const c = cartasAbertas().find(x => x.id === L.carta); if (!c) return; S.abrirLink = null; abrirCarta(c); }
   else if (L.pombo) { const p = S.pombosIn.find(x => x.id === L.pombo); if (!p) return; S.abrirLink = null; abrirPombo(p, !p.lida); }
   else if (L.hab) { if (!(eu() && (eu().habilidades || {})[L.hab])) return; S.abrirLink = null; abrirHabilidade(L.hab, true); }
   else if (L.selo) { const l = localDe(L.selo); if (!l) return; S.abrirLink = null; abrirSelo(l); }
@@ -9194,9 +9205,9 @@ function cartaoAvaliacao() {
   if (S.isOwner || !eu() || !avaliacaoAberta()) return null;
   const feita = jaAvaliou();
   return h("button", { class: "avisoleitura avalcartao" + (feita ? "" : " nova"), type: "button", onclick: () => abrirAvaliacao() },
-    h("span", { class: "avalico", "aria-hidden": "true", text: "🕊️" }),
+    feita ? h("span", { class: "avalico", "aria-hidden": "true", text: "🕊️" }) : h("span", { class: "avalpombo", "aria-hidden": "true" }, pomboSvg("pombo")),
     h("span", { class: "ctx" }, h("b", { text: feita ? "Sua avaliação chegou até nós" : "Uma carta de volta para a Caravana" }),
-      h("span", { text: feita ? "Gratidão! Toque para deixar sua avaliação no Google." : "Conte como foi a sua travessia. Leva dois minutinhos." })));
+      h("span", { text: feita ? "Gratidão! Toque para deixar sua avaliação no Google." : "O último pombo-correio da travessia chegou. Toque para abrir e contar como foi." })));
 }
 // abre sozinha uma vez por dia, depois que a viagem acabou, quando a pessoa já está no Brasil (ou no dia seguinte ao fim)
 function checaAvaliacao() {

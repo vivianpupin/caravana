@@ -12,6 +12,7 @@ export default async () => {
   // dia do translado: passaporte completo (uma vez só, até dois dias depois do horário)
   if (agora >= DIA_COMPLETO && agora - DIA_COMPLETO < 2 * 24 * 3600 * 1000) { k = await chaves(d); enviados += await avisarPassaporteCompleto(d, k); }
   enviados += await avisaChegadas(d, async () => k || (k = await chaves(d))).catch(() => 0);
+  enviados += await avisaPomboFinal(d, agora, async () => k || (k = await chaves(d))).catch(() => 0);
   const cs = [...(await d.collection("cartas").get()).docs.filter(pronta), ...(await d.collection("cartasPessoais").get()).docs.filter(pronta)];
   if (!cs.length) return new Response(enviados ? "enviados: " + enviados : "nada");
   for (const s of cs) {
@@ -43,4 +44,24 @@ async function avisaChegadas(d, pegaChaves) {
   const lista = nomes.length === 1 ? nomes[0] : nomes.length <= 4 ? nomes.slice(0, -1).join(", ") + " e " + nomes.at(-1) : nomes.slice(0, 3).join(", ") + " e mais " + (nomes.length - 3);
   const body = lista + (nomes.length === 1 ? " chegou" : " chegaram") + " na Índia!";
   return enviarTodos(d, await pegaChaves(), { title: "Saudações do Oriente 🇮🇳", body, tag: "chegada-" + agora, url: "./?aba=mapa" }, null, 6 * 3600);
+}
+
+// O último pombo-correio da travessia (a avaliação): no dia seguinte ao fim da viagem, um aviso no celular de cada viajante
+// que ainda não respondeu; três dias depois, um lembrete só para quem ainda não respondeu. Cada aviso vai uma vez só
+// (fica marcado em cartas/_avaliacao, o mesmo documento do link do Google).
+const POMBO_FINAL = DIA_COMPLETO + 30 * 3600 * 1000, LEMBRETE = POMBO_FINAL + 3 * 24 * 3600 * 1000;
+async function avisaPomboFinal(d, agora, pegaChaves) {
+  if (agora < POMBO_FINAL || agora - POMBO_FINAL > 10 * 24 * 3600 * 1000) return 0;
+  const ref = d.doc("cartas/_avaliacao"), cfg = (await ref.get()).data() || {};
+  const qual = !cfg.pomboAvisado ? "chegou" : agora >= LEMBRETE && !cfg.pomboLembrete ? "lembrete" : null;
+  if (!qual) return 0;
+  await ref.set(qual === "chegou" ? { pomboAvisado: agora, rascunho: true } : { pomboLembrete: agora, rascunho: true }, { merge: true });
+  const [vs, ds] = await Promise.all([d.collection("viajantes").get(), d.collection("diarios").get()]);
+  const responderam = new Set(ds.docs.filter(x => (x.data().avaliacao || {}).estrelas).map(x => x.id));
+  const k = await pegaChaves(); let n = 0;
+  const carga = qual === "chegou"
+    ? { title: "🕊️ O último pombo-correio da travessia chegou", body: "Uma carta de volta para a Caravana está esperando por você.", tag: "pombo-final", url: "./?aba=travessia&aval=1" }
+    : { title: "🕊️ O último pombo-correio ainda está esperando", body: "Conte como foi a sua travessia. Leva poucos minutos.", tag: "pombo-final", url: "./?aba=travessia&aval=1" };
+  for (const v of vs.docs) { if (v.data().lider || responderam.has(v.id)) continue; n += await enviarPara(d, k, v.id, carga, 3 * 24 * 3600).catch(() => 0); }
+  return n;
 }
