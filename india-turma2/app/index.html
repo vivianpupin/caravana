@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "17/11 · 02:11";</script>
+<script>window.__VERSAO = "17/11 · 02:26";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -4974,6 +4974,21 @@ async function estiloMapa(l) {
   x.fillStyle = "#7A5A36"; x.font = '600 26px "Cinzel",Georgia,serif'; esp(6); x.fillText("CARAVANA DO CÉU · ÍNDIA SAGRADA", W / 2, H - 80); esp(0);
   return B.sai();
 }
+// só o selo, em PNG sem fundo (para pôr por cima de uma foto ou vídeo), no dobro do tamanho
+async function baixarSeloPng(l, bt) {
+  const txt0 = bt.textContent; bt.disabled = true; bt.textContent = "Preparando…";
+  try {
+    const im = await carregaLivre(badgeSrc(l)); if (!im) throw 0;
+    const k = 2, c = document.createElement("canvas"); c.width = im.naturalWidth * k; c.height = im.naturalHeight * k;
+    const x = c.getContext("2d"); x.imageSmoothingQuality = "high"; x.drawImage(im, 0, 0, c.width, c.height);
+    const b = await new Promise(ok => c.toBlob(ok, "image/png")); if (!b) throw 0;
+    const nome = "selo-" + norm(l.nome || "caravana").replace(/[^a-z0-9]+/g, "-") + ".png", f = new File([b], nome, { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f] }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
+    let msg = bt.parentNode.nextElementSibling; if (!msg || !msg.hasAttribute("data-carmsg")) { msg = h("p", { class: "msg carmsg", role: "status", "data-carmsg": "1" }); bt.parentNode.after(msg); }
+    salvarNoRolo(Promise.resolve(b), nome, msg);
+  } catch (e) { avisoReacao("Não consegui preparar o selo."); }
+  finally { bt.disabled = false; bt.textContent = txt0; }
+}
 async function compartilharCarimbo(l, bt, salvar) {
   const txt0 = bt.textContent; bt.disabled = true; bt.textContent = "Preparando…";
   try {
@@ -5566,7 +5581,8 @@ function conteudoInsignia(l) {
     on && S.unlockMsg && S.unlockMsg.ok ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn gold", type: "button", onclick: () => abrirLivro(paginaDoSelo(l.id)) }, "Folhear meu passaporte")) : null,
     // carimbo ganho: botão para compartilhar a imagem do carimbo (Stories, WhatsApp...)
     on ? h("div", { class: "actions", style: "justify-content:center" }, h("button", { class: "btn", type: "button", onclick: e => compartilharCarimbo(l, e.currentTarget) }, "Compartilhar carimbo"),
-      h("button", { class: "btn", type: "button", onclick: e => compartilharCarimbo(l, e.currentTarget, true) }, "Salvar no celular")) : null,
+      h("button", { class: "btn", type: "button", onclick: e => compartilharCarimbo(l, e.currentTarget, true) }, "Salvar no celular"),
+      h("button", { class: "btn", type: "button", onclick: e => baixarSeloPng(l, e.currentTarget) }, "Baixar PNG (só o selo)")) : null,
     on ? saberes.map(e => h("div", { class: "saber" }, h("p", { class: "eyebrow", text: "O saber deste carimbo" }), h("h3", { text: e.titulo }),
       String(e.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })), e.fonte ? h("p", { class: "src", text: "Fontes: " + e.fonte }) : null)) : null,
     l.preparo ? null : h("div", { class: "actions", style: "justify-content:center" },
