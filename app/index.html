@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "17/11 · 07:45";</script>
+<script>window.__VERSAO = "17/11 · 08:45";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -11071,7 +11071,10 @@ function checaAvaliacao() {
 }
 // link de avaliação da Caravana do Céu no Google (a líder pode trocar no cartão "Avaliações da travessia")
 const GOOGLE_AVALIACAO = "https://g.page/r/CQ3ts3M-DenYEAE/review";
-function linkGoogle() { return ((S.avalCfg || {}).google || "").trim() || GOOGLE_AVALIACAO; }
+// viajantes que não recebem o convite para avaliar no Google (pedido da líder)
+const SEM_GOOGLE = ["monalisa"];
+const semGoogle = () => !S.isOwner && SEM_GOOGLE.some(n => norm((eu() || {}).nome || "").split(" ").includes(n));
+function linkGoogle() { if (semGoogle()) return ""; return ((S.avalCfg || {}).google || "").trim() || GOOGLE_AVALIACAO; }
 function botaoGoogle(relato, st) {
   const url = linkGoogle(); if (!url) return null;
   return h("button", { class: "btn gold", type: "button", onclick: () => window.open(url, "_blank", "noopener") }, "⭐ Deixar minha avaliação no Google");
