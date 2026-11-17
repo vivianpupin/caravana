@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "17/11 · 01:41";</script>
+<script>window.__VERSAO = "17/11 · 01:42";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -10977,7 +10977,9 @@ function checaAvaliacao() {
   // só conta como mostrada quando abre de verdade (se outra janela estiver aberta, tenta de novo depois)
   setTimeout(() => { S.avalAgendada = false; if (document.querySelector(".sheet,.abertura,#boasvindas,#portao") || jaAvaliou()) return; lsSet("cdi-aval-mostrou", hoje); abrirAvaliacao(); }, 1500);
 }
-function linkGoogle() { return ((S.avalCfg || {}).google || "").trim(); }
+// link de avaliação da Caravana do Céu no Google (a líder pode trocar no cartão "Avaliações da travessia")
+const GOOGLE_AVALIACAO = "https://g.page/r/CQ3ts3M-DenYEAE/review";
+function linkGoogle() { return ((S.avalCfg || {}).google || "").trim() || GOOGLE_AVALIACAO; }
 function botaoGoogle(relato, st) {
   const url = linkGoogle(); if (!url) return null;
   return h("button", { class: "btn gold", type: "button", onclick: async () => {
@@ -11006,7 +11008,6 @@ function abrirAvaliacao() {
     const st2 = h("p", { class: "msg", role: "status" });
     box.replaceChildren(...[
       h("button", { type: "button", class: "celx", "aria-label": "Fechar", onclick: () => { closeSheets(); render(); } }, "×"),
-      h("p", { class: "eyebrow", style: "text-align:center", text: "Correspondência" }),
       h("h2", { class: "avaltit", text: "Gratidão por cada passo" }),
       h("p", { class: "avaltexto", text: "Suas palavras chegaram até nós." }),
       linkGoogle() ? h("p", { class: "avaltexto", text: "Se quiser, ajude outras pessoas a encontrarem esse caminho: deixe a sua avaliação no Google. Suas palavras vão copiadas, é só colar e tocar nas estrelas." }) : null,
