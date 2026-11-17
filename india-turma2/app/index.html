@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "17/11 · 01:42";</script>
+<script>window.__VERSAO = "17/11 · 01:46";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2274,6 +2274,9 @@ video.mgrande{max-height:70vh;background:#000}
 .avalestrelas{display:flex;gap:6px;justify-content:center}.avalestrela{border:0;background:none;font-size:38px;line-height:1;color:#D9CBB0;cursor:pointer;padding:0 2px}.avalestrela.on{color:#D7A23A}
 .avallista{display:flex;flex-direction:column;gap:10px;margin:6px 0}.avalitem{padding:10px 12px;border-radius:12px;background:#FBF6EC;border:1px solid #EADFC9}
 .avaltopo{display:flex;align-items:center;gap:8px}.avaltopo img{width:28px;height:28px;border-radius:50%;object-fit:cover}.avalest{margin-left:auto;color:#D7A23A;letter-spacing:1px}.avalrelato{margin:6px 0;font-family:Lora,Georgia,serif;font-style:italic;color:#4A3A28;white-space:pre-wrap}
+.avalpausa{margin:14px -4px 2px;padding:14px 14px 12px;border-radius:14px;background:linear-gradient(135deg,#F6EAD3,#EFDDBC);display:flex;flex-direction:column;gap:6px}
+.avalpausatit{margin:0;text-align:center;font-family:var(--display,Lora),Georgia,serif;font-size:19px;color:#5A3F22}
+.avalbox input[type=text]{width:100%}.avalrefl summary{cursor:pointer;color:#8A6B43;font-size:13px;margin-top:4px}.avalrperg{display:block;margin-top:8px;color:#8A6B43;font-weight:600}
 </style>
 
 <div class="app">
@@ -10982,9 +10985,7 @@ const GOOGLE_AVALIACAO = "https://g.page/r/CQ3ts3M-DenYEAE/review";
 function linkGoogle() { return ((S.avalCfg || {}).google || "").trim() || GOOGLE_AVALIACAO; }
 function botaoGoogle(relato, st) {
   const url = linkGoogle(); if (!url) return null;
-  return h("button", { class: "btn gold", type: "button", onclick: async () => {
-    if (relato) { try { await navigator.clipboard.writeText(relato); if (st) { st.textContent = "Suas palavras foram copiadas: no Google, é só colar e tocar nas estrelas."; st.className = "msg ok"; } } catch (e) {} }
-    window.open(url, "_blank", "noopener"); } }, "⭐ Deixar minha avaliação no Google");
+  return h("button", { class: "btn gold", type: "button", onclick: () => window.open(url, "_blank", "noopener") }, "⭐ Deixar minha avaliação no Google");
 }
 function abrirAvaliacao() {
   closeSheets();
@@ -10997,10 +10998,23 @@ function abrirAvaliacao() {
     if (multi) b.setAttribute("aria-pressed", String(atual.has(t))); else b.parentNode.querySelectorAll(".opt").forEach(x => x.setAttribute("aria-pressed", String(x === b))); } }, t)));
   const estr = h("div", { class: "avalestrelas", role: "radiogroup", "aria-label": "Estrelas" }, [1, 2, 3, 4, 5].map(n => h("button", { type: "button", class: "avalestrela", "aria-label": n + (n === 1 ? " estrela" : " estrelas"), onclick: () => { estrelas = n; estr.querySelectorAll(".avalestrela").forEach((b, i) => b.classList.toggle("on", i < n)); } }, "★")));
   const ta = h("textarea", { rows: "6", maxlength: "3000", placeholder: "Escreva do jeito que vier: uma lembrança, um agradecimento, algo que poderia ser diferente…" });
+  // perguntas para a pessoa voltar lá dentro e ir lembrando (todas opcionais)
+  const g = v.genero === "o" ? "o" : "a";
+  const REFLEXOES = [
+    ["mudou", "✦ Qual foi o momento em que você sentiu que algo mudou dentro de você?", "Onde você estava? O que estava acontecendo à sua volta?"],
+    ["voltar", "✦ Se pudesse voltar a um único instante da travessia, qual seria?", "Feche os olhos e descreva: o cheiro, o som, quem estava ao seu lado…"],
+    ["desafio", "✦ O que foi mais desafiador para você na Índia?", "O caos, o cansaço, a comida, uma emoção difícil…"],
+    ["ensinou", "✦ E o que esse desafio te ensinou?", "Às vezes é o que mais pesou que mais transforma."],
+    ["mostrou", "✦ O que a Índia te mostrou sobre você que você ainda não sabia?", ""],
+    ["pessoa", "✦ Alguém da caravana marcou a sua jornada? Conte quem e por quê.", ""],
+    ["leva", "✦ O que você trouxe na mala do coração e quer cultivar daqui para frente?", "Um hábito, um mantra, um jeito de olhar a vida…"],
+    ["palavra", "✦ Se a sua travessia fosse uma palavra só, qual seria?", ""]];
+  const refl = {}; REFLEXOES.forEach(([k, , ph]) => { refl[k] = k === "palavra" ? h("input", { type: "text", maxlength: "40", placeholder: "Uma palavra" }) : h("textarea", { rows: "3", maxlength: "1500", placeholder: ph || "Escreva do seu jeito…" }); });
   const envia = async bt => {
     if (!estrelas) { st.textContent = "Toque nas estrelas para dizer como foi."; st.className = "msg err"; return; }
     bt.disabled = true; st.textContent = "Enviando…"; st.className = "msg";
-    const avaliacao = { estrelas, tocou: [...tocou], cuidado, indica, relato: ta.value.trim(), ts: Date.now() };
+    const reflexoes = {}; REFLEXOES.forEach(([k]) => { const t = refl[k].value.trim(); if (t) reflexoes[k] = t; });
+    const avaliacao = { estrelas, tocou: [...tocou], reflexoes, cuidado, indica, relato: ta.value.trim(), ts: Date.now() };
     const ref = S.db.doc("diarios/" + S.uid);
     try { await ref.update({ avaliacao }).catch(e => { if (/not.?found/i.test(String(e && (e.code || e.message)))) return ref.set({ avaliacao }); throw e; }); }
     catch (e) { bt.disabled = false; st.textContent = "Não consegui enviar. Confira a internet e tente de novo."; st.className = "msg err"; return; }
@@ -11010,7 +11024,7 @@ function abrirAvaliacao() {
       h("button", { type: "button", class: "celx", "aria-label": "Fechar", onclick: () => { closeSheets(); render(); } }, "×"),
       h("h2", { class: "avaltit", text: "Gratidão por cada passo" }),
       h("p", { class: "avaltexto", text: "Suas palavras chegaram até nós." }),
-      linkGoogle() ? h("p", { class: "avaltexto", text: "Se quiser, ajude outras pessoas a encontrarem esse caminho: deixe a sua avaliação no Google. Suas palavras vão copiadas, é só colar e tocar nas estrelas." }) : null,
+      linkGoogle() ? h("p", { class: "avaltexto", text: "Se quiser, ajude outras pessoas a encontrarem esse caminho: deixe a sua avaliação no Google." }) : null,
       botaoGoogle(avaliacao.relato, st2), st2,
       h("p", { class: "avalmantra", text: "लोकाः समस्ताः सुखिनो भवन्तु" })].filter(Boolean));
   };
@@ -11030,6 +11044,9 @@ function abrirAvaliacao() {
       h("p", { class: "avaltexto", text: "Antes que a rotina apague as cores, queremos ouvir você. Como foi atravessar a Índia Sagrada com a Caravana do Céu?" }),
       h("p", { class: "avalperg", text: "✦ De 1 a 5 estrelas, como foi a sua travessia?" }), estr,
       h("p", { class: "avalperg", text: "✦ O que mais tocou o seu coração?" }), h("small", { class: "avalobs", text: "Pode escolher mais de um." }), opts(locais, tocou, t => tocou.has(t) ? tocou.delete(t) : tocou.add(t), true),
+      h("div", { class: "avalpausa" }, h("p", { class: "avalpausatit", text: "Volte lá por um instante" }),
+        h("p", { class: "avaltexto", text: `Respire fundo. Antes de responder, deixe a memória te levar de novo pelos templos, pelas escadarias do Ganges, pelos amanheceres e pelas risadas no caminho. Escreva sem pressa, só o que quiser: estas respostas guardam a sua travessia para você e para nós.` })),
+      ...REFLEXOES.flatMap(([k, perg]) => [h("p", { class: "avalperg", text: perg }), refl[k]]),
       h("p", { class: "avalperg", text: "✦ Como você se sentiu cuidad" + (v.genero === "o" ? "o" : "a") + " pela Caravana?" }), opts(["Muito cuidad" + (v.genero === "o" ? "o" : "a"), "Cuidad" + (v.genero === "o" ? "o" : "a"), "Poderia ser melhor"], cuidado, t => { cuidado = t; }),
       h("p", { class: "avalperg", text: "✦ Você indicaria a Caravana para alguém que ama?" }), opts(["Com certeza", "Talvez", "Não"], indica, t => { indica = t; }),
       h("p", { class: "avalperg", text: "✦ Deixe aqui as suas palavras sobre a travessia" }), ta,
@@ -11053,6 +11070,8 @@ function vAvaliacoesLider() {
     lista.length ? h("div", { class: "avallista" }, lista.map(a => h("div", { class: "avalitem" },
       h("div", { class: "avaltopo" }, h("img", { src: avatar(a.id), alt: "" }), h("b", { text: nomeDe(a.id) }), h("span", { class: "avalest", text: est(a.estrelas) })),
       a.relato ? h("p", { class: "avalrelato", text: a.relato }) : null,
+      a.reflexoes && Object.keys(a.reflexoes).length ? h("details", { class: "avalrefl" }, h("summary", { text: `Ver as ${Object.keys(a.reflexoes).length} lembranças` }),
+        Object.entries(a.reflexoes).map(([k, t]) => h("div", null, h("small", { class: "avalrperg", text: ({ mudou: "O momento em que algo mudou", voltar: "O instante para onde voltaria", desafio: "O mais desafiador", ensinou: "O que o desafio ensinou", mostrou: "O que a Índia mostrou sobre ela", pessoa: "Quem marcou a jornada", leva: "O que leva na mala do coração", palavra: "A travessia em uma palavra" })[k] || k }), h("p", { class: "avalrelato", text: t })))) : null,
       h("small", { text: [a.tocou && a.tocou.length ? "Tocou: " + a.tocou.join(", ") : "", a.cuidado, a.indica ? "Indicaria: " + a.indica : ""].filter(Boolean).join(" · ") })))) : null,
     h("p", { class: "lab", text: "Link de avaliação no Google" }), inp,
     h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: salvaLink }, "Guardar link"), h("button", { class: "btn ghost", type: "button", onclick: () => abrirAvaliacaoPrevia() }, "Ver como os viajantes veem")), st);
