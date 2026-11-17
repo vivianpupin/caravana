@@ -11032,6 +11032,7 @@ function abrirAvaliacao(chegou) {
     ["desafio", "✦ O que foi mais desafiador para você na Índia?", "O caos, o cansaço, a comida, uma emoção difícil…"],
     ["ensinou", "✦ E o que esse desafio te ensinou?", "Às vezes é o que mais pesou que mais transforma."],
     ["mostrou", "✦ O que a Índia te mostrou sobre você que você ainda não sabia?", ""],
+    ["ensinamento", "✦ Qual ensinamento você trouxe dessa travessia?", "Algo que você ouviu, viu ou sentiu e quer levar para a vida…"],
     ["pessoa", "✦ Alguém da caravana marcou a sua jornada? Conte quem e por quê.", ""],
     ["leva", "✦ O que você trouxe na mala do coração e quer cultivar daqui para frente?", "Um hábito, um mantra, um jeito de olhar a vida…"],
     ["palavra", "✦ Se a sua travessia fosse uma palavra só, qual seria?", ""]];
@@ -11102,7 +11103,7 @@ function vAvaliacoesLider() {
       h("div", { class: "avaltopo" }, h("img", { src: avatar(a.id), alt: "" }), h("b", { text: nomeDe(a.id) }), h("span", { class: "avalest", text: est(a.estrelas) })),
       a.relato ? h("p", { class: "avalrelato", text: a.relato }) : null,
       a.reflexoes && Object.keys(a.reflexoes).length ? h("details", { class: "avalrefl" }, h("summary", { text: `Ver as ${Object.keys(a.reflexoes).length} lembranças` }),
-        Object.entries(a.reflexoes).map(([k, t]) => h("div", null, h("small", { class: "avalrperg", text: ({ sempre: "O momento que leva para sempre", mudou: "O momento em que algo mudou", voltar: "O instante para onde voltaria", desafio: "O mais desafiador", ensinou: "O que o desafio ensinou", mostrou: "O que a Índia mostrou sobre ela", pessoa: "Quem marcou a jornada", leva: "O que leva na mala do coração", palavra: "A travessia em uma palavra" })[k] || k }), h("p", { class: "avalrelato", text: t })))) : null,
+        Object.entries(a.reflexoes).map(([k, t]) => h("div", null, h("small", { class: "avalrperg", text: ({ sempre: "O momento que leva para sempre", mudou: "O momento em que algo mudou", voltar: "O instante para onde voltaria", desafio: "O mais desafiador", ensinou: "O que o desafio ensinou", mostrou: "O que a Índia mostrou sobre ela", ensinamento: "O ensinamento que trouxe", pessoa: "Quem marcou a jornada", leva: "O que leva na mala do coração", palavra: "A travessia em uma palavra" })[k] || k }), h("p", { class: "avalrelato", text: t })))) : null,
       h("small", { text: [a.tocou && a.tocou.length ? "Tocou: " + a.tocou.join(", ") : "", a.cuidado, a.indica ? "Indicaria: " + a.indica : ""].filter(Boolean).join(" · ") })))) : null,
     h("p", { class: "lab", text: "Link de avaliação no Google" }), inp,
     h("div", { class: "actions" }, h("button", { class: "btn", type: "button", onclick: salvaLink }, "Guardar link"), h("button", { class: "btn ghost", type: "button", onclick: () => abrirAvaliacaoPrevia() }, "Ver como os viajantes veem")), st);
