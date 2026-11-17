@@ -2261,6 +2261,17 @@ video.mgrande{max-height:70vh;background:#000}
 .pgm.avalbox .avalmantra{color:#7A5A36}
 .pgm.avalbox .avaldestaque,.avaldestaque{margin:4px 0 2px;font-family:Lora,Georgia,serif;font-style:normal;font-weight:600;font-size:18px;line-height:1.4;color:#3B2A1C;text-align:center;text-wrap:balance}
 .pgm.avalbox>*{flex-shrink:0}
+.pgm.avalbox{gap:18px;padding-left:24px;padding-right:24px}
+.pgm.avalbox .avalperg{margin-top:22px;line-height:1.5}
+.pgm.avalbox .avaltexto{line-height:1.7}
+.pgm.avalbox .opts{gap:10px}
+.pgm.avalbox .opt{padding:8px 14px;line-height:1.35}
+.pgm.avalbox .avalpausa{margin:26px -4px 6px;padding:18px 16px;gap:10px}
+.pgm.avalbox textarea{min-height:96px;line-height:1.55}
+.pgm.avalbox .btn.gold{margin-top:16px;padding:12px 18px}
+.avalgoogle{margin-top:14px!important;font-size:13px;color:#7A5A36;text-align:center;line-height:1.5}
+.avalestrelas.falta{animation:faltaestrela .5s ease 2}.avalestrelas.falta .avalestrela{color:#C98A3A}
+@keyframes faltaestrela{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 </style>
 
 <div class="app">
@@ -10998,7 +11009,7 @@ function abrirAvaliacao(chegou) {
     ["palavra", "✦ Se a sua travessia fosse uma palavra só, qual seria?", ""]];
   const refl = {}; REFLEXOES.forEach(([k, , ph]) => { refl[k] = k === "palavra" ? h("input", { type: "text", maxlength: "40", placeholder: "Uma palavra" }) : h("textarea", { rows: "3", maxlength: "1500", placeholder: ph || "Escreva do seu jeito…" }); });
   const envia = async bt => {
-    if (!estrelas) { st.textContent = "Toque nas estrelas para dizer como foi."; st.className = "msg err"; return; }
+    if (!estrelas) { st.textContent = "Falta só tocar nas estrelas, lá em cima, para dizer como foi."; st.className = "msg err"; estr.classList.remove("falta"); void estr.offsetWidth; estr.classList.add("falta"); return; }
     bt.disabled = true; st.textContent = "Enviando…"; st.className = "msg";
     const reflexoes = {}; REFLEXOES.forEach(([k]) => { const t = refl[k].value.trim(); if (t) reflexoes[k] = t; });
     const avaliacao = { estrelas, tocou: [...tocou], reflexoes, cuidado, indica, relato: ta.value.trim(), ts: Date.now() };
@@ -11037,6 +11048,7 @@ function abrirAvaliacao(chegou) {
       h("p", { class: "avalperg", text: "✦ Como você se sentiu cuidad" + (v.genero === "o" ? "o" : "a") + " pela Caravana?" }), opts(["Muito cuidad" + (v.genero === "o" ? "o" : "a"), "Cuidad" + (v.genero === "o" ? "o" : "a"), "Poderia ser melhor"], cuidado, t => { cuidado = t; }),
       h("p", { class: "avalperg", text: "✦ Você indicaria a Caravana para alguém que ama?" }), opts(["Com certeza", "Talvez", "Não"], indica, t => { indica = t; }),
       h("p", { class: "avalperg", text: "✦ Deixe aqui as suas palavras sobre a travessia" }), ta,
+      linkGoogle() ? h("p", { class: "avalgoogle", text: "Ao enviar, aparece o convite para você deixar também a sua avaliação no Google ⭐" }) : null,
       bt, st);
   }
   const caixa = h("div", { role: "dialog", "aria-label": "O último pombo-correio da travessia: avaliação", class: "correiobox avalcarta" + (chegou ? " chegou" : "") },
