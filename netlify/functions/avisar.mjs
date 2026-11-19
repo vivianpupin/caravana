@@ -18,6 +18,7 @@ export default async req => {
   if (corpo.selo) return avisarSelo(d, k, corpo.selo);
   if (corpo.habilidade) return avisarHabilidade(d, k, corpo.habilidade, corpo.para);
   if (corpo.pombo) return avisarPombo(d, k, corpo.pombo);
+  if (corpo.avaliacao) return avisarAvaliacao(d, k, corpo.avaliacao);
   if (corpo.reacao) return avisarReacao(d, k, corpo.reacao);
   const { id } = corpo;
   if (!id || typeof id !== "string" || id.includes("/")) return Response.json({ ok: false }, { status: 400 });
@@ -113,5 +114,24 @@ async function avisarReacao(d, k, id) {
   const nome = String((v.exists && v.data().nome) || "Alguém da caravana").trim().split(/\s+/)[0];
   const texto = r.r === "fala" ? String(r.texto || "").slice(0, 80) : REACOES[r.r] || "👋";
   const enviados = await enviarPara(d, k, r.para, { title: nome + " · Caravana do Céu", body: texto, tag: "reacao-" + id, url: "./?aba=mapa&de=" + m.by }, 3600);
+  return Response.json({ ok: true, enviados });
+}
+
+// alguém respondeu a avaliação da travessia (o último pombo-correio): avisa só as líderes, uma vez por resposta
+async function avisarAvaliacao(d, k, uid) {
+  if (typeof uid !== "string" || uid.includes("/")) return Response.json({ ok: false }, { status: 400 });
+  const ref = d.doc("diarios/" + uid);
+  const a = await d.runTransaction(async t => {
+    const s = await t.get(ref); if (!s.exists) return null;
+    const x = s.data().avaliacao; if (!x || !x.estrelas || Date.now() - (x.ts || 0) > 10 * 60 * 1000 || s.data().avaliacaoAvisada === x.ts) return null;
+    t.update(ref, { avaliacaoAvisada: x.ts }); return x;
+  });
+  if (!a) return Response.json({ ok: false });
+  const v = await d.doc("viajantes/" + uid).get();
+  const nome = String((v.exists && v.data().nome) || "Alguém da caravana").trim().split(/\s+/)[0];
+  const lideres = (await d.collection("viajantes").where("lider", "==", true).get()).docs.map(x => x.id);
+  const trecho = String(a.relato || "").trim(), corpo = "★".repeat(a.estrelas) + "☆".repeat(5 - a.estrelas) + (trecho ? " · " + (trecho.length > 110 ? trecho.slice(0, 107) + "…" : trecho) : "");
+  let enviados = 0;
+  for (const id of lideres) enviados += await enviarPara(d, k, id, { title: "🕊️ " + nome + " respondeu o último pombo-correio", body: corpo, tag: "aval-" + uid, url: "./?aba=passaporte" }, 3 * 24 * 3600).catch(() => 0);
   return Response.json({ ok: true, enviados });
 }

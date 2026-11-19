@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "18/11 · 22:59";</script>
+<script>window.__VERSAO = "18/11 · 23:10";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -11088,6 +11088,8 @@ function abrirAvaliacao(chegou) {
     try { await ref.update({ avaliacao }).catch(e => { if (/not.?found/i.test(String(e && (e.code || e.message)))) return ref.set({ avaliacao }); throw e; }); }
     catch (e) { bt.disabled = false; st.textContent = "Não consegui enviar. Confira a internet e tente de novo."; st.className = "msg err"; return; }
     lsSet("cdi-avaliou-" + S.uid, String(Date.now()));
+    // avisa a líder no celular que chegou uma avaliação
+    if (typeof AVISAR !== "undefined" && noSite()) fetch(AVISAR, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ avaliacao: S.uid }), keepalive: true }).catch(() => {});
     const fb = document.querySelector(".avalcarta .foot2 .btn"); if (fb) fb.textContent = "Fechar";
     const st2 = h("p", { class: "msg", role: "status" });
     box.replaceChildren(...[
