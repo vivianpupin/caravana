@@ -8361,7 +8361,8 @@ function vEstante() {
     vDiarioViajante(),
     h("p", { class: "eyebrow rule", text: "A trilha da travessia" }),
     vVitrolaSaberes(),
-    null);
+    // a chave do logo também fica aqui embaixo, além do botão Logo dentro de cada câmera
+    ehLider(S.uid) ? chaveLogoLider() : null);
 }
 // só a líder vê: tirar o logo da Caravana das fotos e filmes que ela fizer (em todas as câmeras); fica guardado neste celular
 const semLogo = () => { try { return ehLider(S.uid) && localStorage.getItem("cdi-sem-logo") === "1"; } catch (e) { return false; } };

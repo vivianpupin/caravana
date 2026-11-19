@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "19/11 · 02:47";</script>
+<script>window.__VERSAO = "19/11 · 03:28";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -1920,6 +1920,10 @@ body:has(.sheet) .navmais{display:none!important}
 /* Correspondência */
 nav.tabs .badge{position:absolute;top:2px;right:calc(50% - 26px);display:grid;place-items:center;min-width:17px;height:17px;border-radius:9px;background:#B3473A;color:#fff;font-size:10.5px;font-weight:700;padding:0 4px;box-shadow:0 0 0 2px #2B1F14}
 nav.tabs button{position:relative}
+/* cartas já lidas, no fim dos Saberes: discretas, sem o destaque das novas */
+.correio.lidas{background:transparent!important;border:1px dashed var(--line2)!important;box-shadow:none!important;padding:14px!important;margin-top:8px}
+.correio.lidas .cchead h2{font-size:17px}.correio.lidas .pombomini{opacity:.6;transform:scale(.8)}
+.correio.lidas .envelope{background:rgba(251,241,218,.55)}
 .correio{background:linear-gradient(180deg,#F3E6C8,#EAD6A8);border:1px solid #CDB184;border-radius:var(--r);box-shadow:var(--shadow);padding:18px;display:flex;flex-direction:column;gap:12px}
 .cchead{display:flex;align-items:center;gap:12px}.cchead h2{margin:0;font-size:22px}
 .pombomini{width:56px;height:auto;flex:none}
@@ -2978,7 +2982,8 @@ function vTravessia() {
     vMissoes(),
     vOnlineLider(),
     vTempo(),
-    S.isOwner ? null : vCorrespondencia(),
+    // viajante: no início só as cartas ainda não lidas, em destaque; as lidas vão para o fim da aba Saberes
+    S.isOwner ? null : vCorrespondencia("novas"),
     ins.length ? h("div", null,
       h("p", { class: "eyebrow rule", text: `Os ${ins.length} carimbos do passaporte` }),
       h("div", { class: "strip", style: "margin-top:10px" }, ins.map(l => h("button", { type: "button", "aria-label": l.nome, onclick: () => abrirSelo(l) },
@@ -4410,6 +4415,7 @@ function vSaberes() {
       guia.map(g => h("details", { class: "guide" + (S.lidos[g.id] ? " lido" : ""), ontoggle: ev => { if (ev.currentTarget.open) { marcaLido(g.id); ev.currentTarget.classList.add("lido"); } } },
         h("summary", null, h("div", null, h("b", { text: g.titulo }), g.resumo ? h("span", { text: g.resumo }) : null), h("span", { class: "lidotag", "aria-label": "Lido" }, "✓"), h("span", { text: "▾", "aria-hidden": "true" })),
         h("div", { class: "gb" }, String(g.texto || "").split(/\n\s*\n/).map(p => h("p", { text: p.trim() })))))) : null,
+    S.isOwner ? null : vCorrespondencia("lidas"),
     vOffline(),
     h("img", { class: "orn", src: "img/mantra-vasudeva.webp", alt: "Om Namo Bhagavate Vasudevaya" }));
 }
@@ -8423,7 +8429,8 @@ function vEstante() {
     vDiarioViajante(),
     h("p", { class: "eyebrow rule", text: "A trilha da travessia" }),
     vVitrolaSaberes(),
-    null);
+    // a chave do logo também fica aqui embaixo, além do botão Logo dentro de cada câmera
+    ehLider(S.uid) ? chaveLogoLider() : null);
 }
 // só a líder vê: tirar o logo da Caravana das fotos e filmes que ela fizer (em todas as câmeras); fica guardado neste celular
 const semLogo = () => { try { return ehLider(S.uid) && localStorage.getItem("cdi-sem-logo") === "1"; } catch (e) { return false; } };
@@ -11381,8 +11388,11 @@ function quadroPombo() {
 }
 // a líder vê a avaliação como os viajantes, sem enviar nada
 function abrirAvaliacaoPrevia() { const sal = S.isOwner; try { S.isOwner = false; const ja = lsGet("cdi-avaliou-" + S.uid); abrirAvaliacao(); if (!ja) { const b = document.querySelector(".avalbox .btn.gold"); if (b) { b.textContent = "Prévia: o envio fica para os viajantes"; b.disabled = true; } } } finally { S.isOwner = sal; } }
-function vCorrespondencia() {
-  const abertas = cartasAbertas().slice().reverse();
+function vCorrespondencia(modo) {
+  const vistas = cartasVistas(), todas = cartasAbertas().slice().reverse();
+  const abertas = S.isOwner || !modo ? todas : todas.filter(c => modo === "novas" ? !vistas[c.id] : vistas[c.id]);
+  if (!S.isOwner && modo === "novas" && !abertas.length) return null;
+  if (!S.isOwner && modo === "lidas" && todas.length && !abertas.length) return null;
   const pessoais = S.isOwner ? S.cartasP.filter(c => c.para !== S.uid) : [];
   const futuras = S.isOwner ? [...S.cartas, ...pessoais].filter(c => c.rascunho || !c.envio || c.envio > Date.now()).sort((a, b) => (a.envio || 0) - (b.envio || 0)) : [];
   const enviadasP = pessoais.filter(c => !c.rascunho && c.envio && c.envio <= Date.now()).sort((a, b) => b.envio - a.envio);
@@ -11400,8 +11410,9 @@ function vCorrespondencia() {
     h("span", { class: "rolinho", "aria-hidden": "true" }, h("i")),
     h("span", { class: "ctx" }, h("b", { text: (c.audio && c.audio.partes ? "🎙️ " : c.para || c.pessoal ? "💌 " : "") + (c.titulo || (c.audio && c.audio.partes ? "Aviso da Caravana" : "Carta da líder")) }),
       h("span", { text: (c.para && S.isOwner ? "Só para " + nomeDe(c.para).split(" ")[0] + " · " : c.pessoal ? "Só para você · " : "") + (fut && !entregue ? (c.rascunho ? "Rascunho · ninguém vê ainda" : `Programada · ${dataCarta(c.envio)}, ${horaCarta(c.envio)} na Índia`) : (c.local ? c.local + " · " : "") + dataCarta(c.envio)) })));
-  return h("section", { class: "correio" },
-    h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: "Correspondência" }), h("h2", { text: "Cartas da travessia" }))),
+  return h("section", { class: "correio" + (modo === "lidas" ? " lidas" : modo === "novas" ? " novas" : "") },
+    h("div", { class: "cchead" }, pomboSvg("pombomini"), h("div", null, h("p", { class: "eyebrow", text: modo === "lidas" ? "Correspondência · já lidas" : "Correspondência" }),
+      h("h2", { text: modo === "novas" ? (abertas.length > 1 ? "Cartas novas para você" : "Carta nova para você") : "Cartas da travessia" }))),
     abertas.length ? h("div", { class: "envs" }, abertas.map(c => env(c, false))) : null,
     S.isOwner ? h("div", { class: "secret" },
       futuras.length ? h("div", { class: "envs" }, futuras.map(c => env(c, true))) : null,
