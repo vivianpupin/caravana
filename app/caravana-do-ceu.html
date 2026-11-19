@@ -1009,6 +1009,13 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 .cellentes.anal .lenteciclo{display:none;flex-direction:column;align-items:center;justify-content:center;min-width:46px;height:30px;padding:0 8px;border:0;border-radius:15px;background:rgba(30,20,12,.85);color:#F6C66B;cursor:pointer;line-height:1;box-shadow:0 0 0 1px rgba(246,198,107,.5)}
 .cellentes.anal .lenteciclo b{font:700 10.5px Poppins,sans-serif}.cellentes.anal .lenteciclo small{font:600 7.5px "Courier Prime",monospace;opacity:.8;margin-top:2px}
 .cellentes.anal.estreita{padding:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.cellentes .lentesol{width:30px;height:30px;padding:0;border:0;border-radius:50%;background:rgba(30,20,12,.65);color:#F6C84A;font-size:16px;line-height:1;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cellentes.anal .lentesol{width:30px;border-radius:15px}
+.exporegua{position:absolute;z-index:5;left:50%;bottom:52px;transform:translateX(-50%);display:flex;align-items:center;gap:7px;width:min(92%,290px);padding:7px 10px;border-radius:999px;background:rgba(14,9,5,.72);color:#F6C84A;font:700 14px Poppins,sans-serif;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);touch-action:none}
+.exporegua.fixa{position:fixed;z-index:85;bottom:auto;top:58%;width:min(86vw,300px)}
+.exporegua input{flex:1;min-width:0;accent-color:#F6C84A;height:22px}
+.exporegua b{font:600 10.5px Poppins,sans-serif;color:#F3E3C0;min-width:40px;text-align:center}
+.exporegua button{border:0;border-radius:999px;padding:3px 8px;background:rgba(246,200,74,.18);color:#F6C84A;font:700 10.5px Poppins,sans-serif;cursor:pointer}
 .cellentes.anal.estreita .lenteanal{display:none}.cellentes.anal.estreita .lenteciclo{display:flex}
 .celflash{position:fixed;z-index:60;pointer-events:none;background:#fff;border-radius:12px;animation:celflash .42s ease-out forwards}
 @keyframes celflash{0%{opacity:.95}100%{opacity:0}}
@@ -9129,9 +9136,10 @@ const LENTES = [[.5, "13mm"], [1, "26mm"], [2, "52mm"], [3, "77mm"]];
 const rotLente = z => String(z).replace(".", ",") + "×";
 // acha a ultra-angular pelo nome (iPhone: "Back Ultra Wide Camera" / "Câmera Ultra-Angular Traseira"); os nomes só aparecem depois da permissão
 async function achaUltra() {
-  if (S.lenteUW !== undefined) return S.lenteUW;
-  try { const ds = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === "videoinput"); if (!ds.some(d => d.label)) return null;
-    const d = ds.find(d => /ultra/i.test(d.label) && !/front|frontal|dianteir/i.test(d.label)); S.lenteUW = d ? d.deviceId : null; } catch (e) { return null; }
+  if (S.lenteUW) return S.lenteUW;
+  try { const ds = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === "videoinput"); S.camNomes = ds.map(d => d.label || "?");
+    if (!ds.some(d => d.label)) return null;
+    const d = ds.find(d => /ultra|ultrawide|ultra-wide|ultra-angular|ultra-grande|grande-angular|0[.,]5/i.test(d.label) && !/front|frontal|dianteir|selfie/i.test(d.label)); S.lenteUW = d ? d.deviceId : null; } catch (e) { return null; }
   marcaLentes(); return S.lenteUW;
 }
 const uwPorZoom = C => !!(C && C.zoomHw && C.zoomHw.min <= .6 && !C.lenteUW);
@@ -9153,6 +9161,8 @@ const avisoLente = txt => etiquetaCam(txt, txt.length > 20 ? 2600 : 1100);
 async function trocaLente(C, uw) {
   if (C.trocandoLente || !!C.lenteUW === uw) return;
   C.lenteUW = uw; C.zoom = 1; C.zoomPedido = null; C.trocandoLente = true;
+  if (C.fluxo) { C.fluxo.getTracks().forEach(t => { t.onended = null; t.stop(); }); C.fluxo = null; }
+  const G = S.fluxoGuardado; if (G) { G.fluxo.getTracks().forEach(t => t.stop()); clearTimeout(G.t); S.fluxoGuardado = null; }
   try { await ligaCam(); } finally { C.trocandoLente = false; }
   if (S.camEst === C && C.zAlvo != null) { const z = C.zAlvo; C.zAlvo = null; zoomGesto(z, true); }
   marcaLentes();
@@ -9177,8 +9187,8 @@ async function escolheLente(z) {
     if (uwPorZoom(C)) zoomCam(z, true);
     else {
       const id = await achaUltra(); if (S.camEst !== C) return;
-      if (!id) { avisoLente("Este celular não libera a lente 0,5 para o app"); marcaLentes(); return; }
-      if (!C.lenteUW) { C.zAlvo = null; await trocaLente(C, true); if (S.camEst !== C) return; }
+      if (!id) { avisoLente("Este celular não libera a lente 0,5 para o app" + (S.camNomes && S.camNomes.length ? " · câmeras: " + S.camNomes.join(", ") : "")); marcaLentes(); return; }
+      if (!C.lenteUW) { C.zAlvo = null; await trocaLente(C, true); if (S.camEst !== C) return; if (!C.lenteUW) { avisoLente("A lente 0,5 não abriu" + (S.erroUW ? " (" + S.erroUW + ")" : "")); return; } }
       C.zoom = 1;
     }
   } else {
@@ -9191,6 +9201,8 @@ async function escolheLente(z) {
 const botoesLentes = analogica => (queueMicrotask(marcaLentes), h("div", { class: "cellentes" + (analogica ? " anal" : ""), role: "radiogroup", "aria-label": "Lente" },
   LENTES.map(([z, mm]) => h("button", { type: "button", role: "radio", class: analogica ? "lenteanal" : "lentebt", "data-lente": z, "aria-label": "Lente " + rotLente(z) + ", " + mm, onclick: e => { e.stopPropagation(); escolheLente(z); } },
     analogica ? [h("b", { text: String(z).replace(".", ",") }), h("small", { text: mm })] : String(z).replace(".", ","))),
+  // o sol: abre a régua de exposição (mais claro / mais escuro)
+  h("button", { type: "button", class: "lentesol", "aria-label": "Exposição: mais claro ou mais escuro", onclick: e => { e.stopPropagation(); reguaExpo(e.currentTarget.closest(".cellentes").parentNode); } }, "☀"),
   // visor pequeno (Bazar, Kashi): um anel só, que gira para a próxima lente a cada toque
   analogica ? h("button", { type: "button", class: "lenteciclo", "aria-label": "Trocar de lente", onclick: e => { e.stopPropagation(); const z = lenteAtual(), op = LENTES.map(l => l[0]).filter(v => v >= 1 || (temUltra() && !C0frente()));
     const i = op.findIndex(v => Math.abs(v - z) < .06); escolheLente(op[(i + 1) % op.length]); } }, h("b"), h("small")) : null));
@@ -9215,11 +9227,24 @@ function pontoExpo(caixa, x, y) {
   const cr = caixa.getBoundingClientRect(), p = h("div", { class: "expoponto", "aria-hidden": "true", style: `left:${x - cr.left}px;top:${y - cr.top}px` }, h("i"), h("b"));
   caixa.append(p); mudaExpo2(C.expo || 1); etiquetaCam(rotExpo(C.expo || 1)); somePonto();
 }
+// régua de exposição: arrastar para a direita clareia, para a esquerda escurece; tocar no sol de novo fecha (e o 0 volta ao normal)
+function reguaExpo(caixa) {
+  const ja = document.querySelector(".exporegua"); if (ja) { ja.remove(); return; }
+  const C = S.camEst; if (!C || !caixa) return;
+  const r = h("input", { type: "range", min: String(Math.log2(EXPO_MIN).toFixed(1)), max: String(Math.log2(EXPO_MAX)), step: "0.1", value: String(Math.log2(C.expo || 1)), "aria-label": "Exposição" });
+  const rot = h("b", { text: rotExpo(C.expo || 1) });
+  r.oninput = () => { mudaExpo2(Math.pow(2, +r.value)); rot.textContent = rotExpo((S.camEst && S.camEst.expo) || 1); };
+  // visor pequeno (Bazar, Kashi): a régua fica solta na tela, no meio
+  const caixaR = h("div", { class: "exporegua" + (caixa.clientWidth < 230 ? " fixa" : "") }, h("span", { text: "−" }), r, h("span", { text: "+" }), rot,
+    h("button", { type: "button", text: "0", "aria-label": "Exposição normal", onclick: e => { e.stopPropagation(); r.value = "0"; r.oninput(); } }));
+  ["touchstart", "pointerdown", "click"].forEach(t => caixaR.addEventListener(t, e => e.stopPropagation()));
+  caixa.append(caixaR);
+}
 function somePonto(ms) { clearTimeout(somePonto.t); const p = document.querySelector(".expoponto"); if (p) p.classList.remove("apaga"); somePonto.t = setTimeout(() => { const q = document.querySelector(".expoponto"); if (q) { q.classList.add("apaga"); setTimeout(() => q.classList.contains("apaga") && q.remove(), 600); } }, ms || 2600); }
 (() => {
   let d0 = 0, z0 = 1, toque = null, arrasta = null;
   const vivo = () => S.tab === "fotos" && S.camSel && S.camEst && S.foto && S.foto.vivo;
-  const visor = e => e.target.closest && !e.target.closest(".cellentes,button") && e.target.closest(".celvisor .fotoframe,.cfjanela");
+  const visor = e => e.target.closest && !e.target.closest(".cellentes,.exporegua,button,input") && e.target.closest(".celvisor .fotoframe,.cfjanela");
   const dist = e => Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
   document.addEventListener("touchstart", e => {
     if (!vivo()) { d0 = 0; toque = arrasta = null; return; }
@@ -9283,7 +9308,7 @@ async function ligaCam() {
     const pedeUW = () => navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: S.lenteUW }, width: { ideal: 4032 }, height: { ideal: 3024 } }, audio: false });
     const pede = exato => navigator.mediaDevices.getUserMedia({ video: { facingMode: exato ? { exact: lado ? "user" : "environment" } : (lado ? "user" : "environment"), width: { ideal: lado ? 1920 : 4032 }, height: { ideal: lado ? 1440 : 3024 } }, audio: false });
     // a ultra-angular que não abrir volta para a lente normal (e o 0,5 apaga)
-    const fluxo = pegaFluxoGuardado(chaveF) || await (uw ? pedeUW().catch(() => { C.lenteUW = false; S.lenteUW = null; return pede(true).catch(() => pede(false)); }) : pede(true).catch(() => pede(false)));
+    const fluxo = pegaFluxoGuardado(chaveF) || await (uw ? pedeUW().catch(() => navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: S.lenteUW } }, audio: false })).catch(er => { S.erroUW = er && (er.name || er.message); C.lenteUW = false; return pede(true).catch(() => pede(false)); }) : pede(true).catch(() => pede(false)));
     // se a câmera já foi fechada ou virada de novo enquanto esperava, desliga este fluxo e sai
     if (S.camEst !== C || C.vez !== vez) { guardaFluxo(fluxo, chaveF); return; }
     C.fluxo = fluxo; C.fluxoFrente = chaveF; achaUltra();
