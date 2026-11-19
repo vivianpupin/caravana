@@ -989,6 +989,20 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 @keyframes contapulsa{0%{transform:scale(1.25);opacity:.4}25%{transform:scale(1);opacity:1}100%{opacity:.85}}
 .zoometiq{position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:80;background:rgba(20,12,6,.72);color:#F3E3C0;font:600 18px Poppins,sans-serif;padding:6px 14px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none}
 .zoometiq.on{opacity:1}
+/* lentes: 0,5× · 1× · 2× · 3×, como no celular (no visor da câmera do celular e em botões nas câmeras da maleta) */
+.cellentes{position:absolute;z-index:3;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:5px;align-items:center;padding:4px 5px;border-radius:999px;background:rgba(14,9,5,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.cellentes .lentebt{width:30px;height:30px;padding:0;border:0;border-radius:50%;background:rgba(30,20,12,.65);color:#F3E3C0;font:700 10.5px Poppins,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s,background .15s}
+.cellentes .lentebt.on{transform:scale(1.14);color:#F6C66B;background:rgba(30,20,12,.9)}
+.cellentes .lentebt.sem{opacity:.38}
+.cellentes.anal{bottom:7px;gap:3px;padding:3px 4px}
+.cellentes .lenteanal{display:flex;flex-direction:column;align-items:center;justify-content:center;width:36px;height:30px;padding:0;border:0;border-radius:15px;background:rgba(30,20,12,.6);color:#F3E3C0;cursor:pointer;-webkit-tap-highlight-color:transparent;line-height:1;transition:background .15s,color .15s}
+.cellentes .lenteanal b{font:700 10.5px Poppins,sans-serif}.cellentes .lenteanal small{font:600 7.5px "Courier Prime",monospace;opacity:.75;margin-top:2px}
+.cellentes .lenteanal.on{color:#F6C66B;background:rgba(30,20,12,.92);box-shadow:0 0 0 1px rgba(246,198,107,.55)}
+.cellentes .lenteanal.sem{opacity:.38}
+.cellentes.anal .lenteciclo{display:none;flex-direction:column;align-items:center;justify-content:center;min-width:46px;height:30px;padding:0 8px;border:0;border-radius:15px;background:rgba(30,20,12,.85);color:#F6C66B;cursor:pointer;line-height:1;box-shadow:0 0 0 1px rgba(246,198,107,.5)}
+.cellentes.anal .lenteciclo b{font:700 10.5px Poppins,sans-serif}.cellentes.anal .lenteciclo small{font:600 7.5px "Courier Prime",monospace;opacity:.8;margin-top:2px}
+.cellentes.anal.estreita{padding:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.cellentes.anal.estreita .lenteanal{display:none}.cellentes.anal.estreita .lenteciclo{display:flex}
 .celflash{position:fixed;z-index:60;pointer-events:none;background:#fff;border-radius:12px;animation:celflash .42s ease-out forwards}
 @keyframes celflash{0%{opacity:.95}100%{opacity:0}}
 .estudiocel .celvisor .celknob{display:flex;flex-direction:column;align-items:center;gap:4px;width:48px;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;
@@ -8515,7 +8529,7 @@ function vCameraFisica(c) {
     document.querySelectorAll(".cfchave").forEach(b => { if (/Selfie/.test(b.textContent)) b.classList.toggle("b", C.frente); }); };
   const frente = !!(S.camEst && S.camEst.frente);
   // peças da câmera
-  const janela = h("div", { class: "cfjanela", style: c.id === "super8" ? "--razao:" + (F.recorte === 2.35 ? 2.35 : 4 / 3) : null }, F.img ? canvas : h("p", { class: "small", text: "Libere a câmera nos ajustes do celular." }),
+  const janela = h("div", { class: "cfjanela", style: c.id === "super8" ? "--razao:" + (F.recorte === 2.35 ? 2.35 : 4 / 3) : null }, F.img ? canvas : h("p", { class: "small", text: "Libere a câmera nos ajustes do celular." }), F.vivo && F.img ? botoesLentes(true) : null,
     c.id === "super8" ? [h("span", { class: "cfmira", "aria-hidden": "true" }), h("span", { class: "cfrazao", text: F.recorte === 2.35 ? "2.35:1" : "4:3" })] : null);
   const visor = h("div", { class: "cfvisor" }, h("div", { class: "cfmoldura" }, janela));
   const obturador = h("button", { type: "button", class: "cfdisparo", "aria-label": "Tirar foto", onclick: dispara }, c.id === "descartavel" ? h("i", { "aria-hidden": "true" }, "• • •") : c.rajadas && !umaQuatro() ? h("i", { "aria-hidden": "true" }, "AGORA") : null);
@@ -8545,7 +8559,7 @@ function vCameraFisica(c) {
   // com a foto realista: a câmera de perto ocupa a tela, a imagem ao vivo entra no visor da foto e o botão da foto dispara
   const palco = fotoCorpo ? h("div", { class: "cfpalco", "aria-hidden": "false" }, h("img", { class: "cffundo", src: "img/cameras/" + c.id + "-corpo.jpg", alt: "", decoding: "sync" }), h("div", { class: "cfimg" },
     h("img", { src: "img/cameras/" + c.id + "-corpo.jpg", alt: "", decoding: "sync" }),
-    h("div", { class: "cfjanela cfjanelafoto" + (fc.invertido ? " invertido" : "") + (fc.inteira ? " inteira" : ""), style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : S.camFalhou ? camNegada() : null,
+    h("div", { class: "cfjanela cfjanelafoto" + (fc.invertido ? " invertido" : "") + (fc.inteira ? " inteira" : ""), style: `left:${fc.visor[0] * 100}%;top:${fc.visor[1] * 100}%;width:${(fc.visor[2] - fc.visor[0]) * 100}%;height:${(fc.visor[3] - fc.visor[1]) * 100}%` }, F.img ? canvas : S.camFalhou ? camNegada() : null, F.vivo && F.img ? botoesLentes(true) : null,
       F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando", "aria-live": "polite" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null,
       c.filma && S.camModo === "filme" && F.vivo ? dicaFilme() : null,
       c.id === "super8" ? h("span", { class: "cfmira", "aria-hidden": "true" }) : null,
@@ -9081,15 +9095,68 @@ function videoCam(C) {
 }
 // zoom das câmeras antigas da maleta (a câmera do celular fica sem zoom): pinça com dois dedos na tela da câmera. Se o celular deixa, usa o zoom da própria câmera (melhor);
 // se não, amplia o meio da imagem (até 3×, para a foto não perder qualidade). Trocar de câmera volta para 1×.
-function zoomCam(z) {
+function zoomCam(z, quieto) {
   const C = S.camEst; if (!C) return;
   const hw = C.zoomHw, max = hw ? Math.min(hw.max, 5) : 3, min = hw ? Math.max(hw.min, 1) : 1;
   z = Math.max(min, Math.min(max, z)); C.zoomPedido = z;
   if (hw) { C.zoom = 1; if (!C.zoomT) C.zoomT = setTimeout(() => { C.zoomT = 0; try { hw.trilha.applyConstraints({ advanced: [{ zoom: C.zoomPedido }] }).catch(() => {}); } catch (e) {} }, 60); }
   else C.zoom = z;
+  marcaLentes(); if (quieto) return;
   let et = document.querySelector(".zoometiq"); if (!et) { et = h("div", { class: "zoometiq", "aria-live": "polite" }); document.body.append(et); }
   et.textContent = (Math.round(z * 10) / 10).toString().replace(".", ",") + "×"; et.classList.add("on"); clearTimeout(zoomCam.t); zoomCam.t = setTimeout(() => et.classList.remove("on"), 900);
 }
+// lentes: 0,5× é a ultra-angular de verdade (outra câmera do celular); 2× e 3× usam o zoom da câmera, ou recortam o meio da imagem.
+// as distâncias focais são as equivalentes do filme 35 mm, como as lentes de um iPhone
+const LENTES = [[.5, "13mm"], [1, "26mm"], [2, "52mm"], [3, "77mm"]];
+const rotLente = z => String(z).replace(".", ",") + "×";
+// acha a ultra-angular pelo nome (iPhone: "Back Ultra Wide Camera" / "Câmera Ultra-Angular Traseira"); os nomes só aparecem depois da permissão
+async function achaUltra() {
+  if (S.lenteUW !== undefined) return S.lenteUW;
+  try { const ds = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === "videoinput"); if (!ds.some(d => d.label)) return null;
+    const d = ds.find(d => /ultra/i.test(d.label) && !/front|frontal|dianteir/i.test(d.label)); S.lenteUW = d ? d.deviceId : null; } catch (e) { return null; }
+  marcaLentes(); return S.lenteUW;
+}
+const temUltra = () => { const C = S.camEst; return !!(C && !C.frente && ((C.zoomHw && C.zoomHw.min <= .6) || S.lenteUW || C.lenteUW)); };
+const lenteAtual = () => { const C = S.camEst; if (!C) return 1; return C.lenteUW ? .5 * (C.zoom || 1) : zoomAtual(); };
+// acende a lente em uso (sem redesenhar a câmera)
+function marcaLentes() {
+  const z = lenteAtual(), uw = temUltra(), fr = C0frente();
+  document.querySelectorAll("[data-lente]").forEach(b => { const v = +b.dataset.lente, on = Math.abs(v - z) < .06;
+    b.classList.toggle("on", on); b.setAttribute("aria-checked", String(on)); b.classList.toggle("sem", v < 1 && (!uw || fr));
+    if (b.classList.contains("lentebt")) b.textContent = on ? rotLente(v) : String(v).replace(".", ","); });
+  document.querySelectorAll(".cellentes.anal").forEach(d => { const j = d.parentNode; d.classList.toggle("estreita", !!j && j.clientWidth < 180);
+    const l = LENTES.reduce((a, x) => Math.abs(x[0] - z) < Math.abs(a[0] - z) ? x : a), c = d.querySelector(".lenteciclo"); if (c) { c.firstChild.textContent = rotLente(l[0]); c.lastChild.textContent = l[1]; } });
+}
+function avisoLente(txt) {
+  let et = document.querySelector(".zoometiq"); if (!et) { et = h("div", { class: "zoometiq", "aria-live": "polite" }); document.body.append(et); }
+  et.textContent = txt; et.classList.add("on"); clearTimeout(zoomCam.t); zoomCam.t = setTimeout(() => et.classList.remove("on"), txt.length > 20 ? 2600 : 1100);
+}
+async function escolheLente(z) {
+  const C = S.camEst; if (!C || S.gravando || C.trocandoLente) return;
+  const mm = (LENTES.find(l => l[0] === z) || [])[1];
+  if (z < 1) {
+    if (C.frente) { avisoLente("A selfie não tem lente 0,5"); return; }
+    const hw = C.zoomHw;
+    if (hw && hw.min <= .6) { C.zoom = 1; C.zoomPedido = Math.max(hw.min, .5); try { hw.trilha.applyConstraints({ advanced: [{ zoom: C.zoomPedido }] }).catch(() => {}); } catch (e) {} }
+    else {
+      const id = await achaUltra(); if (S.camEst !== C) return;
+      if (!id) { avisoLente("Este celular não libera a lente 0,5 para o app"); marcaLentes(); return; }
+      if (!C.lenteUW) { C.lenteUW = true; C.zoom = 1; C.trocandoLente = true; try { await ligaCam(); } finally { C.trocandoLente = false; } if (S.camEst !== C) return; }
+      else C.zoom = 1;
+    }
+  } else {
+    if (C.lenteUW) { C.lenteUW = false; C.zoom = 1; C.zoomPedido = null; C.trocandoLente = true; try { await ligaCam(); } finally { C.trocandoLente = false; } if (S.camEst !== C) return; }
+    zoomCam(z, true);
+  }
+  avisoLente(rotLente(z) + (mm ? " · " + mm : "")); marcaLentes();
+}
+// botões das lentes: bolinhas no visor (celular) ou botões da câmera, com a distância focal (maleta)
+const botoesLentes = analogica => (queueMicrotask(marcaLentes), h("div", { class: "cellentes" + (analogica ? " anal" : ""), role: "radiogroup", "aria-label": "Lente" },
+  LENTES.map(([z, mm]) => h("button", { type: "button", role: "radio", class: analogica ? "lenteanal" : "lentebt", "data-lente": z, "aria-label": "Lente " + rotLente(z) + ", " + mm, onclick: e => { e.stopPropagation(); escolheLente(z); } },
+    analogica ? [h("b", { text: String(z).replace(".", ",") }), h("small", { text: mm })] : String(z).replace(".", ","))),
+  // visor pequeno (Bazar, Kashi): um anel só, que gira para a próxima lente a cada toque
+  analogica ? h("button", { type: "button", class: "lenteciclo", "aria-label": "Trocar de lente", onclick: e => { e.stopPropagation(); const z = lenteAtual(), op = LENTES.map(l => l[0]).filter(v => v >= 1 || (temUltra() && !C0frente()));
+    const i = op.findIndex(v => Math.abs(v - z) < .06); escolheLente(op[(i + 1) % op.length]); } }, h("b"), h("small")) : null));
 const zoomAtual = () => { const C = S.camEst; return C ? (C.zoomHw ? C.zoomPedido || C.zoomHw.atual || 1 : C.zoom || 1) : 1; };
 (() => {
   let d0 = 0, z0 = 1;
@@ -9127,7 +9194,7 @@ function pegaFluxoGuardado(frente) {
 }
 document.addEventListener("visibilitychange", () => { if (document.hidden && S.gravando) S.gravando.stop(); const G = S.fluxoGuardado; if (document.hidden && G) { G.fluxo.getTracks().forEach(t => t.stop()); clearTimeout(G.t); S.fluxoGuardado = null; } });
 // guarda o fluxo com o lado em que ele foi aberto (o Virar troca C.frente antes; sem isso a câmera de trás voltava no lugar da selfie)
-function paraCam() { const C = S.camEst; if (C && C.fluxo) { guardaFluxo(C.fluxo, !!C.fluxoFrente); C.fluxo = null; } }
+function paraCam() { const C = S.camEst; if (C && C.fluxo) { guardaFluxo(C.fluxo, C.fluxoFrente); C.fluxo = null; } }
 function fechaVivo() { if (S.gravando) S.gravando.stop(); paraCam(); if (S.camEst) { S.camEst.rodando = false; const v = S.camEst.video; if (v) { try { v.pause(); v.srcObject = null; } catch (e) {} } } S.camEst = null; }
 async function ligaCam() {
   const C = S.camEst; if (!C) return; paraCam();
@@ -9135,16 +9202,22 @@ async function ligaCam() {
   try {
     // pede a câmera da frente ou de trás com "exact": sem isso o iPhone às vezes ignora o pedido e continua na de trás (o Virar não virava)
     // câmera de trás na resolução máxima do celular (a foto sai com até 8 megapixels); a selfie fica em 1920, porque o visor espelha cada quadro
+    if (lado) C.lenteUW = false;
+    if (C.ladoAnt !== undefined && C.ladoAnt !== lado) C.zoom = 1; C.ladoAnt = lado;
+    const uw = !lado && C.lenteUW && S.lenteUW, chaveF = lado ? true : uw ? "uw" : false;
+    const pedeUW = () => navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: S.lenteUW }, width: { ideal: 4032 }, height: { ideal: 3024 } }, audio: false });
     const pede = exato => navigator.mediaDevices.getUserMedia({ video: { facingMode: exato ? { exact: lado ? "user" : "environment" } : (lado ? "user" : "environment"), width: { ideal: lado ? 1920 : 4032 }, height: { ideal: lado ? 1440 : 3024 } }, audio: false });
-    const fluxo = pegaFluxoGuardado(lado) || await pede(true).catch(() => pede(false));
+    // a ultra-angular que não abrir volta para a lente normal (e o 0,5 apaga)
+    const fluxo = pegaFluxoGuardado(chaveF) || await (uw ? pedeUW().catch(() => { C.lenteUW = false; S.lenteUW = null; return pede(true).catch(() => pede(false)); }) : pede(true).catch(() => pede(false)));
     // se a câmera já foi fechada ou virada de novo enquanto esperava, desliga este fluxo e sai
-    if (S.camEst !== C || C.vez !== vez) { guardaFluxo(fluxo, lado); return; }
-    C.fluxo = fluxo; C.fluxoFrente = lado;
+    if (S.camEst !== C || C.vez !== vez) { guardaFluxo(fluxo, chaveF); return; }
+    C.fluxo = fluxo; C.fluxoFrente = chaveF; achaUltra();
     try { const tr0 = fluxo.getVideoTracks()[0], cp = tr0.getCapabilities ? tr0.getCapabilities() : null; C.zoomHw = cp && cp.zoom && cp.zoom.max > 1 ? { trilha: tr0, min: cp.zoom.min || 1, max: cp.zoom.max, atual: (tr0.getSettings().zoom || 1) } : null; C.zoom = 1;
       // câmera reaproveitada que ficou com zoom: volta para 1×
       if (C.zoomHw && C.zoomHw.atual > Math.max(C.zoomHw.min, 1) + .01) { C.zoomHw.atual = Math.max(C.zoomHw.min, 1); tr0.applyConstraints({ advanced: [{ zoom: C.zoomHw.atual }] }).catch(() => {}); } } catch (e) { C.zoomHw = null; }
     fluxo.getVideoTracks().forEach(t => { t.onended = () => { if (S.camEst === C && C.fluxo === fluxo && !document.hidden) { C.fluxo = null; ligaCam(); } }; }); C.video.srcObject = fluxo; await C.video.play(); C.acordou = true; C.vivoDesde = performance.now();
     if (!C.rodando) { C.rodando = true; requestAnimationFrame(quadroCam); }
+    marcaLentes();
   } catch (e) { if (S.camEst !== C || C.vez !== vez) return; fechaVivo(); S.camFalhou = true; if (S.foto && S.foto.vivo) S.foto = { ...S.foto, img: null, vivo: false }; render(); }
 }
 const dicaCel = () => S.gravando ? "Gravando… solte ou toque em Stop · até 1 minuto. O filme vai para os Registros." : "Para filmar: segure Film, ou toque uma vez para começar e outra para parar.";
@@ -9404,7 +9477,7 @@ function vFotos() {
       h("div", { class: "celtit" }, h("p", { class: "celeye", text: "Arsenal de Travessia" }), h("h1", { text: "Câmera do celular" }))),
     F.img ? h("div", { class: "estudio" },
       // visor e botão de clique andam juntos: ao rolar a tela, o botão nunca fica escondido atrás da foto
-      h("div", { class: "fotofixa" }, h("div", { class: "celvisor" }, voltaMaleta("topo celvolta"), botaoLogo("topo cellogo"), h("div", { class: "fotoframe" }, canvas, !F.img && S.camFalhou ? camNegada() : null, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
+      h("div", { class: "fotofixa" }, h("div", { class: "celvisor" }, voltaMaleta("topo celvolta"), botaoLogo("topo cellogo"), h("div", { class: "fotoframe" }, canvas, F.vivo ? botoesLentes(false) : null, !F.img && S.camFalhou ? camNegada() : null, F.vivo && !(S.camEst && S.camEst.acordou) ? h("span", { class: "cfligando" }, h("i", { "aria-hidden": "true" }), "Ligando a câmera…") : null),
         F.vivo ? h("div", { class: "actions camacoes" },
           h("button", { class: "celknob celselfie", type: "button", onclick: e => { const C = S.camEst; if (C && !S.gravando) { C.frente = !C.frente; S.camFrente = C.frente; ligaCam(); e.currentTarget.textContent = C.frente ? "Trás" : "Selfie"; } } }, C0frente() ? "Trás" : "Selfie"),
           h("button", { class: "habclique celobtur", type: "button", "aria-label": "Tirar foto", onclick: disparaCel }),
