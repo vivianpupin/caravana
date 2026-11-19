@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "18/11 · 23:10";</script>
+<script>window.__VERSAO = "18/11 · 23:12";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2294,6 +2294,7 @@ video.mgrande{max-height:70vh;background:#000}
 .pombolista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}.pombolista li{display:grid;grid-template-columns:28px minmax(0,1fr);column-gap:10px;align-items:center}
 .pombolista img{grid-row:span 2;width:28px;height:28px;border-radius:50%;object-fit:cover}.pnome{font-weight:600;font-size:13.5px}.pest{font-size:12px;color:#8A7B63}
 .pombolista li.pe3 .pest{color:#3F6A3A}.pombolista li.pe0 .pest{color:#9A8B73}
+.avalmsg{margin:6px 0;padding:8px 10px;border-radius:10px;background:#F3E6CC}.avalmsg small{color:#8A3F32;font-weight:600}
 </style>
 
 <div class="app">
@@ -11094,6 +11095,7 @@ function abrirAvaliacao(chegou) {
     if (multi) b.setAttribute("aria-pressed", String(atual.has(t))); else b.parentNode.querySelectorAll(".opt").forEach(x => x.setAttribute("aria-pressed", String(x === b))); } }, t)));
   const estr = h("div", { class: "avalestrelas", role: "radiogroup", "aria-label": "Estrelas" }, [1, 2, 3, 4, 5].map(n => h("button", { type: "button", class: "avalestrela", "aria-label": n + (n === 1 ? " estrela" : " estrelas"), onclick: () => { estrelas = n; estr.querySelectorAll(".avalestrela").forEach((b, i) => b.classList.toggle("on", i < n)); } }, "★")));
   const ta = h("textarea", { rows: "6", maxlength: "3000", placeholder: "Escreva do jeito que vier: uma lembrança, um agradecimento, algo que poderia ser diferente…" });
+  const taMsg = h("textarea", { rows: "4", maxlength: "3000", placeholder: "Um recado, um pedido, algo que você quer que a gente saiba…" });
   // perguntas para a pessoa voltar lá dentro e ir lembrando (todas opcionais)
   const g = v.genero === "o" ? "o" : "a";
   const REFLEXOES = [
@@ -11112,7 +11114,7 @@ function abrirAvaliacao(chegou) {
     if (!estrelas) { st.textContent = "Falta só tocar nas estrelas, lá em cima, para dizer como foi."; st.className = "msg err"; estr.classList.remove("falta"); void estr.offsetWidth; estr.classList.add("falta"); return; }
     bt.disabled = true; st.textContent = "Enviando…"; st.className = "msg";
     const reflexoes = {}; REFLEXOES.forEach(([k]) => { const t = refl[k].value.trim(); if (t) reflexoes[k] = t; });
-    const avaliacao = { estrelas, tocou: [...tocou], reflexoes, cuidado, indica, relato: ta.value.trim(), ts: Date.now() };
+    const avaliacao = { estrelas, tocou: [...tocou], reflexoes, cuidado, indica, relato: ta.value.trim(), mensagem: taMsg.value.trim(), ts: Date.now() };
     const ref = S.db.doc("diarios/" + S.uid);
     try { await ref.update({ avaliacao }).catch(e => { if (/not.?found/i.test(String(e && (e.code || e.message)))) return ref.set({ avaliacao }); throw e; }); }
     catch (e) { bt.disabled = false; st.textContent = "Não consegui enviar. Confira a internet e tente de novo."; st.className = "msg err"; return; }
@@ -11150,6 +11152,7 @@ function abrirAvaliacao(chegou) {
       h("p", { class: "avalperg", text: "✦ Como você se sentiu cuidad" + (v.genero === "o" ? "o" : "a") + " pela Caravana?" }), opts(["Muito cuidad" + (v.genero === "o" ? "o" : "a"), "Cuidad" + (v.genero === "o" ? "o" : "a"), "Poderia ser melhor"], cuidado, t => { cuidado = t; }),
       h("p", { class: "avalperg", text: "✦ Você indicaria a Caravana para alguém que ama?" }), opts(["Com certeza", "Talvez", "Não"], indica, t => { indica = t; }),
       h("p", { class: "avalperg", text: "✦ Deixe aqui as suas palavras sobre a travessia" }), ta,
+      h("p", { class: "avalperg", text: "✦ Quer deixar uma mensagem para nós sobre algo?" }), h("small", { class: "avalobs", text: "Opcional. Só a Caravana lê." }), taMsg,
       linkGoogle() ? h("p", { class: "avalgoogle", text: "Ao enviar, aparece o convite para você deixar também a sua avaliação no Google ⭐" }) : null,
       bt, st);
   }
@@ -11177,6 +11180,7 @@ function vAvaliacoesLider() {
     lista.length ? h("div", { class: "avallista" }, lista.map(a => h("div", { class: "avalitem" },
       h("div", { class: "avaltopo" }, h("img", { src: avatar(a.id), alt: "" }), h("b", { text: nomeDe(a.id) }), h("span", { class: "avalest", text: est(a.estrelas) })),
       a.relato ? h("p", { class: "avalrelato", text: a.relato }) : null,
+      a.mensagem ? h("div", { class: "avalmsg" }, h("small", { text: "💌 Mensagem para a Caravana" }), h("p", { class: "avalrelato", text: a.mensagem })) : null,
       a.reflexoes && Object.keys(a.reflexoes).length ? h("details", { class: "avalrefl" }, h("summary", { text: `Ver as ${Object.keys(a.reflexoes).length} lembranças` }),
         Object.entries(a.reflexoes).map(([k, t]) => h("div", null, h("small", { class: "avalrperg", text: ({ sempre: "O momento que leva para sempre", mudou: "O momento em que algo mudou", voltar: "O instante para onde voltaria", desafio: "O mais desafiador", ensinou: "O que o desafio ensinou", mostrou: "O que a Índia mostrou sobre ela", ensinamento: "O ensinamento que trouxe", pessoa: "Quem marcou a jornada", leva: "O que leva na mala do coração", palavra: "A travessia em uma palavra" })[k] || k }), h("p", { class: "avalrelato", text: t })))) : null,
       h("small", { text: [a.tocou && a.tocou.length ? "Tocou: " + a.tocou.join(", ") : "", a.cuidado, a.indica ? "Indicaria: " + a.indica : ""].filter(Boolean).join(" · ") })))) : null,
