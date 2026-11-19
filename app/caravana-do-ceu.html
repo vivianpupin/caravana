@@ -989,6 +989,13 @@ nav.tabs button[aria-current="page"] .ic{background:linear-gradient(180deg,#E2BE
 @keyframes contapulsa{0%{transform:scale(1.25);opacity:.4}25%{transform:scale(1);opacity:1}100%{opacity:.85}}
 .zoometiq{position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:80;background:rgba(20,12,6,.72);color:#F3E3C0;font:600 18px Poppins,sans-serif;padding:6px 14px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none}
 .zoometiq.on{opacity:1}
+/* exposição: o quadradinho amarelo com o sol, onde a pessoa tocou */
+.expoponto{position:absolute;z-index:4;width:64px;height:64px;margin:-32px 0 0 -32px;pointer-events:none;--sol:0;animation:expoEntra .35s ease-out;transition:opacity .5s}
+.expoponto i{position:absolute;inset:0;border:1.5px solid #F6C84A;border-radius:3px;box-shadow:0 0 4px rgba(0,0,0,.4)}
+.expoponto b{position:absolute;left:calc(100% + 10px);top:50%;width:1.5px;height:84px;margin-top:-42px;background:rgba(246,200,74,.75)}
+.expoponto b::after{content:"☀";position:absolute;left:50%;top:calc(50% - var(--sol) * 38px);transform:translate(-50%,-50%);color:#F6C84A;font-size:17px;line-height:1;text-shadow:0 0 3px rgba(0,0,0,.6)}
+.expoponto.apaga{opacity:0}
+@keyframes expoEntra{from{transform:scale(1.5);opacity:0}to{transform:none;opacity:1}}
 /* lentes: 0,5× · 1× · 2× · 3×, como no celular (no visor da câmera do celular e em botões nas câmeras da maleta) */
 .cellentes{position:absolute;z-index:3;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:5px;align-items:center;padding:4px 5px;border-radius:999px;background:rgba(14,9,5,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .cellentes .lentebt{width:30px;height:30px;padding:0;border:0;border-radius:50%;background:rgba(30,20,12,.65);color:#F3E3C0;font:700 10.5px Poppins,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s,background .15s}
@@ -9083,27 +9090,38 @@ const podeCamera = () => !!(navigator.mediaDevices && navigator.mediaDevices.get
 const C0frente = () => !!(S.camEst && S.camEst.frente);
 // selfie espelhada, como num espelho: o que a pessoa vê no visor é o que fica na foto e no filme (em todas as câmeras)
 // zoom digital: recorta o meio da imagem da câmera (o visor, a foto e o filme saem com o mesmo zoom)
-function videoCam(C) {
+// exposição (C.expo): ganho de luz aplicado na imagem da câmera (escurece multiplicando, clareia somando a própria imagem)
+// max: o visor ao vivo pede a imagem já reduzida (a foto pede inteira), para o celular não pesar
+function videoCam(C, max) {
   const v = C && C.video; if (!v || !v.videoWidth) return v;
-  const z = C.zoom || 1; if (!C.frente && z <= 1.01) return v;
+  const z = C.zoom || 1, g = C.expo || 1; if (!C.frente && z <= 1.01 && Math.abs(g - 1) < .02) return v;
   const vw = v.videoWidth, vh = v.videoHeight, sw = Math.round(vw / z), sh = Math.round(vh / z), sx = (vw - sw) / 2, sy = (vh - sh) / 2;
-  const e = C.espelho || (C.espelho = document.createElement("canvas")), chave = v.currentTime + "|" + z + "|" + !!C.frente;
-  if (e.chave === chave && e.width === sw && e.height === sh) return e;
-  if (e.width !== sw || e.height !== sh) { e.width = sw; e.height = sh; }
-  const x = e.getContext("2d"); if (C.frente) x.setTransform(-1, 0, 0, 1, sw, 0); x.drawImage(v, sx, sy, sw, sh, 0, 0, sw, sh); x.setTransform(1, 0, 0, 1, 0, 0);
-  e.videoWidth = sw; e.videoHeight = sh; e.chave = chave; return e;
+  const k = max && Math.max(sw, sh) > max ? max / Math.max(sw, sh) : 1, ow = Math.round(sw * k), oh = Math.round(sh * k);
+  const nome = max ? "espelhoV" : "espelho", e = C[nome] || (C[nome] = document.createElement("canvas")), chave = v.currentTime + "|" + z + "|" + !!C.frente + "|" + g;
+  if (e.chave === chave && e.width === ow && e.height === oh) return e;
+  if (e.width !== ow || e.height !== oh) { e.width = ow; e.height = oh; }
+  const x = e.getContext("2d"); x.globalAlpha = 1; x.globalCompositeOperation = "source-over";
+  if (C.frente) x.setTransform(-1, 0, 0, 1, ow, 0); x.drawImage(v, sx, sy, sw, sh, 0, 0, ow, oh);
+  if (g > 1.02) { x.globalCompositeOperation = "lighter"; x.globalAlpha = Math.min(1, g - 1); x.drawImage(v, sx, sy, sw, sh, 0, 0, ow, oh); }
+  else if (g < .98) { x.fillStyle = "#000"; x.globalAlpha = 1 - g; x.fillRect(0, 0, ow, oh); }
+  x.globalAlpha = 1; x.globalCompositeOperation = "source-over"; x.setTransform(1, 0, 0, 1, 0, 0);
+  e.videoWidth = ow; e.videoHeight = oh; e.chave = chave; return e;
 }
-// zoom das câmeras antigas da maleta (a câmera do celular fica sem zoom): pinça com dois dedos na tela da câmera. Se o celular deixa, usa o zoom da própria câmera (melhor);
+// zoom: pinça com dois dedos na tela da câmera (em todas, a do celular também), como no iPhone: abrindo os dedos aproxima,
+// fechando abaixo de 1× passa para a ultra-angular (0,5×). Se o celular deixa, usa o zoom da própria câmera (melhor);
 // se não, amplia o meio da imagem (até 3×, para a foto não perder qualidade). Trocar de câmera volta para 1×.
+const rotZoom = z => (Math.round(z * 10) / 10).toString().replace(".", ",") + "×";
+function etiquetaCam(txt, ms) {
+  let et = document.querySelector(".zoometiq"); if (!et) { et = h("div", { class: "zoometiq", "aria-live": "polite" }); document.body.append(et); }
+  et.textContent = txt; et.classList.add("on"); clearTimeout(zoomCam.t); zoomCam.t = setTimeout(() => et.classList.remove("on"), ms || 900);
+}
 function zoomCam(z, quieto) {
   const C = S.camEst; if (!C) return;
-  const hw = C.zoomHw, max = hw ? Math.min(hw.max, 5) : 3, min = hw ? Math.max(hw.min, 1) : 1;
+  const hw = C.zoomHw, max = hw ? Math.min(hw.max, 5) : 3, min = hw ? Math.max(hw.min, .5) : 1;
   z = Math.max(min, Math.min(max, z)); C.zoomPedido = z;
   if (hw) { C.zoom = 1; if (!C.zoomT) C.zoomT = setTimeout(() => { C.zoomT = 0; try { hw.trilha.applyConstraints({ advanced: [{ zoom: C.zoomPedido }] }).catch(() => {}); } catch (e) {} }, 60); }
   else C.zoom = z;
-  marcaLentes(); if (quieto) return;
-  let et = document.querySelector(".zoometiq"); if (!et) { et = h("div", { class: "zoometiq", "aria-live": "polite" }); document.body.append(et); }
-  et.textContent = (Math.round(z * 10) / 10).toString().replace(".", ",") + "×"; et.classList.add("on"); clearTimeout(zoomCam.t); zoomCam.t = setTimeout(() => et.classList.remove("on"), 900);
+  marcaLentes(); if (!quieto) etiquetaCam(rotZoom(z));
 }
 // lentes: 0,5× é a ultra-angular de verdade (outra câmera do celular); 2× e 3× usam o zoom da câmera, ou recortam o meio da imagem.
 // as distâncias focais são as equivalentes do filme 35 mm, como as lentes de um iPhone
@@ -9116,36 +9134,55 @@ async function achaUltra() {
     const d = ds.find(d => /ultra/i.test(d.label) && !/front|frontal|dianteir/i.test(d.label)); S.lenteUW = d ? d.deviceId : null; } catch (e) { return null; }
   marcaLentes(); return S.lenteUW;
 }
-const temUltra = () => { const C = S.camEst; return !!(C && !C.frente && ((C.zoomHw && C.zoomHw.min <= .6) || S.lenteUW || C.lenteUW)); };
+const uwPorZoom = C => !!(C && C.zoomHw && C.zoomHw.min <= .6 && !C.lenteUW);
+const temUltra = () => { const C = S.camEst; return !!(C && !C.frente && (uwPorZoom(C) || S.lenteUW || C.lenteUW)); };
 const lenteAtual = () => { const C = S.camEst; if (!C) return 1; return C.lenteUW ? .5 * (C.zoom || 1) : zoomAtual(); };
 // acende a lente em uso (sem redesenhar a câmera)
 function marcaLentes() {
   const z = lenteAtual(), uw = temUltra(), fr = C0frente();
-  document.querySelectorAll("[data-lente]").forEach(b => { const v = +b.dataset.lente, on = Math.abs(v - z) < .06;
+  // zoom no meio do caminho (pinça): a lente de baixo acende mostrando o valor, como no iPhone (ex.: 1,4×)
+  const exata = LENTES.some(l => Math.abs(l[0] - z) < .06), base = LENTES.reduce((a, l) => l[0] <= z + .06 ? l[0] : a, .5);
+  document.querySelectorAll("[data-lente]").forEach(b => { const v = +b.dataset.lente, on = exata ? Math.abs(v - z) < .06 : v === base;
     b.classList.toggle("on", on); b.setAttribute("aria-checked", String(on)); b.classList.toggle("sem", v < 1 && (!uw || fr));
-    if (b.classList.contains("lentebt")) b.textContent = on ? rotLente(v) : String(v).replace(".", ","); });
+    if (b.classList.contains("lentebt")) b.textContent = on ? (exata ? rotLente(v) : rotZoom(z)) : String(v).replace(".", ","); });
   document.querySelectorAll(".cellentes.anal").forEach(d => { const j = d.parentNode; d.classList.toggle("estreita", !!j && j.clientWidth < 180);
     const l = LENTES.reduce((a, x) => Math.abs(x[0] - z) < Math.abs(a[0] - z) ? x : a), c = d.querySelector(".lenteciclo"); if (c) { c.firstChild.textContent = rotLente(l[0]); c.lastChild.textContent = l[1]; } });
 }
-function avisoLente(txt) {
-  let et = document.querySelector(".zoometiq"); if (!et) { et = h("div", { class: "zoometiq", "aria-live": "polite" }); document.body.append(et); }
-  et.textContent = txt; et.classList.add("on"); clearTimeout(zoomCam.t); zoomCam.t = setTimeout(() => et.classList.remove("on"), txt.length > 20 ? 2600 : 1100);
+const avisoLente = txt => etiquetaCam(txt, txt.length > 20 ? 2600 : 1100);
+// troca entre a ultra-angular e a lente principal (reabre a câmera); no fim aplica o último zoom pedido
+async function trocaLente(C, uw) {
+  if (C.trocandoLente || !!C.lenteUW === uw) return;
+  C.lenteUW = uw; C.zoom = 1; C.zoomPedido = null; C.trocandoLente = true;
+  try { await ligaCam(); } finally { C.trocandoLente = false; }
+  if (S.camEst === C && C.zAlvo != null) { const z = C.zAlvo; C.zAlvo = null; zoomGesto(z, true); }
+  marcaLentes();
+}
+// zoom contínuo (pinça): de 0,5× a 3×+, trocando de lente quando passa de 1×
+function zoomGesto(z, quieto) {
+  const C = S.camEst; if (!C) return;
+  const podeUW = !C.frente && !S.gravando && !uwPorZoom(C) && (S.lenteUW || C.lenteUW);
+  if (C.trocandoLente) { C.zAlvo = z; return; }
+  if (C.lenteUW) {
+    if (z >= 1 && !S.gravando) { C.zAlvo = z; trocaLente(C, false); }
+    else { z = Math.max(.5, Math.min(S.gravando ? 1.5 : 1, z)); C.zoom = z / .5; marcaLentes(); }
+  } else if (z < .97 && podeUW) { C.zAlvo = Math.max(.5, z); trocaLente(C, true); z = Math.max(.5, z); }
+  else { zoomCam(z, true); z = lenteAtual(); }
+  if (!quieto) etiquetaCam(rotZoom(z));
 }
 async function escolheLente(z) {
   const C = S.camEst; if (!C || S.gravando || C.trocandoLente) return;
   const mm = (LENTES.find(l => l[0] === z) || [])[1];
   if (z < 1) {
     if (C.frente) { avisoLente("A selfie não tem lente 0,5"); return; }
-    const hw = C.zoomHw;
-    if (hw && hw.min <= .6) { C.zoom = 1; C.zoomPedido = Math.max(hw.min, .5); try { hw.trilha.applyConstraints({ advanced: [{ zoom: C.zoomPedido }] }).catch(() => {}); } catch (e) {} }
+    if (uwPorZoom(C)) zoomCam(z, true);
     else {
       const id = await achaUltra(); if (S.camEst !== C) return;
       if (!id) { avisoLente("Este celular não libera a lente 0,5 para o app"); marcaLentes(); return; }
-      if (!C.lenteUW) { C.lenteUW = true; C.zoom = 1; C.trocandoLente = true; try { await ligaCam(); } finally { C.trocandoLente = false; } if (S.camEst !== C) return; }
-      else C.zoom = 1;
+      if (!C.lenteUW) { C.zAlvo = null; await trocaLente(C, true); if (S.camEst !== C) return; }
+      C.zoom = 1;
     }
   } else {
-    if (C.lenteUW) { C.lenteUW = false; C.zoom = 1; C.zoomPedido = null; C.trocandoLente = true; try { await ligaCam(); } finally { C.trocandoLente = false; } if (S.camEst !== C) return; }
+    if (C.lenteUW) { C.zAlvo = null; await trocaLente(C, false); if (S.camEst !== C) return; }
     zoomCam(z, true);
   }
   avisoLente(rotLente(z) + (mm ? " · " + mm : "")); marcaLentes();
@@ -9158,13 +9195,51 @@ const botoesLentes = analogica => (queueMicrotask(marcaLentes), h("div", { class
   analogica ? h("button", { type: "button", class: "lenteciclo", "aria-label": "Trocar de lente", onclick: e => { e.stopPropagation(); const z = lenteAtual(), op = LENTES.map(l => l[0]).filter(v => v >= 1 || (temUltra() && !C0frente()));
     const i = op.findIndex(v => Math.abs(v - z) < .06); escolheLente(op[(i + 1) % op.length]); } }, h("b"), h("small")) : null));
 const zoomAtual = () => { const C = S.camEst; return C ? (C.zoomHw ? C.zoomPedido || C.zoomHw.atual || 1 : C.zoom || 1) : 1; };
+// exposição, como no iPhone: tocar num ponto do visor mede a luz dali (tocar no céu claro escurece a foto, tocar na sombra clareia);
+// depois, arrastar o dedo para cima clareia e para baixo escurece. Vale para o visor, a foto e o filme.
+const EXPO_MIN = .3, EXPO_MAX = 2;
+const rotExpo = g => { const ev = Math.log2(g); return "☀ " + (Math.abs(ev) < .05 ? "0" : (ev > 0 ? "+" : "−") + Math.abs(ev).toFixed(1).replace(".", ",")); };
+function mudaExpo2(g) { const C = S.camEst; if (!C) return; C.expo = Math.max(EXPO_MIN, Math.min(EXPO_MAX, g)); if (Math.abs(C.expo - 1) < .04) C.expo = 1; const p = document.querySelector(".expoponto"); if (p) p.style.setProperty("--sol", String(Math.max(-1, Math.min(1, Math.log2(C.expo))))); }
+function pontoExpo(caixa, x, y) {
+  const C = S.camEst, tela = S.fotoCanvas; if (!C || !tela) return;
+  // mede a luz em volta do ponto tocado, no quadro que está na tela
+  try { const r = tela.getBoundingClientRect(), fx = Math.max(0, Math.min(1, (x - r.left) / r.width)), fy = Math.max(0, Math.min(1, (y - r.top) / r.height));
+    const q = C.frame, m = mudaExpo2.m || (mudaExpo2.m = document.createElement("canvas")); m.width = m.height = 6;
+    const lw = q.width * .12, lh = q.height * .12, g = m.getContext("2d", { willReadFrequently: true });
+    g.drawImage(q, Math.max(0, fx * q.width - lw / 2), Math.max(0, fy * q.height - lh / 2), lw, lh, 0, 0, 6, 6);
+    const d = g.getImageData(0, 0, 6, 6).data; let s = 0; for (let i = 0; i < d.length; i += 4) s += .2126 * d[i] + .7152 * d[i + 1] + .0722 * d[i + 2];
+    const lum = Math.max(.03, s / 36 / 255), atual = C.expo || 1; mudaExpo2(atual * Math.pow(.46 / lum, .8));
+  } catch (e) {}
+  // o quadradinho amarelo com o sol, no lugar do toque
+  document.querySelectorAll(".expoponto").forEach(e => e.remove());
+  const cr = caixa.getBoundingClientRect(), p = h("div", { class: "expoponto", "aria-hidden": "true", style: `left:${x - cr.left}px;top:${y - cr.top}px` }, h("i"), h("b"));
+  caixa.append(p); mudaExpo2(C.expo || 1); etiquetaCam(rotExpo(C.expo || 1)); somePonto();
+}
+function somePonto(ms) { clearTimeout(somePonto.t); const p = document.querySelector(".expoponto"); if (p) p.classList.remove("apaga"); somePonto.t = setTimeout(() => { const q = document.querySelector(".expoponto"); if (q) { q.classList.add("apaga"); setTimeout(() => q.classList.contains("apaga") && q.remove(), 600); } }, ms || 2600); }
 (() => {
-  let d0 = 0, z0 = 1;
-  const pode = e => e.touches.length === 2 && S.tab === "fotos" && S.camSel && S.camSel !== "celular" && S.camEst && S.foto && S.foto.vivo && e.target.closest && e.target.closest("#main");
+  let d0 = 0, z0 = 1, toque = null, arrasta = null;
+  const vivo = () => S.tab === "fotos" && S.camSel && S.camEst && S.foto && S.foto.vivo;
+  const visor = e => e.target.closest && !e.target.closest(".cellentes,button") && e.target.closest(".celvisor .fotoframe,.cfjanela");
   const dist = e => Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-  document.addEventListener("touchstart", e => { if (!pode(e)) { d0 = 0; return; } d0 = dist(e); z0 = zoomAtual(); e.preventDefault(); }, { passive: false });
-  document.addEventListener("touchmove", e => { if (!d0 || e.touches.length !== 2) return; e.preventDefault(); zoomCam(z0 * dist(e) / d0); }, { passive: false });
-  document.addEventListener("touchend", e => { if (e.touches.length < 2) d0 = 0; });
+  document.addEventListener("touchstart", e => {
+    if (!vivo()) { d0 = 0; toque = arrasta = null; return; }
+    if (e.touches.length === 2 && e.target.closest && e.target.closest("#main")) { toque = arrasta = null; d0 = dist(e); z0 = lenteAtual(); e.preventDefault(); return; }
+    if (e.touches.length !== 1) return; const cx = visor(e); if (!cx) { toque = arrasta = null; return; }
+    const t = e.touches[0];
+    // logo depois de tocar (com o sol na tela), o dedo no visor regula a luz: sem rolar a página
+    if (document.querySelector(".expoponto:not(.apaga)")) { arrasta = { y: t.clientY, g: (S.camEst && S.camEst.expo) || 1 }; e.preventDefault(); somePonto(4000); return; }
+    toque = { x: t.clientX, y: t.clientY, cx, ms: Date.now() };
+  }, { passive: false });
+  document.addEventListener("touchmove", e => {
+    if (d0 && e.touches.length === 2) { e.preventDefault(); zoomGesto(z0 * dist(e) / d0); return; }
+    if (arrasta && e.touches.length === 1) { e.preventDefault(); const dy = arrasta.y - e.touches[0].clientY; mudaExpo2(arrasta.g * Math.pow(2, dy / 110)); etiquetaCam(rotExpo(S.camEst ? S.camEst.expo || 1 : 1)); somePonto(4000); return; }
+    if (toque && e.touches.length === 1 && Math.hypot(e.touches[0].clientX - toque.x, e.touches[0].clientY - toque.y) > 10) toque = null;
+  }, { passive: false });
+  document.addEventListener("touchend", e => {
+    if (e.touches.length < 2) d0 = 0;
+    if (arrasta && !e.touches.length) { arrasta = null; somePonto(); }
+    if (toque && !e.touches.length) { const t = toque; toque = null; if (Date.now() - t.ms < 500 && vivo() && t.cx.isConnected) { e.preventDefault(); pontoExpo(t.cx, t.x, t.y); } }
+  }, { passive: false });
 })();
 function iniciaVivo(F0) {
   let C = S.camEst;
@@ -9350,8 +9425,8 @@ function quadroCam() {
   // os primeiros quadros da câmera recém-ligada vêm pretos: o visor segura a última imagem até a câmera nova mostrar de verdade
   if (!v0.videoWidth || v0.readyState < 2 || performance.now() - (C.vivoDesde || 0) < 350) { requestAnimationFrame(quadroCam); return; }
   if (v0.videoWidth && !C.ocupado && !C.pausa) {
-    const v = videoCam(C);
     const f = FILTROS.find(y => y.id === F.filtro) || FILTROS[0], G = !(f.arco || f.holi) && glVivo(C);
+    const v = videoCam(C, G ? (S.gravando ? 1920 : 960) : (S.gravando ? 1280 : 640));
     // tamanho do visor ao vivo: maior que isso o iPhone fica sem memória e some com as fotos das câmeras
     // filmando, a imagem sobe para Full HD (só enquanto grava), para o vídeo não sair quadriculado
     const lado = G ? (S.gravando ? 1920 : 960) : (S.gravando ? 1280 : 640),
