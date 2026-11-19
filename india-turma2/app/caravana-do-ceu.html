@@ -5349,8 +5349,8 @@ function checaHabilidades() {
 function vMinhasHabilidades() {
   const ids = minhasHab(); if (!ids.length) return null;
   const gen = (eu() || {}).genero;
-  // a líder vê as habilidades dela aberta, igual aos viajantes
-  return ((resumo, ...resto) => h("div", { class: "panel" }, ...resumo.childNodes, ...resto))(h("div", null, h("p", { class: "eyebrow", text: "Minhas habilidades" }), h("h2", { text: ids.length === 1 ? "1 habilidade" : ids.length + " habilidades" })),
+  // para a líder, abre e fecha como os outros cartões; para os viajantes, fica sempre aberto
+  return (S.isOwner ? (resumo, ...resto) => dobraLider("minhashab", "panel", resumo, ...resto) : (resumo, ...resto) => h("div", { class: "panel" }, ...resumo.childNodes, ...resto))(h("div", null, h("p", { class: "eyebrow", text: "Minhas habilidades" }), h("h2", { text: ids.length === 1 ? "1 habilidade" : ids.length + " habilidades" })),
     h("div", { class: "hablista" }, ids.map(id => { const t = habTexto(id, gen); return h("button", { type: "button", class: "habitem", onclick: () => abrirHabilidade(id) },
       h("b", { text: t.nome, style: "--n:" + t.nome.length }), h("span", { text: t.frase }),
       h("small", { text: [localDe(t.local) ? "📍 " + localDe(t.local).nome : "", habFeitas().includes(id) ? "📸 Fazer outra foto" : "📸 Fazer a foto"].filter(Boolean).join("  ·  ") })); })),
