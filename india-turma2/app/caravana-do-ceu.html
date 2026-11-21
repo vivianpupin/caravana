@@ -2221,6 +2221,7 @@ video.mgrande{max-height:70vh;background:#000}
 .passbarra{display:flex;gap:5px}
 .passbarra button{flex:1;height:8px;border-radius:99px;border:0;padding:0;background:var(--panel3);cursor:pointer}
 .passbarra button.feito{background:var(--moss)}
+.passgbts{display:grid;grid-template-columns:1fr 1fr;gap:8px}.passgbts .btn{justify-content:center;text-align:center;font-size:13.5px;padding:11px 8px}
 .passescolhe{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 4px;-webkit-overflow-scrolling:touch}.passescolhe::-webkit-scrollbar{display:none}
 .passescolhe button{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:6px 11px 6px 6px;border-radius:999px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font:600 12.5px var(--ui);cursor:pointer;white-space:nowrap}
 .passescolhe button b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--sand);font-size:12px}
@@ -3465,22 +3466,45 @@ const distTxt = km => km < 1 ? Math.max(10, Math.round(km * 1000 / 10) * 10) + "
 // ---------- rotas a pé pelas ruas (servidor de rotas do OpenStreetMap, o mesmo do openstreetmap.org) ----------
 const ROTA_PE = "https://routing.openstreetmap.de/routed-foot/route/v1/driving/", ROTA_CARRO = "https://routing.openstreetmap.de/routed-car/route/v1/driving/";
 const rotasMem = (() => { try { return JSON.parse(lsGet("cdi-rotas-pe") || "{}"); } catch (e) { return {}; } })();
+// dois roteadores do OpenStreetMap, perguntados juntos: o OSRM (com caminhos alternativos) e o Valhalla (o mesmo do openstreetmap.org,
+// que conhece melhor as vielas a pé); fica o caminho mais curto que faz sentido. Sem resposta em 8 s, desiste daquele roteador.
+const VALHALLA = "https://valhalla1.openstreetmap.de/route?json=";
+const comPrazo = (url, ms) => { const c = new AbortController(), t = setTimeout(() => c.abort(), ms || 8000); return fetch(url, { signal: c.signal }).finally(() => clearTimeout(t)); };
+function polyline6(str) {
+  const out = []; let i = 0, lat = 0, lng = 0;
+  while (i < str.length) { for (const k of [0, 1]) { let r = 0, sh = 0, b; do { b = str.charCodeAt(i++) - 63; r |= (b & 31) << sh; sh += 5; } while (b >= 32); const d = r & 1 ? ~(r >> 1) : r >> 1; if (k) lng += d; else lat += d; } out.push([lng / 1e6, lat / 1e6]); }
+  return out;
+}
+async function rotaOsrm(pts, carro) {
+  const r = await comPrazo((carro ? ROTA_CARRO : ROTA_PE) + pts.map(q => `${(+q.lng).toFixed(6)},${(+q.lat).toFixed(6)}`).join(";") + "?overview=full&geometries=geojson&steps=false&alternatives=" + (pts.length === 2 ? "3" : "false"));
+  if (!r.ok) throw new Error("rota " + r.status);
+  const j = await r.json(); if (!j || j.code !== "Ok" || !j.routes || !j.routes.length) throw new Error("sem rota");
+  const rt = j.routes.slice().sort((x, y) => x.distance - y.distance)[0];
+  if (!rt.geometry || !rt.geometry.coordinates || rt.geometry.coordinates.length < 2) throw new Error("sem rota");
+  return { coords: rt.geometry.coordinates, m: rt.distance, s: rt.duration || 0, de: "osrm" };
+}
+async function rotaValhalla(pts, carro) {
+  const q = { locations: pts.map(p => ({ lat: +(+p.lat).toFixed(6), lon: +(+p.lng).toFixed(6) })), costing: carro ? "auto" : "pedestrian", units: "kilometers" };
+  const r = await comPrazo(VALHALLA + encodeURIComponent(JSON.stringify(q))); if (!r.ok) throw new Error("valhalla " + r.status);
+  const j = await r.json(), t = j && j.trip; if (!t || !t.legs || !t.legs.length) throw new Error("sem rota");
+  const coords = t.legs.flatMap((l, i) => { const c = polyline6(l.shape || ""); return i ? c.slice(1) : c; }); if (coords.length < 2) throw new Error("sem rota");
+  return { coords, m: (t.summary && t.summary.length || 0) * 1000, s: t.summary && t.summary.time || 0, de: "valhalla" };
+}
 async function rotaPe(a, b, via, carro) {
   // via: pontos por onde a linha tem que passar (ex.: a beira do rio, em vez da estrada de cima)
   const pts = [a, ...(via || []), b];
-  const k = (carro ? "c:" : "") + pts.map(q => (+q.lat).toFixed(5) + "," + (+q.lng).toFixed(5)).join(";");
+  const k = "v2:" + (carro ? "c:" : "") + pts.map(q => (+q.lat).toFixed(5) + "," + (+q.lng).toFixed(5)).join(";");
   if (rotasMem[k]) return rotasMem[k];
   let reta = 0; for (let i = 0; i < pts.length - 1; i++) reta += distKm(pts[i], pts[i + 1]) * 1000;
-  const r = await fetch((carro ? ROTA_CARRO : ROTA_PE) + pts.map(q => `${(+q.lng).toFixed(6)},${(+q.lat).toFixed(6)}`).join(";") + "?overview=full&geometries=geojson&steps=false");
-  if (!r.ok) throw new Error("rota " + r.status);
-  const j = await r.json(), rt = j && j.code === "Ok" && j.routes && j.routes[0];
-  if (!rt || !rt.geometry || !rt.geometry.coordinates || rt.geometry.coordinates.length < 2) throw new Error("sem rota");
-  // o roteador pode não conhecer uma ponte nova (Bajrang Setu) e mandar dar uma volta enorme: aí fica a linha reta
+  // o roteador pode não conhecer uma ponte nova (Bajrang Setu) e mandar dar uma volta enorme: essa resposta é descartada
   // de carro na serra a estrada faz muitas curvas: a folga é maior
-  if (rt.distance > reta * (carro ? 6 : 3) + 400) throw new Error("volta grande");
+  const ok = rt => rt && rt.m <= reta * (carro ? 6 : 3) + 400;
+  const rs = (await Promise.allSettled([rotaOsrm(pts, carro), rotaValhalla(pts, carro)])).map(x => x.status === "fulfilled" ? x.value : null).filter(ok);
+  if (!rs.length) throw new Error("sem rota boa");
+  const rt = rs.sort((x, y) => x.m - y.m)[0];
   // começa e termina nos pontos de verdade (o roteador encosta o começo e o fim na rua mais perto)
-  const coords = [[+a.lng, +a.lat], ...rt.geometry.coordinates.map(([x, y]) => [+x.toFixed(6), +y.toFixed(6)]), [+b.lng, +b.lat]];
-  const res = { coords, m: Math.round(rt.distance), s: Math.round(rt.duration || 0) };
+  const coords = [[+a.lng, +a.lat], ...rt.coords.map(([x, y]) => [+(+x).toFixed(6), +(+y).toFixed(6)]), [+b.lng, +b.lat]];
+  const res = { coords, m: Math.round(rt.m), s: Math.round(rt.s) };
   rotasMem[k] = res;
   return res;
 }
@@ -3734,7 +3758,7 @@ function abrirPasseio(id) {
     if (!forca && agoraPara === kAlvo() && !andou && !saiu) return;
     if (!forca && Date.now() - agoraEm < 12000) return;
     pedindo = true; agoraEm = Date.now(); const de = { lat: eu.lat, lng: eu.lng }, para = kAlvo();
-    try { const r = !extra && p.trilha ? rotaTrilha(de, p, trilhaAFrente(p)) : await rotaPe(de, p, extra ? [] : viaAFrente(p), !extra && !!p.carro); if (para === kAlvo()) { agora = r; agoraDe = de; agoraPara = para; } }
+    try { const r = !extra && p.trilha ? rotaTrilha(de, p, trilhaAFrente(p)) : await rotaPe(de, p, extra ? [] : viaAFrente(p), !extra && !!p.carro && distKm(de, p) > 1.2); if (para === kAlvo()) { agora = r; agoraDe = de; agoraPara = para; } }
     catch (e) { if (para === kAlvo()) { agora = null; agoraDe = de; agoraPara = para; } }
     pedindo = false; desenhaAgora(); desenha();
   }
@@ -3804,8 +3828,8 @@ function abrirPasseio(id) {
     else if (ws) fotoWiki(ws).then(u => { if (u) mostra(u, "foto da Wikipédia"); });
     return fotoEls[nome] = h("div", { class: "passfotobox" }, fig);
   }
-  const linkGoogle = (o, txt) => { const vs = o.poi ? [] : viaAFrente(o);
-    return h("a", { class: "passgoogle", href: o.poi ? mapsBusca(o.q) : "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(o.destino || o.lat + "," + o.lng) + (vs.length ? "&waypoints=" + encodeURIComponent(vs.map(v => v.lat + "," + v.lng).join("|")) : "") + "&travelmode=" + (o.carro ? "driving" : "walking"), target: "_blank", rel: "noopener" }, txt); };
+  const linkGoogle = (o, txt, cls) => { const vs = o.poi ? [] : viaAFrente(o), perto = eu && isFinite(o.lat) && distKm(eu, o) <= 1.2;
+    return h("a", { class: cls || "passgoogle", href: o.poi ? mapsBusca(o.q) : "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(o.destino || o.lat + "," + o.lng) + (vs.length ? "&waypoints=" + encodeURIComponent(vs.map(v => v.lat + "," + v.lng).join("|")) : "") + "&travelmode=" + (o.carro && !perto ? "driving" : "walking"), target: "_blank", rel: "noopener" }, txt); };
   function desenha() {
     lsSet(chave + "-v", JSON.stringify({ v: vendo ? vendo.nome : null }));
     const p = alvoAt(), parada = ps[est.i], fim = est.feitos.length === ps.length;
@@ -3863,6 +3887,9 @@ function abrirPasseio(id) {
           // a foto vem depois da seta e da distância (o mais importante andando)
           fotoEl(p.nome),
           d != null && !(bussola && bussola.g != null) ? h("button", { class: "btn ghost passbig", type: "button", onclick: ligaBussola }, "🧭 Mostrar para onde o celular aponta") : null,
+          // como no Google: o caminho guiado no Google Maps, e o Street View para ver a rua e a fachada antes de chegar
+          h("div", { class: "passgbts" }, linkGoogle(p, "🧭 Navegar no Google Maps", "btn ghost"),
+            isFinite(p.lat) ? h("a", { class: "btn ghost", href: `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${p.lat},${p.lng}`, target: "_blank", rel: "noopener" }, "👁 Ver no Street View") : null),
           h("button", { class: "btn passbig", type: "button", onclick: () => { if (extra) extra.chegou = true; else if (!est.chegou.includes(est.i)) est.chegou.push(est.i); guarda(); desenha(); painel.scrollTo({ top: 0 }); } }, "Já cheguei"),
           extra ? h("button", { class: "btn ghost passbig", type: "button", onclick: sairExtra }, `Voltar ao roteiro: ${parada.nome}`) : null,
           !extra && p.opcional && prox ? h("button", { class: "btn ghost passbig", type: "button", onclick: () => vai(est.i + 1) }, "Pular: está fechado") : null),
