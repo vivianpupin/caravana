@@ -3901,13 +3901,10 @@ function abrirPasseio(id) {
         h("p", { text: extra ? extra.desc : p.texto }),
         !extra && p.dica ? h("p", { class: "passdica", text: p.dica }) : null,
         !extra && p.lojas ? h("div", { class: "passlojas" }, h("p", { class: "eyebrow rule", text: "No caminho até aqui" }), p.lojas.map(itemPoi)) : null,
-        // o mapa salvo no Google (My Maps), com cada lugar marcado pelo nome; e o passeio inteiro num mapa só
-        h("div", { class: "passlojas passlugares" }, h("p", { class: "eyebrow rule", text: "No Google Maps" }),
-          mapaSalvo(id) ? h("a", { href: mapaSalvo(id), target: "_blank", rel: "noopener" },
-            h("b", { text: "📍 Mapa salvo: " + (/^varanasi/.test(id) ? "Varanasi" : "Rishikesh") }), h("span", { text: "Todos os lugares marcados, com o nome de cada um" }), h("i", { text: "Abrir ›" })) : null,
-          !P.livre && ps.length > 1 ? h("a", { class: "passtodos", href: "https://www.google.com/maps/dir/?api=1&origin=" + encodeURIComponent(ps[0].lat + "," + ps[0].lng) + "&destination=" + encodeURIComponent(ps[ps.length - 1].lat + "," + ps[ps.length - 1].lng)
-            + (ps.length > 2 ? "&waypoints=" + encodeURIComponent(ps.slice(1, -1).slice(0, 9).map(q => q.lat + "," + q.lng).join("|")) : "") + "&travelmode=walking", target: "_blank", rel: "noopener" },
-            h("b", { text: "🗺 O caminho do dia no Google Maps" }), h("span", { text: "Todas as paradas, na ordem" }), h("i", { text: "Abrir ›" })) : null),
+        // o mapa salvo no Google (My Maps), com cada lugar marcado pelo nome (só aparece quando o link estiver colocado)
+        mapaSalvo(id) ? h("div", { class: "passlojas passlugares" }, h("p", { class: "eyebrow rule", text: "No Google Maps" }),
+          h("a", { href: mapaSalvo(id), target: "_blank", rel: "noopener" },
+            h("b", { text: "📍 Mapa salvo: " + (/^varanasi/.test(id) ? "Varanasi" : "Rishikesh") }), h("span", { text: "Todos os lugares marcados, com o nome de cada um" }), h("i", { text: "Abrir ›" }))) : null,
         fim && !extra ? h("div", { class: "passfim" }, h("p", { class: "eyebrow", text: "Passeio completo" }), h("p", { text: "Você passou por todas as paradas do dia. Bom descanso e bom jantar!" })) : null,
         S.offRodando && S.offProg ? h("p", { class: "small passnota", text: `Guardando o mapa para usar sem internet… ${Math.round(S.offProg.feitos / Math.max(1, S.offProg.total) * 100)}%` }) : null,
         linkGoogle(p, "Se precisar, o passo a passo também no Google Maps")));
