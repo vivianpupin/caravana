@@ -10,7 +10,7 @@
 <link rel="icon" href="img/icone-t2-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-t2-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "21/11 · 11:32";</script>
+<script>window.__VERSAO = "21/11 · 11:34";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -2254,6 +2254,11 @@ video.mgrande{max-height:70vh;background:#000}
 .passbarra{display:flex;gap:5px}
 .passbarra button{flex:1;height:8px;border-radius:99px;border:0;padding:0;background:var(--panel3);cursor:pointer}
 .passbarra button.feito{background:var(--moss)}
+.passescolhe{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 4px;-webkit-overflow-scrolling:touch}.passescolhe::-webkit-scrollbar{display:none}
+.passescolhe button{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:6px 11px 6px 6px;border-radius:999px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font:600 12.5px var(--ui);cursor:pointer;white-space:nowrap}
+.passescolhe button b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--sand);font-size:12px}
+.passescolhe button.feito b{background:var(--moss);color:var(--on-dark)}
+.passescolhe button.atual{border-color:var(--terra);background:var(--terra);color:var(--on-dark)}.passescolhe button.atual b{background:rgba(255,255,255,.22);color:var(--on-dark)}
 .passbarra button[aria-selected="true"]{background:var(--terra)}
 .passrot{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--terra)}
 .passatual.chegou .passrot{color:var(--moss)}
@@ -3557,11 +3562,13 @@ function fotoWiki(ts) {
 }
 // ---------- passeio sem internet: guarda no celular os pedaços do mapa em volta de todas as paradas e atrativos, e as rotas do dia ----------
 // (cache "caravana-rotas": o service worker não apaga; o GPS, a seta, a distância e o aviso de direção funcionam sem internet)
-const OFF_CACHE = "caravana-rotas", OFF_VERSAO = "4"; // 4: Varanasi com Lolark Kund, Lanka, BHU e as opções extras
+// fundo dos mapas: o mapa claro da CARTO (dados do OpenStreetMap), limpo, sem os ícones de hospital, farmácia, banco etc. do mapa padrão do OpenStreetMap
+const MAPA_LIMPO = "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png";
+const OFF_CACHE = "caravana-rotas", OFF_VERSAO = "5"; // 4: Varanasi com Lolark Kund, Lanka, BHU e as opções extras
 function tilesEm(lat, lng, z, raio) {
   const n = 2 ** z, dLat = raio / 110540, dLng = raio / (111320 * Math.cos(lat * Math.PI / 180));
   const tx = x => Math.floor((x + 180) / 360 * n), ty = y => { const r = y * Math.PI / 180; return Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n); };
-  const out = []; for (let x = tx(lng - dLng); x <= tx(lng + dLng); x++) for (let y = ty(lat + dLat); y <= ty(lat - dLat); y++) out.push(`https://tile.openstreetmap.org/${z}/${x}/${y}.png`);
+  const out = []; for (let x = tx(lng - dLng); x <= tx(lng + dLng); x++) for (let y = ty(lat + dLat); y <= ty(lat - dLat); y++) out.push(MAPA_LIMPO.replace("{z}", z).replace("{x}", x).replace("{y}", y));
   return out;
 }
 function listaOffline() {
@@ -3843,7 +3850,10 @@ function abrirPasseio(id) {
       : tendencia === "indo" ? ["indo", "✓ Na direção certa"] : tendencia === "volta" ? ["volta", "↩ Você está se afastando"] : null;
     const progresso = h("div", { class: "passprog" },
       h("p", { text: P.livre ? `Opção ${est.i + 1} de ${ps.length}` : (fim ? "Passeio completo ✓" : `Parada ${est.i + 1} de ${ps.length}`) + (parada.dia ? " · " + parada.dia : "") + (extra ? " · desvio até um atrativo" : "") }),
-      h("div", { class: "passbarra", role: "tablist", "aria-label": "Paradas" }, ps.map((q, k) => h("button", { type: "button", role: "tab", "aria-selected": String(k === est.i), class: est.feitos.includes(k) ? "feito" : "", "aria-label": `Parada ${k + 1}: ${q.nome}`, onclick: () => vai(k) }))));
+      h("div", { class: "passbarra", role: "tablist", "aria-label": "Paradas" }, ps.map((q, k) => h("button", { type: "button", role: "tab", "aria-selected": String(k === est.i), class: est.feitos.includes(k) ? "feito" : "", "aria-label": `Parada ${k + 1}: ${q.nome}`, onclick: () => vai(k) }))),
+      // escolher qualquer parada, na ordem que quiser: um toque no número leva até ela
+      h("div", { class: "passescolhe", "aria-label": "Escolher parada" }, ps.map((q, k) => h("button", { type: "button", class: (k === est.i ? "atual " : "") + (est.feitos.includes(k) ? "feito" : ""), "aria-current": String(k === est.i), onclick: () => vai(k) },
+        h("b", { text: String(k + 1) }), h("span", { text: q.nome.split(" · ")[0] })))));
     // descrição de um atrativo (sem sair do app)
     if (vendo) {
       const o = vendo, dv = eu && isFinite(o.lat) ? distKm(eu, o) : null;
@@ -3965,7 +3975,7 @@ function abrirPasseio(id) {
     const vazio = fc([]);
     mapa = new maplibregl.Map({ container: caixaMapa, attributionControl: false, center: [ps[est.i].lng, ps[est.i].lat], zoom: 15, maxZoom: 19, dragRotate: false, pitchWithRotate: false, fadeDuration: 0,
       style: { version: 8, sources: {
-          ruas: { type: "raster", tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize: 256, maxzoom: 19 },
+          ruas: { type: "raster", tiles: [MAPA_LIMPO], tileSize: 256, maxzoom: 18 },
           dia: { type: "geojson", data: vazio }, agora: { type: "geojson", data: vazio }, rastro: { type: "geojson", data: vazio } },
         layers: [{ id: "fundo", type: "background", paint: { "background-color": "#EAD6A8" } },
           { id: "ruas", type: "raster", source: "ruas", paint: { "raster-fade-duration": 0, "raster-saturation": -.2, "raster-opacity": .85 } },
@@ -6619,7 +6629,7 @@ function satelite(svg, P, modo) {
   const x2lon = x => x / n * 360 - 180, y2lat = y => { const k = Math.PI - 2 * Math.PI * y / n; return 180 / Math.PI * Math.atan(.5 * (Math.exp(k) - Math.exp(-k))); };
   const g = h("g", { class: "satelite " + modo });
   const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/", subs = "abcd";
-  const url = (cam, z, x, y) => cam === "ruas" ? `https://tile.openstreetmap.org/${z}/${x}/${y}.png`
+  const url = (cam, z, x, y) => cam === "ruas" ? MAPA_LIMPO.replace("{z}", Math.min(z, 18)).replace("{x}", x).replace("{y}", y)
     : cam === "rotulos" ? `https://${subs[(x + y) % 4]}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/${z}/${x}/${y}.png`
     : `${ESRI}World_Imagery/MapServer/tile/${z}/${y}/${x}`;
   const reserva = (cam, z, x, y) => cam === "ruas" ? `https://${subs[(x + y) % 4]}.basemaps.cartocdn.com/rastertiles/voyager/${Math.min(z, 18)}/${x}/${y}.png` : cam === "rotulos" ? `${ESRI}Reference/World_Boundaries_and_Places/MapServer/tile/${z}/${y}/${x}` : `${ESRI}World_Imagery/MapServer/tile/${z}/${y}/${x}`;
@@ -6992,7 +7002,7 @@ function montaGlobo(caixa) {
     style: { version: 8, projection: { type: "globe" },
       sources: {
         // mapa bege (o mesmo do "Perto de mim"): opção "Mapa" quando aproxima, e reserva se a foto de satélite falhar
-        mapa: { type: "raster", tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize: 256, maxzoom: 19, attribution: "© OpenStreetMap" },
+        mapa: { type: "raster", tiles: [MAPA_LIMPO], tileSize: 256, maxzoom: 18, attribution: "© OpenStreetMap · CARTO" },
         sat: { type: "raster", tiles: [ESRI_GLOBO + "World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18, attribution: "Esri, Maxar" },
         nomes: { type: "raster", tiles: [ESRI_GLOBO + "Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18 },
         prec: { type: "geojson", data: { type: "FeatureCollection", features: [] } } },
