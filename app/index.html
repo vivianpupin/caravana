@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icone-180.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script>window.__VERSAO = "21/11 · 11:34";</script>
+<script>window.__VERSAO = "21/11 · 11:42";</script>
 <script src="config.js"></script>
 <script src="shim.js"></script>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
@@ -3529,9 +3529,9 @@ function fotoWiki(ts) {
 }
 // ---------- passeio sem internet: guarda no celular os pedaços do mapa em volta de todas as paradas e atrativos, e as rotas do dia ----------
 // (cache "caravana-rotas": o service worker não apaga; o GPS, a seta, a distância e o aviso de direção funcionam sem internet)
-// fundo dos mapas: o mapa claro da CARTO (dados do OpenStreetMap), limpo, sem os ícones de hospital, farmácia, banco etc. do mapa padrão do OpenStreetMap
-const MAPA_LIMPO = "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png";
-const OFF_CACHE = "caravana-rotas", OFF_VERSAO = "5";
+// fundo dos mapas: o OpenStreetMap (a CARTO passou a exigir chave e carimbava "API key required" no mapa)
+const MAPA_LIMPO = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const OFF_CACHE = "caravana-rotas", OFF_VERSAO = "6";
 function tilesEm(lat, lng, z, raio) {
   const n = 2 ** z, dLat = raio / 110540, dLng = raio / (111320 * Math.cos(lat * Math.PI / 180));
   const tx = x => Math.floor((x + 180) / 360 * n), ty = y => { const r = y * Math.PI / 180; return Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n); };
@@ -4005,7 +4005,7 @@ function abrirPasseio(id) {
     const vazio = fc([]);
     mapa = new maplibregl.Map({ container: caixaMapa, attributionControl: false, center: [ps[est.i].lng, ps[est.i].lat], zoom: 15, maxZoom: 19, dragRotate: false, pitchWithRotate: false, fadeDuration: 0,
       style: { version: 8, sources: {
-          ruas: { type: "raster", tiles: [MAPA_LIMPO], tileSize: 256, maxzoom: 18 },
+          ruas: { type: "raster", tiles: [MAPA_LIMPO], tileSize: 256, maxzoom: 19 },
           dia: { type: "geojson", data: vazio }, agora: { type: "geojson", data: vazio }, rastro: { type: "geojson", data: vazio } },
         layers: [{ id: "fundo", type: "background", paint: { "background-color": "#EAD6A8" } },
           { id: "ruas", type: "raster", source: "ruas", paint: { "raster-fade-duration": 0, "raster-saturation": -.2, "raster-opacity": .85 } },
@@ -6660,10 +6660,11 @@ function satelite(svg, P, modo) {
   const x2lon = x => x / n * 360 - 180, y2lat = y => { const k = Math.PI - 2 * Math.PI * y / n; return 180 / Math.PI * Math.atan(.5 * (Math.exp(k) - Math.exp(-k))); };
   const g = h("g", { class: "satelite " + modo });
   const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/", subs = "abcd";
-  const url = (cam, z, x, y) => cam === "ruas" ? MAPA_LIMPO.replace("{z}", Math.min(z, 18)).replace("{x}", x).replace("{y}", y)
-    : cam === "rotulos" ? `https://${subs[(x + y) % 4]}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/${z}/${x}/${y}.png`
+  const url = (cam, z, x, y) => cam === "ruas" ? MAPA_LIMPO.replace("{z}", z).replace("{x}", x).replace("{y}", y)
+    : cam === "rotulos" ? `${ESRI}Reference/World_Boundaries_and_Places/MapServer/tile/${z}/${y}/${x}`
     : `${ESRI}World_Imagery/MapServer/tile/${z}/${y}/${x}`;
-  const reserva = (cam, z, x, y) => cam === "ruas" ? `https://${subs[(x + y) % 4]}.basemaps.cartocdn.com/rastertiles/voyager/${Math.min(z, 18)}/${x}/${y}.png` : cam === "rotulos" ? `${ESRI}Reference/World_Boundaries_and_Places/MapServer/tile/${z}/${y}/${x}` : `${ESRI}World_Imagery/MapServer/tile/${z}/${y}/${x}`;
+  // reserva se a imagem falhar (a CARTO passou a exigir chave: saiu daqui)
+  const reserva = (cam, z, x, y) => cam === "ruas" ? `${ESRI}World_Street_Map/MapServer/tile/${z}/${y}/${x}` : cam === "rotulos" ? `${ESRI}Reference/World_Boundaries_and_Places/MapServer/tile/${z}/${y}/${x}` : `${ESRI}World_Imagery/MapServer/tile/${z}/${y}/${x}`;
   const camadas = modo === "ruas" ? ["ruas"] : modo === "hibrido" ? ["sat", "rotulos"] : ["sat"];
   const x0 = lon2x(tl.lng), x1 = lon2x(br.lng), y0 = lat2y(tl.lat), y1 = lat2y(br.lat);
   if ((x1 - x0 + 1) * (y1 - y0 + 1) > 64) return;
@@ -7033,7 +7034,7 @@ function montaGlobo(caixa) {
     style: { version: 8, projection: { type: "globe" },
       sources: {
         // mapa bege (o mesmo do "Perto de mim"): opção "Mapa" quando aproxima, e reserva se a foto de satélite falhar
-        mapa: { type: "raster", tiles: [MAPA_LIMPO], tileSize: 256, maxzoom: 18, attribution: "© OpenStreetMap · CARTO" },
+        mapa: { type: "raster", tiles: [MAPA_LIMPO], tileSize: 256, maxzoom: 19, attribution: "© OpenStreetMap" },
         sat: { type: "raster", tiles: [ESRI_GLOBO + "World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18, attribution: "Esri, Maxar" },
         nomes: { type: "raster", tiles: [ESRI_GLOBO + "Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, maxzoom: 18 },
         prec: { type: "geojson", data: { type: "FeatureCollection", features: [] } } },
