@@ -132,11 +132,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--moss);outline:none;bo
 .logi b{color:var(--ink);font-weight:500}
 .per{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--moss);margin:10px 0 4px}
 ul.items{list-style:none;margin:0;padding:0}
-ul.items li{display:grid;grid-template-columns:58px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line);align-items:baseline}
+ul.items li{display:grid;grid-template-columns:14px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line);align-items:baseline}
 ul.items li>span:last-child{font-weight:500;color:var(--ink)}
 ul.items .h.sem{color:var(--faint);font-weight:400}
 ul.items li:first-child{border-top:0}
 ul.items .h{font-weight:600;color:var(--terra);font-variant-numeric:tabular-nums}
+/* Turma 2: sem os horários no roteiro, um pontinho de tópico na cor que eram os horários */
+ul.items .h.ponto::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--terra);transform:translateY(-1px)}
 .place{display:flex;flex-direction:column;gap:8px}
 .place .sub{font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--terra)}
 .place h4{font-size:24px;font-weight:500}
@@ -1834,6 +1836,7 @@ body:has(.sheet) .navmais{display:none!important}
 .hjl{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#E2BE78;margin:0}
 .hjitem{display:flex;gap:10px;margin:0;font-size:15px;line-height:1.4}
 .hjitem b{font-variant-numeric:tabular-nums;color:#F6EDDA;min-width:44px}
+.hjitem b.ponto{min-width:0;color:#E9B48A}
 .hjitem.dep{font-size:13px;color:#CDB894}
 .hjmantra{display:flex;flex-direction:column;align-items:flex-start;gap:0;background:none;border:0;border-left:2px solid #E2BE78;padding:2px 0 2px 10px;color:#F1E2BC;text-align:left}
 .hjmantra span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#D8C09A}
@@ -4021,7 +4024,7 @@ function vDia(d, open, isToday, abrir) {
       h("div", null, h("p", { class: "eyebrow rule", text: "Agenda do dia" }),
         // agenda corrida, sem separar em manhã, tarde e noite
         [d.agenda.flatMap(p => p.itens)].map(itens => [
-          h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h" + (it.hora ? "" : " sem"), text: it.hora || "" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
+          h("ul", { class: "items" }, itens.map(it => h("li", null, h("span", { class: "h ponto", "aria-hidden": "true" }), h("span", null, it.texto, it.nota ? h("small", { class: "inota", text: it.nota }) : null, it.mapa ? h("a", { class: "imapa", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(it.mapa), target: "_blank", rel: "noopener" }, "🗺️ mapa") : null))))])),
       // passeio guiado do dia: Dia 10 é o de Kunjapuri e Vashishta; os outros dias de Rishikesh, o das pontes
       podePasseio() ? cartaoPasseio(Object.keys(PASSEIOS).find(k => PASSEIOS[k].diaN === d.n) || (d.cidade === "Rishikesh" && d.n === 11 ? "extras" : null)) : null,
       d.cerimonia ? h("div", { class: "cer" }, h("p", { class: "t", text: "Cerimônia da Caravana" }), h("h4", { text: d.cerimonia.titulo }), h("p", { text: d.cerimonia.texto }), h("p", { class: "q", text: d.cerimonia.quando })) : null,
@@ -10578,10 +10581,10 @@ function vHoje(d, abrir) {
     h("h2", { text: d.titulo }),
     h("p", { class: "hjcid", text: [d.cidade, d.hotel].filter(Boolean).join(" · ") }),
     prox.length ? h("div", { class: "hjprox" }, h("p", { class: "hjl", text: "A seguir" }),
-        h("p", { class: "hjitem" }, h("b", { text: prox[0].hora }), h("span", { text: prox[0].texto })),
-        prox[1] ? h("p", { class: "hjitem dep" }, h("b", { text: prox[1].hora }), h("span", { text: prox[1].texto })) : null)
+        h("p", { class: "hjitem" }, h("b", { class: "ponto", "aria-hidden": "true", text: "•" }), h("span", { text: prox[0].texto })),
+        prox[1] ? h("p", { class: "hjitem dep" }, h("b", { class: "ponto", "aria-hidden": "true", text: "•" }), h("span", { text: prox[1].texto })) : null)
       : h("div", { class: "hjprox" }, h("p", { class: "hjl", text: prim ? "Amanhã" : "Programação encerrada" }),
-        prim ? h("p", { class: "hjitem" }, h("b", { text: prim.hora }), h("span", { text: prim.texto })) : h("p", { class: "hjitem", text: "Boa volta para casa!" })),
+        prim ? h("p", { class: "hjitem" }, h("b", { class: "ponto", "aria-hidden": "true", text: "•" }), h("span", { text: prim.texto })) : h("p", { class: "hjitem", text: "Boa volta para casa!" })),
     m ? h("button", { class: "hjmantra", type: "button", onclick: () => { S.diaAberto = 0; abrir(d.n); } }, h("span", { text: "Mantra do dia" }), h("b", { text: m.nome })) : null,
     ls.length ? h("div", { class: "hjselos" }, ls.map(l => h("button", { type: "button", onclick: () => abrirSelo(l) },
       h("img", { src: badgeSrc(l), alt: "", class: aberto(l) ? "" : "off" }), h("span", { text: aberto(l) ? "Carimbado" : S.isOwner ? "Carimbar" : "A carimbar" })))) : null,
@@ -11463,7 +11466,7 @@ function htmlOffline() {
 <p class="e">Caravana do Céu · Índia Sagrada · 18 a 30 nov 2026</p><h1>Travessia da Índia Sagrada</h1><p class="s">Cópia para ler sem internet. Salva em ${esc(new Date().toLocaleDateString("pt-BR"))}.</p>
 <nav>${dias.map(d => `<a href="#d${d.n}">Dia ${d.n}</a>`).join("")}<a href="#hindi">Hindi</a><a href="#saberes">Saberes</a><a href="#guia">Guia</a></nav>
 ${dias.map(d => { return `<h2 id="d${d.n}">Dia ${d.n} · ${esc(d.data)} · ${esc(d.titulo)}</h2><p class="s">${esc(d.rota)}<br>Hospedagem: ${esc(d.hotel)}${d.guia ? " · " + esc(d.guia) : ""}</p>
-<ul>${d.agenda.flatMap(p => p.itens).map(i => `<li><b>${esc(i.hora || "·")}</b> ${esc(i.texto)}</li>`).join("")}</ul>
+<ul>${d.agenda.flatMap(p => p.itens).map(i => `<li>${esc(i.texto)}</li>`).join("")}</ul>
 ${d.cerimonia ? `<h3>${esc(d.cerimonia.titulo)}</h3><p class="s">${esc(d.cerimonia.quando || "")}</p>${par(d.cerimonia.texto)}` : ""}${d.aviso ? `<h3>${esc(d.aviso.titulo)}</h3>${par(d.aviso.texto)}` : ""}
 ${(d.lugares || []).map(l => `<h3>${esc(l.nome)}</h3>${par(l.texto)}`).join("")}
 `; }).join("")}
